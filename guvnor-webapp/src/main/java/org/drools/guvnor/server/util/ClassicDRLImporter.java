@@ -294,6 +294,7 @@ public class ClassicDRLImporter {
     /**
      * This merges the toMerge new schtuff into the existing. Line by line, simple stuff.
      */
+    @SuppressWarnings("rawtypes")
     public static String mergeLines(String existing, String toMerge) {
 
         if ( toMerge == null || toMerge.equals( "" ) ) {

@@ -31,7 +31,6 @@ import org.drools.guvnor.client.rpc.Cause;
 import org.drools.verifier.components.Field;
 import org.drools.verifier.components.ObjectType;
 import org.drools.verifier.components.PatternComponent;
-import org.drools.verifier.components.Restriction;
 import org.drools.verifier.components.VerifierComponentType;
 import org.drools.verifier.components.VerifierRule;
 import org.drools.verifier.data.VerifierData;
@@ -104,8 +103,8 @@ public class VerifierReportCreator {
             line.description = message.getMessage();
             if ( message.getFaulty() != null ) {
                 line.reason = message.getFaulty().toString();
-                if (message.getFaulty() instanceof PatternComponent){
-                    line.patternOrderNumber = ((PatternComponent)message.getFaulty()).getPatternOrderNumber();
+                if ( message.getFaulty() instanceof PatternComponent ) {
+                    line.patternOrderNumber = ((PatternComponent) message.getFaulty()).getPatternOrderNumber();
                 }
             }
 

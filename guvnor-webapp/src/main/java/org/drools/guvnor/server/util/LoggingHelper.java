@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.Arrays;
 import java.util.Date;
 
 import org.drools.guvnor.client.rpc.LogEntry;
@@ -48,12 +47,16 @@ public class LoggingHelper {
 
     public void info(String message) {
         log.info( message );
-        messages.add( message, 1 );
+        messages.add( message,
+                      1 );
     }
 
-    public void info(String message, Throwable error) {
-        log.info( message, error );
-        messages.add( message + " " + error.getMessage(), 1 );
+    public void info(String message,
+                     Throwable error) {
+        log.info( message,
+                  error );
+        messages.add( message + " " + error.getMessage(),
+                      1 );
     }
 
     public void debug(String message) {
@@ -62,19 +65,23 @@ public class LoggingHelper {
 
     public void error(String message) {
         log.error( message );
-        messages.add( message, 0 );
+        messages.add( message,
+                      0 );
     }
 
-    public void error(String message, Throwable error) {
-        log.error( message, error );
-        messages.add( message + " " + error.getMessage(), 0 );
+    public void error(String message,
+                      Throwable error) {
+        log.error( message,
+                   error );
+        messages.add( message + " " + error.getMessage(),
+                      0 );
     }
 
     public void warn(String message) {
         log.warn( message );
     }
-    
-    public boolean isDebugEnabled(){
+
+    public boolean isDebugEnabled() {
         return log.isDebugEnabled();
     }
 
@@ -89,7 +96,8 @@ class MessageList {
 
     }
 
-    public synchronized void add(String message, int severity) {
+    public synchronized void add(String message,
+                                 int severity) {
         LogEntry entry = new LogEntry();
         entry.message = message;
         entry.timestamp = new Date();
@@ -102,14 +110,18 @@ class MessageList {
     }
 
     public LogEntry[] getMessages() {
-    	//JDK1.5 Incompatible. 
+        //JDK1.5 Incompatible. 
         //return Arrays.copyOf( messages, current );
         LogEntry[] result = new LogEntry[current];
-        System.arraycopy(messages, 0, result, 0, Math.min(messages.length, current));   
+        System.arraycopy( messages,
+                          0,
+                          result,
+                          0,
+                          Math.min( messages.length,
+                                    current ) );
         return result;
     }
 
-    
     public synchronized void cleanEntry() {
         messages = new LogEntry[MAX];
         current = 0;

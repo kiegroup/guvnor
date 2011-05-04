@@ -87,6 +87,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     	return getSuggestionEngine(pkg, DroolsHeader.getDroolsHeader(pkg));
     }
 
+    @SuppressWarnings("rawtypes")
     private List<String> getDataEnums(PackageItem pkg) {
         Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
         List<String> list = new ArrayList<String>();

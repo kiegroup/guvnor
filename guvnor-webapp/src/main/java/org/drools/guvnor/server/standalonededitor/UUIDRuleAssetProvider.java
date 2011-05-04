@@ -15,45 +15,46 @@
  */
 package org.drools.guvnor.server.standalonededitor;
 
-import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
-import org.drools.guvnor.server.ServiceImplementation;
+
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Creates a new RuleAsset.
  */
-public class UUIDRuleAssetProvider implements RuleAssetProvider {
+public class UUIDRuleAssetProvider
+    implements
+    RuleAssetProvider {
 
     private String[] assetsUUIDs;
 
     public UUIDRuleAssetProvider(String[] assetsUUIDs) {
         this.assetsUUIDs = assetsUUIDs;
     }
-    
+
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
 
             RuleAsset[] assets = new RuleAsset[assetsUUIDs.length];
-            
-            for (int i = 0; i < assetsUUIDs.length; i++) {
-                String uuid = assetsUUIDs[i];
-                assets[i] = this.getAssetService().loadRuleAsset(uuid);
-            }
-            
-            return assets;
-        } catch (SerializationException ex) {
-            throw new DetailedSerializationException("Error creating rule asset", ex.getMessage());
-        }
 
+            for ( int i = 0; i < assetsUUIDs.length; i++ ) {
+                String uuid = assetsUUIDs[i];
+                assets[i] = this.getAssetService().loadRuleAsset( uuid );
+            }
+
+            return assets;
+        } catch ( SerializationException ex ) {
+            throw new DetailedSerializationException( "Error creating rule asset",
+                                                      ex.getMessage() );
+        }
 
     }
 
     private RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
     }
-    
-    
+
 }
