@@ -31,56 +31,65 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
-public class SpringContextContentHandler extends PlainTextContentHandler implements IValidating {
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
-            throws SerializationException {
-        if (item.getContent() != null) {
+public class SpringContextContentHandler extends PlainTextContentHandler
+    implements
+    IValidating {
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item)
+                                                    throws SerializationException {
+        if ( item.getContent() != null ) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
             asset.content = text;
         }
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset) throws SerializationException {
 
         RuleContentText text = (RuleContentText) asset.content;
 
         try {
-            InputStream input = new ByteArrayInputStream(text.content.getBytes("UTF-8"));
-            repoAsset.updateBinaryContentAttachment(input);
-        } catch (UnsupportedEncodingException e) {
+            InputStream input = new ByteArrayInputStream( text.content.getBytes( "UTF-8" ) );
+            repoAsset.updateBinaryContentAttachment( input );
+        } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 
     public BuilderResult validateAsset(AssetItem asset) {
 
-        String message = validate(asset.getContent());
+        String message = validate( asset.getContent() );
 
-        return createBuilderResult(message, asset.getName(), asset.getFormat(), asset.getUUID());
+        return createBuilderResult( message,
+                                    asset.getName(),
+                                    asset.getFormat(),
+                                    asset.getUUID() );
     }
 
     public BuilderResult validateAsset(RuleAsset asset) {
 
-        String message = validate(((RuleContentText) asset.content).content);
+        String message = validate( ((RuleContentText) asset.content).content );
 
-        return createBuilderResult(message, asset.name, asset.metaData.format, asset.uuid);
+        return createBuilderResult( message,
+                                    asset.name,
+                                    asset.metaData.format,
+                                    asset.uuid );
     }
 
-    private BuilderResult createBuilderResult(String message, String name, String format, String uuid) {
+    private BuilderResult createBuilderResult(String message,
+                                              String name,
+                                              String format,
+                                              String uuid) {
 
-        if(message.length() ==0){
+        if ( message.length() == 0 ) {
             return new BuilderResult();
-        }else{
+        } else {
             List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
 
-            BuilderResultLine result = new BuilderResultLine();
-            result.setAssetName(name);
-            result.setAssetFormat(format);
-            result.setUuid(uuid);
-            result.setMessage( message);
+            BuilderResultLine result = new BuilderResultLine().setAssetName( name ).setAssetFormat( format ).setUuid( uuid ).setMessage( message );
             errors.add( result );
 
             BuilderResult builderResult = new BuilderResult();
@@ -93,7 +102,7 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
     private String validate(String content) {
 
         SpringContextValidator contextValidator = new SpringContextValidator();
-        contextValidator.setContentAsString(content);
+        contextValidator.setContentAsString( content );
 
         return contextValidator.validate();
     }

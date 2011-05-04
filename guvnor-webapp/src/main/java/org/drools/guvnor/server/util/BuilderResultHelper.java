@@ -27,11 +27,7 @@ public class BuilderResultHelper {
         List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( asm.getErrors().size() );
         for ( int i = 0; i < asm.getErrors().size(); i++ ) {
             ContentAssemblyError err = asm.getErrors().get( i );
-            BuilderResultLine res = new BuilderResultLine();
-            res.setAssetName( err.getName() );
-            res.setAssetFormat( err.getFormat() );
-            res.setMessage( err.getErrorReport() );
-            res.setUuid( err.getUUID() );
+            BuilderResultLine res = new BuilderResultLine().setAssetName( err.getName() ).setAssetFormat( err.getFormat() ).setMessage( err.getErrorReport() ).setUuid( err.getUUID() );
             result.add( res );
         }
         return result;

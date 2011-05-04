@@ -52,8 +52,6 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.contenthandler.IValidating;
 import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
@@ -72,8 +70,6 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -105,8 +101,7 @@ public class RepositoryAssetOperations {
                                                  newName );
     }
 
-    protected BuilderResult buildAsset(RuleAsset asset)
-                                                       {
+    protected BuilderResult buildAsset(RuleAsset asset) {
         BuilderResult result = new BuilderResult();
 
         try {
@@ -152,11 +147,7 @@ public class RepositoryAssetOperations {
                        e );
             result = new BuilderResult();
 
-            BuilderResultLine res = new BuilderResultLine();
-            res.setAssetName( asset.name );
-            res.setAssetFormat( asset.metaData.format );
-            res.setMessage( "Unable to validate this asset. (Check log for detailed messages)." );
-            res.setUuid( asset.uuid );
+            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.name ).setAssetFormat( asset.metaData.format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.uuid );
             result.getLines().add( res );
 
             return result;
@@ -181,7 +172,7 @@ public class RepositoryAssetOperations {
         repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
 
         repoAsset.updateCategoryList( meta.categories );
-        repoAsset.updateDescription(asset.description);
+        repoAsset.updateDescription( asset.description );
 
         ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
         handler.storeAssetContent( asset,
@@ -205,12 +196,12 @@ public class RepositoryAssetOperations {
         cal.setTime( date );
         return cal;
     }
-   
+
     private boolean isAssetUpdatedInRepository(RuleAsset asset,
                                                AssetItem repoAsset) {
         return asset.lastModified.before( repoAsset.getLastModified().getTime() );
     }
-    
+
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
@@ -224,8 +215,7 @@ public class RepositoryAssetOperations {
                                                      comment );
     }
 
-    protected TableDataResult loadItemHistory(final VersionableItem item)
-                                                                         {
+    protected TableDataResult loadItemHistory(final VersionableItem item) {
         Iterator<VersionableItem> it = item.getHistory();
         //AssetHistoryIterator it = assetItem.getHistory();
 
@@ -289,8 +279,7 @@ public class RepositoryAssetOperations {
      * @deprecated in favour of {@link loadArchivedAssets(PageRequest)}
      */
     protected TableDataResult loadArchivedAssets(int skip,
-                                                 int numRows)
-                                                             {
+                                                 int numRows) {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
@@ -338,7 +327,7 @@ public class RepositoryAssetOperations {
         return table;
     }
 
-    protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request)  {
+    protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) {
         // Do query
         long start = System.currentTimeMillis();
         AssetItemIterator iterator = getRulesRepository().findArchivedAssets();
@@ -380,8 +369,7 @@ public class RepositoryAssetOperations {
                                          String formats[],
                                          int skip,
                                          int numRows,
-                                         String tableConfig)
-                                                            {
+                                         String tableConfig) {
         long start = System.currentTimeMillis();
         PackageItem pkg = getRulesRepository().loadPackageByUUID( packageUuid );
         AssetItemIterator it;
@@ -529,8 +517,7 @@ public class RepositoryAssetOperations {
         return stringBuilder.toString();
     }
 
-    protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request)
-                                                                                {
+    protected PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) {
         log.debug( "Finding asset page of packageUuid ("
                    + request.getPackageUuid() + ")" );
         long start = System.currentTimeMillis();
@@ -580,7 +567,7 @@ public class RepositoryAssetOperations {
         return response;
     }
 
-    protected PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request)  {
+    protected PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) {
         // Setup parameters
         String search = request.getSearchText().replace( '*',
                                                          '%' );

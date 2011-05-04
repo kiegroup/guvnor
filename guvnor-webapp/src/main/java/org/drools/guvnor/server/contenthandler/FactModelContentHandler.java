@@ -29,6 +29,7 @@ import org.drools.guvnor.client.factmodel.FactModels;
 import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
@@ -40,6 +41,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 
 public class FactModelContentHandler extends ContentHandler {
+    private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
 
     @Override
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
@@ -50,7 +52,7 @@ public class FactModelContentHandler extends ContentHandler {
             ms.models = models;
             asset.content = ms;
         } catch (DroolsParserException e) {
-            System.err.println("Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
+            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
             asset.content = text;

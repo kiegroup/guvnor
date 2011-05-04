@@ -31,32 +31,36 @@ public class BuilderResultLine extends AbstractPageRow {
         return assetFormat;
     }
 
-    public void setAssetFormat(String assetFormat) {
+    public BuilderResultLine setAssetFormat(String assetFormat) {
         this.assetFormat = assetFormat;
+        return this;
     }
 
     public String getAssetName() {
         return assetName;
     }
 
-    public void setAssetName(String assetName) {
+    public BuilderResultLine setAssetName(String assetName) {
         this.assetName = assetName;
+        return this;
     }
 
     public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public BuilderResultLine setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public void setMessage(String message) {
+    public BuilderResultLine setMessage(String message) {
         this.message = message;
+        return this;
     }
 
     public String toString() {

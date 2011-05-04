@@ -42,11 +42,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
 
             for ( String message : errs ) {
 
-                BuilderResultLine result = new BuilderResultLine();
-                result.setAssetName(asset.getName());
-                result.setAssetFormat(asset.getFormat());
-                result.setUuid(asset.getUUID());
-                result.setMessage(message);
+                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.getName()).setAssetFormat(asset.getFormat()).setUuid(asset.getUUID()).setMessage(message);
                 errors.add( result );
             }
 
@@ -68,11 +64,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
 
             for ( String message : errs ) {
 
-                BuilderResultLine result = new BuilderResultLine();
-                result.setAssetName(asset.name);
-                result.setAssetFormat(asset.metaData.format);
-                result.setUuid(asset.uuid);
-                result.setMessage(message);
+                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.name).setAssetFormat(asset.metaData.format).setUuid(asset.uuid).setMessage(message);
                 errors.add( result );
             }
 
