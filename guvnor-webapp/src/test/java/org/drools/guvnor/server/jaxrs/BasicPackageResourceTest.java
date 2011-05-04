@@ -43,6 +43,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.drools.util.codec.Base64;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
 
@@ -127,6 +128,38 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     public static void tearDown() {
     	restTestingBase.tearDownGuvnorTestBase();
     }
+    
+    @Test
+    public void testBasicAuthentication() throws MalformedURLException, IOException {
+        //Test with invalid user name and pwd
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        String userpassword = "test" + ":" + "invalidPwd";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword
+                .getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        assertEquals (401, connection.getResponseCode());
+        //assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        
+        //Test with valid user name and pwd
+        url = new URL(generateBaseUrl() + "/packages");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        userpassword = "test" + ":" + "password";
+        authEncBytes = Base64.encodeBase64(userpassword
+                .getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));        
+    }
 
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
@@ -169,6 +202,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        String userpassword = "jliu" + ":" + "pwd";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword
+                .getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());

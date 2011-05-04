@@ -37,6 +37,7 @@ public class GuvnorApplication extends Application {
         classes.add(CategoryResource.class);
         classes.add(AtomEntryProvider.class);
         classes.add(AtomFeedProvider.class);
+        classes.add(CXFAuthenticationHandler.class);        
         return classes;
     }
     
