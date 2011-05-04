@@ -24,8 +24,8 @@ import org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;
 import org.drools.guvnor.client.rulefloweditor.SplitNode;
 import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode;
-import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
 import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
+import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
 import org.drools.process.core.Work;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
@@ -41,64 +41,52 @@ public class RuleFlowProcessBuilder {
     public static void updateProcess(RuleFlowProcess process,
                                      Collection<TransferNode> contentNodes) {
 
-        for ( TransferNode tn : contentNodes ) {
+        for ( TransferNode transferNode : contentNodes ) {
 
-            Node node = process.getNode( tn.getId() );
+            Node node = process.getNode( transferNode.getId() );
 
-            updateNode( tn,
+            updateNode( transferNode,
                         node );
         }
     }
 
-    //    public static void updateContainer(NodeContainer nodeContainer,
-    //                                       Collection<TransferNode> contentNodes) {
-    //
-    //        for ( TransferNode tn : contentNodes ) {
-    //
-    //            Node node = nodeContainer.getNode( tn.getId() );
-    //
-    //            updateNode( tn,
-    //                        node );
-    //        }
-    //    }
-
-    private static void updateNode(TransferNode tn,
+    private static void updateNode(TransferNode transferNode,
                                    Node node) {
         /*
          * At this point only the parameters are editable
          */
-        if ( tn instanceof HumanTaskTransferNode ) {
+        if ( transferNode instanceof HumanTaskTransferNode ) {
 
-            updateHumanTask( (HumanTaskTransferNode) tn,
+            updateHumanTask( (HumanTaskTransferNode) transferNode,
                              (HumanTaskNode) node );
 
-        } else if ( tn instanceof WorkItemTransferNode ) {
+        } else if ( transferNode instanceof WorkItemTransferNode ) {
 
-            updateWorkItem( (WorkItemTransferNode) tn,
+            updateWorkItem( (WorkItemTransferNode) transferNode,
                             (WorkItemNode) node );
 
-        } else if ( tn instanceof SplitTransferNode ) {
+        } else if ( transferNode instanceof SplitTransferNode ) {
 
-            updateSplitNode( (SplitTransferNode) tn,
+            updateSplitNode( (SplitTransferNode) transferNode,
                              (Split) node );
 
-        } else if ( tn instanceof ElementContainerTransferNode ) {
+        } else if ( transferNode instanceof ElementContainerTransferNode ) {
 
-            if ( tn.getType() == Type.FOR_EACH ) {
+            if ( transferNode.getType() == Type.FOR_EACH ) {
 
-                updateForEach( (ElementContainerTransferNode) tn,
+                updateForEach( (ElementContainerTransferNode) transferNode,
                                (ForEachNode) node );
 
-            } else if ( tn.getType() == Type.COMPOSITE ) {
+            } else if ( transferNode.getType() == Type.COMPOSITE ) {
 
-                updateComposite( (ElementContainerTransferNode) tn,
+                updateComposite( (ElementContainerTransferNode) transferNode,
                                  (CompositeNode) node );
 
             }
         }
     }
 
-    private static void updateHumanTask(HumanTaskTransferNode httn,
+    private static void updateHumanTask(HumanTaskTransferNode transferNode,
                                         HumanTaskNode humanTaskNode) {
         Work work = humanTaskNode.getWork();
 
@@ -106,12 +94,12 @@ public class RuleFlowProcessBuilder {
             for ( String key : work.getParameters().keySet() ) {
 
                 work.setParameter( key,
-                                   httn.getParameters().get( key ) );
+                                   transferNode.getParameters().get( key ) );
             }
         }
     }
 
-    private static void updateWorkItem(WorkItemTransferNode witn,
+    private static void updateWorkItem(WorkItemTransferNode transferNode,
                                        WorkItemNode workItemNode) {
         Work work = workItemNode.getWork();
 
@@ -120,65 +108,65 @@ public class RuleFlowProcessBuilder {
             for ( String key : work.getParameters().keySet() ) {
 
                 work.setParameter( key,
-                                   witn.getParameters().get( key ) );
+                                   transferNode.getParameters().get( key ) );
             }
         }
     }
 
-    private static void updateSplitNode(SplitTransferNode stn,
+    private static void updateSplitNode(SplitTransferNode splitTransferNode,
                                         Split splitNode) {
         for ( ConnectionRef connection : splitNode.getConstraints().keySet() ) {
 
-            final ConnectionRef ref1 = new ConnectionRef( connection.getNodeId(),
-                                                          connection.getToType() );
+            final ConnectionRef connectionRef = new ConnectionRef( connection.getNodeId(),
+                                                                   connection.getToType() );
 
-            SplitNode.ConnectionRef ref2 = new SplitNode.ConnectionRef();
-            ref2.setNodeId( connection.getNodeId() );
-            ref2.setToType( connection.getToType() );
+            SplitNode.ConnectionRef splitNodeConnectionRef = new SplitNode.ConnectionRef();
+            splitNodeConnectionRef.setNodeId( connection.getNodeId() );
+            splitNodeConnectionRef.setToType( connection.getToType() );
 
-            Constraint c1 = splitNode.internalGetConstraint( ref1 );
-            SplitNode.Constraint c2 = stn.getConstraints().get( ref2 );
+            Constraint constraint = splitNode.internalGetConstraint( connectionRef );
+            SplitNode.Constraint splitNodeConstraint = splitTransferNode.getConstraints().get( splitNodeConnectionRef );
 
-            updateConstraint( c1,
-                              c2 );
+            updateConstraint( constraint,
+                              splitNodeConstraint );
         }
     }
 
-    private static void updateForEach(ElementContainerTransferNode tn,
+    private static void updateForEach(ElementContainerTransferNode transferNode,
                                       ForEachNode foreachNode) {
 
-        for ( TransferNode subTn : tn.getContentModel().getNodes() ) {
+        for ( TransferNode subTransferNode : transferNode.getContentModel().getNodes() ) {
 
-            Node subNode = foreachNode.getNode( subTn.getId() );
+            Node subNode = foreachNode.getNode( subTransferNode.getId() );
 
-            updateNode( subTn,
+            updateNode( subTransferNode,
                         subNode );
         }
     }
 
-    private static void updateComposite(ElementContainerTransferNode tn,
+    private static void updateComposite(ElementContainerTransferNode transferNode,
                                         CompositeNode compositeNode) {
 
-        for ( TransferNode subTn : tn.getContentModel().getNodes() ) {
+        for ( TransferNode subTransferNode : transferNode.getContentModel().getNodes() ) {
 
-            Node subNode = compositeNode.getNode( subTn.getId() );
+            Node subNode = compositeNode.getNode( subTransferNode.getId() );
 
-            updateNode( subTn,
+            updateNode( subTransferNode,
                         subNode );
         }
     }
 
-    private static void updateConstraint(Constraint to,
+    private static void updateConstraint(Constraint constraint,
                                          org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint from) {
 
-        to.setConstraint( from.getConstraint() );
+        constraint.setConstraint( from.getConstraint() );
 
-        to.setDialect( from.getDialect() );
+        constraint.setDialect( from.getDialect() );
 
-        to.setName( from.getName() );
+        constraint.setName( from.getName() );
 
-        to.setPriority( from.getPriority() );
+        constraint.setPriority( from.getPriority() );
 
-        to.setType( from.getType() );
+        constraint.setType( from.getType() );
     }
 }

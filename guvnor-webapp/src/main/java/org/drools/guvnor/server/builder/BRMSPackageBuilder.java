@@ -155,6 +155,7 @@ public class BRMSPackageBuilder extends PackageBuilder {
     /**
      * Load up all the DSL mappping files for the given package.
      */
+    @SuppressWarnings("rawtypes")
     public static List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
         List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
         AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DSL} );
