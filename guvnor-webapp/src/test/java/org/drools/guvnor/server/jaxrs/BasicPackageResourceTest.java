@@ -202,11 +202,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "jliu" + ":" + "pwd";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword
-                .getBytes());
-        connection.setRequestProperty("Authorization", "Basic "
-                + new String(authEncBytes));
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());

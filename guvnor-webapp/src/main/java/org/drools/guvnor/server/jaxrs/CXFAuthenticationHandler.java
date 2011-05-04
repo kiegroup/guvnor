@@ -33,40 +33,46 @@ import org.jboss.seam.security.Identity;
 public class CXFAuthenticationHandler implements RequestHandler {
 
     public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-        AuthorizationPolicy policy = (AuthorizationPolicy) m
-                .get(AuthorizationPolicy.class);
-        String username = policy.getUserName();
-        String password = policy.getPassword();
         if (Contexts.isApplicationContextActive()) {
-            System.out.println("-----CXFAuthenticationHandler.isApplicationContextActive");
-
-            // If the request is from same session, the user should be logged
-            // already.
-            if (Identity.instance().isLoggedIn()) {
+            //If the request is from same session, the user should be logged already.
+            Identity ids = Identity.instance();
+            if (ids.isLoggedIn()) {
                 return null;
             }
 
-            Identity ids = Identity.instance();
+            AuthorizationPolicy policy = (AuthorizationPolicy) m
+                    .get(AuthorizationPolicy.class);
 
-            ids.getCredentials().setUsername(username);
-            ids.getCredentials().setPassword(password);
+            // The policy can be null when the user did not specify credentials
+            if (policy != null) {
+                String username = policy.getUserName();
+                String password = policy.getPassword();
+
+                ids.getCredentials().setUsername(username);
+                ids.getCredentials().setPassword(password);
+            }
 
             try {
                 ids.authenticate();
                 return null;
             } catch (LoginException e) {
-                throw new WebApplicationException(Response.Status.UNAUTHORIZED);
+                throw new WebApplicationException(getErrorResponse());
             }
-        } else {           
-            //NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-            System.out.println("-----CXFAuthenticationHandler.Not isApplicationContextActive");
-            if(username.equals( "test" ) && password.equals( "password" )) {
-                return null;
-            } else{
-                Response r =  Response.status(Response.Status.UNAUTHORIZED).header("WWW-Authenticate", "BASIC realm=\"users\"").build();
+        } else {
+            // NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
+            AuthorizationPolicy policy = (AuthorizationPolicy) m
+                    .get(AuthorizationPolicy.class);
 
-                throw new WebApplicationException(r);
+            if (policy == null || (("test").equals(policy.getUserName())
+                    && ("password").equals(policy.getPassword()))) {
+                return null;
+            } else {
+                throw new WebApplicationException(getErrorResponse());
             }
         }
+    }
+    
+    private Response getErrorResponse() {
+        return Response.status(Response.Status.UNAUTHORIZED).header("WWW-Authenticate", "BASIC realm=\"users\"").build();
     }
 }
