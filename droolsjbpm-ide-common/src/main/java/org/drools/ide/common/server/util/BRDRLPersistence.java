@@ -187,6 +187,27 @@ public class BRDRLPersistence
         }
     }
 
+    private static void buildFieldValue(StringBuilder buf,
+                                        String fieldType,
+                                        String value) {
+        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            buf.append( value );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            buf.append( "\"" );
+            buf.append( value );
+            buf.append( "\"" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            buf.append( value );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+            buf.append( "\"" );
+            buf.append( value );
+            buf.append( "\"" );
+        } else {
+            buf.append( value );
+        }
+    }
+
+    
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
         private StringBuilder buf;
@@ -491,6 +512,7 @@ public class BRDRLPersistence
 
                 addFieldRestriction( buf,
                                      constr.getConstraintValueType(),
+                                     constr.getFieldType(),
                                      constr.getOperator(),
                                      constr.getValue(),
                                      constr.getExpressionValue() );
@@ -501,6 +523,7 @@ public class BRDRLPersistence
                         final ConnectiveConstraint conn = constr.connectives[j];
                         addFieldRestriction( buf,
                                              conn.getConstraintValueType(),
+                                             conn.fieldType,
                                              conn.operator,
                                              conn.getValue(),
                                              null );
@@ -511,6 +534,7 @@ public class BRDRLPersistence
 
         private void addFieldRestriction(final StringBuilder buf,
                                          final int type,
+                                         final String fieldType,
                                          final String operator,
                                          final String value,
                                          final ExpressionFormLine expression) {
@@ -532,9 +556,9 @@ public class BRDRLPersistence
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                            buf.append( '"' );
-                            buf.append( value );
-                            buf.append( '"' );
+                            buildFieldValue( buf,
+                                             fieldType,
+                                             value );
                         }
                     }
                     break;
@@ -544,16 +568,21 @@ public class BRDRLPersistence
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    buf.append( "@{" ).append( value ).append( "}" );
+                    buildFieldValue( buf,
+                                     fieldType,
+                                     "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
-                    buf.append( value );
+                    buildFieldValue( buf,
+                                     fieldType,
+                                     value );
                     break;
                 default :
                     buf.append( value );
             }
             buf.append( " " );
         }
+        
     }
 
     public static class RHSActionVisitor extends ReflectiveVisitor {
@@ -719,20 +748,16 @@ public class BRDRLPersistence
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );
                 } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    buf.append( "@{" ).append( fieldValues[i].value ).append( "}" );
-                } else if ( SuggestionCompletionEngine.TYPE_STRING.equals( fieldValues[i].type ) ) {
-                    buf.append( "\"" );
-                    buf.append( generateFieldValue( fieldValues[i] ) );
-                    buf.append( "\"" );
+                    buildFieldValue( buf,
+                                     fieldValues[i].type,
+                                     "@{" + fieldValues[i].value + "}" );
                 } else {
-                    buf.append( generateFieldValue( fieldValues[i] ) );
+                    buildFieldValue( buf,
+                                     fieldValues[i].type,
+                                     fieldValues[i].value );
                 }
                 buf.append( " );\n" );
             }
-        }
-
-        private String generateFieldValue(final ActionFieldValue fieldValue) {
-            return fieldValue.value;
         }
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,
