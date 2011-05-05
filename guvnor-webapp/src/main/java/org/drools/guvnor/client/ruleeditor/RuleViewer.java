@@ -150,7 +150,7 @@ public class RuleViewer extends GuvnorEditor {
         this.checkedInCommand = checkedInCommand;
         this.archiveCommand = archiveCommand;
         this.refreshCommand = refreshCommand;
-        this.readOnly = historicalReadOnly || asset.isreadonly;
+        this.readOnly = historicalReadOnly || asset.isReadonly();
 
         if ( ruleViewerSettings == null ) {
             this.ruleViewerSettings = new RuleViewerSettings();
@@ -176,7 +176,7 @@ public class RuleViewer extends GuvnorEditor {
         }
 
         toolbar = new ActionToolbar( getConfiguration(),
-                                     asset.state );
+                                     asset.getState() );
 
         initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
@@ -212,7 +212,7 @@ public class RuleViewer extends GuvnorEditor {
     private void initActionToolBar() {
         // the action widgets (checkin/close etc).
         if ( readOnly
-             || asset.isreadonly || this.ruleViewerSettings.isStandalone()) {
+             || asset.isReadonly() || this.ruleViewerSettings.isStandalone()) {
             toolbar.setVisible( false );
         } else {
             toolbar.setPromtToGlobalCommand( new Command() {
@@ -312,7 +312,7 @@ public class RuleViewer extends GuvnorEditor {
      * Show the state change popup.
      */
     private void showStatusChanger() {
-        final StatusChangePopup pop = new StatusChangePopup( asset.uuid,
+        final StatusChangePopup pop = new StatusChangePopup( asset.getUuid(),
                                                              false );
         pop.setChangeStatusEvent( new Command() {
 
@@ -411,7 +411,7 @@ public class RuleViewer extends GuvnorEditor {
 
     private void showSource(String src) {
         PackageBuilderWidget.showSource( src,
-                                         this.asset.name );
+                                         this.asset.getName() );
         LoadingPopup.close();
     }
 
@@ -441,7 +441,7 @@ public class RuleViewer extends GuvnorEditor {
 
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
-        RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.uuid,
+        RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
                                                                    new GenericCallback<Void>() {
                                                                        public void onSuccess(Void o) {
                                                                            close();
@@ -450,7 +450,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void doArchive() {
-        RepositoryServiceFactory.getAssetService().archiveAsset( asset.uuid,
+        RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
                                                             new GenericCallback<Void>() {
                                                                 public void onSuccess(Void o) {
                                                                     if ( archiveCommand != null ) {
@@ -462,7 +462,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void performCheckIn(String comment) {
-        this.asset.checkinComment = comment;
+        this.asset.setCheckinComment( comment );
         final boolean[] saved = {false};
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
@@ -571,7 +571,7 @@ public class RuleViewer extends GuvnorEditor {
                 if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
                     return;
                 }
-                RepositoryServiceFactory.getAssetService().copyAsset( asset.uuid,
+                RepositoryServiceFactory.getAssetService().copyAsset( asset.getUuid(),
                                                                  sel.getSelectedPackage(),
                                                                  name,
                                                                  new GenericCallback<String>() {
@@ -605,7 +605,7 @@ public class RuleViewer extends GuvnorEditor {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
-        box.setText( asset.name );
+        box.setText( asset.getName() );
         pop.addAttribute( constants.NewNameAsset(),
                           box );
         Button ok = new Button( constants.RenameItem() );
@@ -613,7 +613,7 @@ public class RuleViewer extends GuvnorEditor {
                           ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                RepositoryServiceFactory.getAssetService().renameAsset( asset.uuid,
+                RepositoryServiceFactory.getAssetService().renameAsset( asset.getUuid(),
                                                                    box.getText(),
                                                                    new GenericCallback<java.lang.String>() {
                     public void onSuccess(String data) {
@@ -643,11 +643,11 @@ public class RuleViewer extends GuvnorEditor {
             return;
         }
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
-            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.uuid,
+            RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );
-                                                                                    closeAndReopen(asset.uuid);
+                                                                                    closeAndReopen(asset.getUuid());
                                                                                 }
 
                                                                                 @Override

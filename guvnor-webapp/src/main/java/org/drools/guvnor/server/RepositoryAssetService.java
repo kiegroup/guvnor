@@ -115,15 +115,15 @@ public class RepositoryAssetService
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
         RuleAsset asset = new RuleAsset();
 
-        asset.uuid = item.getUUID();
-        asset.name = item.getName();
-        asset.description = item.getDescription();
-        asset.lastModified = item.getLastModified().getTime();
-        asset.lastContributor = item.getLastContributor();
-        asset.state = (item.getState() != null) ? item.getState().getName() : "";
-        asset.dateCreated = item.getCreatedDate().getTime();
-        asset.checkinComment = item.getCheckinComment();
-        asset.versionNumber = item.getVersionNumber();
+        asset.setUuid( item.getUUID() );
+        asset.setName( item.getName() );
+        asset.setDescription( item.getDescription() );
+        asset.setLastModified( item.getLastModified().getTime() );
+        asset.setLastContributor( item.getLastContributor() );
+        asset.setState( (item.getState() != null) ? item.getState().getName() : "" );
+        asset.setDateCreated( item.getCreatedDate().getTime() );
+        asset.setCheckinComment( item.getCheckinComment() );
+        asset.setVersionNumber( item.getVersionNumber() );
 
         // load standard meta data
         asset.metaData = repositoryAssetOperations.populateMetaData( item );
@@ -161,10 +161,10 @@ public class RepositoryAssetService
                                       pkgItem,
                                       item );
 
-        asset.isreadonly = asset.metaData.hasSucceedingVersion;
+        asset.setReadonly( asset.metaData.hasSucceedingVersion );
 
         if ( pkgItem.isSnapshot() ) {
-            asset.isreadonly = true;
+            asset.setReadonly( true );
         }
         return pkgItem;
     }
@@ -223,7 +223,7 @@ public class RepositoryAssetService
             }
         }
 
-        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.name + "] UUID: [" + asset.uuid + "] " );
+        log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] " );
         return repositoryAssetOperations.checkinVersion( asset );       
     }
     

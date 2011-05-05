@@ -32,20 +32,20 @@ public class PackageConfigDataFactory {
 
     private static PackageConfigData create(PackageItem item) {
         PackageConfigData data = new PackageConfigData();
-        data.uuid = item.getUUID();
+        data.setUuid( item.getUUID() );
         data.setHeader( DroolsHeader.getDroolsHeader( item ) );
         data.setExternalURI( item.getExternalURI() );
         data.setCatRules( item.getCategoryRules() );
-        data.description = item.getDescription();
+        data.setDescription( item.getDescription() );
         data.setArchived( item.isArchived() );
-        data.name = item.getName();
-        data.lastModified = item.getLastModified().getTime();
-        data.dateCreated = item.getCreatedDate().getTime();
-        data.checkinComment = item.getCheckinComment();
-        data.lastContributor = item.getLastContributor();
-        data.state = item.getStateDescription();
+        data.setName( item.getName() );
+        data.setLastModified( item.getLastModified().getTime() );
+        data.setDateCreated( item.getCreatedDate().getTime() );
+        data.setCheckinComment( item.getCheckinComment() );
+        data.setLastContributor( item.getLastContributor() );
+        data.setState( item.getStateDescription() );
         data.setSnapshot( item.isSnapshot() );
-        data.versionNumber = item.getVersionNumber();
+        data.setVersionNumber( item.getVersionNumber() );
         return data;
     }
 

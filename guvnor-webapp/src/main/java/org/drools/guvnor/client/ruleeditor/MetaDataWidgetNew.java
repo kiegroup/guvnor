@@ -97,7 +97,7 @@ public class MetaDataWidgetNew extends Composite {
         //layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
         startSection( constants.Metadata() );
         addHeader( images.assetVersion(),
-                   artifact.name,
+                   artifact.getName(),
                    null );
 
         loadData();
@@ -121,15 +121,15 @@ public class MetaDataWidgetNew extends Composite {
         }
 
         addAttribute( constants.LastModified(),
-                      readOnlyDate( artifact.lastModified ) );
+                      readOnlyDate( artifact.getLastModified() ) );
         addAttribute( constants.ModifiedByMetaData(),
-                      readOnlyText( artifact.lastContributor ) );
+                      readOnlyText( artifact.getLastContributor() ) );
         addAttribute( constants.NoteMetaData(),
-                      readOnlyText( artifact.checkinComment ) );
+                      readOnlyText( artifact.getCheckinComment() ) );
 
         if ( !readOnly ) {
             addAttribute( constants.CreatedOnMetaData(),
-                          readOnlyDate( artifact.dateCreated ) );
+                          readOnlyDate( artifact.getDateCreated() ) );
         }
 
         if ( artifact instanceof RuleAsset ) {
@@ -328,10 +328,10 @@ public class MetaDataWidgetNew extends Composite {
     }
 
     private Widget getVersionNumberLabel() {
-        if ( artifact.versionNumber == 0 ) {
+        if ( artifact.getVersionNumber() == 0 ) {
             return new SmallLabel( constants.NotCheckedInYet() );
         } else {
-            return readOnlyText( Long.toString( artifact.versionNumber ) );
+            return readOnlyText( Long.toString( artifact.getVersionNumber() ) );
         }
     }
 
@@ -413,11 +413,11 @@ public class MetaDataWidgetNew extends Composite {
 
     static String getVersionFeed(Artifact artifact) {
         if ( artifact instanceof PackageConfigData ) {
-            String hurl = getRESTBaseURL() + "packages/" + artifact.name + "/versions";
+            String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
             String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).metaData.packageName
-                          + "/assets/" + artifact.name + "/versions";
+                          + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }
     }

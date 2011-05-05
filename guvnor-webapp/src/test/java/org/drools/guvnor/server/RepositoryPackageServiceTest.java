@@ -498,7 +498,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNotNull( snaps[0].uuid );
         PackageConfigData confSnap = repositoryPackageService.loadPackageConfig( snaps[0].uuid );
         assertEquals( "testSnapshot",
-                      confSnap.name );
+                      confSnap.getName() );
 
         repositoryPackageService.createPackageSnapshot( "testSnapshot",
                                                         "Y",
@@ -741,8 +741,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         PackageConfigData conf = repositoryPackageService.loadPackageConfig( uuid );
         assertEquals( "this is a new package",
-                      conf.description );
-        assertNotNull( conf.lastModified );
+                      conf.getDescription() );
+        assertNotNull( conf.getLastModified() );
 
         pkgs = repositoryPackageService.listPackages();
 
@@ -775,17 +775,17 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNotNull( data );
 
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
-                      data.name );
+                      data.getName() );
         assertEquals( "header",
                       data.getHeader() );
         assertEquals( "ext",
                       data.getExternalURI() );
 
-        assertNotNull( data.uuid );
+        assertNotNull( data.getUuid() );
         assertFalse( data.isSnapshot() );
 
-        assertNotNull( data.dateCreated );
-        Date original = data.lastModified;
+        assertNotNull( data.getDateCreated() );
+        Date original = data.getLastModified();
 
         Thread.sleep( 100 );
 
@@ -800,9 +800,9 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertTrue( data.isSnapshot() );
         assertEquals( "TEST SNAP 2.0",
                       data.getSnapshotName() );
-        assertFalse( original.equals( data.lastModified ) );
+        assertFalse( original.equals( data.getLastModified() ) );
         assertEquals( "ya",
-                      data.checkinComment );
+                      data.getCheckinComment() );
     }
 
     @Test
@@ -825,7 +825,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.name );
+        it = impl.getRulesRepository().loadPackage( data.getName() );
         assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -834,7 +834,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.name );
+        it = impl.getRulesRepository().loadPackage( data.getName() );
         assertFalse( data.isArchived() );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -843,7 +843,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.name );
+        it = impl.getRulesRepository().loadPackage( data.getName() );
         assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -859,7 +859,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "a desc" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
 
-        data.description = "new desc";
+        data.setDescription( "new desc" );
         data.setHeader( "wa" );
         data.setExternalURI( "new URI" );
 
@@ -870,7 +870,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         data = repositoryPackageService.loadPackageConfig( uuid );
         assertEquals( "new desc",
-                      data.description );
+                      data.getDescription() );
         assertEquals( "wa",
                       data.getHeader() );
         assertEquals( "new URI",

@@ -39,7 +39,7 @@ public class PackageConfigData extends Artifact {
     }
 
     public PackageConfigData(String name) {
-        this.name = name;
+        super.setName(name);
     }
 
     public String getHeader() {
@@ -126,7 +126,7 @@ public class PackageConfigData extends Artifact {
     
 
     public boolean isGlobal() {
-        return "global".equals(name); // TODO kills i18n
+        return "global".equals(super.getName()); // TODO kills i18n
     }
 
 }

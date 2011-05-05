@@ -42,7 +42,7 @@ public class BusinessProcessEditor extends DirtyableComposite
 
     public BusinessProcessEditor(RuleAsset asset) {
         this.asset = asset;
-        modelUUID = asset.uuid;
+        modelUUID = asset.getUuid();
         initWidgets();
     }
 

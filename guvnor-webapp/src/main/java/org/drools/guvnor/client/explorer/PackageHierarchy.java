@@ -27,7 +27,7 @@ public class PackageHierarchy {
 
     public void addPackage(PackageConfigData config) {
         Folder folder = getRoot();
-        String[] folders = config.name.split( "\\." );
+        String[] folders = config.getName().split( "\\." );
         for ( int i = 0; i < folders.length; i++ ) {
             String folderName = folders[i];
             Folder existing = folder.contains( folderName );

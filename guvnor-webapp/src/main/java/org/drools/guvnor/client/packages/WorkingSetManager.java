@@ -92,7 +92,7 @@ public class WorkingSetManager {
         if (factTypes != null && !factTypes.isEmpty()) {
             //create a temporal RuleAsset to hold the fact types.
             final RuleAsset workingSet = new RuleAsset();
-            workingSet.uuid = "workingSetMock";
+            workingSet.setUuid( "workingSetMock" );
             
             WorkingSetConfigData wsConfig = new WorkingSetConfigData();
             wsConfig.validFacts = factTypes.toArray(new String[factTypes.size()]);
@@ -165,7 +165,7 @@ public class WorkingSetManager {
         }
         Set<String> uuids = new HashSet<String>(assets.size());
         for (RuleAsset asset : assets) {
-            uuids.add(asset.uuid);
+            uuids.add(asset.getUuid());
         }
         return uuids;
     }
@@ -196,7 +196,7 @@ public class WorkingSetManager {
      * @return whether the given (WorkingSet) RuleSet is active in a package or not.
      */
     public boolean isWorkingSetActive(String packageName, RuleAsset workingSetAsset) {
-        return this.isWorkingSetActive(packageName, workingSetAsset.uuid);
+        return this.isWorkingSetActive(packageName, workingSetAsset.getUuid());
     }
 
     /**
@@ -212,7 +212,7 @@ public class WorkingSetManager {
 
         Set<RuleAsset> wss = this.activeWorkingSets.get(packageName);
         for (RuleAsset asset : wss) {
-            if (asset.uuid.equals(ruleAssetUUID)) {
+            if (asset.getUuid().equals(ruleAssetUUID)) {
                 return true;
             }
         }

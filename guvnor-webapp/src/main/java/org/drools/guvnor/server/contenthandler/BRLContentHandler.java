@@ -42,7 +42,7 @@ public class BRLContentHandler extends ContentHandler
                                      AssetItem item) throws SerializationException {
         RuleModel ruleModel = getBrlXmlPersistence().unmarshal( item.getContent() );
 
-        ruleModel.name = asset.name;
+        ruleModel.name = asset.getName();
 
         asset.content = ruleModel;
     }

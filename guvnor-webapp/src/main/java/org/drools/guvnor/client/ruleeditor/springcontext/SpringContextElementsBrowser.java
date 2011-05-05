@@ -171,13 +171,13 @@ public class SpringContextElementsBrowser extends Composite {
 
         final String resourceElement = "<drools:resource type=\"PKG\" source=\"{url}\" basicAuthentication='enabled' username='|' password=''/>";
         
-        final TreeItem packageItem = new TreeItem(packageConfigData.name);
+        final TreeItem packageItem = new TreeItem(packageConfigData.getName());
 
-        TreeItem leafItem = new TreeItem(new ClickableLabel("LATEST", new LeafClickHandler(packageConfigData.name, resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(packageConfigData)))));
+        TreeItem leafItem = new TreeItem(new ClickableLabel("LATEST", new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(packageConfigData)))));
         
         packageItem.addItem(leafItem);
 
-        RepositoryServiceFactory.getPackageService().listSnapshots(packageConfigData.name, new AsyncCallback<SnapshotInfo[]>()    {
+        RepositoryServiceFactory.getPackageService().listSnapshots(packageConfigData.getName(), new AsyncCallback<SnapshotInfo[]>()    {
 
             public void onFailure(Throwable caught) {
                 ErrorPopup.showMessage("Error listing snapshots information!");
@@ -193,7 +193,7 @@ public class SpringContextElementsBrowser extends Composite {
                         }
 
                         public void onSuccess(PackageConfigData result) {
-                            TreeItem leafItem = new TreeItem(new ClickableLabel(snapshotInfo.name, new LeafClickHandler(packageConfigData.name, resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
+                            TreeItem leafItem = new TreeItem(new ClickableLabel(snapshotInfo.name, new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
                             packageItem.addItem(leafItem);
                         }
                     });

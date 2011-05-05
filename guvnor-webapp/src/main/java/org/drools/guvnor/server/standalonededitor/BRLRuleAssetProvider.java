@@ -66,7 +66,7 @@ public class BRLRuleAssetProvider
         } catch ( Exception e ) {
             //if something failed, delete the generated assets
             for ( RuleAsset ruleAsset : assets ) {
-                this.getAssetService().removeAsset( ruleAsset.uuid );
+                this.getAssetService().removeAsset( ruleAsset.getUuid() );
             }
 
             if ( e instanceof DetailedSerializationException ) {
@@ -83,9 +83,9 @@ public class BRLRuleAssetProvider
     private RuleAsset createAsset(RuleModel ruleModel) {
         RuleAsset asset = new RuleAsset();
 
-        asset.uuid = "mock";
+        asset.setUuid( "mock" );
         asset.content = ruleModel;
-        asset.name = ruleModel.name;
+        asset.setName( ruleModel.name );
         asset.metaData = createMetaData( ruleModel );
 
         return asset;

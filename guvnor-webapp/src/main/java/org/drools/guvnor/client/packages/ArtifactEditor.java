@@ -80,13 +80,13 @@ public class ArtifactEditor extends GuvnorEditor {
             final OpenItemCommand openItemCommand,
             final Command closeCommand) {
         this.artifact = artifact;
-        this.readOnly = historicalReadOnly || artifact.isreadonly;
+        this.readOnly = historicalReadOnly || artifact.isReadonly();
 
         ruleDocumentWidget = new RuleDocumentWidget(this.artifact,
                 readOnly);
 
         metaWidget = new MetaDataWidgetNew(this.artifact, readOnly,
-                this.artifact.uuid, refreshCommand, openItemCommand, closeCommand);
+                this.artifact.getUuid(), refreshCommand, openItemCommand, closeCommand);
 
         initWidget(uiBinder.createAndBindUi(this));
         setWidth("100%");

@@ -293,7 +293,7 @@ public class PackageHeaderWidget extends Composite {
         final ListBox factList = new ListBox();
         factList.addItem( constants.loadingList() );
 
-        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.uuid,
+        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.getUuid(),
                                                                          createGenericCallbackForListTypesInPackage( global,
                                                                                                                      factList ) );
 

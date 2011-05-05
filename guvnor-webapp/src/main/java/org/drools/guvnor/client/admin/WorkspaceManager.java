@@ -161,7 +161,7 @@ public class WorkspaceManager extends Composite {
             public void onSuccess(PackageConfigData[] packageConfigData) {
                 selectedModulesListBox.clear();
                 for ( PackageConfigData p : packageConfigData) {
-                    selectedModulesListBox.addItem( p.name );
+                    selectedModulesListBox.addItem( p.getName() );
                 }
                 LoadingPopup.close();
             }
@@ -174,12 +174,12 @@ public class WorkspaceManager extends Composite {
                 for ( PackageConfigData p : packageConfigData) {
                     boolean isSelected = false;
                     for ( int i = 0; i < selectedModulesListBox.getItemCount(); i++ ) {
-                        if(p.name.equals(selectedModulesListBox.getItemText( i ))) {
+                        if(p.getName().equals(selectedModulesListBox.getItemText( i ))) {
                             isSelected = true;
                         }
                     }
                     if(!isSelected) {
-                        availableModulesListBox.addItem( p.name );
+                        availableModulesListBox.addItem( p.getName() );
                     }
                 }
                 LoadingPopup.close();

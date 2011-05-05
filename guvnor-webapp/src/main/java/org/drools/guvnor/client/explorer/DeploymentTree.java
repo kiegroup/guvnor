@@ -67,7 +67,7 @@ public class DeploymentTree extends AbstractTree
             Object[] o = (Object[]) item.getUserObject();
             final String snapName = ((SnapshotInfo) o[0]).name;
             PackageConfigData conf = (PackageConfigData) o[1];
-            RepositoryServiceFactory.getPackageService().listSnapshots( conf.name,
+            RepositoryServiceFactory.getPackageService().listSnapshots( conf.getName(),
                                                                  new GenericCallback<SnapshotInfo[]>() {
                                                                      public void onSuccess(SnapshotInfo[] a) {
                                                                          for ( SnapshotInfo snap : a ) {
@@ -89,7 +89,7 @@ public class DeploymentTree extends AbstractTree
         }
         final PackageConfigData conf = (PackageConfigData) node.getUserObject();
         if ( conf != null ) {
-            RepositoryServiceFactory.getPackageService().listSnapshots( conf.name,
+            RepositoryServiceFactory.getPackageService().listSnapshots( conf.getName(),
                                                                  new GenericCallback<SnapshotInfo[]>() {
                                                                      public void onSuccess(SnapshotInfo[] snaps) {
                                                                          node.removeItems();

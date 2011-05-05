@@ -73,15 +73,15 @@ public class CommentWidget extends DirtyableComposite {
     }
 
     private void loadData(final Artifact data) {
-        text.setText( data.description );
+        text.setText( data.getDescription() );
         text.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                data.description = text.getText();
+                data.setDescription( text.getText() );
                 makeDirty();
             }
         } );
-        if ( data.description == null || "".equals( data.description ) ) {
+        if ( data.getDescription() == null || "".equals( data.getDescription() ) ) {
             text.setText( constants.documentationDefault() );
         }
     }

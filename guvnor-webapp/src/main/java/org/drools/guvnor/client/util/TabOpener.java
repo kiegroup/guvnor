@@ -164,7 +164,7 @@ public class TabOpener {
                                                                               ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null,
                                                                               ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null
                                                                 );
-                        explorerViewCenterPanel.addTab( ruleAsset.name,
+                        explorerViewCenterPanel.addTab( ruleAsset.getName(),
                                                         ruleViewer,
                                                         uuid );
                         LoadingPopup.close();
@@ -259,9 +259,9 @@ public class TabOpener {
                                                                                                                                                                    refreshPackageListCommand );
                                                                                                                                             }
                                                                                                                                         } );
-                                                                                    explorerViewCenterPanel.addTab( conf.name,
+                                                                                    explorerViewCenterPanel.addTab( conf.getName(),
                                                                                                                     ed,
-                                                                                                                    conf.uuid );
+                                                                                                                    conf.getUuid() );
                                                                                     LoadingPopup.close();
                                                                                 }
                                                                             } );

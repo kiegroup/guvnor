@@ -214,7 +214,7 @@ public class StandaloneEditorManager {
         for (int i = 0; i < this.assets.length; i++) {
             uuids.append(separator);
             uuids.append("'");
-            uuids.append(this.assets[i].uuid);
+            uuids.append(this.assets[i].getUuid());
             uuids.append("'");
             if (separator.equals("")){
                 separator = ",";

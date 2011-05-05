@@ -104,7 +104,7 @@ public class MultiViewEditor extends GuvnorEditor {
 
     private void addAssets(RuleAsset[] assets) {
         for ( RuleAsset ruleAsset : assets ) {
-            this.assets.put( ruleAsset.uuid,
+            this.assets.put( ruleAsset.getUuid(),
                              ruleAsset );
         }
     }
@@ -113,8 +113,8 @@ public class MultiViewEditor extends GuvnorEditor {
         List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
         for ( RuleAsset ruleAsset : assets ) {
             MultiViewRow row = new MultiViewRow();
-            row.uuid = ruleAsset.uuid;
-            row.name = ruleAsset.name;
+            row.uuid = ruleAsset.getUuid();
+            row.name = ruleAsset.getName();
             row.format = AssetFormats.BUSINESS_RULE;
             rows.add( row );
         }
@@ -197,7 +197,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                                                                              new GenericCallback<RuleAsset>() {
 
                                                                                                  public void onSuccess(final RuleAsset asset) {
-                                                                                                     assets.put( asset.uuid,
+                                                                                                     assets.put( asset.getUuid(),
                                                                                                                  asset );
 
                                                                                                      addRuleViewInToSimplePanel( row,

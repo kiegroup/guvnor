@@ -38,8 +38,8 @@ public class BPELWrapper extends Composite
     public BPELWrapper(RuleAsset asset,
                        RuleViewer viewer) {
 
-        final String uuid = asset.uuid;
-        final String fileName = asset.name;
+        final String uuid = asset.getUuid();
+        final String fileName = asset.getName();
         final String dirName = asset.metaData.packageName;
         final String servletName = "workflowmanager";
         final String isNew = (asset.content == null ? "true" : "false");

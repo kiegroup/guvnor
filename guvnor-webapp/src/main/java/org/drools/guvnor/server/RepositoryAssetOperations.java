@@ -111,7 +111,7 @@ public class RepositoryAssetOperations {
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID(
-                                                                       asset.uuid );
+                                                                       asset.getUuid() );
 
                 handler.storeAssetContent( asset,
                                            item );
@@ -147,7 +147,7 @@ public class RepositoryAssetOperations {
                        e );
             result = new BuilderResult();
 
-            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.name ).setAssetFormat( asset.metaData.format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.uuid );
+            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.getName() ).setAssetFormat( asset.metaData.format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.getUuid() );
             result.getLines().add( res );
 
             return result;
@@ -157,7 +157,7 @@ public class RepositoryAssetOperations {
     }
 
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-        AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.uuid );
+        AssetItem repoAsset = getRulesRepository().loadAssetByUUID( asset.getUuid() );
         if ( isAssetUpdatedInRepository( asset,
                                          repoAsset ) ) {
             return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
@@ -172,7 +172,7 @@ public class RepositoryAssetOperations {
         repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
 
         repoAsset.updateCategoryList( meta.categories );
-        repoAsset.updateDescription( asset.description );
+        repoAsset.updateDescription( asset.getDescription() );
 
         ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
         handler.storeAssetContent( asset,
@@ -183,7 +183,7 @@ public class RepositoryAssetOperations {
             pkg.updateBinaryUpToDate( false );
             RuleBaseCache.getInstance().remove( pkg.getUUID() );
         }
-        repoAsset.checkin( asset.checkinComment );
+        repoAsset.checkin( asset.getCheckinComment() );
 
         return repoAsset.getUUID();
     }
@@ -199,7 +199,7 @@ public class RepositoryAssetOperations {
 
     private boolean isAssetUpdatedInRepository(RuleAsset asset,
                                                AssetItem repoAsset) {
-        return asset.lastModified.before( repoAsset.getLastModified().getTime() );
+        return asset.getLastModified().before( repoAsset.getLastModified().getTime() );
     }
 
     public void restoreVersion(String versionUUID,
@@ -454,7 +454,7 @@ public class RepositoryAssetOperations {
         while ( it.hasNext() ) {
             AssetItem ai = it.next();
             PackageConfigData data = new PackageConfigData();
-            data.uuid = ai.getPackage().getUUID();
+            data.setUuid( ai.getPackage().getUUID() );
             if ( filter.accept( data,
                                 RoleTypes.PACKAGE_READONLY ) ) {
                 resultList.add( ai );
@@ -492,7 +492,7 @@ public class RepositoryAssetOperations {
                                                                         } ) );
             if ( asset.metaData.isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID(
-                                                                       asset.uuid );
+                                                                       asset.getUuid() );
 
                 handler.storeAssetContent( asset,
                                            item );
@@ -643,15 +643,15 @@ public class RepositoryAssetOperations {
     protected RuleAsset loadAsset(AssetItem item) throws SerializationException {
 
         RuleAsset asset = new RuleAsset();
-        asset.uuid = item.getUUID();
-        asset.name = item.getName();
-        asset.description = item.getDescription();
-        asset.lastModified = item.getLastModified().getTime();
-        asset.lastContributor = item.getLastContributor();
-        asset.state = (item.getState() != null) ? item.getState().getName() : "";
-        asset.dateCreated = item.getCreatedDate().getTime();
-        asset.checkinComment = item.getCheckinComment();
-        asset.versionNumber = item.getVersionNumber();
+        asset.setUuid( item.getUUID() );
+        asset.setName( item.getName() );
+        asset.setDescription( item.getDescription() );
+        asset.setLastModified( item.getLastModified().getTime() );
+        asset.setLastContributor( item.getLastContributor() );
+        asset.setState( (item.getState() != null) ? item.getState().getName() : "" );
+        asset.setDateCreated( item.getCreatedDate().getTime() );
+        asset.setCheckinComment( item.getCheckinComment() );
+        asset.setVersionNumber( item.getVersionNumber() );
 
         asset.metaData = populateMetaData( item );
         ContentHandler handler = ContentManager.getHandler( asset.metaData.format );

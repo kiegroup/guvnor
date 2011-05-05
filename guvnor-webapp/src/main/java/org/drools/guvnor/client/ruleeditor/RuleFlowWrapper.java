@@ -56,8 +56,8 @@ public class RuleFlowWrapper extends Composite
                            final RuleViewer viewer) {
         this.viewer = viewer;
         this.asset = asset;
-        initWidgets( asset.uuid,
-                     asset.name );
+        initWidgets( asset.getUuid(),
+                     asset.getName() );
     }
 
     protected void initWidgets(final String uuid,

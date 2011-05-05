@@ -217,8 +217,8 @@ public class VersionBrowser extends Composite {
                                                                             new GenericCallback<PackageConfigData>() {
                                                                                 public void onSuccess(PackageConfigData conf) {
                                                                                     final FormStylePopup pop = new FormStylePopup( images.snapshot(),
-                                                                                                                                   constants.VersionNumber0Of1( conf.versionNumber,
-                                                                                                                                                                conf.name ),
+                                                                                                                                   constants.VersionNumber0Of1( conf.getVersionNumber(),
+                                                                                                                                                                conf.getName() ),
                                                                                                                                    new Integer( 800 ) );
 
                                                                                     PackageEditorWrapper ed = new PackageEditorWrapper( conf,
@@ -240,12 +240,12 @@ public class VersionBrowser extends Composite {
                                                                       new GenericCallback<RuleAsset>() {
 
                                                                           public void onSuccess(RuleAsset asset) {
-                                                                              asset.isreadonly = true;
+                                                                              asset.setReadonly( true );
                                                                               //asset.metaData.name = metaData.name;
                                                                               final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                              constants.VersionNumber0Of1(
-                                                                                                                                                          asset.versionNumber,
-                                                                                                                                                          asset.name ),
+                                                                                                                                                          asset.getVersionNumber(),
+                                                                                                                                                          asset.getName() ),
                                                                                                                              new Integer( 800 ) );
 
                                                                               Button restore = new Button( constants.RestoreThisVersion() );

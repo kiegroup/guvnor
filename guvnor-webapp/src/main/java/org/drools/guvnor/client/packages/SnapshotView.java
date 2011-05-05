@@ -134,7 +134,7 @@ public class SnapshotView extends Composite {
                       new Label( constants.ForPackage() ) );
         ft.setWidget( 1,
                       1,
-                      new Label( this.parentConf.name ) );
+                      new Label( this.parentConf.getName() ) );
         ft.getFlexCellFormatter().setHorizontalAlignment( 1,
                                                           0,
                                                           HasHorizontalAlignment.ALIGN_RIGHT );
@@ -159,7 +159,7 @@ public class SnapshotView extends Composite {
                       new Label( constants.SnapshotCreatedOn() ) );
         ft.setWidget( 3,
                       1,
-                      new Label( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.lastModified)));
+                      new Label( DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_TIME_SHORT).format(parentConf.getLastModified())));
         ft.getFlexCellFormatter().setHorizontalAlignment( 4,
                                                           0,
                                                           HasHorizontalAlignment.ALIGN_RIGHT );
@@ -169,7 +169,7 @@ public class SnapshotView extends Composite {
                       new Label( constants.CommentColon() ) );
         ft.setWidget( 4,
                       1,
-                      new Label( parentConf.checkinComment ) );
+                      new Label( parentConf.getCheckinComment() ) );
         ft.getFlexCellFormatter().setHorizontalAlignment( 4,
                                                           0,
                                                           HasHorizontalAlignment.ALIGN_RIGHT );
@@ -177,9 +177,9 @@ public class SnapshotView extends Composite {
         HorizontalPanel actions = new HorizontalPanel();
 
         actions.add( getDeleteButton( this.snapInfo.name,
-                                      this.parentConf.name ) );
+                                      this.parentConf.getName() ) );
         actions.add( getCopyButton( this.snapInfo.name,
-                                    this.parentConf.name ) );
+                                    this.parentConf.getName() ) );
 
         ft.setWidget( 5,
                       0,
@@ -187,7 +187,7 @@ public class SnapshotView extends Composite {
 
         ft.setWidget( 6,
                       0,
-                      getCompareWidget( this.parentConf.name,
+                      getCompareWidget( this.parentConf.getName(),
                                         this.snapInfo.name ) );
         ft.getFlexCellFormatter().setHorizontalAlignment( 4,
                                                           0,
@@ -205,7 +205,7 @@ public class SnapshotView extends Composite {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( new Label( "Compare to:" ) );
 
-        RepositoryServiceFactory.getPackageService().listSnapshots( this.parentConf.name,
+        RepositoryServiceFactory.getPackageService().listSnapshots( this.parentConf.getName(),
                                                              new GenericCallback<SnapshotInfo[]>() {
                                                                  public void onSuccess(SnapshotInfo[] info) {
                                                                      for ( int i = 0; i < info.length; i++ ) {
@@ -400,7 +400,7 @@ public class SnapshotView extends Composite {
         Tree root = new Tree();
         root.setAnimationEnabled( true );
 
-        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.name,
+        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.getName(),
                                                                    snapInfo.uuid,
                                                                    itemWidgets );
         pkg.setUserObject( snapInfo );

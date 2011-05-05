@@ -283,14 +283,14 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
+        serviceSecurity.checkSecurityIsPackageDeveloper( data.getUuid() );
         return repositoryPackageOperations.validatePackageConfiguration( data );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void savePackage(PackageConfigData data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( data.uuid );
+        serviceSecurity.checkSecurityIsPackageDeveloper( data.getUuid() );
         repositoryPackageOperations.savePackage( data );
     }
 
@@ -784,9 +784,9 @@ public class RepositoryPackageService
                     int[] totals = sc.countFailuresTotal();
                     resultSummaries.add( new ScenarioResultSummary( totals[0],
                             totals[1],
-                            asset.name,
-                            asset.description,
-                            asset.uuid ) );
+                            asset.getName(),
+                            asset.getDescription(),
+                            asset.getUuid() ) );
                 }
             }
 

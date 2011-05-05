@@ -113,7 +113,7 @@ public class PackageEditorWrapper extends Composite {
      */
     public void refresh() {
         LoadingPopup.showMessage( constants.RefreshingPackageData() );
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.uuid,
+        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.getUuid(),
                                                                  new GenericCallback<PackageConfigData>() {
                                                                      public void onSuccess(PackageConfigData data) {
                                                                          LoadingPopup.close();

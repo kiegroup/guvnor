@@ -97,7 +97,7 @@ public class MetaDataWidget extends Composite {
 
     private void render() {
         layout.clear();
-        layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
+        layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.getName() + "</b>]" ) );
         if ( !readOnly ) {
             Image edit = new ImageButton( images.edit(),
                                           constants.RenameThisAsset() );
@@ -107,11 +107,11 @@ public class MetaDataWidget extends Composite {
                 }
             } );
             addHeader( images.metadata(),
-                       data.name,
+                       data.getName(),
                        edit );
         } else {
             addHeader( images.assetVersion(),
-                       data.name,
+                       data.getName(),
                        null );
         }
 
@@ -135,15 +135,15 @@ public class MetaDataWidget extends Composite {
                       categories() );
 
         addAttribute( constants.ModifiedOnMetaData(),
-                      readOnlyDate( data.lastModified ) );
+                      readOnlyDate( data.getLastModified() ) );
         addAttribute( constants.ModifiedByMetaData(),
-                      readOnlyText( data.lastContributor ) );
+                      readOnlyText( data.getLastContributor() ) );
         addAttribute( constants.NoteMetaData(),
-                      readOnlyText( data.checkinComment ) );
+                      readOnlyText( data.getCheckinComment() ) );
 
         if ( !readOnly ) {
             addAttribute( constants.CreatedOnMetaData(),
-                          readOnlyDate( data.dateCreated ) );
+                          readOnlyDate( data.getDateCreated() ) );
         }
         if ( data instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
@@ -284,7 +284,7 @@ public class MetaDataWidget extends Composite {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                                                        constants.RenameThisItem() );
         final TextBox box = new TextBox();
-        box.setText( data.name );
+        box.setText( data.getName() );
         pop.addAttribute( constants.NewNameAsset(),
                           box );
         Button ok = new Button( constants.RenameItem() );
@@ -345,10 +345,10 @@ public class MetaDataWidget extends Composite {
     }
 
     private Widget getVersionNumberLabel() {
-        if ( data.versionNumber == 0 ) {
+        if ( data.getVersionNumber() == 0 ) {
             return new SmallLabel( constants.NotCheckedInYet() );
         } else {
-            return readOnlyText( Long.toString( data.versionNumber ) );
+            return readOnlyText( Long.toString( data.getVersionNumber() ) );
         }
 
     }

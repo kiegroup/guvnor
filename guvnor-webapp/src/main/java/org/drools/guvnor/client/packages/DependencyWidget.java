@@ -82,7 +82,7 @@ public class DependencyWidget extends Composite {
         //pf.startSection();
         layout.addRow( vp );
 
-        table = new DependenciesPagedTable( conf.uuid,
+        table = new DependenciesPagedTable( conf.getUuid(),
                                             new OpenItemCommand() {
                                                 public void open(String path) {
                                                     showEditor( path );
@@ -132,7 +132,7 @@ public class DependencyWidget extends Composite {
                              new Label( decodeDependencyPath( dependencyPath )[0] ) );
         final VersionChooser versionChoose = new VersionChooser(
                                                                  decodeDependencyPath( dependencyPath )[1],
-                                                                 conf.uuid,
+                                                                 conf.getUuid(),
                                                                  decodeDependencyPath( dependencyPath )[0],
                                                                  new Command() {
                                                                      public void execute() {
@@ -153,7 +153,7 @@ public class DependencyWidget extends Composite {
                 }
                 if ( Window.confirm( "Are you sure you want to use version: " + selectedVersion + " as dependency?" ) ) {
                     RepositoryServiceFactory.getPackageService().updateDependency(
-                                                                                   conf.uuid,
+                                                                                   conf.getUuid(),
                                                                                    encodeDependencyPath( DependencyWidget
                                                                                                                  .decodeDependencyPath( dependencyPath )[0],
                                                                                                          selectedVersion ),

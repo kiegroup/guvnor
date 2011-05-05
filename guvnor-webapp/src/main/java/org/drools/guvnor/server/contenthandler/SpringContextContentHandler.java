@@ -74,9 +74,9 @@ public class SpringContextContentHandler extends PlainTextContentHandler
         String message = validate( ((RuleContentText) asset.content).content );
 
         return createBuilderResult( message,
-                                    asset.name,
+                                    asset.getName(),
                                     asset.metaData.format,
-                                    asset.uuid );
+                                    asset.getUuid() );
     }
 
     private BuilderResult createBuilderResult(String message,

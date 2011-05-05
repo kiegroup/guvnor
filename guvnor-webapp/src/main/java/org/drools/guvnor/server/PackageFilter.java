@@ -29,7 +29,7 @@ public class PackageFilter extends AbstractFilter<PackageConfigData> {
     @Override
     protected boolean checkPermission(final PackageConfigData packageConfigData,
                                       final String action) {
-        return Identity.instance().hasPermission( new PackageUUIDType( packageConfigData.uuid ),
+        return Identity.instance().hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
                                                   action );
     }
 

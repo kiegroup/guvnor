@@ -64,11 +64,11 @@ public class QATree extends AbstractTree
             TabOpener opener = TabOpener.getInstance();
 
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
-                opener.openTestScenario( pc.uuid,
-                                         pc.name );
+                opener.openTestScenario( pc.getUuid(),
+                                         pc.getName() );
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                opener.openVerifierView( pc.uuid,
-                                         pc.name );
+                opener.openVerifierView( pc.getUuid(),
+                                         pc.getName() );
             }
         }
     }
@@ -84,7 +84,7 @@ public class QATree extends AbstractTree
                     for ( int i = 0; i < conf.length; i++ ) {
                         final PackageConfigData c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
-                                                                     c.name ) );
+                                                                     c.getName() ) );
 
                         node.addItem( pkg );
                         pkg.setUserObject( c );
@@ -101,7 +101,7 @@ public class QATree extends AbstractTree
                     for ( int i = 0; i < conf.length; i++ ) {
                         final PackageConfigData c = conf[i];
                         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
-                                                                     c.name ) );
+                                                                     c.getName() ) );
 
                         node.addItem( pkg );
                         pkg.setUserObject( c );

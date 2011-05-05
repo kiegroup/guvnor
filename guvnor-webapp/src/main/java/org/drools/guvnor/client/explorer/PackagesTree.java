@@ -108,7 +108,7 @@ public class PackagesTree extends AbstractTree
         RepositoryServiceFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
             public void onSuccess(PackageConfigData value) {
                 TreeItem globalRootNode = ExplorerNodeConfig.getPackageItemStructure( constants.GlobalArea(),
-                                                                                      value.uuid,
+                                                                                      value.getUuid(),
                                                                                       itemWidgets );
                 globalRootNode.setHTML( Util.getHeader( images.chartOrganisation(),
                                                         constants.GlobalArea() ) );
@@ -139,7 +139,7 @@ public class PackagesTree extends AbstractTree
     private TreeItem loadPackage(String name,
                                  PackageConfigData config) {
         TreeItem treeItem = ExplorerNodeConfig.getPackageItemStructure( name,
-                                                                        config.uuid,
+                                                                        config.getUuid(),
                                                                         itemWidgets );
         treeItem.setUserObject( config );
         return treeItem;
@@ -147,7 +147,7 @@ public class PackagesTree extends AbstractTree
 
     public static String key(String[] formats,
                              PackageConfigData userObject) {
-        StringBuilder keyBuilder = new StringBuilder(userObject.uuid);
+        StringBuilder keyBuilder = new StringBuilder(userObject.getUuid());
         if ( formats.length == 0 ) {
             keyBuilder.append("[0]");
         } else {
@@ -168,9 +168,9 @@ public class PackagesTree extends AbstractTree
         if ( userObject != null ) {
             if ( userObject instanceof PackageConfigData && !((PackageConfigData) userObject).isGlobal() ) {
                 PackageConfigData pc = (PackageConfigData) userObject;
-                RulePackageSelector.currentlySelectedPackage = pc.name;
+                RulePackageSelector.currentlySelectedPackage = pc.getName();
 
-                String uuid = pc.uuid;
+                String uuid = pc.getUuid();
                 opener.openPackageEditor( uuid,
                                           new Command() {
                                               public void execute() {
@@ -181,11 +181,11 @@ public class PackagesTree extends AbstractTree
             } else if ( userObject instanceof String[] ) {
                 final String[] formats = (String[]) userObject;
                 final PackageConfigData packageConfigData = (PackageConfigData) node.getParentItem().getUserObject();
-                RulePackageSelector.currentlySelectedPackage = packageConfigData.name;
+                RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
                 String key = key( formats,
                                   packageConfigData );
-                opener.openPackageViewAssets( packageConfigData.uuid,
-                                              packageConfigData.name,
+                opener.openPackageViewAssets( packageConfigData.getUuid(),
+                                              packageConfigData.getName(),
                                               key,
                                               formats.length == 0 ? null : Arrays.asList( formats ),
                                               formats.length == 0 ? Boolean.TRUE : null,

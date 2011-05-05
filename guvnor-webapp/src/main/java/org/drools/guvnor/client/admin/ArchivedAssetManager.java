@@ -194,8 +194,8 @@ public class ArchivedAssetManager extends Composite {
         RepositoryServiceFactory.getPackageService().listArchivedPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] configs) {
                 for ( int i = 0; i < configs.length; i++ ) {
-                    packages.addItem( configs[i].name,
-                                      configs[i].uuid );
+                    packages.addItem( configs[i].getName(),
+                                      configs[i].getUuid() );
                 }
                 if ( configs.length == 0 ) {
                     packages.addItem( constants.noArchivedPackages() );

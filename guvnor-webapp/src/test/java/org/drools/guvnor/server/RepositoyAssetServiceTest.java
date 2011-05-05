@@ -170,19 +170,19 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
         //create version 1.
         RuleAsset assetWrapper = repositoryAssetService.loadRuleAsset( uuidLink );
-        assertEquals( assetWrapper.description,
+        assertEquals( assetWrapper.getDescription(),
                       "an initial desc" );
-        assetWrapper.description = "version 1";
+        assetWrapper.setDescription( "version 1" );
         String uuidLink1 = repositoryAssetService.checkinVersion( assetWrapper );
 
         //create version 2
         RuleAsset assetWrapper2 = repositoryAssetService.loadRuleAsset( uuidLink );
-        assetWrapper2.description = "version 2";
+        assetWrapper2.setDescription( "version 2" );
         String uuidLink2 = repositoryAssetService.checkinVersion( assetWrapper2 );
 
         //create version head
         RuleAsset assetWrapper3 = repositoryAssetService.loadRuleAsset( uuidLink );
-        assetWrapper3.description = "version head";
+        assetWrapper3.setDescription( "version head" );
         @SuppressWarnings("unused")
         String uuidLink3 = repositoryAssetService.checkinVersion( assetWrapper3 );
 
@@ -205,15 +205,15 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         RuleAsset version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
         RuleAsset version3 = repositoryAssetService.loadRuleAsset( rows[2].id );
         RuleAsset versionHead = repositoryAssetService.loadRuleAsset( uuidLink );
-        assertFalse( version1.versionNumber == version2.versionNumber );
-        assertFalse( version1.versionNumber == versionHead.versionNumber );
-        assertEquals( version1.description,
+        assertFalse( version1.getVersionNumber() == version2.getVersionNumber() );
+        assertFalse( version1.getVersionNumber() == versionHead.getVersionNumber() );
+        assertEquals( version1.getDescription(),
                       "an initial desc" );
-        assertEquals( version2.description,
+        assertEquals( version2.getDescription(),
                       "version 1" );
-        assertEquals( version3.description,
+        assertEquals( version3.getDescription(),
                       "version 2" );
-        assertEquals( versionHead.description,
+        assertEquals( versionHead.getDescription(),
                       "version head" );
 
         //verify the history info of the original AssetItem
@@ -228,21 +228,21 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         version1 = repositoryAssetService.loadRuleAsset( rows[0].id );
         version2 = repositoryAssetService.loadRuleAsset( rows[1].id );
         versionHead = repositoryAssetService.loadRuleAsset( uuid );
-        assertFalse( version1.versionNumber == version2.versionNumber );
-        assertFalse( version1.versionNumber == versionHead.versionNumber );
-        assertTrue( version1.description.equals( "an initial desc" ) );
-        assertTrue( version2.description.equals( "version 1" ) );
-        assertTrue( versionHead.description.equals( "version head" ) );
+        assertFalse( version1.getVersionNumber() == version2.getVersionNumber() );
+        assertFalse( version1.getVersionNumber() == versionHead.getVersionNumber() );
+        assertTrue( version1.getDescription().equals( "an initial desc" ) );
+        assertTrue( version2.getDescription().equals( "version 1" ) );
+        assertTrue( versionHead.getDescription().equals( "version head" ) );
 
         //test restore
-        repositoryAssetService.restoreVersion( version1.uuid,
-                                               versionHead.uuid,
+        repositoryAssetService.restoreVersion( version1.getUuid(),
+                                               versionHead.getUuid(),
                                                "this was cause of a mistake" );
 
         RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
-                      newHead.checkinComment );
+                      newHead.getCheckinComment() );
     }
 
     @Test
@@ -280,22 +280,22 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertNotNull( asset );
 
         assertEquals( uuid,
-                      asset.uuid );
+                      asset.getUuid() );
 
         assertEquals( "description",
-                      asset.description );
+                      asset.getDescription() );
 
         assertNotNull( asset.content );
         assertTrue( asset.content instanceof RuleContentText );
         assertEquals( "testLoadRuleAsset",
-                      asset.name );
+                      asset.getName() );
         assertEquals( "testLoadRuleAsset",
                       asset.metaData.title );
         assertEquals( "testLoadRuleAsset",
                       asset.metaData.packageName );
         assertEquals( AssetFormats.DRL,
                       asset.metaData.format );
-        assertNotNull( asset.dateCreated );
+        assertNotNull( asset.getDateCreated() );
 
         assertEquals( 1,
                       asset.metaData.categories.length );
@@ -309,9 +309,9 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "whee",
-                      asset.state );
+                      asset.getState() );
         assertEquals( "changed state",
-                      asset.checkinComment );
+                      asset.getCheckinComment() );
 
         uuid = impl.createNewRule( "testBRLFormatSugComp",
                                    "description",
@@ -537,21 +537,21 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
         RuleAsset old = repositoryAssetService.loadRuleAsset( rows[0].id );
         RuleAsset newer = repositoryAssetService.loadRuleAsset( rows[1].id );
-        assertFalse( old.versionNumber == newer.versionNumber );
+        assertFalse( old.getVersionNumber() == newer.getVersionNumber() );
 
         RuleAsset head = repositoryAssetService.loadRuleAsset( uuid );
 
-        long oldVersion = old.versionNumber;
-        assertFalse( oldVersion == head.versionNumber );
+        long oldVersion = old.getVersionNumber();
+        assertFalse( oldVersion == head.getVersionNumber() );
 
-        repositoryAssetService.restoreVersion( old.uuid,
-                                               head.uuid,
+        repositoryAssetService.restoreVersion( old.getUuid(),
+                                               head.getUuid(),
                                                "this was cause of a mistake" );
 
         RuleAsset newHead = repositoryAssetService.loadRuleAsset( uuid );
 
         assertEquals( "this was cause of a mistake",
-                      newHead.checkinComment );
+                      newHead.getCheckinComment() );
 
     }
 
@@ -579,7 +579,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       asset.metaData.packageName );
         assertEquals( "testCopyAsset2",
-                      asset.name );
+                      asset.getName() );
     }
 
     @Test
@@ -1020,7 +1020,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertEquals( 3,
                       assets.size() );
         // now lets copy...
-        String newUUID = repositoryAssetService.copyAsset( rule.uuid,
+        String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
                                                            rule.metaData.packageName,
                                                            "ruleName2" );
 

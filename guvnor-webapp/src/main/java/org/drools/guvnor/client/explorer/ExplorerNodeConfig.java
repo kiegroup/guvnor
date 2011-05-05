@@ -198,7 +198,7 @@ public class ExplorerNodeConfig {
                                             PackageHierarchy.Folder fldr) {
         if ( fldr.getConfig() != null ) {
             TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(),
-                                                         fldr.getConfig().name ) );
+                                                         fldr.getConfig().getName() ) );
             pkg.setUserObject( fldr.getConfig() );
             pkg.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
             root.addItem( pkg );

@@ -91,7 +91,7 @@ public class DSLRuleContentHandler extends ContentHandler
 
         RuleContentText text = (RuleContentText) asset.content;
         String source = getDRL( text.content,
-                                asset.name,
+                                asset.getName(),
                                 null );
 
         //expand and check for errors
@@ -140,7 +140,7 @@ public class DSLRuleContentHandler extends ContentHandler
         String source = text.content;
 
         source = getDRL( source,
-                         asset.name,
+                         asset.getName(),
                          null );
 
         DefaultExpander expander = builder.getDSLExpander();

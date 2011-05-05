@@ -164,11 +164,11 @@ public class VersionChooser extends Composite {
                                                              new GenericCallback<RuleAsset>() {
 
                                                                  public void onSuccess(RuleAsset asset) {
-                                                                     asset.isreadonly = true;
+                                                                     asset.setReadonly( true );
                                                                      final FormStylePopup pop = new FormStylePopup( images.snapshot(),
                                                                                                                     constants.VersionNumber0Of1(
-                                                                                                                                   asset.versionNumber,
-                                                                                                                                   asset.name ),
+                                                                                                                                   asset.getVersionNumber(),
+                                                                                                                                   asset.getName() ),
                                                                                                                     new Integer( 800 ) );
 
                                                                      RuleViewerWrapper viewer = new RuleViewerWrapper( asset,

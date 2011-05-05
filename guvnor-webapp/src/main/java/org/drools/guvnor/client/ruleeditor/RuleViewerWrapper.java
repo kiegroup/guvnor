@@ -135,7 +135,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingItem());
-        RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.uuid,
+        RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
                 new GenericCallback<RuleAsset>() {
                     public void onSuccess(RuleAsset a) {
                         asset = a;

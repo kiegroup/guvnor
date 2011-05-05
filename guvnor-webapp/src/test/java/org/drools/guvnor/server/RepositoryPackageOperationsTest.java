@@ -196,7 +196,7 @@ public class RepositoryPackageOperationsTest {
         when( packageItem.getLastModified() ).thenReturn( calendar );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( true );
-        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
         doNothing().when( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
@@ -205,9 +205,9 @@ public class RepositoryPackageOperationsTest {
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
         localRepositoryPackageOperations.savePackage( packageConfigData );
         verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
-        verify( packageItem ).updateDescription( packageConfigData.description );
+        verify( packageItem ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem ).archiveItem( packageConfigData.isArchived() );
-        verify( packageItem ).checkin( packageConfigData.description );
+        verify( packageItem ).checkin( packageConfigData.getDescription() );
         verify( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
                                                                                    packageItem,
                                                                                    calendar );
@@ -222,7 +222,7 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( false );
-        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
         doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
@@ -230,9 +230,9 @@ public class RepositoryPackageOperationsTest {
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
         localRepositoryPackageOperations.savePackage( packageConfigData );
         verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
-        verify( packageItem ).updateDescription( packageConfigData.description );
+        verify( packageItem ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem ).archiveItem( packageConfigData.isArchived() );
-        verify( packageItem ).checkin( packageConfigData.description );
+        verify( packageItem ).checkin( packageConfigData.getDescription() );
         verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
     }
@@ -246,7 +246,7 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         initDroolsHeaderCheck( packageItem );
         when( packageItem.isArchived() ).thenReturn( false );
-        when( this.rulesRepository.loadPackage( packageConfigData.name ) ).thenReturn( packageItem );
+        when( this.rulesRepository.loadPackage( packageConfigData.getName() ) ).thenReturn( packageItem );
         doNothing().when( localRepositoryPackageOperations ).updateCategoryRules( packageConfigData,
                                                                                   packageItem );
         doNothing().when( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
@@ -254,9 +254,9 @@ public class RepositoryPackageOperationsTest {
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
         localRepositoryPackageOperations.validatePackageConfiguration( packageConfigData );
         verify( packageItem, never() ).updateExternalURI( "");
-        verify( packageItem, never() ).updateDescription( packageConfigData.description );
+        verify( packageItem, never() ).updateDescription( packageConfigData.getDescription() );
         verify( packageItem, never() ).archiveItem( packageConfigData.isArchived() );
-        verify( packageItem, never() ).checkin( packageConfigData.description );
+        verify( packageItem, never() ).checkin( packageConfigData.getDescription() );
         verify( localRepositoryPackageOperations, never() ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
     }
@@ -391,10 +391,10 @@ public class RepositoryPackageOperationsTest {
 
     private PackageConfigData createPackageConfigData(boolean isArchived) {
         PackageConfigData packageConfigData = new PackageConfigData();
-        packageConfigData.name = "name";
+        packageConfigData.setName( "name" );
         packageConfigData.setHeader( "header" );
         packageConfigData.setArchived( isArchived );
-        packageConfigData.description = "description";
+        packageConfigData.setDescription( "description" );
         packageConfigData.setExternalURI( "externalUri" );
         return packageConfigData;
     }

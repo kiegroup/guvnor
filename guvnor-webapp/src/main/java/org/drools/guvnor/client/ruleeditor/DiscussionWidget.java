@@ -95,7 +95,7 @@ public class DiscussionWidget extends Composite {
 
         pushNotify = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {
-                if ( "discussion".equals( response.messageType ) && artifact.uuid.equals( response.message ) ) {
+                if ( "discussion".equals( response.messageType ) && artifact.getUuid().equals( response.message ) ) {
                     System.err.println( "Refreshing discussion..." );
                     refreshDiscussion();
                 }
@@ -109,7 +109,7 @@ public class DiscussionWidget extends Composite {
 
     /** Hit up the server */
     public void refreshDiscussion() {
-        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( artifact.uuid,
+        RepositoryServiceFactory.getAssetService().loadDiscussionForAsset( artifact.getUuid(),
                                                                       new GenericCallback<List<DiscussionRecord>>() {
                                                                           public void onSuccess(List<DiscussionRecord> result) {
                                                                               updateCommentList( result );
@@ -171,7 +171,7 @@ public class DiscussionWidget extends Composite {
             adminClearAll.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     if ( Window.confirm( constants.EraseAllCommentsWarning() ) ) {
-                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( artifact.uuid,
+                        RepositoryServiceFactory.getAssetService().clearAllDiscussionsForAsset( artifact.getUuid(),
                                                                                            new GenericCallback<java.lang.Void>() {
                                                                                                public void onSuccess(Void v) {
                                                                                                    updateCommentList( new ArrayList<DiscussionRecord>() );
@@ -183,7 +183,7 @@ public class DiscussionWidget extends Composite {
         }
         
         String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((RuleAsset)artifact).metaData.packageName
-                + "&assetName=" + URL.encode( artifact.name ) + "&viewUrl=" + Util.getSelfURL();
+                + "&assetName=" + URL.encode( artifact.getName() ) + "&viewUrl=" + Util.getSelfURL();
         hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='"
                 + new Image( images.feed() ).getUrl() + "'/></a>" ) );
 
@@ -231,7 +231,7 @@ public class DiscussionWidget extends Composite {
     private void sendNewComment(String text) {
         newCommentLayout.clear();
         newCommentLayout.add( new Image( images.spinner() ) );
-        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( artifact.uuid,
+        RepositoryServiceFactory.getAssetService().addToDiscussionForAsset( artifact.getUuid(),
                                                                        text,
                                                                        new GenericCallback<List<DiscussionRecord>>() {
                                                                            public void onSuccess(List<DiscussionRecord> result) {

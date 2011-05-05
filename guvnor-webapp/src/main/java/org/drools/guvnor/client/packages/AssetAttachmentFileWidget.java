@@ -61,8 +61,8 @@ public abstract class AssetAttachmentFileWidget extends Composite
                                      final RuleViewer viewer) {
         this.viewer = viewer;
         this.asset = asset;
-        initWidgets( asset.uuid,
-                     asset.name );
+        initWidgets( asset.getUuid(),
+                     asset.getName() );
         initAssetHandlers();
     }
 
@@ -92,7 +92,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
         layout = new FormStyleLayout( getIcon(),
                                       formName );
 
-        if ( !this.asset.isreadonly ) layout.addAttribute( constants.UploadNewVersion(),
+        if ( !this.asset.isReadonly() ) layout.addAttribute( constants.UploadNewVersion(),
                                                            form );
 
         Button dl = new Button( constants.Download() );

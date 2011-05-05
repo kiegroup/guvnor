@@ -110,7 +110,7 @@ public class PackageEditor extends PrettyFormLayout {
         clear();
 
         actionToolBar = new ActionToolbar( getConfiguration(),
-                                           conf.state );
+                                           conf.getState() );
         if ( isHistoricalReadOnly ) {
             actionToolBar.setVisible( false );
         } else {
@@ -141,8 +141,8 @@ public class PackageEditor extends PrettyFormLayout {
             } );
             actionToolBar.setViewSourceCommand( new Command() {
                 public void execute() {
-                    PackageBuilderWidget.doBuildSource( conf.uuid,
-                                                        conf.name );
+                    PackageBuilderWidget.doBuildSource( conf.getUuid(),
+                                                        conf.getName() );
                 }
             } );
         }
@@ -195,8 +195,8 @@ public class PackageEditor extends PrettyFormLayout {
         buildSource.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                PackageBuilderWidget.doBuildSource( conf.uuid,
-                                                    conf.name );
+                PackageBuilderWidget.doBuildSource( conf.getUuid(),
+                                                    conf.getName() );
             }
         } );
 
@@ -258,7 +258,7 @@ public class PackageEditor extends PrettyFormLayout {
             }
         };
 
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.conf.name,
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.conf.getName(),
                                                                               new String[]{AssetFormats.SPRING_CONTEXT},
                                                                               0,
                                                                               -1,
@@ -435,17 +435,17 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     static String getVersionFeed(PackageConfigData conf) {
-        String hurl = getRESTBaseURL() + "packages/" + conf.name + "/versions";
+        String hurl = getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
     String getPackageSourceURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
-            url = getRESTBaseURL() + "packages/" + conf.name +
-                  "/versions/" + conf.versionNumber + "/source";
+            url = getRESTBaseURL() + "packages/" + conf.getName() +
+                  "/versions/" + conf.getVersionNumber() + "/source";
         } else {
-            url = getRESTBaseURL() + "packages/" + conf.name + "/source";
+            url = getRESTBaseURL() + "packages/" + conf.getName() + "/source";
         }
         return url;
     }
@@ -453,10 +453,10 @@ public class PackageEditor extends PrettyFormLayout {
     String getPackageBinaryURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
-            url = getRESTBaseURL() + "packages/" + conf.name +
-                  "/versions/" + conf.versionNumber + "/binary";
+            url = getRESTBaseURL() + "packages/" + conf.getName() +
+                  "/versions/" + conf.getVersionNumber() + "/binary";
         } else {
-            url = getRESTBaseURL() + "packages/" + conf.name + "/binary";
+            url = getRESTBaseURL() + "packages/" + conf.getName() + "/binary";
         }
         return url;
     }
@@ -471,7 +471,7 @@ public class PackageEditor extends PrettyFormLayout {
      * Get a download link for the binary package.
      */
     public static String makeLink(PackageConfigData conf) {
-        String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
+        String hurl = GWT.getModuleBaseURL() + "package/" + conf.getName();
         if ( !conf.isSnapshot() ) {
             hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
         } else {
@@ -482,7 +482,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     protected void showStatusChanger() {
-        final StatusChangePopup pop = new StatusChangePopup( conf.uuid,
+        final StatusChangePopup pop = new StatusChangePopup( conf.getUuid(),
                                                              true );
         pop.setChangeStatusEvent( new Command() {
             public void execute() {
@@ -512,7 +512,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getPackageService().renamePackage( conf.uuid,
+                RepositoryServiceFactory.getPackageService().renamePackage( conf.getUuid(),
                                                                             name.getText(),
                                                                             new GenericCallback<String>() {
                                                                                 public void onSuccess(String data) {
@@ -560,7 +560,7 @@ public class PackageEditor extends PrettyFormLayout {
                     return;
                 }
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().copyPackage( conf.name,
+                RepositoryServiceFactory.getPackageService().copyPackage( conf.getName(),
                                                                           name.getText(),
                                                                           new GenericCallback<String>() {
                                                                               public void onSuccess(String uuid) {
@@ -592,7 +592,7 @@ public class PackageEditor extends PrettyFormLayout {
                                                                           refreshCommand.execute();
                                                                           LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
-                                                                          SuggestionCompletionCache.getInstance().refreshPackage( conf.name,
+                                                                          SuggestionCompletionCache.getInstance().refreshPackage( conf.getName(),
                                                                                                                                   new Command() {
                                                                                                                                       public void execute() {
                                                                                                                                           if ( refresh != null ) {

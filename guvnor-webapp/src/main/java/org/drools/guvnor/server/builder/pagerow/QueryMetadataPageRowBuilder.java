@@ -73,7 +73,7 @@ public class QueryMetadataPageRowBuilder {
 
     private PackageConfigData getConfigDataHelper(String uuidStr) {
         PackageConfigData data = new PackageConfigData();
-        data.uuid = uuidStr;
+        data.setUuid( uuidStr );
         return data;
     }
 

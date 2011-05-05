@@ -262,7 +262,7 @@ public class RuleModeller extends DirtyableComposite
 
     private boolean isLock(String attr) {
 
-        if ( this.asset.isreadonly ) {
+        if ( this.asset.isReadonly() ) {
             return true;
         }
 

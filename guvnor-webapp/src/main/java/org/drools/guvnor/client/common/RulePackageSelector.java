@@ -63,9 +63,9 @@ public class RulePackageSelector extends Composite {
 
             public void onSuccess(PackageConfigData[] list) {
                 for ( int i = 0; i < list.length; i++ ) {
-                    packageList.addItem( list[i].name,
-                                         list[i].uuid );
-                    if ( currentlySelectedPackage != null && list[i].name.equals( currentlySelectedPackage ) ) {
+                    packageList.addItem( list[i].getName(),
+                                         list[i].getUuid() );
+                    if ( currentlySelectedPackage != null && list[i].getName().equals( currentlySelectedPackage ) ) {
                         packageList.setSelectedIndex( i );
                     }
                 }

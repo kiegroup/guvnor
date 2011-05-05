@@ -119,8 +119,8 @@ public class RepositoryPackageOperations {
             PackageItem pkg = pkgs.next();
 
             PackageConfigData data = new PackageConfigData();
-            data.uuid = pkg.getUUID();
-            data.name = pkg.getName();
+            data.setUuid( pkg.getUUID() );
+            data.setName( pkg.getName() );
             data.setArchived( pkg.isArchived() );
             data.setWorkspaces( pkg.getWorkspaces() );
             handleIsPackagesListed( archive,
@@ -159,7 +159,7 @@ public class RepositoryPackageOperations {
 
                               public int compare(final PackageConfigData d1,
                                                  final PackageConfigData d2) {
-                                  return d1.name.compareTo( d2.name );
+                                  return d1.getName().compareTo( d2.getName() );
                               }
 
                           } );
@@ -310,11 +310,11 @@ public class RepositoryPackageOperations {
     }
 
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.getName() + "]" );
 
-        PackageItem item = getRulesRepository().loadPackage( data.name );
+        PackageItem item = getRulesRepository().loadPackage( data.getName() );
 
-        RuleBaseCache.getInstance().remove( data.uuid );
+        RuleBaseCache.getInstance().remove( data.getUuid() );
 
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item,
@@ -324,9 +324,9 @@ public class RepositoryPackageOperations {
     }
 
     public void savePackage(PackageConfigData data) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.name + "]" );
+        log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.getName() + "]" );
 
-        PackageItem item = getRulesRepository().loadPackage( data.name );
+        PackageItem item = getRulesRepository().loadPackage( data.getName() );
 
         // If package is being unarchived.
         boolean unarchived = (!data.isArchived() && item.isArchived());
@@ -338,11 +338,11 @@ public class RepositoryPackageOperations {
                              item );
 
         item.updateExternalURI( data.getExternalURI() );
-        item.updateDescription( data.description );
+        item.updateDescription( data.getDescription() );
         item.archiveItem( data.isArchived() );
         item.updateBinaryUpToDate( false );
-        RuleBaseCache.getInstance().remove( data.uuid );
-        item.checkin( data.description );
+        RuleBaseCache.getInstance().remove( data.getUuid() );
+        item.checkin( data.getDescription() );
 
         // If package is archived, archive all the assets under it
         if ( data.isArchived() ) {
@@ -412,7 +412,7 @@ public class RepositoryPackageOperations {
             AssetItem assetItem = iter.next();
             if ( !assetItem.isArchived() ) {
                 assetItem.archiveItem( true );
-                assetItem.checkin( data.description );
+                assetItem.checkin( data.getDescription() );
             }
         }
     }
@@ -426,7 +426,7 @@ public class RepositoryPackageOperations {
             // ( == at the same time that the package was archived)
             if ( assetItem.getLastModified().compareTo( packageLastModified ) >= 0 ) {
                 assetItem.archiveItem( false );
-                assetItem.checkin( data.description );
+                assetItem.checkin( data.getDescription() );
             }
         }
     }

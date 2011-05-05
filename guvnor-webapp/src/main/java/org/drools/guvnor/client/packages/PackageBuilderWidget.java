@@ -247,7 +247,7 @@ public class PackageBuilderWidget extends Composite {
         Button snap = new Button( constants.CreateSnapshotForDeployment() );
         snap.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                showSnapshotDialog( conf.name,
+                showSnapshotDialog( conf.getName(),
                                     null );
             }
         } );
@@ -289,7 +289,7 @@ public class PackageBuilderWidget extends Composite {
         Scheduler scheduler = Scheduler.get();
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackage( conf.uuid,
+                RepositoryServiceFactory.getPackageService().buildPackage( conf.getUuid(),
                                                                     true,
                                                                     buildMode,
                                                                     statusOperator,
@@ -465,7 +465,7 @@ public class PackageBuilderWidget extends Composite {
                             + "'/><i>"
                             + constants.PackageBuiltSuccessfully()
                             + " "
-                            + conf.lastModified
+                            + conf.getLastModified()
                             + "</i>" ) );
 
         final String hyp = getDownloadLink( this.conf );
@@ -487,7 +487,7 @@ public class PackageBuilderWidget extends Composite {
     public static String getDownloadLink(PackageConfigData conf) {
         String hurl = GWT.getModuleBaseURL()
                       + "package/"
-                      + conf.name; // NON-NLS
+                      + conf.getName(); // NON-NLS
         if ( !conf.isSnapshot() ) {
             hurl = hurl
                    + "/"

@@ -85,7 +85,7 @@ public class ScenarioWidget extends Composite
 
         ifFixturesSizeZeroThenAddExecutionTrace();
 
-        if ( !asset.isreadonly ) {
+        if ( !asset.isReadonly() ) {
             layout.add( new TestRunnerWidget( this,
                                               asset.metaData.packageName ) );
         }
