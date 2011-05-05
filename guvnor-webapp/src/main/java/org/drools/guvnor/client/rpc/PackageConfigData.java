@@ -38,9 +38,8 @@ public class PackageConfigData extends Artifact {
     public PackageConfigData() {
     }
 
-    public PackageConfigData PackageConfigData(String name) {
+    public PackageConfigData(String name) {
         this.name = name;
-        return this;
     }
 
     public String getHeader() {
