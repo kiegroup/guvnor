@@ -16,10 +16,13 @@
 
 package org.drools.guvnor.server.files;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,9 +37,13 @@ import net.sf.webdav.IWebdavStore;
 import net.sf.webdav.StoredObject;
 
 import org.apache.commons.io.IOUtils;
+import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
+import org.drools.guvnor.server.util.ClassicDRLImporter;
+import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
+import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -689,7 +696,24 @@ public class WebDAVImpl implements IWebdavStore {
                 return 0;
             }
             AssetItem asset = loadAssetItemFromPackage( repository, path );
-            asset.updateBinaryContentAttachment( content );
+            if(asset.getFormat().equals("drl")) {
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        if(!line.startsWith("package ")) {
+                            sb.append(line + "\n");
+                        }
+                    }
+                    asset.updateBinaryContentAttachment(new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
+                } catch (Exception e) {
+                    //default
+                    asset.updateBinaryContentAttachment( content );
+                } 
+            } else {
+                asset.updateBinaryContentAttachment( content );
+            }
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
@@ -705,7 +729,24 @@ public class WebDAVImpl implements IWebdavStore {
                 return 0;
             }
             AssetItem asset = loadAssetItemFromGlobalArea(repository, path);
-            asset.updateBinaryContentAttachment( content );
+            if(asset.getFormat().equals("drl")) {
+                try {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                    StringBuilder sb = new StringBuilder();
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        if(!line.startsWith("package ")) {
+                            sb.append(line + "\n");
+                        }
+                    }
+                    asset.updateBinaryContentAttachment(new ByteArrayInputStream(sb.toString().getBytes("UTF-8")));
+                } catch (Exception e) {
+                    //default
+                    asset.updateBinaryContentAttachment( content );
+                } 
+            } else {
+                asset.updateBinaryContentAttachment( content );
+            }
             //here we could save, or check in, depending on if enough time has passed to justify
             //a new version. Otherwise we will pollute the version history with lots of trivial versions.
             //if (shouldCreateNewVersion(asset.getLastModified())) {
