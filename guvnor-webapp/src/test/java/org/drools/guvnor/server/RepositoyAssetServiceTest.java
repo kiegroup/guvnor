@@ -991,6 +991,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         con.setValue( "mark" );
         con.setOperator( "==" );
         con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
 
         p.addConstraint( con );
 
