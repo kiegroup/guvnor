@@ -24,7 +24,7 @@
     <para>
     The source code for the EGT is available at: 
     <ulink url="http://github.com/droolsjbpm/droolsjbpm-tools/tree/master/drools-eclipse" />. EGT consist of 
-    two plug-ins: org.guvnor.tools org.eclipse.webdav and requires Eclipse 3.3.x. The current Eclipse Drools
+    two plug-ins: org.guvnor.tools and org.eclipse.webdav. They require Eclipse 3.3.x. The current Eclipse Drools
     plug-ins are also useful for viewing Guvnor repository resources such as rule definitions, but not
     required for operation of the EGT.
     </para>
