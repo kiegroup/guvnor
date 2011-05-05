@@ -29,15 +29,15 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig> {
 
-    private static String[]     DIALECTS = {"java", "mvel"};
+    private static String[]             DIALECTS = {"java", "mvel"};
 
     // Model used to determine data-types etc for cells
     private TypeSafeGuidedDecisionTable model;
@@ -61,7 +61,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
-
     }
 
     /**
@@ -71,9 +70,12 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            The Decision Table model column
      * @return A Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> getCell(DTColumnConfig column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(DTColumnConfig column) {
 
-        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
+        //This is the cell that will be used to edit values; its type can differ to the "fieldType" 
+        //of the underlying model. For example a "Guvnor-enum" requires a drop-down list of potential 
+        //values whereas the "fieldType" may be a String. 
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
 
         if ( column instanceof RowNumberCol ) {
             cell = makeRowNumberCell();
@@ -108,33 +110,26 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
             }
 
         } else if ( column instanceof ConditionCol ) {
-            cell = makeNewCell( column );
+            cell = derieveNewCellFromModel( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {
-            cell = makeNewCell( column );
+            cell = derieveNewCellFromModel( column );
 
         } else if ( column instanceof ActionInsertFactCol ) {
-            cell = makeNewCell( column );
+            cell = derieveNewCellFromModel( column );
 
         }
-        
+
+        column.setFieldType( model.getType( column, sce ) );
         cell.setMergableGridWidget( grid );
         return cell;
 
     }
 
-    // Make a new Cell for Dialect columns
-    private DecoratedGridCellValueAdaptor<String, DTColumnConfig> makeDialectCell() {
-        PopupDropDownEditCell pudd = new PopupDropDownEditCell();
-        pudd.setItems( DIALECTS );
-        return new DecoratedGridCellValueAdaptor<String, DTColumnConfig>( pudd );
-    }
-
     // Make a new Cell for Condition and Actions columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> makeNewCell(
-                                                                                                  DTColumnConfig col) {
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig col) {
 
-        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, DTColumnConfig> cell = makeTextCell();
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
@@ -153,14 +148,21 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         } else {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
-            cell = new DecoratedGridCellValueAdaptor<String, DTColumnConfig>( pudd );
+            cell = new DecoratedGridCellValueAdaptor<String>( pudd );
         }
         return cell;
     }
 
+    // Make a new Cell for Dialect columns
+    private DecoratedGridCellValueAdaptor<String> makeDialectCell() {
+        PopupDropDownEditCell pudd = new PopupDropDownEditCell();
+        pudd.setItems( DIALECTS );
+        return new DecoratedGridCellValueAdaptor<String>( pudd );
+    }
+
     // Make a new Cell for Row Number columns
-    private DecoratedGridCellValueAdaptor<BigDecimal, DTColumnConfig> makeRowNumberCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal, DTColumnConfig>( new RowNumberCell() );
+    private DecoratedGridCellValueAdaptor<BigDecimal> makeRowNumberCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal>( new RowNumberCell() );
     }
 
 }

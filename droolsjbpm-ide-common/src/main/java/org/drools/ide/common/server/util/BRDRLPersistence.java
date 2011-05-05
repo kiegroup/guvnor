@@ -189,10 +189,9 @@ public class BRDRLPersistence
 
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
-        private StringBuilder          buf;
-        private DRLConstraintValueBuilder helper = new DRLConstraintValueBuilder();
-        private boolean                isDSLEnhanced;
-        private String                 indentation;
+        private StringBuilder buf;
+        private boolean       isDSLEnhanced;
+        private String        indentation;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
                                  StringBuilder b,
@@ -536,9 +535,9 @@ public class BRDRLPersistence
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                            helper.buildFieldValue( buf,
-                                                    fieldType,
-                                                    value );
+                            DRLConstraintValueBuilder.buildFieldValue( buf,
+                                                                       fieldType,
+                                                                       value );
                         }
                     }
                     break;
@@ -548,14 +547,14 @@ public class BRDRLPersistence
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    helper.buildFieldValue( buf,
-                                            fieldType,
-                                            "@{" + value + "}" );
+                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                                                               fieldType,
+                                                               "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
-                    helper.buildFieldValue( buf,
-                                            fieldType,
-                                            value );
+                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                                                               fieldType,
+                                                               value );
                     break;
                 default :
                     buf.append( value );
@@ -567,11 +566,10 @@ public class BRDRLPersistence
 
     public static class RHSActionVisitor extends ReflectiveVisitor {
 
-        private StringBuilder          buf;
-        private DRLConstraintValueBuilder helper = new DRLConstraintValueBuilder();
-        private boolean                isDSLEnhanced;
-        private String                 indentation;
-        private int                    idx    = 0;
+        private StringBuilder buf;
+        private boolean       isDSLEnhanced;
+        private String        indentation;
+        private int           idx = 0;
 
         public RHSActionVisitor(boolean isDSLEnhanced,
                                 StringBuilder b,
@@ -729,13 +727,13 @@ public class BRDRLPersistence
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );
                 } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    helper.buildFieldValue( buf,
-                                            fieldValues[i].type,
-                                            "@{" + fieldValues[i].value + "}" );
+                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                                                               fieldValues[i].type,
+                                                               "@{" + fieldValues[i].value + "}" );
                 } else {
-                    helper.buildFieldValue( buf,
-                                            fieldValues[i].type,
-                                            fieldValues[i].value );
+                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                                                               fieldValues[i].type,
+                                                               fieldValues[i].value );
                 }
                 buf.append( " );\n" );
             }

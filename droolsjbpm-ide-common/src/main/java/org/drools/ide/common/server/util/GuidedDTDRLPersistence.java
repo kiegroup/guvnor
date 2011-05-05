@@ -117,7 +117,7 @@ public class GuidedDTDRLPersistence {
             ActionCol c = actionCols.get( i );
             int index = allColumns.indexOf( c );
 
-            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
 
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();
@@ -216,7 +216,7 @@ public class GuidedDTDRLPersistence {
             int index = allColumns.indexOf( c );
 
             DTCellValue dcv = row.get( index );
-            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( dcv );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
             boolean isOtherwise = dcv.isOtherwise();
             boolean isValid = isOtherwise;
 
@@ -326,7 +326,7 @@ public class GuidedDTDRLPersistence {
             AttributeCol at = attributeCols.get( j );
             int index = allColumns.indexOf( at );
 
-            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
 
@@ -359,7 +359,7 @@ public class GuidedDTDRLPersistence {
             MetadataCol meta = metadataCols.get( j );
             int index = allColumns.indexOf( meta );
 
-            String cell = GuidedDTDRLOtherwiseHelper.convertDTCellValueToString( row.get( index ) );
+            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
 
             if ( validCell( cell ) ) {
                 metadataList.add( new RuleMetadata( meta.getMetadata(),
@@ -416,6 +416,7 @@ public class GuidedDTDRLPersistence {
 
         }
         sfc.setConstraintValueType( c.getConstraintValueType() );
+        sfc.setFieldType( c.getFieldType() );
         return sfc;
     }
 

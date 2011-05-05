@@ -457,10 +457,10 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertEquals( "salience",
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
                       dt.getType( salienceAttribute,
                                   sce ) );
-        assertEquals( "enabled",
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
                       dt.getType( enabledAttribute,
                                   sce ) );
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,

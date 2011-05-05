@@ -35,7 +35,7 @@ public class DRLConstraintValueBuilder {
      * @param fieldType
      * @param fieldValue
      */
-    public void buildFieldValue(StringBuilder buf,
+    public static void buildFieldValue(StringBuilder buf,
                                         String fieldType,
                                         String fieldValue) {
         if ( fieldType == null ) {
