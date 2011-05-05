@@ -777,12 +777,12 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       data.name );
         assertEquals( "header",
-                      data.header );
+                      data.getHeader() );
         assertEquals( "ext",
-                      data.externalURI );
+                      data.getExternalURI() );
 
         assertNotNull( data.uuid );
-        assertFalse( data.isSnapshot );
+        assertFalse( data.isSnapshot() );
 
         assertNotNull( data.dateCreated );
         Date original = data.lastModified;
@@ -797,9 +797,9 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                                             "TEST SNAP 2.0" );
 
         data = repositoryPackageService.loadPackageConfig( loaded.getUUID() );
-        assertTrue( data.isSnapshot );
+        assertTrue( data.isSnapshot() );
         assertEquals( "TEST SNAP 2.0",
-                      data.snapshotName );
+                      data.getSnapshotName() );
         assertFalse( original.equals( data.lastModified ) );
         assertEquals( "ya",
                       data.checkinComment );
@@ -813,7 +813,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                               "a desc" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
         PackageItem it = impl.getRulesRepository().loadPackageByUUID( uuid );
-        data.archived = true;
+        data.setArchived( true );
 
         AssetItem rule1 = it.addAsset( "rule_1",
                                        "" );
@@ -826,25 +826,25 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
         it = impl.getRulesRepository().loadPackage( data.name );
-        assertTrue( data.archived );
+        assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
-        data.archived = false;
+        data.setArchived( false );
 
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
         it = impl.getRulesRepository().loadPackage( data.name );
-        assertFalse( data.archived );
+        assertFalse( data.isArchived() );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
-        data.archived = true;
+        data.setArchived( true );
 
         repositoryPackageService.savePackage( data );
         data = repositoryPackageService.loadPackageConfig( uuid );
         it = impl.getRulesRepository().loadPackage( data.name );
-        assertTrue( data.archived );
+        assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
@@ -860,8 +860,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
 
         data.description = "new desc";
-        data.header = "wa";
-        data.externalURI = "new URI";
+        data.setHeader( "wa" );
+        data.setExternalURI( "new URI" );
 
         ValidatedResponse res = repositoryPackageService.validatePackageConfiguration( data );
         assertNotNull( res );
@@ -872,11 +872,11 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( "new desc",
                       data.description );
         assertEquals( "wa",
-                      data.header );
+                      data.getHeader() );
         assertEquals( "new URI",
-                      data.externalURI );
+                      data.getExternalURI() );
 
-        data.header = "";
+        data.setHeader( "" );
         res = repositoryPackageService.validatePackageConfiguration( data );
         if ( res.hasErrors ) {
             System.out.println( "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" );

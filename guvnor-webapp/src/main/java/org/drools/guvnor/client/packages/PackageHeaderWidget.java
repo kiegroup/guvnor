@@ -51,16 +51,17 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class PackageHeaderWidget extends Composite {
 
-    private Constants         constants = GWT.create( Constants.class );
-    private static Images     images    = GWT.create( Images.class );
+    private Constants         constants            = GWT.create( Constants.class );
+    private static Images     images               = GWT.create( Images.class );
 
     private PackageConfigData conf;
     private SimplePanel       layout;
     private ListBox           importList;
     private ListBox           globalList;
-    private boolean isHistoricalReadOnly = false;
+    private boolean           isHistoricalReadOnly = false;
 
-    public PackageHeaderWidget(PackageConfigData conf, boolean isHistoricalReadOnly) {
+    public PackageHeaderWidget(PackageConfigData conf,
+                               boolean isHistoricalReadOnly) {
         this.conf = conf;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new SimplePanel();
@@ -70,7 +71,7 @@ public class PackageHeaderWidget extends Composite {
     }
 
     private void render() {
-        final Types t = PackageHeaderHelper.parseHeader( conf.header );
+        final Types t = PackageHeaderHelper.parseHeader( conf.getHeader() );
         if ( t == null ) {
             textEditorVersion();
         } else {
@@ -90,28 +91,34 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel importCols = new HorizontalPanel();
         importCols.add( importList );
         VerticalPanel importActions = new VerticalPanel();
-        if(isHistoricalReadOnly) {
-            ImageButton newItemButton =  new ImageButton( images.newItem(), images.newItemDisabled());
-            newItemButton.setEnabled(false);
-            importActions.add(newItemButton);          	
-            
-            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() );            	
-            trashButton.setEnabled(false); 
+        if ( isHistoricalReadOnly ) {
+            ImageButton newItemButton = new ImageButton( images.newItem(),
+                                                         images.newItemDisabled() );
+            newItemButton.setEnabled( false );
+            importActions.add( newItemButton );
+
+            ImageButton trashButton = new ImageButton( images.trash(),
+                                                       images.trashDisabled() );
+            trashButton.setEnabled( false );
             importActions.add( trashButton );
-         } else {
-			ImageButton newItemButton = new ImageButton(images.newItem(), images.newItemDisabled()) {
-				{
-					addClickHandler(new ClickHandler() {
-						public void onClick(ClickEvent event) {
-							showTypeQuestion((Widget) event.getSource(), t,
-									false, constants.FactTypesJarTip());
-						}
-					});
-				}
-			};
-            importActions.add(newItemButton);        	
-            
-            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() ) {
+        } else {
+            ImageButton newItemButton = new ImageButton( images.newItem(),
+                                                         images.newItemDisabled() ) {
+                {
+                    addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                            showTypeQuestion( (Widget) event.getSource(),
+                                              t,
+                                              false,
+                                              constants.FactTypesJarTip() );
+                        }
+                    } );
+                }
+            };
+            importActions.add( newItemButton );
+
+            ImageButton trashButton = new ImageButton( images.trash(),
+                                                       images.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -124,10 +131,10 @@ public class PackageHeaderWidget extends Composite {
                         }
                     } );
                 }
-            };            	
+            };
             importActions.add( trashButton );
         }
-        
+
         importCols.add( importActions );
         imports.add( importCols );
 
@@ -138,27 +145,34 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel globalCols = new HorizontalPanel();
         globalCols.add( globalList );
         VerticalPanel globalActions = new VerticalPanel();
-        if(isHistoricalReadOnly) {
-            ImageButton newItemButton =  new ImageButton( images.newItem(), images.newItemDisabled());
-            newItemButton.setEnabled(false);
-            globalActions.add(newItemButton);          	
-            
-            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() );            	
-            trashButton.setEnabled(false); 
+        if ( isHistoricalReadOnly ) {
+            ImageButton newItemButton = new ImageButton( images.newItem(),
+                                                         images.newItemDisabled() );
+            newItemButton.setEnabled( false );
+            globalActions.add( newItemButton );
+
+            ImageButton trashButton = new ImageButton( images.trash(),
+                                                       images.trashDisabled() );
+            trashButton.setEnabled( false );
             globalActions.add( trashButton );
         } else {
-			ImageButton newItemButton = new ImageButton( images.newItem(), images.newItemDisabled() ) {
-	            {
-	                addClickHandler( new ClickHandler() {
-	                    public void onClick(ClickEvent event) {
-	                        showTypeQuestion( (Widget) event.getSource(), t, true, constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
-	                    }
-	                } );
-	            }
-	        } ;
-	        globalActions.add(newItemButton);        	
-            
-            ImageButton trashButton = new ImageButton( images.trash(), images.trashDisabled() ) {
+            ImageButton newItemButton = new ImageButton( images.newItem(),
+                                                         images.newItemDisabled() ) {
+                {
+                    addClickHandler( new ClickHandler() {
+                        public void onClick(ClickEvent event) {
+                            showTypeQuestion( (Widget) event.getSource(),
+                                              t,
+                                              true,
+                                              constants.GlobalTypesAreClassesFromJarFilesThatHaveBeenUploadedToTheCurrentPackage() );
+                        }
+                    } );
+                }
+            };
+            globalActions.add( newItemButton );
+
+            ImageButton trashButton = new ImageButton( images.trash(),
+                                                       images.trashDisabled() ) {
                 {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
@@ -171,9 +185,9 @@ public class PackageHeaderWidget extends Composite {
                         }
                     } );
                 }
-            };   	
+            };
             globalActions.add( trashButton );
-        }       
+        }
         globalCols.add( globalActions );
         globals.add( globalCols );
 
@@ -205,18 +219,18 @@ public class PackageHeaderWidget extends Composite {
         VerticalPanel main = new VerticalPanel();
 
         final TextArea area = new TextArea();
-        if(isHistoricalReadOnly) {
-        	area.setEnabled(false);
+        if ( isHistoricalReadOnly ) {
+            area.setEnabled( false );
         }
         area.setWidth( "100%" );
         area.setVisibleLines( 8 );
 
         area.setCharacterWidth( 100 );
 
-        area.setText( this.conf.header );
+        area.setText( this.conf.getHeader() );
         area.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                conf.header = area.getText();
+                conf.setHeader( area.getText() );
             }
         } );
 
@@ -243,7 +257,7 @@ public class PackageHeaderWidget extends Composite {
     private ClickHandler createClickHanderForBasicModeButton(final TextArea area) {
         return new ClickHandler() {
             public void onClick(ClickEvent event) {
-                conf.header = area.getText();
+                conf.setHeader( area.getText() );
                 handleCasesForBasicModeButton();
             }
 
@@ -251,7 +265,7 @@ public class PackageHeaderWidget extends Composite {
     }
 
     private void handleCasesForBasicModeButton() {
-        final Types types = PackageHeaderHelper.parseHeader( conf.header );
+        final Types types = PackageHeaderHelper.parseHeader( conf.getHeader() );
         if ( types == null ) {
             Window.alert( constants.CanNotSwitchToBasicView() );
         } else {
@@ -269,24 +283,37 @@ public class PackageHeaderWidget extends Composite {
         }
     }
 
-    private void showTypeQuestion(Widget w, final Types t, final boolean global, String headerMessage) {
-        final FormStylePopup pop = new FormStylePopup( images.homeIcon(), constants.ChooseAFactType() );
+    private void showTypeQuestion(Widget w,
+                                  final Types t,
+                                  final boolean global,
+                                  String headerMessage) {
+        final FormStylePopup pop = new FormStylePopup( images.homeIcon(),
+                                                       constants.ChooseAFactType() );
         pop.addRow( new HTML( "<small><i>" + headerMessage + " </i></small>" ) ); //NON-NLS
         final ListBox factList = new ListBox();
         factList.addItem( constants.loadingList() );
 
-        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.uuid, createGenericCallbackForListTypesInPackage( global, factList ) );
+        RepositoryServiceFactory.getPackageService().listTypesInPackage( this.conf.uuid,
+                                                                         createGenericCallbackForListTypesInPackage( global,
+                                                                                                                     factList ) );
 
-        InfoPopup info = new InfoPopup( constants.TypesInThePackage(), constants.IfNoTypesTip() );
+        InfoPopup info = new InfoPopup( constants.TypesInThePackage(),
+                                        constants.IfNoTypesTip() );
 
-        pop.addAttribute( constants.ChooseClassType(), createHorizontalPanel( factList, info ) );
+        pop.addAttribute( constants.ChooseClassType(),
+                          createHorizontalPanel( factList,
+                                                 info ) );
         final TextBox globalName = new TextBox();
         if ( global ) {
-            pop.addAttribute( constants.GlobalName(), globalName );
+            pop.addAttribute( constants.GlobalName(),
+                              globalName );
         }
         final TextBox className = new TextBox();
-        InfoPopup infoClass = new InfoPopup( constants.EnteringATypeClassName(), constants.EnterTypeNameTip() );
-        pop.addAttribute( constants.advancedClassName(), createHorizontalPanel( className, infoClass ) );
+        InfoPopup infoClass = new InfoPopup( constants.EnteringATypeClassName(),
+                                             constants.EnterTypeNameTip() );
+        pop.addAttribute( constants.advancedClassName(),
+                          createHorizontalPanel( className,
+                                                 infoClass ) );
 
         Button ok = new Button( constants.OK() ) {
             {
@@ -301,7 +328,8 @@ public class PackageHeaderWidget extends Composite {
                                 Window.alert( constants.YouMustEnterAGlobalVariableName() );
                                 return;
                             }
-                            t.globals.add( new Global( type, globalName.getText() ) );
+                            t.globals.add( new Global( type,
+                                                       globalName.getText() ) );
                             doGlobals( t );
                         }
                         updateHeader( t );
@@ -324,7 +352,8 @@ public class PackageHeaderWidget extends Composite {
         HorizontalPanel buttonPanel = new HorizontalPanel();
         buttonPanel.add( ok );
         buttonPanel.add( cancel );
-        pop.addAttribute( "", buttonPanel );
+        pop.addAttribute( "",
+                          buttonPanel );
         pop.show();
     }
 
@@ -337,7 +366,8 @@ public class PackageHeaderWidget extends Composite {
         return horizontalPanel;
     }
 
-    private GenericCallback<String[]> createGenericCallbackForListTypesInPackage(final boolean global, final ListBox factList) {
+    private GenericCallback<String[]> createGenericCallbackForListTypesInPackage(final boolean global,
+                                                                                 final ListBox factList) {
         return new GenericCallback<String[]>() {
             public void onSuccess(String[] list) {
                 factList.clear();
@@ -355,7 +385,7 @@ public class PackageHeaderWidget extends Composite {
     }
 
     private void updateHeader(Types t) {
-        this.conf.header = PackageHeaderHelper.renderTypes( t );
+        this.conf.setHeader( PackageHeaderHelper.renderTypes( t ) );
     }
 
     private void doGlobals(Types t) {
@@ -392,7 +422,8 @@ public class PackageHeaderWidget extends Composite {
         String type;
         String name;
 
-        Global(String type, String name) {
+        Global(String type,
+               String name) {
             this.type = type;
             this.name = name;
         }

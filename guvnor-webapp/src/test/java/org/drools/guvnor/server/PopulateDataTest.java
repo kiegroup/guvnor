@@ -195,7 +195,7 @@ public class PopulateDataTest extends GuvnorTestBase {
                                           "Rules for manufacturing." );
 
         PackageConfigData conf = serv.loadPackageConfig( uuid );
-        conf.header = "import com.billasurf.manuf.materials.*";
+        conf.setHeader( "import com.billasurf.manuf.materials.*" );
         serv.savePackage( conf );
 
         serv.createPackage( "com.billasurf.manufacturing.plant",

@@ -69,7 +69,7 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         prepareMockForPackageConfigDataFactory( packageItem );
-        assertNull( this.repositoryPackageOperations.loadGlobalPackage().dependencies );
+        assertNull( this.repositoryPackageOperations.loadGlobalPackage().getDependencies() );
 
     }
 
@@ -80,8 +80,8 @@ public class RepositoryPackageOperationsTest {
         preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( true );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertTrue( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
-        assertEquals( this.repositoryPackageOperations.loadGlobalPackage().snapshotName,
+        assertTrue( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot() );
+        assertEquals( this.repositoryPackageOperations.loadGlobalPackage().getSnapshotName(),
                       "snapshotName123" );
 
     }
@@ -93,8 +93,8 @@ public class RepositoryPackageOperationsTest {
         preparePackageItemMockDates( packageItem );
         when( packageItem.isSnapshot() ).thenReturn( false );
         when( packageItem.getSnapshotName() ).thenReturn( "snapshotName123" );
-        assertFalse( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot );
-        assertNull( this.repositoryPackageOperations.loadGlobalPackage().snapshotName );
+        assertFalse( this.repositoryPackageOperations.loadGlobalPackage().isSnapshot() );
+        assertNull( this.repositoryPackageOperations.loadGlobalPackage().getSnapshotName() );
     }
 
     @Test
@@ -183,7 +183,7 @@ public class RepositoryPackageOperationsTest {
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadGlobalArea() ).thenReturn( packageItem );
         prepareMockForPackageConfigDataFactory( packageItem );
-        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).dependencies );
+        assertNotNull( this.repositoryPackageOperations.loadPackageConfig( packageItem ).getDependencies() );
     }
 
     @Test
@@ -204,9 +204,9 @@ public class RepositoryPackageOperationsTest {
                                                                                              calendar );
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
         localRepositoryPackageOperations.savePackage( packageConfigData );
-        verify( packageItem ).updateExternalURI( packageConfigData.externalURI );
+        verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
         verify( packageItem ).updateDescription( packageConfigData.description );
-        verify( packageItem ).archiveItem( packageConfigData.archived );
+        verify( packageItem ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem ).checkin( packageConfigData.description );
         verify( localRepositoryPackageOperations ).handleUnarchivedForSavePackage( packageConfigData,
                                                                                    packageItem,
@@ -229,9 +229,9 @@ public class RepositoryPackageOperationsTest {
                                                                                              packageItem );
         initSpyingAndMockingOnSuggestionCompletionLoader( localRepositoryPackageOperations );
         localRepositoryPackageOperations.savePackage( packageConfigData );
-        verify( packageItem ).updateExternalURI( packageConfigData.externalURI );
+        verify( packageItem ).updateExternalURI( packageConfigData.getExternalURI() );
         verify( packageItem ).updateDescription( packageConfigData.description );
-        verify( packageItem ).archiveItem( packageConfigData.archived );
+        verify( packageItem ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem ).checkin( packageConfigData.description );
         verify( localRepositoryPackageOperations ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
@@ -255,7 +255,7 @@ public class RepositoryPackageOperationsTest {
         localRepositoryPackageOperations.validatePackageConfiguration( packageConfigData );
         verify( packageItem, never() ).updateExternalURI( "");
         verify( packageItem, never() ).updateDescription( packageConfigData.description );
-        verify( packageItem, never() ).archiveItem( packageConfigData.archived );
+        verify( packageItem, never() ).archiveItem( packageConfigData.isArchived() );
         verify( packageItem, never() ).checkin( packageConfigData.description );
         verify( localRepositoryPackageOperations, never() ).handleArchivedForSavePackage( packageConfigData,
                                                                                    packageItem );
@@ -392,10 +392,10 @@ public class RepositoryPackageOperationsTest {
     private PackageConfigData createPackageConfigData(boolean isArchived) {
         PackageConfigData packageConfigData = new PackageConfigData();
         packageConfigData.name = "name";
-        packageConfigData.header = "header";
-        packageConfigData.archived = isArchived;
+        packageConfigData.setHeader( "header" );
+        packageConfigData.setArchived( isArchived );
         packageConfigData.description = "description";
-        packageConfigData.externalURI = "externalUri";
+        packageConfigData.setExternalURI( "externalUri" );
         return packageConfigData;
     }
 

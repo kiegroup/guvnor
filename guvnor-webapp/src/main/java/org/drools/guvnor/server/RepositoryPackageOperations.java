@@ -121,8 +121,8 @@ public class RepositoryPackageOperations {
             PackageConfigData data = new PackageConfigData();
             data.uuid = pkg.getUUID();
             data.name = pkg.getName();
-            data.archived = pkg.isArchived();
-            data.workspaces = pkg.getWorkspaces();
+            data.setArchived( pkg.isArchived() );
+            data.setWorkspaces( pkg.getWorkspaces() );
             handleIsPackagesListed( archive,
                                     workspace,
                                     filter,
@@ -172,11 +172,11 @@ public class RepositoryPackageOperations {
                                         PackageConfigData data) {
         if ( !archive && (filter == null || filter.accept( data,
                                                            RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
-                                                                                                                               data.workspaces )) ) {
+                                                                                                                               data.getWorkspaces() )) ) {
             result.add( data );
-        } else if ( archive && data.archived && (filter == null || filter.accept( data,
+        } else if ( archive && data.isArchived() && (filter == null || filter.accept( data,
                                                                                   RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
-                                                                                                                                                      data.workspaces )) ) {
+                                                                                                                                                      data.getWorkspaces() )) ) {
             result.add( data );
         }
     }
@@ -196,8 +196,8 @@ public class RepositoryPackageOperations {
 
         PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithOutDependencies( item );
 
-        if ( data.isSnapshot ) {
-            data.snapshotName = item.getSnapshotName();
+        if ( data.isSnapshot() ) {
+            data.setSnapshotName( item.getSnapshotName() );
         }
 
         return data;
@@ -303,8 +303,8 @@ public class RepositoryPackageOperations {
 
     protected PackageConfigData loadPackageConfig(PackageItem packageItem) {
         PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithDependencies( packageItem );
-        if ( data.isSnapshot ) {
-            data.snapshotName = packageItem.getSnapshotName();
+        if ( data.isSnapshot() ) {
+            data.setSnapshotName( packageItem.getSnapshotName() );
         }
         return data;
     }
@@ -318,7 +318,7 @@ public class RepositoryPackageOperations {
 
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
         loader.getSuggestionEngine( item,
-                                    data.header );
+                                    data.getHeader() );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
     }
@@ -329,23 +329,23 @@ public class RepositoryPackageOperations {
         PackageItem item = getRulesRepository().loadPackage( data.name );
 
         // If package is being unarchived.
-        boolean unarchived = (!data.archived && item.isArchived());
+        boolean unarchived = (!data.isArchived() && item.isArchived());
         Calendar packageLastModified = item.getLastModified();
 
-        DroolsHeader.updateDroolsHeader( data.header,
+        DroolsHeader.updateDroolsHeader( data.getHeader(),
                                          item );
         updateCategoryRules( data,
                              item );
 
-        item.updateExternalURI( data.externalURI );
+        item.updateExternalURI( data.getExternalURI() );
         item.updateDescription( data.description );
-        item.archiveItem( data.archived );
+        item.archiveItem( data.isArchived() );
         item.updateBinaryUpToDate( false );
         RuleBaseCache.getInstance().remove( data.uuid );
         item.checkin( data.description );
 
         // If package is archived, archive all the assets under it
-        if ( data.archived ) {
+        if ( data.isArchived() ) {
             handleArchivedForSavePackage( data,
                                           item );
         } else if ( unarchived ) {
@@ -361,7 +361,7 @@ public class RepositoryPackageOperations {
 
     void updateCategoryRules(PackageConfigData data,
                                      PackageItem item) {
-        KeyValueTO keyValueTO = convertMapToCsv( data.catRules );
+        KeyValueTO keyValueTO = convertMapToCsv( data.getCatRules() );
         item.updateCategoryRules( keyValueTO.getKeys(),
                                   keyValueTO.getValues() );
     }

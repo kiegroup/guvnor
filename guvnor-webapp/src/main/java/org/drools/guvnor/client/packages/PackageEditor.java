@@ -162,7 +162,7 @@ public class PackageEditor extends PrettyFormLayout {
         addAttribute( "",
                       getShowCatRules() );
 
-        if ( !conf.isSnapshot && !isHistoricalReadOnly ) {
+        if ( !conf.isSnapshot() && !isHistoricalReadOnly ) {
             Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
@@ -183,7 +183,7 @@ public class PackageEditor extends PrettyFormLayout {
             endSection();
         }
 
-        if ( !conf.isSnapshot && !isHistoricalReadOnly ) {
+        if ( !conf.isSnapshot() && !isHistoricalReadOnly ) {
             startSection( constants.BuildAndValidate() );
             addRow( new PackageBuilderWidget( this.conf ) );
             endSection();
@@ -282,10 +282,10 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget getShowCatRules() {
-        if ( conf.catRules != null && conf.catRules.size() > 0 ) {
+        if ( conf.getCatRules() != null && conf.getCatRules().size() > 0 ) {
             VerticalPanel vp = new VerticalPanel();
 
-            for ( Iterator<Entry<String, String>> iterator = conf.catRules.entrySet().iterator(); iterator.hasNext(); ) {
+            for ( Iterator<Entry<String, String>> iterator = conf.getCatRules().entrySet().iterator(); iterator.hasNext(); ) {
                 Entry<String, String> entry = iterator.next();
                 HorizontalPanel hp = new HorizontalPanel();
                 String m = constants.AllRulesForCategory0WillNowExtendTheRule1(
@@ -306,7 +306,7 @@ public class PackageEditor extends PrettyFormLayout {
 
             public void onClick(ClickEvent event) {
                 if ( Window.confirm( constants.RemoveThisCategoryRule() ) ) {
-                    conf.catRules.remove( rule );
+                    conf.getCatRules().remove( rule );
                     refreshWidgets();
                 }
             }
@@ -335,10 +335,10 @@ public class PackageEditor extends PrettyFormLayout {
     private void addToCatRules(String category,
                                String rule) {
         if ( null != category && null != rule ) {
-            if ( conf.catRules == null ) {
-                conf.catRules = new HashMap<String, String>();
+            if ( conf.getCatRules() == null ) {
+                conf.setCatRules( new HashMap<String, String>() );
             }
-            conf.catRules.put( rule,
+            conf.getCatRules().put( rule,
                                category );
         }
     }
@@ -472,10 +472,10 @@ public class PackageEditor extends PrettyFormLayout {
      */
     public static String makeLink(PackageConfigData conf) {
         String hurl = GWT.getModuleBaseURL() + "package/" + conf.name;
-        if ( !conf.isSnapshot ) {
+        if ( !conf.isSnapshot() ) {
             hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
         } else {
-            hurl = hurl + "/" + conf.snapshotName;
+            hurl = hurl + "/" + conf.getSnapshotName();
         }
         final String uri = hurl;
         return uri;
@@ -630,7 +630,7 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private void doArchive() {
-        conf.archived = true;
+        conf.setArchived( true );
         Command ref = new Command() {
             public void execute() {
                 closeCommand.execute();

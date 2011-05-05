@@ -21,7 +21,7 @@ import org.drools.repository.PackageItem;
 public class PackageConfigDataFactory {
     public static PackageConfigData createPackageConfigDataWithDependencies(PackageItem item) {
         PackageConfigData data = create( item );
-        data.dependencies = item.getDependencies();
+        data.setDependencies( item.getDependencies() );
         return data;
     }
 
@@ -33,18 +33,18 @@ public class PackageConfigDataFactory {
     private static PackageConfigData create(PackageItem item) {
         PackageConfigData data = new PackageConfigData();
         data.uuid = item.getUUID();
-        data.header = DroolsHeader.getDroolsHeader( item );
-        data.externalURI = item.getExternalURI();
-        data.catRules = item.getCategoryRules();
+        data.setHeader( DroolsHeader.getDroolsHeader( item ) );
+        data.setExternalURI( item.getExternalURI() );
+        data.setCatRules( item.getCategoryRules() );
         data.description = item.getDescription();
-        data.archived = item.isArchived();
+        data.setArchived( item.isArchived() );
         data.name = item.getName();
         data.lastModified = item.getLastModified().getTime();
         data.dateCreated = item.getCreatedDate().getTime();
         data.checkinComment = item.getCheckinComment();
         data.lastContributor = item.getLastContributor();
         data.state = item.getStateDescription();
-        data.isSnapshot = item.isSnapshot();
+        data.setSnapshot( item.isSnapshot() );
         data.versionNumber = item.getVersionNumber();
         return data;
     }

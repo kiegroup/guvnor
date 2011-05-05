@@ -488,14 +488,14 @@ public class PackageBuilderWidget extends Composite {
         String hurl = GWT.getModuleBaseURL()
                       + "package/"
                       + conf.name; // NON-NLS
-        if ( !conf.isSnapshot ) {
+        if ( !conf.isSnapshot() ) {
             hurl = hurl
                    + "/"
                    + SnapshotView.LATEST_SNAPSHOT;
         } else {
             hurl = hurl
                    + "/"
-                   + conf.snapshotName;
+                   + conf.getSnapshotName();
         }
         final String uri = hurl;
         return uri;

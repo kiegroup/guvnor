@@ -175,7 +175,7 @@ public class ArchivedAssetManager extends Composite {
         RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
                                                                  new GenericCallback<PackageConfigData>() {
                                                                      public void onSuccess(PackageConfigData cf) {
-                                                                         cf.archived = false;
+                                                                         cf.setArchived( false );
                                                                          RepositoryServiceFactory.getPackageService().savePackage( cf,
                                                                                                                             new GenericCallback<ValidatedResponse>() {
                                                                                                                                 public void onSuccess(ValidatedResponse data) {
