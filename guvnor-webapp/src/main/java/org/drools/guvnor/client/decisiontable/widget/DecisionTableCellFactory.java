@@ -111,7 +111,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
         } else if ( column instanceof ConditionCol ) {
             cell = derieveNewCellFromModel( column );
-
+            
         } else if ( column instanceof ActionSetFieldCol ) {
             cell = derieveNewCellFromModel( column );
 
@@ -120,7 +120,6 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
         }
 
-        column.setFieldType( model.getType( column, sce ) );
         cell.setMergableGridWidget( grid );
         return cell;
 
@@ -130,19 +129,23 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig col) {
 
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
+        String type = model.getType( col,
+                                     sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return cell;
+        }
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
                                             sce );
         if ( vals.length == 0 ) {
-            if ( model.isNumeric( col,
-                                  sce ) ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 cell = makeNumericCell();
-            } else if ( model.isBoolean( col,
-                                         sce ) ) {
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 cell = makeBooleanCell();
-            } else if ( model.isDate( col,
-                                      sce ) ) {
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 cell = makeDateCell();
             }
         } else {

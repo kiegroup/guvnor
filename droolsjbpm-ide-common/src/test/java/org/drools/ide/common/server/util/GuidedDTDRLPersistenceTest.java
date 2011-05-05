@@ -1125,7 +1125,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol asf = new ActionSetFieldCol();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
-        asf.setType( "String" );
+        asf.setType( SuggestionCompletionEngine.TYPE_STRING );
 
         dt.getActionCols().add( asf );
 
@@ -1300,7 +1300,7 @@ public class GuidedDTDRLPersistenceTest {
         ActionSetFieldCol asf = new ActionSetFieldCol();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
-        asf.setType( "String" );
+        asf.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         asf.setUpdate( true );
 
         dt.getActionCols().add( asf );

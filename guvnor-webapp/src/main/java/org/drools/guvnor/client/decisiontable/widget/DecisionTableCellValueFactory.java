@@ -157,11 +157,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                     }
                 }
         }
-        
-        if(dcv.isOtherwise()) {
+
+        if ( dcv.isOtherwise() ) {
             cell.addState( CellState.OTHERWISE );
         }
-        
+
         return cell;
     }
 
@@ -212,19 +212,23 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     private DTDataTypes derieveDataType(DTColumnConfig col) {
 
         DTDataTypes dataType = DTDataTypes.STRING;
+        String type = model.getType( col,
+                                     sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return dataType;
+        }
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = model.getValueList( col,
                                             sce );
         if ( vals.length == 0 ) {
-            if ( model.isNumeric( col,
-                                  sce ) ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 dataType = DTDataTypes.NUMERIC;
-            } else if ( model.isBoolean( col,
-                                         sce ) ) {
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
                 dataType = DTDataTypes.BOOLEAN;
-            } else if ( model.isDate( col,
-                                      sce ) ) {
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 dataType = DTDataTypes.DATE;
             }
         }

@@ -34,6 +34,7 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.junit.Test;
 
+@SuppressWarnings("deprecation")
 public class GuidedDTModelConversionTest {
 
     @Test
