@@ -36,17 +36,29 @@ public class TypeSafeGuidedDecisionTable
     implements
     PortableObject {
 
-    private static final long       serialVersionUID  = 510l;
+    private static final long       serialVersionUID      = 510l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
-    public static final int         INTERNAL_ELEMENTS = 2;
+    public static final int         INTERNAL_ELEMENTS     = 2;
 
     /**
-     * This attribute is only used for Decision Tables to negate a rule
+     * Various attribute names
      */
-    public static final String      NEGATE_RULE_ATTR  = "negate";
+    public static final String      SALIENCE_ATTR         = "salience";
+    public static final String      ENABLED_ATTR          = "enabled";
+    public static final String      DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String      DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String      NO_LOOP_ATTR          = "no-loop";
+    public static final String      AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String      ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String      DURATION_ATTR         = "duration";
+    public static final String      AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String      LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String      RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String      DIALECT_ATTR          = "dialect";
+    public static final String      NEGATE_RULE_ATTR      = "negate";
 
     /**
      * The name - obviously.
@@ -56,24 +68,24 @@ public class TypeSafeGuidedDecisionTable
     private String                  parentName;
 
     // metadata defined for table ( will be represented as a column per table row of DATA
-    private RowNumberCol            rowNumberCol      = new RowNumberCol();
+    private RowNumberCol            rowNumberCol          = new RowNumberCol();
 
-    private DescriptionCol          descriptionCol    = new DescriptionCol();
+    private DescriptionCol          descriptionCol        = new DescriptionCol();
 
-    private List<MetadataCol>       metadataCols      = new ArrayList<MetadataCol>();
+    private List<MetadataCol>       metadataCols          = new ArrayList<MetadataCol>();
 
-    private List<AttributeCol>      attributeCols     = new ArrayList<AttributeCol>();
+    private List<AttributeCol>      attributeCols         = new ArrayList<AttributeCol>();
 
-    private List<ConditionCol>      conditionCols     = new ArrayList<ConditionCol>();
+    private List<ConditionCol>      conditionCols         = new ArrayList<ConditionCol>();
 
-    private List<ActionCol>         actionCols        = new ArrayList<ActionCol>();
+    private List<ActionCol>         actionCols            = new ArrayList<ActionCol>();
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue>> data              = new ArrayList<List<DTCellValue>>();
+    private List<List<DTCellValue>> data                  = new ArrayList<List<DTCellValue>>();
 
     public TypeSafeGuidedDecisionTable() {
     }
@@ -139,9 +151,35 @@ public class TypeSafeGuidedDecisionTable
     public String getType(DTColumnConfig col,
                           SuggestionCompletionEngine sce) {
         String type = null;
-        if ( col instanceof AttributeCol ) {
-            AttributeCol at = (AttributeCol) col;
-            type = at.getAttribute();
+
+        if ( col instanceof RowNumberCol ) {
+            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+
+        } else if ( col instanceof DescriptionCol ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
+
+        } else if ( col instanceof AttributeCol ) {
+            AttributeCol attrCol = (AttributeCol) col;
+            String attrName = attrCol.getAttribute();
+            if ( attrName.equals( TypeSafeGuidedDecisionTable.SALIENCE_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.ENABLED_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NO_LOOP_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DURATION_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_NUMERIC;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.AUTO_FOCUS_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.LOCK_ON_ACTIVE_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DATE_EFFECTIVE_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_DATE;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DATE_EXPIRES_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_DATE;
+            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DIALECT_ATTR ) ) {
+                type = SuggestionCompletionEngine.TYPE_STRING;
+            }
         } else if ( col instanceof ConditionCol ) {
             ConditionCol c = (ConditionCol) col;
             type = sce.getFieldType( c.getFactType(),
@@ -220,8 +258,9 @@ public class TypeSafeGuidedDecisionTable
             AttributeCol at = (AttributeCol) col;
             return "enabled".equals( at.getAttribute() )
                    || "no-loop".equals( at.getAttribute() )
-                    || "auto-focus".equals( at.getAttribute() )
-                    || "lock-on-active".equals( at.getAttribute() );
+                   || "auto-focus".equals( at.getAttribute() )
+                   || "lock-on-active".equals( at.getAttribute() )
+                   || NEGATE_RULE_ATTR.equals( at.getAttribute() );
         } else {
             return isDataType( col,
                                sce,
@@ -269,7 +308,7 @@ public class TypeSafeGuidedDecisionTable
         if ( col instanceof AttributeCol ) {
             AttributeCol at = (AttributeCol) col;
             return "date-effective".equals( at.getAttribute() )
-                    || "date-expires".equals( at.getAttribute() );
+                   || "date-expires".equals( at.getAttribute() );
         } else {
             return isDataType( col,
                                sce,
@@ -277,9 +316,25 @@ public class TypeSafeGuidedDecisionTable
         }
     }
 
+    public boolean isString(DTColumnConfig col,
+                            SuggestionCompletionEngine sce) {
+        if ( col instanceof DescriptionCol ) {
+            return true;
+        } else if ( col instanceof AttributeCol ) {
+            AttributeCol at = (AttributeCol) col;
+            return "dialect".equals( at.getAttribute() );
+        } else {
+            return isDataType( col,
+                               sce,
+                               SuggestionCompletionEngine.TYPE_STRING );
+        }
+    }
+
     public boolean isNumeric(DTColumnConfig col,
                              SuggestionCompletionEngine sce) {
-        if ( col instanceof AttributeCol ) {
+        if ( col instanceof RowNumberCol ) {
+            return true;
+        } else if ( col instanceof AttributeCol ) {
             AttributeCol at = (AttributeCol) col;
             return "salience".equals( at.getAttribute() )
                    || "duration".equals( at.getAttribute() );

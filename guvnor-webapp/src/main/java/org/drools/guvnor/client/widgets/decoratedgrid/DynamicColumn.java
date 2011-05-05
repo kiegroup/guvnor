@@ -34,7 +34,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  * @param <T>
  *            The type of domain columns represented
  */
-public class DynamicColumn<T> extends DynamicBaseColumn<T>
+public class DynamicColumn<T> extends DynamicBaseColumn
     implements
         HasValueChangeHandlers<SortConfiguration> {
 
@@ -49,7 +49,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn<T>
     private SimpleEventBus    seb                = new SimpleEventBus();
 
     public DynamicColumn(T modelColumn,
-                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
                          int columnIndex) {
         this( modelColumn,
               cell,
@@ -59,7 +59,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn<T>
     }
 
     public DynamicColumn(T modelColumn,
-                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
                          int columnIndex,
                          boolean isSystemControlled,
                          boolean isSortable) {

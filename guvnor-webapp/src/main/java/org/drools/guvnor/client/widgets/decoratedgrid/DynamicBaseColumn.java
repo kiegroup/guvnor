@@ -35,14 +35,14 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * 
  * Forked GWT2.1.1's Column<T, C> class to make Cell<C> non-final.
  */
-public abstract class DynamicBaseColumn<T>
+public abstract class DynamicBaseColumn
     implements
     HasCell<DynamicDataRow, CellValue< ? extends Comparable< ? >>> {
 
     /**
      * The {@link Cell} responsible for rendering items in the column.
      */
-    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T>        cell;
+    protected DecoratedGridCellValueAdaptor< ? extends Comparable< ? >>        cell;
 
     /**
      * The {@link FieldUpdater} used for updating values in the column.
@@ -55,7 +55,7 @@ public abstract class DynamicBaseColumn<T>
      * @param cell
      *            the Cell used by this Column
      */
-    public DynamicBaseColumn(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+    public DynamicBaseColumn(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
         }
@@ -67,7 +67,7 @@ public abstract class DynamicBaseColumn<T>
      * 
      * @return a Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell() {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell() {
         return cell;
     }
 
@@ -141,7 +141,7 @@ public abstract class DynamicBaseColumn<T>
      * 
      * @param cell
      */
-    public void setCell(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> cell) {
+    public void setCell(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell) {
         if ( cell == null ) {
             throw new IllegalArgumentException( "cell cannot be null" );
         }

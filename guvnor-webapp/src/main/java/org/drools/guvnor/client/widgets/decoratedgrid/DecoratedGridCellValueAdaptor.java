@@ -32,13 +32,13 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * @param <C>
  *            The data-type of columns represented in the domain model
  */
-public class DecoratedGridCellValueAdaptor<T, C> extends
+public class DecoratedGridCellValueAdaptor<T> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
     private AbstractCell<T>         cell;
 
-    protected MergableGridWidget<C> grid;
+    protected MergableGridWidget<?> grid;
 
     /**
      * @param cell
@@ -123,7 +123,7 @@ public class DecoratedGridCellValueAdaptor<T, C> extends
      * 
      * @param manager
      */
-    public void setMergableGridWidget(MergableGridWidget<C> grid) {
+    public void setMergableGridWidget(MergableGridWidget<?> grid) {
         this.grid = grid;
     }
 

@@ -17,90 +17,73 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
-public class DTColumnConfig implements PortableObject {
+public class DTColumnConfig
+    implements
+    PortableObject {
 
     private static final long serialVersionUID = 510l;
-
-    /**
-     * If this is not -1, then this is the width which will be displayed.
-     */
-    private int width = -1;
 
     /**
      * For a default value ! Will still be in the array of course, just use this
      * value if its empty.
      */
-    private String defaultValue = null;
+    private String            defaultValue     = null;
+
+    /**
+     * The data-type of the column. Possible values are
+     * SuggestionCompletionEngine.TYPE_XXX
+     */
+    private String            fieldType        = "";
 
     /**
      * to hide the column (eg if it has a mandatory default).
      */
-    private boolean hideColumn = false;
-
-    /**
-     * to use the row number as number for the salience attribute.
-     */
-    private boolean useRowNumber = false;
+    private boolean           hideColumn       = false;
 
     /**
      * to use the reverse order of the row number as the salience attribute.
      */
-    private boolean reverseOrder = false;
+    private boolean           reverseOrder     = false;
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
+    /**
+     * to use the row number as number for the salience attribute.
+     */
+    private boolean           useRowNumber     = false;
 
-    public int getWidth() {
-        return width;
-    }
+    /**
+     * If this is not -1, then this is the width which will be displayed.
+     */
+    private int               width            = -1;
 
-    public void setDefaultValue(String defaultValue) {
-        this.defaultValue = defaultValue;
+    @Override
+    public boolean equals(Object obj) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( !(obj instanceof DTColumnConfig) ) {
+            return false;
+        }
+        DTColumnConfig that = (DTColumnConfig) obj;
+        return this.width == that.width
+                && nullOrEqual( this.defaultValue,
+                                that.defaultValue )
+                && nullOrEqual( this.fieldType,
+                                that.fieldType )
+                && this.hideColumn == that.hideColumn
+                && this.useRowNumber == that.useRowNumber
+                && this.reverseOrder == that.reverseOrder;
     }
 
     public String getDefaultValue() {
         return defaultValue;
     }
 
-    public void setHideColumn(boolean hideColumn) {
-        this.hideColumn = hideColumn;
+    public String getFieldType() {
+        return this.fieldType;
     }
 
-    public boolean isHideColumn() {
-        return hideColumn;
-    }
-
-    public void setUseRowNumber(boolean useRowNumber) {
-        this.useRowNumber = useRowNumber;
-    }
-
-    public boolean isUseRowNumber() {
-        return useRowNumber;
-    }
-
-    public void setReverseOrder(boolean reverseOrder) {
-        this.reverseOrder = reverseOrder;
-    }
-
-    public boolean isReverseOrder() {
-        return reverseOrder;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof DTColumnConfig)) {
-            return false;
-        }
-        DTColumnConfig that = (DTColumnConfig) obj;
-        return this.width == that.width
-                && nullOrEqual(this.defaultValue, that.defaultValue)
-                && this.hideColumn == that.hideColumn
-                && this.useRowNumber == that.useRowNumber
-                && this.reverseOrder == that.reverseOrder;
+    public int getWidth() {
+        return width;
     }
 
     @Override
@@ -108,20 +91,58 @@ public class DTColumnConfig implements PortableObject {
         int hash = 1;
         hash = hash * 31 + width;
         hash = hash * 31 + (defaultValue == null ? 0 : defaultValue.hashCode());
+        hash = hash * 31 + (fieldType == null ? 0 : fieldType.hashCode());
         hash = hash * 31 + (hideColumn ? 1 : 0);
         hash = hash * 31 + (useRowNumber ? 1 : 0);
         hash = hash * 31 + (reverseOrder ? 1 : 0);
         return hash;
     }
 
-    private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-        if (thisAttr == null && thatAttr == null) {
+    public boolean isHideColumn() {
+        return hideColumn;
+    }
+
+    public boolean isReverseOrder() {
+        return reverseOrder;
+    }
+
+    public boolean isUseRowNumber() {
+        return useRowNumber;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public void setHideColumn(boolean hideColumn) {
+        this.hideColumn = hideColumn;
+    }
+
+    public void setReverseOrder(boolean reverseOrder) {
+        this.reverseOrder = reverseOrder;
+    }
+
+    public void setUseRowNumber(boolean useRowNumber) {
+        this.useRowNumber = useRowNumber;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    private boolean nullOrEqual(Object thisAttr,
+                                Object thatAttr) {
+        if ( thisAttr == null && thatAttr == null ) {
             return true;
         }
-        if (thisAttr == null && thatAttr != null) {
+        if ( thisAttr == null && thatAttr != null ) {
             return false;
         }
-        return thisAttr.equals(thatAttr);
+        return thisAttr.equals( thatAttr );
     }
 
 }

@@ -410,6 +410,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Initialise CellTable's Action columns
         for ( DTColumnConfig col : model.getActionCols() ) {
+            //TODO Look at GuidedDTDRLPersistence.doMeta, doAttr, doConditions, doActions - consistency?
+            //TODO Look at objects used in above, can we move "fieldType" to super class? - impact on XLS DTs?
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
                                                                                       cellFactory.getCell( col ),
                                                                                       colIndex );

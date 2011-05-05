@@ -65,27 +65,27 @@ public abstract class AbstractCellFactory<T> {
      *            The Decision Table model column
      * @return A Cell
      */
-    public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, T> getCell(T column);
+    public abstract DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(T column);
 
     // Make a new Cell for Boolean columns
-    protected DecoratedGridCellValueAdaptor<Boolean, T> makeBooleanCell() {
+    protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
         CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
-        return new DecoratedGridCellValueAdaptor<Boolean, T>( cbc );
+        return new DecoratedGridCellValueAdaptor<Boolean>( cbc );
     }
 
     // Make a new Cell for Date columns
-    protected DecoratedGridCellValueAdaptor<Date, T> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date, T>( new PopupDateEditCell( DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
+    protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
+        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
     }
 
     // Make a new Cell for Numeric columns
-    protected DecoratedGridCellValueAdaptor<BigDecimal, T> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal, T>( new PopupNumericEditCell() );
+    protected DecoratedGridCellValueAdaptor<BigDecimal> makeNumericCell() {
+        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell() );
     }
 
     // Make a new Cell for a Text columns
-    protected DecoratedGridCellValueAdaptor<String, T> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String, T>( new PopupTextEditCell() );
+    protected DecoratedGridCellValueAdaptor<String> makeTextCell() {
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell() );
     }
 
 }

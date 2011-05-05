@@ -19,19 +19,22 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This holds values for rule metadata (eg @foo(bar), @foo2(bar2)).
  */
-public class RuleMetadata implements PortableObject {
+public class RuleMetadata
+    implements
+    PortableObject {
 
-        public static String HIDE_LHS_IN_EDITOR = "HideLHSInEditor";
-        public static String HIDE_RHS_IN_EDITOR = "HideRHSInEditor";
-        public static String HIDE_ATTRIBUTES_IN_EDITOR = "HideAttributesInEditor";
-    
-        public String attributeName;
-    public String value;
+    public static String HIDE_LHS_IN_EDITOR        = "HideLHSInEditor";
+    public static String HIDE_RHS_IN_EDITOR        = "HideRHSInEditor";
+    public static String HIDE_ATTRIBUTES_IN_EDITOR = "HideAttributesInEditor";
+
+    public String        attributeName;
+    public String        value;
 
     public RuleMetadata() {
     }
 
-    public RuleMetadata(final String name, final String value) {
+    public RuleMetadata(final String name,
+                        final String value) {
         this.attributeName = name;
         this.value = value;
     }
@@ -39,12 +42,12 @@ public class RuleMetadata implements PortableObject {
     @Override
     public String toString() {
         StringBuilder ret = new StringBuilder();
-        ret.append("@");
-        ret.append(this.attributeName);
-        if (this.value != null) {
-            ret.append("(");
-            ret.append(this.value);
-            ret.append(")");
+        ret.append( "@" );
+        ret.append( this.attributeName );
+        if ( this.value != null ) {
+            ret.append( "(" );
+            ret.append( this.value );
+            ret.append( ")" );
         }
         return ret.toString();
     }

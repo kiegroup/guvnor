@@ -15,10 +15,7 @@
  */
 package org.drools.ide.common.server.util;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -54,16 +51,12 @@ public class GuidedDTDRLOtherwiseHelper {
             for ( DTCellValue cv : columnData ) {
 
                 //Ensure cell values start and end with quotes
-                String scv = convertDTCellValueToString( cv );
+                String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        if ( !scv.startsWith( "\"" ) ) {
-                            value.append( "\"" );
-                        }
-                        value.append( scv );
-                        if ( !scv.endsWith( "\"" ) ) {
-                            value.append( "\"" );
-                        }
+                        DRLConstraintValueBuilder.buildFieldValue( value,
+                                                 c.getFieldType(),
+                                                 scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );
@@ -100,16 +93,12 @@ public class GuidedDTDRLOtherwiseHelper {
             for ( DTCellValue cv : columnData ) {
 
                 //Ensure cell values start and end with quotes
-                String scv = convertDTCellValueToString( cv );
+                String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        if ( !scv.startsWith( "\"" ) ) {
-                            value.append( "\"" );
-                        }
-                        value.append( scv );
-                        if ( !scv.endsWith( "\"" ) ) {
-                            value.append( "\"" );
-                        }
+                        DRLConstraintValueBuilder.buildFieldValue( value,
+                                                 c.getFieldType(),
+                                                 scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );
@@ -176,29 +165,6 @@ public class GuidedDTDRLOtherwiseHelper {
         abstract FieldConstraint constructSingleFieldConstraint(ConditionCol c,
                                                                 List<DTCellValue> columnData);
 
-    }
-
-    /**
-     * Utility method to convert DTCellValues to their String representation
-     * 
-     * @param dcv
-     * @return
-     */
-    public static String convertDTCellValueToString(DTCellValue dcv) {
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                Boolean booleanValue = dcv.getBooleanValue();
-                return (booleanValue == null ? null : booleanValue.toString());
-            case DATE :
-                SimpleDateFormat sdf = new SimpleDateFormat( "dd-MMM-yyyy" );
-                Date dateValue = dcv.getDateValue();
-                return (dateValue == null ? null : sdf.format( dcv.getDateValue() ));
-            case NUMERIC :
-                BigDecimal bdValue = dcv.getNumericValue();
-                return (bdValue == null ? null : bdValue.toPlainString());
-            default :
-                return dcv.getStringValue();
-        }
     }
 
     /**

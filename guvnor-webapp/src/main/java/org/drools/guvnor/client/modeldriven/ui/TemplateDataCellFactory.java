@@ -44,9 +44,9 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
      *            The Template Data Table model column
      * @return A Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> getCell(TemplateDataColumn column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(TemplateDataColumn column) {
 
-        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >, TemplateDataColumn> cell = null;
+        DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = null;
 
         //Check if the column has an enumeration
         String[] vals = null;
@@ -61,7 +61,7 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
         if ( vals != null && vals.length > 0 ) {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
-            cell = new DecoratedGridCellValueAdaptor<String, TemplateDataColumn>( pudd );
+            cell = new DecoratedGridCellValueAdaptor<String>( pudd );
             
         } else {
             String dataType = column.getDataType();
