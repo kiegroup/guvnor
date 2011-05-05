@@ -56,8 +56,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     /**
      * An editor for setting the default value.
      */
-    public static HorizontalPanel getDefaultEditor(
-                                                   final DTColumnConfig editingCol) {
+    public static HorizontalPanel getDefaultEditor(final DTColumnConfig editingCol) {
         final TextBox defaultValue = new TextBox();
         defaultValue.setText( editingCol.getDefaultValue() );
         final CheckBox hide = new CheckBox(
@@ -109,6 +108,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         editingCol.setConstraintValueType( col.getConstraintValueType() );
         editingCol.setFactField( col.getFactField() );
         editingCol.setFactType( col.getFactType() );
+        editingCol.setFieldType( col.getFieldType() );
         editingCol.setHeader( col.getHeader() );
         editingCol.setOperator( col.getOperator() );
         editingCol.setValueList( col.getValueList() );
@@ -469,8 +469,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     protected void showFieldChange() {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
-        String[] fields = this.sce.getFieldCompletions(
-                                                        FieldAccessorsAndMutators.ACCESSOR,
+        String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
                                                         this.editingCol.getFactType() );
 
         final ListBox box = new ListBox();
@@ -485,6 +484,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         b.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                editingCol.setFieldType( sce.getFieldType( editingCol.getFactType(),
+                                                           editingCol.getFactField() ) );
                 doFieldLabel();
                 doOperatorLabel();
                 pop.hide();

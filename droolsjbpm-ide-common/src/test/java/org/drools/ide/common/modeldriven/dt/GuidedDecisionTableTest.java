@@ -32,70 +32,13 @@ import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.junit.Test;
 
 public class GuidedDecisionTableTest {
 
-    // public void testGetCol() {
-    // GuidedDecisionTable dt = new GuidedDecisionTable();
-    // AttributeCol at1 = new AttributeCol();
-    // ConditionCol condition1 = new ConditionCol();
-    // ActionCol action1 = new ActionInsertFactCol();
-    // dt.attributeCols.add(at1);
-    // dt.conditionCols.add(condition1);
-    // dt.actionCols.add(action1);
-    //
-    // assertEquals(at1, dt.getColumnConfiguration(0));
-    // assertEquals(condition1, dt.getColumnConfiguration(1));
-    // assertEquals(action1, dt.getColumnConfiguration(2));
-    //
-    //
-    // AttributeCol at2 = new AttributeCol();
-    // dt.attributeCols.add(at2);
-    // assertEquals(at1, dt.getColumnConfiguration(0));
-    // assertEquals(at2, dt.getColumnConfiguration(1));
-    // assertEquals(condition1, dt.getColumnConfiguration(2));
-    // assertEquals(action1, dt.getColumnConfiguration(3));
-    //
-    // ConditionCol condition2 = new ConditionCol();
-    // dt.conditionCols.add(condition2);
-    //
-    // assertEquals(at1, dt.getColumnConfiguration(0));
-    // assertEquals(at2, dt.getColumnConfiguration(1));
-    // assertEquals(condition1, dt.getColumnConfiguration(2));
-    // assertEquals(condition2, dt.getColumnConfiguration(3));
-    // assertEquals(action1, dt.getColumnConfiguration(4));
-    //
-    // ActionCol action2 = new ActionInsertFactCol();
-    // dt.actionCols.add(action2);
-    // assertEquals(at1, dt.getColumnConfiguration(0));
-    // assertEquals(at2, dt.getColumnConfiguration(1));
-    // assertEquals(condition1, dt.getColumnConfiguration(2));
-    // assertEquals(condition2, dt.getColumnConfiguration(3));
-    // assertEquals(action1, dt.getColumnConfiguration(4));
-    // assertEquals(action2, dt.getColumnConfiguration(5));
-    //
-    //
-    //
-    // dt.attributeCols = new ArrayList();
-    // assertEquals(condition1, dt.getColumnConfiguration(0));
-    // assertEquals(condition2, dt.getColumnConfiguration(1));
-    // assertEquals(action1, dt.getColumnConfiguration(2));
-    // assertEquals(action2, dt.getColumnConfiguration(3));
-    //
-    // dt.conditionCols = new ArrayList();
-    // assertEquals(action1, dt.getColumnConfiguration(0));
-    // assertEquals(action2, dt.getColumnConfiguration(1));
-    //
-    //
-    //
-    //
-    //
-    //
-    // }
     @Test
     public void testValueLists() {
         TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
@@ -264,6 +207,7 @@ public class GuidedDecisionTableTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testNumeric() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -338,27 +282,39 @@ public class GuidedDecisionTableTest {
         ins_.setFactField( "age" );
         dt.getActionCols().add( ins_ );
 
-        assertTrue( dt.isNumeric( at,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      dt.getType( at,
                                   sce ) );
-        assertFalse( dt.isNumeric( at_,
-                                   sce ) );
-        assertFalse( dt.isNumeric( c1,
-                                   sce ) );
-        assertTrue( dt.isNumeric( c1_,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      dt.getType( c1_,
                                   sce ) );
-        assertFalse( dt.isNumeric( a,
-                                   sce ) );
-        assertTrue( dt.isNumeric( a2,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      dt.getType( a2,
                                   sce ) );
-        assertFalse( dt.isNumeric( ins,
-                                   sce ) );
-        assertTrue( dt.isNumeric( ins_,
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      dt.getType( ins_,
                                   sce ) );
-        assertFalse( dt.isNumeric( c2,
-                                   sce ) );
+
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      dt.getType( at_,
+                                  sce ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      dt.getType( c1,
+                                  sce ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      dt.getType( a,
+                                  sce ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      dt.getType( ins,
+                                  sce ) );
+
+        assertEquals( null,
+                      dt.getType( c2,
+                                  sce ) );
     }
 
     @Test
+    @SuppressWarnings("serial")
     public void testGetType() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
@@ -487,7 +443,7 @@ public class GuidedDecisionTableTest {
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
                       dt.getType( ins_,
                                   sce ) );
-        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+        assertEquals( null,
                       dt.getType( conditionColAge2,
                                   sce ) );
     }

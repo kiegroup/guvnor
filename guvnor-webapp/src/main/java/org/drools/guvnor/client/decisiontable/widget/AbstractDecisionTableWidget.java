@@ -406,12 +406,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                  makeColumnData( col,
                                                  colIndex++ ),
                                  false );
+
+            //Ensure field data-type is set (field did not exist before 5.2)
+            ConditionCol cc = (ConditionCol) col;
+            cc.setFieldType( sce.getFieldType( cc.getFactType(),
+                                               cc.getFactField() ) );
         }
 
         // Initialise CellTable's Action columns
         for ( DTColumnConfig col : model.getActionCols() ) {
-            //TODO Look at GuidedDTDRLPersistence.doMeta, doAttr, doConditions, doActions - consistency?
-            //TODO Look at objects used in above, can we move "fieldType" to super class? - impact on XLS DTs?
             DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
                                                                                       cellFactory.getCell( col ),
                                                                                       colIndex );
@@ -703,6 +706,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                     editColumn.getFactType() )
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() )
+                    || !isEqualOrNull( origColumn.getFieldType(),
+                                       editColumn.getFieldType() )
                     || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
 
             // Update column's Cell type
@@ -1096,6 +1101,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setConstraintValueType( editingCol.getConstraintValueType() );
         col.setFactField( editingCol.getFactField() );
         col.setFactType( editingCol.getFactType() );
+        col.setFieldType( editingCol.getFieldType() );
         col.setHeader( editingCol.getHeader() );
         col.setOperator( editingCol.getOperator() );
         col.setValueList( editingCol.getValueList() );

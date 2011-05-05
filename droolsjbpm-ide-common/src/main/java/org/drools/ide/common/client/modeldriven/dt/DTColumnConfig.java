@@ -30,12 +30,6 @@ public class DTColumnConfig
     private String            defaultValue     = null;
 
     /**
-     * The data-type of the column. Possible values are
-     * SuggestionCompletionEngine.TYPE_XXX
-     */
-    private String            fieldType        = "";
-
-    /**
      * to hide the column (eg if it has a mandatory default).
      */
     private boolean           hideColumn       = false;
@@ -67,8 +61,6 @@ public class DTColumnConfig
         return this.width == that.width
                 && nullOrEqual( this.defaultValue,
                                 that.defaultValue )
-                && nullOrEqual( this.fieldType,
-                                that.fieldType )
                 && this.hideColumn == that.hideColumn
                 && this.useRowNumber == that.useRowNumber
                 && this.reverseOrder == that.reverseOrder;
@@ -76,10 +68,6 @@ public class DTColumnConfig
 
     public String getDefaultValue() {
         return defaultValue;
-    }
-
-    public String getFieldType() {
-        return this.fieldType;
     }
 
     public int getWidth() {
@@ -91,7 +79,6 @@ public class DTColumnConfig
         int hash = 1;
         hash = hash * 31 + width;
         hash = hash * 31 + (defaultValue == null ? 0 : defaultValue.hashCode());
-        hash = hash * 31 + (fieldType == null ? 0 : fieldType.hashCode());
         hash = hash * 31 + (hideColumn ? 1 : 0);
         hash = hash * 31 + (useRowNumber ? 1 : 0);
         hash = hash * 31 + (reverseOrder ? 1 : 0);
@@ -112,10 +99,6 @@ public class DTColumnConfig
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
-    }
-
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
     }
 
     public void setHideColumn(boolean hideColumn) {

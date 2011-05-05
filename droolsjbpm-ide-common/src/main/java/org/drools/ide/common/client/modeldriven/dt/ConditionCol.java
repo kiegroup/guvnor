@@ -54,6 +54,13 @@ public class ConditionCol extends DTColumnConfig {
     private String            factField;
 
     /**
+     * The data-type of the field in the Fact used in the Condition. Possible
+     * values are held within the SuggestionCompletionEngine.TYPE_XXX
+     */
+
+    private String            fieldType;
+
+    /**
      * The operator to use to compare the field with the value (unless its a
      * predicate, in which case this is ignored).
      */
@@ -92,7 +99,7 @@ public class ConditionCol extends DTColumnConfig {
     public String getBoundName() {
         return boundName;
     }
-
+    
     public void setConstraintValueType(int constraintValueType) {
         this.constraintValueType = constraintValueType;
     }
@@ -109,6 +116,14 @@ public class ConditionCol extends DTColumnConfig {
         return factField;
     }
 
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public String getFieldType() {
+        return fieldType;
+    }
+    
     public void setOperator(String operator) {
         this.operator = operator;
     }
@@ -151,6 +166,8 @@ public class ConditionCol extends DTColumnConfig {
                 && this.constraintValueType == that.constraintValueType
                 && nullOrEqual( this.factField,
                                 that.factField )
+                && nullOrEqual( this.fieldType,
+                                that.fieldType )
                 && nullOrEqual( this.operator,
                                 that.operator )
                 && nullOrEqual( this.valueList,
@@ -167,6 +184,7 @@ public class ConditionCol extends DTColumnConfig {
         hash = hash * 31 + (boundName == null ? 0 : boundName.hashCode());
         hash = hash * 31 + constraintValueType;
         hash = hash * 31 + (factField == null ? 0 : factField.hashCode());
+        hash = hash * 31 + (fieldType == null ? 0 : fieldType.hashCode());
         hash = hash * 31 + (operator == null ? 0 : operator.hashCode());
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
         hash = hash * 31 + (new Boolean( isNegated ).hashCode());
