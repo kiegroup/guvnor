@@ -2907,6 +2907,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         FactPattern p = new FactPattern( "Person" );
         p.setBoundName( "p" );
         SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         con.setFieldName( "name" );
         con.setValue( "mark" );
         con.setOperator( "==" );
