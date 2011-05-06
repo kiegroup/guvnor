@@ -3737,6 +3737,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ConditionCol col = new ConditionCol();
         col.setBoundName( "p" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col.setFactField( "hair" );
         col.setFactType( "Person" );
         col.setOperator( "==" );
