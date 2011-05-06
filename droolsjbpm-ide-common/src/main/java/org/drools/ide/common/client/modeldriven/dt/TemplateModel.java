@@ -24,8 +24,10 @@ import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
@@ -63,7 +65,7 @@ public class TemplateModel extends RuleModel
             this.varName = varName;
             this.dataType = dataType;
         }
-
+        
         public InterpolationVariable(String varName,
                                      String dataType,
                                      String factType,
@@ -147,9 +149,11 @@ public class TemplateModel extends RuleModel
 
         private IFactPattern                        factPattern;
         private Map<InterpolationVariable, Integer> vars;
+        private RuleModel model;
 
-        public RuleModelVisitor(Map<InterpolationVariable, Integer> vars) {
+        public RuleModelVisitor(RuleModel model, Map<InterpolationVariable, Integer> vars) {
             this.vars = vars;
+            this.model=model;
         }
 
         private void parseStringPattern(String text) {
@@ -199,16 +203,52 @@ public class TemplateModel extends RuleModel
                 visitFromCompositeFactPattern( (FromCompositeFactPattern) o );
             } else if ( o instanceof DSLSentence ) {
                 visitDSLSentence( (DSLSentence) o );
-            } else if ( o instanceof ActionFieldList ) {
-                visitActionFieldList( (ActionFieldList) o );
+            } else if ( o instanceof ActionInsertFact ) {
+                visitActionFieldList( (ActionInsertFact) o );
+            } else if ( o instanceof ActionSetField ) {
+                visitActionFieldList( (ActionSetField) o );
+            } else if ( o instanceof ActionUpdateField ) {
+                visitActionFieldList( (ActionUpdateField) o );
             }
         }
 
-        private void visitActionFieldList(ActionFieldList afl) {
+        //ActionInsertFact, ActionSetField, ActionpdateField
+        private void visitActionFieldList(ActionInsertFact afl) {
+            String factType = afl.factType;
             for ( ActionFieldValue afv : afl.fieldValues ) {
                 if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
                     InterpolationVariable var = new InterpolationVariable( afv.getValue(),
-                                                                           afv.getType() );
+                                                                           afv.getType(),
+                                                                           factType,
+                                                                           afv.getField() );
+                    vars.put( var,
+                              vars.size() );
+                }
+            }
+        }
+        
+        private void visitActionFieldList(ActionSetField afl) {
+            String factType = model.getBindingType( afl.variable );
+            for ( ActionFieldValue afv : afl.fieldValues ) {
+                if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
+                    InterpolationVariable var = new InterpolationVariable( afv.getValue(),
+                                                                           afv.getType(),
+                                                                           factType,
+                                                                           afv.getField() );
+                    vars.put( var,
+                              vars.size() );
+                }
+            }
+        }
+
+        private void visitActionFieldList(ActionUpdateField afl) {
+            String factType = model.getBindingType( afl.variable );
+            for ( ActionFieldValue afv : afl.fieldValues ) {
+                if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
+                    InterpolationVariable var = new InterpolationVariable( afv.getValue(),
+                                                                           afv.getType(),
+                                                                           factType,
+                                                                           afv.getField() );
                     vars.put( var,
                               vars.size() );
                 }
@@ -347,7 +387,7 @@ public class TemplateModel extends RuleModel
 
     private Map<InterpolationVariable, Integer> getInterpolationVariables() {
         Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor( result ).visit( this );
+        new RuleModelVisitor( this, result ).visit( this );
 
         InterpolationVariable id = new InterpolationVariable( ID_COLUMN_NAME,
                                                               SuggestionCompletionEngine.TYPE_NUMERIC );

@@ -117,40 +117,47 @@ public class ActionValueEditor extends DirtyableComposite {
 
     private void refresh() {
         root.clear();
-        if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
-            //enum
-            Widget list = boundEnum( value );
-            root.add( list );
-        } else {
 
-            if ( value.value != null && value.value.length() > 0 && value.nature == FieldNature.TYPE_UNDEFINED ) {
+        //If undefined let the user pick
+        if ( value.nature == FieldNature.TYPE_UNDEFINED ) {
+
+            //Automatic decisions regarding FieldNature
+            if ( value.value != null && value.value.length() > 0 ) {
                 if ( value.value.charAt( 0 ) == '=' ) {
                     value.nature = FieldNature.TYPE_VARIABLE;
                 } else {
                     value.nature = FieldNature.TYPE_LITERAL;
                 }
-            }
-            if ( value.nature == FieldNature.TYPE_UNDEFINED ) {
-                // we have a blank slate..
-                // have to give them a choice
-                root.add( choice() );
             } else {
-                if ( value.nature == FieldNature.TYPE_VARIABLE ) {
-                    Widget list = boundVariable( value );
-                    root.add( list );
-                } else if ( value.nature == FieldNature.TYPE_TEMPLATE ) {
-                    value.type = SuggestionCompletionEngine.TYPE_STRING;
-                    Widget box = boundTextBox( this.value );
-                    root.add( box );
-                } else {
-                    //formula and literal
-                    Widget box = boundTextBox( this.value );
-                    root.add( box );
-                }
-
+                root.add( choice() );
+                return;
             }
-
         }
+
+        //Template TextBoxes are always Strings as they hold the template key for the actual value
+        if ( value.nature == FieldNature.TYPE_TEMPLATE ) {
+            Widget box = boundTextBox( this.value );
+            root.add( box );
+            return;
+        }
+
+        //Enumerations - since this does not use FieldNature it should follow those that do
+        if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
+            Widget list = boundEnum( value );
+            root.add( list );
+            return;
+        }
+
+        //Variable fields        
+        if ( value.nature == FieldNature.TYPE_VARIABLE ) {
+            Widget list = boundVariable( value );
+            root.add( list );
+            return;
+        }
+        //Fall through for all remaining FieldNatures
+        Widget box = boundTextBox( this.value );
+        root.add( box );
+
     }
 
     private Widget boundVariable(final FieldNature c) {
@@ -272,7 +279,8 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
-        if ( value.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+        //Template TextBoxes are always Strings as they hold the template key for the actual value
+        if ( value.nature != FieldNature.TYPE_TEMPLATE && value.type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             box.addKeyPressHandler( new NumbericFilterKeyPressHandler( box ) );
         }
 
@@ -305,7 +313,7 @@ public class ActionValueEditor extends DirtyableComposite {
 
             public void onClick(ClickEvent event) {
                 value.nature = FieldNature.TYPE_LITERAL;
-                value.value = " ";
+                value.value = "";
                 makeDirty();
                 executeOnChageCommand();
                 refresh();
@@ -323,7 +331,7 @@ public class ActionValueEditor extends DirtyableComposite {
             templateButton.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent event) {
                     value.nature = FieldNature.TYPE_TEMPLATE;
-                    value.value = " ";
+                    value.value = "";
                     makeDirty();
                     refresh();
                     form.hide();
