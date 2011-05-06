@@ -19,8 +19,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
+import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 
 /**
@@ -41,14 +48,34 @@ public class RepositoryUpgradeHelper {
 
         newDTModel.setTableName( legacyDTModel.getTableName() );
         newDTModel.setParentName( legacyDTModel.getParentName() );
+
         newDTModel.setRowNumberCol( legacyDTModel.getRowNumberCol() );
         newDTModel.setDescriptionCol( legacyDTModel.getDescriptionCol() );
 
-        newDTModel.getMetadataCols().addAll( legacyDTModel.getMetadataCols() );
-        newDTModel.getAttributeCols().addAll( legacyDTModel.getAttributeCols() );
-        newDTModel.getConditionCols().addAll( legacyDTModel.getConditionCols() );
-        newDTModel.getActionCols().addAll( legacyDTModel.getActionCols() );
+        //Metadata columns' data-type is implicitly defined in the metadata value. For example
+        //a String metadata attribute is: "value", a numerical: 1. No conversion action required
+        for ( MetadataCol c : legacyDTModel.getMetadataCols() ) {
+            newDTModel.getMetadataCols().add( c );
+        }
 
+        //Attribute columns' data-type is based upon the attribute name
+        for ( AttributeCol c : legacyDTModel.getAttributeCols() ) {
+            newDTModel.getAttributeCols().add( c );
+        }
+
+        //Legacy decision tables did not have Condition field data-types. Set all Condition 
+        //fields to a *sensible* default of String (as this matches legacy behaviour). 
+        for ( ConditionCol c : legacyDTModel.getConditionCols() ) {
+            c.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+            newDTModel.getConditionCols().add( c );
+        }
+
+        //Action columns have a discrete data-type. No conversion action required.
+        for ( ActionCol c : legacyDTModel.getActionCols() ) {
+            newDTModel.getActionCols().add( c );
+        }
+
+        //Copy across data
         newDTModel.setData( makeDataLists( legacyDTModel.getData() ) );
 
         return newDTModel;
