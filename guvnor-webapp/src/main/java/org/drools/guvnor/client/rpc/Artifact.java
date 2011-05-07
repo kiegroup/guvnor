@@ -7,16 +7,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class Artifact
     implements
     IsSerializable {
-    private String  uuid;
-    private String  name;
-    private String  description;
-    private Date    lastModified;
-    private String  lastContributor;
-    private String  state      = "";
-    private Date    dateCreated;
-    private String  checkinComment;
-    private long    versionNumber;
-    private boolean readonly = false;
+    public String  uuid;
+    public String  name;
+    public String  description;
+    public Date    lastModified;
+    public String  lastContributor;
+    public String  state      = "";
+    public Date    dateCreated;
+    public String  checkinComment;
+    public long    versionNumber;
+    public boolean readonly = false;
 
     public String getUuid() {
         return uuid;

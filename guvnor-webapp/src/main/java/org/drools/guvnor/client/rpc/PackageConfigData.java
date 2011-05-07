@@ -24,14 +24,14 @@ import java.util.HashMap;
  */
 public class PackageConfigData extends Artifact {
     
-    private String header;
-    private String externalURI;
-    private boolean archived = false;
-    private boolean isSnapshot = false;
-    private String snapshotName;
-    private HashMap<String,String> catRules;
-    private String[] workspaces;
-    private String[] dependencies;
+    public String header;
+    public String externalURI;
+    public boolean archived = false;
+    public boolean isSnapshot = false;
+    public String snapshotName;
+    public HashMap<String,String> catRules;
+    public String[] workspaces;
+    public String[] dependencies;
     
     public PackageConfigData[] subPackages;
 
