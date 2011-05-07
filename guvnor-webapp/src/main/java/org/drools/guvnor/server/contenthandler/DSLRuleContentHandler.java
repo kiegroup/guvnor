@@ -44,14 +44,14 @@ public class DSLRuleContentHandler extends ContentHandler
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
 
-        asset.content = text;
+        asset.setContent( text );
 
     }
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
 
-        RuleContentText text = (RuleContentText) asset.content;
+        RuleContentText text = (RuleContentText) asset.getContent();
         repoAsset.updateContent( text.content );
 
     }
@@ -89,7 +89,7 @@ public class DSLRuleContentHandler extends ContentHandler
                                                 asset,
                                                 logger );
 
-        RuleContentText text = (RuleContentText) asset.content;
+        RuleContentText text = (RuleContentText) asset.getContent();
         String source = getDRL( text.content,
                                 asset.getName(),
                                 null );
@@ -136,7 +136,7 @@ public class DSLRuleContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
-        RuleContentText text = (RuleContentText) asset.content;
+        RuleContentText text = (RuleContentText) asset.getContent();
         String source = text.content;
 
         source = getDRL( source,

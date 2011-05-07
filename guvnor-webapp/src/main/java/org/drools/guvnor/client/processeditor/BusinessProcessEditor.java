@@ -76,11 +76,11 @@ public class BusinessProcessEditor extends DirtyableComposite
     public void onSave() {
         try {
             String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
-            if ( asset.content == null ) {
-                asset.content = new RuleFlowContentModel();
+            if ( asset.getContent() == null ) {
+                asset.setContent( new RuleFlowContentModel() );
             }
-            ((RuleFlowContentModel) asset.content).setXml( null );
-            ((RuleFlowContentModel) asset.content).setJson( s );
+            ((RuleFlowContentModel) asset.getContent()).setXml( null );
+            ((RuleFlowContentModel) asset.getContent()).setJson( s );
         } catch ( Exception e ) {
             GWT.log( "JSNI method callSave() threw an exception:",
                      e );

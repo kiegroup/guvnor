@@ -57,14 +57,14 @@ public class OryxEditorServlet extends HttpServlet {
         
         try {
             RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset(uuid);
-            if (asset.content != null) {
+            if (asset.getContent() != null) {
                 response.setContentType("application/xml");
                 response.setCharacterEncoding("UTF-8");
-                String content = asset.content.toString();
-                if (asset.content instanceof RuleFlowContentModel) {
-                    content = ((RuleFlowContentModel) asset.content).getXml();
+                String content = asset.getContent().toString();
+                if (asset.getContent() instanceof RuleFlowContentModel) {
+                    content = ((RuleFlowContentModel) asset.getContent()).getXml();
                 } else {
-                    content = asset.content.toString();
+                    content = asset.getContent().toString();
                 }
                 if(content != null) {
                     //response.setContentLength(content.length());

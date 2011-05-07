@@ -233,7 +233,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
 
         BRLPersistence converter = BRXMLPersistence.getInstance();
         for ( int i = 0; i < assets.length; i++ ) {
-            sources[i] = converter.marshal( (RuleModel) assets[i].content );
+            sources[i] = converter.marshal( (RuleModel) assets[i].getContent() );
         }
 
         return sources;

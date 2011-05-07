@@ -54,7 +54,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
     }
 
     public BuilderResult validateAsset(RuleAsset asset) {
-        String content = ((RuleContentText) asset.content).content;
+        String content = ((RuleContentText) asset.getContent()).content;
         DataEnumLoader loader = new DataEnumLoader( content );
         if ( !loader.hasErrors() ) {
             return new BuilderResult();
@@ -64,7 +64,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
 
             for ( String message : errs ) {
 
-                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.getName()).setAssetFormat(asset.metaData.format).setUuid(asset.getUuid()).setMessage(message);
+                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.getName()).setAssetFormat(asset.getMetaData().format).setUuid(asset.getUuid()).setMessage(message);
                 errors.add( result );
             }
 

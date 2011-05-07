@@ -96,10 +96,10 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         long startTime = System.currentTimeMillis();
 
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().packageName ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.metaData.packageName );
+        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.getMetaData().packageName );
 
         List<String> constraintRules = applyWorkingSets( activeWorkingSets );
 
@@ -137,7 +137,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     private boolean isAssetDecisionTable(RuleAsset asset) {
-        return AssetFormats.DECISION_TABLE_GUIDED.equals( asset.metaData.format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.metaData.format );
+        return AssetFormats.DECISION_TABLE_GUIDED.equals( asset.getMetaData().format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.getMetaData().format );
     }
 
     private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
@@ -149,7 +149,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         List<String> constraintRules = new LinkedList<String>();
         if ( workingSets != null ) {
             for ( RuleAsset workingSet : workingSets ) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
+                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.getContent();
                 if ( wsConfig.constraints != null ) {
                     for ( ConstraintConfiguration config : wsConfig.constraints ) {
                         constraintRules.add( ConstraintsFactory.getInstance().getVerifierRule( config ) );

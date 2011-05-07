@@ -38,14 +38,14 @@ public class PropertiesHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
             AssetItem item) throws SerializationException {
         if (item.getContent() != null) {
-            asset.content = PropertiesPersistence.getInstance().unmarshal(
-                    item.getContent());
+            asset.setContent( PropertiesPersistence.getInstance().unmarshal(
+                    item.getContent()) );
         }
     }
 
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
             throws SerializationException {
-        PropertiesHolder holder = (PropertiesHolder) asset.content;
+        PropertiesHolder holder = (PropertiesHolder) asset.getContent();
         String toSave = PropertiesPersistence.getInstance().marshal(holder);
 
         InputStream input = null;

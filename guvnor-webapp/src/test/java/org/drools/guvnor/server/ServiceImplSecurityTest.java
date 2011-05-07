@@ -657,9 +657,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.getLastModified() );
-        asset.metaData.coverage = "boo";
-        asset.content = new RuleContentText();
-        ((RuleContentText) asset.content).content = "yeah !";
+        asset.getMetaData().coverage = "boo";
+        asset.setContent( new RuleContentText() );
+        ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );
 
         // Mock up SEAM contexts
@@ -726,9 +726,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.getLastModified() );
-        asset.metaData.coverage = "boo";
-        asset.content = new RuleContentText();
-        ((RuleContentText) asset.content).content = "yeah !";
+        asset.getMetaData().coverage = "boo";
+        asset.setContent( new RuleContentText() );
+        ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );
 
         // Mock up SEAM contexts

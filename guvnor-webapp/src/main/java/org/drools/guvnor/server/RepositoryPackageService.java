@@ -775,7 +775,7 @@ public class RepositoryPackageService
                 AssetItem as = it.next();
                 if ( !as.getDisabled() ) {
                     RuleAsset asset = repositoryAssetOperations.loadAsset( as );
-                    Scenario sc = (Scenario) asset.content;
+                    Scenario sc = (Scenario) asset.getContent();
                     runScenario( item.getName(),
                             sc,
                             coverage );// runScenario(sc, res,

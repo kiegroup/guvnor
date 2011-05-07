@@ -128,8 +128,8 @@ public class RuleModeller extends DirtyableComposite
     public RuleModeller(RuleAsset asset,
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
-        this.model = (RuleModel) asset.content;
-        this.packageName = asset.metaData.packageName;
+        this.model = (RuleModel) asset.getContent();
+        this.packageName = asset.getMetaData().packageName;
 
         this.widgetFactory = widgetFactory;
 
@@ -1261,7 +1261,7 @@ public class RuleModeller extends DirtyableComposite
         }
 
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.metaData.packageName );
+        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().packageName );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 

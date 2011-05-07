@@ -269,8 +269,8 @@ public class ContentPackageAssembler {
     }
 
     private void buildAsset(RuleAsset asset) {
-        ContentHandler contentHandler = ContentManager.getHandler( asset.metaData.format );
-        if ( contentHandler instanceof ICompilable && !asset.metaData.disabled ) {
+        ContentHandler contentHandler = ContentManager.getHandler( asset.getMetaData().format );
+        if ( contentHandler instanceof ICompilable && !asset.getMetaData().disabled ) {
             try {
                 ((ICompilable) contentHandler).compile( builder,
                                                         asset,

@@ -62,7 +62,7 @@ public class FactModelsWidget extends Composite
     }
 
     private boolean isContentPlainText() {
-        return asset.content instanceof RuleContentText;
+        return asset.getContent() instanceof RuleContentText;
     }
 
     private Widget getPlainTextEditor() {
@@ -70,17 +70,17 @@ public class FactModelsWidget extends Composite
     }
 
     private Widget getFactModelsEditor() {
-        if ( asset.content == null ) {
-            asset.content = new FactModels();
+        if ( asset.getContent() == null ) {
+            asset.setContent( new FactModels() );
         }
 
-        return new FactModelsEditor( ((FactModels) asset.content).models );
+        return new FactModelsEditor( ((FactModels) asset.getContent()).models );
 
     }
 
     public void onAfterSave() {
         LoadingPopup.showMessage( constants.RefreshingModel() );
-        SuggestionCompletionCache.getInstance().loadPackage( this.asset.metaData.packageName,
+        SuggestionCompletionCache.getInstance().loadPackage( this.asset.getMetaData().packageName,
                                                              new Command() {
                                                                  public void execute() {
                                                                      LoadingPopup.close();

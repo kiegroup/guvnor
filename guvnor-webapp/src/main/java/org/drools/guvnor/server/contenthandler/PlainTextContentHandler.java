@@ -35,13 +35,13 @@ public abstract class PlainTextContentHandler extends ContentHandler {
         //default to text, goode olde texte, just like mum used to make.
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
-        asset.content = text;
+        asset.setContent( text );
 
     }
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        repoAsset.updateContent( ((RuleContentText)asset.content).content );
+        repoAsset.updateContent( ((RuleContentText)asset.getContent()).content );
 
     }
 

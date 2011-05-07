@@ -126,7 +126,7 @@ public class RepositoryAssetService
         asset.setVersionNumber( item.getVersionNumber() );
 
         // load standard meta data
-        asset.metaData = repositoryAssetOperations.populateMetaData( item );
+        asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
 
         // Verify if the user has permission to access the asset through package
         // based permission.
@@ -136,7 +136,7 @@ public class RepositoryAssetService
         if ( Contexts.isSessionContextActive() ) {
 
             try {
-                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().packageName ),
                                                      RoleTypes.PACKAGE_READONLY );
             } catch ( RuntimeException e ) {
                 handleLoadRuleAssetException( asset );
@@ -156,12 +156,12 @@ public class RepositoryAssetService
                                           RuleAsset asset) throws SerializationException {
         PackageItem pkgItem = item.getPackage();
 
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().format );
         handler.retrieveAssetContent( asset,
                                       pkgItem,
                                       item );
 
-        asset.setReadonly( asset.metaData.hasSucceedingVersion );
+        asset.setReadonly( asset.getMetaData().hasSucceedingVersion );
 
         if ( pkgItem.isSnapshot() ) {
             asset.setReadonly( true );
@@ -198,16 +198,16 @@ public class RepositoryAssetService
             boolean passed = false;
 
             try {
-                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().packageName ),
                                                      RoleTypes.PACKAGE_DEVELOPER );
             } catch ( RuntimeException e ) {
-                if ( asset.metaData.categories.length == 0 ) {
+                if ( asset.getMetaData().categories.length == 0 ) {
                     Identity.instance().checkPermission( new CategoryPathType( null ),
                                                          RoleTypes.ANALYST );
                 } else {
                     RuntimeException exception = null;
 
-                    for ( String cat : asset.metaData.categories ) {
+                    for ( String cat : asset.getMetaData().categories ) {
                         try {
                             Identity.instance().checkPermission( new CategoryPathType( cat ),
                                                                  RoleTypes.ANALYST );
@@ -517,13 +517,13 @@ public class RepositoryAssetService
     }
 
     private void handleLoadRuleAssetException(RuleAsset asset) {
-        if ( asset.metaData.categories.length == 0 ) {
+        if ( asset.getMetaData().categories.length == 0 ) {
             Identity.instance().checkPermission( new CategoryPathType( null ),
                                                  RoleTypes.ANALYST_READ );
         } else {
             RuntimeException exception = null;
             boolean passed = false;
-            for ( String cat : asset.metaData.categories ) {
+            for ( String cat : asset.getMetaData().categories ) {
                 try {
                     Identity.instance().checkPermission( new CategoryPathType( cat ),
                                                          RoleTypes.ANALYST_READ );

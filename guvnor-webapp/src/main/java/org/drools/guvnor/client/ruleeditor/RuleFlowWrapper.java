@@ -112,7 +112,7 @@ public class RuleFlowWrapper extends Composite
     }
 
     private void initRuleflowViewer() {
-        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
+        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.getContent();
 
         if ( rfcm != null && rfcm.getXml() != null && rfcm.getNodes() != null ) {
             try {
@@ -153,7 +153,7 @@ public class RuleFlowWrapper extends Composite
 
     public void onSave() {
 
-        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.content;
+        RuleFlowContentModel rfcm = (RuleFlowContentModel) asset.getContent();
 
         rfcm.setNodes( ruleFlowViewer.getTransferNodes() );
 

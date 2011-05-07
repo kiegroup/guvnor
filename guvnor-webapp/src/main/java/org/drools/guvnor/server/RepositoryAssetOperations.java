@@ -107,9 +107,9 @@ public class RepositoryAssetOperations {
         try {
 
             ContentHandler handler = ContentManager
-                    .getHandler( asset.metaData.format );
+                    .getHandler( asset.getMetaData().format );
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
-            if ( asset.metaData.isBinary() ) {
+            if ( asset.getMetaData().isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID(
                                                                        asset.getUuid() );
 
@@ -132,7 +132,7 @@ public class RepositoryAssetOperations {
                 }
 
                 PackageItem packageItem = getRulesRepository()
-                        .loadPackageByUUID( asset.metaData.packageUUID );
+                        .loadPackageByUUID( asset.getMetaData().packageUUID );
 
                 ContentPackageAssembler asm = new ContentPackageAssembler(
                                                                            asset,
@@ -147,7 +147,7 @@ public class RepositoryAssetOperations {
                        e );
             result = new BuilderResult();
 
-            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.getName() ).setAssetFormat( asset.metaData.format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.getUuid() );
+            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.getName() ).setAssetFormat( asset.getMetaData().format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.getUuid() );
             result.getLines().add( res );
 
             return result;
@@ -163,7 +163,7 @@ public class RepositoryAssetOperations {
             return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
         }
 
-        MetaData meta = asset.metaData;
+        MetaData meta = asset.getMetaData();
         MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
         metaDataMapper.copyFromMetaData( meta,
                                          repoAsset );
@@ -178,7 +178,7 @@ public class RepositoryAssetOperations {
         handler.storeAssetContent( asset,
                                    repoAsset );
 
-        if ( !(asset.metaData.format.equals( AssetFormats.TEST_SCENARIO )) || asset.metaData.format.equals( AssetFormats.ENUMERATION ) ) {
+        if ( !(asset.getMetaData().format.equals( AssetFormats.TEST_SCENARIO )) || asset.getMetaData().format.equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
             RuleBaseCache.getInstance().remove( pkg.getUUID() );
@@ -471,14 +471,14 @@ public class RepositoryAssetOperations {
     protected String buildAssetSource(RuleAsset asset)
                                                       throws SerializationException {
         ContentHandler handler = ContentManager
-                .getHandler( asset.metaData.format );
+                .getHandler( asset.getMetaData().format );
 
         StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
             PackageItem packageItem = getRulesRepository().loadPackage(
-                                                                        asset.metaData.packageName );
+                                                                        asset.getMetaData().packageName );
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles(
                                                                         packageItem,
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
@@ -490,7 +490,7 @@ public class RepositoryAssetOperations {
                                                                                 // point...
                                                                             }
                                                                         } ) );
-            if ( asset.metaData.isBinary() ) {
+            if ( asset.getMetaData().isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID(
                                                                        asset.getUuid() );
 
@@ -510,7 +510,7 @@ public class RepositoryAssetOperations {
                     .getName()
                     .equals( "org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler" ) ) {
                 BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
-                bpmn2handler.assembleProcessSource( asset.content,
+                bpmn2handler.assembleProcessSource( asset.getContent(),
                                                     stringBuilder );
             }
         }
@@ -653,8 +653,8 @@ public class RepositoryAssetOperations {
         asset.setCheckinComment( item.getCheckinComment() );
         asset.setVersionNumber( item.getVersionNumber() );
 
-        asset.metaData = populateMetaData( item );
-        ContentHandler handler = ContentManager.getHandler( asset.metaData.format );
+        asset.setMetaData( populateMetaData( item ) );
+        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().format );
         handler.retrieveAssetContent( asset,
                                       item.getPackage(),
                                       item );

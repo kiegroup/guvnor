@@ -498,9 +498,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull( asset.getLastModified() );
 
-        asset.metaData.coverage = "boo";
-        asset.content = new RuleContentText();
-        ((RuleContentText) asset.content).content = "yeah !";
+        asset.getMetaData().coverage = "boo";
+        asset.setContent( new RuleContentText() );
+        ((RuleContentText) asset.getContent()).content = "yeah !";
         asset.setDescription( "Description 1" );
 
         Date start = new Date();
@@ -517,43 +517,43 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( asset2.getLastModified().after( start ) );
 
         assertEquals( "boo",
-                      asset2.metaData.coverage );
+                      asset2.getMetaData().coverage );
         assertEquals( 1,
                       asset2.getVersionNumber() );
 
         assertEquals( "yeah !",
-                      ((RuleContentText) asset2.content).content );
+                      ((RuleContentText) asset2.getContent()).content );
 
         assertEquals( "Description 1",
                       asset2.getDescription() );
 
-        asset2.metaData.coverage = "ya";
+        asset2.getMetaData().coverage = "ya";
         asset2.setCheckinComment( "checked in" );
 
-        String cat = asset2.metaData.categories[0];
-        asset2.metaData.categories = new String[3];
-        asset2.metaData.categories[0] = cat;
-        asset2.metaData.categories[1] = "testCheckinCategory2";
-        asset2.metaData.categories[2] = "testCheckinCategory/deeper";
+        String cat = asset2.getMetaData().categories[0];
+        asset2.getMetaData().categories = new String[3];
+        asset2.getMetaData().categories[0] = cat;
+        asset2.getMetaData().categories[1] = "testCheckinCategory2";
+        asset2.getMetaData().categories[2] = "testCheckinCategory/deeper";
         asset2.setDescription( "Description 2" );
 
         repositoryAssetService.checkinVersion( asset2 );
 
         asset2 = repositoryAssetService.loadRuleAsset( uuid );
         assertEquals( "ya",
-                      asset2.metaData.coverage );
+                      asset2.getMetaData().coverage );
         assertEquals( 2,
                       asset2.getVersionNumber() );
         assertEquals( "checked in",
                       asset2.getCheckinComment() );
         assertEquals( 3,
-                      asset2.metaData.categories.length );
+                      asset2.getMetaData().categories.length );
         assertEquals( "testCheckinCategory",
-                      asset2.metaData.categories[0] );
+                      asset2.getMetaData().categories[0] );
         assertEquals( "testCheckinCategory2",
-                      asset2.metaData.categories[1] );
+                      asset2.getMetaData().categories[1] );
         assertEquals( "testCheckinCategory/deeper",
-                      asset2.metaData.categories[2] );
+                      asset2.getMetaData().categories[2] );
         assertEquals( "Description 2",
                       asset2.getDescription() );
 
@@ -562,7 +562,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // clobber, it, which should fail.
         // as it is optimistically locked.
         RuleAsset asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
-        asset3.metaData.subject = "new sub";
+        asset3.getMetaData().subject = "new sub";
         repositoryAssetService.checkinVersion( asset3 );
 
         asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
@@ -1226,7 +1226,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                          AssetFormats.DECISION_TABLE_GUIDED );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset ass = repositoryAssetService.loadRuleAsset( uid );
-        ass.content = dt;
+        ass.setContent( dt );
         repositoryAssetService.checkinVersion( ass );
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),

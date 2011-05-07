@@ -70,7 +70,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ConfigWidget createConfigWidget() {
-        return new ConfigWidget( getScenario(), this.asset.metaData.packageName, this.scenarioWidget );
+        return new ConfigWidget( getScenario(), this.asset.getMetaData().packageName, this.scenarioWidget );
     }
 
     protected AddExecuteButton createAddExecuteButton() {
@@ -98,7 +98,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     protected ExpectPanel createExpectPanel(ExecutionTrace currentExecutionTrace) {
-        return new ExpectPanel( this.asset.metaData.packageName, currentExecutionTrace, getScenario(), this.scenarioWidget );
+        return new ExpectPanel( this.asset.getMetaData().packageName, currentExecutionTrace, getScenario(), this.scenarioWidget );
     }
 
     protected DirtyableFlexTable createDirtyableFlexTable() {
@@ -165,7 +165,7 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public MetaData getMetaData() {
-        return this.asset.metaData;
+        return this.asset.getMetaData();
     }
 
     public void setShowResults(boolean showResults) {
@@ -177,11 +177,11 @@ public class ScenarioWidgetComponentCreator {
     }
 
     public Scenario getScenario() {
-        return (Scenario) this.asset.content;
+        return (Scenario) this.asset.getContent();
     }
 
     public void setScenario(Scenario scenario) {
-        this.asset.content = scenario;
+        this.asset.setContent( scenario );
     }
 
 }

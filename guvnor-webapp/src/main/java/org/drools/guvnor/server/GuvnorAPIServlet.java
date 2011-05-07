@@ -76,13 +76,13 @@ public class GuvnorAPIServlet extends HttpServlet {
             
             try {
                 RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset( uuid );
-                if ( asset.content != null ) {
+                if ( asset.getContent() != null ) {
                     response.setContentType( "application/json" );
                     String content = null;
-                    if ( asset.content instanceof RuleFlowContentModel ) {
-                        content = ((RuleFlowContentModel) asset.content).getXml();
+                    if ( asset.getContent() instanceof RuleFlowContentModel ) {
+                        content = ((RuleFlowContentModel) asset.getContent()).getXml();
                     } else {
-                        content = asset.content.toString();
+                        content = asset.getContent().toString();
                     }
                     try {
                         // TODO fix for non-localhost <---- Can someone please describe what is problem so it can be fixed? 

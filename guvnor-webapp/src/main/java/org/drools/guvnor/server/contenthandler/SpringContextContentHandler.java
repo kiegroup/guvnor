@@ -41,14 +41,14 @@ public class SpringContextContentHandler extends PlainTextContentHandler
         if ( item.getContent() != null ) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
-            asset.content = text;
+            asset.setContent( text );
         }
     }
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
 
-        RuleContentText text = (RuleContentText) asset.content;
+        RuleContentText text = (RuleContentText) asset.getContent();
 
         try {
             InputStream input = new ByteArrayInputStream( text.content.getBytes( "UTF-8" ) );
@@ -71,11 +71,11 @@ public class SpringContextContentHandler extends PlainTextContentHandler
 
     public BuilderResult validateAsset(RuleAsset asset) {
 
-        String message = validate( ((RuleContentText) asset.content).content );
+        String message = validate( ((RuleContentText) asset.getContent()).content );
 
         return createBuilderResult( message,
                                     asset.getName(),
-                                    asset.metaData.format,
+                                    asset.getMetaData().format,
                                     asset.getUuid() );
     }
 

@@ -97,7 +97,7 @@ public class WorkingSetManager {
             WorkingSetConfigData wsConfig = new WorkingSetConfigData();
             wsConfig.validFacts = factTypes.toArray(new String[factTypes.size()]);
 
-            workingSet.content = wsConfig;
+            workingSet.setContent( wsConfig );
             
             workingSets = new HashSet<RuleAsset>() {{this.add(workingSet);}};
         }
@@ -137,7 +137,7 @@ public class WorkingSetManager {
 
             final Set<String> validFacts = new HashSet<String>();
             for (RuleAsset asset : wss) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.content;
+                WorkingSetConfigData wsConfig = (WorkingSetConfigData) asset.getContent();
                 if (wsConfig.validFacts != null && wsConfig.validFacts.length > 0) {
                     validFacts.addAll(Arrays.asList(wsConfig.validFacts));
                 }
@@ -183,7 +183,7 @@ public class WorkingSetManager {
 
         Set<WorkingSetConfigData> result = new HashSet<WorkingSetConfigData>();
         for (RuleAsset ruleAsset : assets) {
-            result.add((WorkingSetConfigData) ruleAsset.content);
+            result.add((WorkingSetConfigData) ruleAsset.getContent());
         }
 
         return result;
@@ -236,7 +236,7 @@ public class WorkingSetManager {
         Set<RuleAsset> activeAssets = this.getActiveAssets(packageName);
         if (activeAssets != null) {
             for (RuleAsset ruleAsset : activeAssets) {
-                List<ConstraintConfiguration> constraints = ((WorkingSetConfigData) ruleAsset.content).constraints;
+                List<ConstraintConfiguration> constraints = ((WorkingSetConfigData) ruleAsset.getContent()).constraints;
                 if (constraints != null) {
                     for (ConstraintConfiguration constraint : constraints) {
                         if (constraint.getFactType().equals(factType) && constraint.getFieldName().equals(fieldName)) {

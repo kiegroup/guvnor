@@ -1407,13 +1407,13 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNull( model2.name );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
-        asset.content = (PortableObject) model2;
+        asset.setContent( (PortableObject) model2 );
 
         repositoryAssetService.checkinVersion( asset );
 
         asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
 
-        model2 = (RuleModel) asset.content;
+        model2 = (RuleModel) asset.getContent();
         assertNotNull( model2 );
         assertNotNull( model2.name );
         assertEquals( asset2.getName(),

@@ -34,13 +34,13 @@ public class XmlFileHandler extends PlainTextContentHandler {
         if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
-            asset.content = text;
+            asset.setContent( text );
         }
     }
 
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset) throws SerializationException {
 
-        RuleContentText text = (RuleContentText) asset.content;
+        RuleContentText text = (RuleContentText) asset.getContent();
 
         try {
             InputStream input = new ByteArrayInputStream(text.content.getBytes("UTF-8"));

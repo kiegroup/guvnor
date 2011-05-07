@@ -63,7 +63,7 @@ public class DSLRuleEditor extends DirtyableComposite {
 
     public DSLRuleEditor(RuleAsset asset) {
 
-        RuleContentText cont = (RuleContentText) asset.content;
+        RuleContentText cont = (RuleContentText) asset.getContent();
 
         this.data = cont;
         text = new TextArea();
@@ -71,7 +71,7 @@ public class DSLRuleEditor extends DirtyableComposite {
         text.setVisibleLines( 16 );
         text.setText( data.content );
 
-        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.metaData.packageName );
+        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().packageName );
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
 

@@ -56,11 +56,11 @@ public class WorkingSetEditor extends Composite
     private CustomFormsEditorPanel      customFormsEditorPanel;
 
     public WorkingSetEditor(RuleAsset asset) {
-        if ( !AssetFormats.WORKING_SET.equals( asset.metaData.format ) ) {
-            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.metaData.format );
+        if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().format ) ) {
+            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().format );
         }
         workingSet = asset;
-        WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.content;
+        WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.getContent();
         cc = new ConstraintsContainer( wsData.constraints );
         cfc = new CustomFormsContainer( wsData.customForms );
         refreshWidgets();
@@ -69,7 +69,7 @@ public class WorkingSetEditor extends Composite
     }
 
     private void refreshWidgets() {
-        WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.content;
+        WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.getContent();
 
         TabPanel tPanel = new TabPanel();
         //tPanel.setWidth(800);
@@ -118,7 +118,7 @@ public class WorkingSetEditor extends Composite
         Grid grid = new Grid( 2,
                               3 );
 
-        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.metaData.packageName );
+        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().packageName );
         boolean filteringFact = sce.isFilteringFacts();
         sce.setFilteringFacts( false );
 
@@ -211,7 +211,7 @@ public class WorkingSetEditor extends Composite
         for ( int i = 0; i < availFacts.getItemCount(); i++ ) {
             l.add( availFacts.getItemText( i ) );
         }
-        ((WorkingSetConfigData) workingSet.content).validFacts = l.toArray( new String[l.size()] );
+        ((WorkingSetConfigData) workingSet.getContent()).validFacts = l.toArray( new String[l.size()] );
     }
 
     private void copySelected(final ListBox from,

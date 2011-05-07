@@ -40,9 +40,9 @@ public class BPELWrapper extends Composite
 
         final String uuid = asset.getUuid();
         final String fileName = asset.getName();
-        final String dirName = asset.metaData.packageName;
+        final String dirName = asset.getMetaData().packageName;
         final String servletName = "workflowmanager";
-        final String isNew = (asset.content == null ? "true" : "false");
+        final String isNew = (asset.getContent() == null ? "true" : "false");
 
         AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor( asset,
                                                                                  viewer );

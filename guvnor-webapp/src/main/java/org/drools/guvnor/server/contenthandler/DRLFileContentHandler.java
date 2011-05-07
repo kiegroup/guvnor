@@ -45,7 +45,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                         RuleAsset asset,
                         ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
-        String content = ((RuleContentText) asset.content).content;
+        String content = ((RuleContentText) asset.getContent()).content;
         if ( content != null && !content.trim().equals( "" ) ) {
             builder.addPackageFromDrl( new StringReader( content ) );
         }
@@ -113,7 +113,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
 
-        String content = ((RuleContentText) asset.content).content;
+        String content = ((RuleContentText) asset.getContent()).content;
 
         if ( isStandAloneRule( content ) ) {
 

@@ -36,7 +36,7 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
                          final RuleViewer viewer) {
         super( asset,
                viewer );
-        data = (RuleContentText) asset.content;
+        data = (RuleContentText) asset.getContent();
 
         if ( data.content == null ) {
             data.content = "";
@@ -68,7 +68,7 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
 
     public void onSave() {
         data.content = text.getText();
-        asset.content = data;
+        asset.setContent( data );
     }
 
     public void onAfterSave() {

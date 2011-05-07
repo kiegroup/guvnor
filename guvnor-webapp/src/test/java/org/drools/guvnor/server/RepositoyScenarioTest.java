@@ -144,16 +144,16 @@ public class RepositoyScenarioTest extends GuvnorTestBase {
                                                 AssetFormats.TEST_SCENARIO );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset asset = repositoryAssetService.loadRuleAsset( scenarioId );
-        assertNotNull( asset.content );
-        assertTrue( asset.content instanceof Scenario );
+        assertNotNull( asset.getContent() );
+        assertTrue( asset.getContent() instanceof Scenario );
 
-        Scenario sc_ = (Scenario) asset.content;
+        Scenario sc_ = (Scenario) asset.getContent();
         sc_.getFixtures().add( new ExecutionTrace() );
         repositoryAssetService.checkinVersion( asset );
         asset = repositoryAssetService.loadRuleAsset( scenarioId );
-        assertNotNull( asset.content );
-        assertTrue( asset.content instanceof Scenario );
-        sc_ = (Scenario) asset.content;
+        assertNotNull( asset.getContent() );
+        assertTrue( asset.getContent() instanceof Scenario );
+        sc_ = (Scenario) asset.getContent();
         assertEquals( 1,
                       sc_.getFixtures().size() );
 

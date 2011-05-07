@@ -144,7 +144,7 @@ public class TabOpener {
                                                              final boolean[] loading) {
         return new GenericCallback<RuleAsset>() {
             public void onSuccess(final RuleAsset ruleAsset) {
-                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+                SuggestionCompletionCache.getInstance().doAction( ruleAsset.getMetaData().packageName,
                                                                   createCommandForSuggestCompletionCache( uuid,
                                                                                                           loading,
                                                                                                           ruleAsset ) );
@@ -161,8 +161,8 @@ public class TabOpener {
                         RuleViewerWrapper ruleViewer = new RuleViewerWrapper( ruleAsset,
                                                                               createEditEvent(),
                                                                               createCloseCommandForRuleViewer( uuid ),
-                                                                              ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null,
-                                                                              ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null
+                                                                              ruleAsset.getMetaData().format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null,
+                                                                              ruleAsset.getMetaData().format.equals( AssetFormats.MODEL ) ? checkInAndArchiveCommand : null
                                                                 );
                         explorerViewCenterPanel.addTab( ruleAsset.getName(),
                                                         ruleViewer,
@@ -174,7 +174,7 @@ public class TabOpener {
                     private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
                         Command command = new Command() {
                             public void execute() {
-                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
+                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.getMetaData().packageName );
                                 if ( packageEditor != null ) {
                                     packageEditor.refresh();
                                 }

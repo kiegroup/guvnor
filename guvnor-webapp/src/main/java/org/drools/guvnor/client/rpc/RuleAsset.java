@@ -26,7 +26,19 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class RuleAsset extends Artifact {
 
-    public MetaData       metaData;
-    public PortableObject content;
+    private MetaData       metaData;
+    private PortableObject content;
+    public void setMetaData(MetaData metaData) {
+        this.metaData = metaData;
+    }
+    public MetaData getMetaData() {
+        return metaData;
+    }
+    public void setContent(PortableObject content) {
+        this.content = content;
+    }
+    public PortableObject getContent() {
+        return content;
+    }
 
 }

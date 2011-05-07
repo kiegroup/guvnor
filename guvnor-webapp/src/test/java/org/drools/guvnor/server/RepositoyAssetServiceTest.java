@@ -285,22 +285,22 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertEquals( "description",
                       asset.getDescription() );
 
-        assertNotNull( asset.content );
-        assertTrue( asset.content instanceof RuleContentText );
+        assertNotNull( asset.getContent() );
+        assertTrue( asset.getContent() instanceof RuleContentText );
         assertEquals( "testLoadRuleAsset",
                       asset.getName() );
         assertEquals( "testLoadRuleAsset",
-                      asset.metaData.title );
+                      asset.getMetaData().title );
         assertEquals( "testLoadRuleAsset",
-                      asset.metaData.packageName );
+                      asset.getMetaData().packageName );
         assertEquals( AssetFormats.DRL,
-                      asset.metaData.format );
+                      asset.getMetaData().format );
         assertNotNull( asset.getDateCreated() );
 
         assertEquals( 1,
-                      asset.metaData.categories.length );
+                      asset.getMetaData().categories.length );
         assertEquals( "testLoadRuleAsset",
-                      asset.metaData.categories[0] );
+                      asset.getMetaData().categories[0] );
 
         AssetItem rule = impl.getRulesRepository().loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
         impl.getRulesRepository().createState( "whee" );
@@ -319,7 +319,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                    "testLoadRuleAsset",
                                    AssetFormats.BUSINESS_RULE );
         asset = repositoryAssetService.loadRuleAsset( uuid );
-        assertTrue( asset.content instanceof RuleModel );
+        assertTrue( asset.getContent() instanceof RuleModel );
 
         uuid = impl.createNewRule( "testLoadRuleAssetBRL",
                                    "description",
@@ -327,7 +327,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                    "testLoadRuleAsset",
                                    AssetFormats.DSL_TEMPLATE_RULE );
         asset = repositoryAssetService.loadRuleAsset( uuid );
-        assertTrue( asset.content instanceof RuleContentText );
+        assertTrue( asset.getContent() instanceof RuleContentText );
     }
 
     @Test
@@ -577,7 +577,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid2 );
         assertNotNull( asset );
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
-                      asset.metaData.packageName );
+                      asset.getMetaData().packageName );
         assertEquals( "testCopyAsset2",
                       asset.getName() );
     }
@@ -869,7 +869,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         // try it with a bad rule
         RuleContentText text = new RuleContentText();
         text.content = "rule 'MyBadRule' \n when Personx() then System.err.println(42); \n end";
-        rule.content = text;
+        rule.setContent( text );
 
         result = repositoryAssetService.buildAsset( rule );
         assertNotNull( result );
@@ -928,7 +928,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         t1Content.content = "function void t1(){\n";
         t1Content.content += " t2();\n";
         t1Content.content += "}\n";
-        t1.content = t1Content;
+        t1.setContent( t1Content );
         repositoryAssetService.checkinVersion( t1 );
 
         String uuidt2 = impl.createNewRule( "t2",
@@ -941,7 +941,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         t2Content.content = "function void t2(){\n";
         t2Content.content += " t1();\n";
         t2Content.content += "}\n";
-        t2.content = t2Content;
+        t2.setContent( t2Content );
         repositoryAssetService.checkinVersion( t2 );
 
         BuilderResult result = repositoryAssetService.buildAsset( t1 );
@@ -980,7 +980,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RuleAsset rule = repositoryAssetService.loadRuleAsset( uuid );
 
-        RuleModel m = (RuleModel) rule.content;
+        RuleModel m = (RuleModel) rule.getContent();
         assertNotNull( m );
         m.name = "testBRL";
 
@@ -1021,7 +1021,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                       assets.size() );
         // now lets copy...
         String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
-                                                           rule.metaData.packageName,
+                                                           rule.getMetaData().packageName,
                                                            "ruleName2" );
 
         assets = iteratorToList( pkg.getAssets() );

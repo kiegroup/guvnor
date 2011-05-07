@@ -36,7 +36,7 @@ public class BPELHandler extends ContentHandler {
         if ( inputStream != null ) {
             RuleContentText text = new RuleContentText();
             text.content = ruleAsset.getName();
-            ruleAsset.content = text;
+            ruleAsset.setContent( text );
         }
 
     }

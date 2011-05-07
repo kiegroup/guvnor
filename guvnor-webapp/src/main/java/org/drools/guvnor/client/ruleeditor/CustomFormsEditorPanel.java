@@ -114,8 +114,8 @@ public class CustomFormsEditorPanel extends Composite {
                                                       return;
                                                   }
 
-                                                  if ( ((WorkingSetConfigData) workingSet.content).customForms == null ) {
-                                                      ((WorkingSetConfigData) workingSet.content).customForms = new ArrayList<CustomFormConfiguration>();
+                                                  if ( ((WorkingSetConfigData) workingSet.getContent()).customForms == null ) {
+                                                      ((WorkingSetConfigData) workingSet.getContent()).customForms = new ArrayList<CustomFormConfiguration>();
                                                   }
 
                                                   String factType = factsCombo.getItemText( factsCombo.getSelectedIndex() );
@@ -129,7 +129,7 @@ public class CustomFormsEditorPanel extends Composite {
                                                   newCustomFormConfiguration.setCustomFormHeight( h );
 
                                                   workingSetEditor.getCustomFormsContainer().putCustomForm( newCustomFormConfiguration );
-                                                  ((WorkingSetConfigData) workingSet.content).customForms = workingSetEditor.getCustomFormsContainer().getCustomForms();
+                                                  ((WorkingSetConfigData) workingSet.getContent()).customForms = workingSetEditor.getCustomFormsContainer().getCustomForms();
                                               }
                                           } );
 
@@ -208,7 +208,7 @@ public class CustomFormsEditorPanel extends Composite {
     }
 
     private SuggestionCompletionEngine getCompletionEngine() {
-        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.metaData.packageName );
+        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().packageName );
     }
 
     public void notifyValidFactsChanged() {

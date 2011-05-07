@@ -42,10 +42,10 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
         super( asset,
                viewer );
 
-        if ( asset.content == null ) {
+        if ( asset.getContent() == null ) {
             properties = new PropertiesHolder();
         } else {
-            properties = (PropertiesHolder) asset.content;
+            properties = (PropertiesHolder) asset.getContent();
         }
 
         VerticalPanel panel = new VerticalPanel();
@@ -66,7 +66,7 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
     public void onSave() {
         // Scrape changes back into the persistent model
         properties.list = propertiesEditor.getPropertyHolders();
-        asset.content = properties;
+        asset.setContent( properties );
     }
 
     public void onAfterSave() {

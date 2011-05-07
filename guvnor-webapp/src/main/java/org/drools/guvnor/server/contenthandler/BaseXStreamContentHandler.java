@@ -41,19 +41,19 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
     public void retrieveAssetContent(RuleAsset ruleAsset, PackageItem packageItem, AssetItem assetItem) throws SerializationException {
         if (assetItem.getContent() != null && assetItem.getContent().length() > 0) {
             try {
-                ruleAsset.content = (T) getXStream().fromXML(assetItem.getContent());
+                ruleAsset.setContent( (T) getXStream().fromXML(assetItem.getContent()) );
             } catch (RulesRepositoryException e) {
                 log.error("error marshalling asset content: " + ruleAsset.getName(), e);
                 throw new SerializationException(e.getMessage());
             }
         } else {
-            ruleAsset.content = new WorkingSetConfigData();
+            ruleAsset.setContent( new WorkingSetConfigData() );
         }
     }
 
     public void storeAssetContent(RuleAsset ruleAsset, AssetItem assetItem) throws SerializationException {
         try {
-            assetItem.updateContent(getXStream().toXML(ruleAsset.content));
+            assetItem.updateContent(getXStream().toXML(ruleAsset.getContent()));
         } catch (Exception e) {
             log.error("error marshalling asset content: " + ruleAsset.getName(), e);
             throw new SerializationException(e.getMessage());

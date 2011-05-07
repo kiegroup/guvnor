@@ -50,12 +50,12 @@ public class FactModelContentHandler extends ContentHandler {
             List<FactMetaModel> models = toModel(item.getContent());
             FactModels ms = new FactModels();
             ms.models = models;
-            asset.content = ms;
+            asset.setContent( ms );
         } catch (DroolsParserException e) {
             log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
-            asset.content = text;
+            asset.setContent( text );
         }
 
     }
@@ -63,11 +63,11 @@ public class FactModelContentHandler extends ContentHandler {
     @Override
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
             throws SerializationException {
-        if (asset.content instanceof FactModels) {
-            FactModels fm = (FactModels) asset.content;
+        if (asset.getContent() instanceof FactModels) {
+            FactModels fm = (FactModels) asset.getContent();
             repoAsset.updateContent(toDRL(fm.models));
         } else {
-            RuleContentText text = (RuleContentText) asset.content;
+            RuleContentText text = (RuleContentText) asset.getContent();
             repoAsset.updateContent(text.content);
         }
 

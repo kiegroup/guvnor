@@ -84,9 +84,9 @@ public class BRLRuleAssetProvider
         RuleAsset asset = new RuleAsset();
 
         asset.setUuid( "mock" );
-        asset.content = ruleModel;
+        asset.setContent( ruleModel );
         asset.setName( ruleModel.name );
-        asset.metaData = createMetaData( ruleModel );
+        asset.setMetaData( createMetaData( ruleModel ) );
 
         return asset;
     }

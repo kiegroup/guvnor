@@ -134,22 +134,22 @@ public class MetaDataWidgetNew extends Composite {
 
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
-                          readOnlyText( ((RuleAsset) artifact).metaData.creator ) );
+                          readOnlyText( ((RuleAsset) artifact).getMetaData().creator ) );
             addAttribute( constants.FormatMetaData(),
                           new SmallLabel( "<b>"
-                                          + ((RuleAsset) artifact).metaData.format + "</b>" ) );
+                                          + ((RuleAsset) artifact).getMetaData().format + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
-                          packageEditor( ((RuleAsset) artifact).metaData.packageName ) );
+                          packageEditor( ((RuleAsset) artifact).getMetaData().packageName ) );
 
             addAttribute( constants.IsDisabledMetaData(),
                           editableBoolean( new FieldBooleanBinding() {
                                                public boolean getValue() {
-                                                   return ((RuleAsset) artifact).metaData.disabled;
+                                                   return ((RuleAsset) artifact).getMetaData().disabled;
                                                }
 
                                                public void setValue(boolean val) {
-                                                   ((RuleAsset) artifact).metaData.disabled = val;
+                                                   ((RuleAsset) artifact).getMetaData().disabled = val;
                                                }
                                            },
                                            constants.DisableTip() ) );
@@ -350,7 +350,7 @@ public class MetaDataWidgetNew extends Composite {
     }
 
     private Widget categories() {
-        ed = new AssetCategoryEditor( ((RuleAsset) this.artifact).metaData,
+        ed = new AssetCategoryEditor( ((RuleAsset) this.artifact).getMetaData(),
                                       this.readOnly );
         return ed;
     }
@@ -416,7 +416,7 @@ public class MetaDataWidgetNew extends Composite {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).metaData.packageName
+            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().packageName
                           + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }

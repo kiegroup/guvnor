@@ -63,7 +63,7 @@ public class SpringContextEditor extends DirtyableComposite
                                     int visibleLines) {
         asset = a;
                        
-        data = (RuleContentText) asset.content;
+        data = (RuleContentText) asset.getContent();
         
         if ( data.content == null ) {
             data.content = "Empty!";

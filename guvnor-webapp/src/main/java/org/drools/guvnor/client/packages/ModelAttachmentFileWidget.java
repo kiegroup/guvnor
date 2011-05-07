@@ -46,7 +46,7 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
                                      RuleViewer viewer) {
         super( asset,
                viewer );
-        this.packageName = asset.metaData.packageName;
+        this.packageName = asset.getMetaData().packageName;
     }
 
     public ImageResource getIcon() {

@@ -61,12 +61,12 @@ public class BPMN2ProcessHandler extends ContentHandler
         if ( process != null ) {
             RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
             content.setXml( item.getContent() );
-            asset.content = content;
+            asset.setContent( content );
         } else {
             // we are very fault tolerant
             RuleFlowContentModel content = new RuleFlowContentModel();
             content.setXml( item.getContent() );
-            asset.content = content;
+            asset.setContent( content );
         }
     }
 
@@ -96,7 +96,7 @@ public class BPMN2ProcessHandler extends ContentHandler
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
+        RuleFlowContentModel content = (RuleFlowContentModel) asset.getContent();
         // 
         // Migrate v4 ruleflows to v5
         // Added guards to check for nulls in the case where the ruleflows

@@ -45,13 +45,13 @@ public class GuidedDTContentHandler extends ContentHandler
                                      AssetItem item) throws SerializationException {
         TypeSafeGuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
-        asset.content = model;
+        asset.setContent( model );
 
     }
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        TypeSafeGuidedDecisionTable data = (TypeSafeGuidedDecisionTable) asset.content;
+        TypeSafeGuidedDecisionTable data = (TypeSafeGuidedDecisionTable) asset.getContent();
         if ( data.getTableName() == null ) {
             data.setTableName( repoAsset.getName() );
         }
@@ -71,7 +71,7 @@ public class GuidedDTContentHandler extends ContentHandler
                         RuleAsset asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.content;
+        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.getContent();
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
 
@@ -83,7 +83,7 @@ public class GuidedDTContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
-        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.content;
+        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.getContent();
 
         stringBuilder.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
     }

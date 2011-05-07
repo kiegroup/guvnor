@@ -216,7 +216,7 @@ public class FactsConstraintsEditorPanel extends Composite {
     protected void removeConstraint() {
         if ( constraintsCombo.getSelectedIndex() != -1 ) {
             ConstraintConfiguration c = contraintsMap.get( constraintsCombo.getValue( constraintsCombo.getSelectedIndex() ) );
-            ((WorkingSetConfigData) workingSet.content).constraints = this.workingSetEditor.getConstraintsConstrainer().removeConstraint( c );
+            ((WorkingSetConfigData) workingSet.getContent()).constraints = this.workingSetEditor.getConstraintsConstrainer().removeConstraint( c );
         }
         fillFieldConstrains();
     }
@@ -262,10 +262,10 @@ public class FactsConstraintsEditorPanel extends Composite {
                     String fieldName = fieldsCombo.getItemText( fieldsCombo.getSelectedIndex() );
                     config.setFactType( factName );
                     config.setFieldName( fieldName );
-                    if ( ((WorkingSetConfigData) workingSet.content).constraints == null ) {
-                        ((WorkingSetConfigData) workingSet.content).constraints = new ArrayList<ConstraintConfiguration>();
+                    if ( ((WorkingSetConfigData) workingSet.getContent()).constraints == null ) {
+                        ((WorkingSetConfigData) workingSet.getContent()).constraints = new ArrayList<ConstraintConfiguration>();
                     }
-                    ((WorkingSetConfigData) workingSet.content).constraints.add( config );
+                    ((WorkingSetConfigData) workingSet.getContent()).constraints.add( config );
                     constraintsCombo.addItem( config.getConstraintName(),
                                               addContrainsMap( config ) );
                     workingSetEditor.getConstraintsConstrainer().addConstraint( config );
@@ -284,7 +284,7 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private SuggestionCompletionEngine getCompletionEngine() {
-        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.metaData.packageName );
+        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().packageName );
     }
 
     public void notifyValidFactsChanged() {

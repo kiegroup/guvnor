@@ -55,11 +55,11 @@ public class RuleTemplateEditor extends DirtyableComposite
      */
     public RuleTemplateEditor(RuleAsset asset) {
 
-        model = (TemplateModel) asset.content;
+        model = (TemplateModel) asset.getContent();
         ruleModeller = new RuleModeller( asset,
                                          new TemplateModellerWidgetFactory() );
         
-        this.packageName = asset.metaData.packageName;
+        this.packageName = asset.getMetaData().packageName;
         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( this.packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();

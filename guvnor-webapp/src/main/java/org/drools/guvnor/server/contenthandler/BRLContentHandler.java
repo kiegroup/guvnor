@@ -44,12 +44,12 @@ public class BRLContentHandler extends ContentHandler
 
         ruleModel.name = asset.getName();
 
-        asset.content = ruleModel;
+        asset.setContent( ruleModel );
     }
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        RuleModel data = (RuleModel) asset.content;
+        RuleModel data = (RuleModel) asset.getContent();
         if ( data.name == null ) {
             data.name = repoAsset.getName();
         }
@@ -68,7 +68,7 @@ public class BRLContentHandler extends ContentHandler
                         RuleAsset asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        builder.addPackageFromDrl( new StringReader( getSourceDRL( (RuleModel) asset.content,
+        builder.addPackageFromDrl( new StringReader( getSourceDRL( (RuleModel) asset.getContent(),
                                                                    builder ) ) );
 
     }
@@ -76,7 +76,7 @@ public class BRLContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
-        String drl = getSourceDRL( (RuleModel) asset.content,
+        String drl = getSourceDRL( (RuleModel) asset.getContent(),
                                    builder );
         stringBuilder.append( drl );
     }

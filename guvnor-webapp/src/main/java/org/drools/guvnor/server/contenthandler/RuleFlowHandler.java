@@ -51,9 +51,9 @@ public class RuleFlowHandler extends ContentHandler
         if ( process != null ) {
             RuleFlowContentModel content = RuleFlowContentModelBuilder.createModel( process );
             content.setXml( item.getContent() );
-            asset.content = content;
+            asset.setContent( content );
         } else if ( process == null && !"".equals( item.getContent() ) ) {
-            asset.content = new RuleFlowContentModel();
+            asset.setContent( new RuleFlowContentModel() );
             //
             // 
             // Migrate v4 ruleflows to v5
@@ -61,7 +61,7 @@ public class RuleFlowHandler extends ContentHandler
             // that we can at least rebuild the package with it if the
             // migrate ruleflow system property is set true.
             //
-            ((RuleFlowContentModel) asset.content).setXml( item.getContent() );
+            ((RuleFlowContentModel) asset.getContent()).setXml( item.getContent() );
         }
 
     }
@@ -93,7 +93,7 @@ public class RuleFlowHandler extends ContentHandler
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
 
-        RuleFlowContentModel content = (RuleFlowContentModel) asset.content;
+        RuleFlowContentModel content = (RuleFlowContentModel) asset.getContent();
 
         // 
         // Migrate v4 ruleflows to v5

@@ -31,14 +31,14 @@ public class ScenarioContentHandler extends PlainTextContentHandler {
     public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
             AssetItem item) throws SerializationException {
         Scenario sc = ScenarioXMLPersistence.getInstance().unmarshal(item.getContent());
-        asset.content = sc;
+        asset.setContent( sc );
 
     }
 
     @Override
     public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
             throws SerializationException {
-        Scenario sc = (Scenario) asset.content;
+        Scenario sc = (Scenario) asset.getContent();
         repoAsset.updateContent(ScenarioXMLPersistence.getInstance().marshal(sc));
     }
 
