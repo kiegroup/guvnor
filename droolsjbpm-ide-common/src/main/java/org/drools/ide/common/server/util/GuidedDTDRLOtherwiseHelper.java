@@ -54,9 +54,9 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        DRLConstraintValueBuilder.buildFieldValue( value,
-                                                 c.getFieldType(),
-                                                 scv );
+                        DRLConstraintValueBuilder.buildLHSFieldValue( value,
+                                                                      c.getFieldType(),
+                                                                      scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );
@@ -96,9 +96,9 @@ public class GuidedDTDRLOtherwiseHelper {
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
-                        DRLConstraintValueBuilder.buildFieldValue( value,
-                                                 c.getFieldType(),
-                                                 scv );
+                        DRLConstraintValueBuilder.buildLHSFieldValue( value,
+                                                                      c.getFieldType(),
+                                                                      scv );
                         value.append( ", " );
                     }
                     consumedValues.add( scv );

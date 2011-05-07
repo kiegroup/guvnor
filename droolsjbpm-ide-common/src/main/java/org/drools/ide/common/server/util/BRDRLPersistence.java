@@ -16,10 +16,43 @@
 
 package org.drools.ide.common.server.util;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.*;
+import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.IPattern;
+import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 /**
  * This class persists the rule model to DRL and back
@@ -176,15 +209,34 @@ public class BRDRLPersistence
     private void marshalRHS(StringBuilder buf,
                             RuleModel model,
                             boolean isDSLEnhanced) {
-        String indentation = "\t\t";
+        String indentation = "\t\t";    
         if ( model.rhs != null ) {
-            RHSActionVisitor visitor = new RHSActionVisitor( isDSLEnhanced,
+            Map<String, List<ActionFieldValue>> classes = getRHSClassDependencies( model );
+            if(classes.containsKey( SuggestionCompletionEngine.TYPE_DATE )) {
+                buf.append( indentation );
+                buf.append("SimpleDateFormat sdf = new SimpleDateFormat(\"dd-MMM-yyyy\");\n");
+            }
+            
+            RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
                                                              buf,
                                                              indentation );
             for ( IAction action : model.rhs ) {
-                visitor.visit( action );
+                actionVisitor.visit( action );
             }
         }
+    }
+    
+    private Map<String, List<ActionFieldValue>> getRHSClassDependencies(RuleModel model) {
+        if ( model != null ) {
+            RHSClassDependencyVisitor dependencyVisitor = new RHSClassDependencyVisitor();
+            for ( IAction action : model.rhs ) {
+                dependencyVisitor.visit( action );
+            }
+            return dependencyVisitor.getRHSClasses();
+        }
+
+        Map<String, List<ActionFieldValue>> empty = Collections.emptyMap();
+        return empty;
     }
 
     public static class LHSPatternVisitor extends ReflectiveVisitor {
@@ -535,7 +587,7 @@ public class BRDRLPersistence
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
-                            DRLConstraintValueBuilder.buildFieldValue( buf,
+                            DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                        fieldType,
                                                                        value );
                         }
@@ -547,12 +599,12 @@ public class BRDRLPersistence
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
-                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                fieldType,
                                                                "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
-                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                fieldType,
                                                                value );
                     break;
@@ -584,8 +636,7 @@ public class BRDRLPersistence
                                      false );
         }
 
-        public void visitActionInsertLogicalFact(
-                                                 final ActionInsertLogicalFact action) {
+        public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
             this.generateInsertCall( action,
                                      true );
         }
@@ -670,8 +721,7 @@ public class BRDRLPersistence
             buf.append( " );\n" );
         }
 
-        public void visitActionGlobalCollectionAdd(
-                                                   final ActionGlobalCollectionAdd add) {
+        public void visitActionGlobalCollectionAdd(final ActionGlobalCollectionAdd add) {
             buf.append( indentation );
             if ( isDSLEnhanced ) {
                 buf.append( ">" );
@@ -727,11 +777,11 @@ public class BRDRLPersistence
                 if ( fieldValues[i].isFormula() ) {
                     buf.append( fieldValues[i].value.substring( 1 ) );
                 } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
                                                                fieldValues[i].type,
                                                                "@{" + fieldValues[i].value + "}" );
                 } else {
-                    DRLConstraintValueBuilder.buildFieldValue( buf,
+                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
                                                                fieldValues[i].type,
                                                                fieldValues[i].value );
                 }
@@ -766,4 +816,44 @@ public class BRDRLPersistence
 
         }
     }
+
+    public static class RHSClassDependencyVisitor extends ReflectiveVisitor {
+
+        private Map<String, List<ActionFieldValue>> classes = new HashMap<String, List<ActionFieldValue>>();
+        
+        public void visitActionInsertFact(final ActionInsertFact action) {
+            getClasses(action.fieldValues);
+        }
+
+        public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
+            getClasses(action.fieldValues);
+        }
+
+        public void visitActionUpdateField(final ActionUpdateField action) {
+            getClasses(action.fieldValues);
+        }
+
+        public void visitActionSetField(final ActionSetField action) {
+            getClasses(action.fieldValues);
+        }
+        
+        public Map<String, List<ActionFieldValue>> getRHSClasses() {
+            return classes;
+        }
+
+        private void getClasses(ActionFieldValue[] fieldValues) {
+            for(ActionFieldValue afv : fieldValues) {
+                String type = afv.getType();
+                List<ActionFieldValue> afvs = classes.get( type );
+                if(afvs==null) {
+                    afvs = new ArrayList<ActionFieldValue>();
+                    classes.put( type, afvs );
+                }
+                afvs.add(afv);
+            }
+        }
+        
+    }
+
+
 }
