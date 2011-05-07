@@ -35,9 +35,9 @@ public class DRLConstraintValueBuilder {
      * @param fieldType
      * @param fieldValue
      */
-    public static void buildFieldValue(StringBuilder buf,
-                                        String fieldType,
-                                        String fieldValue) {
+    public static void buildLHSFieldValue(StringBuilder buf,
+                                          String fieldType,
+                                          String fieldValue) {
         if ( fieldType == null ) {
             //This should ideally be an error however we show leniency to legacy code
             buf.append( fieldValue );
@@ -50,6 +50,45 @@ public class DRLConstraintValueBuilder {
             buf.append( "\"" );
             buf.append( fieldValue );
             buf.append( "\"" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+            buf.append( "\"" );
+            buf.append( fieldValue );
+            buf.append( "\"" );
+        } else {
+            buf.append( fieldValue );
+        }
+
+    }
+
+    /**
+     * Concatenate a String to the provided buffer suitable for the fieldValue
+     * and fieldType. Strings are escaped with double-quotes, Dates are wrapped
+     * with a call to a pre-constructed SimpleDateFormatter, whilst Numerics,
+     * Booleans, (Java 1.5+) enums and all other fieldTypes are not escaped at
+     * all. Guvnor-type enums are really a pick list of Strings and in these
+     * cases the underlying fieldType is a String.
+     * 
+     * @param buf
+     * @param fieldType
+     * @param fieldValue
+     */
+    public static void buildRHSFieldValue(StringBuilder buf,
+                                          String fieldType,
+                                          String fieldValue) {
+        if ( fieldType == null ) {
+            //This should ideally be an error however we show leniency to legacy code
+            buf.append( fieldValue );
+            return;
+        }
+
+        if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            buf.append( fieldValue );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            buf.append( "sdf.parse(\"" );
+            buf.append( fieldValue );
+            buf.append( "\")" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
