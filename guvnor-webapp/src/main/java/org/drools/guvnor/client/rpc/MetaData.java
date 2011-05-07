@@ -29,13 +29,7 @@ public class MetaData
     IsSerializable {
 
     public String   title                = "";
-    //public String   status               = "";
-
-    //public Date     lastModifiedDate;
-    //public String   lastContributor      = "";
-    //public long     versionNumber;
-
-    //public Date     createdDate;
+    
 
     public String   packageName          = "";
     public String   packageUUID          = "";
@@ -50,7 +44,6 @@ public class MetaData
     public String   rights               = "";
     public String   coverage             = "";
     public String   publisher            = "";
-    //public String   checkinComment       = "";
 
     private boolean binary               = false;
 
@@ -66,27 +59,27 @@ public class MetaData
      * @param idx The index of the cat to remove.
      */
     public void removeCategory(int idx) {
-        String[] newList = new String[categories.length - 1];
+        String[] newList = new String[getCategories().length - 1];
         int newIdx = 0;
-        for ( int i = 0; i < categories.length; i++ ) {
+        for ( int i = 0; i < getCategories().length; i++ ) {
 
             if ( i != idx ) {
-                newList[newIdx] = categories[i];
+                newList[newIdx] = getCategories()[i];
                 newIdx++;
             }
 
         }
-        this.categories = newList;
+        this.setCategories( newList );
     }
 
     /**
      * Add the given cat to the end of the cat list.
      */
     public void addCategory(String cat) {
-        for ( int i = 0; i < this.categories.length; i++ ) {
-            if ( categories[i].equals( cat ) ) return;
+        for ( int i = 0; i < this.getCategories().length; i++ ) {
+            if ( getCategories()[i].equals( cat ) ) return;
         }
-        String[] list = this.categories;
+        String[] list = this.getCategories();
         String[] newList = new String[list.length + 1];
 
         for ( int i = 0; i < list.length; i++ ) {
@@ -94,15 +87,178 @@ public class MetaData
         }
         newList[list.length] = cat;
 
-        this.categories = newList;
+        this.setCategories( newList );
     }
 
-    public void setBinary(boolean binary) {
+    public MetaData setBinary(boolean binary) {
         this.binary = binary;
+        return this;
     }
 
     public boolean isBinary() {
         return binary;
+    }
+
+    public MetaData setTitle(String title) {
+        this.title = title;
+        return this;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public MetaData setPackageName(String packageName) {
+        this.packageName = packageName;
+        return this;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public MetaData setPackageUUID(String packageUUID) {
+        this.packageUUID = packageUUID;
+        return this;
+    }
+
+    public String getPackageUUID() {
+        return packageUUID;
+    }
+
+    public MetaData setCategories(String[] categories) {
+        this.categories = categories;
+        return this;
+    }
+
+    public String[] getCategories() {
+        return categories;
+    }
+
+    public MetaData setFormat(String format) {
+        this.format = format;
+        return this;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public MetaData setType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public MetaData setCreator(String creator) {
+        this.creator = creator;
+        return this;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public MetaData setExternalSource(String externalSource) {
+        this.externalSource = externalSource;
+        return this;
+    }
+
+    public String getExternalSource() {
+        return externalSource;
+    }
+
+    public MetaData setSubject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public MetaData setExternalRelation(String externalRelation) {
+        this.externalRelation = externalRelation;
+        return this;
+    }
+
+    public String getExternalRelation() {
+        return externalRelation;
+    }
+
+    public MetaData setRights(String rights) {
+        this.rights = rights;
+        return this;
+    }
+
+    public String getRights() {
+        return rights;
+    }
+
+    public MetaData setCoverage(String coverage) {
+        this.coverage = coverage;
+        return this;
+    }
+
+    public String getCoverage() {
+        return coverage;
+    }
+
+    public MetaData setPublisher(String publisher) {
+        this.publisher = publisher;
+        return this;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public MetaData setDisabled(boolean disabled) {
+        this.disabled = disabled;
+        return this;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public MetaData setHasPreceedingVersion(boolean hasPreceedingVersion) {
+        this.hasPreceedingVersion = hasPreceedingVersion;
+        return this;
+    }
+
+    public boolean isHasPreceedingVersion() {
+        return hasPreceedingVersion;
+    }
+
+    public MetaData setHasSucceedingVersion(boolean hasSucceedingVersion) {
+        this.hasSucceedingVersion = hasSucceedingVersion;
+        return this;
+    }
+
+    public boolean isHasSucceedingVersion() {
+        return hasSucceedingVersion;
+    }
+
+    public MetaData setDateEffective(Date dateEffective) {
+        this.dateEffective = dateEffective;
+        return this;
+    }
+
+    public Date getDateEffective() {
+        return dateEffective;
+    }
+
+    public MetaData setDateExpired(Date dateExpired) {
+        this.dateExpired = dateExpired;
+        return this;
+    }
+
+    public Date getDateExpired() {
+        return dateExpired;
     }
 
 }

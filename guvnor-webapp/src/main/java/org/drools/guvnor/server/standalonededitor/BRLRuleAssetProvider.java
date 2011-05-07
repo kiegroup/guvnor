@@ -94,10 +94,10 @@ public class BRLRuleAssetProvider
     private MetaData createMetaData(RuleModel ruleModel) {
         MetaData metaData = new MetaData();
 
-        metaData.packageName = packageName;
-        metaData.format = AssetFormats.BUSINESS_RULE;
+        metaData.setPackageName( packageName );
+        metaData.setFormat( AssetFormats.BUSINESS_RULE );
 
-        metaData.packageUUID = "mock";
+        metaData.setPackageUUID( "mock" );
 
         return metaData;
     }

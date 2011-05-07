@@ -59,7 +59,7 @@ public class RuleTemplateEditor extends DirtyableComposite
         ruleModeller = new RuleModeller( asset,
                                          new TemplateModellerWidgetFactory() );
         
-        this.packageName = asset.getMetaData().packageName;
+        this.packageName = asset.getMetaData().getPackageName();
         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( this.packageName );
 
         final VerticalPanel tPanel = new VerticalPanel();

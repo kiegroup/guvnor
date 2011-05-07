@@ -56,8 +56,8 @@ public class WorkingSetEditor extends Composite
     private CustomFormsEditorPanel      customFormsEditorPanel;
 
     public WorkingSetEditor(RuleAsset asset) {
-        if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().format ) ) {
-            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().format );
+        if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().getFormat() ) ) {
+            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().getFormat() );
         }
         workingSet = asset;
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.getContent();
@@ -118,7 +118,7 @@ public class WorkingSetEditor extends Composite
         Grid grid = new Grid( 2,
                               3 );
 
-        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().packageName );
+        SuggestionCompletionEngine sce = SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getPackageName() );
         boolean filteringFact = sce.isFilteringFacts();
         sce.setFilteringFacts( false );
 

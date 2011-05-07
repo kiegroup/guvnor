@@ -22,80 +22,90 @@ public class Artifact
         return uuid;
     }
 
-    public void setUuid(String uuid) {
+    public Artifact setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Artifact setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public Artifact setDescription(String description) {
         this.description = description;
+        return this;
     }
 
     public Date getLastModified() {
         return lastModified;
     }
 
-    public void setLastModified(Date lastModified) {
+    public Artifact setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+        return this;
     }
 
     public String getLastContributor() {
         return lastContributor;
     }
 
-    public void setLastContributor(String lastContributor) {
+    public Artifact setLastContributor(String lastContributor) {
         this.lastContributor = lastContributor;
+        return this;
     }
 
     public String getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public Artifact setState(String state) {
         this.state = state;
+        return this;
     }
 
     public Date getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(Date dateCreated) {
+    public Artifact setDateCreated(Date dateCreated) {
         this.dateCreated = dateCreated;
+        return this;
     }
 
     public String getCheckinComment() {
         return checkinComment;
     }
 
-    public void setCheckinComment(String checkinComment) {
+    public Artifact setCheckinComment(String checkinComment) {
         this.checkinComment = checkinComment;
+        return this;
     }
 
     public long getVersionNumber() {
         return versionNumber;
     }
 
-    public void setVersionNumber(long versionNumber) {
+    public Artifact setVersionNumber(long versionNumber) {
         this.versionNumber = versionNumber;
+        return this;
     }
 
     public boolean isReadonly() {
         return readonly;
     }
 
-    public void setReadonly(boolean isreadonly) {
+    public Artifact setReadonly(boolean isreadonly) {
         this.readonly = isreadonly;
+        return this;
     }
 
 }

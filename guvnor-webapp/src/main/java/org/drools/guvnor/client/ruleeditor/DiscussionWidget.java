@@ -182,7 +182,7 @@ public class DiscussionWidget extends Composite {
             } );
         }
         
-        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((RuleAsset)artifact).getMetaData().packageName
+        String feedURL = GWT.getModuleBaseURL() + "feed/discussion?package=" + ((RuleAsset)artifact).getMetaData().getPackageName()
                 + "&assetName=" + URL.encode( artifact.getName() ) + "&viewUrl=" + Util.getSelfURL();
         hp.add( new HTML( "<a href='" + feedURL + "' target='_blank'><img src='"
                 + new Image( images.feed() ).getUrl() + "'/></a>" ) );

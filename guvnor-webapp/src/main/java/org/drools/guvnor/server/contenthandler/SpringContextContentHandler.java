@@ -75,7 +75,7 @@ public class SpringContextContentHandler extends PlainTextContentHandler
 
         return createBuilderResult( message,
                                     asset.getName(),
-                                    asset.getMetaData().format,
+                                    asset.getMetaData().getFormat(),
                                     asset.getUuid() );
     }
 

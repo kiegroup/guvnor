@@ -134,22 +134,22 @@ public class MetaDataWidgetNew extends Composite {
 
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
-                          readOnlyText( ((RuleAsset) artifact).getMetaData().creator ) );
+                          readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
             addAttribute( constants.FormatMetaData(),
                           new SmallLabel( "<b>"
-                                          + ((RuleAsset) artifact).getMetaData().format + "</b>" ) );
+                                          + ((RuleAsset) artifact).getMetaData().getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
-                          packageEditor( ((RuleAsset) artifact).getMetaData().packageName ) );
+                          packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
 
             addAttribute( constants.IsDisabledMetaData(),
                           editableBoolean( new FieldBooleanBinding() {
                                                public boolean getValue() {
-                                                   return ((RuleAsset) artifact).getMetaData().disabled;
+                                                   return ((RuleAsset) artifact).getMetaData().isDisabled();
                                                }
 
                                                public void setValue(boolean val) {
-                                                   ((RuleAsset) artifact).getMetaData().disabled = val;
+                                                   ((RuleAsset) artifact).getMetaData().setDisabled( val );
                                                }
                                            },
                                            constants.DisableTip() ) );
@@ -416,7 +416,7 @@ public class MetaDataWidgetNew extends Composite {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
-            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().packageName
+            String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().getPackageName()
                           + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }

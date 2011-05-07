@@ -28,14 +28,16 @@ public class RuleAsset extends Artifact {
 
     public MetaData       metaData;
     public PortableObject content;
-    public void setMetaData(MetaData metaData) {
+    public RuleAsset setMetaData(MetaData metaData) {
         this.metaData = metaData;
+        return this;
     }
     public MetaData getMetaData() {
         return metaData;
     }
-    public void setContent(PortableObject content) {
+    public RuleAsset setContent(PortableObject content) {
         this.content = content;
+        return this;
     }
     public PortableObject getContent() {
         return content;

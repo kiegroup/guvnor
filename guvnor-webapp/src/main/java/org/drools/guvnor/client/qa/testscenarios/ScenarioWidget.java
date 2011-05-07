@@ -81,13 +81,13 @@ public class ScenarioWidget extends Composite
                                                                                   this );
         this.setShowResults( false );
 
-        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().packageName );
+        this.suggestionCompletionEngine = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().getPackageName() );
 
         ifFixturesSizeZeroThenAddExecutionTrace();
 
         if ( !asset.isReadonly() ) {
             layout.add( new TestRunnerWidget( this,
-                                              asset.getMetaData().packageName ) );
+                                              asset.getMetaData().getPackageName() ) );
         }
 
         renderEditor();

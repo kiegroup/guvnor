@@ -71,7 +71,7 @@ public class DSLRuleEditor extends DirtyableComposite {
         text.setVisibleLines( 16 );
         text.setText( data.content );
 
-        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().packageName );
+        SuggestionCompletionEngine eng = SuggestionCompletionCache.getInstance().getEngineFromCache( asset.getMetaData().getPackageName() );
         this.actions = eng.actionDSLSentences;
         this.conditions = eng.conditionDSLSentences;
 

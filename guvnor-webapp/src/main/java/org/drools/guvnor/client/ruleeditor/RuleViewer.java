@@ -383,7 +383,7 @@ public class RuleViewer extends GuvnorEditor {
         onSave();
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
         Set<String> activeWorkingSets = null;
-        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().packageName );
+        activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().getPackageName() );
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
@@ -505,9 +505,9 @@ public class RuleViewer extends GuvnorEditor {
      * editor though.
      */
     public void flushSuggestionCompletionCache() {
-        if ( AssetFormats.isPackageDependency( this.asset.getMetaData().format ) ) {
+        if ( AssetFormats.isPackageDependency( this.asset.getMetaData().getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().packageName,
+            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().getPackageName(),
                                                                     new Command() {
                                                                         public void execute() {
                                                                             LoadingPopup.close();
@@ -638,7 +638,7 @@ public class RuleViewer extends GuvnorEditor {
     }
 
     private void doPromptToGlobal() {
-        if ( asset.getMetaData().packageName.equals( "globalArea" ) ) {
+        if ( asset.getMetaData().getPackageName().equals( "globalArea" ) ) {
             Window.alert( constants.ItemAlreadyInGlobalArea() );
             return;
         }

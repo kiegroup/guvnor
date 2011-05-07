@@ -234,7 +234,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final RuleAsset asset) {
-        SuggestionCompletionCache.getInstance().doAction( asset.getMetaData().packageName,
+        SuggestionCompletionCache.getInstance().doAction( asset.getMetaData().getPackageName(),
                                                           new Command() {
 
                                                               public void execute() {

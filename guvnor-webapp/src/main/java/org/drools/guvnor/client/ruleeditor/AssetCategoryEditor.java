@@ -110,12 +110,12 @@ public class AssetCategoryEditor extends DirtyableComposite {
     }
 
     private void loadData(FlexTable list) {
-        for ( int i = 0; i < data.categories.length; i++ ) {
+        for ( int i = 0; i < data.getCategories().length; i++ ) {
             final int idx = i;
 
             list.setWidget( i,
                             0,
-                            new SmallLabel( data.categories[i] ) );
+                            new SmallLabel( data.getCategories()[i] ) );
             if ( !readOnly ) {
 
                 Image del = new ImageButton( images.trash() );

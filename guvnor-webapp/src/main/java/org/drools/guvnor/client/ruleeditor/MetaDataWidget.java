@@ -147,21 +147,21 @@ public class MetaDataWidget extends Composite {
         }
         if ( data instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
-                          readOnlyText( ((RuleAsset) data).getMetaData().creator ) );
+                          readOnlyText( ((RuleAsset) data).getMetaData().getCreator() ) );
             addAttribute( constants.FormatMetaData(),
-                          new SmallLabel( "<b>" + ((RuleAsset) data).getMetaData().format + "</b>" ) );
+                          new SmallLabel( "<b>" + ((RuleAsset) data).getMetaData().getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
-                          packageEditor( ((RuleAsset) data).getMetaData().packageName ) );
+                          packageEditor( ((RuleAsset) data).getMetaData().getPackageName() ) );
 
             addAttribute( constants.IsDisabledMetaData(),
                           editableBoolean( new FieldBooleanBinding() {
                                                public boolean getValue() {
-                                                   return ((RuleAsset) data).getMetaData().disabled;
+                                                   return ((RuleAsset) data).getMetaData().isDisabled();
                                                }
 
                                                public void setValue(boolean val) {
-                                                   ((RuleAsset) data).getMetaData().disabled = val;
+                                                   ((RuleAsset) data).getMetaData().setDisabled( val );
                                                }
                                            },
                                            constants.DisableTip() ) );
@@ -176,11 +176,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.SubjectMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset) data).getMetaData().subject;
+                                            return ((RuleAsset) data).getMetaData().getSubject();
                                         }
 
                                         public void setValue(String val) {
-                                            ((RuleAsset) data).getMetaData().subject = val;
+                                            ((RuleAsset) data).getMetaData().setSubject( val );
                                         }
                                     },
                                     constants.AShortDescriptionOfTheSubjectMatter() ) );
@@ -188,11 +188,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.TypeMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset) data).getMetaData().type;
+                                            return ((RuleAsset) data).getMetaData().getType();
                                         }
 
                                         public void setValue(String val) {
-                                            ((RuleAsset) data).getMetaData().type = val;
+                                            ((RuleAsset) data).getMetaData().setType( val );
                                         }
 
                                     },
@@ -201,11 +201,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.ExternalLinkMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset) data).getMetaData().externalRelation;
+                                            return ((RuleAsset) data).getMetaData().getExternalRelation();
                                         }
 
                                         public void setValue(String val) {
-                                            ((RuleAsset) data).getMetaData().externalRelation = val;
+                                            ((RuleAsset) data).getMetaData().setExternalRelation( val );
                                         }
 
                                     },
@@ -214,11 +214,11 @@ public class MetaDataWidget extends Composite {
         addAttribute( constants.SourceMetaData(),
                       editableText( new FieldBinding() {
                                         public String getValue() {
-                                            return ((RuleAsset) data).getMetaData().externalSource;
+                                            return ((RuleAsset) data).getMetaData().getExternalSource();
                                         }
 
                                         public void setValue(String val) {
-                                            ((RuleAsset) data).getMetaData().externalSource = val;
+                                            ((RuleAsset) data).getMetaData().setExternalSource( val );
                                         }
 
                                     },

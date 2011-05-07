@@ -90,7 +90,7 @@ public class GuidedDecisionTableWidget extends Composite
     public GuidedDecisionTableWidget(RuleAsset asset) {
 
         this.guidedDecisionTable = (TypeSafeGuidedDecisionTable) asset.getContent();
-        this.packageName = asset.getMetaData().packageName;
+        this.packageName = asset.getMetaData().getPackageName();
         this.guidedDecisionTable.setTableName( asset.getName() );
 
         layout = new VerticalPanel();

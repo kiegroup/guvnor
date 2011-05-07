@@ -64,7 +64,7 @@ public class EnumerationContentHandler extends PlainTextContentHandler
 
             for ( String message : errs ) {
 
-                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.getName()).setAssetFormat(asset.getMetaData().format).setUuid(asset.getUuid()).setMessage(message);
+                BuilderResultLine result = new BuilderResultLine().setAssetName(asset.getName()).setAssetFormat(asset.getMetaData().getFormat()).setUuid(asset.getUuid()).setMessage(message);
                 errors.add( result );
             }
 

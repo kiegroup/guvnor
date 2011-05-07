@@ -55,7 +55,7 @@ public class WorkingSetSelectorPopup {
         pop.setTitle(constants.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
-        RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().packageUUID,
+        RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().getPackageUUID(),
                 new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
                 new GenericCallback<TableDataResult>() {
 
@@ -63,7 +63,7 @@ public class WorkingSetSelectorPopup {
 
                         for (int i = 0; i < result.data.length; i++) {
                             if (WorkingSetManager.getInstance().isWorkingSetActive(
-                                            asset.getMetaData().packageName,
+                                            asset.getMetaData().getPackageName(),
                                             result.data[i].id)) {
                                 selectedFacts.addItem(result.data[i].getDisplayName(), result.data[i].id);
                             } else {
@@ -81,7 +81,7 @@ public class WorkingSetSelectorPopup {
                     wsUUIDs[i] = selectedFacts.getValue(i);
                 }
 
-                WorkingSetManager.getInstance().applyWorkingSets(asset.getMetaData().packageName, wsUUIDs, new Command() {
+                WorkingSetManager.getInstance().applyWorkingSets(asset.getMetaData().getPackageName(), wsUUIDs, new Command() {
                         public void execute() {
                             LoadingPopup.close();
                             pop.hide();

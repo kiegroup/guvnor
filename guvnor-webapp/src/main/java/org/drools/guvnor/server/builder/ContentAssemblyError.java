@@ -48,7 +48,7 @@ public class ContentAssemblyError {
 
     public ContentAssemblyError(RuleAsset itemInError,
                                 String errorReport) {
-        format = itemInError.getMetaData().format;
+        format = itemInError.getMetaData().getFormat();
         name = itemInError.getName();
         uuid = itemInError.getUuid();
         isPackageItem = false;

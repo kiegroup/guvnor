@@ -284,7 +284,7 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private SuggestionCompletionEngine getCompletionEngine() {
-        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().packageName );
+        return SuggestionCompletionCache.getInstance().getEngineFromCache( workingSet.getMetaData().getPackageName() );
     }
 
     public void notifyValidFactsChanged() {

@@ -107,7 +107,7 @@ public class RepositoryAssetOperations {
         try {
 
             ContentHandler handler = ContentManager
-                    .getHandler( asset.getMetaData().format );
+                    .getHandler( asset.getMetaData().getFormat() );
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
             if ( asset.getMetaData().isBinary() ) {
                 AssetItem item = getRulesRepository().loadAssetByUUID(
@@ -132,7 +132,7 @@ public class RepositoryAssetOperations {
                 }
 
                 PackageItem packageItem = getRulesRepository()
-                        .loadPackageByUUID( asset.getMetaData().packageUUID );
+                        .loadPackageByUUID( asset.getMetaData().getPackageUUID() );
 
                 ContentPackageAssembler asm = new ContentPackageAssembler(
                                                                            asset,
@@ -147,7 +147,7 @@ public class RepositoryAssetOperations {
                        e );
             result = new BuilderResult();
 
-            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.getName() ).setAssetFormat( asset.getMetaData().format ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.getUuid() );
+            BuilderResultLine res = new BuilderResultLine().setAssetName( asset.getName() ).setAssetFormat( asset.getMetaData().getFormat() ).setMessage( "Unable to validate this asset. (Check log for detailed messages)." ).setUuid( asset.getUuid() );
             result.getLines().add( res );
 
             return result;
@@ -168,17 +168,17 @@ public class RepositoryAssetOperations {
         metaDataMapper.copyFromMetaData( meta,
                                          repoAsset );
 
-        repoAsset.updateDateEffective( dateToCalendar( meta.dateEffective ) );
-        repoAsset.updateDateExpired( dateToCalendar( meta.dateExpired ) );
+        repoAsset.updateDateEffective( dateToCalendar( meta.getDateEffective() ) );
+        repoAsset.updateDateExpired( dateToCalendar( meta.getDateExpired() ) );
 
-        repoAsset.updateCategoryList( meta.categories );
+        repoAsset.updateCategoryList( meta.getCategories() );
         repoAsset.updateDescription( asset.getDescription() );
 
         ContentHandler handler = ContentManager.getHandler( repoAsset.getFormat() );
         handler.storeAssetContent( asset,
                                    repoAsset );
 
-        if ( !(asset.getMetaData().format.equals( AssetFormats.TEST_SCENARIO )) || asset.getMetaData().format.equals( AssetFormats.ENUMERATION ) ) {
+        if ( !(asset.getMetaData().getFormat().equals( AssetFormats.TEST_SCENARIO )) || asset.getMetaData().getFormat().equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
             RuleBaseCache.getInstance().remove( pkg.getUUID() );
@@ -471,14 +471,14 @@ public class RepositoryAssetOperations {
     protected String buildAssetSource(RuleAsset asset)
                                                       throws SerializationException {
         ContentHandler handler = ContentManager
-                .getHandler( asset.getMetaData().format );
+                .getHandler( asset.getMetaData().getFormat() );
 
         StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
             PackageItem packageItem = getRulesRepository().loadPackage(
-                                                                        asset.getMetaData().packageName );
+                                                                        asset.getMetaData().getPackageName() );
             builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles(
                                                                         packageItem,
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
@@ -654,7 +654,7 @@ public class RepositoryAssetOperations {
         asset.setVersionNumber( item.getVersionNumber() );
 
         asset.setMetaData( populateMetaData( item ) );
-        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().format );
+        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
         handler.retrieveAssetContent( asset,
                                       item.getPackage(),
                                       item );
@@ -668,15 +668,15 @@ public class RepositoryAssetOperations {
     MetaData populateMetaData(AssetItem item) {
         MetaData meta = populateMetaData( (VersionableItem) item );
 
-        meta.packageName = item.getPackageName();
-        meta.packageUUID = item.getPackage().getUUID();
+        meta.setPackageName( item.getPackageName() );
+        meta.setPackageUUID( item.getPackage().getUUID() );
         meta.setBinary( item.isBinary() );
 
         List<CategoryItem> categories = item.getCategories();
         fillMetaCategories( meta,
                             categories );
-        meta.dateEffective = calendarToDate( item.getDateEffective() );
-        meta.dateExpired = calendarToDate( item.getDateExpired() );
+        meta.setDateEffective( calendarToDate( item.getDateEffective() ) );
+        meta.setDateExpired( calendarToDate( item.getDateExpired() ) );
         return meta;
 
     }
@@ -700,10 +700,10 @@ public class RepositoryAssetOperations {
 
     private void fillMetaCategories(MetaData meta,
                                     List<CategoryItem> categories) {
-        meta.categories = new String[categories.size()];
-        for ( int i = 0; i < meta.categories.length; i++ ) {
+        meta.setCategories( new String[categories.size()] );
+        for ( int i = 0; i < meta.getCategories().length; i++ ) {
             CategoryItem cat = (CategoryItem) categories.get( i );
-            meta.categories[i] = cat.getFullPath();
+            meta.getCategories()[i] = cat.getFullPath();
         }
     }
 

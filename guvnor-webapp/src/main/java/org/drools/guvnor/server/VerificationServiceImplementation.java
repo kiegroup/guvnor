@@ -96,10 +96,10 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         long startTime = System.currentTimeMillis();
 
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().packageName ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ), RoleTypes.PACKAGE_DEVELOPER );
         }
 
-        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.getMetaData().packageName );
+        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.getMetaData().getPackageName() );
 
         List<String> constraintRules = applyWorkingSets( activeWorkingSets );
 
@@ -137,7 +137,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     private boolean isAssetDecisionTable(RuleAsset asset) {
-        return AssetFormats.DECISION_TABLE_GUIDED.equals( asset.getMetaData().format ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.getMetaData().format );
+        return AssetFormats.DECISION_TABLE_GUIDED.equals( asset.getMetaData().getFormat() ) || AssetFormats.DECISION_SPREADSHEET_XLS.equals( asset.getMetaData().getFormat() );
     }
 
     private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {

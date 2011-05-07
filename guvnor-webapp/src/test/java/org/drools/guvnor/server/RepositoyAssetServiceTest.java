@@ -290,17 +290,17 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getName() );
         assertEquals( "testLoadRuleAsset",
-                      asset.getMetaData().title );
+                      asset.getMetaData().getTitle() );
         assertEquals( "testLoadRuleAsset",
-                      asset.getMetaData().packageName );
+                      asset.getMetaData().getPackageName() );
         assertEquals( AssetFormats.DRL,
-                      asset.getMetaData().format );
+                      asset.getMetaData().getFormat() );
         assertNotNull( asset.getDateCreated() );
 
         assertEquals( 1,
-                      asset.getMetaData().categories.length );
+                      asset.getMetaData().getCategories().length );
         assertEquals( "testLoadRuleAsset",
-                      asset.getMetaData().categories[0] );
+                      asset.getMetaData().getCategories()[0] );
 
         AssetItem rule = impl.getRulesRepository().loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
         impl.getRulesRepository().createState( "whee" );
@@ -577,7 +577,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid2 );
         assertNotNull( asset );
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
-                      asset.getMetaData().packageName );
+                      asset.getMetaData().getPackageName() );
         assertEquals( "testCopyAsset2",
                       asset.getName() );
     }
@@ -1021,7 +1021,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                       assets.size() );
         // now lets copy...
         String newUUID = repositoryAssetService.copyAsset( rule.getUuid(),
-                                                           rule.getMetaData().packageName,
+                                                           rule.getMetaData().getPackageName(),
                                                            "ruleName2" );
 
         assets = iteratorToList( pkg.getAssets() );

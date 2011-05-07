@@ -56,7 +56,7 @@ public class ServiceSecurity {
 
     protected void checkSecurityIsPackageDeveloper(RuleAsset asset) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().packageName ),
+            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
     }

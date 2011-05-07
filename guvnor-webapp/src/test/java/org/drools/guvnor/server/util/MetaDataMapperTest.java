@@ -26,18 +26,18 @@ public class MetaDataMapperTest {
     @Test
     public void testMapping() {
         MetaData data = new MetaData();
-        assertEquals("", data.coverage);
+        assertEquals("", data.getCoverage());
         TestBean bean = new TestBean();
         
         MetaDataMapper mapper = MetaDataMapper.getInstance();
         mapper.copyToMetaData( data, bean );
         
-        assertEquals("42", data.publisher);
-        assertEquals("42", data.creator);
-        assertEquals("", data.coverage);
+        assertEquals("42", data.getPublisher());
+        assertEquals("42", data.getCreator());
+        assertEquals("", data.getCoverage());
         
-        data.publisher = "abc";
-        data.creator = "def";
+        data.setPublisher( "abc" );
+        data.setCreator( "def" );
         
         mapper.copyFromMetaData( data, bean );
         

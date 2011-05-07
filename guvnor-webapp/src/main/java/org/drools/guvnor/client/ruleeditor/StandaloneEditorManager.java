@@ -78,7 +78,7 @@ public class StandaloneEditorManager {
                     validFacts.addAll(Arrays.asList(parameters.getValidFactTypes()));
                 }
                 
-                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().packageName, validFacts, new Command() {
+                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().getPackageName(), validFacts, new Command() {
 
                     public void execute() {
                         LoadingPopup.close();

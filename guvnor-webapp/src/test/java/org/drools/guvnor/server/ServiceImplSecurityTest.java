@@ -657,7 +657,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.getLastModified() );
-        asset.getMetaData().coverage = "boo";
+        asset.getMetaData().setCoverage( "boo" );
         asset.setContent( new RuleContentText() );
         ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );
@@ -726,7 +726,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset.getLastModified() );
-        asset.getMetaData().coverage = "boo";
+        asset.getMetaData().setCoverage( "boo" );
         asset.setContent( new RuleContentText() );
         ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );

@@ -85,7 +85,7 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showViewSourceButton() {
-        return isMemberOfFormats(asset.getMetaData().format, SOURCE_FORMATS);
+        return isMemberOfFormats(asset.getMetaData().getFormat(), SOURCE_FORMATS);
     }
 
     public boolean showStateLabel() {
@@ -93,11 +93,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     private boolean isValidatorTypeAsset() {
-        return isMemberOfFormats(asset.getMetaData().format, VALIDATING_FORMATS);
+        return isMemberOfFormats(asset.getMetaData().getFormat(), VALIDATING_FORMATS);
     }
 
     private boolean isVerificationTypeAsset() {
-        return isMemberOfFormats(asset.getMetaData().format, VERIFY_FORMATS);
+        return isMemberOfFormats(asset.getMetaData().getFormat(), VERIFY_FORMATS);
     }
 
     private boolean isMemberOfFormats(String format, String[] formats) {
