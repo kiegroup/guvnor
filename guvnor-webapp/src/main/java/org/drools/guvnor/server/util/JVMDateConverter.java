@@ -31,7 +31,6 @@ public class JVMDateConverter
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat( "dd-MMM-yyyy" );
 
-    //Singleton
     private static DateConverter          INSTANCE;
 
     public static synchronized DateConverter getInstance() {
@@ -45,12 +44,17 @@ public class JVMDateConverter
     }
 
     public String format(Date date) {
-        return formatter.format( date );
+        synchronized ( formatter ) {
+            return formatter.format( date );
+        }
     }
 
     public Date parse(String text) {
         try {
-            return formatter.parse( text );
+            synchronized ( formatter ) {
+                return formatter.parse( text );
+            }
+
         } catch ( ParseException pe ) {
         }
         return null;
