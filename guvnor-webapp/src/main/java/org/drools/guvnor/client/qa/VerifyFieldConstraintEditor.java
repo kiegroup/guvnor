@@ -127,7 +127,16 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
         } else {
             String[] enums = sce.getDataEnumList( key );
             if ( enums != null ) {
-                field.setNature( FieldData.TYPE_ENUM );
+                //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
+                //The distinction here controls whether the EXPECTED value is handled as a true
+                //Java enum or a literal with a selection list (i.e. Guvnor enum)
+                String dataType = sce.getFieldType( key );
+                if(dataType.equals(SuggestionCompletionEngine.TYPE_COMPARABLE)) {
+                    field.setNature( FieldData.TYPE_ENUM );
+                } else {
+                    field.setNature( FieldData.TYPE_LITERAL );
+                }
+                
                 panel.add( new EnumDropDown( field.getExpected(),
                                              new DropDownValueChanged() {
                                                  public void valueChanged(String newText,
