@@ -214,7 +214,7 @@ public class BRDRLPersistence
             Map<String, List<ActionFieldValue>> classes = getRHSClassDependencies( model );
             if(classes.containsKey( SuggestionCompletionEngine.TYPE_DATE )) {
                 buf.append( indentation );
-                buf.append("SimpleDateFormat sdf = new SimpleDateFormat(\"dd-MMM-yyyy\");\n");
+                buf.append("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n");
             }
             
             RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
