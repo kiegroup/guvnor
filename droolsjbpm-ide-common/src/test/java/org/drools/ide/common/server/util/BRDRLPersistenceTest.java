@@ -16,9 +16,10 @@
 
 package org.drools.ide.common.server.util;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -26,7 +27,9 @@ import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
@@ -35,10 +38,11 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.junit.Before;
+import org.junit.Test;
 
 public class BRDRLPersistenceTest {
 
@@ -506,6 +510,100 @@ public class BRDRLPersistenceTest {
 
     }
 
+    @Test
+    public void testRHSDateInsertAction() {
+
+        RuleModel m = new RuleModel();
+        m.name = "RHS Date";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        con.setFieldName( "dateOfBirth" );
+        con.setOperator( "==" );
+        con.setValue( "31-Jan-2000" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionInsertFact ai = new ActionInsertFact( "Birthday" );
+        ai.addFieldValue( new ActionFieldValue( "dob",
+                                                "31-Jan-2000",
+                                                SuggestionCompletionEngine.TYPE_DATE ) );
+        m.addRhsItem( ai );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+        assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+
+    }
+
+    @Test
+    public void testRHSDateModifyAction() {
+
+        RuleModel m = new RuleModel();
+        m.name = "RHS Date";
+
+        FactPattern p = new FactPattern( "Person" );
+        p.setBoundName( "$p" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        con.setFieldName( "dateOfBirth" );
+        con.setOperator( "==" );
+        con.setValue( "31-Jan-2000" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionUpdateField am = new ActionUpdateField("$p");
+        am.addFieldValue( new ActionFieldValue( "dob",
+                                                "31-Jan-2000",
+                                                SuggestionCompletionEngine.TYPE_DATE ) );
+        m.addRhsItem( am );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+        assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+        assertTrue( result.indexOf( "update( $p );" ) != -1 );
+
+    }
+
+    @Test
+    public void testRHSDateUpdateAction() {
+
+        RuleModel m = new RuleModel();
+        m.name = "RHS Date";
+
+        FactPattern p = new FactPattern( "Person" );
+        p.setBoundName( "$p" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        con.setFieldName( "dateOfBirth" );
+        con.setOperator( "==" );
+        con.setValue( "31-Jan-2000" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionSetField au = new ActionSetField("$p");
+        au.addFieldValue( new ActionFieldValue( "dob",
+                                                "31-Jan-2000",
+                                                SuggestionCompletionEngine.TYPE_DATE ) );
+        m.addRhsItem( au );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+        assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+        assertTrue( result.indexOf( "update( $p );" ) == -1 );
+
+    }
+    
     @Test
     public void testSubConstraints() {
 
