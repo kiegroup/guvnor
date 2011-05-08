@@ -25,9 +25,6 @@ import java.util.UUID;
  * Provides any generated input to inject into the output templates
  */
 public class GeneratedData {
-  /** formatter for the guvnor-webapp xml timestamp */
-    public static SimpleDateFormat XMLDATEFORMAT  = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm:ss.SSSZ", Locale.UK);
-
     /** generated uuid for new objects within the guvnor-webapp jcr repository */
   public static String generateUUID(){
         return UUID.randomUUID().toString();
@@ -35,6 +32,7 @@ public class GeneratedData {
   
   /** @returns the current time in timestamp format. ie ie. 2009-06-09T19:06:44.783+01:00 */
     public static String getTimestamp(){
+        SimpleDateFormat XMLDATEFORMAT  = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH:mm:ss.SSSZ", Locale.UK);
         Date now=new Date();
         //ie. 2009-06-09T19:06:44.783+01:00
         StringBuffer sb=new StringBuffer(XMLDATEFORMAT.format(now));
