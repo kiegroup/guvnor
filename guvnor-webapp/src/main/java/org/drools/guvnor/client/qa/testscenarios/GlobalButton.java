@@ -29,8 +29,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 
 class GlobalButton extends ImageButton {
 
@@ -65,14 +67,21 @@ class GlobalButton extends ImageButton {
 
     class NewGlobalPopup extends FormStylePopup {
 
-        final ListBox factTypes;
+        final ListBox  factTypes;
+        private Button addButton;
+        private Widget warning;
 
         public NewGlobalPopup() {
             super( images.ruleAsset(),
                    constants.NewGlobal() );
 
             factTypes = new ListBox();
+            addButton = new AddButton();
+            warning = getMissingGlobalsWarning();
+
             fillFactTypes();
+
+            addRow( warning );
 
             addAttribute( constants.GlobalColon(),
                           getHorizontalPanel() );
@@ -81,13 +90,22 @@ class GlobalButton extends ImageButton {
         private HorizontalPanel getHorizontalPanel() {
             HorizontalPanel insertFact = new HorizontalPanel();
             insertFact.add( factTypes );
-            insertFact.add( new AddButton() );
+            insertFact.add( addButton );
             return insertFact;
         }
 
         private void fillFactTypes() {
-            for ( String globals : suggestionCompletionEngine.getGlobalVariables() ) {
-                factTypes.addItem( globals );
+            if ( suggestionCompletionEngine.getGlobalVariables().length == 0 ) {
+                addButton.setEnabled( false );
+                factTypes.setEnabled( false );
+                warning.setVisible( true );
+            } else {
+                addButton.setEnabled( true );
+                factTypes.setEnabled( true );
+                warning.setVisible( false );
+                for ( String globals : suggestionCompletionEngine.getGlobalVariables() ) {
+                    factTypes.addItem( globals );
+                }
             }
         }
 
@@ -119,5 +137,12 @@ class GlobalButton extends ImageButton {
             }
         }
 
+    }
+
+    //A simple banner to alert users that no Globals have been defined
+    private Widget getMissingGlobalsWarning() {
+        HTML warning = new HTML( constants.missingGlobalsWarning() );
+        warning.getElement().setClassName( "missingGlobalsWarning" );
+        return warning;
     }
 }

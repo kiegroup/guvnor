@@ -2265,4 +2265,7 @@ public interface Constants
     String VersionFeed();
     
     String Dependencies();
+    
+    String missingGlobalsWarning();
+    
 }

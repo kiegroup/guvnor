@@ -602,3 +602,9 @@ input,.constraint-value-Editor {
     padding-left: 20px;
     padding-right: 20px;
 }
+
+.missingGlobalsWarning {
+    width: 100%;
+    background-color: yellow;
+    text-align: center;
+}
