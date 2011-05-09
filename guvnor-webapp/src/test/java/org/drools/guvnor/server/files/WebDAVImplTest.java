@@ -435,6 +435,14 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
     @Test
     public void testSetContent() throws Exception {
+        
+        //WebDAVImpl.setResourceContent adds a trailing \n
+        final String CONTENT1 = "some input"; 
+        final String EXPECTED_CONTENT1 = CONTENT1 + "\n";
+
+        final String CONTENT2 = "some more input"; 
+        final String EXPECTED_CONTENT2 = CONTENT2 + "\n";
+
         WebDAVImpl imp = getWebDAVImpl();
         imp.createFolder( new TransactionMock(),
                           "/packages/testSetDavContent" );
@@ -446,7 +454,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         imp = getWebDAVImpl();
         imp.setResourceContent( new TransactionMock(),
                                 "/packages/testSetDavContent/Something.drl",
-                                IOUtils.toInputStream( "some input" ),
+                                IOUtils.toInputStream( CONTENT1 ),
                                 null,
                                 null );
         imp.commit( new TransactionMock() );
@@ -461,26 +469,26 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
         String result = IOUtils.toString( imp.getResourceContent( new TransactionMock(),
                                                                   "/packages/testSetDavContent/Something.drl" ) );
-        assertEquals( "some input",
+        assertEquals( EXPECTED_CONTENT1,
                       result );
 
         PackageItem pkg = imp.getRepo().loadPackage( "testSetDavContent" );
         AssetItem asset = pkg.loadAsset( "Something" );
         assertEquals( "drl",
                       asset.getFormat() );
-        assertEquals( "some input",
+        assertEquals( EXPECTED_CONTENT1,
                       asset.getContent() );
-        assertEquals( "some input",
+        assertEquals( EXPECTED_CONTENT1,
                       IOUtils.toString( asset.getBinaryContentAttachment() ) );
 
         imp.setResourceContent( new TransactionMock(),
                                 "/packages/testSetDavContent/Something.drl",
-                                IOUtils.toInputStream( "some more input" ),
+                                IOUtils.toInputStream( CONTENT2 ),
                                 null,
                                 null );
         result = IOUtils.toString( imp.getResourceContent( new TransactionMock(),
                                                            "/packages/testSetDavContent/Something.drl" ) );
-        assertEquals( "some more input",
+        assertEquals( EXPECTED_CONTENT2,
                       result );
 
     }
@@ -518,6 +526,11 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
     @Test
     public void testSnapshot() throws Exception {
+        
+        //WebDAVImpl.setResourceContent adds a trailing \n
+        final String CONTENT = "some input"; 
+        final String EXPECTED_CONTENT = CONTENT +"\n";
+
         WebDAVImpl imp = getWebDAVImpl();
         imp.createFolder( new TransactionMock(),
                           "/packages/testDavSnapshot" );
@@ -525,7 +538,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
                             "/packages/testDavSnapshot/Something.drl" );
         imp.setResourceContent( new TransactionMock(),
                                 "/packages/testDavSnapshot/Something.drl",
-                                IOUtils.toInputStream( "some input" ),
+                                IOUtils.toInputStream( CONTENT ),
                                 null,
                                 null );
 
@@ -596,13 +609,13 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
         InputStream in = imp.getResourceContent( new TransactionMock(),
                                                  "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
-        assertEquals( "some input",
+        assertEquals( EXPECTED_CONTENT,
                       IOUtils.toString( in ) );
 
         assertEquals( 0,
                       imp.getResourceLength( new TransactionMock(),
                                              "/snapshots/testDavSnapshot/SNAP1" ) );
-        assertEquals( "some input".getBytes().length,
+        assertEquals( EXPECTED_CONTENT.getBytes().length,
                       imp.getResourceLength( new TransactionMock(),
                                              "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
 
