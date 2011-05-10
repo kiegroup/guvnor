@@ -58,8 +58,7 @@ public class BusinessProcessEditor extends DirtyableComposite
          } else {
              name = "/designer/editor";
          } **/
-        
-        name = "/designer/editor/?uuid=" + modelUUID + "&profile=drools";
+        name = "/designer/editor/?uuid=" + modelUUID + "&profile=jbpm";
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain",
                                          Document.get().getDomain() );
