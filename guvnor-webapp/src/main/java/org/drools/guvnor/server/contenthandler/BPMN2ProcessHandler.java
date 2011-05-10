@@ -124,7 +124,7 @@ public class BPMN2ProcessHandler extends ContentHandler
             }
             if ( content.getJson() != null ) {
                 try {
-                    String xml = serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
+                    String xml = serialize("http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
                                         content.getJson());
                     content.setXml(xml);
                     repoAsset.updateContent(content.getXml());
@@ -232,7 +232,7 @@ public class BPMN2ProcessHandler extends ContentHandler
         } else if(content.getJson() != null && content.getJson().length() > 0) {
             // convert the json to xml
             try {
-                String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=drools&action=toXML",
+                String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
                         content.getJson());
                 stringBuilder.append(StringEscapeUtils.escapeXml(xml));
             } catch (IOException e) {
