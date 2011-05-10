@@ -23,12 +23,12 @@ import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
@@ -64,11 +64,11 @@ public class RepositoryCategoryOperations {
 
         CategoryItem item = getRulesRepository().loadCategory( categoryPath );
         List children = item.getChildTags();
-        for (Object aChildren : children) {
+        for ( Object aChildren : children ) {
             String childCategoryName = ((CategoryItem) aChildren).getName();
-            if (filter.acceptNavigate(categoryPath,
-                    childCategoryName)) {
-                resultList.add(childCategoryName);
+            if ( filter.acceptNavigate( categoryPath,
+                                        childCategoryName ) ) {
+                resultList.add( childCategoryName );
             }
         }
 
@@ -126,7 +126,7 @@ public class RepositoryCategoryOperations {
 
     }
 
-    protected PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request)  {
+    protected PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) {
 
         // Do query
         long start = System.currentTimeMillis();
@@ -141,22 +141,16 @@ public class RepositoryCategoryOperations {
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
-        PageResponse<CategoryPageRow> pageResponse = new PageResponse<CategoryPageRow>();
+
         CategoryRuleListPageRowBuilder categoryRuleListPageRowBuilder = new CategoryRuleListPageRowBuilder();
         List<CategoryPageRow> rowList = categoryRuleListPageRowBuilder.createRows( request,
                                                                                    result.assets.iterator() );
+        PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
+                                                            .withStartRowIndex( request.getStartRowIndex() )
+                                                            .withPageRowList( rowList )
+                                                            .withLastPage( !bHasMoreRows )
+                                                                .buildWithTotalRowCount( -1 );
 
-        pageResponse.setStartRowIndex( request.getStartRowIndex() );
-        pageResponse.setPageRowList( rowList );
-        pageResponse.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              pageResponse,
-                                              -1,
-                                              rowList.size(),
-                                              bHasMoreRows );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
         return pageResponse;
