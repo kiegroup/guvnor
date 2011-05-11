@@ -253,19 +253,15 @@
         <type>jar</type>
     </dependency>
     <dependency>
-        <groupId>org.apache.cxf</groupId>
-        <artifactId>cxf-bundle-jaxrs</artifactId>
-        <version>2.3.3</version>
-        <exclusions>
-            <exclusion>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-            </exclusion>
-            <exclusion>
-                <groupId>org.apache.geronimo.specs</groupId>
-                <artifactId>geronimo-servlet_3.0_spec</artifactId>
-            </exclusion>
-        </exclusions>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>2.3.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-testutils</artifactId>
+      <version>2.3.3</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
         <groupId>org.apache.abdera</groupId>
@@ -277,12 +273,6 @@
         <groupId>org.apache.abdera</groupId>
         <artifactId>abdera-server</artifactId>
         <version>1.1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-testutils</artifactId>
-      <version>2.3.3</version>
-      <scope>test</scope>
     </dependency>
     <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies -->
     <dependency>
