@@ -821,6 +821,22 @@ public class BRDRLPersistence
 
         private Map<String, List<ActionFieldValue>> classes = new HashMap<String, List<ActionFieldValue>>();
         
+        public void visitFreeFormLine(FreeFormLine ffl) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
+        }
+
+        public void visitActionGlobalCollectionAdd(final ActionGlobalCollectionAdd add) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
+        }
+
+        public void visitActionRetractFact(final ActionRetractFact action) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
+        }
+
+        public void visitDSLSentence(final DSLSentence sentence) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
+        }
+        
         public void visitActionInsertFact(final ActionInsertFact action) {
             getClasses(action.fieldValues);
         }
