@@ -31,14 +31,12 @@ import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
-import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
@@ -49,33 +47,26 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
-import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
+import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.InboxPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.LogPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.PermissionPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryFullTextPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
-import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.guvnor.server.contenthandler.ContentHandler;
-import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.AdminType;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
@@ -120,11 +111,11 @@ public class ServiceImplementation
     RepositoryService {
 
     @In
-    private RulesRepository             repository;
+    private RulesRepository                   repository;
 
-    private static final long           serialVersionUID            = 510l;
+    private static final long                 serialVersionUID            = 510l;
 
-    private static final LoggingHelper  log                         = LoggingHelper.getLogger( ServiceImplementation.class );
+    private static final LoggingHelper        log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
     /**
      * This is used for pushing messages back to the client.
@@ -275,7 +266,7 @@ public class ServiceImplementation
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
 
         PackageItem packageItem = asset.getPackage();
-        packageItem.updateBinaryUpToDate(false);
+        packageItem.updateBinaryUpToDate( false );
 
         asset.remove();
 
@@ -336,11 +327,11 @@ public class ServiceImplementation
 
         Map<String, String[]> q = new HashMap<String, String[]>() {
             {
-                for (MetaDataQuery aQr : qr) {
+                for ( MetaDataQuery aQr : qr ) {
                     String vals = (aQr.valueList == null) ? "" : aQr.valueList.trim();
-                    if (vals.length() > 0) {
-                        put(aQr.attribute,
-                                vals.split(",\\s?"));
+                    if ( vals.length() > 0 ) {
+                        put( aQr.attribute,
+                                vals.split( ",\\s?" ) );
                     }
                 }
             }
@@ -535,13 +526,13 @@ public class ServiceImplementation
                                            String expression) {
         Map<String, String> context = new HashMap<String, String>();
 
-        for (String valuePair : valuePairs) {
-            if (valuePair == null) {
+        for ( String valuePair : valuePairs ) {
+            if ( valuePair == null ) {
                 return new String[0];
             }
-            String[] pair = valuePair.split("=");
-            context.put(pair[0],
-                    pair[1]);
+            String[] pair = valuePair.split( "=" );
+            context.put( pair[0],
+                         pair[1] );
         }
         // first interpolate the pairs
         expression = (String) TemplateRuntime.eval( expression,
@@ -775,30 +766,22 @@ public class ServiceImplementation
             throw new IllegalArgumentException( "pageSize cannot be less than zero." );
         }
 
-        // Do query
         long start = System.currentTimeMillis();
         AssetItemIterator it = getRulesRepository().queryFullText( request.getSearchText(),
                                                                    request.isSearchArchived() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        // Populate response
         long totalRowsCount = it.getSize();
-        PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
+
         QueryFullTextPageRowBuilder queryFullTextPageRowBuilder = new QueryFullTextPageRowBuilder();
         List<QueryPageRow> rowList = queryFullTextPageRowBuilder.createRows( request,
                                                                                  it );
         boolean bHasMoreRows = it.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              totalRowsCount,
-                                              rowList.size(),
-                                              bHasMoreRows );
+        PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
+                                                      .withStartRowIndex( request.getStartRowIndex() )
+                                                      .withPageRowList( rowList )
+                                                      .withLastPage( !bHasMoreRows )
+                                                          .buildWithTotalRowCount( totalRowsCount );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Full Text) for (" + request.getSearchText() + ") in " + methodDuration + " ms." );
@@ -820,32 +803,23 @@ public class ServiceImplementation
 
         DateQuery[] dates = createDateQueryForRepository( request );
 
-        // Do query
         long start = System.currentTimeMillis();
         AssetItemIterator it = getRulesRepository().query( queryMap,
                                                            request.isSearchArchived(),
                                                            dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        // Populate response
         long totalRowsCount = it.getSize();
-        PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
+
         QueryMetadataPageRowBuilder queryMetadataPageRowBuilder = new QueryMetadataPageRowBuilder();
         List<QueryPageRow> rowList = queryMetadataPageRowBuilder.createRows( request,
                                                                                  it );
         boolean bHasMoreRows = it.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              totalRowsCount,
-                                              rowList.size(),
-                                              bHasMoreRows );
-
+        PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
+                                                .withStartRowIndex( request.getStartRowIndex() )
+                                                .withPageRowList( rowList )
+                                                .withLastPage( !bHasMoreRows )
+                                                    .buildWithTotalRowCount( totalRowsCount );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
@@ -902,22 +876,15 @@ public class ServiceImplementation
 
         // Populate response
         boolean bHasMoreRows = result.hasNext;
-        PageResponse<StatePageRow> response = new PageResponse<StatePageRow>();
+
         StatePageRowBuilder statePageRowBuilder = new StatePageRowBuilder();
         List<StatePageRow> rowList = statePageRowBuilder.createRows( request,
                                                                      result.assets.iterator() );
-
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              -1,
-                                              rowList.size(),
-                                              bHasMoreRows );
+        PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
+                                                    .withStartRowIndex( request.getStartRowIndex() )
+                                                    .withPageRowList( rowList )
+                                                    .withLastPage( !bHasMoreRows )
+                                                        .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Assest with State (" + request.getStateName() + ") in " + methodDuration + " ms." );
@@ -928,9 +895,9 @@ public class ServiceImplementation
                                                   AssetItem item,
                                                   String roleType) {
         List<CategoryItem> tempCateList = item.getCategories();
-        for (CategoryItem categoryItem : tempCateList) {
-            if (filter.accept(categoryItem.getName(),
-                    roleType)) {
+        for ( CategoryItem categoryItem : tempCateList ) {
+            if ( filter.accept( categoryItem.getName(),
+                                roleType ) ) {
                 return true;
             }
         }
@@ -965,4 +932,3 @@ public class ServiceImplementation
     }
 
 }
-

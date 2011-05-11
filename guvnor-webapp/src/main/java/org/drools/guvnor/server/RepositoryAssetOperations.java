@@ -42,6 +42,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QuickFindPageRowBuilder;
@@ -59,7 +60,6 @@ import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.MetaDataMapper;
-import org.drools.guvnor.server.util.ServiceRowSizeHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -335,20 +335,16 @@ public class RepositoryAssetOperations {
 
         // Populate response
         long totalRowsCount = iterator.getSize();
-        PageResponse<AdminArchivedPageRow> response = new PageResponse<AdminArchivedPageRow>();
+
         ArchivedAssetPageRowBuilder archivedAssetPageRowBuilder = new ArchivedAssetPageRowBuilder();
         List<AdminArchivedPageRow> rowList = archivedAssetPageRowBuilder.createRows( request,
                                                                                      iterator );
-        boolean bHasMoreRows = iterator.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              totalRowsCount,
-                                              rowList.size(),
-                                              bHasMoreRows );
+
+        PageResponse<AdminArchivedPageRow> response = new PageResponseBuilder<AdminArchivedPageRow>()
+                                                        .withStartRowIndex( request.getStartRowIndex() )
+                                                        .withPageRowList( rowList )
+                                                        .withLastPage( !iterator.hasNext() )
+                                                            .buildWithTotalRowCount( totalRowsCount );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Searched for Archived Assests in " + methodDuration + " ms." );
@@ -544,23 +540,15 @@ public class RepositoryAssetOperations {
 
         // Populate response
         long totalRowsCount = it.getSize();
-        PageResponse<AssetPageRow> response = new PageResponse<AssetPageRow>();
+
         AssetPageRowBuilder assetPageRowBuilder = new AssetPageRowBuilder();
         List<AssetPageRow> rowList = assetPageRowBuilder.createRows( request,
                                                                      it );
-        boolean bHasMoreRows = it.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              totalRowsCount,
-                                              rowList.size(),
-                                              bHasMoreRows );
-
+        PageResponse<AssetPageRow> response = new PageResponseBuilder<AssetPageRow>()
+                                                    .withStartRowIndex( request.getStartRowIndex() )
+                                                    .withPageRowList( rowList )
+                                                    .withLastPage( !it.hasNext() )
+                                                        .buildWithTotalRowCount( totalRowsCount );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Found asset page of packageUuid ("
                    + request.getPackageUuid() + ") in " + methodDuration + " ms." );
@@ -586,22 +574,15 @@ public class RepositoryAssetOperations {
 
         // Populate response
         long totalRowsCount = it.getSize();
-        PageResponse<QueryPageRow> response = new PageResponse<QueryPageRow>();
+
         QuickFindPageRowBuilder quickFindPageRowBuilder = new QuickFindPageRowBuilder();
         List<QueryPageRow> rowList = quickFindPageRowBuilder.createRows( request,
                                                                          it );
-        boolean bHasMoreRows = it.hasNext();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setPageRowList( rowList );
-        response.setLastPage( !bHasMoreRows );
-
-        // Fix Total Row Size
-        ServiceRowSizeHelper serviceRowSizeHelper = new ServiceRowSizeHelper();
-        serviceRowSizeHelper.fixTotalRowSize( request,
-                                              response,
-                                              totalRowsCount,
-                                              rowList.size(),
-                                              bHasMoreRows );
+        PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
+                                                    .withStartRowIndex( request.getStartRowIndex() )
+                                                    .withPageRowList( rowList )
+                                                    .withLastPage( !it.hasNext() )
+                                                        .buildWithTotalRowCount( totalRowsCount );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms." );

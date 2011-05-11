@@ -76,7 +76,7 @@ public class PageResponseBuilder<T extends AbstractPageRow> {
         return pageResponse;
     }
 
-    public PageResponse<T> buildWithTotalRowCount(final int totalRowCount) {
+    public PageResponse<T> buildWithTotalRowCount(final long totalRowCount) {
         fixTotalRowSize( totalRowCount );
         return pageResponse;
     }
