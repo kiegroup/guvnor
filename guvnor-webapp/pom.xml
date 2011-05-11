@@ -283,25 +283,25 @@
       <artifactId>cxf-testutils</artifactId>
       <version>2.3.3</version>
       <scope>test</scope>
-    </dependency> 
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-server</artifactId>
-                <version>7.2.2.v20101205</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                </exclusions>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.jetty</groupId>
-                <artifactId>jetty-webapp</artifactId>
-                <version>7.2.2.v20101205</version>
-                <scope>test</scope>
-            </dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>7.2.2.v20101205</version>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-webapp</artifactId>
+      <version>7.2.2.v20101205</version>
+      <scope>test</scope>
+    </dependency>
     <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead -->
     <dependency>
       <groupId>javax.transaction</groupId>
