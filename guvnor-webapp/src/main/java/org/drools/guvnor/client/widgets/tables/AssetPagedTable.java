@@ -89,7 +89,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
                                                  new GenericCallback<PageResponse<AssetPageRow>>() {
                                                      public void onSuccess(PageResponse<AssetPageRow> response) {
                                                          updateRowCount( response.getTotalRowSize(),
-                                                                         true );
+                                                                         response.isTotalRowSizeExact() );
                                                          updateRowData( response.getStartRowIndex(),
                                                                         response.getPageRowList() );
                                                      }

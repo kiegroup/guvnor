@@ -90,7 +90,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
                                                       new GenericCallback<PageResponse<AdminArchivedPageRow>>() {
                                                           public void onSuccess(PageResponse<AdminArchivedPageRow> response) {
                                                               updateRowCount( response.getTotalRowSize(),
-                                                                              true );
+                                                                              response.isTotalRowSizeExact() );
                                                               updateRowData( response.getStartRowIndex(),
                                                                              response.getPageRowList() );
                                                           }
