@@ -34,11 +34,9 @@ class FactUsagesItem extends TreeItem {
     public FactUsagesItem(AnalysisFactUsage[] factUsages) {
         setStyleName( "analysis-Report" );
 
-        setHTML( "<img src='" + new Image( images.factTemplate() ).getUrl() + "'/><b>"
-                + constants.ShowFactUsages() + "</b>");
+        setHTML( "<img src='" + images.factTemplate().getURL() + "'/><b>" + constants.ShowFactUsages() + "</b>" );
 
-        setUserObject( new HTML( "<img src='" + new Image( images.factTemplate() ).getUrl() + "'/><b>"
-                + constants.FactUsages() + ":</b>" ) );
+        setUserObject( new HTML( "<img src='" + images.factTemplate().getURL() + "'/><b>" + constants.FactUsages() + ":</b>" ) );
 
         doFacts( factUsages );
     }
@@ -46,8 +44,7 @@ class FactUsagesItem extends TreeItem {
     private void doFacts(AnalysisFactUsage[] factUsages) {
         for ( AnalysisFactUsage factUsage : factUsages ) {
 
-            TreeItem fact = new TreeItem( "<img src='" + (new Image( images.fact() ).getUrl() + factUsage.name) + "'/>");
-
+            TreeItem fact = new TreeItem( "<img src='" + new Image( images.fact() ).getUrl() + "'/>" + factUsage.name );
             TreeItem fieldList = doFields( factUsage.fields );
             fact.addItem( fieldList );
             fieldList.setState( true );
@@ -61,8 +58,7 @@ class FactUsagesItem extends TreeItem {
         TreeItem fieldList = new TreeItem( constants.FieldsUsed() );
 
         for ( AnalysisFieldUsage fieldUsage : fields ) {
-            TreeItem field = new TreeItem( "<img src='" + (new Image( images.field() ).getUrl() + fieldUsage.name)
-                    + "'/>");
+            TreeItem field = new TreeItem( "<img src='" + images.field().getURL() + "'/>" + fieldUsage.name );
             fieldList.addItem( field );
             TreeItem ruleList = doAffectedRules( fieldUsage );
             field.addItem( ruleList );
@@ -76,8 +72,7 @@ class FactUsagesItem extends TreeItem {
         TreeItem ruleList = new TreeItem( constants.ShowRulesAffected() );
         ruleList.setUserObject( new HTML( constants.RulesAffected() ) );
         for ( String ruleName : fieldUsage.rules ) {
-            ruleList.addItem( new TreeItem( "<img src='" + (new Image( images.ruleAsset() ).getUrl() ) + ruleName)
-                    + "'/>");
+            ruleList.addItem( new TreeItem( "<img src='" + images.ruleAsset().getURL() + "'/>" + ruleName ) );
         }
         return ruleList;
     }
