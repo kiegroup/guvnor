@@ -150,8 +150,9 @@ mode:url=jdbc:hsqldb:mem:target
 mode:maximumConnectionsInPool=5</programlisting>
 
 	  <para>
-	  For purposes of illustration, the HSQL DB is being used, but simply replace the attribute values with the
-     appropriate driver class name, username, password, and database URL.
+      For purposes of illustration, the HSQL DB is being used, but simply replace the attribute values with the
+      appropriate driver class name, username, password, and database URL.
+	    Don't forget to add a dependency to your JDBC jar, so the JDBC driver available in the classpath.
 	  </para>
 	  
   </chapter>
