@@ -284,6 +284,37 @@
       <version>2.3.3</version>
       <scope>test</scope>
     </dependency>
+    <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies -->
+    <dependency>
+      <groupId>javax.transaction</groupId>
+      <artifactId>jta</artifactId>
+    </dependency>
+    <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies -->
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+    </dependency>
+    <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies  -->
+    <dependency>
+      <groupId>javax.faces</groupId>
+      <artifactId>jsf-api</artifactId>
+    </dependency>
+    <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies  -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+    </dependency>
+    <!-- NOT needed due to licencing -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
@@ -300,37 +331,6 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
       <version>7.2.2.v20101205</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead -->
-    <dependency>
-      <groupId>javax.transaction</groupId>
-      <artifactId>jta</artifactId>
-    </dependency>
-    <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead -->
-    <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-    </dependency>
-    <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead -->
-    <dependency>
-      <groupId>javax.faces</groupId>
-      <artifactId>jsf-api</artifactId>
-    </dependency>
-    <!-- Only needed by Tomcat deployment. Should include this lib through a Tomcat profile instead -->
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-    </dependency>
-    <!-- NOT needed due to licencing -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>jcl-over-slf4j</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
