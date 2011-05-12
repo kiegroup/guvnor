@@ -11,7 +11,7 @@
 
   <artifactId>guvnor-webapp</artifactId>
   <packaging>war</packaging>
-  
+
   <name>Guvnor web application</name>
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
@@ -247,10 +247,10 @@
     </dependency>
     <!-- REST dependencies -->
     <dependency>
-        <groupId>javax.ws.rs</groupId>
-        <artifactId>jsr311-api</artifactId>
-        <version>1.1.1</version>
-        <type>jar</type>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>jsr311-api</artifactId>
+      <version>1.1.1</version>
+      <type>jar</type>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
@@ -272,15 +272,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.abdera</groupId>
-        <artifactId>abdera-client</artifactId>
-        <version>1.1.1</version>  
-        <scope>test</scope>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-client</artifactId>
+      <version>1.1.1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>org.apache.abdera</groupId>
-        <artifactId>abdera-server</artifactId>
-        <version>1.1.1</version>
+      <groupId>org.apache.abdera</groupId>
+      <artifactId>abdera-server</artifactId>
+      <version>1.1.1</version>
     </dependency>
     <!-- Only needed by Tomcat deployment. Excluded by most guvnor-distribution-wars assemblies -->
     <dependency>
