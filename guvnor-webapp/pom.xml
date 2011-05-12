@@ -257,6 +257,12 @@
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <!-- TODO JBRULES-3028 overwrites the droolsjbpm-parent version of 2.2.9 used by drools-camel -->
       <version>2.3.3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-web</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
