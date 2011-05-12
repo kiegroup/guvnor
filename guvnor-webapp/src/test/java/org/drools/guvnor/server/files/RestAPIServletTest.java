@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -49,7 +50,10 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testGet() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testGetRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
@@ -147,7 +151,10 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testPost() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testPostRestServlet",
                                               "" );
 
@@ -214,7 +221,10 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testPut() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testPutRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
@@ -267,7 +277,10 @@ public class RestAPIServletTest extends GuvnorTestBase {
 
     @Test
     public void testDelete() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testDeleteRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",

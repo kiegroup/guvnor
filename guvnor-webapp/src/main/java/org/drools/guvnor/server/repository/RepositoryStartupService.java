@@ -108,6 +108,12 @@ public class RepositoryStartupService {
         });
         System.out.println("Check-in listener up");
     }
+    
+    public static void removeListeners() {
+        System.out.println("Removing all listeners...");
+        StorageEventManager.removeListeners();
+        System.out.println("Listeners removed...");
+    }
 
     /** Start up the mailbox, flush out any messages that were left */
     private void startMailboxService() {

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
@@ -40,7 +41,9 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testLoader() throws Exception {
 
-        RulesRepository repo = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoader",
                                                "to test the loader" );
         DroolsHeader.updateDroolsHeader( "import java.util.Date",
@@ -58,7 +61,9 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testLoaderWithComplexFields() throws Exception {
 
-        RulesRepository repo = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoaderWithComplexFields",
                                                "to test the loader" );
         DroolsHeader.updateDroolsHeader( "import org.drools.guvnor.server.util.Agent",
@@ -125,7 +130,9 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Ignore("Needs fixing")
     public void testFactTemplates() throws Exception {
 
-        RulesRepository repo = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoader2",
                                                "to test the loader for fact templates" );
         DroolsHeader.updateDroolsHeader( "import java.util.Date\ntemplate Person\njava.lang.String name\nDate birthDate\nend",
@@ -164,7 +171,10 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
     @Test
     public void testDeclaredTypes() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoaderDeclaredTypes",
                                                "to test the loader for declared types" );
         AssetItem asset = item.addAsset( "MyModel",
@@ -202,7 +212,10 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
-        RulesRepository repo = getRulesRepository();
+        
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoadDSLs",
                                                "to test the loader for DSLs" );
         AssetItem asset = item.addAsset( "mydsl",
@@ -233,7 +246,10 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Ignore("MVEL error")
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testLoadEnums",
                                                "to test the loader for enums" );
         AssetItem asset = item.addAsset( "myenum",
@@ -261,7 +277,10 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 
     @Test
     public void testErrors() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testErrorsInPackage",
                                                "to test error handling" );
 
@@ -289,7 +308,10 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
      * This shows we need to load up the model without anything attached yet.
      */
     public void testModelWithNoAttachment() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem item = repo.createPackage( "testmodelWithNoAttachment",
                                                "to test model loading" );
 

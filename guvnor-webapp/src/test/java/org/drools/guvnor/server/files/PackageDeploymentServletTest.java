@@ -16,41 +16,24 @@
 
 package org.drools.guvnor.server.files;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.httpclient.Header;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.HeadMethod;
-import org.drools.KnowledgeBase;
-import org.drools.agent.KnowledgeAgent;
-import org.drools.agent.KnowledgeAgentFactory;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.FileManager;
-import org.drools.definition.KnowledgePackage;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.io.ResourceChangeScannerConfiguration;
-import org.drools.io.ResourceFactory;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-//import org.jboss.resteasy.plugins.server.tjws.TJWSEmbeddedJaxrsServer;
-import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class PackageDeploymentServletTest extends GuvnorTestBase {
 
@@ -301,13 +284,15 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 */
     @Test
     public void testScenariosAndChangeSet() throws Exception {
-        RulesRepository repo = getRulesRepository();
 
-        RepositoryPackageService impl = getRepositoryPackageService();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
+        RepositoryPackageService repoServiceImpl = getRepositoryPackageService();
 
         repo.createPackage( "testScenariosURL",
                             "" );
-        impl.createPackageSnapshot( "testScenariosURL",
+        repoServiceImpl.createPackageSnapshot( "testScenariosURL",
                                     "SNAP1",
                                     false,
                                     "" );
@@ -360,7 +345,9 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
     @Test
     public void testPNG() throws Exception {
-        RulesRepository repo = getRulesRepository();
+        
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPNGPackage",
                                               "" );

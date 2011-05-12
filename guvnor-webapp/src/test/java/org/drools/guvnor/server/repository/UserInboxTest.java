@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
@@ -32,7 +33,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testInboxen() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
         inb.addToRecentEdited( "ABC",
@@ -93,7 +97,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testLoadEntriesRecentlyOpened() {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
         inb.addToRecentOpened( "QED",
@@ -107,7 +114,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testLoadEntriesRecentlyEdited() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
         inb.addToRecentEdited( "ABC",
@@ -123,7 +133,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testLoadEntriesIncoming() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
                                                               "" );
         UserInbox ib = new UserInbox( repo );
@@ -142,7 +155,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testRead() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
         inb.addToRecentOpened( "QED",
@@ -160,7 +176,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testDupes() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
 
@@ -202,7 +221,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testHelper() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
         AssetItem asset = repo.loadDefaultPackage().addAsset( "InBoxTestHelper",
@@ -227,7 +249,10 @@ public class UserInboxTest extends GuvnorTestBase {
 
     @Test
     public void testIncoming() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
                                                               "" );
         UserInbox ib = new UserInbox( repo );

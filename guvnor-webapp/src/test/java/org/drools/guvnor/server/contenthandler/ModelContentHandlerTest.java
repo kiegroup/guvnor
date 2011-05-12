@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.InputStream;
 
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -34,7 +35,10 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
 
     @Test
     public void testModelAttached() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
                                                   "for test" );
         AssetItem asset = pacakge.addAsset( "testModelAttachedAsset",
@@ -52,7 +56,10 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
 
     @Test
     public void testModelRemoved() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testModelRemovedPackage",
                                               "for test" );
         AssetItem asset = pkg.addAsset( "testModelRemovedAsset",

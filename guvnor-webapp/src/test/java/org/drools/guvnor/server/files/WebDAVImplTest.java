@@ -33,6 +33,7 @@ import net.sf.webdav.ITransaction;
 
 import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -696,9 +697,13 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
     @Test
     public void testThreadLocal() throws Exception {
+        
+        ServiceImplementation impl = getServiceImplementation();
+        final RulesRepository repo = impl.getRulesRepository();
+
         Thread t = new Thread( new Runnable() {
             public void run() {
-                WebDAVImpl i = new WebDAVImpl( getRulesRepository() );
+                WebDAVImpl i = new WebDAVImpl( repo );
                 assertNull( i.getRepo() );
                 try {
                     i.begin( null );

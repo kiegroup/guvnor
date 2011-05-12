@@ -22,18 +22,19 @@ import static org.junit.Assert.assertSame;
 import java.util.List;
 
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo.InboxEntry;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testMailbox() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );
@@ -119,7 +120,9 @@ public class MailboxServiceTest extends GuvnorTestBase {
 
     @Test
     public void testOneToMany() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );

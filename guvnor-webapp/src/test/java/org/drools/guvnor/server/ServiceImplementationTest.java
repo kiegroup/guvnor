@@ -134,97 +134,104 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Ignore("This needs a little re-work as it does not work as expected")
     public void testInboxEvents() throws Exception {
-        RepositoryStartupService.registerCheckinListener();
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
-        assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
-        //this should trigger the fact that the original user edited something
-        AssetItem as = impl.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
-                                                                                "" );
-        as.checkin( "" );
-        RuleAsset ras = assetServiceImpl.loadRuleAsset( as.getUUID() );
-        
-        TableDataResult res = impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
-        boolean found = false;
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( ras.uuid ) ) found = true;
-        }
-        assertTrue( found );
+        try {
+            RepositoryStartupService.registerCheckinListener();
+            ServiceImplementation impl = getServiceImplementation();
+            
+            RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
+            assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
-        //but should not be in "incoming" yet
-        found = false;
-        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertFalse( found );
+            //this should trigger the fact that the original user edited something
+            AssetItem as = impl.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
+                                                                                    "" );
+            as.checkin( "" );
+            RuleAsset ras = assetServiceImpl.loadRuleAsset( as.getUUID() );
 
-        //Now, another user comes along, makes a change...
-        RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "thirdpartyuser" ) );
-        AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
-        as2.updateContent( "hey" );
-        as2.checkin( "here we go again !" );
-
-        Thread.sleep( 200 );
-
-        //now check that it is in the first users inbox
-        TableDataRow rowMatch = null;
-        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) {
-                rowMatch = row;
-                break;
+            TableDataResult res = impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
+            boolean found = false;
+            for ( TableDataRow row : res.data ) {
+                if ( row.id.equals( ras.uuid ) ) found = true;
             }
+            assertTrue( found );
+
+            //but should not be in "incoming" yet
+            found = false;
+            res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+            for ( TableDataRow row : res.data ) {
+                if ( row.id.equals( as.getUUID() ) ) found = true;
+            }
+            assertFalse( found );
+
+            //Now, another user comes along, makes a change...
+            RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "thirdpartyuser" ) );
+            AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
+            as2.updateContent( "hey" );
+            as2.checkin( "here we go again !" );
+
+            Thread.sleep( 200 );
+
+            //now check that it is in the first users inbox
+            TableDataRow rowMatch = null;
+            res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+            for ( TableDataRow row : res.data ) {
+                if ( row.id.equals( as.getUUID() ) ) {
+                    rowMatch = row;
+                    break;
+                }
+            }
+            assertNotNull( rowMatch );
+            assertEquals( as.getName(),
+                          rowMatch.values[0] );
+            assertEquals( "thirdpartyuser",
+                          rowMatch.values[2] ); //should be "from" that user name...
+
+            //shouldn't be in thirdpartyusers inbox
+            UserInbox ib = new UserInbox( repo2 );
+            ib.loadIncoming();
+            assertEquals( 0,
+                          ib.loadIncoming().size() );
+            assertEquals( 1,
+                          ib.loadRecentEdited().size() );
+
+            //ok lets create another user...
+            RulesRepository repo3 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "fourthuser" ) );
+            AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
+            as3.updateContent( "hey22" );
+            as3.checkin( "here we go again 22!" );
+
+            Thread.sleep( 250 );
+
+            //so should be in thirdpartyuser inbox
+            assertEquals( 1,
+                          ib.loadIncoming().size() );
+
+            //and also still in the original user...
+            found = false;
+            res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+            for ( TableDataRow row : res.data ) {
+                if ( row.id.equals( as.getUUID() ) ) found = true;
+            }
+            assertTrue( found );
+
+            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+            //now lets open it with first user, and check that it disappears from the incoming...
+            repositoryAssetService.loadRuleAsset( as.getUUID() );
+            found = false;
+            res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+            for ( TableDataRow row : res.data ) {
+                if ( row.id.equals( as.getUUID() ) ) found = true;
+            }
+            assertFalse( found );
+        } finally {
+            RepositoryStartupService.removeListeners();
         }
-        assertNotNull( rowMatch );
-        assertEquals( as.getName(),
-                      rowMatch.values[0] );
-        assertEquals( "thirdpartyuser",
-                      rowMatch.values[2] ); //should be "from" that user name...
-
-        //shouldn't be in thirdpartyusers inbox
-        UserInbox ib = new UserInbox( repo2 );
-        ib.loadIncoming();
-        assertEquals( 0,
-                      ib.loadIncoming().size() );
-        assertEquals( 1,
-                      ib.loadRecentEdited().size() );
-
-        //ok lets create another user...
-        RulesRepository repo3 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "fourthuser" ) );
-        AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
-        as3.updateContent( "hey22" );
-        as3.checkin( "here we go again 22!" );
-
-        Thread.sleep( 250 );
-
-        //so should be in thirdpartyuser inbox
-        assertEquals( 1,
-                      ib.loadIncoming().size() );
-
-        //and also still in the original user...
-        found = false;
-        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertTrue( found );
-
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
-        //now lets open it with first user, and check that it disappears from the incoming...
-        repositoryAssetService.loadRuleAsset( as.getUUID() );
-        found = false;
-        res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-        for ( TableDataRow row : res.data ) {
-            if ( row.id.equals( as.getUUID() ) ) found = true;
-        }
-        assertFalse( found );
 
     }
 
     @Test
     public void testCategory() throws Exception {
+        
         ServiceImplementation serviceImplementation = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
@@ -900,53 +907,59 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testTrackRecentOpenedChanged() throws Exception {
-        RepositoryStartupService.registerCheckinListener();
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        UserInbox ib = new UserInbox( impl.getRulesRepository() );
-        ib.clearAll();
-        impl.getRulesRepository().createPackage( "testTrackRecentOpenedChanged",
-                                                 "desc" );
-        repositoryCategoryService.createCategory( "",
-                                                  "testTrackRecentOpenedChanged",
-                                                  "this is a cat" );
 
-        String id = impl.createNewRule( "myrule",
-                                        "desc",
-                                        "testTrackRecentOpenedChanged",
-                                        "testTrackRecentOpenedChanged",
-                                        "drl" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
-        RuleAsset ass = repositoryAssetService.loadRuleAsset( id );
+        try {
+            RepositoryStartupService.registerCheckinListener();
+            ServiceImplementation impl = getServiceImplementation();
+            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+            
+            UserInbox ib = new UserInbox( impl.getRulesRepository() );
+            ib.clearAll();
+            impl.getRulesRepository().createPackage( "testTrackRecentOpenedChanged",
+                                                     "desc" );
+            repositoryCategoryService.createCategory( "",
+                                                      "testTrackRecentOpenedChanged",
+                                                      "this is a cat" );
 
-        repositoryAssetService.checkinVersion( ass );
+            String id = impl.createNewRule( "myrule",
+                                            "desc",
+                                            "testTrackRecentOpenedChanged",
+                                            "testTrackRecentOpenedChanged",
+                                            "drl" );
+            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+            RuleAsset ass = repositoryAssetService.loadRuleAsset( id );
 
-        List<InboxEntry> es = ib.loadRecentEdited();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.uuid,
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.name,
-                      es.get( 0 ).note );
+            repositoryAssetService.checkinVersion( ass );
 
-        ib.clearAll();
+            List<InboxEntry> es = ib.loadRecentEdited();
+            assertEquals( 1,
+                          es.size() );
+            assertEquals( ass.uuid,
+                          es.get( 0 ).assetUUID );
+            assertEquals( ass.name,
+                          es.get( 0 ).note );
 
-        repositoryAssetService.loadRuleAsset( ass.uuid );
-        es = ib.loadRecentEdited();
-        assertEquals( 0,
-                      es.size() );
+            ib.clearAll();
 
-        //now check they have it in their opened list...
-        es = ib.loadRecentOpened();
-        assertEquals( 1,
-                      es.size() );
-        assertEquals( ass.uuid,
-                      es.get( 0 ).assetUUID );
-        assertEquals( ass.name,
-                      es.get( 0 ).note );
+            repositoryAssetService.loadRuleAsset( ass.uuid );
+            es = ib.loadRecentEdited();
+            assertEquals( 0,
+                          es.size() );
 
-        assertEquals( 0,
-                      ib.loadRecentEdited().size() );
+            //now check they have it in their opened list...
+            es = ib.loadRecentOpened();
+            assertEquals( 1,
+                          es.size() );
+            assertEquals( ass.uuid,
+                          es.get( 0 ).assetUUID );
+            assertEquals( ass.name,
+                          es.get( 0 ).note );
+
+            assertEquals( 0,
+                          ib.loadRecentEdited().size() );
+        } finally {
+            RepositoryStartupService.removeListeners();
+        }
     }
 
     @Test
@@ -1017,106 +1030,113 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCheckin() throws Exception {
-        RepositoryStartupService.registerCheckinListener();
-        ServiceImplementation serv = getServiceImplementation();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        UserInbox ib = new UserInbox( serv.getRulesRepository() );
-        List<InboxEntry> inbox = ib.loadRecentEdited();
+        try {
+            RepositoryStartupService.registerCheckinListener();
+            ServiceImplementation serv = getServiceImplementation();
+            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
-        repositoryPackageService.listPackages();
+            UserInbox ib = new UserInbox( serv.getRulesRepository() );
+            List<InboxEntry> inbox = ib.loadRecentEdited();
 
-        repositoryCategoryService.createCategory( "/",
-                                                  "testCheckinCategory",
-                                                  "this is a description" );
-        repositoryCategoryService.createCategory( "/",
-                                                  "testCheckinCategory2",
-                                                  "this is a description" );
-        repositoryCategoryService.createCategory( "testCheckinCategory",
-                                                  "deeper",
-                                                  "description" );
+            repositoryPackageService.listPackages();
 
-        String uuid = serv.createNewRule( "testChecking",
-                                          "this is a description",
-                                          "testCheckinCategory",
-                                          RulesRepository.DEFAULT_PACKAGE,
-                                          AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+            repositoryCategoryService.createCategory( "/",
+                                                      "testCheckinCategory",
+                                                      "this is a description" );
+            repositoryCategoryService.createCategory( "/",
+                                                      "testCheckinCategory2",
+                                                      "this is a description" );
+            repositoryCategoryService.createCategory( "testCheckinCategory",
+                                                      "deeper",
+                                                      "description" );
 
-        assertNotNull( asset.lastModified );
+            String uuid = serv.createNewRule( "testChecking",
+                                              "this is a description",
+                                              "testCheckinCategory",
+                                              RulesRepository.DEFAULT_PACKAGE,
+                                              AssetFormats.DRL );
+            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
 
-        asset.metaData.coverage = "boo";
-        asset.content = new RuleContentText();
-        ((RuleContentText) asset.content).content = "yeah !";
-        asset.description = "Description 1";
+            assertNotNull( asset.lastModified );
 
-        Date start = new Date();
-        Thread.sleep( 100 );
+            asset.metaData.coverage = "boo";
+            asset.content = new RuleContentText();
+            ((RuleContentText) asset.content).content = "yeah !";
+            asset.description = "Description 1";
 
-        String uuid2 = repositoryAssetService.checkinVersion( asset );
-        assertEquals( uuid,
-                      uuid2 );
+            Date start = new Date();
+            Thread.sleep( 100 );
 
-        assertTrue( ib.loadRecentEdited().size() > inbox.size() );
+            String uuid2 = repositoryAssetService.checkinVersion( asset );
+            assertEquals( uuid,
+                          uuid2 );
 
-        RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid );
-        assertNotNull( asset2.lastModified );
-        assertTrue( asset2.lastModified.after( start ) );
+            assertTrue( ib.loadRecentEdited().size() > inbox.size() );
 
-        assertEquals( "boo",
-                      asset2.metaData.coverage );
-        assertEquals( 1,
-                      asset2.versionNumber );
+            RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid );
+            assertNotNull( asset2.lastModified );
+            assertTrue( asset2.lastModified.after( start ) );
 
-        assertEquals( "yeah !",
-                      ((RuleContentText) asset2.content).content );
-        
-        assertEquals( "Description 1", asset2.description);
+            assertEquals( "boo",
+                          asset2.metaData.coverage );
+            assertEquals( 1,
+                          asset2.versionNumber );
 
-        asset2.metaData.coverage = "ya";
-        asset2.checkinComment = "checked in";
+            assertEquals( "yeah !",
+                          ((RuleContentText) asset2.content).content );
 
-        String cat = asset2.metaData.categories[0];
-        asset2.metaData.categories = new String[3];
-        asset2.metaData.categories[0] = cat;
-        asset2.metaData.categories[1] = "testCheckinCategory2";
-        asset2.metaData.categories[2] = "testCheckinCategory/deeper";
-        asset2.description = "Description 2";
+            assertEquals( "Description 1",
+                          asset2.description );
 
-        repositoryAssetService.checkinVersion( asset2 );
+            asset2.metaData.coverage = "ya";
+            asset2.checkinComment = "checked in";
 
-        asset2 = repositoryAssetService.loadRuleAsset( uuid );
-        assertEquals( "ya",
-                      asset2.metaData.coverage );
-        assertEquals( 2,
-                      asset2.versionNumber );
-        assertEquals( "checked in",
-                      asset2.checkinComment );
-        assertEquals( 3,
-                      asset2.metaData.categories.length );
-        assertEquals( "testCheckinCategory",
-                      asset2.metaData.categories[0] );
-        assertEquals( "testCheckinCategory2",
-                      asset2.metaData.categories[1] );
-        assertEquals( "testCheckinCategory/deeper",
-                      asset2.metaData.categories[2] );
-        assertEquals( "Description 2", asset2.description);
+            String cat = asset2.metaData.categories[0];
+            asset2.metaData.categories = new String[3];
+            asset2.metaData.categories[0] = cat;
+            asset2.metaData.categories[1] = "testCheckinCategory2";
+            asset2.metaData.categories[2] = "testCheckinCategory/deeper";
+            asset2.description = "Description 2";
 
-        // now lets try a concurrent edit of an asset.
-        // asset3 will be loaded and edited, and then asset2 will try to
-        // clobber, it, which should fail.
-        // as it is optimistically locked.
-        RuleAsset asset3 = repositoryAssetService.loadRuleAsset( asset2.uuid );
-        asset3.metaData.subject = "new sub";
-        repositoryAssetService.checkinVersion( asset3 );
+            repositoryAssetService.checkinVersion( asset2 );
 
-        asset3 = repositoryAssetService.loadRuleAsset( asset2.uuid );
-        assertFalse( asset3.versionNumber == asset2.versionNumber );
+            asset2 = repositoryAssetService.loadRuleAsset( uuid );
+            assertEquals( "ya",
+                          asset2.metaData.coverage );
+            assertEquals( 2,
+                          asset2.versionNumber );
+            assertEquals( "checked in",
+                          asset2.checkinComment );
+            assertEquals( 3,
+                          asset2.metaData.categories.length );
+            assertEquals( "testCheckinCategory",
+                          asset2.metaData.categories[0] );
+            assertEquals( "testCheckinCategory2",
+                          asset2.metaData.categories[1] );
+            assertEquals( "testCheckinCategory/deeper",
+                          asset2.metaData.categories[2] );
+            assertEquals( "Description 2",
+                          asset2.description );
 
-        String result = repositoryAssetService.checkinVersion( asset2 );
-        assertTrue( result.startsWith( "ERR" ) );
-        System.err.println( result.substring( 5 ) );
+            // now lets try a concurrent edit of an asset.
+            // asset3 will be loaded and edited, and then asset2 will try to
+            // clobber, it, which should fail.
+            // as it is optimistically locked.
+            RuleAsset asset3 = repositoryAssetService.loadRuleAsset( asset2.uuid );
+            asset3.metaData.subject = "new sub";
+            repositoryAssetService.checkinVersion( asset3 );
+
+            asset3 = repositoryAssetService.loadRuleAsset( asset2.uuid );
+            assertFalse( asset3.versionNumber == asset2.versionNumber );
+
+            String result = repositoryAssetService.checkinVersion( asset2 );
+            assertTrue( result.startsWith( "ERR" ) );
+            System.err.println( result.substring( 5 ) );
+        } finally {
+            RepositoryStartupService.removeListeners();
+        }
 
     }
 
@@ -5394,7 +5414,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource",
                                                                    "" );
 
-        //Package version 2	
+        //Package version 2 
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
                                          pkg );
 
@@ -5533,7 +5553,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         func.updateContent( "function void foo() { System.out.println(version 2); }" );
         func.checkin( "func version 2" );
 
-        //Package version 2		
+        //Package version 2     
         pkg.checkout();
         pkg.checkin( "package version 2" );
 
@@ -5544,7 +5564,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         func.updateContent( "function void foo() { System.out.println(version 2); }" );
         func.checkin( "func version 3" );
 
-        //Package version 4		
+        //Package version 4     
         pkg.checkout();
         pkg.checkin( "package version 4" );
 
