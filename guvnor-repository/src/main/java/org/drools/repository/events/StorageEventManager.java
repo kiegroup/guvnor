@@ -16,12 +16,11 @@
 
 package org.drools.repository.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.repository.AssetItem;
 import org.drools.repository.VersionableItem;
-
-import java.io.InputStream;
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * This manages storage events, which may load/save from another location, or just notify on change etc.
@@ -82,7 +81,10 @@ public class StorageEventManager {
     public static void registerCheckinEvent(CheckinEvent ev) {
         checkinEvents.add(ev);
     }
-
+    
+    public static void removeListeners() {
+        checkinEvents.clear();
+    }
 
     /**
      * Process any checkin event listeners.

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryPackageService;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -284,13 +285,15 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     */
     @Test
     public void testScenariosAndChangeSet() throws Exception {
-        RulesRepository repo = getRulesRepository();
 
-        RepositoryPackageService impl = getRepositoryPackageService();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
+        RepositoryPackageService repoServiceImpl = getRepositoryPackageService();
 
         repo.createPackage( "testScenariosURL",
                             "" );
-        impl.createPackageSnapshot( "testScenariosURL",
+        repoServiceImpl.createPackageSnapshot( "testScenariosURL",
                                     "SNAP1",
                                     false,
                                     "" );
@@ -343,7 +346,9 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
     @Test
     public void testPNG() throws Exception {
-        RulesRepository repo = getRulesRepository();
+        
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPNGPackage",
                                               "" );

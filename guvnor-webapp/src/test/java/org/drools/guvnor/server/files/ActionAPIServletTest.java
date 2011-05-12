@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.ActionsAPI.Parameters;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
@@ -43,7 +44,10 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     @Test
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         repo.createPackage( dynamicPackage,
                             "test-action package for testing" );
         HashMap<String, String> headers = new HashMap<String, String>() {
@@ -73,7 +77,10 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     @Test
     public void testSnapshotCreation() throws Exception {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         repo.createPackage( dynamicPackage,
                             "test-snapshot package for testing" );
         HashMap<String, String> headers = new HashMap<String, String>() {

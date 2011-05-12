@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
@@ -66,7 +67,10 @@ public class ContentHandlerTest extends GuvnorTestBase {
     @Test
     @Ignore("MVEL error")
     public void testValidating() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testValidatingEnum",
                                         "" );
@@ -90,7 +94,10 @@ public class ContentHandlerTest extends GuvnorTestBase {
 
     @Test
     public void testEmptyDT() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testEmptyDT",
                                         "" );

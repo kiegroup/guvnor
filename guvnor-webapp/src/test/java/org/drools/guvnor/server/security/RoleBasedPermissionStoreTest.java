@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
 public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
@@ -29,7 +31,11 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
     private RoleBasedPermissionStore getStore() throws Exception {
         RoleBasedPermissionStore store = new RoleBasedPermissionStore();
 
-        store.repository = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+        
+        store.repository = repo;
+        
         return store;
     }
 

@@ -42,8 +42,6 @@ import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -54,7 +52,9 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         FileManagerUtils uploadHelper = getFileManagerUtils();
 
-        RulesRepository repo = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile",
                                                              "description" );
         item.updateFormat( "drl" );
@@ -77,7 +77,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testAttachModel() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testAttachModelImports",
                                               "heh" );
         AssetItem asset = pkg.addAsset( "MyModel",
@@ -120,7 +123,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     @Test
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = getFileManagerUtils();
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
         item.updateFormat( "drl" );
@@ -145,8 +151,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
-        RulesRepository repo = getRulesRepository();
-        RepositoryPackageService impl = getRepositoryPackageService();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
+        RepositoryPackageService repoPackageService = getRepositoryPackageService();
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
@@ -162,7 +170,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( before < uploadHelper.getLastModified( pkg.getName(),
                                                            "LATEST" ) );
 
-        impl.createPackageSnapshot( pkg.getName(),
+        repoPackageService.createPackageSnapshot( pkg.getName(),
                                     "SNAPPY 1",
                                     false,
                                     "" );
@@ -213,7 +221,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "import java.util.List" ) > -1 );
 
         Thread.sleep( 100 );
-        impl.createPackageSnapshot( pkg.getName(),
+        repoPackageService.createPackageSnapshot( pkg.getName(),
                                     "SNAPX",
                                     false,
                                     "" );
@@ -224,7 +232,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         Thread.sleep( 100 );
 
-        impl.createPackageSnapshot( pkg.getName(),
+        repoPackageService.createPackageSnapshot( pkg.getName(),
                                     "SNAPX",
                                     true,
                                     "yeah" );
@@ -486,7 +494,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     @Test
     @Ignore("This test is broken. The approach needs to be revised - i.e. not use FileManagerUtils to handle repository sessions.")
     public void testHeadOOME() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testHeadOOME",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
@@ -517,7 +528,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.loadPackage( nm );
         pkg.updateDescription( System.currentTimeMillis() + "" );
         pkg.checkin( "a change" );

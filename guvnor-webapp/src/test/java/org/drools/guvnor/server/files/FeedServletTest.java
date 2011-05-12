@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -41,7 +42,10 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testPackageFeed() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testPackageFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
@@ -154,7 +158,10 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testCategoryFeed() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testCategoryFeed",
                                               "" );
         repo.loadCategory( "/" ).addCategory( "testCategoryFeedCat",
@@ -242,7 +249,10 @@ public class FeedServletTest extends GuvnorTestBase {
 
     @Test
     public void testDiscussionFeed() throws Exception {
-        RulesRepository repo = getRulesRepository();
+
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.createPackage( "testDiscussionFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",

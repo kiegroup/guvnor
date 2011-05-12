@@ -31,6 +31,7 @@ import org.drools.guvnor.client.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.GuvnorTestBase;
+import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -161,7 +162,9 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
     public void testStore() throws Exception {
         FactModelContentHandler ch = new FactModelContentHandler();
 
-        RulesRepository repo = getRulesRepository();
+        ServiceImplementation impl = getServiceImplementation();
+        RulesRepository repo = impl.getRulesRepository();
+
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testDeclaredTypeStore",
                                         "" );

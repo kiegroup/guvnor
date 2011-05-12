@@ -16,21 +16,25 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.Collection;
+
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
-import org.drools.repository.IFramePerspectiveConfigurationItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
@@ -41,7 +45,8 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
     public void setUpGuvnorTestBase() {
         setUpSeam();
         setUpRepository();
-        rulesRepository = spy(getRulesRepository());
+        ServiceImplementation impl = getServiceImplementation();
+        rulesRepository = spy(impl.getRulesRepository());
         createConfigurationService();
     }
 
