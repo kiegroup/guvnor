@@ -80,7 +80,7 @@ public abstract class GuvnorTestBase {
                                           repositoryCategoryService );
     }
 
-    protected RulesRepository getRulesRepository() {
+    private RulesRepository getRulesRepository() {
         if ( repository == null ) {
             repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
         }

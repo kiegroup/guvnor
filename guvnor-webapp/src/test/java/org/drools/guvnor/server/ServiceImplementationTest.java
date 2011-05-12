@@ -264,7 +264,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testDeleteUnversionedRule() throws Exception {
-        getRulesRepository();
+
         ServiceImplementation impl = getServiceImplementation();
 
         impl.getRulesRepository().loadDefaultPackage();
@@ -3896,8 +3896,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( PAGE_SIZE,
                       responsePage2.getStartRowIndex() );
-        //alan_parson is implicit when running full test suite
-        assertEquals( 2,
+        assertEquals( 1,
                       responsePage2.getPageRowList().size() );
         assertTrue( responsePage2.isLastPage() );
 
@@ -3927,8 +3926,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         assertEquals( 0,
                       response.getStartRowIndex() );
-        //alan_parson is implicit when running full test suite
-        assertEquals( 4,
+        assertEquals( 3,
                       response.getPageRowList().size() );
 
         assertTrue( response.isLastPage() );
