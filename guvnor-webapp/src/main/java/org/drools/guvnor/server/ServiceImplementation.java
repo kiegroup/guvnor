@@ -293,8 +293,7 @@ public class ServiceImplementation
                                                                              skip,
                                                                              numRows,
                                                                              filter );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
+        return new TableDisplayHandler( tableConfig ).loadRuleListTable( result );
     }
 
     /**
@@ -448,8 +447,7 @@ public class ServiceImplementation
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
             PackageItem packageItem = getRulesRepository().loadPackage( packageName );
-            SuggestionCompletionEngineLoaderInitializer suggestionCompletionEngineLoader = new SuggestionCompletionEngineLoaderInitializer();
-            suggestionCompletionEngine = suggestionCompletionEngineLoader.loadFor( packageItem );
+            suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor( packageItem );
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
             throw new SerializationException( e.getMessage() );
@@ -491,16 +489,12 @@ public class ServiceImplementation
 
         serviceSecurity.checkSecurityIsAdmin();
 
-        // Do query
         long start = System.currentTimeMillis();
         LogEntry[] logEntries = LoggingHelper.getMessages();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        // Populate response
-
-        LogPageRowBuilder logPageRowBuilder = new LogPageRowBuilder();
-        List<LogPageRow> rowList = logPageRowBuilder.createRows( request,
-                                                                 logEntries );
+        List<LogPageRow> rowList = new LogPageRowBuilder().createRows( request,
+                                                                       logEntries );
 
         PageResponse<LogPageRow> response = new PageResponseBuilder<LogPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )
@@ -580,13 +574,14 @@ public class ServiceImplementation
 
         // Do query
         long start = System.currentTimeMillis();
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
-        Map<String, List<String>> permissions = pm.listUsers();
+        Map<String, List<String>> permissions = new PermissionManager( getRulesRepository() )
+                                                        .listUsers();
+
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        PermissionPageRowBuilder permissionPageRowBuilder = new PermissionPageRowBuilder();
-        List<PermissionsPageRow> rowList = permissionPageRowBuilder.createRows( request,
-                                                                                permissions );
+        List<PermissionsPageRow> rowList = new PermissionPageRowBuilder().createRows( request,
+                                                                                      permissions );
+
         PageResponse<PermissionsPageRow> response = new PageResponseBuilder<PermissionsPageRow>()
                                                         .withStartRowIndex( request.getStartRowIndex() )
                                                         .withTotalRowSize( permissions.size() )
@@ -677,19 +672,18 @@ public class ServiceImplementation
         }
 
         String inboxName = request.getInboxName();
-        UserInbox userInbox = new UserInbox( getRulesRepository() );
         PageResponse<InboxPageRow> response = new PageResponse<InboxPageRow>();
         long start = System.currentTimeMillis();
 
         try {
 
-            List<InboxEntry> entries = userInbox.loadEntries( inboxName );
+            List<InboxEntry> entries = new UserInbox( getRulesRepository() ).loadEntries( inboxName );
+
             log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
             Iterator<InboxEntry> iterator = entries.iterator();
-            InboxPageRowBuilder inboxPageRowBuilder = new InboxPageRowBuilder();
-            List<InboxPageRow> rowList = inboxPageRowBuilder.createRows( request,
-                                                                             iterator );
+            List<InboxPageRow> rowList = new InboxPageRowBuilder().createRows( request,
+                                                                               iterator );
 
             response = new PageResponseBuilder<InboxPageRow>()
                         .withStartRowIndex( request.getStartRowIndex() )
@@ -771,9 +765,8 @@ public class ServiceImplementation
 
         long totalRowsCount = it.getSize();
 
-        QueryFullTextPageRowBuilder queryFullTextPageRowBuilder = new QueryFullTextPageRowBuilder();
-        List<QueryPageRow> rowList = queryFullTextPageRowBuilder.createRows( request,
-                                                                                 it );
+        List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder().createRows( request,
+                                                                                   it );
         boolean bHasMoreRows = it.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                       .withStartRowIndex( request.getStartRowIndex() )
@@ -809,9 +802,8 @@ public class ServiceImplementation
 
         long totalRowsCount = it.getSize();
 
-        QueryMetadataPageRowBuilder queryMetadataPageRowBuilder = new QueryMetadataPageRowBuilder();
-        List<QueryPageRow> rowList = queryMetadataPageRowBuilder.createRows( request,
-                                                                                 it );
+        List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder().createRows( request,
+                                                                                   it );
         boolean bHasMoreRows = it.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )
@@ -875,9 +867,8 @@ public class ServiceImplementation
         // Populate response
         boolean bHasMoreRows = result.hasNext;
 
-        StatePageRowBuilder statePageRowBuilder = new StatePageRowBuilder();
-        List<StatePageRow> rowList = statePageRowBuilder.createRows( request,
-                                                                     result.assets.iterator() );
+        List<StatePageRow> rowList = new StatePageRowBuilder().createRows( request,
+                                                                           result.assets.iterator() );
         PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )
