@@ -48,6 +48,11 @@ public class PageResponseBuilder<T extends AbstractPageRow> {
         return this;
     }
 
+    public PageResponseBuilder<T> withTotalRowSizeExact() {
+        pageResponse.setTotalRowSizeExact( true );
+        return this;
+    }
+
     public void fixTotalRowSize(long totalRowsCount) {
 
         // CellTable only handles integer row counts

@@ -497,17 +497,18 @@ public class ServiceImplementation
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
-        PageResponse<LogPageRow> response = new PageResponse<LogPageRow>();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setTotalRowSize( logEntries.length );
-        response.setTotalRowSizeExact( true );
+
         LogPageRowBuilder logPageRowBuilder = new LogPageRowBuilder();
         List<LogPageRow> rowList = logPageRowBuilder.createRows( request,
                                                                  logEntries );
 
-        response.setPageRowList( rowList );
-        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == logEntries.length );
-
+        PageResponse<LogPageRow> response = new PageResponseBuilder<LogPageRow>()
+                                                .withStartRowIndex( request.getStartRowIndex() )
+                                                .withPageRowList( rowList )
+                                                .withTotalRowSizeExact()
+                                                .withLastPage( (rowList.size() + request.getStartRowIndex()) == logEntries.length )
+                                                .withTotalRowSize( logEntries.length )
+                                                    .build();
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
         return response;
@@ -583,18 +584,16 @@ public class ServiceImplementation
         Map<String, List<String>> permissions = pm.listUsers();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        // Populate response
-        PageResponse<PermissionsPageRow> response = new PageResponse<PermissionsPageRow>();
-        response.setStartRowIndex( request.getStartRowIndex() );
-        response.setTotalRowSize( permissions.size() );
-        response.setTotalRowSizeExact( true );
-
         PermissionPageRowBuilder permissionPageRowBuilder = new PermissionPageRowBuilder();
         List<PermissionsPageRow> rowList = permissionPageRowBuilder.createRows( request,
                                                                                 permissions );
-        response.setPageRowList( rowList );
-        response.setLastPage( (rowList.size() + request.getStartRowIndex()) == permissions.size() );
-
+        PageResponse<PermissionsPageRow> response = new PageResponseBuilder<PermissionsPageRow>()
+                                                        .withStartRowIndex( request.getStartRowIndex() )
+                                                        .withTotalRowSize( permissions.size() )
+                                                        .withTotalRowSizeExact()
+                                                        .withPageRowList( rowList )
+                                                        .withLastPage( (rowList.size() + request.getStartRowIndex()) == permissions.size() )
+                                                            .build();
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Retrieved Log Entries in " + methodDuration + " ms." );
         return response;
@@ -684,22 +683,21 @@ public class ServiceImplementation
 
         try {
 
-            // Do applicable query
             List<InboxEntry> entries = userInbox.loadEntries( inboxName );
             log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-            // Populate response
             Iterator<InboxEntry> iterator = entries.iterator();
             InboxPageRowBuilder inboxPageRowBuilder = new InboxPageRowBuilder();
             List<InboxPageRow> rowList = inboxPageRowBuilder.createRows( request,
                                                                              iterator );
 
-            response.setStartRowIndex( request.getStartRowIndex() );
-            response.setTotalRowSize( entries.size() );
-            response.setTotalRowSizeExact( true );
-            response.setPageRowList( rowList );
-            response.setLastPage( !iterator.hasNext() );
-
+            response = new PageResponseBuilder<InboxPageRow>()
+                        .withStartRowIndex( request.getStartRowIndex() )
+                        .withTotalRowSize( entries.size() )
+                        .withTotalRowSizeExact()
+                        .withPageRowList( rowList )
+                        .withLastPage( !iterator.hasNext() )
+                            .build();
             long methodDuration = System.currentTimeMillis() - start;
             log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );
 
