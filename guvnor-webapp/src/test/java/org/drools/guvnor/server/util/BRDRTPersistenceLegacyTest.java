@@ -22,7 +22,6 @@ import static org.junit.Assert.assertNotNull;
 import java.util.HashSet;
 
 import org.drools.ide.common.client.modeldriven.FieldNature;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -39,8 +38,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BRDRTPersistenceTest {
-    private static final Logger log = LoggerFactory.getLogger(BRDRTPersistenceTest.class);
+public class BRDRTPersistenceLegacyTest {
+    private static final Logger log = LoggerFactory.getLogger(BRDRTPersistenceLegacyTest.class);
     private BRLPersistence p;
 
     @Before
@@ -87,7 +86,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -113,7 +111,7 @@ public class BRDRTPersistenceTest {
             "\t\tCheese(type == \"Gouda\", price < 17)\n" +
             "\tthen\n" +
             "\t\tPerson fact0 = new Person();\n" +
-            "\t\tfact0.setAge( 87 );\n" +
+            "\t\tfact0.setAge( \"87\" );\n" +
             "\t\tinsert(fact0 );\n" +
             "end\n" +
             "\n" +
@@ -124,7 +122,7 @@ public class BRDRTPersistenceTest {
             "\t\tCheese(type == \"Cheddar\", price < 23)\n" +
             "\tthen\n" +
             "\t\tPerson fact0 = new Person();\n" +
-            "\t\tfact0.setAge( 34 );\n" +
+            "\t\tfact0.setAge( \"34\" );\n" +
             "\t\tinsert(fact0 );\n" +
             "end";
 
@@ -137,7 +135,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
 
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -148,20 +145,19 @@ public class BRDRTPersistenceTest {
         m.lhs[0] = fp;
 
         FreeFormLine ffl = new FreeFormLine();
-        ffl.text = "Cheese(type == @{type}, price < @{price})";
+        ffl.text = "Cheese(type == \"@{type}\", price < @{price})";
 
         m.lhs[1] = ffl;
 
         ActionInsertFact aif = new ActionInsertFact("Person");
         ActionFieldValue afv = new ActionFieldValue("age", "age", "");
-        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         afv.nature = FieldNature.TYPE_TEMPLATE;
 
         aif.addFieldValue(afv);
         m.rhs[0] = aif;
 
-        m.addRow(new String[] {"baunax", "\"Cheddar\"", "23", "34"});
-        m.addRow(new String[] {"diegoll", "\"Gouda\"", "17", "87"});
+        m.addRow(new String[] {"baunax", "Cheddar", "23", "34"});
+        m.addRow(new String[] {"diegoll", "Gouda", "17", "87"});
         final String drl = p.marshal(m);
         log.info("drl :\n{}", drl);
 
@@ -178,7 +174,7 @@ public class BRDRTPersistenceTest {
                 "\t\t$p : Person( name == \"diegoll\" )\n" +
                 "\tthen\n" +
                 "\t\tPerson fact0 = new Person();\n" +
-                "\t\tfact0.setAge( 87 );\n" +
+                "\t\tfact0.setAge( \"87\" );\n" +
                 "\t\tinsert(fact0 );\n" +
                 "end\n" +
                 "\n" +
@@ -188,7 +184,7 @@ public class BRDRTPersistenceTest {
                 "\t\t$p : Person( name == \"baunax\" )\n" +
                 "\tthen\n" +
                 "\t\tPerson fact0 = new Person();\n" +
-                "\t\tfact0.setAge( 34 );\n" +
+                "\t\tfact0.setAge( \"34\" );\n" +
                 "\t\tinsert(fact0 );\n" +
                 "end";
 
@@ -201,7 +197,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -213,7 +208,6 @@ public class BRDRTPersistenceTest {
         
         ActionInsertFact aif = new ActionInsertFact("Person");
         ActionFieldValue afv = new ActionFieldValue("age", "age", "");
-        afv.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         afv.nature = FieldNature.TYPE_TEMPLATE;
         
         aif.addFieldValue(afv);
@@ -254,7 +248,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -300,7 +293,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -336,7 +328,6 @@ public class BRDRTPersistenceTest {
         fp.setBoundName("$p");
         
         SingleFieldConstraint sfc = new SingleFieldConstraint("name");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         sfc.setFieldName("name");
         sfc.setValue("name");
         sfc.setOperator("==");
@@ -345,7 +336,6 @@ public class BRDRTPersistenceTest {
         fp.addConstraint(sfc);
         
         sfc = new SingleFieldConstraint("age");
-        sfc.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         sfc.setFieldName("age");
         sfc.setValue("age");
         sfc.setOperator("==");
