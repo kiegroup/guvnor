@@ -1182,7 +1182,7 @@ public class GuidedDTDRLPersistenceTest {
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
-        assertTrue( drl.indexOf( "age > 42" ) > 0 );
+        assertTrue( drl.indexOf( "age > \"42\"" ) > 0 );
 
     }
 
