@@ -56,6 +56,7 @@ import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
 import org.drools.rule.Rule;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mvel2.MVEL;
 
@@ -605,6 +606,7 @@ public class ContentPackageAssemblerTest extends GuvnorTestBase {
     }
 
     @Test
+    @Ignore("Known MVEL regression - https://github.com/etirelli/mvel/commit/c0110733608fcf96fb44d9b5351e3e17b6679cf2")
     public void testEventingExample() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
