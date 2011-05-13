@@ -38,9 +38,11 @@ public class DRLConstraintValueBuilder {
     public static void buildLHSFieldValue(StringBuilder buf,
                                           String fieldType,
                                           String fieldValue) {
-        if ( fieldType == null ) {
+        if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
+            buf.append( "\"" );
             buf.append( fieldValue );
+            buf.append( "\"" );
             return;
         }
 
@@ -77,9 +79,11 @@ public class DRLConstraintValueBuilder {
     public static void buildRHSFieldValue(StringBuilder buf,
                                           String fieldType,
                                           String fieldValue) {
-        if ( fieldType == null ) {
+        if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
+            buf.append( "\"" );
             buf.append( fieldValue );
+            buf.append( "\"" );
             return;
         }
 

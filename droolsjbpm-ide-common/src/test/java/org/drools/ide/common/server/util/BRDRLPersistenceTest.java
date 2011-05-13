@@ -129,17 +129,138 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    public void testEnum() {
-        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type = CheeseType.CHEDDAR )\n"
+    public void testEnumNoType() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CheeseType.CHEDDAR\" )\n"
                 + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
         final FactPattern pat = new FactPattern("Cheese");
-        //pat.boundName = "p1";
+
         m.addLhsItem(pat);
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName("type");
-        con.setOperator("=");
+        con.setOperator("==");
         con.setValue("CheeseType.CHEDDAR");
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+        pat.addConstraint(con);
+
+        m.addRhsItem(new ActionInsertFact("Report"));
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal(m);
+        assertEquals(expected, drl);
+    }
+
+    @Test
+    public void testEnumTypeString() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CHEDDAR\" )\n"
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern("Cheese");
+
+        m.addLhsItem(pat);
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("type");
+        con.setOperator("==");
+        con.setValue("CHEDDAR");
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+        pat.addConstraint(con);
+
+        m.addRhsItem(new ActionInsertFact("Report"));
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal(m);
+        assertEquals(expected, drl);
+    }
+
+    @Test
+    public void testEnumTypeNumeric() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( age == 100 )\n"
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern("Cheese");
+
+        m.addLhsItem(pat);
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("age");
+        con.setOperator("==");
+        con.setValue("100");
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+        pat.addConstraint(con);
+
+        m.addRhsItem(new ActionInsertFact("Report"));
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal(m);
+        assertEquals(expected, drl);
+    }
+
+    @Test
+    public void testEnumTypeBoolean() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( smelly == true )\n"
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern("Cheese");
+
+        m.addLhsItem(pat);
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("smelly");
+        con.setOperator("==");
+        con.setValue("true");
+        con.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+        pat.addConstraint(con);
+
+        m.addRhsItem(new ActionInsertFact("Report"));
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal(m);
+        assertEquals(expected, drl);
+    }
+
+    @Test
+    public void testEnumTypeDate() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( dateMade == \"31-Jan-2010\" )\n"
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern("Cheese");
+
+        m.addLhsItem(pat);
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("dateMade");
+        con.setOperator("==");
+        con.setValue("31-Jan-2010");
+        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
+        pat.addConstraint(con);
+
+        m.addRhsItem(new ActionInsertFact("Report"));
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal(m);
+        assertEquals(expected, drl);
+    }
+
+    @Test
+    public void testEnumTypeComparable() {
+        //Java 1.5+ "true" enums are of type Comparable
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == Cheese.CHEDDAR )\n"
+                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern("Cheese");
+
+        m.addLhsItem(pat);
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("type");
+        con.setOperator("==");
+        con.setValue("Cheese.CHEDDAR");
+        con.setFieldType( SuggestionCompletionEngine.TYPE_COMPARABLE );
         con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
         pat.addConstraint(con);
 
@@ -510,6 +631,137 @@ public class BRDRLPersistenceTest {
 
     }
 
+    @Test
+    public void testLiteralNumerics() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal numerics";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("44");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        p.addConstraint(con);
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldName("field2");
+        con2.setOperator("==");
+        con2.setValue("variableHere");
+        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+        p.addConstraint(con2);
+
+        m.addLhsItem(p);
+
+        String result = BRDRLPersistence.getInstance().marshal(m);
+
+        assertEqualsIgnoreWhitespace("rule \"test literal numerics\""
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == 44, field2 == variableHere)"
+                + " then " + "end", result);
+
+    }
+
+    @Test
+    public void testLiteralBooleans() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal booleans";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("true");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        p.addConstraint(con);
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldName("field2");
+        con2.setOperator("==");
+        con2.setValue("variableHere");
+        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+        p.addConstraint(con2);
+
+        m.addLhsItem(p);
+
+        String result = BRDRLPersistence.getInstance().marshal(m);
+
+        assertEqualsIgnoreWhitespace("rule \"test literal booleans\""
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == true, field2 == variableHere)"
+                + " then " + "end", result);
+
+    }
+
+    @Test
+    public void testLiteralDates() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal dates";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("31-Jan-2010");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        p.addConstraint(con);
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldName("field2");
+        con2.setOperator("==");
+        con2.setValue("variableHere");
+        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+        p.addConstraint(con2);
+
+        m.addLhsItem(p);
+
+        String result = BRDRLPersistence.getInstance().marshal(m);
+
+        assertEqualsIgnoreWhitespace("rule \"test literal dates\""
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
+                + " then " + "end", result);
+
+    }
+
+    @Test
+    public void testLiteralNoType() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test literal no type";
+
+        FactPattern p = new FactPattern("Person");
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName("field1");
+        con.setOperator("==");
+        con.setValue("bananna");
+        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        p.addConstraint(con);
+
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldName("field2");
+        con2.setOperator("==");
+        con2.setValue("variableHere");
+        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
+        p.addConstraint(con2);
+
+        m.addLhsItem(p);
+
+        String result = BRDRLPersistence.getInstance().marshal(m);
+
+        assertEqualsIgnoreWhitespace("rule \"test literal no type\""
+                + "\tdialect \"mvel\"\n when "
+                + "     Person(field1 == \"bananna\", field2 == variableHere)"
+                + " then " + "end", result);
+
+    }
+    
     @Test
     public void testRHSDateInsertAction() {
 
