@@ -103,16 +103,12 @@ public class RepositoryAssetOperations {
 
     protected BuilderResult buildAsset(RuleAsset asset) {
         BuilderResult result = new BuilderResult();
-
         try {
-
-            ContentHandler handler = ContentManager
-                    .getHandler( asset.getMetaData().getFormat() );
+            ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
-            if ( asset.getMetaData().isBinary() ) {
-                AssetItem item = getRulesRepository().loadAssetByUUID(
-                                                                       asset.getUuid() );
 
+            if ( asset.getMetaData().isBinary() ) {
+                AssetItem item = getRulesRepository().loadAssetByUUID( asset.getUuid() );
                 handler.storeAssetContent( asset,
                                            item );
 
@@ -131,11 +127,9 @@ public class RepositoryAssetOperations {
                     return ((IValidating) handler).validateAsset( asset );
                 }
 
-                PackageItem packageItem = getRulesRepository()
-                        .loadPackageByUUID( asset.getMetaData().getPackageUUID() );
+                PackageItem packageItem = getRulesRepository().loadPackageByUUID( asset.getMetaData().getPackageUUID() );
 
-                ContentPackageAssembler asm = new ContentPackageAssembler(
-                                                                           asset,
+                ContentPackageAssembler asm = new ContentPackageAssembler( asset,
                                                                            packageItem );
                 if ( !asm.hasErrors() ) {
                     return null;
@@ -164,9 +158,8 @@ public class RepositoryAssetOperations {
         }
 
         MetaData meta = asset.getMetaData();
-        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
-        metaDataMapper.copyFromMetaData( meta,
-                                         repoAsset );
+        MetaDataMapper.getInstance().copyFromMetaData( meta,
+                                                       repoAsset );
 
         repoAsset.updateDateEffective( dateToCalendar( meta.getDateEffective() ) );
         repoAsset.updateDateExpired( dateToCalendar( meta.getDateExpired() ) );
@@ -336,9 +329,8 @@ public class RepositoryAssetOperations {
         // Populate response
         long totalRowsCount = iterator.getSize();
 
-        ArchivedAssetPageRowBuilder archivedAssetPageRowBuilder = new ArchivedAssetPageRowBuilder();
-        List<AdminArchivedPageRow> rowList = archivedAssetPageRowBuilder.createRows( request,
-                                                                                     iterator );
+        List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder().createRows( request,
+                                                                                           iterator );
 
         PageResponse<AdminArchivedPageRow> response = new PageResponseBuilder<AdminArchivedPageRow>()
                                                         .withStartRowIndex( request.getStartRowIndex() )
@@ -464,19 +456,15 @@ public class RepositoryAssetOperations {
     }
 
     // TODO: Very hard to unit test -> needs refactoring
-    protected String buildAssetSource(RuleAsset asset)
-                                                      throws SerializationException {
-        ContentHandler handler = ContentManager
-                .getHandler( asset.getMetaData().getFormat() );
+    protected String buildAssetSource(RuleAsset asset) throws SerializationException {
+        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
 
         StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            PackageItem packageItem = getRulesRepository().loadPackage(
-                                                                        asset.getMetaData().getPackageName() );
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles(
-                                                                        packageItem,
+            PackageItem packageItem = getRulesRepository().loadPackage( asset.getMetaData().getPackageName() );
+            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( packageItem,
                                                                         new BRMSPackageBuilder.DSLErrorEvent() {
                                                                             public void recordError(AssetItem asset,
                                                                                                     String message) {
@@ -518,21 +506,18 @@ public class RepositoryAssetOperations {
                    + request.getPackageUuid() + ")" );
         long start = System.currentTimeMillis();
 
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID(
-                                                                          request.getPackageUuid() );
+        PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
 
         AssetItemIterator it;
         if ( request.getFormatInList() != null ) {
             if ( request.getFormatIsRegistered() != null ) {
-                throw new IllegalArgumentException(
-                                                    "Combining formatInList and formatIsRegistered is not yet supported." );
-            } else {
-                it = packageItem.listAssetsByFormat( request.getFormatInList() );
+                throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
             }
+            it = packageItem.listAssetsByFormat( request.getFormatInList() );
+
         } else {
             if ( request.getFormatIsRegistered() != null ) {
-                it = packageItem.listAssetsNotOfFormat( AssetFormatHelper
-                        .listRegisteredTypes() );
+                it = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
             } else {
                 it = packageItem.queryAssets( "" );
             }
@@ -667,10 +652,8 @@ public class RepositoryAssetOperations {
      */
     MetaData populateMetaData(VersionableItem item) {
         MetaData meta = new MetaData();
-
-        MetaDataMapper metaDataMapper = MetaDataMapper.getInstance();
-        metaDataMapper.copyToMetaData( meta,
-                                       item );
+        MetaDataMapper.getInstance().copyToMetaData( meta,
+                                                     item );
 
         //problematic implementation of getPrecedingVersion and getPrecedingVersion().
         //commented out temporarily as this is used by the front end. 
