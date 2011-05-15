@@ -142,9 +142,11 @@ public class RepositoryCategoryOperations {
         // Populate response
         boolean bHasMoreRows = result.hasNext;
 
-        CategoryRuleListPageRowBuilder categoryRuleListPageRowBuilder = new CategoryRuleListPageRowBuilder();
-        List<CategoryPageRow> rowList = categoryRuleListPageRowBuilder.createRows( request,
-                                                                                   result.assets.iterator() );
+        List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
+                                                .withPageRequest( request )
+                                                .withContent( result.assets.iterator() )
+                                                    .build();
+
         PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
                                                             .withStartRowIndex( request.getStartRowIndex() )
                                                             .withPageRowList( rowList )

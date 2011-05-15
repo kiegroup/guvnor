@@ -24,9 +24,14 @@ import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 
-public class AssetPageRowBuilder {
-    public List<AssetPageRow> createRows(final PageRequest pageRequest,
-                                         AssetItemIterator iterator) {
+public class AssetPageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, AssetItemIterator> {
+    private PageRequest       pageRequest;
+    private AssetItemIterator iterator;
+
+    public List<AssetPageRow> build() {
+        validate();
         Integer pageSize = pageRequest.getPageSize();
         iterator.skip( pageRequest.getStartRowIndex() );
         List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
@@ -37,5 +42,26 @@ public class AssetPageRowBuilder {
             rowList.add( assetPageRowPopulator.makeAssetPageRow( assetItem ) );
         }
         return rowList;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public AssetPageRowBuilder withPageRequest(PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public AssetPageRowBuilder withContent(AssetItemIterator iterator) {
+        this.iterator = iterator;
+        return this;
     }
 }

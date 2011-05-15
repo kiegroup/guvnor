@@ -15,10 +15,15 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryFilter;
 
-public class QueryMetadataPageRowBuilder {
+public class QueryMetadataPageRowBuilder
+    implements
+    PageRowBuilder<QueryMetadataPageRequest, Iterator<AssetItem>> {
 
-    public List<QueryPageRow> createRows(QueryMetadataPageRequest pageRequest,
-                                         Iterator<AssetItem> iterator) {
+    private QueryMetadataPageRequest pageRequest;
+    private Iterator<AssetItem>      iterator;
+
+    public List<QueryPageRow> build() {
+        validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
@@ -75,6 +80,27 @@ public class QueryMetadataPageRowBuilder {
         PackageConfigData data = new PackageConfigData();
         data.setUuid( uuidStr );
         return data;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public QueryMetadataPageRowBuilder withPageRequest(QueryMetadataPageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public QueryMetadataPageRowBuilder withContent(Iterator<AssetItem> iterator) {
+        this.iterator = iterator;
+        return this;
     }
 
 }

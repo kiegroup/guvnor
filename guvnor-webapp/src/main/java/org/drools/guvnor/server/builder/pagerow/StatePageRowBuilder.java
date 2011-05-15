@@ -24,16 +24,21 @@ import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.repository.AssetItem;
 
-public class StatePageRowBuilder {
+public class StatePageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, Iterator<AssetItem>> {
 
-    public List<StatePageRow> createRows(final PageRequest pageRequest,
-                                         Iterator<AssetItem> it) {
+    private PageRequest         pageRequest;
+    private Iterator<AssetItem> iterator;
+
+    public List<StatePageRow> build() {
+        validate();
         List<StatePageRow> rowList = new ArrayList<StatePageRow>();
 
         // Filtering and skipping records to the required page is handled in
         // repository.findAssetsByState() so we only need to simply copy
-        while ( it.hasNext() ) {
-            AssetItem assetItem = (AssetItem) it.next();
+        while ( iterator.hasNext() ) {
+            AssetItem assetItem = (AssetItem) iterator.next();
             rowList.add( makeStatePageRow( assetItem ) );
         }
         return rowList;
@@ -51,5 +56,26 @@ public class StatePageRowBuilder {
         row.setStateName( assetItem.getState().getName() );
         row.setPackageName( assetItem.getPackageName() );
         return row;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public StatePageRowBuilder withPageRequest(PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public StatePageRowBuilder withContent(Iterator<AssetItem> iterator) {
+        this.iterator = iterator;
+        return this;
     }
 }

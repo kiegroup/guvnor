@@ -22,9 +22,14 @@ import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
 
-public class SnapshotComparisonPageRowBuilder {
-    public List<SnapshotComparisonPageRow> createRows(final PageRequest pageRequest,
-                                                      final SnapshotDiffs diffs) {
+public class SnapshotComparisonPageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, SnapshotDiffs> {
+    private SnapshotDiffs diffs;
+    private PageRequest   pageRequest;
+
+    public List<SnapshotComparisonPageRow> build() {
+        validate();
         List<SnapshotComparisonPageRow> rowList = new ArrayList<SnapshotComparisonPageRow>();
 
         int pageStart = pageRequest.getStartRowIndex();
@@ -38,5 +43,26 @@ public class SnapshotComparisonPageRowBuilder {
         }
 
         return rowList;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( diffs == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public SnapshotComparisonPageRowBuilder withPageRequest(PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public SnapshotComparisonPageRowBuilder withContent(SnapshotDiffs diffs) {
+        this.diffs = diffs;
+        return this;
     }
 }

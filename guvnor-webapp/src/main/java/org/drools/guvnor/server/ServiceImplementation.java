@@ -581,8 +581,10 @@ public class ServiceImplementation
 
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        List<PermissionsPageRow> rowList = new PermissionPageRowBuilder().createRows( request,
-                                                                                      permissions );
+        List<PermissionsPageRow> rowList = new PermissionPageRowBuilder()
+                                                .withPageRequest( request )
+                                                .withContent( permissions )
+                                                    .build();
 
         PageResponse<PermissionsPageRow> response = new PageResponseBuilder<PermissionsPageRow>()
                                                         .withStartRowIndex( request.getStartRowIndex() )
@@ -684,8 +686,10 @@ public class ServiceImplementation
             log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
             Iterator<InboxEntry> iterator = entries.iterator();
-            List<InboxPageRow> rowList = new InboxPageRowBuilder().createRows( request,
-                                                                               iterator );
+            List<InboxPageRow> rowList = new InboxPageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( iterator )
+                                                .build();
 
             response = new PageResponseBuilder<InboxPageRow>()
                         .withStartRowIndex( request.getStartRowIndex() )
@@ -761,15 +765,17 @@ public class ServiceImplementation
         }
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().queryFullText( request.getSearchText(),
-                                                                   request.isSearchArchived() );
+        AssetItemIterator iterator = getRulesRepository().queryFullText( request.getSearchText(),
+                                                                         request.isSearchArchived() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        long totalRowsCount = it.getSize();
+        long totalRowsCount = iterator.getSize();
 
-        List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder().createRows( request,
-                                                                                   it );
-        boolean bHasMoreRows = it.hasNext();
+        List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( iterator )
+                                                .build();
+        boolean bHasMoreRows = iterator.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                       .withStartRowIndex( request.getStartRowIndex() )
                                                       .withPageRowList( rowList )
@@ -797,16 +803,18 @@ public class ServiceImplementation
         DateQuery[] dates = createDateQueryForRepository( request );
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().query( queryMap,
-                                                           request.isSearchArchived(),
-                                                           dates );
+        AssetItemIterator iterator = getRulesRepository().query( queryMap,
+                                                                 request.isSearchArchived(),
+                                                                 dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        long totalRowsCount = it.getSize();
+        long totalRowsCount = iterator.getSize();
 
-        List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder().createRows( request,
-                                                                                   it );
-        boolean bHasMoreRows = it.hasNext();
+        List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( iterator )
+                                                .build();
+        boolean bHasMoreRows = iterator.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )
                                                 .withPageRowList( rowList )
@@ -869,8 +877,11 @@ public class ServiceImplementation
         // Populate response
         boolean bHasMoreRows = result.hasNext;
 
-        List<StatePageRow> rowList = new StatePageRowBuilder().createRows( request,
-                                                                           result.assets.iterator() );
+        List<StatePageRow> rowList = new StatePageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( result.assets.iterator() )
+                                                .build();
+        
         PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )

@@ -27,11 +27,15 @@ import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.repository.UserInfo.InboxEntry;
 
-public class InboxPageRowBuilder {
+public class InboxPageRowBuilder
+    implements
+    PageRowBuilder<InboxPageRequest, Iterator<InboxEntry>> {
 
-    public List<InboxPageRow> createRows(InboxPageRequest pageRequest,
-                                         Iterator<InboxEntry> iterator) {
+    private InboxPageRequest     pageRequest;
+    private Iterator<InboxEntry> iterator;
 
+    public List<InboxPageRow> build() {
+        validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
@@ -48,28 +52,49 @@ public class InboxPageRowBuilder {
         return rowList;
     }
 
-    private InboxPageRow createInboxPageRow(InboxEntry ie,
+    private InboxPageRow createInboxPageRow(InboxEntry inboxEntry,
                                             InboxPageRequest request) {
         InboxPageRow row = null;
         if ( request.getInboxName().equals( ExplorerNodeConfig.INCOMING_ID ) ) {
             InboxIncomingPageRow tr = new InboxIncomingPageRow();
-            tr.setUuid( ie.assetUUID );
+            tr.setUuid( inboxEntry.assetUUID );
             tr.setFormat( AssetFormats.BUSINESS_RULE );
-            tr.setNote( ie.note );
-            tr.setName( ie.note );
-            tr.setTimestamp( new Date( ie.timestamp ) );
-            tr.setFrom( ie.from );
+            tr.setNote( inboxEntry.note );
+            tr.setName( inboxEntry.note );
+            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
+            tr.setFrom( inboxEntry.from );
             row = tr;
 
         } else {
             InboxPageRow tr = new InboxPageRow();
-            tr.setUuid( ie.assetUUID );
-            tr.setNote( ie.note );
-            tr.setName( ie.note );
-            tr.setTimestamp( new Date( ie.timestamp ) );
+            tr.setUuid( inboxEntry.assetUUID );
+            tr.setNote( inboxEntry.note );
+            tr.setName( inboxEntry.note );
+            tr.setTimestamp( new Date( inboxEntry.timestamp ) );
             row = tr;
         }
         return row;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public InboxPageRowBuilder withPageRequest(InboxPageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public InboxPageRowBuilder withContent(Iterator<InboxEntry> iterator) {
+        this.iterator = iterator;
+        return this;
     }
 
 }

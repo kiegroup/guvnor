@@ -329,8 +329,10 @@ public class RepositoryAssetOperations {
         // Populate response
         long totalRowsCount = iterator.getSize();
 
-        List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder().createRows( request,
-                                                                                           iterator );
+        List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder()
+                                                    .withPageRequest( request )
+                                                    .withContent( iterator )
+                                                        .build();
 
         PageResponse<AdminArchivedPageRow> response = new PageResponseBuilder<AdminArchivedPageRow>()
                                                         .withStartRowIndex( request.getStartRowIndex() )
@@ -508,31 +510,33 @@ public class RepositoryAssetOperations {
 
         PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
 
-        AssetItemIterator it;
+        AssetItemIterator iterator;
         if ( request.getFormatInList() != null ) {
             if ( request.getFormatIsRegistered() != null ) {
                 throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
             }
-            it = packageItem.listAssetsByFormat( request.getFormatInList() );
+            iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
 
         } else {
             if ( request.getFormatIsRegistered() != null ) {
-                it = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+                iterator = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
             } else {
-                it = packageItem.queryAssets( "" );
+                iterator = packageItem.queryAssets( "" );
             }
         }
 
         // Populate response
-        long totalRowsCount = it.getSize();
+        long totalRowsCount = iterator.getSize();
 
-        AssetPageRowBuilder assetPageRowBuilder = new AssetPageRowBuilder();
-        List<AssetPageRow> rowList = assetPageRowBuilder.createRows( request,
-                                                                     it );
+        List<AssetPageRow> rowList = new AssetPageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( iterator )
+                                                .build();
+
         PageResponse<AssetPageRow> response = new PageResponseBuilder<AssetPageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )
-                                                    .withLastPage( !it.hasNext() )
+                                                    .withLastPage( !iterator.hasNext() )
                                                         .buildWithTotalRowCount( totalRowsCount );
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Found asset page of packageUuid ("
@@ -553,20 +557,22 @@ public class RepositoryAssetOperations {
 
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findAssetsByName( search,
-                                                                      request.isSearchArchived() );
+        AssetItemIterator iterator = getRulesRepository().findAssetsByName( search,
+                                                                            request.isSearchArchived() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
-        long totalRowsCount = it.getSize();
+        long totalRowsCount = iterator.getSize();
 
-        QuickFindPageRowBuilder quickFindPageRowBuilder = new QuickFindPageRowBuilder();
-        List<QueryPageRow> rowList = quickFindPageRowBuilder.createRows( request,
-                                                                         it );
+        List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
+                                            .withPageRequest( request )
+                                            .withContent( iterator )
+                                                .build();
+
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )
-                                                    .withLastPage( !it.hasNext() )
+                                                    .withLastPage( !iterator.hasNext() )
                                                         .buildWithTotalRowCount( totalRowsCount );
 
         long methodDuration = System.currentTimeMillis() - start;

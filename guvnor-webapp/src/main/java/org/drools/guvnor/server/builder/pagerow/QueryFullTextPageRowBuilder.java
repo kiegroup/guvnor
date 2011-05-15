@@ -28,10 +28,15 @@ import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RepositoryFilter;
 
-public class QueryFullTextPageRowBuilder {
+public class QueryFullTextPageRowBuilder
+    implements
+    PageRowBuilder<QueryPageRequest, Iterator<AssetItem>> {
 
-    public List<QueryPageRow> createRows(QueryPageRequest pageRequest,
-                                         Iterator<AssetItem> iterator) {
+    private QueryPageRequest    pageRequest;
+    private Iterator<AssetItem> iterator;
+
+    public List<QueryPageRow> build() {
+        validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
@@ -72,4 +77,24 @@ public class QueryFullTextPageRowBuilder {
         return data;
     }
 
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public QueryFullTextPageRowBuilder withPageRequest(QueryPageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public QueryFullTextPageRowBuilder withContent(Iterator<AssetItem> iterator) {
+        this.iterator = iterator;
+        return this;
+    }
 }

@@ -175,8 +175,8 @@ public class RepositoryPackageOperations {
                                                                                                                                data.getWorkspaces() )) ) {
             result.add( data );
         } else if ( archive && data.isArchived() && (filter == null || filter.accept( data,
-                                                                                  RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
-                                                                                                                                                      data.getWorkspaces() )) ) {
+                                                                                      RoleTypes.PACKAGE_READONLY )) && (workspace == null || isWorkspace( workspace,
+                                                                                                                                                          data.getWorkspaces() )) ) {
             result.add( data );
         }
     }
@@ -204,13 +204,13 @@ public class RepositoryPackageOperations {
     }
 
     protected String copyPackage(String sourcePackageName,
-                               String destPackageName) throws SerializationException {
+                                 String destPackageName) throws SerializationException {
 
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
 
             return getRulesRepository().copyPackage( sourcePackageName,
-                                              destPackageName );
+                                                     destPackageName );
         } catch ( RulesRepositoryException e ) {
             log.error( "Unable to copy package.",
                        e );
@@ -370,18 +370,18 @@ public class RepositoryPackageOperations {
     private static KeyValueTO convertMapToCsv(final Map map) {
         StringBuilder keysBuilder = new StringBuilder();
         StringBuilder valuesBuilder = new StringBuilder();
-        for (Object o : map.entrySet()) {
+        for ( Object o : map.entrySet() ) {
             Map.Entry entry = (Map.Entry) o;
-            if (keysBuilder.length() > 0) {
-                keysBuilder.append(",");
+            if ( keysBuilder.length() > 0 ) {
+                keysBuilder.append( "," );
             }
 
-            if (valuesBuilder.length() > 0) {
-                valuesBuilder.append(",");
+            if ( valuesBuilder.length() > 0 ) {
+                valuesBuilder.append( "," );
             }
 
-            keysBuilder.append(entry.getKey());
-            valuesBuilder.append(entry.getValue());
+            keysBuilder.append( entry.getKey() );
+            valuesBuilder.append( entry.getValue() );
         }
         return new KeyValueTO( keysBuilder.toString(),
                                valuesBuilder.toString() );
@@ -793,10 +793,12 @@ public class RepositoryPackageOperations {
         // Populate response
         response.setLeftSnapshotName( diffs.leftName );
         response.setRightSnapshotName( diffs.rightName );
-        
-        SnapshotComparisonPageRowBuilder snapshotComparisonPageRowBuilder = new SnapshotComparisonPageRowBuilder();
-        List<SnapshotComparisonPageRow> rowList = snapshotComparisonPageRowBuilder.createRows( request, diffs );
-        
+
+        List<SnapshotComparisonPageRow> rowList = new SnapshotComparisonPageRowBuilder()
+                                                        .withPageRequest( request )
+                                                        .withContent( diffs )
+                                                            .build();
+
         response.setPageRowList( rowList );
         response.setStartRowIndex( request.getStartRowIndex() );
         response.setTotalRowSize( diffs.diffs.length );

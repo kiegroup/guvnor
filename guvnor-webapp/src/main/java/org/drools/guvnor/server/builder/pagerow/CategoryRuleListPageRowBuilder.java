@@ -24,10 +24,15 @@ import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.repository.AssetItem;
 
-public class CategoryRuleListPageRowBuilder {
+public class CategoryRuleListPageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, Iterator<AssetItem>> {
 
-    public List<CategoryPageRow> createRows(final PageRequest pageRequest,
-                                            final Iterator<AssetItem> iterator) {
+    private PageRequest         pageRequest;
+    private Iterator<AssetItem> iterator;
+
+    public List<CategoryPageRow> build() {
+        validate();
         List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
 
         // Filtering and skipping records to the required page is handled in
@@ -52,4 +57,26 @@ public class CategoryRuleListPageRowBuilder {
         row.setPackageName( assetItem.getPackageName() );
         return row;
     }
+
+    public CategoryRuleListPageRowBuilder withPageRequest(final PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public CategoryRuleListPageRowBuilder withContent(Iterator<AssetItem> iterator) {
+        this.iterator = iterator;
+        return this;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( iterator == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
 }

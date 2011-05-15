@@ -23,9 +23,14 @@ import java.util.Map;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 
-public class PermissionPageRowBuilder {
-    public List<PermissionsPageRow> createRows(final PageRequest pageRequest,
-                                               final Map<String, List<String>> permissions) {
+public class PermissionPageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, Map<String, List<String>>> {
+    private PageRequest               pageRequest;
+    private Map<String, List<String>> permissions;
+
+    public List<PermissionsPageRow> build() {
+        validate();
         int rowNumber = 0;
         int rowMinNumber = pageRequest.getStartRowIndex();
         int rowMaxNumber = pageRequest.getPageSize() == null ? permissions.size() : rowMinNumber + pageRequest.getPageSize();
@@ -45,6 +50,27 @@ public class PermissionPageRowBuilder {
         }
 
         return rowList;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( permissions == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
+    }
+
+    public PermissionPageRowBuilder withPageRequest(PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public PermissionPageRowBuilder withContent(Map<String, List<String>> permissions) {
+        this.permissions = permissions;
+        return this;
     }
 
 }
