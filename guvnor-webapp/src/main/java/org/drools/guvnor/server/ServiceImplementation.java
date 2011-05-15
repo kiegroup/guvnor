@@ -202,10 +202,10 @@ public class ServiceImplementation
                                             description,
                                             initialCategory,
                                             format );
-            AssetTemplateCreator assetTemplateCreator = new AssetTemplateCreator();
-            assetTemplateCreator.applyPreBuiltTemplates( ruleName,
-                                                         format,
-                                                         asset );
+
+            new AssetTemplateCreator().applyPreBuiltTemplates( ruleName,
+                                                               format,
+                                                               asset );
             getRulesRepository().save();
 
             push( "categoryChange",
@@ -493,8 +493,10 @@ public class ServiceImplementation
         LogEntry[] logEntries = LoggingHelper.getMessages();
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        List<LogPageRow> rowList = new LogPageRowBuilder().createRows( request,
-                                                                       logEntries );
+        List<LogPageRow> rowList = new LogPageRowBuilder()
+                                       .withPageRequest( request )
+                                       .withContent( logEntries )
+                                           .build();
 
         PageResponse<LogPageRow> response = new PageResponseBuilder<LogPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )

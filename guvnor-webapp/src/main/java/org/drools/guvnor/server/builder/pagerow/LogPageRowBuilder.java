@@ -22,9 +22,14 @@ import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 
-public class LogPageRowBuilder {
-    public List<LogPageRow> createRows(final PageRequest pageRequest,
-                                       final LogEntry[] logEntries) {
+public class LogPageRowBuilder
+    implements
+    PageRowBuilder<PageRequest, LogEntry[]> {
+    private PageRequest pageRequest;
+    private LogEntry[]  logEntries;
+
+    public List<LogPageRow> build() {
+        validate();
         int rowNumber = 0;
         int rowMinNumber = pageRequest.getStartRowIndex();
         int rowMaxNumber = pageRequest.getPageSize() == null ? logEntries.length : Math.min( rowMinNumber + pageRequest.getPageSize(),
@@ -41,6 +46,27 @@ public class LogPageRowBuilder {
         }
 
         return rowList;
+    }
+
+    public LogPageRowBuilder withPageRequest(final PageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public LogPageRowBuilder withContent(LogEntry[] logEntries) {
+        this.logEntries = logEntries;
+        return this;
+    }
+
+    public void validate() {
+        if ( pageRequest == null ) {
+            throw new IllegalArgumentException( "PageRequest cannot be null" );
+        }
+
+        if ( logEntries == null ) {
+            throw new IllegalArgumentException( "Content cannot be null" );
+        }
+
     }
 
 }
