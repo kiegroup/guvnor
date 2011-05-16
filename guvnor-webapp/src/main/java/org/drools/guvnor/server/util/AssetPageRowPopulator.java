@@ -20,7 +20,7 @@ import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.repository.AssetItem;
 
 public class AssetPageRowPopulator {
-    public AssetPageRow makeAssetPageRow(AssetItem assetItem) {
+    public AssetPageRow populateFrom(AssetItem assetItem) {
         AssetPageRow row = new AssetPageRow();
         row.setUuid( assetItem.getUUID() );
         row.setFormat( assetItem.getFormat() );

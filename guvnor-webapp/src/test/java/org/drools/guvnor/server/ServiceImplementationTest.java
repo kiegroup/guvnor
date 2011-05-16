@@ -93,7 +93,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Ignore("This needs a little re-work as it does not work as expected")
     public void testInboxEvents() throws Exception {
-        
+
         try {
             RepositoryStartupService.registerCheckinListener();
             ServiceImplementation impl = getServiceImplementation();

@@ -29,51 +29,51 @@ import org.junit.Test;
 public class AssetPageRowPopulatorTest {
 
     @Test
-    public void testMakeAssetPageRow() {
-
-        AssetItem assetItem = mock( AssetItem.class );
-        Calendar calendar = GregorianCalendar.getInstance();
-        calendar.add( Calendar.MONTH,
-                      -1 );
-        Calendar lastModifiedCalendar = GregorianCalendar.getInstance();
-
-        when( assetItem.getUUID() ).thenReturn( "UUID" );
-        when( assetItem.getFormat() ).thenReturn( "format" );
-        when( assetItem.getName() ).thenReturn( "name" );
-        when( assetItem.getDescription() ).thenReturn( "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription" );
-        when( assetItem.getStateDescription() ).thenReturn( "statedescription" );
-        when( assetItem.getCreator() ).thenReturn( "creator" );
-        when( assetItem.getCreatedDate() ).thenReturn( calendar );
-        when( assetItem.getLastContributor() ).thenReturn( "lastcontributor" );
-        when( assetItem.getLastModified() ).thenReturn( lastModifiedCalendar );
-        when( assetItem.getCategorySummary() ).thenReturn( "categorysummary" );
-        when( assetItem.getExternalSource() ).thenReturn( "externalsource" );
-        AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
-        AssetPageRow makeAssetPageRow = assetPageRowPopulator.makeAssetPageRow( assetItem );
-        assertEquals( makeAssetPageRow.getUuid(),
-                      assetItem.getUUID() );
-        assertEquals( makeAssetPageRow.getFormat(),
-                      assetItem.getFormat() );
-        assertEquals( makeAssetPageRow.getName(),
-                      assetItem.getName() );
-        assertEquals( makeAssetPageRow.getDescription(),
-                      assetItem.getDescription() );
-        assertEquals( makeAssetPageRow.getAbbreviatedDescription().length(),
-                      80 );
-        assertEquals( makeAssetPageRow.getStateName(),
-                      assetItem.getStateDescription() );
-        assertEquals( makeAssetPageRow.getCreator(),
-                      assetItem.getCreator() );
-        assertEquals( makeAssetPageRow.getCreatedDate(),
-                      assetItem.getCreatedDate().getTime() );
-        assertEquals( makeAssetPageRow.getLastContributor(),
-                      assetItem.getLastContributor() );
-        assertEquals( makeAssetPageRow.getLastModified(),
-                      assetItem.getLastModified().getTime() );
-        assertEquals( makeAssetPageRow.getCategorySummary(),
-                      assetItem.getCategorySummary() );
-        assertEquals( makeAssetPageRow.getExternalSource(),
-                      assetItem.getExternalSource() );
-
-    }
+    public void testPopulateFrom() {
+    
+            AssetItem assetItem = mock( AssetItem.class );
+            Calendar calendar = GregorianCalendar.getInstance();
+            calendar.add( Calendar.MONTH,
+                          -1 );
+            Calendar lastModifiedCalendar = GregorianCalendar.getInstance();
+    
+            when( assetItem.getUUID() ).thenReturn( "UUID" );
+            when( assetItem.getFormat() ).thenReturn( "format" );
+            when( assetItem.getName() ).thenReturn( "name" );
+            when( assetItem.getDescription() ).thenReturn( "descriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescriptiondescription" );
+            when( assetItem.getStateDescription() ).thenReturn( "statedescription" );
+            when( assetItem.getCreator() ).thenReturn( "creator" );
+            when( assetItem.getCreatedDate() ).thenReturn( calendar );
+            when( assetItem.getLastContributor() ).thenReturn( "lastcontributor" );
+            when( assetItem.getLastModified() ).thenReturn( lastModifiedCalendar );
+            when( assetItem.getCategorySummary() ).thenReturn( "categorysummary" );
+            when( assetItem.getExternalSource() ).thenReturn( "externalsource" );
+            AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
+            AssetPageRow makeAssetPageRow = assetPageRowPopulator.populateFrom( assetItem );
+            assertEquals( makeAssetPageRow.getUuid(),
+                          assetItem.getUUID() );
+            assertEquals( makeAssetPageRow.getFormat(),
+                          assetItem.getFormat() );
+            assertEquals( makeAssetPageRow.getName(),
+                          assetItem.getName() );
+            assertEquals( makeAssetPageRow.getDescription(),
+                          assetItem.getDescription() );
+            assertEquals( makeAssetPageRow.getAbbreviatedDescription().length(),
+                          80 );
+            assertEquals( makeAssetPageRow.getStateName(),
+                          assetItem.getStateDescription() );
+            assertEquals( makeAssetPageRow.getCreator(),
+                          assetItem.getCreator() );
+            assertEquals( makeAssetPageRow.getCreatedDate(),
+                          assetItem.getCreatedDate().getTime() );
+            assertEquals( makeAssetPageRow.getLastContributor(),
+                          assetItem.getLastContributor() );
+            assertEquals( makeAssetPageRow.getLastModified(),
+                          assetItem.getLastModified().getTime() );
+            assertEquals( makeAssetPageRow.getCategorySummary(),
+                          assetItem.getCategorySummary() );
+            assertEquals( makeAssetPageRow.getExternalSource(),
+                          assetItem.getExternalSource() );
+    
+        }
 }

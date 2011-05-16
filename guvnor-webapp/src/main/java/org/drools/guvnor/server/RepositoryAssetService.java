@@ -46,6 +46,7 @@ import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.RuleAssetPopulator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -113,33 +114,17 @@ public class RepositoryAssetService
         long time = System.currentTimeMillis();
 
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-        RuleAsset asset = new RuleAsset();
+        RuleAsset asset = new RuleAssetPopulator().populateFrom( item );
 
-        asset.setUuid( item.getUUID() );
-        asset.setName( item.getName() );
-        asset.setDescription( item.getDescription() );
-        asset.setLastModified( item.getLastModified().getTime() );
-        asset.setLastContributor( item.getLastContributor() );
-        asset.setState( (item.getState() != null) ? item.getState().getName() : "" );
-        asset.setDateCreated( item.getCreatedDate().getTime() );
-        asset.setCheckinComment( item.getCheckinComment() );
-        asset.setVersionNumber( item.getVersionNumber() );
-
-        // load standard meta data
         asset.setMetaData( repositoryAssetOperations.populateMetaData( item ) );
 
-        // Verify if the user has permission to access the asset through package
-        // based permission.
-        // If failed, then verify if the user has permission to access the asset
-        // through category
-        // based permission
         if ( Contexts.isSessionContextActive() ) {
 
             try {
                 Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ),
                                                      RoleTypes.PACKAGE_READONLY );
             } catch ( RuntimeException e ) {
-                handleLoadRuleAssetException( asset );
+                handleExceptionAndVerifyCategoryBasedPermission( asset );
             }
         }
 
@@ -518,7 +503,7 @@ public class RepositoryAssetService
                                                         numRows );
     }
 
-    private void handleLoadRuleAssetException(RuleAsset asset) {
+    private void handleExceptionAndVerifyCategoryBasedPermission(RuleAsset asset) {
         if ( asset.getMetaData().getCategories().length == 0 ) {
             Identity.instance().checkPermission( new CategoryPathType( null ),
                                                  RoleTypes.ANALYST_READ );
