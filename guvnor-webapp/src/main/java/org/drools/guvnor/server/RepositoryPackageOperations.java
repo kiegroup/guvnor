@@ -116,20 +116,20 @@ public class RepositoryPackageOperations {
                                        PackageIterator pkgs) {
         pkgs.setArchivedIterator( archive );
         while ( pkgs.hasNext() ) {
-            PackageItem pkg = pkgs.next();
+            PackageItem packageItem = pkgs.next();
 
             PackageConfigData data = new PackageConfigData();
-            data.setUuid( pkg.getUUID() );
-            data.setName( pkg.getName() );
-            data.setArchived( pkg.isArchived() );
-            data.setWorkspaces( pkg.getWorkspaces() );
+            data.setUuid( packageItem.getUUID() );
+            data.setName( packageItem.getName() );
+            data.setArchived( packageItem.isArchived() );
+            data.setWorkspaces( packageItem.getWorkspaces() );
             handleIsPackagesListed( archive,
                                     workspace,
                                     filter,
                                     result,
                                     data );
 
-            data.subPackages = listSubPackages( pkg,
+            data.subPackages = listSubPackages( packageItem,
                                                 archive,
                                                 null,
                                                 filter );
@@ -142,12 +142,11 @@ public class RepositoryPackageOperations {
                                                 RepositoryFilter filter) {
         List<PackageConfigData> children = new LinkedList<PackageConfigData>();
 
-        PackageIterator pkgs = parentPkg.listSubPackages();
         handleIteratePackages( archive,
                                workspace,
                                filter,
                                children,
-                               pkgs );
+                               parentPkg.listSubPackages() );
 
         sortPackages( children );
         return children.toArray( new PackageConfigData[children.size()] );
@@ -183,6 +182,7 @@ public class RepositoryPackageOperations {
 
     private boolean isWorkspace(String workspace,
                                 String[] workspaces) {
+
         for ( String w : workspaces ) {
             if ( w.equals( workspace ) ) {
                 return true;
@@ -258,10 +258,8 @@ public class RepositoryPackageOperations {
     protected byte[] exportPackages(String packageName) {
         log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
 
-        byte[] result = null;
-
         try {
-            result = getRulesRepository().dumpPackageFromRepositoryXml( packageName );
+            return getRulesRepository().dumpPackageFromRepositoryXml( packageName );
         } catch ( PathNotFoundException e ) {
             throw new RulesRepositoryException( e );
         } catch ( IOException e ) {
@@ -269,7 +267,6 @@ public class RepositoryPackageOperations {
         } catch ( RepositoryException e ) {
             throw new RulesRepositoryException( e );
         }
-        return result;
     }
 
     // TODO: Not working. GUVNOR-475
@@ -312,12 +309,9 @@ public class RepositoryPackageOperations {
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " validatePackageConfiguration package [" + data.getName() + "]" );
 
-        PackageItem item = getRulesRepository().loadPackage( data.getName() );
-
         RuleBaseCache.getInstance().remove( data.getUuid() );
-
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine( item,
+        loader.getSuggestionEngine( getRulesRepository().loadPackage( data.getName() ),
                                     data.getHeader() );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
@@ -615,17 +609,17 @@ public class RepositoryPackageOperations {
         // load package
         PackageItem item = getRulesRepository().loadPackage( packageName );
 
-        ContentPackageAssembler asm = createContentPackageAssembler( item,
-                                                                     false );
+        ContentPackageAssembler assembler = createContentPackageAssembler( item,
+                                                                           false );
 
         List<String> result = new ArrayList<String>();
         try {
 
-            String drl = asm.getDRL();
+            String drl = assembler.getDRL();
             if ( drl == null || "".equals( drl ) ) {
                 return new String[0];
             } else {
-                parseRulesToPackageList( asm,
+                parseRulesToPackageList( assembler,
                                          result );
             }
 

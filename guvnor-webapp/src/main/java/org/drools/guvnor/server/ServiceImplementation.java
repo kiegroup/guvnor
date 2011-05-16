@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -64,8 +63,8 @@ import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsMa
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
+import org.drools.guvnor.server.util.DateUtil;
 import org.drools.guvnor.server.util.HtmlCleaner;
-import org.drools.guvnor.server.util.ISO8601;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -238,8 +237,8 @@ public class ServiceImplementation
         log.info( "USER:" + getRulesRepository().getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
-            PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
-            AssetItem asset = pkg.addAssetImportedFromGlobalArea( sharedAssetName );
+            PackageItem packageItem = getRulesRepository().loadPackage( initialPackage );
+            AssetItem asset = packageItem.addAssetImportedFromGlobalArea( sharedAssetName );
             getRulesRepository().save();
 
             return asset.getUUID();
@@ -339,11 +338,11 @@ public class ServiceImplementation
         DateQuery[] dates = new DateQuery[2];
 
         dates[0] = new DateQuery( "jcr:created",
-                                  isoDate( createdAfter ),
-                                  isoDate( createdBefore ) );
+                                  DateUtil.isoDate( createdAfter ),
+                                  DateUtil.isoDate( createdBefore ) );
         dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  isoDate( modifiedAfter ),
-                                  isoDate( modifiedBefore ) );
+                                  DateUtil.isoDate( modifiedAfter ),
+                                  DateUtil.isoDate( modifiedBefore ) );
         AssetItemIterator it = getRulesRepository().query( q,
                                                            seekArchived,
                                                            dates );
@@ -558,9 +557,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();
-
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
-        return pm.listUsers();
+        return new PermissionManager( getRulesRepository() ).listUsers();
     }
 
     @Restrict("#{identity.loggedIn}")
@@ -574,10 +571,8 @@ public class ServiceImplementation
 
         serviceSecurity.checkSecurityIsAdmin();
 
-        // Do query
         long start = System.currentTimeMillis();
-        Map<String, List<String>> permissions = new PermissionManager( getRulesRepository() )
-                                                        .listUsers();
+        Map<String, List<String>> permissions = new PermissionManager( getRulesRepository() ).listUsers();
 
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
@@ -622,7 +617,6 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String[] listAvailablePermissionTypes() {
         serviceSecurity.checkSecurityIsAdmin();
-
         return RoleTypes.listAvailableTypes();
     }
 
@@ -692,12 +686,12 @@ public class ServiceImplementation
                                                 .build();
 
             response = new PageResponseBuilder<InboxPageRow>()
-                        .withStartRowIndex( request.getStartRowIndex() )
-                        .withTotalRowSize( entries.size() )
-                        .withTotalRowSizeExact()
-                        .withPageRowList( rowList )
-                        .withLastPage( !iterator.hasNext() )
-                            .build();
+                            .withStartRowIndex( request.getStartRowIndex() )
+                            .withTotalRowSize( entries.size() )
+                            .withTotalRowSizeExact()
+                            .withPageRowList( rowList )
+                            .withLastPage( !iterator.hasNext() )
+                                .build();
             long methodDuration = System.currentTimeMillis() - start;
             log.debug( "Queried inbox ('" + inboxName + "') in " + methodDuration + " ms." );
 
@@ -715,17 +709,17 @@ public class ServiceImplementation
     public String processTemplate(String name,
                                   Map<String, Object> data) {
         try {
-            Configuration cfg = new Configuration();
-            cfg.setObjectWrapper( new DefaultObjectWrapper() );
-            cfg.setTemplateUpdateDelay( 0 );
+            Configuration configuration = new Configuration();
+            configuration.setObjectWrapper( new DefaultObjectWrapper() );
+            configuration.setTemplateUpdateDelay( 0 );
 
-            Template temp = new Template( name,
-                                          new InputStreamReader( ServiceImplementation.class.getResourceAsStream( "/repoconfig/" + name + ".xml" ) ),
-                                          cfg );
-            StringWriter strw = new StringWriter();
-            temp.process( data,
-                          strw );
-            return StringEscapeUtils.escapeXml( strw.toString() );
+            Template template = new Template( name,
+                                              new InputStreamReader( ServiceImplementation.class.getResourceAsStream( "/repoconfig/" + name + ".xml" ) ),
+                                              configuration );
+            StringWriter stringwriter = new StringWriter();
+            template.process( data,
+                              stringwriter );
+            return StringEscapeUtils.escapeXml( stringwriter.toString() );
         } catch ( Exception e ) {
             return "";
         }
@@ -841,11 +835,11 @@ public class ServiceImplementation
     private DateQuery[] createDateQueryForRepository(QueryMetadataPageRequest request) {
         DateQuery[] dates = new DateQuery[2];
         dates[0] = new DateQuery( "jcr:created",
-                                  isoDate( request.getCreatedAfter() ),
-                                  isoDate( request.getCreatedBefore() ) );
+                                  DateUtil.isoDate( request.getCreatedAfter() ),
+                                  DateUtil.isoDate( request.getCreatedBefore() ) );
         dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  isoDate( request.getLastModifiedAfter() ),
-                                  isoDate( request.getLastModifiedBefore() ) );
+                                  DateUtil.isoDate( request.getLastModifiedAfter() ),
+                                  DateUtil.isoDate( request.getLastModifiedBefore() ) );
         return dates;
     }
 
@@ -863,15 +857,13 @@ public class ServiceImplementation
         long start = System.currentTimeMillis();
 
         // TODO: May need to use a filter for both package and categories
-        RepositoryFilter filter = new AssetItemFilter();
-
         // NOTE: Filtering is handled in repository.findAssetsByState()
         int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
         AssetItemPageResult result = getRulesRepository().findAssetsByState( request.getStateName(),
                                                                              false,
                                                                              request.getStartRowIndex(),
                                                                              numRowsToReturn,
-                                                                             filter );
+                                                                             new AssetItemFilter() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
@@ -881,7 +873,7 @@ public class ServiceImplementation
                                             .withPageRequest( request )
                                             .withContent( result.assets.iterator() )
                                                 .build();
-        
+
         PageResponse<StatePageRow> response = new PageResponseBuilder<StatePageRow>()
                                                     .withStartRowIndex( request.getStartRowIndex() )
                                                     .withPageRowList( rowList )
@@ -905,15 +897,6 @@ public class ServiceImplementation
         }
 
         return false;
-    }
-
-    private String isoDate(Date d) {
-        if ( d != null ) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime( d );
-            return ISO8601.format( cal );
-        }
-        return null;
     }
 
     /**

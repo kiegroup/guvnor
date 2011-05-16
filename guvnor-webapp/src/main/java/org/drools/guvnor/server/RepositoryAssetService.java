@@ -70,15 +70,15 @@ public class RepositoryAssetService
     AssetService {
 
     @In
-    private RulesRepository            repository;
+    private RulesRepository                 repository;
 
-    private static final long          serialVersionUID          = 90111;
+    private static final long               serialVersionUID          = 90111;
 
-    private static final LoggingHelper log                       = LoggingHelper.getLogger( RepositoryAssetService.class );
+    private static final LoggingHelper      log                       = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    private final ServiceSecurity            serviceSecurity           = new ServiceSecurity();
+    private final ServiceSecurity           serviceSecurity           = new ServiceSecurity();
 
-    private final RepositoryAssetOperations  repositoryAssetOperations = new RepositoryAssetOperations();
+    private final RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
 
     @Create
     public void create() {
@@ -154,19 +154,19 @@ public class RepositoryAssetService
 
     private PackageItem handlePackageItem(AssetItem item,
                                           RuleAsset asset) throws SerializationException {
-        PackageItem pkgItem = item.getPackage();
+        PackageItem packageItem = item.getPackage();
 
         ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
         handler.retrieveAssetContent( asset,
-                                      pkgItem,
+                                      packageItem,
                                       item );
 
         asset.setReadonly( asset.getMetaData().isHasSucceedingVersion() );
 
-        if ( pkgItem.isSnapshot() ) {
+        if ( packageItem.isSnapshot() ) {
             asset.setReadonly( true );
         }
-        return pkgItem;
+        return packageItem;
     }
 
     @WebRemote
@@ -174,7 +174,7 @@ public class RepositoryAssetService
     public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets( Arrays.asList( uuids ) );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     /**
@@ -224,17 +224,19 @@ public class RepositoryAssetService
         }
 
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] " );
-        return repositoryAssetOperations.checkinVersion( asset );       
+        return repositoryAssetOperations.checkinVersion( asset );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
-        repositoryAssetOperations.restoreVersion( versionUUID, assetUUID, comment);
+        repositoryAssetOperations.restoreVersion( versionUUID,
+                                                  assetUUID,
+                                                  comment );
     }
-    
+
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {

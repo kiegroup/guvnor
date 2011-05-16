@@ -434,20 +434,19 @@ public class RepositoryAssetOperations {
                                             boolean seekArchived,
                                             int skip,
                                             int numRows) throws SerializationException {
-        AssetItemIterator it = getRulesRepository().queryFullText( text,
-                                                                   seekArchived );
 
-        // Add filter for READONLY permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
         RepositoryFilter filter = new PackageFilter();
 
-        while ( it.hasNext() ) {
-            AssetItem ai = it.next();
+        AssetItemIterator assetItemIterator = getRulesRepository().queryFullText( text,
+                                                                                  seekArchived );
+        while ( assetItemIterator.hasNext() ) {
+            AssetItem assetItem = assetItemIterator.next();
             PackageConfigData data = new PackageConfigData();
-            data.setUuid( ai.getPackage().getUUID() );
+            data.setUuid( assetItem.getPackage().getUUID() );
             if ( filter.accept( data,
                                 RoleTypes.PACKAGE_READONLY ) ) {
-                resultList.add( ai );
+                resultList.add( assetItem );
             }
         }
 
@@ -581,7 +580,7 @@ public class RepositoryAssetOperations {
     }
 
     protected void lockAsset(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
+        AssetLockManager lockManager = AssetLockManager.instance();
 
         String userName;
         if ( Contexts.isApplicationContextActive() ) {
@@ -592,8 +591,8 @@ public class RepositoryAssetOperations {
 
         log.info( "Locking asset uuid=" + uuid + " for user [" + userName + "]" );
 
-        alm.lockAsset( uuid,
-                       userName );
+        lockManager.lockAsset( uuid,
+                               userName );
     }
 
     protected void unLockAsset(String uuid) {
@@ -697,16 +696,16 @@ public class RepositoryAssetOperations {
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                              String comment) {
-        RulesRepository repo = getRulesRepository();
-        AssetItem asset = repo.loadAssetByUUID( assetId );
+        RulesRepository repository = getRulesRepository();
+        AssetItem asset = repository.loadAssetByUUID( assetId );
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
-        discussion.add( new DiscussionRecord( repo.getSession().getUserID(),
+        discussion.add( new DiscussionRecord( repository.getSession().getUserID(),
                                               StringEscapeUtils.escapeXml( comment ) ) );
         asset.updateStringProperty( dp.toString( discussion ),
                                     Discussion.DISCUSSION_PROPERTY_KEY,
                                     false );
-        repo.save();
+        repository.save();
 
         push( "discussion",
               assetId );

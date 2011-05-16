@@ -140,7 +140,7 @@ public class RepositoryCategoryOperations {
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
-        boolean bHasMoreRows = result.hasNext;
+        boolean hasMoreRows = result.hasNext;
 
         List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
                                                 .withPageRequest( request )
@@ -150,7 +150,7 @@ public class RepositoryCategoryOperations {
         PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
                                                             .withStartRowIndex( request.getStartRowIndex() )
                                                             .withPageRowList( rowList )
-                                                            .withLastPage( !bHasMoreRows )
+                                                            .withLastPage( !hasMoreRows )
                                                                 .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
