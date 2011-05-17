@@ -25,6 +25,13 @@
           <exclude>WEB-INF/lib/jta-*.jar</exclude>
           <exclude>WEB-INF/lib/jsf-api-*.jar</exclude>
           <!-- End workaround for GUVNOR-1160 -->
+          <!-- Exclude all CXF jars except cxf-rt-frontend-jaxrs-->
+          <exclude>WEB-INF/lib/cxf-api-*.jar</exclude>
+          <exclude>WEB-INF/lib/cxf-common-schemas-*.jar</exclude>
+          <exclude>WEB-INF/lib/cxf-common-utilities-*.jar</exclude>
+          <exclude>WEB-INF/lib/cxf-rt-bindings-xml-*.jar</exclude>
+          <exclude>WEB-INF/lib/cxf-rt-core-*.jar</exclude>
+          <exclude>WEB-INF/lib/cxf-rt-transports-http-*.jar</exclude>          
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
