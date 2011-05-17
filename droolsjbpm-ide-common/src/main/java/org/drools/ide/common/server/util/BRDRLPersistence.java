@@ -46,6 +46,7 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
@@ -392,6 +393,18 @@ public class BRDRLPersistence
 
         }
 
+        public void visitFromEntryPointFactPattern(FromEntryPointFactPattern pattern) {
+            buf.append( indentation );
+            if ( isDSLEnhanced ) {
+                // adding passthrough markup
+                buf.append( ">" );
+            }
+            if ( pattern.getFactPattern() != null ) {
+                generateFactPattern( pattern.getFactPattern() );
+            }
+            buf.append( " from entry-point \"" + pattern.getEntryPointName() + "\"\n" );
+        }
+        
         private void renderCompositeFOL(CompositeFactPattern pattern) {
             buf.append( pattern.type );
             if ( pattern.getPatterns() != null ) {

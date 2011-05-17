@@ -63,6 +63,7 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
@@ -997,6 +998,8 @@ public class RuleModeller extends DirtyableComposite
             p = new FromAccumulateCompositeFactPattern();
         } else if ( type.equals( "from collect" ) ) {
             p = new FromCollectCompositeFactPattern();
+        } else if ( type.equals( "from entry-point" ) ) {
+            p = new FromEntryPointFactPattern();
         }
 
         this.model.addLhsItem( p,

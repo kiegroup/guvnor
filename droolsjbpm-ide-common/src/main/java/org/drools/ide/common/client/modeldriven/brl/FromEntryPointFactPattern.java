@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,16 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-public class FromCollectCompositeFactPattern extends FromCompositeFactPattern {
+public class FromEntryPointFactPattern extends FromCompositeFactPattern {
 
-    private IPattern rightPattern;
+    private String entryPointName;
 
-    public FromCollectCompositeFactPattern() {
+    public String getEntryPointName() {
+        return entryPointName;
     }
 
-    public IPattern getRightPattern() {
-        return rightPattern;
-    }
-
-    public void setRightPattern(IPattern rightPattern) {
-        this.rightPattern = rightPattern;
+    public void setEntryPointName(String entryPointName) {
+        this.entryPointName = entryPointName;
     }
 
 }

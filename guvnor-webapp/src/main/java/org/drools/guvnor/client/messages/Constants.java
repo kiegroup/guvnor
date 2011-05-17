@@ -49,6 +49,8 @@ public interface Constants
 
     String AddField();
 
+    String AddAnnotation();
+
     String OK();
 
     String pleaseChooseFactType();
@@ -516,6 +518,8 @@ public interface Constants
 
     String AreYouSureYouWantToRemoveTheField0(String fieldName);
 
+    String AreYouSureYouWantToRemoveTheAnnotation0(String annotationName);
+    
     String AddNewFactType();
 
     String NewType();
@@ -1929,6 +1933,8 @@ public interface Constants
     String FromAccumulate();
 
     String FromCollect();
+
+    String FromEntryPoint();
 
     String URLDocumentionDescription();
 

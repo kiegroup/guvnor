@@ -40,29 +40,42 @@ public class FactFieldsEditor extends Composite {
         UiBinder<Widget, FactFieldsEditor> {
     }
 
-    private static FactFieldsEditorBinder uiBinder = GWT.create( FactFieldsEditorBinder.class );
+    private static FactFieldsEditorBinder   uiBinder = GWT.create( FactFieldsEditorBinder.class );
 
     @UiField
-    VerticalPanel                         fieldsPanel;
+    VerticalPanel                           fieldsPanel;
+    
     @UiField
-    AddButton                             addFieldIcon;
+    AddButton                               addFieldIcon;
+    
+    @UiField
+    AddButton                               addAnnotationIcon;
 
-    private final ModelNameHelper         modelNameHelper;
+    private final ModelNameHelper           modelNameHelper;
+    
+    private final List<FieldMetaModel>      fields;
 
-    private final List<FieldMetaModel>    fields;
+    private final List<AnnotationMetaModel> annotations;
 
     public FactFieldsEditor(final List<FieldMetaModel> fields,
+                            final List<AnnotationMetaModel> annotations,
                             final ModelNameHelper modelNameHelper) {
 
         this.fields = fields;
+        this.annotations = annotations;
         this.modelNameHelper = modelNameHelper;
 
         initWidget( uiBinder.createAndBindUi( this ) );
 
+        addAnnotationRows();
         addFieldRows();
 
         addFieldIcon.setTitle( constants.AddField() );
         addFieldIcon.setText( constants.AddField() );
+
+        addAnnotationIcon.setTitle( constants.AddAnnotation() );
+        addAnnotationIcon.setText( constants.AddAnnotation() );
+
     }
 
     @UiHandler("addFieldIcon")
@@ -86,12 +99,39 @@ public class FactFieldsEditor extends Composite {
 
     }
 
+    @UiHandler("addAnnotationIcon")
+    void addNewAnnotationClick(ClickEvent event) {
+        final AnnotationEditorPopup popup = new AnnotationEditorPopup( annotations );
+
+        popup.setOkCommand( new Command() {
+
+            public void execute() {
+                createNewAnnotation( popup );
+            }
+
+            private void createNewAnnotation(final AnnotationEditorPopup popup) {
+                AnnotationMetaModel annotation = popup.getAnnotation();
+                annotations.add( annotation );
+                addAnnotationRow( annotation );
+            }
+        } );
+
+        popup.show();
+
+    }
+
     private void addFieldRows() {
         for ( FieldMetaModel fieldMetaModel : fields ) {
             addFieldRow( fieldMetaModel );
         }
     }
 
+    private void addAnnotationRows() {
+        for ( AnnotationMetaModel annotation : annotations ) {
+            addAnnotationRow( annotation );
+        }
+    }
+    
     private void addFieldRow(final FieldMetaModel fieldMetaModel) {
         final FactFieldEditor editor = new FactFieldEditor( fieldMetaModel,
                                                             modelNameHelper );
@@ -107,4 +147,21 @@ public class FactFieldsEditor extends Composite {
 
         fieldsPanel.add( editor );
     }
+
+    private void addAnnotationRow(final AnnotationMetaModel annotation) {
+        final AnnotationEditor editor = new AnnotationEditor( annotation,
+                                                            annotations );
+
+        editor.setDeleteCommand( new Command() {
+            public void execute() {
+                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheAnnotation0( annotation.name ) ) ) {
+                    fieldsPanel.remove( editor );
+                    annotations.remove( annotation );
+                }
+            }
+        } );
+
+        fieldsPanel.add( editor );
+    }
+
 }

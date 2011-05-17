@@ -29,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 
@@ -79,6 +80,9 @@ public class RuleModellerWidgetFactory implements ModellerWidgetFactory {
         }
         if (pattern instanceof FromCollectCompositeFactPattern) {
             return new FromCollectCompositeFactPatternWidget(ruleModeller, (FromCollectCompositeFactPattern) pattern, readOnly);
+        }
+        if(pattern instanceof FromEntryPointFactPattern) {
+            return new FromEntryPointFactPatternWidget(ruleModeller, (FromEntryPointFactPattern) pattern, readOnly);
         }
         if (pattern instanceof FromCompositeFactPattern) {
             return new FromCompositeFactPatternWidget(ruleModeller, (FromCompositeFactPattern) pattern, readOnly);
