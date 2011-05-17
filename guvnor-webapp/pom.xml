@@ -290,7 +290,7 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-testutils</artifactId>
       <!-- TODO JBRULES-3028 overwrites the droolsjbpm-parent version of 2.2.9 used by drools-camel -->
-      <version>2.3.3</version>
+      <version>2.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
