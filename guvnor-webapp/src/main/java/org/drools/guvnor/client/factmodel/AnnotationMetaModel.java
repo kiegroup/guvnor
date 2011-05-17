@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
@@ -25,7 +26,7 @@ public class AnnotationMetaModel
 
     private static final long  serialVersionUID = 510l;
     public String              name;
-    public Map<String, String> values;
+    public Map<String, String> values           = new HashMap<String, String>();
 
     public AnnotationMetaModel() {
     }
@@ -34,6 +35,10 @@ public class AnnotationMetaModel
                                Map<String, String> values) {
         this.name = name;
         this.values = values;
+    }
+
+    public Map<String, String> getValues() {
+        return values;
     }
 
 }

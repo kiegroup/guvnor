@@ -21,7 +21,10 @@
   <gwt:HTMLPanel>
     <div class="guvnor-modelview-button-bar" >
       <div style="float:right;padding-right:20px;">
-        <guvnor:AddButton ui:field="addFieldIcon"></guvnor:AddButton>
+        <gwt:HorizontalPanel ui:spacing="5">
+          <guvnor:AddButton ui:field="addFieldIcon"></guvnor:AddButton>
+          <guvnor:AddButton ui:field="addAnnotationIcon"></guvnor:AddButton>
+        </gwt:HorizontalPanel>
       </div>
       <div style="clear:both;">
       </div>

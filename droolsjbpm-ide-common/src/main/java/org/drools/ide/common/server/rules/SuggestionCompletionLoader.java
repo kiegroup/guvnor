@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -43,20 +42,17 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.MethodInfo;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.util.ClassMethodInspector;
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.drools.ide.common.server.util.SuggestionCompletionEngineBuilder;
-import org.drools.lang.descr.FactTemplateDescr;
-import org.drools.lang.descr.FieldTemplateDescr;
+import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
-import org.drools.lang.dsl.AbstractDSLMappingEntry;
-import org.drools.lang.dsl.DSLMapping;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
@@ -327,6 +323,17 @@ public class SuggestionCompletionLoader
 
                 this.builder.addFactType(declaredType,
                         FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS);
+                
+                //Annotations
+                Map<String, Map<String, String>> annotations = new HashMap<String, Map<String, String>>();
+                for (String annotationName : typeDeclarationDescr.getAnnotationNames()) {
+                    AnnotationDescr annotation = typeDeclarationDescr.getAnnotation( annotationName );
+                    annotations.put( annotationName, annotation.getValues() );
+                }
+
+                this.builder.addAnnotationsForType(declaredType, annotations);
+                
+                //Fields
                 List<String> fieldNames = new ArrayList<String>();
                 for (Map.Entry<String, TypeFieldDescr> f : typeDeclarationDescr.getFields().entrySet()) {
                     String fieldName = f.getKey();

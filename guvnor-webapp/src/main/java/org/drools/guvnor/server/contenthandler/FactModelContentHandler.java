@@ -39,20 +39,20 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public class FactModelContentHandler extends ContentHandler {
     private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
 
     @Override
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-            AssetItem item) throws SerializationException {
+    public void retrieveAssetContent(RuleAsset asset,
+                                     PackageItem pkg,
+                                     AssetItem item) throws SerializationException {
         try {
-            List<FactMetaModel> models = toModel(item.getContent());
+            List<FactMetaModel> models = toModel( item.getContent() );
             FactModels ms = new FactModels();
             ms.models = models;
             asset.setContent( ms );
-        } catch (DroolsParserException e) {
-            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
+        } catch ( DroolsParserException e ) {
+            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")" );
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
             asset.setContent( text );
@@ -61,85 +61,109 @@ public class FactModelContentHandler extends ContentHandler {
     }
 
     @Override
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-            throws SerializationException {
-        if (asset.getContent() instanceof FactModels) {
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset)
+                                                      throws SerializationException {
+        if ( asset.getContent() instanceof FactModels ) {
             FactModels fm = (FactModels) asset.getContent();
-            repoAsset.updateContent(toDRL(fm.models));
+            repoAsset.updateContent( toDRL( fm.models ) );
         } else {
             RuleContentText text = (RuleContentText) asset.getContent();
-            repoAsset.updateContent(text.content);
+            repoAsset.updateContent( text.content );
         }
 
     }
 
-
     String toDRL(FactMetaModel mm) {
         StringBuilder sb = new StringBuilder();
-        sb.append("declare " + mm.name);
-        for (int i = 0; i < mm.fields.size(); i++) {
-            FieldMetaModel f = (FieldMetaModel) mm.fields.get(i);
-            sb.append("\n\t");
-            sb.append(f.name + ": " + f.type);
+        sb.append( "declare " + mm.name );
+        for ( int i = 0; i < mm.annotations.size(); i++ ) {
+            AnnotationMetaModel a = (AnnotationMetaModel) mm.annotations.get( i );
+            sb.append( "\n\t" );
+            sb.append( buildAnnotationDRL( a ) );
         }
-        sb.append("\nend");
+        for ( int i = 0; i < mm.fields.size(); i++ ) {
+            FieldMetaModel f = (FieldMetaModel) mm.fields.get( i );
+            sb.append( "\n\t" );
+            sb.append( f.name + ": " + f.type );
+        }
+        sb.append( "\nend" );
         return sb.toString();
     }
 
     List<FactMetaModel> toModel(String drl) throws DroolsParserException {
-        if (drl != null && drl.startsWith("#advanced")) {
-            throw new DroolsParserException("Using advanced editor");
+        if ( drl != null && drl.startsWith( "#advanced" ) ) {
+            throw new DroolsParserException( "Using advanced editor" );
         }
         DrlParser parser = new DrlParser();
-        PackageDescr pkg = parser.parse(drl);
-        if (parser.hasErrors()) {
-            throw new DroolsParserException("The model drl " + drl + " is not valid");
+        PackageDescr pkg = parser.parse( drl );
+        if ( parser.hasErrors() ) {
+            throw new DroolsParserException( "The model drl " + drl + " is not valid" );
         }
 
-        if (pkg == null) return new ArrayList<FactMetaModel>();
+        if ( pkg == null ) return new ArrayList<FactMetaModel>();
         List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
-        List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
-        for (TypeDeclarationDescr td : types) {
+        List<FactMetaModel> list = new ArrayList<FactMetaModel>( types.size() );
+        for ( TypeDeclarationDescr td : types ) {
             FactMetaModel mm = new FactMetaModel();
             mm.name = td.getTypeName();
 
             Map<String, TypeFieldDescr> fields = td.getFields();
-            for (Iterator<Map.Entry<String, TypeFieldDescr>> iterator = fields.entrySet().iterator(); iterator.hasNext();) {
+            for ( Iterator<Map.Entry<String, TypeFieldDescr>> iterator = fields.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, TypeFieldDescr> en = iterator.next();
                 String fieldName = en.getKey();
                 TypeFieldDescr descr = en.getValue();
-                FieldMetaModel fm = new FieldMetaModel(fieldName, descr.getPattern().getObjectType());
+                FieldMetaModel fm = new FieldMetaModel( fieldName,
+                                                        descr.getPattern().getObjectType() );
 
-                mm.fields.add(fm);
+                mm.fields.add( fm );
             }
-            
+
             Map<String, AnnotationDescr> annotations = td.getAnnotations();
             for ( Iterator<Map.Entry<String, AnnotationDescr>> iterator = annotations.entrySet().iterator(); iterator.hasNext(); ) {
                 Map.Entry<String, AnnotationDescr> en = iterator.next();
                 String annotationName = en.getKey();
                 AnnotationDescr descr = en.getValue();
                 Map<String, String> values = descr.getValues();
-
                 AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
                                                                   values );
 
                 mm.annotations.add( am );
             }
 
-            
-            list.add(mm);
+            list.add( mm );
         }
         return list;
     }
 
     String toDRL(List<FactMetaModel> models) {
         StringBuilder sb = new StringBuilder();
-        for (FactMetaModel factMetaModel : models) {
-            String drl = toDRL(factMetaModel);
-            sb.append(drl + "\n\n");
+        for ( FactMetaModel factMetaModel : models ) {
+            String drl = toDRL( factMetaModel );
+            sb.append( drl + "\n\n" );
         }
         return sb.toString().trim();
     }
 
+    private StringBuilder buildAnnotationDRL(AnnotationMetaModel a) {
+        StringBuilder sb = new StringBuilder();
+        sb.append( "@" );
+        sb.append( a.name );
+        sb.append( "(" );
+        for ( Map.Entry<String, String> e : a.getValues().entrySet() ) {
+            if ( e.getKey() != null && e.getKey().length() > 0 ) {
+                sb.append( e.getKey() );
+                sb.append( " = " );
+            }
+            if ( e.getValue() != null && e.getValue().length() > 0 ) {
+                sb.append( e.getValue() );
+            }
+            sb.append( ", " );
+        }
+        sb.delete( sb.length() - 2,
+                   sb.length() );
+        sb.append( ")" );
+        return sb;
+    }
 
 }

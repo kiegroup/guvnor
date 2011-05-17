@@ -472,16 +472,14 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c, String type) {
-        return operatorDropDown( c, type, null, -1, -1 );
+        return operatorDropDown( c, null, -1, -1 );
     }
     
-    private Widget operatorDropDown(final SingleFieldConstraint c, DirtyableFlexTable inner, int row, int col) {
-        return operatorDropDown( c, connectives.getCompletions().getFieldType( pattern.getFactType(), c.getFieldName() ), inner, row, col);
-    }
-
-    private Widget operatorDropDown(final SingleFieldConstraint c, String type, final DirtyableFlexTable inner, final int row, final int col) {
+    private Widget operatorDropDown(final SingleFieldConstraint c, final DirtyableFlexTable inner, final int row, final int col) {
         if ( !this.readOnly ) {
-            String[] ops = connectives.getCompletions().getOperatorCompletions( type );
+            String fieldName = c.getFieldName();
+            String factType = this.pattern.getFactType();
+            String[] ops = connectives.getCompletions().getOperatorCompletions( factType, fieldName );
             final ListBox box = new ListBox();
             box.addItem( constants.pleaseChoose(), "" );
             for ( int i = 0; i < ops.length; i++ ) {

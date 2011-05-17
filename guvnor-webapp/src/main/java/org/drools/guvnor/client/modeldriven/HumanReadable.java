@@ -36,7 +36,7 @@ public class HumanReadable {
     public static Map<String, String> ceDisplayMap = new HashMap<String, String>();
     public static Map<String, String> actionDisplayMap = new HashMap<String, String>();
     public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
-    public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[] {"from","from accumulate","from collect"};
+    public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[] {"from","from accumulate","from collect", "from entry-point"};
 
     private static Constants constants;
 
@@ -78,6 +78,7 @@ public class HumanReadable {
         ceDisplayMap.put( "from", constants.From());
         ceDisplayMap.put( "from accumulate", constants.FromAccumulate());
         ceDisplayMap.put( "from collect", constants.FromCollect());
+        ceDisplayMap.put( "from entry-point", constants.FromEntryPoint());
 
         actionDisplayMap.put( "assert", constants.Insert());
         actionDisplayMap.put( "assertLogical", constants.LogicallyInsert());

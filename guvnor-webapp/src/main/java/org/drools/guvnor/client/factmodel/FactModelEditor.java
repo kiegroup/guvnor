@@ -200,6 +200,7 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     public Widget getContent() {
         return new FactFieldsEditor( factMetaModel.fields,
+                                     factMetaModel.annotations,
                                      modelNameHelper );
     }
 }

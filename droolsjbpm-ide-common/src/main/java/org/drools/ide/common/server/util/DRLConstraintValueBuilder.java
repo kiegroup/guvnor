@@ -40,11 +40,14 @@ public class DRLConstraintValueBuilder {
                                           String fieldValue) {
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
-            if(!fieldValue.startsWith( "\"" )) {
+            if ( fieldValue == null ) {
+                return;
+            }
+            if ( !fieldValue.startsWith( "\"" ) ) {
                 buf.append( "\"" );
             }
             buf.append( fieldValue );
-            if(!fieldValue.endsWith( "\"" )) {
+            if ( !fieldValue.endsWith( "\"" ) ) {
                 buf.append( "\"" );
             }
             return;
@@ -85,11 +88,14 @@ public class DRLConstraintValueBuilder {
                                           String fieldValue) {
         if ( fieldType == null || fieldType.length() == 0 ) {
             //This should ideally be an error however we show leniency to legacy code
-            if(!fieldValue.startsWith( "\"" )) {
+            if ( fieldValue == null ) {
+                return;
+            }
+            if ( !fieldValue.startsWith( "\"" ) ) {
                 buf.append( "\"" );
             }
             buf.append( fieldValue );
-            if(!fieldValue.endsWith( "\"" )) {
+            if ( !fieldValue.endsWith( "\"" ) ) {
                 buf.append( "\"" );
             }
             return;
