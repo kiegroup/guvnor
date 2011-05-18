@@ -26,9 +26,9 @@ import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jbpm.compiler.xml.XmlProcessReader;
@@ -73,7 +73,8 @@ public class RuleFlowHandler extends ContentHandler
         try {
             InputStreamReader reader = new InputStreamReader( is );
             PackageBuilderConfiguration configuration = new PackageBuilderConfiguration();
-            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(),
+                                                               getClassLoader() );
 
             try {
                 process = (RuleFlowProcess) xmlReader.read( reader );
@@ -124,8 +125,8 @@ public class RuleFlowHandler extends ContentHandler
     }
 
     /**
-     * The rule flow can not be built if the package name is not the same as the package that it exists in.
-     * This changes the package name.
+     * The rule flow can not be built if the package name is not the same as the
+     * package that it exists in. This changes the package name.
      * 
      * @param item
      */
@@ -172,5 +173,13 @@ public class RuleFlowHandler extends ContentHandler
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
         // Nothing to do here, binary content
+    }
+
+    private static ClassLoader getClassLoader() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if ( cl == null ) {
+            cl = RuleFlowHandler.class.getClassLoader();
+        }
+        return cl;
     }
 }
