@@ -468,23 +468,24 @@ public class SuggestionCompletionLoader
         }
 
         final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
-        List<String> fieldSet = new ArrayList<String>();
-        fieldSet.addAll( inspector.getFieldNames().keySet() );
+        Set<String> fieldsSet = new TreeSet<String>();
+        fieldsSet.addAll( inspector.getFieldNames().keySet() );
+        List<String> fields = removeIrrelevantFields( fieldsSet );
 
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
         Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
 
         //'this' is a special case
-        fieldSet.add( 0,
-                      "this" );
+        fields.add( 0,
+                    "this" );
         accessorsAndMutators.put( shortTypeName + ".this",
                                   FieldAccessorsAndMutators.ACCESSOR );
         this.builder.addFieldType( shortTypeName + ".this",
                                    SuggestionCompletionEngine.TYPE_THIS,
                                    clazz );
         this.builder.addFieldsForType( shortTypeName,
-                                       removeIrrelevantFields( fieldSet ) );
+                                       fields.toArray(new String[fields.size()]));
 
         //Determine accessors for methods
         for ( Method method : methods ) {
@@ -533,8 +534,8 @@ public class SuggestionCompletionLoader
         this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
 
         //Configure other fields
-        fieldSet.remove( "this" );
-        for ( String field : fieldSet ) {
+        fields.remove( "this" );
+        for ( String field : fields ) {
             final Class< ? > type = inspector.getFieldTypes().get( field );
             final String fieldType = translateClassToGenericType( type );
             this.builder.addFieldType( shortTypeName + "." + field,
@@ -568,14 +569,14 @@ public class SuggestionCompletionLoader
      * This will remove the unneeded "fields" that come from java.lang.Object
      * these are really not needed for the modeller.
      */
-    public String[] removeIrrelevantFields(Collection<String> fields) {
+    public List<String> removeIrrelevantFields(Collection<String> fields) {
         final List<String> result = new ArrayList<String>();
         for (String field : fields) {
             if (!(field.equals("class") || field.equals("hashCode") || field.equals("toString"))) {
                 result.add(field);
             }
         }
-        return result.toArray(new String[result.size()]);
+        return result;
     }
 
     /**
