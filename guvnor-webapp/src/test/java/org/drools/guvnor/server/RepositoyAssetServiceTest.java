@@ -1148,11 +1148,14 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         result = repositoryAssetService.buildAsset( rule );
         assertNotNull( result );
 
-        assertEquals( 1,
+        assertEquals( 2,
                       result.getLines().size() );
         assertEquals( "package",
                       result.getLines().get( 0 ).getAssetFormat() );
         assertNotNull( result.getLines().get( 0 ).getMessage() );
+        assertEquals( "package",
+                      result.getLines().get( 1 ).getAssetFormat() );
+        assertNotNull( result.getLines().get( 1 ).getMessage() );
 
     }
 
