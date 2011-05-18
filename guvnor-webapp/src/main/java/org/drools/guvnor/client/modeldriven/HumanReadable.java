@@ -71,6 +71,32 @@ public class HumanReadable {
         operatorDisplayMap.put("== null", constants.isEqualToNull());
         operatorDisplayMap.put("!= null", constants.isNotEqualToNull());
         
+        operatorDisplayMap.put("|| after", constants.orAfter());
+        operatorDisplayMap.put("|| before", constants.orBefore()); 
+        operatorDisplayMap.put("|| coincided", constants.orCoincided());
+        operatorDisplayMap.put("&& after", constants.andAfter());
+        operatorDisplayMap.put("&& before", constants.andBefore());
+        operatorDisplayMap.put("&& coincided", constants.andConcided());
+        operatorDisplayMap.put("|| during", constants.orDuring());
+        operatorDisplayMap.put("|| finished", constants.orFinished());
+        operatorDisplayMap.put("|| finishedby", constants.orFinishedBy());
+        operatorDisplayMap.put("|| includes", constants.orIncludes());
+        operatorDisplayMap.put("|| meets", constants.orMeets());
+        operatorDisplayMap.put("|| metBy", constants.orMetBy());
+        operatorDisplayMap.put("|| overlaps", constants.orOverlaps());
+        operatorDisplayMap.put("|| overlappedby", constants.orOverlappedBy());
+        operatorDisplayMap.put("|| starts", constants.orStarts());
+        operatorDisplayMap.put("|| startedby", constants.orStartedBy());
+        operatorDisplayMap.put("&& during", constants.addDuring());
+        operatorDisplayMap.put("&& finished", constants.andFinished());
+        operatorDisplayMap.put("&& finishedby", constants.andFinishedBy());
+        operatorDisplayMap.put("&& includes", constants.andIncluded());
+        operatorDisplayMap.put("&& meets", constants.andMeets());
+        operatorDisplayMap.put("&& metBy", constants.andMetBy());
+        operatorDisplayMap.put("&& overlaps", constants.andOverlaps());
+        operatorDisplayMap.put("&& overlappedby", constants.andOverlappedBy());
+        operatorDisplayMap.put("&& starts", constants.andStarts());
+        operatorDisplayMap.put("&& startedby", constants.andStartedBy());
 
         ceDisplayMap.put( "not", constants.ThereIsNo());
         ceDisplayMap.put( "exists", constants.ThereExists());

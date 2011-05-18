@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.ui.AbstractOperatorWidget.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.resources.Images;
@@ -40,20 +41,20 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlexTable;
+import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
  * This is the new smart widget that works off the model.
@@ -71,25 +72,51 @@ public class FactPatternWidget extends RuleModellerWidget {
     private boolean            isAll0WithLabel;
     private boolean            readOnly;
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, boolean canBind) {
-        this( mod, p, false, canBind, null );
+    public FactPatternWidget(RuleModeller mod,
+                             IPattern p,
+                             boolean canBind) {
+        this( mod,
+              p,
+              false,
+              canBind,
+              null );
     }
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, boolean isAll0WithLabel, boolean canBind) {
-        this( mod, p, isAll0WithLabel, canBind, null );
+    public FactPatternWidget(RuleModeller mod,
+                             IPattern p,
+                             boolean isAll0WithLabel,
+                             boolean canBind) {
+        this( mod,
+              p,
+              isAll0WithLabel,
+              canBind,
+              null );
     }
 
     /**
      * Creates a new FactPatternWidget
+     * 
      * @param canBind
-     * @param readOnly if the widget should be in RO mode. If this parameter
-     * is null, the readOnly attribute is calculated.
+     * @param readOnly
+     *            if the widget should be in RO mode. If this parameter is null,
+     *            the readOnly attribute is calculated.
      */
-    public FactPatternWidget(RuleModeller ruleModeller, IPattern pattern, boolean canBind, Boolean readOnly) {
-        this( ruleModeller, pattern, false, canBind, readOnly );
+    public FactPatternWidget(RuleModeller ruleModeller,
+                             IPattern pattern,
+                             boolean canBind,
+                             Boolean readOnly) {
+        this( ruleModeller,
+              pattern,
+              false,
+              canBind,
+              readOnly );
     }
 
-    public FactPatternWidget(RuleModeller mod, IPattern p, boolean isAll0WithLabel, boolean canBind, Boolean readOnly) {
+    public FactPatternWidget(RuleModeller mod,
+                             IPattern p,
+                             boolean isAll0WithLabel,
+                             boolean canBind,
+                             Boolean readOnly) {
         super( mod );
         this.pattern = (FactPattern) p;
         this.bindable = canBind;
@@ -113,10 +140,17 @@ public class FactPatternWidget extends RuleModellerWidget {
             this.readOnly = readOnly;
         }
 
-        layout.setWidget( 0, 0, getPatternLabel() );
+        layout.setWidget( 0,
+                          0,
+                          getPatternLabel() );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        formatter.setAlignment( 0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_BOTTOM );
-        formatter.setStyleName( 0, 0, "modeller-fact-TypeHeader" );
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_BOTTOM );
+        formatter.setStyleName( 0,
+                                0,
+                                "modeller-fact-TypeHeader" );
 
         List<FieldConstraint> sortedConst = sortConstraints( pattern.getFieldConstraints() );
         pattern.setFieldConstraints( sortedConst );
@@ -134,21 +168,27 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     /**
-     * Render a hierarchy of constraints, hierarchy here means constraints that may
-     * themselves depend on members of constraint objects. With this code, the GUI
-     * enables clicking rules of the form:
-     *
-     *     $result = RoutingResult( NerOption.types contains "arzt" )
-     *
-     * @param sortedConst a sorted list of constraints to display.
+     * Render a hierarchy of constraints, hierarchy here means constraints that
+     * may themselves depend on members of constraint objects. With this code,
+     * the GUI enables clicking rules of the form:
+     * 
+     * $result = RoutingResult( NerOption.types contains "arzt" )
+     * 
+     * @param sortedConst
+     *            a sorted list of constraints to display.
      * */
     private void drawConstraints(List<FieldConstraint> sortedConst) {
         final DirtyableFlexTable table = new DirtyableFlexTable();
-        layout.setWidget( 1, 0, table );
+        layout.setWidget( 1,
+                          0,
+                          table );
         List<FieldConstraint> parents = new ArrayList<FieldConstraint>();
 
         for ( int i = 0; i < sortedConst.size(); i++ ) {
-            traverseSingleFieldConstraints( sortedConst, table, parents, i );
+            traverseSingleFieldConstraints( sortedConst,
+                                            table,
+                                            parents,
+                                            i );
 
             //now the clear icon
             final int currentRow = i;
@@ -158,7 +198,9 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             if ( !this.readOnly ) {
                 //This used to be 5 and Connectives were not rendered
-                table.setWidget( currentRow, 6, clear );
+                table.setWidget( currentRow,
+                                 6,
+                                 clear );
             }
 
         }
@@ -177,7 +219,10 @@ public class FactPatternWidget extends RuleModellerWidget {
         };
     }
 
-    private void traverseSingleFieldConstraints(List<FieldConstraint> sortedConst, final DirtyableFlexTable table, List<FieldConstraint> parents, int i) {
+    private void traverseSingleFieldConstraints(List<FieldConstraint> sortedConst,
+                                                final DirtyableFlexTable table,
+                                                List<FieldConstraint> parents,
+                                                int i) {
         int tabs = -1;
         FieldConstraint current = sortedConst.get( i );
         if ( current instanceof SingleFieldConstraint ) {
@@ -188,7 +233,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 FieldConstraint storedParent = parents.get( j );
                 if ( storedParent != null && storedParent.equals( parent ) ) {
                     tabs = j + 1;
-                    traverseForRemoval( parents, j );
+                    traverseForRemoval( parents,
+                                        j );
                     parents.add( current );
                     break;
                 }
@@ -199,19 +245,26 @@ public class FactPatternWidget extends RuleModellerWidget {
                 parents.add( current );
             }
         }
-        renderFieldConstraint( table, i, current, true, tabs );
+        renderFieldConstraint( table,
+                               i,
+                               current,
+                               true,
+                               tabs );
     }
 
-    private void traverseForRemoval(List<FieldConstraint> parents, int j) {
+    private void traverseForRemoval(List<FieldConstraint> parents,
+                                    int j) {
         for ( int k = j + 1; k < parents.size(); k++ ) {
             parents.remove( j + 1 );
         }
     }
 
     /**
-     * Sort the rule constraints such that parent rules are inserted directly before
-     * their child rules.
-     * @param constraints the list of inheriting constraints to sort.
+     * Sort the rule constraints such that parent rules are inserted directly
+     * before their child rules.
+     * 
+     * @param constraints
+     *            the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
      * */
     private List<FieldConstraint> sortConstraints(FieldConstraint[] constraints) {
@@ -224,9 +277,11 @@ public class FactPatternWidget extends RuleModellerWidget {
                 if ( single.getParent() == null ) {
                     sortedConst.add( single );
                 } else if ( index >= 0 ) {
-                    sortedConst.add( index + 1, single );
+                    sortedConst.add( index + 1,
+                                     single );
                 } else {
-                    insertSingleFieldConstraint( single, sortedConst );
+                    insertSingleFieldConstraint( single,
+                                                 sortedConst );
                 }
             } else {
                 sortedConst.add( current );
@@ -237,33 +292,54 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     /**
      * Recursively add constraints and their parents.
-     * @param sortedConst the array to fill.
-     * @param fieldConst the constraint to investigate.
+     * 
+     * @param sortedConst
+     *            the array to fill.
+     * @param fieldConst
+     *            the constraint to investigate.
      * */
-    private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst, List<FieldConstraint> sortedConst) {
+    private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst,
+                                             List<FieldConstraint> sortedConst) {
         if ( fieldConst.getParent() instanceof SingleFieldConstraint ) {
-            insertSingleFieldConstraint( (SingleFieldConstraint) fieldConst.getParent(), sortedConst );
+            insertSingleFieldConstraint( (SingleFieldConstraint) fieldConst.getParent(),
+                                         sortedConst );
         }
         sortedConst.add( fieldConst );
     }
 
     /**
-     * This will render a field constraint into the given table.
-     * The row is the row number to stick it into.
+     * This will render a field constraint into the given table. The row is the
+     * row number to stick it into.
      */
-    private void renderFieldConstraint(final DirtyableFlexTable inner, int row, FieldConstraint constraint, boolean showBinding, int tabs) {
+    private void renderFieldConstraint(final DirtyableFlexTable inner,
+                                       int row,
+                                       FieldConstraint constraint,
+                                       boolean showBinding,
+                                       int tabs) {
         //if nesting, or predicate, then it will need to span 5 cols.
         if ( constraint instanceof SingleFieldConstraint ) {
-            renderSingleFieldConstraint( this.getModeller(), inner, row, (SingleFieldConstraint) constraint, showBinding, tabs );
+            renderSingleFieldConstraint( this.getModeller(),
+                                         inner,
+                                         row,
+                                         (SingleFieldConstraint) constraint,
+                                         showBinding,
+                                         tabs );
         } else if ( constraint instanceof CompositeFieldConstraint ) {
-            inner.setWidget( row, 1, compositeFieldConstraintEditor( (CompositeFieldConstraint) constraint ) );
-            inner.getFlexCellFormatter().setColSpan( row, 1, 5 );
-            inner.setWidget( row, 0, new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
+            inner.setWidget( row,
+                             1,
+                             compositeFieldConstraintEditor( (CompositeFieldConstraint) constraint ) );
+            inner.getFlexCellFormatter().setColSpan( row,
+                                                     1,
+                                                     5 );
+            inner.setWidget( row,
+                             0,
+                             new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) ); //NON-NLS
         }
     }
 
     /**
-     * This will show the constraint editor - allowing field constraints to be nested etc.
+     * This will show the constraint editor - allowing field constraints to be
+     * nested etc.
      */
     private Widget compositeFieldConstraintEditor(final CompositeFieldConstraint constraint) {
         FlexTable t = new FlexTable();
@@ -272,7 +348,8 @@ public class FactPatternWidget extends RuleModellerWidget {
         ClickHandler click = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                popupCreator.showPatternPopupForComposite( (Widget) event.getSource(), constraint );
+                popupCreator.showPatternPopupForComposite( (Widget) event.getSource(),
+                                                           constraint );
             }
         };
 
@@ -282,15 +359,25 @@ public class FactPatternWidget extends RuleModellerWidget {
             desc = constants.AnyOf() + ":";
         }
 
-        t.setWidget( 0, 0, new ClickableLabel( desc, click, !this.readOnly ) );
-        t.getFlexCellFormatter().setColSpan( 0, 0, 2 );
+        t.setWidget( 0,
+                     0,
+                     new ClickableLabel( desc,
+                                         click,
+                                         !this.readOnly ) );
+        t.getFlexCellFormatter().setColSpan( 0,
+                                             0,
+                                             2 );
 
         FieldConstraint[] nested = constraint.constraints;
         DirtyableFlexTable inner = new DirtyableFlexTable();
         inner.setStyleName( "modeller-inner-nested-Constraints" ); //NON-NLS
         if ( nested != null ) {
             for ( int i = 0; i < nested.length; i++ ) {
-                this.renderFieldConstraint( inner, i, nested[i], false, 0 );
+                this.renderFieldConstraint( inner,
+                                            i,
+                                            nested[i],
+                                            false,
+                                            0 );
                 //add in remove icon here...
                 final int currentRow = i;
                 Image clear = new ImageButton( images.deleteItemSmall() );
@@ -307,53 +394,97 @@ public class FactPatternWidget extends RuleModellerWidget {
                 } );
                 if ( !this.readOnly ) {
                     //This used to be 5 and Connectives were not rendered
-                    inner.setWidget( i, 6, clear );
+                    inner.setWidget( i,
+                                     6,
+                                     clear );
                 }
             }
         }
 
-        t.setWidget( 1, 1, inner );
-        t.setWidget( 1, 0, new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+        t.setWidget( 1,
+                     1,
+                     inner );
+        t.setWidget( 1,
+                     0,
+                     new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
         return t;
     }
 
     /**
      * Applies a single field constraint to the given table, and start row.
      */
-    private void renderSingleFieldConstraint(final RuleModeller modeller, final DirtyableFlexTable inner, final int row, final SingleFieldConstraint constraint, boolean showBinding, final int tabs) {
+    private void renderSingleFieldConstraint(final RuleModeller modeller,
+                                             final DirtyableFlexTable inner,
+                                             final int row,
+                                             final SingleFieldConstraint constraint,
+                                             boolean showBinding,
+                                             final int tabs) {
 
         final int col = 1; //for offsetting, just a slight indent
 
-        inner.setWidget( row, 0, new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
+        inner.setWidget( row,
+                         0,
+                         new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
         if ( constraint.getConstraintValueType() != SingleFieldConstraint.TYPE_PREDICATE ) {
 
             HorizontalPanel ebContainer = null;
             if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
-                ebContainer = expressionBuilderLS( (SingleFieldConstraintEBLeftSide) constraint, showBinding, tabs * 20 );
-                inner.setWidget( row, 0 + col, ebContainer );
+                ebContainer = expressionBuilderLS( (SingleFieldConstraintEBLeftSide) constraint,
+                                                   showBinding,
+                                                   tabs * 20 );
+                inner.setWidget( row,
+                                 0 + col,
+                                 ebContainer );
             } else {
-                inner.setWidget( row, 0 + col, fieldLabel( constraint, showBinding, tabs * 20 ) );
+                inner.setWidget( row,
+                                 0 + col,
+                                 fieldLabel( constraint,
+                                             showBinding,
+                                             tabs * 20 ) );
             }
-            inner.setWidget( row, 2 + col, valueEditor( constraint, constraint.getFieldType() ) );
-            inner.setWidget( row, 1 + col, operatorDropDown( constraint, inner, row, 2 + col ) );
-            inner.setWidget( row, 3 + col, connectives.connectives( constraint, constraint.getFieldType() ) );
+            inner.setWidget( row,
+                             2 + col,
+                             valueEditor( constraint,
+                                          constraint.getFieldType() ) );
+            inner.setWidget( row,
+                             1 + col,
+                             operatorDropDown( constraint,
+                                               inner,
+                                               row,
+                                               2 + col ) );
+            inner.setWidget( row,
+                             3 + col,
+                             connectives.connectives( constraint,
+                                                      constraint.getFieldType() ) );
 
             if ( ebContainer != null && ebContainer.getWidgetCount() > 0 ) {
                 if ( ebContainer.getWidget( 0 ) instanceof ExpressionBuilder ) {
-                    associateExpressionWithChangeHandler( inner, row, constraint, col, ebContainer );
+                    associateExpressionWithChangeHandler( inner,
+                                                          row,
+                                                          constraint,
+                                                          col,
+                                                          ebContainer );
                 }
             }
 
             if ( !this.readOnly ) {
-                inner.setWidget( row, 4 + col, createaAddConnectiveImageButton( modeller, constraint ) );
+                inner.setWidget( row,
+                                 4 + col,
+                                 createaAddConnectiveImageButton( modeller,
+                                                                  constraint ) );
             }
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
-            inner.setWidget( row, 1, predicateEditor( constraint ) );
-            inner.getFlexCellFormatter().setColSpan( row, 1, 5 );
+            inner.setWidget( row,
+                             1,
+                             predicateEditor( constraint ) );
+            inner.getFlexCellFormatter().setColSpan( row,
+                                                     1,
+                                                     5 );
         }
     }
 
-    private Image createaAddConnectiveImageButton(final RuleModeller modeller, final SingleFieldConstraint constraint) {
+    private Image createaAddConnectiveImageButton(final RuleModeller modeller,
+                                                  final SingleFieldConstraint constraint) {
         Image addConnective = new ImageButton( images.addConnective() );
         addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
@@ -367,14 +498,21 @@ public class FactPatternWidget extends RuleModellerWidget {
         return addConnective;
     }
 
-    private void associateExpressionWithChangeHandler(final DirtyableFlexTable inner, final int row, final SingleFieldConstraint constraint, final int col, HorizontalPanel ebContainer) {
+    private void associateExpressionWithChangeHandler(final DirtyableFlexTable inner,
+                                                      final int row,
+                                                      final SingleFieldConstraint constraint,
+                                                      final int col,
+                                                      HorizontalPanel ebContainer) {
         ExpressionBuilder eb = (ExpressionBuilder) ebContainer.getWidget( 0 );
         eb.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
 
             public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
                 try {
                     constraint.setFieldType( event.getNewType() );
-                    inner.setWidget( row, 1 + col, operatorDropDown( constraint, event.getNewType() ) );
+                    inner.setWidget( row,
+                                     1 + col,
+                                     operatorDropDown( constraint,
+                                                       event.getNewType() ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -426,7 +564,9 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             public void onClick(ClickEvent event) {
                 String factTypeShortName = (pattern.getFactType().contains( "." ) ? pattern.getFactType().substring( pattern.getFactType().lastIndexOf( "." ) + 1 ) : pattern.getFactType());
-                popupCreator.showPatternPopup( (Widget) event.getSource(), factTypeShortName, null );
+                popupCreator.showPatternPopup( (Widget) event.getSource(),
+                                               factTypeShortName,
+                                               null );
             }
         };
 
@@ -434,38 +574,52 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         String desc;
         if ( isAll0WithLabel ) {
-            desc = constants.All0with(patternName);
+            desc = constants.All0with( patternName );
         } else {
             if ( pattern.constraintList != null && pattern.constraintList.constraints.length > 0 ) {
                 desc = constants.ThereIsAAn0With( patternName );
             } else {
                 desc = constants.ThereIsAAn0( patternName );
             }
-            desc = anA( desc, patternName );
+            desc = anA( desc,
+                        patternName );
         }
 
-        return new ClickableLabel( desc, click, !this.readOnly );
+        return new ClickableLabel( desc,
+                                   click,
+                                   !this.readOnly );
     }
 
     /**
-     * Change to an/a depending on context - only for english
-     * TODO use GWT support for that: http://code.google.com/intl/nl/webtoolkit/doc/latest/DevGuideI18n.html
+     * Change to an/a depending on context - only for english TODO use GWT
+     * support for that:
+     * http://code.google.com/intl/nl/webtoolkit/doc/latest/DevGuideI18n.html
      */
-    private String anA(String desc, String patternName) {
+    private String anA(String desc,
+                       String patternName) {
         if ( desc.startsWith( "There is a/an" ) ) { //NON-NLS
-            String vowel = patternName.substring( 0, 1 );
+            String vowel = patternName.substring( 0,
+                                                  1 );
             if ( vowel.equalsIgnoreCase( "A" ) || vowel.equalsIgnoreCase( "E" ) || vowel.equalsIgnoreCase( "I" ) || vowel.equalsIgnoreCase( "O" ) || vowel.equalsIgnoreCase( "U" ) ) { //NON-NLS
-                return desc.replace( "There is a/an", "There is an" ); //NON-NLS
+                return desc.replace( "There is a/an",
+                                     "There is an" ); //NON-NLS
             } else {
-                return desc.replace( "There is a/an", "There is a" ); //NON-NLS
+                return desc.replace( "There is a/an",
+                                     "There is a" ); //NON-NLS
             }
         } else {
             return desc;
         }
     }
 
-    private Widget valueEditor(final SingleFieldConstraint c, String factType) {
-        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( pattern, c.getFieldName(), c, this.getModeller(), c.getFieldType(), this.readOnly );
+    private Widget valueEditor(final SingleFieldConstraint c,
+                               String factType) {
+        ConstraintValueEditor constraintValueEditor = new ConstraintValueEditor( pattern,
+                                                                                 c.getFieldName(),
+                                                                                 c,
+                                                                                 this.getModeller(),
+                                                                                 c.getFieldType(),
+                                                                                 this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
                 setModified( true );
@@ -474,79 +628,56 @@ public class FactPatternWidget extends RuleModellerWidget {
         return constraintValueEditor;
     }
 
-    private Widget operatorDropDown(final SingleFieldConstraint c, String type) {
-        return operatorDropDown( c, null, -1, -1 );
+    private Widget operatorDropDown(final SingleFieldConstraint c,
+                                    String type) {
+        return operatorDropDown( c,
+                                 null,
+                                 -1,
+                                 -1 );
     }
-    
-    private Widget operatorDropDown(final SingleFieldConstraint c, final DirtyableFlexTable inner, final int row, final int col) {
-        if ( !this.readOnly ) {
-            //--> MA 
-            //TODO   i) Encapsulate into CEPOperatorsWidget 
-            //      ii) Encapsulate CEPOperators into class implementing OperatorExtensions
-            //     iii) Add OperatorExtensions to SingleFieldConstraint
-            //      iv) Set SingleFieldConstraint on CEPOperatorsWidget
-            HorizontalPanel p = new HorizontalPanel();
-            final Image btnAddCEPOperators = new Image( images.clock() );
-            btnAddCEPOperators.setVisible( c.getOperator()!=null && c.getOperator().equals("==") );
-            btnAddCEPOperators.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
-                    Window.alert( "woot!" );
-                }
-            } );
-            
-            //Operators drop-down
+    private Widget operatorDropDown(final SingleFieldConstraint c,
+                                    final DirtyableFlexTable inner,
+                                    final int row,
+                                    final int col) {
+        if ( !this.readOnly ) {
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
-            String[] ops = connectives.getCompletions().getOperatorCompletions( factType, fieldName );
-            final ListBox box = new ListBox();
-            box.addItem( constants.pleaseChoose(), "" );
-            for ( int i = 0; i < ops.length; i++ ) {
-                String op = ops[i];
-                box.addItem( HumanReadable.getOperatorDisplayName( op ), op );
-                if ( op.equals( c.getOperator() ) ) {
-                    if(HumanReadable.getOperatorDisplayName( op ).equals(constants.isEqualToNull()) || HumanReadable.getOperatorDisplayName( op ).equals(constants.isNotEqualToNull())) {
-                        inner.getWidget(row, col).setVisible(false);
-                        ( (ConstraintValueEditor) inner.getWidget(row, col)).getConstraint().setValue("");
-                    }
-                    box.setSelectedIndex( i + 1 );
-                }
+            String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
+                                                                                      fieldName );
+            SingleFieldConstraintOperatorWidget w = new SingleFieldConstraintOperatorWidget( operators,
+                                                                                             c );
 
-            }
+            w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-            box.addChangeHandler( new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
+                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                     setModified( true );
-                    String selected = box.getValue( box.getSelectedIndex());
-                    String selectedText = box.getItemText( box.getSelectedIndex() );
+                    OperatorSelection selection = event.getValue();
+                    String selected = selection.getValue();
+                    String selectedText = selection.getDisplayText();
                     c.setOperator( selected );
                     if ( c.getOperator().equals( "" ) ) {
                         c.setOperator( null );
                     }
-                    if( selectedText.equals(constants.isEqualToNull()) || selectedText.equals(constants.isNotEqualToNull())) {
-                        if(inner != null) {
-                            inner.getWidget(row, col).setVisible(false);
-                            ( (ConstraintValueEditor) inner.getWidget(row, col)).getConstraint().setValue("");
+                    if ( selectedText.equals( constants.isEqualToNull() ) || selectedText.equals( constants.isNotEqualToNull() ) ) {
+                        if ( inner != null ) {
+                            inner.getWidget( row,
+                                             col ).setVisible( false );
+                            ((ConstraintValueEditor) inner.getWidget( row,
+                                                                      col )).getConstraint().setValue( "" );
                         }
-                     } else {
-                        if(inner != null) {
-                            inner.getWidget(row, col).setVisible(true);
+                    } else {
+                        if ( inner != null ) {
+                            inner.getWidget( row,
+                                             col ).setVisible( true );
                         }
                     }
-                    
-                    //-->MA
-                    //TODO Update CEPOperatorsWidget with SingleFieldConstraint (c) changes
-                    btnAddCEPOperators.setVisible( c.getOperator()!=null && c.getOperator().equals("==") );
-                    
+
                     getModeller().makeDirty();
                 }
             } );
 
-            p.add(box);
-            p.add(btnAddCEPOperators);
- 
-            return p;
+            return w;
         } else {
             SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
             return sl;
@@ -554,28 +685,34 @@ public class FactPatternWidget extends RuleModellerWidget {
 
     }
 
-    private HorizontalPanel expressionBuilderLS(final SingleFieldConstraintEBLeftSide con, boolean showBinding, int padding) {
+    private HorizontalPanel expressionBuilderLS(final SingleFieldConstraintEBLeftSide con,
+                                                boolean showBinding,
+                                                int padding) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
         if ( !con.isBound() ) {
             if ( bindable && showBinding && !this.readOnly ) {
-                ab.add( new ExpressionBuilder( getModeller(), con.getExpressionLeftSide() ) );
+                ab.add( new ExpressionBuilder( getModeller(),
+                                               con.getExpressionLeftSide() ) );
             } else {
                 ab.add( new SmallLabel( con.getExpressionLeftSide().getText() ) );
             }
         } else {
-            ab.add( new ExpressionBuilder( getModeller(), con.getExpressionLeftSide() ) );
+            ab.add( new ExpressionBuilder( getModeller(),
+                                           con.getExpressionLeftSide() ) );
         }
         return ab;
     }
 
     /**
-     * get the field widget. This may be a simple label, or it may
-     * be bound (and show the var name) or a icon to create a binding.
-     * It will only show the binding option of showBinding is true.
+     * get the field widget. This may be a simple label, or it may be bound (and
+     * show the var name) or a icon to create a binding. It will only show the
+     * binding option of showBinding is true.
      */
-    private Widget fieldLabel(final SingleFieldConstraint con, boolean showBinding, int padding) {
+    private Widget fieldLabel(final SingleFieldConstraint con,
+                              boolean showBinding,
+                              int padding) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
@@ -585,15 +722,23 @@ public class FactPatternWidget extends RuleModellerWidget {
 
                     public void onClick(ClickEvent event) {
                         String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
-                        popupCreator.showBindFieldPopup( (Widget) event.getSource(), con, fields, popupCreator );
+                        popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                         con,
+                                                         fields,
+                                                         popupCreator );
                     }
                 };
 
-                Image bind = new ImageButton( images.editTiny(), constants.GiveFieldVarName() );
+                Image bind = new ImageButton( images.editTiny(),
+                                              constants.GiveFieldVarName() );
 
                 bind.addClickHandler( click );
-                ClickableLabel cl = new ClickableLabel( con.getFieldName(), click, !this.readOnly );
-                DOM.setStyleAttribute( cl.getElement(), "marginLeft", "" + padding + "pt" ); //NON-NLS
+                ClickableLabel cl = new ClickableLabel( con.getFieldName(),
+                                                        click,
+                                                        !this.readOnly );
+                DOM.setStyleAttribute( cl.getElement(),
+                                       "marginLeft",
+                                       "" + padding + "pt" ); //NON-NLS
                 ab.add( cl );
             } else {
                 ab.add( new SmallLabel( con.getFieldName() ) );
