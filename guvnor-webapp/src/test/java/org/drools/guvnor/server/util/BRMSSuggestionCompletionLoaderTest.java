@@ -108,11 +108,11 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testStripUnNeededFields() {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
-        String[] result = loader.removeIrrelevantFields( Arrays.asList( new String[]{"foo", "toString", "class", "hashCode"} ) );
+        List<String> result = loader.removeIrrelevantFields( Arrays.asList( new String[]{"foo", "toString", "class", "hashCode"} ) );
         assertEquals( 1,
-                      result.length );
+                      result.size());
         assertEquals( "foo",
-                      result[0] );
+                      result.get( 0 ) );
     }
 
     @Test

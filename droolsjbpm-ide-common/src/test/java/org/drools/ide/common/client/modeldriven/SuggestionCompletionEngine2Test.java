@@ -55,7 +55,7 @@ public class SuggestionCompletionEngine2Test {
 
         String[] mutators = engine.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                         "Test" );
-        assertEquals( 2,
+        assertEquals( 1,
                       mutators.length );
 
     }
@@ -78,7 +78,7 @@ public class SuggestionCompletionEngine2Test {
         
         String[] mutators = engine.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
         "SuggestionCompletionEngine2Test$Person" );
-        assertEquals( 3,
+        assertEquals( 2,
                       mutators.length );
         
     }

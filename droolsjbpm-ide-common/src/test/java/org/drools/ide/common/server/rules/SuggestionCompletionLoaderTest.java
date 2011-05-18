@@ -234,10 +234,11 @@ public class SuggestionCompletionLoaderTest {
 
         String[] fields = eng.getFieldCompletions("SomeFact");
 
-        assertEquals("age", fields[0]);
-        assertEquals("alive", fields[1]);
-        assertEquals("anEnum", fields[2]);
-        assertEquals("bigDecimal", fields[3]);
+        assertEquals("this", fields[0]);
+        assertEquals("age", fields[1]);
+        assertEquals("alive", fields[2]);
+        assertEquals("anEnum", fields[3]);
+        assertEquals("bigDecimal", fields[4]);
     }
 
     @Test
