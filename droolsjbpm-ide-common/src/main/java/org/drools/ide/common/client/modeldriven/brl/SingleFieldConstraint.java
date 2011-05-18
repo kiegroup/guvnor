@@ -19,43 +19,47 @@ package org.drools.ide.common.client.modeldriven.brl;
 /**
  * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
- * Can also include optional "connective constraints" that extend the options for matches.
+ * Can also include optional "connective constraints" that extend the options
+ * for matches.
  */
-public class SingleFieldConstraint extends BaseSingleFieldConstraint implements FieldConstraint {
+public class SingleFieldConstraint extends BaseSingleFieldConstraint
+    implements
+    FieldConstraint {
 
-    private String fieldBinding;
-    private String fieldName;
-    private String operator;
-    private String fieldType;
-    private FieldConstraint parent;
+    private String                fieldBinding;
+    private String                fieldName;
+    private String                operator;
+    private String                fieldType;
+    private FieldConstraint       parent;
     /**
      * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
      * Esteban Aliverti
      */
-    private ExpressionFormLine expression = new ExpressionFormLine();
+    private ExpressionFormLine    expression = new ExpressionFormLine();
     /**
-     * Used with "value" when using custom forms.
-     * Esteban Aliverti
+     * Used with "value" when using custom forms. Esteban Aliverti
      */
-    private String id;
+    private String                id;
     public ConnectiveConstraint[] connectives;
 
-    public SingleFieldConstraint(final String field, final String fieldType, final FieldConstraint parent) {
-        this.setFieldName(field);
-        this.setFieldType(fieldType);
-        this.setParent(parent);
+    public SingleFieldConstraint(final String field,
+                                 final String fieldType,
+                                 final FieldConstraint parent) {
+        this.setFieldName( field );
+        this.setFieldType( fieldType );
+        this.setParent( parent );
     }
 
     public SingleFieldConstraint(final String field) {
-        this.setFieldName(field);
-        this.setFieldType("");
-        this.setParent(null);
+        this.setFieldName( field );
+        this.setFieldType( "" );
+        this.setParent( null );
     }
 
     public SingleFieldConstraint() {
-        this.setFieldName(null);
-        this.setFieldType("");
-        this.setParent(null);
+        this.setFieldName( null );
+        this.setFieldType( "" );
+        this.setParent( null );
     }
 
     public void setFieldBinding(String fieldBinding) {
@@ -70,14 +74,20 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint implements 
      * This adds a new connective.
      */
     public void addNewConnective() {
-        if (this.connectives == null) {
-            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint(this.getFieldName(), this.getFieldType(), null, null)};
+        if ( this.connectives == null ) {
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( this.getFieldName(),
+                                                                                    this.getFieldType(),
+                                                                                    null,
+                                                                                    null )};
         } else {
             final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
-            for (int i = 0; i < this.connectives.length; i++) {
+            for ( int i = 0; i < this.connectives.length; i++ ) {
                 newList[i] = this.connectives[i];
             }
-            newList[this.connectives.length] = new ConnectiveConstraint(this.getFieldName(), this.getFieldType(), null, null);
+            newList[this.connectives.length] = new ConnectiveConstraint( this.getFieldName(),
+                                                                         this.getFieldType(),
+                                                                         null,
+                                                                         null );
             this.connectives = newList;
         }
     }
