@@ -360,7 +360,7 @@
 
       <para>H: Pattern/Action toolbar. Next to each Pattern or Action you will
       find a toolbar containing 3 buttons. The first button lets you insert a
-      new Pattern/Action bellow the one you selected, the other two buttons
+      new Pattern/Action below the one you selected, the other two buttons
       will move the current Pattern/Action up or down. The toolbars are
       translucent by default; they get active when you move the mouse cursor
       inside one of them.</para>
