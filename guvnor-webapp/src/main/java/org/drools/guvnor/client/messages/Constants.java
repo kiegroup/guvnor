@@ -519,7 +519,7 @@ public interface Constants
     String AreYouSureYouWantToRemoveTheField0(String fieldName);
 
     String AreYouSureYouWantToRemoveTheAnnotation0(String annotationName);
-    
+
     String AddNewFactType();
 
     String NewType();
@@ -709,7 +709,7 @@ public interface Constants
     String isEqualTo();
 
     String isNotEqualTo();
-    
+
     String isEqualToNull();
 
     String isNotEqualToNull();
@@ -761,6 +761,58 @@ public interface Constants
     String ThereIsNo();
 
     String ThereExists();
+
+    String orAfter();
+
+    String orBefore();
+
+    String orCoincided();
+
+    String andAfter();
+
+    String andBefore();
+
+    String andConcided();
+
+    String orDuring();
+
+    String orFinished();
+
+    String orFinishedBy();
+
+    String orIncludes();
+
+    String orMeets();
+
+    String orMetBy();
+
+    String orOverlaps();
+
+    String orOverlappedBy();
+
+    String orStarts();
+
+    String orStartedBy();
+
+    String addDuring();
+
+    String andFinished();
+
+    String andFinishedBy();
+
+    String andIncluded();
+
+    String andMeets();
+
+    String andMetBy();
+
+    String andOverlaps();
+
+    String andOverlappedBy();
+
+    String andStarts();
+
+    String andStartedBy();
 
     String AnyOf1();
 
@@ -2265,13 +2317,13 @@ public interface Constants
     String PerspectivesConfiguration();
 
     String NewPerspective();
-    
+
     String PackageValidatedSuccessfully();
-    
+
     String VersionFeed();
-    
+
     String Dependencies();
-    
+
     String missingGlobalsWarning();
-    
+
 }
