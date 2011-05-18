@@ -31,6 +31,7 @@ import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.GuvnorAPIServlet;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
@@ -78,7 +79,8 @@ public class BPMN2ProcessHandler extends ContentHandler
             configuration.initSemanticModules();
             configuration.addSemanticModule( new BPMNSemanticModule() );
             configuration.addSemanticModule( new BPMNDISemanticModule() );
-            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules() );
+            XmlProcessReader xmlReader = new XmlProcessReader( configuration.getSemanticModules(),
+                                                               getClassLoader() );
             try {
                 process = (RuleFlowProcess) xmlReader.read( reader );
             } catch ( Exception e ) {
@@ -124,14 +126,14 @@ public class BPMN2ProcessHandler extends ContentHandler
             }
             if ( content.getJson() != null ) {
                 try {
-                    String xml = serialize("http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
-                                        content.getJson());
-                    content.setXml(xml);
-                    repoAsset.updateContent(content.getXml());
+                    String xml = serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
+                                            content.getJson() );
+                    content.setXml( xml );
+                    repoAsset.updateContent( content.getXml() );
                 } catch ( Exception e ) {
-                  log.error( e.getMessage(),
-                             e );
-              }
+                    log.error( e.getMessage(),
+                               e );
+                }
             }
         }
     }
@@ -144,7 +146,7 @@ public class BPMN2ProcessHandler extends ContentHandler
 
         try {
             modelJson = "&data=" + URLEncoder.encode( modelJson,
-                                                     "UTF-8" );
+                                                      "UTF-8" );
             byte[] bytes = modelJson.getBytes( "UTF-8" );
 
             HttpURLConnection connection = (HttpURLConnection) new URL( serializeUrl ).openConnection();
@@ -224,22 +226,32 @@ public class BPMN2ProcessHandler extends ContentHandler
                         ErrorLogger logger) {
         // This can not work, no binary data in RuleAsset
     }
-    
-    public void assembleProcessSource(PortableObject assetContent, StringBuilder stringBuilder) {
+
+    public void assembleProcessSource(PortableObject assetContent,
+                                      StringBuilder stringBuilder) {
         RuleFlowContentModel content = (RuleFlowContentModel) assetContent;
-        if(content.getXml() != null && content.getXml().length() > 0) {
-            stringBuilder.append(content.getXml());
-        } else if(content.getJson() != null && content.getJson().length() > 0) {
+        if ( content.getXml() != null && content.getXml().length() > 0 ) {
+            stringBuilder.append( content.getXml() );
+        } else if ( content.getJson() != null && content.getJson().length() > 0 ) {
             // convert the json to xml
             try {
-                String xml = BPMN2ProcessHandler.serialize("http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
-                        content.getJson());
-                stringBuilder.append(StringEscapeUtils.escapeXml(xml));
-            } catch (IOException e) {
-                log.error("Exception converting to xml: " + e.getMessage());
+                String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
+                                                            content.getJson() );
+                stringBuilder.append( StringEscapeUtils.escapeXml( xml ) );
+            } catch ( IOException e ) {
+                log.error( "Exception converting to xml: " + e.getMessage() );
             }
         } else {
             //default..nothing.
         }
     }
+
+    private static ClassLoader getClassLoader() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if ( cl == null ) {
+            cl = BPMN2ProcessHandler.class.getClassLoader();
+        }
+        return cl;
+    }
+
 }

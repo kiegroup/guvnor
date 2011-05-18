@@ -64,7 +64,9 @@ public class GuvnorAPIServlet extends HttpServlet {
     private static final String        LOAD    = "load";
     private static final LoggingHelper log     = LoggingHelper.getLogger( GuvnorAPIServlet.class );
 
-    public void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void service(HttpServletRequest request,
+                        HttpServletResponse response) throws ServletException,
+                                                     IOException {
         log.debug( "Incoming request for Guvnor API:" + request.getRequestURL() );
         String action = request.getParameter( "action" );
         if ( LOAD.equals( action ) ) {
@@ -73,7 +75,7 @@ public class GuvnorAPIServlet extends HttpServlet {
                 throw new ServletException( new IllegalArgumentException( "The load action requires the parameter uuid" ) );
             }
             ServletOutputStream outputStream = response.getOutputStream();
-            
+
             try {
                 RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset( uuid );
                 if ( asset.getContent() != null ) {
@@ -86,10 +88,13 @@ public class GuvnorAPIServlet extends HttpServlet {
                     }
                     try {
                         // TODO fix for non-localhost <---- Can someone please describe what is problem so it can be fixed? 
-                        content = deserialize( "http://localhost:8080/designer/bpmn2_0deserialization", content );
+                        content = deserialize( "http://localhost:8080/designer/bpmn2_0deserialization",
+                                               content );
                     } catch ( IOException e ) {
-                        log.error( e.getMessage(), e );
-                        throw new ServletException( e.getMessage(), e );
+                        log.error( e.getMessage(),
+                                   e );
+                        throw new ServletException( e.getMessage(),
+                                                    e );
                     }
                     log.debug( "Sending model" );
                     log.debug( content );
@@ -98,8 +103,10 @@ public class GuvnorAPIServlet extends HttpServlet {
                     outputStream.write( content.getBytes() );
                 }
             } catch ( SerializationException e ) {
-                log.error( e.getMessage(), e );
-                throw new ServletException( e.getMessage(), e );
+                log.error( e.getMessage(),
+                           e );
+                throw new ServletException( e.getMessage(),
+                                            e );
             } finally {
                 outputStream.close();
             }
@@ -134,14 +141,17 @@ public class GuvnorAPIServlet extends HttpServlet {
                 Map<String, String> constraints = new HashMap<String, String>();
                 String[] constraint = request.getParameterValues( "constraint" );
                 for ( String c : constraint ) {
-                    String nodeId = c.substring( 0, c.indexOf( ":" ) );
+                    String nodeId = c.substring( 0,
+                                                 c.indexOf( ":" ) );
                     String rule = c.substring( c.indexOf( ":" ) + 1 );
-                    constraints.put( nodeId, rule );
+                    constraints.put( nodeId,
+                                     rule );
                 }
-                String result = inject( json, constraints );
+                String result = inject( json,
+                                        constraints );
                 response.setContentType( "application/json" );
                 log.debug( "injecting" );
-                if(log.isDebugEnabled()){
+                if ( log.isDebugEnabled() ) {
                     for ( Map.Entry<String, String> entry : constraints.entrySet() ) {
                         log.debug( entry.getKey() + " " + entry.getValue() );
                     }
@@ -160,19 +170,22 @@ public class GuvnorAPIServlet extends HttpServlet {
         }
     }
 
-    public static String deserialize(String deserializeUrl, String modelXml) throws IOException {
+    public static String deserialize(String deserializeUrl,
+                                     String modelXml) throws IOException {
         OutputStream out = null;
         InputStream content = null;
         ByteArrayOutputStream bos = null;
 
         try {
             URL bpmn2_0SerializationURL = new URL( deserializeUrl );
-            modelXml = "data=" + URLEncoder.encode( modelXml, "UTF-8" );
+            modelXml = "data=" + URLEncoder.encode( modelXml,
+                                                    "UTF-8" );
             byte[] bytes = modelXml.getBytes( "UTF-8" );
 
             HttpURLConnection connection = (HttpURLConnection) bpmn2_0SerializationURL.openConnection();
             connection.setRequestMethod( "POST" );
-            connection.setRequestProperty( "Content-Type", "application/x-www-form-urlencoded" );
+            connection.setRequestProperty( "Content-Type",
+                                           "application/x-www-form-urlencoded" );
             connection.setFixedLengthStreamingMode( bytes.length );
             connection.setDoOutput( true );
             out = connection.getOutputStream();
@@ -191,20 +204,22 @@ public class GuvnorAPIServlet extends HttpServlet {
             bos.close();
             return new String( bytes );
         } finally {
-            IOUtils.closeQuietly(out);
-            IOUtils.closeQuietly(content);
-            IOUtils.closeQuietly(bos);
+            IOUtils.closeQuietly( out );
+            IOUtils.closeQuietly( content );
+            IOUtils.closeQuietly( bos );
         }
     }
 
     public static Map<String, String[]> extract(String json) throws Exception {
         Map<String, String[]> result = null;
-        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization", json );
+        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization",
+                                                    json );
         Reader isr = new StringReader( xml );
         SemanticModules semanticModules = new SemanticModules();
         semanticModules.addSemanticModule( new BPMNSemanticModule() );
         semanticModules.addSemanticModule( new BPMNDISemanticModule() );
-        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
+        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
+                                                           getClassLoader() );
         RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
         if ( process == null ) {
             throw new IllegalArgumentException( "Could not read process" );
@@ -219,7 +234,8 @@ public class GuvnorAPIServlet extends HttpServlet {
                 Constraint constraint = split.getConstraint( connection );
                 if ( constraint != null ) {
                     System.out.println( "Found constraint to node " + connection.getTo().getName() + " [" + connection.getTo().getId() + "]: " + constraint.getConstraint() );
-                    result.put( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ), new String[]{connection.getTo().getName(), constraint.getConstraint()} );
+                    result.put( XmlBPMNProcessDumper.getUniqueNodeId( connection.getTo() ),
+                                new String[]{connection.getTo().getName(), constraint.getConstraint()} );
                 }
             }
         }
@@ -230,13 +246,16 @@ public class GuvnorAPIServlet extends HttpServlet {
         return result;
     }
 
-    public static String inject(String json, Map<String, String> constraints) throws Exception {
-        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization", json );
+    public static String inject(String json,
+                                Map<String, String> constraints) throws Exception {
+        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization",
+                                                    json );
         Reader isr = new StringReader( xml );
         SemanticModules semanticModules = new SemanticModules();
         semanticModules.addSemanticModule( new BPMNSemanticModule() );
         semanticModules.addSemanticModule( new BPMNDISemanticModule() );
-        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules );
+        XmlProcessReader xmlReader = new XmlProcessReader( semanticModules,
+                                                           getClassLoader() );
         RuleFlowProcess process = (RuleFlowProcess) xmlReader.read( isr );
         isr.close();
         if ( process == null ) {
@@ -254,7 +273,8 @@ public class GuvnorAPIServlet extends HttpServlet {
                         Constraint constraint = split.getConstraint( connection );
                         if ( constraint == null ) {
                             constraint = new ConstraintImpl();
-                            split.setConstraint( connection, constraint );
+                            split.setConstraint( connection,
+                                                 constraint );
                         }
                         constraint.setConstraint( s );
                     }
@@ -262,8 +282,17 @@ public class GuvnorAPIServlet extends HttpServlet {
             }
             String newXml = XmlBPMNProcessDumper.INSTANCE.dump( process );
             System.out.println( newXml );
-            return deserialize( "http://localhost:8080/designer/bpmn2_0deserialization", newXml );
+            return deserialize( "http://localhost:8080/designer/bpmn2_0deserialization",
+                                newXml );
         }
+    }
+
+    private static ClassLoader getClassLoader() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if ( cl == null ) {
+            cl = GuvnorAPIServlet.class.getClassLoader();
+        }
+        return cl;
     }
 
 }
