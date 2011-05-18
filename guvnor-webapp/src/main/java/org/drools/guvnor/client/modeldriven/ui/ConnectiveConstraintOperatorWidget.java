@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 
 /**
@@ -31,6 +32,11 @@ public class ConnectiveConstraintOperatorWidget extends AbstractOperatorWidget<C
 
     protected String getOperator(ConnectiveConstraint bfc) {
         return bfc.operator;
+    }
+
+    @Override
+    protected boolean isCEPOperator(String value) {
+        return SuggestionCompletionEngine.isCEPConnectiveOperator( value );
     }
 
 }

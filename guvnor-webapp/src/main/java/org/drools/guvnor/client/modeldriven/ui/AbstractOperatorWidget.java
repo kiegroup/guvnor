@@ -32,7 +32,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -52,6 +51,7 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
 
     private T             bfc;
     private String[]      operators;
+    private Image         btnAddCEPOperators;
 
     public AbstractOperatorWidget(String[] operators,
                                   T bfc) {
@@ -67,7 +67,7 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
 
     //Additional widget for CEP operator parameters
     private Widget getOperatorExtension(T bfc) {
-        final Image btnAddCEPOperators = new Image( images.clock() );
+        btnAddCEPOperators = new Image( images.clock() );
         btnAddCEPOperators.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
@@ -77,9 +77,17 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
         return btnAddCEPOperators;
     }
 
+    private void operatorChanged(OperatorSelection selection) {
+        String value = selection.getValue();
+        btnAddCEPOperators.setVisible( isCEPOperator( value ) );
+    }
+
     //Template method to retrieve the operator
     protected abstract String getOperator(T bfc);
 
+    //Template method for sub-classes to determine if operator is a CEP operator
+    protected abstract boolean isCEPOperator(String value);
+    
     //Actual drop-down
     private Widget getDropDown(final T bfc) {
 
@@ -107,6 +115,7 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
+                operatorChanged(selection);
                 ValueChangeEvent.fire( source,
                                        selection );
             }
@@ -117,11 +126,14 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
+                Object o = event.getSource();
                 String selected = box.getValue( box.getSelectedIndex() );
                 String selectedText = box.getItemText( box.getSelectedIndex() );
+                OperatorSelection selection = new OperatorSelection( selected,
+                                                                     selectedText );
+                operatorChanged( selection );
                 ValueChangeEvent.fire( source,
-                                       new OperatorSelection( selected,
-                                                              selectedText ) );
+                                       selection );
             }
         } );
 

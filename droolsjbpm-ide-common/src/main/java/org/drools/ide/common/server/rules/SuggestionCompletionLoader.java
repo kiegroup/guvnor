@@ -312,34 +312,48 @@ public class SuggestionCompletionLoader
     }
 
     private void populateDeclaredFactTypes() {
-        /** now we do the dynamic facts - the declared types */
+        
         Set<String> declaredTypes = getDeclaredTypes(pkgDescr);
-
+        Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+        
         for (TypeDeclarationDescr typeDeclarationDescr : pkgDescr.getTypeDeclarations()) {
 
+            String declaredType = typeDeclarationDescr.getTypeName();
+            
+            //Configure annotations
+            Map<String, Map<String, String>> annotations = new HashMap<String, Map<String, String>>();
+            for (String annotationName : typeDeclarationDescr.getAnnotationNames()) {
+                AnnotationDescr annotation = typeDeclarationDescr.getAnnotation( annotationName );
+                annotations.put( annotationName, annotation.getValues() );
+            }
+
+            this.builder.addAnnotationsForType(declaredType, annotations);
+            
+            //Configure fields
             if (typeDeclarationDescrHasFields(typeDeclarationDescr)) {
-                //add the type to the map
-                String declaredType = typeDeclarationDescr.getTypeName();
+
+                List<String> fieldNames = new ArrayList<String>();
 
                 this.builder.addFactType(declaredType,
-                        FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS);
-                
-                //Annotations
-                Map<String, Map<String, String>> annotations = new HashMap<String, Map<String, String>>();
-                for (String annotationName : typeDeclarationDescr.getAnnotationNames()) {
-                    AnnotationDescr annotation = typeDeclarationDescr.getAnnotation( annotationName );
-                    annotations.put( annotationName, annotation.getValues() );
-                }
+                                         FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS);
 
-                this.builder.addAnnotationsForType(declaredType, annotations);
+                //'this' is a special case
+                fieldNames.add("this");
+                this.builder.addFieldType(declaredType + ".this",
+                                          SuggestionCompletionEngine.TYPE_THIS,
+                                          null);
+                accessorsAndMutators.put( declaredType + ".this",
+                                          FieldAccessorsAndMutators.ACCESSOR );
                 
-                //Fields
-                List<String> fieldNames = new ArrayList<String>();
+                //Other fields
                 for (Map.Entry<String, TypeFieldDescr> f : typeDeclarationDescr.getFields().entrySet()) {
                     String fieldName = f.getKey();
                     fieldNames.add(fieldName);
-                    String fieldClass = f.getValue().getPattern().getObjectType();
 
+                    String factField = declaredType + "." + fieldName;
+                    accessorsAndMutators.put( factField, FieldAccessorsAndMutators.BOTH );
+                    String fieldClass = f.getValue().getPattern().getObjectType();
+                    
                     if (declaredTypes.contains(fieldClass)) {
                         this.builder.addFieldType(declaredType + "." + fieldName,
                                 fieldClass,
@@ -357,10 +371,13 @@ public class SuggestionCompletionLoader
                 }
 
                 this.builder.addFieldsForType(declaredType,
-                        fieldNames.toArray(new String[fieldNames.size()]));
+                                              fieldNames.toArray(new String[fieldNames.size()]));
 
             }
         }
+        
+        this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
+
     }
 
     private boolean typeDeclarationDescrHasFields(TypeDeclarationDescr typeDeclarationDescr) {
@@ -444,99 +461,103 @@ public class SuggestionCompletionLoader
         return clazz;
     }
 
-    private void loadClassFields(final Class<?> clazz,
+    private void loadClassFields(final Class< ? > clazz,
                                  final String shortTypeName) throws IOException {
-        if (clazz == null) {
+        if ( clazz == null ) {
             return;
         }
 
-        final ClassFieldInspector inspector = new ClassFieldInspector(clazz);
-        Set<String> fieldSet = new TreeSet<String>();
-        fieldSet.addAll(inspector.getFieldNames().keySet());
-        // add the "this" field. This won't come out from the inspector
-        fieldSet.add("this");
-
-        this.builder.addFieldsForType(shortTypeName,
-                removeIrrelevantFields(fieldSet));
+        final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
+        List<String> fieldSet = new ArrayList<String>();
+        fieldSet.addAll( inspector.getFieldNames().keySet() );
 
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
-
         Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
-        for (Method method : methods) {
-            modifierStrings.add(method.getName());
-            if (method.getParameterTypes().length > 0) {
-                String name = method.getName();
-                if (name.startsWith("set")) {
-                    name = Introspector.decapitalize(name.substring(3));
-                }
 
+        //'this' is a special case
+        fieldSet.add( 0,
+                      "this" );
+        accessorsAndMutators.put( shortTypeName + ".this",
+                                  FieldAccessorsAndMutators.ACCESSOR );
+        this.builder.addFieldType( shortTypeName + ".this",
+                                   SuggestionCompletionEngine.TYPE_THIS,
+                                   clazz );
+        this.builder.addFieldsForType( shortTypeName,
+                                       removeIrrelevantFields( fieldSet ) );
+
+        //Determine accessors for methods
+        for ( Method method : methods ) {
+            modifierStrings.add( method.getName() );
+            String name = method.getName();
+            if ( method.getParameterTypes().length > 0 ) {
+
+                //Strip bare mutator name
+                if ( name.startsWith( "set" ) ) {
+                    name = Introspector.decapitalize( name.substring( 3 ) );
+                }
                 String factField = shortTypeName + "." + name;
 
-                if (accessorsAndMutators.get(factField) == FieldAccessorsAndMutators.ACCESSOR) {
-                    accessorsAndMutators.put(factField,
-                            FieldAccessorsAndMutators.BOTH);
+                if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.ACCESSOR ) {
+                    accessorsAndMutators.put( factField,
+                                              FieldAccessorsAndMutators.BOTH );
                 } else {
-                    accessorsAndMutators.put(factField,
-                            FieldAccessorsAndMutators.MUTATOR);
+                    accessorsAndMutators.put( factField,
+                                              FieldAccessorsAndMutators.MUTATOR );
                 }
-            } else if (!method.getReturnType().equals("void")) {
-                String name = method.getName();
-                if (name.startsWith("get")) {
-                    name = Introspector.decapitalize(name.substring(3));
-                } else if (name.startsWith("is")) {
-                    name = Introspector.decapitalize(name.substring(2));
-                }
+            } else if ( !method.getReturnType().equals( "void" ) ) {
 
+                //Strip bare accessor name
+                if ( name.startsWith( "get" ) ) {
+                    name = Introspector.decapitalize( name.substring( 3 ) );
+                } else if ( name.startsWith( "is" ) ) {
+                    name = Introspector.decapitalize( name.substring( 2 ) );
+                }
                 String factField = shortTypeName + "." + name;
 
-                if (accessorsAndMutators.get(factField) == FieldAccessorsAndMutators.MUTATOR) {
-                    accessorsAndMutators.put(factField,
-                            FieldAccessorsAndMutators.BOTH);
+                if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.MUTATOR ) {
+                    accessorsAndMutators.put( factField,
+                                              FieldAccessorsAndMutators.BOTH );
                 } else {
-                    accessorsAndMutators.put(shortTypeName + "." + name,
-                            FieldAccessorsAndMutators.ACCESSOR);
+                    accessorsAndMutators.put( shortTypeName + "." + name,
+                                              FieldAccessorsAndMutators.ACCESSOR );
                 }
             }
         }
 
+        //Configure modifiers and accessors
         String[] modifiers = new String[modifierStrings.size()];
-        modifierStrings.toArray(modifiers);
+        modifierStrings.toArray( modifiers );
+        this.builder.addModifiersForType( shortTypeName,
+                                          modifiers );
+        this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
 
-        this.builder.addModifiersForType(shortTypeName,
-                modifiers);
-        this.builder.addFieldAccessorsAndMutatorsForField(accessorsAndMutators);
-
-        // remove this back out because there is no type for it. We add it explicitly
-        fieldSet.remove("this");
-        this.builder.addFieldType(shortTypeName + ".this",
-                SuggestionCompletionEngine.TYPE_OBJECT,
-                clazz);
-
-        for (String field : fieldSet) {
-            final Class<?> type = inspector.getFieldTypes().get(field);
-            final String fieldType = translateClassToGenericType(type);
-            this.builder.addFieldType(shortTypeName + "." + field,
-                    fieldType,
-                    type);
-            Field f = inspector.getFieldTypesField().get(field);
-            this.builder.addFieldTypeField(shortTypeName + "." + field,
-                    f);
+        //Configure other fields
+        fieldSet.remove( "this" );
+        for ( String field : fieldSet ) {
+            final Class< ? > type = inspector.getFieldTypes().get( field );
+            final String fieldType = translateClassToGenericType( type );
+            this.builder.addFieldType( shortTypeName + "." + field,
+                                       fieldType,
+                                       type );
+            Field f = inspector.getFieldTypesField().get( field );
+            this.builder.addFieldTypeField( shortTypeName + "." + field,
+                                            f );
         }
 
-        ClassMethodInspector methodInspector = new ClassMethodInspector(clazz,
-                this);
+        ClassMethodInspector methodInspector = new ClassMethodInspector( clazz,
+                                                                         this );
 
         List<MethodInfo> methodInfos = methodInspector.getMethodInfos();
-        for (MethodInfo mi : methodInfos) {
+        for ( MethodInfo mi : methodInfos ) {
             String genericType = mi.getParametricReturnType();
-            if (genericType != null) {
-                this.builder.putParametricFieldType(shortTypeName + "." + mi.getNameWithParameters(),
-                        genericType);
+            if ( genericType != null ) {
+                this.builder.putParametricFieldType( shortTypeName + "." + mi.getNameWithParameters(),
+                                                     genericType );
             }
         }
-        this.builder.getInstance().addMethodInfo(shortTypeName,
-                methodInfos);
+        this.builder.getInstance().addMethodInfo( shortTypeName,
+                                                  methodInfos );
     }
 
     public String getShortNameOfClass(final String clazz) {
