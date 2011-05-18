@@ -40,48 +40,52 @@ public class SuggestionCompletionEngine
     PortableObject {
 
     /** These are the explicit types supported */
-    public static final String                     TYPE_COLLECTION        = "Collection";
-    public static final String                     TYPE_COMPARABLE        = "Comparable";
-    public static final String                     TYPE_STRING            = "String";
-    public static final String                     TYPE_NUMERIC           = "Numeric";
-    public static final String                     TYPE_BOOLEAN           = "Boolean";
-    public static final String                     TYPE_DATE              = "Date";
-    public static final String                     TYPE_OBJECT            = "Object";                                                                                                                         // for all other unknown
-    public static final String                     TYPE_FINAL_OBJECT      = "FinalObject";                                                                                                                    // for all other unknown
+    public static final String                     TYPE_COLLECTION         = "Collection";
+    public static final String                     TYPE_COMPARABLE         = "Comparable";
+    public static final String                     TYPE_STRING             = "String";
+    public static final String                     TYPE_NUMERIC            = "Numeric";
+    public static final String                     TYPE_BOOLEAN            = "Boolean";
+    public static final String                     TYPE_DATE               = "Date";
+    public static final String                     TYPE_OBJECT             = "Object";                                                                                                                                                        // for all other unknown
+    public static final String                     TYPE_FINAL_OBJECT       = "FinalObject";                                                                                                                                                   // for all other unknown
 
     //Standard annotations
-    public static final String                     ANNOTATION_ROLE        = "role";
-    public static final String                     ANNOTATION_ROLE_EVENT  = "event";
+    public static final String                     ANNOTATION_ROLE         = "role";
+    public static final String                     ANNOTATION_ROLE_EVENT   = "event";
 
     /**
      * The operators that are used at different times (based on type).
      */
-    private static final String[]                  STANDARD_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !="};
-    private static final String[]                  STRING_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
-    private static final String[]                  COMPARABLE_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
-    private static final String[]                  COLLECTION_CONNECTIVES = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
+    private static final String[]                  STANDARD_CONNECTIVES    = new String[]{"|| ==", "|| !=", "&& !="};
+    private static final String[]                  STRING_CONNECTIVES      = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
+    private static final String[]                  COMPARABLE_CONNECTIVES  = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
+    private static final String[]                  COLLECTION_CONNECTIVES  = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
-    private static final String[]                  STANDARD_OPERATORS     = new String[]{"==", "!=", "== null", "!= null"};
-    private static final String[]                  COMPARABLE_OPERATORS   = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
-    private static final String[]                  STRING_OPERATORS       = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
-    private static final String[]                  COLLECTION_OPERATORS   = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
+    private static final String[]                  STANDARD_OPERATORS      = new String[]{"==", "!=", "== null", "!= null"};
+    private static final String[]                  COMPARABLE_OPERATORS    = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
+    private static final String[]                  STRING_OPERATORS        = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
+    private static final String[]                  COLLECTION_OPERATORS    = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
-    private static final String[]                  SIMPLE_CEP_OPERATORS   = new String[]{"after", "before", "coincided"};
-    private static final String[]                  COMPLEX_CEP_OPERATORS  = new String[]{"during", "finished", "finishedby", "includes", "meets", "metBy", "overlaps", "overlappedby", "starts", "startedby"};
+    private static final String[]                  SIMPLE_CEP_OPERATORS    = new String[]{"after", "before", "coincided"};
+    private static final String[]                  COMPLEX_CEP_OPERATORS   = new String[]{"during", "finished", "finishedby", "includes", "meets", "metBy", "overlaps", "overlappedby", "starts", "startedby"};
+
+    private static final String[]                  SIMPLE_CEP_CONNECTIVES  = new String[]{"|| after", "|| before", "|| coincided", "&& after", "&& before", "&& coincided"};
+    private static final String[]                  COMPLEX_CEP_CONNECTIVES = new String[]{"|| during", "|| finished", "|| finishedby", "|| includes", "|| meets", "|| metBy", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
+                                                                                           "&& during", "&& finished", "&& finishedby", "&& includes", "&& meets", "&& metBy", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
 
     /** The top level conditional elements (first order logic) */
-    private static final String[]                  CONDITIONAL_ELEMENTS   = new String[]{"not", "exists", "or"};
+    private static final String[]                  CONDITIONAL_ELEMENTS    = new String[]{"not", "exists", "or"};
 
     /**
      * A map of the field that contains the parametrized type of a collection
      * List<String> name key = "name" value = "String"
      */
-    private Map<String, String>                    fieldParametersType    = new HashMap<String, String>();
+    private Map<String, String>                    fieldParametersType     = new HashMap<String, String>();
 
     /**
      * Contains a map of globals (name is key) and their type (value).
      */
-    private Map<String, String>                    globalTypes            = new HashMap<String, String>();
+    private Map<String, String>                    globalTypes             = new HashMap<String, String>();
 
     /**
      * A map of types to the modifying methods they expose. key is type, value
@@ -94,14 +98,14 @@ public class SuggestionCompletionEngine
      * Contains a map of { TypeName.field : String[] } - where a list is valid
      * values to display in a drop down for a given Type.field combination.
      */
-    private Map<String, String[]>                  dataEnumLists          = new HashMap<String, String[]>();                                                                                                  // TODO this is
+    private Map<String, String[]>                  dataEnumLists           = new HashMap<String, String[]>();                                                                                                                                 // TODO this is
     // a PROBLEM as its not always String[]
 
     /**
      * A map of Annotations for FactTypes. Key is FactType, value is list of
      * annotations
      */
-    private Map<String, List<ModelAnnotation>>     annotationsForTypes    = new HashMap<String, List<ModelAnnotation>>();
+    private Map<String, List<ModelAnnotation>>     annotationsForTypes     = new HashMap<String, List<ModelAnnotation>>();
 
     /**
      * This will show the names of globals that are a collection type.
@@ -125,10 +129,10 @@ public class SuggestionCompletionEngine
     /**
      * DSL language extensions, if needed, if provided by the package.
      */
-    public DSLSentence[]                           conditionDSLSentences  = new DSLSentence[0];
-    public DSLSentence[]                           actionDSLSentences     = new DSLSentence[0];
-    public DSLSentence[]                           keywordDSLItems        = new DSLSentence[0];
-    public DSLSentence[]                           anyScopeDSLItems       = new DSLSentence[0];
+    public DSLSentence[]                           conditionDSLSentences   = new DSLSentence[0];
+    public DSLSentence[]                           actionDSLSentences      = new DSLSentence[0];
+    public DSLSentence[]                           keywordDSLItems         = new DSLSentence[0];
+    public DSLSentence[]                           anyScopeDSLItems        = new DSLSentence[0];
 
     /**
      * This is used to calculate what fields an enum list may depend on.
@@ -170,14 +174,14 @@ public class SuggestionCompletionEngine
     //
     // }
 
-    private Map<String, List<MethodInfo>>          methodInfos            = new HashMap<String, List<MethodInfo>>();
+    private Map<String, List<MethodInfo>>          methodInfos             = new HashMap<String, List<MethodInfo>>();
 
-    private Map<String, ModelField[]>              modelFields            = new HashMap<String, ModelField[]>();
-    private Map<String, ModelField[]>              filterModelFields      = null;
+    private Map<String, ModelField[]>              modelFields             = new HashMap<String, ModelField[]>();
+    private Map<String, ModelField[]>              filterModelFields       = null;
 
-    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators   = new HashMap<String, FieldAccessorsAndMutators>();
-    private FactTypeFilter                         factFilter             = null;
-    private boolean                                filteringFacts         = true;
+    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators    = new HashMap<String, FieldAccessorsAndMutators>();
+    private FactTypeFilter                         factFilter              = null;
+    private boolean                                filteringFacts          = true;
 
     public SuggestionCompletionEngine() {
 
@@ -197,14 +201,24 @@ public class SuggestionCompletionEngine
 
     public String[] getConnectiveOperatorCompletions(final String factType,
                                                      final String fieldName) {
-        final String type = this.getFieldType( factType + "." + fieldName );
-        if ( type == null ) {
-            return STANDARD_CONNECTIVES;
-        } else if ( type.equals( TYPE_STRING ) ) {
+        final String fieldType = this.getFieldType( factType + "." + fieldName );
+
+        if ( fieldType == null ) {
+            if ( this.isFactTypeAnEvent( factType ) ) {
+                return joinArrays( STANDARD_CONNECTIVES,
+                                   SIMPLE_CEP_CONNECTIVES,
+                                   COMPLEX_CEP_CONNECTIVES );
+            } else {
+                return STANDARD_CONNECTIVES;
+            }
+        } else if ( fieldType.equals( TYPE_STRING ) ) {
             return STRING_CONNECTIVES;
-        } else if ( type.equals( TYPE_COMPARABLE ) || type.equals( TYPE_DATE ) || type.equals( TYPE_NUMERIC ) ) {
+        } else if ( fieldType.equals( TYPE_COMPARABLE ) || fieldType.equals( TYPE_NUMERIC ) ) {
             return COMPARABLE_CONNECTIVES;
-        } else if ( type.equals( TYPE_COLLECTION ) ) {
+        } else if ( fieldType.equals( TYPE_DATE ) ) {
+            return joinArrays( COMPARABLE_CONNECTIVES,
+                               SIMPLE_CEP_CONNECTIVES );
+        } else if ( fieldType.equals( TYPE_COLLECTION ) ) {
             return COLLECTION_CONNECTIVES;
         } else {
             return STANDARD_CONNECTIVES;

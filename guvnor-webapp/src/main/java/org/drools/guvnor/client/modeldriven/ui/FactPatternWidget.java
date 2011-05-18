@@ -49,6 +49,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -156,7 +157,8 @@ public class FactPatternWidget extends RuleModellerWidget {
             clear.addClickHandler( createClickHandlerForClearImageButton( currentRow ) );
 
             if ( !this.readOnly ) {
-                table.setWidget( currentRow, 5, clear );
+                //This used to be 5 and Connectives were not rendered
+                table.setWidget( currentRow, 6, clear );
             }
 
         }
@@ -304,7 +306,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                     }
                 } );
                 if ( !this.readOnly ) {
-                    inner.setWidget( i, 5, clear );
+                    //This used to be 5 and Connectives were not rendered
+                    inner.setWidget( i, 6, clear );
                 }
             }
         }
@@ -477,6 +480,22 @@ public class FactPatternWidget extends RuleModellerWidget {
     
     private Widget operatorDropDown(final SingleFieldConstraint c, final DirtyableFlexTable inner, final int row, final int col) {
         if ( !this.readOnly ) {
+            //--> MA 
+            //TODO   i) Encapsulate into CEPOperatorsWidget 
+            //      ii) Encapsulate CEPOperators into class implementing OperatorExtensions
+            //     iii) Add OperatorExtensions to SingleFieldConstraint
+            //      iv) Set SingleFieldConstraint on CEPOperatorsWidget
+            HorizontalPanel p = new HorizontalPanel();
+            final Image btnAddCEPOperators = new Image( images.clock() );
+            btnAddCEPOperators.setVisible( c.getOperator()!=null && c.getOperator().equals("==") );
+            btnAddCEPOperators.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    Window.alert( "woot!" );
+                }
+            } );
+            
+            //Operators drop-down
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
             String[] ops = connectives.getCompletions().getOperatorCompletions( factType, fieldName );
@@ -516,11 +535,18 @@ public class FactPatternWidget extends RuleModellerWidget {
                         }
                     }
                     
+                    //-->MA
+                    //TODO Update CEPOperatorsWidget with SingleFieldConstraint (c) changes
+                    btnAddCEPOperators.setVisible( c.getOperator()!=null && c.getOperator().equals("==") );
+                    
                     getModeller().makeDirty();
                 }
             } );
 
-            return box;
+            p.add(box);
+            p.add(btnAddCEPOperators);
+ 
+            return p;
         } else {
             SmallLabel sl = new SmallLabel( "<b>" + (c.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( c.getOperator() )) + "</b>" );
             return sl;

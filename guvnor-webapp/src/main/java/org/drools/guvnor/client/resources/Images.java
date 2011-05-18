@@ -191,6 +191,9 @@ public interface Images
     @Source("images/edit.gif")
     ImageResource edit();
 
+    @Source("images/clock.png")
+    ImageResource clock();
+
     @Source("images/collapse.gif")
     ImageResource collapse();
 
