@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 /**
@@ -29,8 +30,14 @@ public class SingleFieldConstraintOperatorWidget extends AbstractOperatorWidget<
                bfc );
     }
 
+    @Override
     protected String getOperator(SingleFieldConstraint bfc) {
         return bfc.getOperator();
+    }
+
+    @Override
+    protected boolean isCEPOperator(String value) {
+        return SuggestionCompletionEngine.isCEPOperator( value );
     }
 
 }

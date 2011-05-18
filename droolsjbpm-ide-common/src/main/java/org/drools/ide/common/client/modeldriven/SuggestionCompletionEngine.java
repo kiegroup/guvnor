@@ -48,6 +48,7 @@ public class SuggestionCompletionEngine
     public static final String                     TYPE_DATE               = "Date";
     public static final String                     TYPE_OBJECT             = "Object";                                                                                                                                                        // for all other unknown
     public static final String                     TYPE_FINAL_OBJECT       = "FinalObject";                                                                                                                                                   // for all other unknown
+    public static final String                     TYPE_THIS               = "this";
 
     //Standard annotations
     public static final String                     ANNOTATION_ROLE         = "role";
@@ -204,6 +205,8 @@ public class SuggestionCompletionEngine
         final String fieldType = this.getFieldType( factType + "." + fieldName );
 
         if ( fieldType == null ) {
+            return STANDARD_CONNECTIVES;
+        } else if ( fieldType.equals( TYPE_THIS ) ) {
             if ( this.isFactTypeAnEvent( factType ) ) {
                 return joinArrays( STANDARD_CONNECTIVES,
                                    SIMPLE_CEP_CONNECTIVES,
@@ -243,10 +246,12 @@ public class SuggestionCompletionEngine
                                          fieldName );
 
         if ( fieldType == null ) {
+            return STANDARD_OPERATORS;
+        } else if ( fieldType.equals( TYPE_THIS ) ) {
             if ( this.isFactTypeAnEvent( factType ) ) {
                 return joinArrays( STANDARD_OPERATORS,
                                    SIMPLE_CEP_OPERATORS,
-                                   COMPLEX_CEP_OPERATORS );
+                                   COMPLEX_CEP_OPERATORS);
             } else {
                 return STANDARD_OPERATORS;
             }
@@ -823,14 +828,11 @@ public class SuggestionCompletionEngine
         ModelField[] fields = this.getModelFields().get( shortName );
 
         List<String> fieldNames = new ArrayList<String>();
-        fieldNames.add( "this" );
 
         for ( int i = 0; i < fields.length; i++ ) {
             String fieldName = fields[i].getName();
-            if ( fields[i].getClassType() == FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS ) {
-                fieldNames.add( fieldName );
-            } else if ( FieldAccessorsAndMutators.compare( accessorOrMutator,
-                                                           this.accessorsAndMutators.get( shortName + "." + fieldName ) ) ) {
+            if ( FieldAccessorsAndMutators.compare( accessorOrMutator,
+                                                    this.accessorsAndMutators.get( shortName + "." + fieldName ) ) ) {
                 fieldNames.add( fieldName );
             }
         }
@@ -937,6 +939,40 @@ public class SuggestionCompletionEngine
 
     public void setFilteringFacts(boolean filterFacts) {
         this.filteringFacts = filterFacts;
+    }
+
+    /**
+     * Check whether an operator is a CEP operator
+     * 
+     * @param value
+     * @return True if the operator is a CEP operator
+     */
+    public static boolean isCEPOperator(String value) {
+        String[] operators = joinArrays( SIMPLE_CEP_OPERATORS,
+                                         COMPLEX_CEP_OPERATORS );
+        for ( int i = 0; i < operators.length; i++ ) {
+            if ( value.equals( operators[i] ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether an operator is a CEP connective operator
+     * 
+     * @param value
+     * @return True if the operator is a CEP connective operator
+     */
+    public static boolean isCEPConnectiveOperator(String value) {
+        String[] operators = joinArrays( SIMPLE_CEP_CONNECTIVES,
+                                         COMPLEX_CEP_CONNECTIVES );
+        for ( int i = 0; i < operators.length; i++ ) {
+            if ( value.equals( operators[i] ) ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String[] joinArrays(String[] first,
