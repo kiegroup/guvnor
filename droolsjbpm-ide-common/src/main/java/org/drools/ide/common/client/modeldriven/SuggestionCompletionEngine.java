@@ -67,12 +67,12 @@ public class SuggestionCompletionEngine
     private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
     private static final String[]                   COLLECTION_OPERATORS     = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
-    private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincided"};
-    private static final String[]                   COMPLEX_CEP_OPERATORS    = new String[]{"during", "finished", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby"};
+    private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincides"};
+    private static final String[]                   COMPLEX_CEP_OPERATORS    = new String[]{"during", "finishes", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby"};
 
-    private static final String[]                   SIMPLE_CEP_CONNECTIVES   = new String[]{"|| after", "|| before", "|| coincided", "&& after", "&& before", "&& coincided"};
-    private static final String[]                   COMPLEX_CEP_CONNECTIVES  = new String[]{"|| during", "|| finished", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
-                                                                                           "&& during", "&& finished", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
+    private static final String[]                   SIMPLE_CEP_CONNECTIVES   = new String[]{"|| after", "|| before", "|| coincides", "&& after", "&& before", "&& coincides"};
+    private static final String[]                   COMPLEX_CEP_CONNECTIVES  = new String[]{"|| during", "|| finishes", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
+                                                                                           "&& during", "&& finishes", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
 
     private static final Map<String, List<Integer>> CEP_OPERATORS_PARAMETERS = new HashMap<String, List<Integer>>();
     {
@@ -80,11 +80,11 @@ public class SuggestionCompletionEngine
                                       Arrays.asList( new Integer[]{0, 1, 2} ) );
         CEP_OPERATORS_PARAMETERS.put( "before",
                                       Arrays.asList( new Integer[]{0, 1, 2} ) );
-        CEP_OPERATORS_PARAMETERS.put( "coincided",
+        CEP_OPERATORS_PARAMETERS.put( "coincides",
                                       Arrays.asList( new Integer[]{0, 1, 2} ) );
         CEP_OPERATORS_PARAMETERS.put( "during",
                                       Arrays.asList( new Integer[]{0, 1, 2, 4} ) );
-        CEP_OPERATORS_PARAMETERS.put( "finised",
+        CEP_OPERATORS_PARAMETERS.put( "finishes",
                                       Arrays.asList( new Integer[]{0, 1} ) );
         CEP_OPERATORS_PARAMETERS.put( "finishedby",
                                       Arrays.asList( new Integer[]{0, 1} ) );

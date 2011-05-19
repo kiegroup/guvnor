@@ -766,17 +766,17 @@ public interface Constants
 
     String orBefore();
 
-    String orCoincided();
+    String orCoincides();
 
     String andAfter();
 
     String andBefore();
 
-    String andConcided();
+    String andCoincides();
 
     String orDuring();
 
-    String orFinished();
+    String orFinishes();
 
     String orFinishedBy();
 
@@ -796,7 +796,7 @@ public interface Constants
 
     String addDuring();
 
-    String andFinished();
+    String andFinishes();
 
     String andFinishedBy();
 
