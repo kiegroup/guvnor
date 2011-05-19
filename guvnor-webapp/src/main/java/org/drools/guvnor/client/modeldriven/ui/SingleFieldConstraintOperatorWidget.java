@@ -22,17 +22,12 @@ import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
  * Drop-down for Operators associated with SingleFieldConstraints including
  * supplementary controls for CEP operator parameters
  */
-public class SingleFieldConstraintOperatorWidget extends AbstractOperatorWidget<SingleFieldConstraint> {
+public class SingleFieldConstraintOperatorWidget extends AbstractOperatorWidget {
 
     public SingleFieldConstraintOperatorWidget(String[] operators,
                                                SingleFieldConstraint bfc) {
         super( operators,
                bfc );
-    }
-
-    @Override
-    protected String getOperator(SingleFieldConstraint bfc) {
-        return bfc.getOperator();
     }
 
     @Override

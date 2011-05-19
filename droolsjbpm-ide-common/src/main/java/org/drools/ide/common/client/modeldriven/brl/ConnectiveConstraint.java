@@ -16,10 +16,22 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * This is for a connective constraint that adds more options to a field constraint. 
+ * This is for a connective constraint that adds more options to a field
+ * constraint.
  */
-public class ConnectiveConstraint extends BaseSingleFieldConstraint {
+public class ConnectiveConstraint extends BaseSingleFieldConstraint
+    implements
+    HasOperatorParameters {
+
+    private String              operator;
+    private String              fieldName;
+    private String              fieldType;
+
+    private Map<String, String> parameters;
 
     public ConnectiveConstraint() {
     }
@@ -31,11 +43,56 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint {
         this.fieldName = fieldName;
         this.fieldType = fieldType;
         this.operator = opr;
-        this.setValue(val);
+        this.setValue( val );
     }
 
-    public String operator;
-    public String fieldName;
-    public String fieldType;
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String getFieldType() {
+        return fieldType;
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType = fieldType;
+    }
+
+    public String getOperator() {
+        return operator;
+    }
+
+    public void setOperator(String operator) {
+        this.operator = operator;
+    }
+
+    public void clearParameters() {
+        this.parameters.clear();
+    }
+
+    public String getParameter(String key) {
+        if ( parameters == null ) {
+            parameters = new HashMap<String, String>();
+        }
+        String parameter = parameters.get( key );
+        return parameter;
+    }
+
+    public void setParameter(String key,
+                             String parameter) {
+        if ( parameters == null ) {
+            parameters = new HashMap<String, String>();
+        }
+        parameters.put( key,
+                        parameter );
+    }
+
+    public Map<String, String> getParameters() {
+        return this.parameters;
+    }
 
 }

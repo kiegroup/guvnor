@@ -47,6 +47,7 @@ import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactP
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
@@ -54,6 +55,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
+import org.drools.ide.common.shared.SharedConstants;
 
 /**
  * This class persists the rule model to DRL and back
@@ -210,23 +212,23 @@ public class BRDRLPersistence
     private void marshalRHS(StringBuilder buf,
                             RuleModel model,
                             boolean isDSLEnhanced) {
-        String indentation = "\t\t";    
+        String indentation = "\t\t";
         if ( model.rhs != null ) {
             Map<String, List<ActionFieldValue>> classes = getRHSClassDependencies( model );
-            if(classes.containsKey( SuggestionCompletionEngine.TYPE_DATE )) {
+            if ( classes.containsKey( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 buf.append( indentation );
-                buf.append("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n");
+                buf.append( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");\n" );
             }
-            
+
             RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
-                                                             buf,
-                                                             indentation );
+                                                                   buf,
+                                                                   indentation );
             for ( IAction action : model.rhs ) {
                 actionVisitor.visit( action );
             }
         }
     }
-    
+
     private Map<String, List<ActionFieldValue>> getRHSClassDependencies(RuleModel model) {
         if ( model != null ) {
             RHSClassDependencyVisitor dependencyVisitor = new RHSClassDependencyVisitor();
@@ -404,7 +406,7 @@ public class BRDRLPersistence
             }
             buf.append( " from entry-point \"" + pattern.getEntryPointName() + "\"\n" );
         }
-        
+
         private void renderCompositeFOL(CompositeFactPattern pattern) {
             buf.append( pattern.type );
             if ( pattern.getPatterns() != null ) {
@@ -554,10 +556,17 @@ public class BRDRLPersistence
                     }
                 }
 
+                Map<String, String> parameters = null;
+                if ( constr instanceof HasOperatorParameters ) {
+                    HasOperatorParameters hop = (HasOperatorParameters) constr;
+                    parameters = hop.getParameters();
+                }
+
                 addFieldRestriction( buf,
                                      constr.getConstraintValueType(),
                                      constr.getFieldType(),
                                      constr.getOperator(),
+                                     parameters,
                                      constr.getValue(),
                                      constr.getExpressionValue() );
 
@@ -565,10 +574,18 @@ public class BRDRLPersistence
                 if ( constr.connectives != null ) {
                     for ( int j = 0; j < constr.connectives.length; j++ ) {
                         final ConnectiveConstraint conn = constr.connectives[j];
+
+                        parameters = null;
+                        if ( conn instanceof HasOperatorParameters ) {
+                            HasOperatorParameters hop = (HasOperatorParameters) constr;
+                            parameters = hop.getParameters();
+                        }
+
                         addFieldRestriction( buf,
                                              conn.getConstraintValueType(),
-                                             conn.fieldType,
-                                             conn.operator,
+                                             conn.getFieldType(),
+                                             conn.getOperator(),
+                                             parameters,
                                              conn.getValue(),
                                              null );
                     }
@@ -580,6 +597,7 @@ public class BRDRLPersistence
                                          final int type,
                                          final String fieldType,
                                          final String operator,
+                                         final Map<String, String> parameters,
                                          final String value,
                                          final ExpressionFormLine expression) {
             if ( operator == null ) {
@@ -588,6 +606,11 @@ public class BRDRLPersistence
 
             buf.append( " " );
             buf.append( operator );
+
+            if ( parameters != null && parameters.size() > 0 ) {
+                buf.append( buildOperatorParameterDRL( parameters ) );
+            }
+
             buf.append( " " );
             switch ( type ) {
                 case BaseSingleFieldConstraint.TYPE_RET_VALUE :
@@ -601,8 +624,8 @@ public class BRDRLPersistence
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                             DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                                       fieldType,
-                                                                       value );
+                                                                          fieldType,
+                                                                          value );
                         }
                     }
                     break;
@@ -613,18 +636,29 @@ public class BRDRLPersistence
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                               fieldType,
-                                                               "@{" + value + "}" );
+                                                                  fieldType,
+                                                                  "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
-                                                               fieldType,
-                                                               value );
+                                                                  fieldType,
+                                                                  value );
                     break;
                 default :
                     buf.append( value );
             }
             buf.append( " " );
+        }
+
+        private StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
+            String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
+            if ( className == null ) {
+                throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterBuilder' undefined. Unable to build Operator Parameter DRL." );
+            }
+
+            StringBuilder b = new StringBuilder();
+            b.append( " [xxx] " );
+            return b;
         }
 
     }
@@ -791,12 +825,12 @@ public class BRDRLPersistence
                     buf.append( fieldValues[i].value.substring( 1 ) );
                 } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
                     DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                               fieldValues[i].type,
-                                                               "@{" + fieldValues[i].value + "}" );
+                                                                  fieldValues[i].type,
+                                                                  "@{" + fieldValues[i].value + "}" );
                 } else {
                     DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                               fieldValues[i].type,
-                                                               fieldValues[i].value );
+                                                                  fieldValues[i].type,
+                                                                  fieldValues[i].value );
                 }
                 buf.append( " );\n" );
             }
@@ -833,7 +867,7 @@ public class BRDRLPersistence
     public static class RHSClassDependencyVisitor extends ReflectiveVisitor {
 
         private Map<String, List<ActionFieldValue>> classes = new HashMap<String, List<ActionFieldValue>>();
-        
+
         public void visitFreeFormLine(FreeFormLine ffl) {
             //Do nothing other than preventing ReflectiveVisitor recording an error
         }
@@ -849,40 +883,40 @@ public class BRDRLPersistence
         public void visitDSLSentence(final DSLSentence sentence) {
             //Do nothing other than preventing ReflectiveVisitor recording an error
         }
-        
+
         public void visitActionInsertFact(final ActionInsertFact action) {
-            getClasses(action.fieldValues);
+            getClasses( action.fieldValues );
         }
 
         public void visitActionInsertLogicalFact(final ActionInsertLogicalFact action) {
-            getClasses(action.fieldValues);
+            getClasses( action.fieldValues );
         }
 
         public void visitActionUpdateField(final ActionUpdateField action) {
-            getClasses(action.fieldValues);
+            getClasses( action.fieldValues );
         }
 
         public void visitActionSetField(final ActionSetField action) {
-            getClasses(action.fieldValues);
+            getClasses( action.fieldValues );
         }
-        
+
         public Map<String, List<ActionFieldValue>> getRHSClasses() {
             return classes;
         }
 
         private void getClasses(ActionFieldValue[] fieldValues) {
-            for(ActionFieldValue afv : fieldValues) {
+            for ( ActionFieldValue afv : fieldValues ) {
                 String type = afv.getType();
                 List<ActionFieldValue> afvs = classes.get( type );
-                if(afvs==null) {
+                if ( afvs == null ) {
                     afvs = new ArrayList<ActionFieldValue>();
-                    classes.put( type, afvs );
+                    classes.put( type,
+                                 afvs );
                 }
-                afvs.add(afv);
+                afvs.add( afv );
             }
         }
-        
-    }
 
+    }
 
 }

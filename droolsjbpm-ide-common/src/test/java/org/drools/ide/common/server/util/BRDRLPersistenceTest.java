@@ -57,10 +57,11 @@ public class BRDRLPersistenceTest {
     public void testGenerateEmptyDRL() {
         String expected = "rule \"null\"\n\tdialect \"mvel\"\n\twhen\n\tthen\nend\n";
 
-        final String drl = brlPersistence.marshal(new RuleModel());
+        final String drl = brlPersistence.marshal( new RuleModel() );
 
-        assertNotNull(drl);
-        assertEquals(expected, drl);
+        assertNotNull( drl );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
@@ -78,53 +79,58 @@ public class BRDRLPersistenceTest {
         fr.text = "fun()";
         m.rhs[0] = fr;
 
-        String drl = brlPersistence.marshal(m);
-        assertNotNull(drl);
-        assertTrue(drl.indexOf("Person()") > 0);
-        assertTrue(drl.indexOf("fun()") > drl.indexOf("Person()"));
+        String drl = brlPersistence.marshal( m );
+        assertNotNull( drl );
+        assertTrue( drl.indexOf( "Person()" ) > 0 );
+        assertTrue( drl.indexOf( "fun()" ) > drl.indexOf( "Person()" ) );
     }
 
     @Test
     public void testBasics() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        m.addLhsItem(new FactPattern("Person"));
-        m.addLhsItem(new FactPattern("Accident"));
-        m.addAttribute(new RuleAttribute("no-loop", "true"));
+        m.addLhsItem( new FactPattern( "Person" ) );
+        m.addLhsItem( new FactPattern( "Accident" ) );
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testInsertLogical() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                + "\t\tAccident( )\n\tthen\n\t\tinsertLogical( new Report() );\nend\n";
+                          + "\t\tAccident( )\n\tthen\n\t\tinsertLogical( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        m.addLhsItem(new FactPattern("Person"));
-        m.addLhsItem(new FactPattern("Accident"));
-        m.addAttribute(new RuleAttribute("no-loop", "true"));
+        m.addLhsItem( new FactPattern( "Person" ) );
+        m.addLhsItem( new FactPattern( "Accident" ) );
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
 
-        m.addRhsItem(new ActionInsertLogicalFact("Report"));
+        m.addRhsItem( new ActionInsertLogicalFact( "Report" ) );
 
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testAttr() {
         RuleModel m = new RuleModel();
         m.attributes = new RuleAttribute[1];
-        m.attributes[0] = new RuleAttribute("enabled", "true");
-        final String drl = brlPersistence.marshal(m);
+        m.attributes[0] = new RuleAttribute( "enabled",
+                                             "true" );
+        final String drl = brlPersistence.marshal( m );
 
-        assertTrue(drl.indexOf("enabled true") > 0);
+        assertTrue( drl.indexOf( "enabled true" ) > 0 );
 
     }
 
@@ -132,160 +138,167 @@ public class BRDRLPersistenceTest {
     public void testEnumNoType() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CheeseType.CHEDDAR\" )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("type");
-        con.setOperator("==");
-        con.setValue("CheeseType.CHEDDAR");
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setFieldName( "type" );
+        con.setOperator( "==" );
+        con.setValue( "CheeseType.CHEDDAR" );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testEnumTypeString() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == \"CHEDDAR\" )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("type");
-        con.setOperator("==");
-        con.setValue("CHEDDAR");
+        con.setFieldName( "type" );
+        con.setOperator( "==" );
+        con.setValue( "CHEDDAR" );
         con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testEnumTypeNumeric() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( age == 100 )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("age");
-        con.setOperator("==");
-        con.setValue("100");
+        con.setFieldName( "age" );
+        con.setOperator( "==" );
+        con.setValue( "100" );
         con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testEnumTypeBoolean() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( smelly == true )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("smelly");
-        con.setOperator("==");
-        con.setValue("true");
+        con.setFieldName( "smelly" );
+        con.setOperator( "==" );
+        con.setValue( "true" );
         con.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testEnumTypeDate() {
         //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( dateMade == \"31-Jan-2010\" )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("dateMade");
-        con.setOperator("==");
-        con.setValue("31-Jan-2010");
+        con.setFieldName( "dateMade" );
+        con.setOperator( "==" );
+        con.setValue( "31-Jan-2010" );
         con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testEnumTypeComparable() {
         //Java 1.5+ "true" enums are of type Comparable
         String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type == Cheese.CHEDDAR )\n"
-                + "\tthen\n\t\tinsert( new Report() );\nend\n";
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
         final RuleModel m = new RuleModel();
-        final FactPattern pat = new FactPattern("Cheese");
+        final FactPattern pat = new FactPattern( "Cheese" );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("type");
-        con.setOperator("==");
-        con.setValue("Cheese.CHEDDAR");
+        con.setFieldName( "type" );
+        con.setOperator( "==" );
+        con.setValue( "Cheese.CHEDDAR" );
         con.setFieldType( SuggestionCompletionEngine.TYPE_COMPARABLE );
-        con.setConstraintValueType(BaseSingleFieldConstraint.TYPE_ENUM);
-        pat.addConstraint(con);
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
     @Test
     public void testMoreComplexRendering() {
         final RuleModel m = getComplexModel();
         String expected = "rule \"Complex Rule\"\n" + "\tno-loop true\n"
-                + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
-                + "\tdialect \"mvel\"\n" + "\twhen\n"
-                + "\t\t>p1 : Person( f1 : age < 42 )\n"
-                + "\t\t>not (Cancel( )) \n" + "\tthen\n"
-                + "\t\t>p1.setStatus( \"rejected\" );\n"
-                + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
-                + "\t\tSend an email to administrator\n" + "end\n";
+                          + "\tsalience -10\n" + "\tagenda-group \"aGroup\"\n"
+                          + "\tdialect \"mvel\"\n" + "\twhen\n"
+                          + "\t\t>p1 : Person( f1 : age < 42 )\n"
+                          + "\t\t>not (Cancel( )) \n" + "\tthen\n"
+                          + "\t\t>p1.setStatus( \"rejected\" );\n"
+                          + "\t\t>update( p1 );\n" + "\t\t>retract( p1 );\n"
+                          + "\t\tSend an email to administrator\n" + "end\n";
 
-        final String drl = brlPersistence.marshal(m);
+        final String drl = brlPersistence.marshal( m );
 
-        assertEquals(expected, drl);
+        assertEquals( expected,
+                      drl );
 
     }
 
@@ -293,9 +306,9 @@ public class BRDRLPersistenceTest {
     public void testFieldBindingWithNoConstraints() {
         // to satisfy JBRULES-850
         RuleModel m = getModelWithNoConstraints();
-        String s = BRDRLPersistence.getInstance().marshal(m);
+        String s = BRDRLPersistence.getInstance().marshal( m );
         // System.out.println(s);
-        assertTrue(s.indexOf("Person( f1 : age)") != -1);
+        assertTrue( s.indexOf( "Person( f1 : age)" ) != -1 );
     }
 
     //
@@ -331,16 +344,16 @@ public class BRDRLPersistenceTest {
     private RuleModel getModelWithNoConstraints() {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
-        final FactPattern pat = new FactPattern("Person");
-        pat.setBoundName("p1");
+        final FactPattern pat = new FactPattern( "Person" );
+        pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldBinding("f1");
-        con.setFieldName("age");
+        con.setFieldBinding( "f1" );
+        con.setFieldName( "age" );
         // con.operator = "<";
         // con.value = "42";
-        pat.addConstraint(con);
+        pat.addConstraint( con );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
 
         return m;
     }
@@ -349,38 +362,42 @@ public class BRDRLPersistenceTest {
         final RuleModel m = new RuleModel();
         m.name = "Complex Rule";
 
-        m.addAttribute(new RuleAttribute("no-loop", "true"));
-        m.addAttribute(new RuleAttribute("salience", "-10"));
-        m.addAttribute(new RuleAttribute("agenda-group", "aGroup"));
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
+        m.addAttribute( new RuleAttribute( "salience",
+                                           "-10" ) );
+        m.addAttribute( new RuleAttribute( "agenda-group",
+                                           "aGroup" ) );
 
-        final FactPattern pat = new FactPattern("Person");
-        pat.setBoundName("p1");
+        final FactPattern pat = new FactPattern( "Person" );
+        pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldBinding("f1");
-        con.setFieldName("age");
-        con.setOperator("<");
-        con.setValue("42");
-        pat.addConstraint(con);
+        con.setFieldBinding( "f1" );
+        con.setFieldName( "age" );
+        con.setOperator( "<" );
+        con.setValue( "42" );
+        pat.addConstraint( con );
 
-        m.addLhsItem(pat);
+        m.addLhsItem( pat );
 
-        final CompositeFactPattern comp = new CompositeFactPattern("not");
-        comp.addFactPattern(new FactPattern("Cancel"));
-        m.addLhsItem(comp);
+        final CompositeFactPattern comp = new CompositeFactPattern( "not" );
+        comp.addFactPattern( new FactPattern( "Cancel" ) );
+        m.addLhsItem( comp );
 
         final ActionUpdateField set = new ActionUpdateField();
         set.variable = "p1";
-        set.addFieldValue(new ActionFieldValue("status", "rejected",
-                SuggestionCompletionEngine.TYPE_STRING));
-        m.addRhsItem(set);
+        set.addFieldValue( new ActionFieldValue( "status",
+                                                 "rejected",
+                                                 SuggestionCompletionEngine.TYPE_STRING ) );
+        m.addRhsItem( set );
 
-        final ActionRetractFact ret = new ActionRetractFact("p1");
-        m.addRhsItem(ret);
+        final ActionRetractFact ret = new ActionRetractFact( "p1" );
+        m.addRhsItem( ret );
 
         final DSLSentence sen = new DSLSentence();
         sen.sentence = "Send an email to {administrator}";
 
-        m.addRhsItem(sen);
+        m.addRhsItem( sen );
         return m;
     }
 
@@ -389,43 +406,43 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "or";
         CompositeFactPattern cp = new CompositeFactPattern(
-                CompositeFactPattern.COMPOSITE_TYPE_OR);
-        FactPattern p1 = new FactPattern("Person");
-        SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-        sf1.setOperator("==");
-        sf1.setValue("42");
-        p1.addConstraint(sf1);
+                                                            CompositeFactPattern.COMPOSITE_TYPE_OR );
+        FactPattern p1 = new FactPattern( "Person" );
+        SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setOperator( "==" );
+        sf1.setValue( "42" );
+        p1.addConstraint( sf1 );
 
-        cp.addFactPattern(p1);
+        cp.addFactPattern( p1 );
 
-        FactPattern p2 = new FactPattern("Person");
-        SingleFieldConstraint sf2 = new SingleFieldConstraint("age");
-        sf2.setOperator("==");
-        sf2.setValue("43");
-        p2.addConstraint(sf2);
+        FactPattern p2 = new FactPattern( "Person" );
+        SingleFieldConstraint sf2 = new SingleFieldConstraint( "age" );
+        sf2.setOperator( "==" );
+        sf2.setValue( "43" );
+        p2.addConstraint( sf2 );
 
-        cp.addFactPattern(p2);
+        cp.addFactPattern( p2 );
 
-        m.addLhsItem(cp);
+        m.addLhsItem( cp );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
-        assertTrue(result
-                .indexOf("( Person( age == 42 ) or Person( age == 43 ) )") > 0);
+        String result = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue( result
+                .indexOf( "( Person( age == 42 ) or Person( age == 43 ) )" ) > 0 );
 
     }
 
     @Test
     public void testExistsMultiPatterns() throws Exception {
-        String result = getCompositeFOL(CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
-        assertTrue(result
-                .indexOf("exists (Person( age == 42 ) and Person( age == 43 ))") > 0);
+        String result = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
+        assertTrue( result
+                .indexOf( "exists (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
     }
 
     @Test
     public void testNotMultiPatterns() throws Exception {
-        String result = getCompositeFOL(CompositeFactPattern.COMPOSITE_TYPE_NOT);
-        assertTrue(result
-                .indexOf("not (Person( age == 42 ) and Person( age == 43 ))") > 0);
+        String result = getCompositeFOL( CompositeFactPattern.COMPOSITE_TYPE_NOT );
+        assertTrue( result
+                .indexOf( "not (Person( age == 42 ) and Person( age == 43 ))" ) > 0 );
     }
 
     @Test
@@ -433,46 +450,46 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "or";
         CompositeFactPattern cp = new CompositeFactPattern(
-                CompositeFactPattern.COMPOSITE_TYPE_EXISTS);
-        FactPattern p1 = new FactPattern("Person");
-        SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-        sf1.setOperator("==");
-        sf1.setValue("42");
-        p1.addConstraint(sf1);
+                                                            CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
+        FactPattern p1 = new FactPattern( "Person" );
+        SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setOperator( "==" );
+        sf1.setValue( "42" );
+        p1.addConstraint( sf1 );
 
-        cp.addFactPattern(p1);
+        cp.addFactPattern( p1 );
 
-        m.addLhsItem(cp);
+        m.addLhsItem( cp );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue(result.indexOf("exists (Person( age == 42 )) ") > 0);
+        assertTrue( result.indexOf( "exists (Person( age == 42 )) " ) > 0 );
 
     }
 
     private String getCompositeFOL(String type) {
         RuleModel m = new RuleModel();
         m.name = "or";
-        CompositeFactPattern cp = new CompositeFactPattern(type);
-        FactPattern p1 = new FactPattern("Person");
-        SingleFieldConstraint sf1 = new SingleFieldConstraint("age");
-        sf1.setOperator("==");
-        sf1.setValue("42");
-        p1.addConstraint(sf1);
+        CompositeFactPattern cp = new CompositeFactPattern( type );
+        FactPattern p1 = new FactPattern( "Person" );
+        SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
+        sf1.setOperator( "==" );
+        sf1.setValue( "42" );
+        p1.addConstraint( sf1 );
 
-        cp.addFactPattern(p1);
+        cp.addFactPattern( p1 );
 
-        FactPattern p2 = new FactPattern("Person");
-        SingleFieldConstraint sf2 = new SingleFieldConstraint("age");
-        sf2.setOperator("==");
-        sf2.setValue("43");
-        p2.addConstraint(sf2);
+        FactPattern p2 = new FactPattern( "Person" );
+        SingleFieldConstraint sf2 = new SingleFieldConstraint( "age" );
+        sf2.setOperator( "==" );
+        sf2.setValue( "43" );
+        p2.addConstraint( sf2 );
 
-        cp.addFactPattern(p2);
+        cp.addFactPattern( p2 );
 
-        m.addLhsItem(cp);
+        m.addLhsItem( cp );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
         return result;
     }
@@ -490,80 +507,81 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "with composite";
 
-        FactPattern p1 = new FactPattern("Person");
-        p1.setBoundName("p1");
-        m.addLhsItem(p1);
+        FactPattern p1 = new FactPattern( "Person" );
+        p1.setBoundName( "p1" );
+        m.addLhsItem( p1 );
 
-        FactPattern p = new FactPattern("Goober");
-        m.addLhsItem(p);
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
         CompositeFieldConstraint comp = new CompositeFieldConstraint();
         comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
-        p.addConstraint(comp);
+        p.addConstraint( comp );
 
         final SingleFieldConstraint X = new SingleFieldConstraint();
-        X.setFieldName("goo");
+        X.setFieldName( "goo" );
         X.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        X.setValue("foo");
-        X.setOperator("==");
+        X.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        X.setValue( "foo" );
+        X.setOperator( "==" );
         X.connectives = new ConnectiveConstraint[1];
         X.connectives[0] = new ConnectiveConstraint();
-        X.connectives[0].setConstraintValueType(ConnectiveConstraint.TYPE_LITERAL);
-        X.connectives[0].fieldType = SuggestionCompletionEngine.TYPE_STRING;
-        X.connectives[0].operator = "|| ==";
-        X.connectives[0].setValue("bar");
-        comp.addConstraint(X);
+        X.connectives[0].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
+        X.connectives[0].setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        X.connectives[0].setOperator( "|| ==" );
+        X.connectives[0].setValue( "bar" );
+        comp.addConstraint( X );
 
         final SingleFieldConstraint Y = new SingleFieldConstraint();
-        Y.setFieldName("goo2");
+        Y.setFieldName( "goo2" );
         Y.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        Y.setValue("foo");
-        Y.setOperator("==");
-        comp.addConstraint(Y);
+        Y.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        Y.setValue( "foo" );
+        Y.setOperator( "==" );
+        comp.addConstraint( Y );
 
         CompositeFieldConstraint comp2 = new CompositeFieldConstraint();
         comp2.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
         final SingleFieldConstraint Q1 = new SingleFieldConstraint();
         Q1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        Q1.setFieldName("goo");
-        Q1.setOperator("==");
-        Q1.setValue("whee");
-        Q1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        Q1.setFieldName( "goo" );
+        Q1.setOperator( "==" );
+        Q1.setValue( "whee" );
+        Q1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
 
-        comp2.addConstraint(Q1);
+        comp2.addConstraint( Q1 );
 
         final SingleFieldConstraint Q2 = new SingleFieldConstraint();
         Q2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        Q2.setFieldName("gabba");
-        Q2.setOperator("==");
-        Q2.setValue("whee");
-        Q2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        Q2.setFieldName( "gabba" );
+        Q2.setOperator( "==" );
+        Q2.setValue( "whee" );
+        Q2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
 
-        comp2.addConstraint(Q2);
+        comp2.addConstraint( Q2 );
 
         // now nest it
-        comp.addConstraint(comp2);
+        comp.addConstraint( comp2 );
 
         final SingleFieldConstraint Z = new SingleFieldConstraint();
-        Z.setFieldName("goo3");
-        Z.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
+        Z.setFieldName( "goo3" );
+        Z.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
         Z.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        Z.setValue("foo");
-        Z.setOperator("==");
+        Z.setValue( "foo" );
+        Z.setOperator( "==" );
 
-        p.addConstraint(Z);
+        p.addConstraint( Z );
 
-        ActionInsertFact ass = new ActionInsertFact("Whee");
-        m.addRhsItem(ass);
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
 
-        String actual = BRDRLPersistence.getInstance().marshal(m);
+        String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"with composite\" "
-                + " \tdialect \"mvel\"\n when "
-                + "p1 : Person( ) "
-                + "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )"
-                + " then " + "insert( new Whee() );" + "end";
-        assertEqualsIgnoreWhitespace(expected, actual);
+                          + " \tdialect \"mvel\"\n when "
+                          + "p1 : Person( ) "
+                          + "Goober( goo == \"foo\"  || == \"bar\" || goo2 == \"foo\" || ( goo == \"whee\" && gabba == \"whee\" ), goo3 == \"foo\" )"
+                          + " then " + "insert( new Whee() );" + "end";
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
 
     }
 
@@ -572,29 +590,31 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "boo";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
 
         // this isn't an effective constraint, so it should be ignored.
-        p.addConstraint(new SingleFieldConstraint("field1"));
+        p.addConstraint( new SingleFieldConstraint( "field1" ) );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String actual = BRDRLPersistence.getInstance().marshal(m);
+        String actual = BRDRLPersistence.getInstance().marshal( m );
 
         String expected = "rule \"boo\" \tdialect \"mvel\"\n when Person() then end";
 
-        assertEqualsIgnoreWhitespace(expected, actual);
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
 
         SingleFieldConstraint con = (SingleFieldConstraint) p.constraintList.constraints[0];
-        con.setFieldBinding("q");
+        con.setFieldBinding( "q" );
 
         // now it should appear, as we are binding a var to it
 
-        actual = BRDRLPersistence.getInstance().marshal(m);
+        actual = BRDRLPersistence.getInstance().marshal( m );
 
         expected = "rule \"boo\" dialect \"mvel\" when Person(q : field1) then end";
 
-        assertEqualsIgnoreWhitespace(expected, actual);
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
 
     }
 
@@ -604,30 +624,31 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal strings";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("goo");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "goo" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace("rule \"test literal strings\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1 == \"goo\", field2 == variableHere)"
-                + " then " + "end", result);
+        assertEqualsIgnoreWhitespace( "rule \"test literal strings\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1 == \"goo\", field2 == variableHere)"
+                                              + " then " + "end",
+                                      result );
 
     }
 
@@ -637,30 +658,31 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal numerics";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("44");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "44" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace("rule \"test literal numerics\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1 == 44, field2 == variableHere)"
-                + " then " + "end", result);
+        assertEqualsIgnoreWhitespace( "rule \"test literal numerics\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1 == 44, field2 == variableHere)"
+                                              + " then " + "end",
+                                      result );
 
     }
 
@@ -670,30 +692,31 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal booleans";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("true");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "true" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace("rule \"test literal booleans\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1 == true, field2 == variableHere)"
-                + " then " + "end", result);
+        assertEqualsIgnoreWhitespace( "rule \"test literal booleans\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1 == true, field2 == variableHere)"
+                                              + " then " + "end",
+                                      result );
 
     }
 
@@ -703,30 +726,31 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal dates";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("31-Jan-2010");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "31-Jan-2010" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace("rule \"test literal dates\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
-                + " then " + "end", result);
+        assertEqualsIgnoreWhitespace( "rule \"test literal dates\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1 == \"31-Jan-2010\", field2 == variableHere)"
+                                              + " then " + "end",
+                                      result );
 
     }
 
@@ -736,32 +760,33 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal no type";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("bananna");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "bananna" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertEqualsIgnoreWhitespace("rule \"test literal no type\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1 == \"bananna\", field2 == variableHere)"
-                + " then " + "end", result);
+        assertEqualsIgnoreWhitespace( "rule \"test literal no type\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1 == \"bananna\", field2 == variableHere)"
+                                              + " then " + "end",
+                                      result );
 
     }
-    
+
     @Test
     public void testRHSDateInsertAction() {
 
@@ -810,7 +835,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( p );
 
-        ActionUpdateField am = new ActionUpdateField("$p");
+        ActionUpdateField am = new ActionUpdateField( "$p" );
         am.addFieldValue( new ActionFieldValue( "dob",
                                                 "31-Jan-2000",
                                                 SuggestionCompletionEngine.TYPE_DATE ) );
@@ -842,7 +867,7 @@ public class BRDRLPersistenceTest {
 
         m.addLhsItem( p );
 
-        ActionSetField au = new ActionSetField("$p");
+        ActionSetField au = new ActionSetField( "$p" );
         au.addFieldValue( new ActionFieldValue( "dob",
                                                 "31-Jan-2000",
                                                 SuggestionCompletionEngine.TYPE_DATE ) );
@@ -855,42 +880,46 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "update( $p );" ) == -1 );
 
     }
-    
+
     @Test
     public void testSubConstraints() {
 
         RuleModel m = new RuleModel();
         m.name = "test sub constraints";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldName("field1");
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        p.addConstraint( con );
 
         SingleFieldConstraint con2 = new SingleFieldConstraint();
-        con2.setFieldName("field2");
-        con2.setOperator("==");
-        con2.setValue("variableHere");
-        con2.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        con2.setParent(con);
-        p.addConstraint(con2);
+        con2.setFieldName( "field2" );
+        con2.setOperator( "==" );
+        con2.setValue( "variableHere" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        con2.setParent( con );
+        p.addConstraint( con2 );
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
-        assertEqualsIgnoreWhitespace("rule \"test sub constraints\""
-                + "\tdialect \"mvel\"\n when "
-                + "     Person(field1.field2 == variableHere)" + " then "
-                + "end", result);
+        String result = BRDRLPersistence.getInstance().marshal( m );
+        assertEqualsIgnoreWhitespace( "rule \"test sub constraints\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person(field1.field2 == variableHere)" + " then "
+                                              + "end",
+                                      result );
 
     }
 
     private void assertEqualsIgnoreWhitespace(final String expected,
-            final String actual) {
-        final String cleanExpected = expected.replaceAll("\\s+", "");
-        final String cleanActual = actual.replaceAll("\\s+", "");
+                                              final String actual) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
 
-        assertEquals(cleanExpected, cleanActual);
+        assertEquals( cleanExpected,
+                      cleanActual );
     }
 
     @Test
@@ -898,23 +927,24 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "yeah";
 
-        FactPattern p = new FactPattern("Goober");
+        FactPattern p = new FactPattern( "Goober" );
 
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_RET_VALUE);
-        con.setValue("someFunc(x)");
-        con.setOperator("==");
-        con.setFieldName("goo");
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
+        con.setValue( "someFunc(x)" );
+        con.setOperator( "==" );
+        con.setFieldName( "goo" );
 
-        p.addConstraint(con);
-        m.addLhsItem(p);
+        p.addConstraint( con );
+        m.addLhsItem( p );
 
-        String actual = BRDRLPersistence.getInstance().marshal(m);
+        String actual = BRDRLPersistence.getInstance().marshal( m );
         // System.err.println(actual);
 
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
-                + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
-        assertEqualsIgnoreWhitespace(expected, actual);
+                          + "Goober( goo == ( someFunc(x) ) )" + " then " + "end";
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
     }
 
     @Test
@@ -922,21 +952,22 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "yeah";
 
-        FactPattern p = new FactPattern("Goober");
+        FactPattern p = new FactPattern( "Goober" );
 
         SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_PREDICATE);
-        con.setValue("field soundslike 'poo'");
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
+        con.setValue( "field soundslike 'poo'" );
 
-        p.addConstraint(con);
-        m.addLhsItem(p);
+        p.addConstraint( con );
+        m.addLhsItem( p );
 
-        String actual = BRDRLPersistence.getInstance().marshal(m);
+        String actual = BRDRLPersistence.getInstance().marshal( m );
         // System.err.println(actual);
 
         String expected = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
-                + "Goober( eval( field soundslike 'poo' ) )" + " then " + "end";
-        assertEqualsIgnoreWhitespace(expected, actual);
+                          + "Goober( eval( field soundslike 'poo' ) )" + " then " + "end";
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
     }
 
     @Test
@@ -945,48 +976,49 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "test literal strings";
 
-        FactPattern p = new FactPattern("Person");
+        FactPattern p = new FactPattern( "Person" );
         SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-        con.setFieldName("field1");
-        con.setOperator("==");
-        con.setValue("goo");
-        con.setConstraintValueType(SingleFieldConstraint.TYPE_VARIABLE);
-        p.addConstraint(con);
+        con.setFieldName( "field1" );
+        con.setOperator( "==" );
+        con.setValue( "goo" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+        p.addConstraint( con );
 
         ConnectiveConstraint connective = new ConnectiveConstraint();
-        connective.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
-        connective.fieldType =  SuggestionCompletionEngine.TYPE_STRING;
-        connective.operator = "|| ==";
-        connective.setValue("blah");
+        connective.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        connective.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        connective.setOperator( "|| ==" );
+        connective.setValue( "blah" );
 
         con.connectives = new ConnectiveConstraint[1];
         con.connectives[0] = connective;
 
-        m.addLhsItem(p);
+        m.addLhsItem( p );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
+        String result = BRDRLPersistence.getInstance().marshal( m );
 
         String expected = "rule \"test literal strings\" "
-                + "\tdialect \"mvel\"\n when "
-                + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
-        assertEqualsIgnoreWhitespace(expected, result);
+                          + "\tdialect \"mvel\"\n when "
+                          + "Person( field1 == goo  || == \"blah\" )" + " then " + "end";
+        assertEqualsIgnoreWhitespace( expected,
+                                      result );
 
     }
 
     @Test
     public void testInvalidComposite() throws Exception {
         RuleModel m = new RuleModel();
-        CompositeFactPattern com = new CompositeFactPattern("not");
-        m.addLhsItem(com);
+        CompositeFactPattern com = new CompositeFactPattern( "not" );
+        m.addLhsItem( com );
 
-        String s = BRDRLPersistence.getInstance().marshal(m);
-        assertNotNull(s);
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertNotNull( s );
 
-        m.addLhsItem(new CompositeFactPattern("or"));
-        m.addLhsItem(new CompositeFactPattern("exists"));
-        s = BRDRLPersistence.getInstance().marshal(m);
-        assertNotNull(s);
+        m.addLhsItem( new CompositeFactPattern( "or" ) );
+        m.addLhsItem( new CompositeFactPattern( "exists" ) );
+        s = BRDRLPersistence.getInstance().marshal( m );
+        assertNotNull( s );
     }
 
     @Test
@@ -994,36 +1026,41 @@ public class BRDRLPersistenceTest {
         RuleModel m = new RuleModel();
         DSLSentence sen = new DSLSentence();
         sen.sentence = "I CAN HAS DSL";
-        m.addRhsItem(sen);
-        ActionInsertFact ins = new ActionInsertFact("Shizzle");
-        ActionFieldValue val = new ActionFieldValue("goo", "42", "Numeric");
+        m.addRhsItem( sen );
+        ActionInsertFact ins = new ActionInsertFact( "Shizzle" );
+        ActionFieldValue val = new ActionFieldValue( "goo",
+                                                     "42",
+                                                     "Numeric" );
         ins.fieldValues = new ActionFieldValue[1];
         ins.fieldValues[0] = val;
-        m.addRhsItem(ins);
+        m.addRhsItem( ins );
 
-        ActionInsertLogicalFact insL = new ActionInsertLogicalFact("Shizzle");
-        ActionFieldValue valL = new ActionFieldValue("goo", "42", "Numeric");
+        ActionInsertLogicalFact insL = new ActionInsertLogicalFact( "Shizzle" );
+        ActionFieldValue valL = new ActionFieldValue( "goo",
+                                                      "42",
+                                                      "Numeric" );
         insL.fieldValues = new ActionFieldValue[1];
         insL.fieldValues[0] = valL;
-        m.addRhsItem(insL);
+        m.addRhsItem( insL );
 
-        String result = BRDRLPersistence.getInstance().marshal(m);
-        assertTrue(result.indexOf(">insert") > -1);
+        String result = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue( result.indexOf( ">insert" ) > -1 );
 
-        assertTrue(result.indexOf(">insertLogical") > -1);
+        assertTrue( result.indexOf( ">insertLogical" ) > -1 );
     }
 
     @Test
     public void testDefaultMVEL() {
         RuleModel m = new RuleModel();
 
-        String s = BRDRLPersistence.getInstance().marshal(m);
-        assertTrue(s.indexOf("mvel") > -1);
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue( s.indexOf( "mvel" ) > -1 );
 
-        m.addAttribute(new RuleAttribute("dialect", "goober"));
-        s = BRDRLPersistence.getInstance().marshal(m);
-        assertFalse(s.indexOf("mvel") > -1);
-        assertTrue(s.indexOf("goober") > -1);
+        m.addAttribute( new RuleAttribute( "dialect",
+                                           "goober" ) );
+        s = BRDRLPersistence.getInstance().marshal( m );
+        assertFalse( s.indexOf( "mvel" ) > -1 );
+        assertTrue( s.indexOf( "goober" ) > -1 );
 
     }
 
@@ -1031,37 +1068,41 @@ public class BRDRLPersistenceTest {
     public void testLockOnActive() {
         RuleModel m = new RuleModel();
 
-        m.addAttribute(new RuleAttribute("lock-on-active", "true"));
-        m.addAttribute(new RuleAttribute("auto-focus", "true"));
-        m.addAttribute(new RuleAttribute("duration", "42"));
+        m.addAttribute( new RuleAttribute( "lock-on-active",
+                                           "true" ) );
+        m.addAttribute( new RuleAttribute( "auto-focus",
+                                           "true" ) );
+        m.addAttribute( new RuleAttribute( "duration",
+                                           "42" ) );
 
-        String s = BRDRLPersistence.getInstance().marshal(m);
+        String s = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue(s.indexOf("lock-on-active true") > -1);
-        assertTrue(s.indexOf("auto-focus true") > -1);
-        assertTrue(s.indexOf("duration 42") > -1);
+        assertTrue( s.indexOf( "lock-on-active true" ) > -1 );
+        assertTrue( s.indexOf( "auto-focus true" ) > -1 );
+        assertTrue( s.indexOf( "duration 42" ) > -1 );
 
     }
-
 
     @Test
     public void testAddGlobal() {
         String expected = "rule \"my rule\"\n\tno-loop true\n\tdialect \"mvel\"\n\twhen\n\t\tPerson( )\n"
-                + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
+                          + "\t\tAccident( )\n\tthen\n\t\tinsert( new Report() );\n\t\tresults.add(f);\nend\n";
         final RuleModel m = new RuleModel();
-        m.addLhsItem(new FactPattern("Person"));
-        m.addLhsItem(new FactPattern("Accident"));
-        m.addAttribute(new RuleAttribute("no-loop", "true"));
+        m.addLhsItem( new FactPattern( "Person" ) );
+        m.addLhsItem( new FactPattern( "Accident" ) );
+        m.addAttribute( new RuleAttribute( "no-loop",
+                                           "true" ) );
 
-        m.addRhsItem(new ActionInsertFact("Report"));
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
         ActionGlobalCollectionAdd add = new ActionGlobalCollectionAdd();
         add.globalName = "results";
         add.factName = "f";
-        m.addRhsItem(add);
+        m.addRhsItem( add );
         m.name = "my rule";
 
-        final String drl = brlPersistence.marshal(m);
-        assertEquals(expected, drl);
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
     }
 
 }

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.explorer.PerspectivesPanel;
 import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
@@ -76,6 +77,7 @@ public class JBRMSEntryPoint
     private void loadStyles() {
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
+        OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
     }
 
     /**

@@ -18,13 +18,13 @@ package org.drools.ide.common.client.modeldriven;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -40,78 +40,108 @@ public class SuggestionCompletionEngine
     PortableObject {
 
     /** These are the explicit types supported */
-    public static final String                     TYPE_COLLECTION         = "Collection";
-    public static final String                     TYPE_COMPARABLE         = "Comparable";
-    public static final String                     TYPE_STRING             = "String";
-    public static final String                     TYPE_NUMERIC            = "Numeric";
-    public static final String                     TYPE_BOOLEAN            = "Boolean";
-    public static final String                     TYPE_DATE               = "Date";
-    public static final String                     TYPE_OBJECT             = "Object";                                                                                                                                                        // for all other unknown
-    public static final String                     TYPE_FINAL_OBJECT       = "FinalObject";                                                                                                                                                   // for all other unknown
-    public static final String                     TYPE_THIS               = "this";
+    public static final String                      TYPE_COLLECTION          = "Collection";
+    public static final String                      TYPE_COMPARABLE          = "Comparable";
+    public static final String                      TYPE_STRING              = "String";
+    public static final String                      TYPE_NUMERIC             = "Numeric";
+    public static final String                      TYPE_BOOLEAN             = "Boolean";
+    public static final String                      TYPE_DATE                = "Date";
+    public static final String                      TYPE_OBJECT              = "Object";                                                                                                                                                      // for all other unknown
+    public static final String                      TYPE_FINAL_OBJECT        = "FinalObject";                                                                                                                                                 // for all other unknown
+    public static final String                      TYPE_THIS                = "this";
 
     //Standard annotations
-    public static final String                     ANNOTATION_ROLE         = "role";
-    public static final String                     ANNOTATION_ROLE_EVENT   = "event";
+    public static final String                      ANNOTATION_ROLE          = "role";
+    public static final String                      ANNOTATION_ROLE_EVENT    = "event";
 
     /**
      * The operators that are used at different times (based on type).
      */
-    private static final String[]                  STANDARD_CONNECTIVES    = new String[]{"|| ==", "|| !=", "&& !="};
-    private static final String[]                  STRING_CONNECTIVES      = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
-    private static final String[]                  COMPARABLE_CONNECTIVES  = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
-    private static final String[]                  COLLECTION_CONNECTIVES  = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
+    private static final String[]                   STANDARD_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !="};
+    private static final String[]                   STRING_CONNECTIVES       = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
+    private static final String[]                   COMPARABLE_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
+    private static final String[]                   COLLECTION_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
-    private static final String[]                  STANDARD_OPERATORS      = new String[]{"==", "!=", "== null", "!= null"};
-    private static final String[]                  COMPARABLE_OPERATORS    = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
-    private static final String[]                  STRING_OPERATORS        = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
-    private static final String[]                  COLLECTION_OPERATORS    = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
+    private static final String[]                   STANDARD_OPERATORS       = new String[]{"==", "!=", "== null", "!= null"};
+    private static final String[]                   COMPARABLE_OPERATORS     = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
+    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
+    private static final String[]                   COLLECTION_OPERATORS     = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
-    private static final String[]                  SIMPLE_CEP_OPERATORS    = new String[]{"after", "before", "coincided"};
-    private static final String[]                  COMPLEX_CEP_OPERATORS   = new String[]{"during", "finished", "finishedby", "includes", "meets", "metBy", "overlaps", "overlappedby", "starts", "startedby"};
+    private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincided"};
+    private static final String[]                   COMPLEX_CEP_OPERATORS    = new String[]{"during", "finished", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby"};
 
-    private static final String[]                  SIMPLE_CEP_CONNECTIVES  = new String[]{"|| after", "|| before", "|| coincided", "&& after", "&& before", "&& coincided"};
-    private static final String[]                  COMPLEX_CEP_CONNECTIVES = new String[]{"|| during", "|| finished", "|| finishedby", "|| includes", "|| meets", "|| metBy", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
-                                                                                           "&& during", "&& finished", "&& finishedby", "&& includes", "&& meets", "&& metBy", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
+    private static final String[]                   SIMPLE_CEP_CONNECTIVES   = new String[]{"|| after", "|| before", "|| coincided", "&& after", "&& before", "&& coincided"};
+    private static final String[]                   COMPLEX_CEP_CONNECTIVES  = new String[]{"|| during", "|| finished", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
+                                                                                           "&& during", "&& finished", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
+
+    private static final Map<String, List<Integer>> CEP_OPERATORS_PARAMETERS = new HashMap<String, List<Integer>>();
+    {
+        CEP_OPERATORS_PARAMETERS.put( "after",
+                                      Arrays.asList( new Integer[]{0, 1, 2} ) );
+        CEP_OPERATORS_PARAMETERS.put( "before",
+                                      Arrays.asList( new Integer[]{0, 1, 2} ) );
+        CEP_OPERATORS_PARAMETERS.put( "coincided",
+                                      Arrays.asList( new Integer[]{0, 1, 2} ) );
+        CEP_OPERATORS_PARAMETERS.put( "during",
+                                      Arrays.asList( new Integer[]{0, 1, 2, 4} ) );
+        CEP_OPERATORS_PARAMETERS.put( "finised",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+        CEP_OPERATORS_PARAMETERS.put( "finishedby",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+        CEP_OPERATORS_PARAMETERS.put( "includes",
+                                      Arrays.asList( new Integer[]{0, 1, 2, 4} ) );
+        CEP_OPERATORS_PARAMETERS.put( "meets",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+        CEP_OPERATORS_PARAMETERS.put( "metby",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+        CEP_OPERATORS_PARAMETERS.put( "overlaps",
+                                      Arrays.asList( new Integer[]{0, 1, 2} ) );
+        CEP_OPERATORS_PARAMETERS.put( "overlappedby",
+                                      Arrays.asList( new Integer[]{0, 1, 2} ) );
+        CEP_OPERATORS_PARAMETERS.put( "starts",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+        CEP_OPERATORS_PARAMETERS.put( "startedby",
+                                      Arrays.asList( new Integer[]{0, 1} ) );
+    }
 
     /** The top level conditional elements (first order logic) */
-    private static final String[]                  CONDITIONAL_ELEMENTS    = new String[]{"not", "exists", "or"};
+    private static final String[]                   CONDITIONAL_ELEMENTS     = new String[]{"not", "exists", "or"};
 
     /**
      * A map of the field that contains the parametrized type of a collection
      * List<String> name key = "name" value = "String"
      */
-    private Map<String, String>                    fieldParametersType     = new HashMap<String, String>();
+    private Map<String, String>                     fieldParametersType      = new HashMap<String, String>();
 
     /**
      * Contains a map of globals (name is key) and their type (value).
      */
-    private Map<String, String>                    globalTypes             = new HashMap<String, String>();
+    private Map<String, String>                     globalTypes              = new HashMap<String, String>();
 
     /**
      * A map of types to the modifying methods they expose. key is type, value
      * is (Sting[] of modifying methods)
      * 
      **/
-    private Map<String, String[]>                  modifiers;
+    private Map<String, String[]>                   modifiers;
 
     /**
      * Contains a map of { TypeName.field : String[] } - where a list is valid
      * values to display in a drop down for a given Type.field combination.
      */
-    private Map<String, String[]>                  dataEnumLists           = new HashMap<String, String[]>();                                                                                                                                 // TODO this is
+    private Map<String, String[]>                   dataEnumLists            = new HashMap<String, String[]>();                                                                                                                               // TODO this is
     // a PROBLEM as its not always String[]
 
     /**
      * A map of Annotations for FactTypes. Key is FactType, value is list of
      * annotations
      */
-    private Map<String, List<ModelAnnotation>>     annotationsForTypes     = new HashMap<String, List<ModelAnnotation>>();
+    private Map<String, List<ModelAnnotation>>      annotationsForTypes      = new HashMap<String, List<ModelAnnotation>>();
 
     /**
      * This will show the names of globals that are a collection type.
      */
-    private String[]                               globalCollections;
+    private String[]                                globalCollections;
 
 /** Operators (from the grammar):
          *      op=(    '=='
@@ -130,16 +160,16 @@ public class SuggestionCompletionEngine
     /**
      * DSL language extensions, if needed, if provided by the package.
      */
-    public DSLSentence[]                           conditionDSLSentences   = new DSLSentence[0];
-    public DSLSentence[]                           actionDSLSentences      = new DSLSentence[0];
-    public DSLSentence[]                           keywordDSLItems         = new DSLSentence[0];
-    public DSLSentence[]                           anyScopeDSLItems        = new DSLSentence[0];
+    public DSLSentence[]                            conditionDSLSentences    = new DSLSentence[0];
+    public DSLSentence[]                            actionDSLSentences       = new DSLSentence[0];
+    public DSLSentence[]                            keywordDSLItems          = new DSLSentence[0];
+    public DSLSentence[]                            anyScopeDSLItems         = new DSLSentence[0];
 
     /**
      * This is used to calculate what fields an enum list may depend on.
      * Optional.
      */
-    private transient Map<String, Object>          dataEnumLookupFields;
+    private transient Map<String, Object>           dataEnumLookupFields;
 
     // /**
     // * For bulk loading up the data (from a previous rule save)
@@ -175,14 +205,14 @@ public class SuggestionCompletionEngine
     //
     // }
 
-    private Map<String, List<MethodInfo>>          methodInfos             = new HashMap<String, List<MethodInfo>>();
+    private Map<String, List<MethodInfo>>           methodInfos              = new HashMap<String, List<MethodInfo>>();
 
-    private Map<String, ModelField[]>              modelFields             = new HashMap<String, ModelField[]>();
-    private Map<String, ModelField[]>              filterModelFields       = null;
+    private Map<String, ModelField[]>               modelFields              = new HashMap<String, ModelField[]>();
+    private Map<String, ModelField[]>               filterModelFields        = null;
 
-    private Map<String, FieldAccessorsAndMutators> accessorsAndMutators    = new HashMap<String, FieldAccessorsAndMutators>();
-    private FactTypeFilter                         factFilter              = null;
-    private boolean                                filteringFacts          = true;
+    private Map<String, FieldAccessorsAndMutators>  accessorsAndMutators     = new HashMap<String, FieldAccessorsAndMutators>();
+    private FactTypeFilter                          factFilter               = null;
+    private boolean                                 filteringFacts           = true;
 
     public SuggestionCompletionEngine() {
 
@@ -251,7 +281,7 @@ public class SuggestionCompletionEngine
             if ( this.isFactTypeAnEvent( factType ) ) {
                 return joinArrays( STANDARD_OPERATORS,
                                    SIMPLE_CEP_OPERATORS,
-                                   COMPLEX_CEP_OPERATORS);
+                                   COMPLEX_CEP_OPERATORS );
             } else {
                 return STANDARD_OPERATORS;
             }
@@ -975,6 +1005,30 @@ public class SuggestionCompletionEngine
         return false;
     }
 
+    /**
+     * Get the parameter sets for the given CEP Operator (simple, or connective)
+     * e.g. CEP operator "during" requires 0, 1, 2 or 4 parameters so the
+     * returned list contains 0, 1, 2 and 4.
+     * 
+     * @param operator
+     * @return
+     */
+    public static List<Integer> getCEPOperatorParameterSets(String operator) {
+        List<Integer> sets = new ArrayList<Integer>();
+        if ( operator == null ) {
+            return sets;
+        }
+        if ( operator.startsWith( "|| " ) || operator.startsWith( "&& " ) ) {
+            operator = operator.substring( 3 );
+        }
+        if ( !CEP_OPERATORS_PARAMETERS.containsKey( operator ) ) {
+            return sets;
+        }
+
+        return CEP_OPERATORS_PARAMETERS.get( operator );
+    }
+
+    //Join an arbitrary number of arrays together
     private static String[] joinArrays(String[] first,
                                        String[]... others) {
         int totalLength = first.length;
