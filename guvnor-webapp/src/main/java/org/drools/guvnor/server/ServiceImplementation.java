@@ -190,7 +190,7 @@ public class ServiceImplementation
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( initialPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
