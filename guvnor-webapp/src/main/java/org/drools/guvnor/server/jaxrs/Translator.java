@@ -54,7 +54,7 @@ public class Translator {
         metadata.setCreatedBy(a.getCreator());
         metadata.setDisabled(a.getDisabled());
         metadata.setFormat(a.getFormat());
-        metadata.setNote(a.getCheckinComment());
+        metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         List<CategoryItem> categories = a.getCategories();
         String[] cats = new String [categories.size()];
         int counter = 0;
