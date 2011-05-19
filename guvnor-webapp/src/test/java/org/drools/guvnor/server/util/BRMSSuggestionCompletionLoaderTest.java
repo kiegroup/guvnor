@@ -86,7 +86,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
                                              "Agent" );
         assertNotNull( modelFields );
         System.out.println( "modelFields: " + Arrays.asList( modelFields ) );
-        assertEquals( 10,
+        assertEquals( 9,
                       modelFields.length );
 
         modelFields = engine.getModelFields( FieldAccessorsAndMutators.ACCESSOR,
@@ -100,7 +100,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
                                              "Agent" );
         assertNotNull( modelFields );
         System.out.println( "modelFields: " + Arrays.asList( modelFields ) );
-        assertEquals( 9,
+        assertEquals( 8,
                       modelFields.length );
 
     }
@@ -195,12 +195,16 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
                       factTypes[0] );
 
         List<String> fields = Arrays.asList( engine.getFieldCompletions( "Car" ) );
-        assertEquals( 2,
+        assertEquals( 3,
                       fields.size() );
 
+        assertTrue( fields.contains( "this" ) );
         assertTrue( fields.contains( "pieceOfRubbish" ) );
         assertTrue( fields.contains( "name" ) );
 
+        assertEquals( "this",
+                      engine.getFieldType( "Car",
+                                           "this" ) );
         assertEquals( "Boolean",
                       engine.getFieldType( "Car",
                                            "pieceOfRubbish" ) );
