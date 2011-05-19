@@ -18,7 +18,7 @@
   <description>Bulk imports files into the Guvnor repository</description>
 
   <properties>
-    <guvnor.server.url>http://localhost:8080/guvnor-${project.version}</guvnor.server.url>
+    <guvnor.server.url>http://localhost:8080/guvnor-${guvnor.version}</guvnor.server.url>
   </properties>
 
   <build>

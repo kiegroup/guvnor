@@ -45,59 +45,59 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-jcr</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-jackrabbit</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-modeshape</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
+      <version>${guvnor.version}</version>
       <classifier>jboss-as-5.1</classifier>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
+      <version>${guvnor.version}</version>
       <classifier>jboss-as-6.0</classifier>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
+      <version>${guvnor.version}</version>
       <classifier>tomcat-6.0</classifier>
-      <version>${project.version}</version>
     </dependency>
 
     <!-- Examples -->
@@ -108,7 +108,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-examples</artifactId>
-      <version>${project.version}</version>
+      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
 
