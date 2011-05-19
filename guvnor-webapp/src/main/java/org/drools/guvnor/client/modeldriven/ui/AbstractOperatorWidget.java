@@ -55,19 +55,23 @@ public abstract class AbstractOperatorWidget extends Composite
 
     protected HasOperatorParameters hop;
 
-    private Constants               constants             = ((Constants) GWT.create( Constants.class ));
-    private OperatorsResource       resources             = GWT.create( OperatorsResource.class );
-    private OperatorsCss            css                   = resources.operatorsCss();
+    private Constants               constants                        = ((Constants) GWT.create( Constants.class ));
+    private OperatorsResource       resources                        = GWT.create( OperatorsResource.class );
+    private OperatorsCss            css                              = resources.operatorsCss();
 
     private String[]                operators;
     private Image                   btnAddCEPOperators;
 
-    private HorizontalPanel         container             = new HorizontalPanel();
-    private TextBox[]               parameters            = new TextBox[4];
-    private int                     visibleParameterSet   = 0;
+    private HorizontalPanel         container                        = new HorizontalPanel();
+    private TextBox[]               parameters                       = new TextBox[4];
+    private int                     visibleParameterSet              = 0;
     private List<Integer>           parameterSets;
 
-    private static final String     VISIBLE_PARAMETER_SET = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
+    //Parameter key to store the current parameter set (i.e. which parameters are visible)
+    private static final String     VISIBLE_PARAMETER_SET            = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
+
+    //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
+    private static final String     CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
 
     public AbstractOperatorWidget(String[] operators,
                                   HasOperatorParameters hop) {
@@ -156,7 +160,7 @@ public abstract class AbstractOperatorWidget extends Composite
             btnAddCEPOperators.setVisible( true );
             parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( value );
             hop.setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
-                              "org.drools.ide.common.server.util.CEPOperatorParameterGenerator" );
+                              CEP_OPERATOR_PARAMETER_GENERATOR );
         } else {
             visibleParameterSet = 0;
             container.setVisible( false );
@@ -170,13 +174,32 @@ public abstract class AbstractOperatorWidget extends Composite
     //Display the appropriate number of parameters
     private void displayParameters() {
         if ( parameterSets.size() == 0 ) {
+
+            //All boxes are hidden if there are no parameter sets
             for ( int i = 0; i < parameters.length; i++ ) {
                 parameters[i].setVisible( false );
             }
         } else {
+
+            //Display text boxes indexed less that the value of the current 
+            //parameter set, initialising the parameter value if necessary 
+            //and removing any excess parameter values
             for ( int i = 0; i < parameters.length; i++ ) {
-                parameters[i].setVisible( i < parameterSets.get( visibleParameterSet ) );
-                parameters[i].setText( hop.getParameter( Integer.toString( i ) ) );
+                String key = Integer.toString( i );
+                boolean isVisible = i < parameterSets.get( visibleParameterSet );
+                if ( isVisible ) {
+                    String value = hop.getParameter( key );
+                    if ( value == null ) {
+                        value = "";
+                        hop.setParameter( key,
+                                          value );
+                    }
+                    parameters[i].setText( value );
+                    parameters[i].setVisible( true );
+                } else {
+                    hop.deleteParameter( key );
+                    parameters[i].setVisible( false );
+                }
             }
         }
     }

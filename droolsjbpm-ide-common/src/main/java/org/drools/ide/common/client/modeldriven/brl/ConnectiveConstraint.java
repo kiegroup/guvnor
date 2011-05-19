@@ -91,6 +91,10 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint
                         parameter );
     }
 
+    public void deleteParameter(String key) {
+        parameters.remove( key );
+    }
+
     public Map<String, String> getParameters() {
         return this.parameters;
     }

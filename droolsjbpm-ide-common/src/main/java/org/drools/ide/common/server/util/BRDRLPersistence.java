@@ -129,8 +129,7 @@ public class BRDRLPersistence
      * @see org.drools.ide.common.server.util.BRLPersistence#unmarshal(java.lang.String)
      */
     public RuleModel unmarshal(String str) {
-        throw new UnsupportedOperationException(
-                                                 "Still not possible to convert pure DRL to RuleModel" );
+        throw new UnsupportedOperationException( "Still not possible to convert pure DRL to RuleModel" );
     }
 
     /**
@@ -653,12 +652,26 @@ public class BRDRLPersistence
         private StringBuilder buildOperatorParameterDRL(Map<String, String> parameters) {
             String className = parameters.get( SharedConstants.OPERATOR_PARAMETER_GENERATOR );
             if ( className == null ) {
-                throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterBuilder' undefined. Unable to build Operator Parameter DRL." );
+                throw new IllegalStateException( "Implementation of 'org.drools.ide.common.server.util.OperatorParameterDRLBuilder' undefined. Unable to build Operator Parameter DRL." );
             }
 
-            StringBuilder b = new StringBuilder();
-            b.append( " [xxx] " );
-            return b;
+            try {
+                OperatorParameterDRLBuilder builder = (OperatorParameterDRLBuilder) Class.forName( className ).newInstance();
+                return builder.buildDRL( parameters );
+            } catch ( ClassNotFoundException cnfe ) {
+                cnfe.fillInStackTrace();
+                cnfe.printStackTrace( System.err );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+            } catch ( IllegalAccessException iae ) {
+                iae.fillInStackTrace();
+                iae.printStackTrace( System.err );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+            } catch ( InstantiationException ie ) {
+                ie.fillInStackTrace();
+                ie.printStackTrace( System.err );
+                throw new IllegalStateException( "Unable to generate Operator DRL using class '" + className + "'." );
+            }
+
         }
 
     }
