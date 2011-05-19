@@ -47,6 +47,13 @@ public interface HasOperatorParameters
                              String parameter);
 
     /**
+     * Delete a parameter
+     * 
+     * @param key
+     */
+    public void deleteParameter(String key);
+
+    /**
      * Get all parameters
      * 
      * @return
