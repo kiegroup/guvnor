@@ -326,7 +326,7 @@ public class RepositoryAssetService
     public String copyAsset(String assetUUID,
                             String newPackage,
                             String newName) {
-        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
         return getRulesRepository().copyAsset( assetUUID,
@@ -339,7 +339,7 @@ public class RepositoryAssetService
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
-        serviceSecurity.checkSecurityIsPackageDeveloper( newPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         getRulesRepository().moveRuleItemPackage( newPackage,
