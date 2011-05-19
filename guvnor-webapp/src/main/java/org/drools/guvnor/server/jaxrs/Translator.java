@@ -69,13 +69,13 @@ public class Translator {
         ret.setDescription(a.getDescription());
         UriBuilder builder = uriInfo.getBaseUriBuilder();
         ret.setRefLink(
-            builder.path("/packages/" + a.getPackage().getName() + "/asset/" + a.getName()).build());
+            builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName()).build());
         builder = uriInfo.getBaseUriBuilder();
         ret.setBinaryLink(
-                builder.path("/packages/" + a.getPackage().getName() + "/asset/" + a.getName() + "/binary").build());
+                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName() + "/binary").build());
         builder = uriInfo.getBaseUriBuilder();
         ret.setSourceLink(
-                builder.path("/packages/" + a.getPackage().getName() + "/asset/" + a.getName() + "/source").build());
+                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName() + "/source").build());
         ret.setVersion(a.getVersionNumber());
         return ret;
     }
