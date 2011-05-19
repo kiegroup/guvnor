@@ -68,19 +68,19 @@ public class BRLPersistenceTest {
         ActionGlobalCollectionAdd ag = new ActionGlobalCollectionAdd();
         ag.factName = "x";
         ag.globalName = "g";
-        m.addRhsItem( ag);
+        m.addRhsItem( ag );
         m.name = "my rule";
         final String xml = p.marshal( m );
-        System.out.println(xml);
+        System.out.println( xml );
         assertTrue( xml.indexOf( "Person" ) > -1 );
         assertTrue( xml.indexOf( "Accident" ) > -1 );
         assertTrue( xml.indexOf( "no-loop" ) > -1 );
         assertTrue( xml.indexOf( "org.drools" ) == -1 );
         assertTrue( xml.indexOf( "addToGlobal" ) > -1 );
 
-
-        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal(xml);
-        assertEquals(2, rm_.rhs.length);
+        RuleModel rm_ = BRXMLPersistence.getInstance().unmarshal( xml );
+        assertEquals( 2,
+                      rm_.rhs.length );
 
     }
 
@@ -130,82 +130,79 @@ public class BRLPersistenceTest {
         RuleModel m = new RuleModel();
         m.name = "with composite";
 
-        FactPattern p1 = new FactPattern("Person");
-        p1.setBoundName("p1");
+        FactPattern p1 = new FactPattern( "Person" );
+        p1.setBoundName( "p1" );
         m.addLhsItem( p1 );
 
-        FactPattern p = new FactPattern("Goober");
+        FactPattern p = new FactPattern( "Goober" );
         m.addLhsItem( p );
         CompositeFieldConstraint comp = new CompositeFieldConstraint();
         comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
         p.addConstraint( comp );
 
         final SingleFieldConstraint X = new SingleFieldConstraint();
-        X.setFieldName("goo");
-        X.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        X.setValue("foo");
-        X.setOperator("==");
+        X.setFieldName( "goo" );
+        X.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        X.setValue( "foo" );
+        X.setOperator( "==" );
         X.connectives = new ConnectiveConstraint[1];
         X.connectives[0] = new ConnectiveConstraint();
-        X.connectives[0].setConstraintValueType(ConnectiveConstraint.TYPE_LITERAL);
-        X.connectives[0].operator = "|| ==";
-        X.connectives[0].setValue("bar");
+        X.connectives[0].setConstraintValueType( ConnectiveConstraint.TYPE_LITERAL );
+        X.connectives[0].setOperator( "|| ==" );
+        X.connectives[0].setValue( "bar" );
         comp.addConstraint( X );
 
         final SingleFieldConstraint Y = new SingleFieldConstraint();
-        Y.setFieldName("goo2");
-        Y.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        Y.setValue("foo");
-        Y.setOperator("==");
+        Y.setFieldName( "goo2" );
+        Y.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        Y.setValue( "foo" );
+        Y.setOperator( "==" );
         comp.addConstraint( Y );
 
         CompositeFieldConstraint comp2 = new CompositeFieldConstraint();
         comp2.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
         final SingleFieldConstraint Q1 = new SingleFieldConstraint();
-        Q1.setFieldName("goo");
-        Q1.setOperator("==");
-        Q1.setValue("whee");
-        Q1.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        Q1.setFieldName( "goo" );
+        Q1.setOperator( "==" );
+        Q1.setValue( "whee" );
+        Q1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         comp2.addConstraint( Q1 );
 
         final SingleFieldConstraint Q2 = new SingleFieldConstraint();
-        Q2.setFieldName("gabba");
-        Q2.setOperator("==");
-        Q2.setValue("whee");
-        Q2.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        Q2.setFieldName( "gabba" );
+        Q2.setOperator( "==" );
+        Q2.setValue( "whee" );
+        Q2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
 
         comp2.addConstraint( Q2 );
 
         //now nest it
         comp.addConstraint( comp2 );
 
-
-
         final SingleFieldConstraint Z = new SingleFieldConstraint();
-        Z.setFieldName("goo3");
-        Z.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
-        Z.setValue("foo");
-        Z.setOperator("==");
+        Z.setFieldName( "goo3" );
+        Z.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        Z.setValue( "foo" );
+        Z.setOperator( "==" );
 
         p.addConstraint( Z );
 
-        ActionInsertFact ass = new ActionInsertFact("Whee");
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
-
 
         String xml = BRXMLPersistence.getInstance().marshal( m );
         //System.err.println(xml);
 
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( xml );
-        assertNotNull(m2);
-        assertEquals("with composite", m2.name);
+        assertNotNull( m2 );
+        assertEquals( "with composite",
+                      m2.name );
 
-        assertEquals(m2.lhs.length, m.lhs.length);
-        assertEquals(m2.rhs.length, m.rhs.length);
-
-
-
+        assertEquals( m2.lhs.length,
+                      m.lhs.length );
+        assertEquals( m2.rhs.length,
+                      m.rhs.length );
 
     }
 
@@ -224,35 +221,39 @@ public class BRLPersistenceTest {
         fr.text = "fun()";
         m.rhs[0] = fr;
 
-        String xml = BRXMLPersistence.getInstance().marshal(m);
-        assertNotNull(xml);
+        String xml = BRXMLPersistence.getInstance().marshal( m );
+        assertNotNull( xml );
 
-        RuleModel m_  = BRXMLPersistence.getInstance().unmarshal(xml);
-        assertEquals(1, m_.lhs.length);
-        assertEquals(1, m_.rhs.length);
+        RuleModel m_ = BRXMLPersistence.getInstance().unmarshal( xml );
+        assertEquals( 1,
+                      m_.lhs.length );
+        assertEquals( 1,
+                      m_.rhs.length );
 
-        assertEquals("Person()", ((FreeFormLine)m_.lhs[0]).text);
-        assertEquals("fun()", ((FreeFormLine)m_.rhs[0]).text);
+        assertEquals( "Person()",
+                      ((FreeFormLine) m_.lhs[0]).text );
+        assertEquals( "fun()",
+                      ((FreeFormLine) m_.rhs[0]).text );
 
     }
 
     /**
-     * This will verify that we can load an old BRL change. If this fails,
-     * then backwards compatibility is broken.
+     * This will verify that we can load an old BRL change. If this fails, then
+     * backwards compatibility is broken.
      */
     @Test
     public void testBackwardsCompat() throws Exception {
         RuleModel m2 = BRXMLPersistence.getInstance().unmarshal( loadResource( "existing_brl.xml" ) );
 
-        assertNotNull(m2);
-        assertEquals(3, m2.rhs.length);
+        assertNotNull( m2 );
+        assertEquals( 3,
+                      m2.rhs.length );
     }
 
     public static String loadResource(final String name) throws Exception {
 
         //        System.err.println( getClass().getResource( name ) );
         final InputStream in = BRLPersistenceTest.class.getResourceAsStream( name );
-
 
         final Reader reader = new InputStreamReader( in );
 
@@ -276,13 +277,13 @@ public class BRLPersistenceTest {
         m.addAttribute( new RuleAttribute( "no-loop",
                                            "true" ) );
 
-        final FactPattern pat = new FactPattern("Person");
+        final FactPattern pat = new FactPattern( "Person" );
         pat.setBoundName( "p1" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldBinding("f1");
-        con.setFieldName("age");
-        con.setOperator("<");
-        con.setValue("42");
+        con.setFieldBinding( "f1" );
+        con.setFieldName( "age" );
+        con.setOperator( "<" );
+        con.setValue( "42" );
         pat.addConstraint( con );
 
         m.addLhsItem( pat );

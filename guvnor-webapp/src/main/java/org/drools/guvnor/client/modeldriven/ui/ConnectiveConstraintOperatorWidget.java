@@ -22,16 +22,12 @@ import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
  * Drop-down for Operators associated with ConnectiveConstraints including
  * supplementary controls for CEP operator parameters
  */
-public class ConnectiveConstraintOperatorWidget extends AbstractOperatorWidget<ConnectiveConstraint> {
+public class ConnectiveConstraintOperatorWidget extends AbstractOperatorWidget {
 
     public ConnectiveConstraintOperatorWidget(String[] operators,
-                                               ConnectiveConstraint bfc) {
+                                              ConnectiveConstraint bfc) {
         super( operators,
                bfc );
-    }
-
-    protected String getOperator(ConnectiveConstraint bfc) {
-        return bfc.operator;
     }
 
     @Override

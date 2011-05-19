@@ -15,11 +15,17 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.AbstractOperatorWidget.OperatorSelection;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.guvnor.client.resources.OperatorsCss;
+import org.drools.guvnor.client.resources.OperatorsResource;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
+import org.drools.ide.common.shared.SharedConstants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -36,60 +42,150 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Abstract Drop-down Widget for Operators including supplementary controls for
  * CEP operator parameters
  */
-public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint> extends Composite
+public abstract class AbstractOperatorWidget extends Composite
     implements
     HasValueChangeHandlers<OperatorSelection> {
 
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
-    private static Images images    = GWT.create( Images.class );
+    protected HasOperatorParameters hop;
 
-    private T             bfc;
-    private String[]      operators;
-    private Image         btnAddCEPOperators;
+    private Constants               constants             = ((Constants) GWT.create( Constants.class ));
+    private OperatorsResource       resources             = GWT.create( OperatorsResource.class );
+    private OperatorsCss            css                   = resources.operatorsCss();
+
+    private String[]                operators;
+    private Image                   btnAddCEPOperators;
+
+    private HorizontalPanel         container             = new HorizontalPanel();
+    private TextBox[]               parameters            = new TextBox[4];
+    private int                     visibleParameterSet   = 0;
+    private List<Integer>           parameterSets;
+
+    private static final String     VISIBLE_PARAMETER_SET = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
 
     public AbstractOperatorWidget(String[] operators,
-                                  T bfc) {
+                                  HasOperatorParameters hop) {
         this.operators = operators;
-        this.bfc = bfc;
+        this.hop = hop;
+
+        //Initialise parameter sets for operator
+        parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( hop.getOperator() );
+
+        //Retrieve last "visible state"
+        String vps = hop.getParameter( VISIBLE_PARAMETER_SET );
+        if ( vps != null ) {
+            try {
+                visibleParameterSet = Integer.parseInt( vps );
+            } catch ( NumberFormatException nfe ) {
+            }
+        }
+
+        for ( int i = 0; i < this.parameters.length; i++ ) {
+            parameters[i] = makeTextBox( i );
+        }
 
         HorizontalPanel hp = new HorizontalPanel();
-        hp.add( getDropDown( bfc ) );
-        hp.add( getOperatorExtension( bfc ) );
+        hp.setStylePrimaryName( css.container() );
+        hp.add( getDropDown() );
+        hp.add( getOperatorExtension() );
 
         initWidget( hp );
     }
 
     //Additional widget for CEP operator parameters
-    private Widget getOperatorExtension(T bfc) {
-        btnAddCEPOperators = new Image( images.clock() );
+    private Widget getOperatorExtension() {
+        container.setStylePrimaryName( css.container() );
+
+        btnAddCEPOperators = new Image( resources.clock() );
+        btnAddCEPOperators.setVisible( parameterSets.size() > 0 );
         btnAddCEPOperators.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                //Window.alert( "woot!" );
+                visibleParameterSet++;
+                if ( visibleParameterSet == parameterSets.size() ) {
+                    visibleParameterSet = 0;
+                }
+                hop.setParameter( VISIBLE_PARAMETER_SET,
+                                  Integer.toString( visibleParameterSet ) );
+                displayParameters();
             }
+
         } );
-        return btnAddCEPOperators;
+
+        container.add( btnAddCEPOperators );
+        for ( int i = 0; i < this.parameters.length; i++ ) {
+            container.add( parameters[i] );
+        }
+
+        return container;
     }
 
+    //TextBox factory
+    private TextBox makeTextBox(final int index) {
+        final TextBox txt = new TextBox();
+        txt.setStyleName( css.parameter() );
+        txt.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                hop.setParameter( Integer.toString( index ),
+                                  txt.getText() );
+            }
+
+        } );
+
+        if ( parameterSets.size() == 0 ) {
+            txt.setVisible( false );
+        } else {
+            txt.setVisible( index < parameterSets.get( visibleParameterSet ) );
+        }
+
+        return txt;
+    }
+
+    //Hide\display the additional CEP widget is appropriate
     private void operatorChanged(OperatorSelection selection) {
         String value = selection.getValue();
-        btnAddCEPOperators.setVisible( isCEPOperator( value ) );
+        if ( isCEPOperator( value ) ) {
+            container.setVisible( true );
+            btnAddCEPOperators.setVisible( true );
+            parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( value );
+            hop.setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
+                              "org.drools.ide.common.server.util.CEPOperatorParameterGenerator" );
+        } else {
+            visibleParameterSet = 0;
+            container.setVisible( false );
+            btnAddCEPOperators.setVisible( false );
+            parameterSets = Collections.emptyList();
+            hop.clearParameters();
+        }
+        displayParameters();
     }
 
-    //Template method to retrieve the operator
-    protected abstract String getOperator(T bfc);
+    //Display the appropriate number of parameters
+    private void displayParameters() {
+        if ( parameterSets.size() == 0 ) {
+            for ( int i = 0; i < parameters.length; i++ ) {
+                parameters[i].setVisible( false );
+            }
+        } else {
+            for ( int i = 0; i < parameters.length; i++ ) {
+                parameters[i].setVisible( i < parameterSets.get( visibleParameterSet ) );
+                parameters[i].setText( hop.getParameter( Integer.toString( i ) ) );
+            }
+        }
+    }
 
     //Template method for sub-classes to determine if operator is a CEP operator
     protected abstract boolean isCEPOperator(String value);
-    
+
     //Actual drop-down
-    private Widget getDropDown(final T bfc) {
+    private Widget getDropDown() {
 
         String selected = "";
         String selectedText = "";
@@ -101,7 +197,7 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
             String op = operators[i];
             box.addItem( HumanReadable.getOperatorDisplayName( op ),
                              op );
-            if ( op.equals( getOperator( bfc ) ) ) {
+            if ( op.equals( hop.getOperator() ) ) {
                 selected = op;
                 selectedText = HumanReadable.getOperatorDisplayName( op );
                 box.setSelectedIndex( i + 1 );
@@ -115,7 +211,7 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
-                operatorChanged(selection);
+                operatorChanged( selection );
                 ValueChangeEvent.fire( source,
                                        selection );
             }
@@ -126,7 +222,6 @@ public abstract class AbstractOperatorWidget<T extends BaseSingleFieldConstraint
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                Object o = event.getSource();
                 String selected = box.getValue( box.getSelectedIndex() );
                 String selectedText = box.getItemText( box.getSelectedIndex() );
                 OperatorSelection selection = new OperatorSelection( selected,

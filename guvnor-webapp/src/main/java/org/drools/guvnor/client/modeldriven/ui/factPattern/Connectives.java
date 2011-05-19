@@ -117,7 +117,7 @@ public class Connectives {
             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                con.operator = selected;
+                con.setOperator( selected );
             }
         } );
 

@@ -16,6 +16,9 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
@@ -24,20 +27,24 @@ package org.drools.ide.common.client.modeldriven.brl;
  */
 public class SingleFieldConstraint extends BaseSingleFieldConstraint
     implements
-    FieldConstraint {
+    FieldConstraint,
+    HasOperatorParameters {
 
     private String                fieldBinding;
     private String                fieldName;
     private String                operator;
     private String                fieldType;
     private FieldConstraint       parent;
+
+    private Map<String, String>   parameters = null;
+
     /**
      * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
-     * Esteban Aliverti
      */
     private ExpressionFormLine    expression = new ExpressionFormLine();
+
     /**
-     * Used with "value" when using custom forms. Esteban Aliverti
+     * Used with "value" when using custom forms.
      */
     private String                id;
     public ConnectiveConstraint[] connectives;
@@ -45,21 +52,21 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     public SingleFieldConstraint(final String field,
                                  final String fieldType,
                                  final FieldConstraint parent) {
-        this.setFieldName( field );
-        this.setFieldType( fieldType );
-        this.setParent( parent );
+        this.fieldName = field;
+        this.fieldType = fieldType;
+        this.parent = parent;
     }
 
     public SingleFieldConstraint(final String field) {
-        this.setFieldName( field );
-        this.setFieldType( "" );
-        this.setParent( null );
+        this.fieldName = field;
+        this.fieldType = "";
+        this.parent = null;
     }
 
     public SingleFieldConstraint() {
-        this.setFieldName( null );
-        this.setFieldType( "" );
-        this.setParent( null );
+        this.fieldName = null;
+        this.fieldType = "";
+        this.parent = null;
     }
 
     public void setFieldBinding(String fieldBinding) {
@@ -145,6 +152,31 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void clearParameters() {
+        this.parameters = null;
+    }
+
+    public String getParameter(String key) {
+        if ( parameters == null ) {
+            return null;
+        }
+        String parameter = parameters.get( key );
+        return parameter;
+    }
+
+    public void setParameter(String key,
+                             String parameter) {
+        if ( parameters == null ) {
+            parameters = new HashMap<String, String>();
+        }
+        parameters.put( key,
+                        parameter );
+    }
+
+    public Map<String, String> getParameters() {
+        return this.parameters;
     }
 
 }
