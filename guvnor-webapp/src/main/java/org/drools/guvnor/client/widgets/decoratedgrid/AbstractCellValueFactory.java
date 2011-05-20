@@ -27,7 +27,7 @@ import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
  */
 public abstract class AbstractCellValueFactory<T> {
 
-    // Dates are serialised and de-serialised to locale-independent format
+    // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
     protected static DateConverter       DATE_CONVERTOR = null;
 
     // SuggestionCompletionEngine to aid data-type resolution etc
