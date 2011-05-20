@@ -15,21 +15,9 @@
  */
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.commons.io.IOUtils;
-import org.drools.ClockType;
-import org.drools.RuleBase;
-import org.drools.RuleBaseConfiguration;
-import org.drools.RuleBaseFactory;
-import org.drools.SessionConfiguration;
+import org.drools.*;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
@@ -38,22 +26,9 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.BulkTestRunResult;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageService;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.rpc.ScenarioRunResult;
-import org.drools.guvnor.client.rpc.SingleScenarioResult;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
-import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
-import org.drools.guvnor.client.rpc.SnapshotDiffs;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.AuditLogReporter;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.security.PackageUUIDType;
@@ -62,12 +37,7 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RepositoryFilter;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.*;
 import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
@@ -81,7 +51,10 @@ import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.util.*;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 @Name("org.drools.guvnor.client.rpc.PackageService")
 @AutoCreate
@@ -394,7 +367,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( packageName );
+        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
 
         String[] snaps = getRulesRepository().listPackageSnapshots( packageName );
         SnapshotInfo[] res = new SnapshotInfo[snaps.length];
@@ -527,7 +500,7 @@ public class RepositoryPackageService
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( packageName );
+        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
 
         return runScenario( packageName,
                 scenario,
@@ -575,29 +548,29 @@ public class RepositoryPackageService
     /*
      * Set the Rule base in a cache
      */
-    private RuleBase loadCacheRuleBase(PackageItem item) throws DetailedSerializationException {
+    private RuleBase loadCacheRuleBase(PackageItem packageItem) throws DetailedSerializationException {
         RuleBase rb = null;
-        if ( item.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( item.getUUID() ) ) {
-            rb = RuleBaseCache.getInstance().get( item.getUUID() );
+        if ( packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( packageItem.getUUID() ) ) {
+            rb = RuleBaseCache.getInstance().get( packageItem.getUUID() );
         } else {
             // load up the classloader we are going to use
-            List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
-            ClassLoader buildCl = BRMSPackageBuilder.createClassLoader( jars );
+            ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
+            ClassLoader buildCl = classLoaderBuilder.buildClassLoader();
 
             // we have to build the package, and try again.
-            if ( item.isBinaryUpToDate() ) {
-                rb = loadRuleBase( item,
-                        buildCl );
-                RuleBaseCache.getInstance().put( item.getUUID(),
-                        rb );
+            if ( packageItem.isBinaryUpToDate() ) {
+                rb = loadRuleBase( packageItem,
+                                   buildCl );
+                RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                 rb );
             } else {
-                BuilderResult result = repositoryPackageOperations.buildPackage( item,
-                        false );
+                BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
+                                                                                 false );
                 if ( result == null || result.getLines().size() == 0 ) {
-                    rb = loadRuleBase( item,
-                            buildCl );
-                    RuleBaseCache.getInstance().put( item.getUUID(),
-                            rb );
+                    rb = loadRuleBase( packageItem,
+                                       buildCl );
+                    RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                     rb );
                 } else throw new DetailedSerializationException( "Build error",
                         result.getLines() );
             }
@@ -725,36 +698,36 @@ public class RepositoryPackageService
         return runScenariosInPackage( item );
     }
 
-    public BulkTestRunResult runScenariosInPackage(PackageItem item) throws DetailedSerializationException,
-            SerializationException {
-        ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
-        ClassLoader cl = null;
+    public BulkTestRunResult runScenariosInPackage(PackageItem packageItem) throws DetailedSerializationException,
+                                                                    SerializationException {
+        ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classloader = null;
 
         try {
-            if ( item.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( item.getUUID() ) ) {
-                RuleBase rb = RuleBaseCache.getInstance().get( item.getUUID() );
-                AbstractRuleBase arb = (AbstractRuleBase) rb;
+            if ( packageItem.isBinaryUpToDate() && RuleBaseCache.getInstance().contains( packageItem.getUUID() ) ) {
+
+                AbstractRuleBase arb = (AbstractRuleBase) RuleBaseCache.getInstance().get( packageItem.getUUID() );
                 // load up the existing class loader from before
-                cl = arb.getConfiguration().getClassLoader();
-                Thread.currentThread().setContextClassLoader( cl );
+                classloader = arb.getConfiguration().getClassLoader();
+                Thread.currentThread().setContextClassLoader( classloader );
             } else {
                 // load up the classloader we are going to use
-                List<JarInputStream> jars = BRMSPackageBuilder.getJars( item );
-                cl = BRMSPackageBuilder.createClassLoader( jars );
-                Thread.currentThread().setContextClassLoader( cl );
+                ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
+                classloader = classLoaderBuilder.buildClassLoader();
+                Thread.currentThread().setContextClassLoader(classloader);
 
                 // we have to build the package, and try again.
-                if ( item.isBinaryUpToDate() ) {
-                    RuleBaseCache.getInstance().put( item.getUUID(),
-                            loadRuleBase( item,
-                                    cl ) );
+                if ( packageItem.isBinaryUpToDate() ) {
+                    RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                     loadRuleBase( packageItem,
+                                                                   classloader ) );
                 } else {
-                    BuilderResult result = repositoryPackageOperations.buildPackage( item,
-                            false );
+                    BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
+                                                                                     false );
                     if ( result == null || result.getLines().size() == 0 ) {
-                        RuleBaseCache.getInstance().put( item.getUUID(),
-                                loadRuleBase( item,
-                                        cl ) );
+                        RuleBaseCache.getInstance().put( packageItem.getUUID(),
+                                                         loadRuleBase( packageItem,
+                                                                       classloader ) );
                     } else {
                         return new BulkTestRunResult( result,
                                 null,
@@ -764,9 +737,9 @@ public class RepositoryPackageService
                 }
             }
 
-            AssetItemIterator it = item.listAssetsByFormat(  AssetFormats.TEST_SCENARIO);
+            AssetItemIterator it = packageItem.listAssetsByFormat( AssetFormats.TEST_SCENARIO );
             List<ScenarioResultSummary> resultSummaries = new ArrayList<ScenarioResultSummary>();
-            RuleBase rb = RuleBaseCache.getInstance().get( item.getUUID() );
+            RuleBase rb = RuleBaseCache.getInstance().get( packageItem.getUUID() );
             Package bin = rb.getPackages()[0];
 
             RuleCoverageListener coverage = new RuleCoverageListener( expectedRules( bin ) );
@@ -776,9 +749,9 @@ public class RepositoryPackageService
                 if ( !as.getDisabled() ) {
                     RuleAsset asset = repositoryAssetOperations.loadAsset( as );
                     Scenario sc = (Scenario) asset.content;
-                    runScenario( item.getName(),
-                            sc,
-                            coverage );// runScenario(sc, res,
+                    runScenario( packageItem.getName(),
+                                 sc,
+                                 coverage );// runScenario(sc, res,
                     // workingMemory).scenario;
 
                     int[] totals = sc.countFailuresTotal();
@@ -798,7 +771,7 @@ public class RepositoryPackageService
                     coverage.getUnfiredRules() );
 
         } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
+            Thread.currentThread().setContextClassLoader( originalClassloader );
         }
 
     }

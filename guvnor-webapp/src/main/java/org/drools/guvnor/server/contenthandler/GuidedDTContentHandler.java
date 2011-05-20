@@ -16,21 +16,18 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.IOException;
-import java.io.StringReader;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.io.StringReader;
 
 /**
  * For guided decision tables.
@@ -40,7 +37,6 @@ public class GuidedDTContentHandler extends ContentHandler
     IRuleAsset {
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
                                      AssetItem item) throws SerializationException {
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
@@ -61,7 +57,7 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                        AssemblyErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
         String drl = getRawDRL( asset );
         if ( drl.equals( "" ) ) return;
@@ -70,7 +66,7 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         RuleAsset asset,
-                        ErrorLogger logger) throws DroolsParserException,
+                        AssemblyErrorLogger logger) throws DroolsParserException,
                                            IOException {
         
         GuidedDecisionTable52 model = (GuidedDecisionTable52) asset.content;

@@ -26,7 +26,7 @@ import javax.jcr.Session;
 
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
@@ -350,15 +350,14 @@ public class RepositoryPackageOperationsTest {
         final String packageName = "packageName";
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
-        ContentPackageAssembler contentPackageAssembler = mock( ContentPackageAssembler.class );
-        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createContentPackageAssembler( packageItem,
-                                                                                                                    false );
+        PackageDRLAssembler contentPackageAssembler = mock( PackageDRLAssembler.class );
+        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createPackageDRLAssembler(packageItem);
         //doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler, new ArrayList<String>() );
         when( contentPackageAssembler.getDRL() ).thenReturn( null );
         assertArrayEquals( localRepositoryPackageOperations.listRulesInPackage( packageName ),
                            new String[]{} );
         verify( localRepositoryPackageOperations,
-                never() ).parseRulesToPackageList( Mockito.any( ContentPackageAssembler.class ),
+                never() ).parseRulesToPackageList( Mockito.any( PackageDRLAssembler.class ),
                                                    Mockito.anyList() );
 
     }
@@ -371,15 +370,14 @@ public class RepositoryPackageOperationsTest {
         final String packageName = "packageName";
         PackageItem packageItem = mock( PackageItem.class );
         when( this.rulesRepository.loadPackage( packageName ) ).thenReturn( packageItem );
-        ContentPackageAssembler contentPackageAssembler = mock( ContentPackageAssembler.class );
-        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createContentPackageAssembler( packageItem,
-                                                                                                                    false );
+        PackageDRLAssembler contentPackageAssembler = mock( PackageDRLAssembler.class );
+        doReturn( contentPackageAssembler ).when( localRepositoryPackageOperations ).createPackageDRLAssembler( packageItem );
         doNothing().when( localRepositoryPackageOperations ).parseRulesToPackageList( contentPackageAssembler,
                                                                                       new ArrayList<String>() );
         when( contentPackageAssembler.getDRL() ).thenReturn( "DRL" );
         assertArrayEquals( localRepositoryPackageOperations.listRulesInPackage( packageName ),
                            new String[]{} );
-        verify( localRepositoryPackageOperations ).parseRulesToPackageList( Mockito.any( ContentPackageAssembler.class ),
+        verify( localRepositoryPackageOperations ).parseRulesToPackageList( Mockito.any( PackageDRLAssembler.class ),
                                                                             Mockito.anyList() );
 
     }

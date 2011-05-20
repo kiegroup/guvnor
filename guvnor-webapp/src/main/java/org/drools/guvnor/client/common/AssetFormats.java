@@ -20,78 +20,104 @@ package org.drools.guvnor.client.common;
 /**
  * Keeps track of the different rule formats we support.
  * Each format type corresponds to the dublin core "format" attribute.
- *
+ * <p/>
  * This is used both by the UI, to determine what are valid formats, and also on the server.
  * If you are adding new types they need to be registered here.
- *
+ * <p/>
  * If an asset type is unknown, then it will be opened with the default editor.
  */
 public class AssetFormats {
 
-    /** For functions */
+    /**
+     * For functions
+     */
     public static final String FUNCTION = "function";
 
-    /** For BPEL */
-    public static final String BPEL_PACKAGE= "bpel.jar";
+    /**
+     * For BPEL
+     */
+    public static final String BPEL_PACKAGE = "bpel.jar";
 
-    /** For "model" assets */
+    /**
+     * For "model" assets
+     */
     public static final String MODEL = "jar";
 
-    /** For DSL language grammars */
+    /**
+     * For DSL language grammars
+     */
     public static final String DSL = "dsl";
 
-    /** Vanilla DRL "file" */
+    /**
+     * Vanilla DRL "file"
+     */
     public static final String DRL = "drl";
 
-    /** Use the rule modeller */
+    /**
+     * Use the rule modeller
+     */
     public static final String BUSINESS_RULE = "brl";
 
 
-    /** use a DSL, free text editor */
-    public static final String DSL_TEMPLATE_RULE   = "dslr";
+    /**
+     * use a DSL, free text editor
+     */
+    public static final String DSL_TEMPLATE_RULE = "dslr";
 
 
-    /** Use a decision table.*/
+    /**
+     * Use a decision table.
+     */
     public static final String DECISION_SPREADSHEET_XLS = "xls";
 
     public static final String DECISION_TABLE_GUIDED = "gdst";
 
-    /** Use a ruleflow.*/
+    /**
+     * Use a ruleflow.
+     */
     public static final String RULE_FLOW_RF = "rf";
     public static final String BPMN_PROCESS = "bpmn";
     public static final String BPMN2_PROCESS = "bpmn2";
 
-    /** Use a data enum.*/
+    /**
+     * Use a data enum.
+     */
     public static final String ENUMERATION = "enumeration";
 
-    /** For test scenarios.  */
+    /**
+     * For test scenarios.
+     */
     public static final String TEST_SCENARIO = "scenario";
 
-    /** For fact models in drl.     */
+    /**
+     * For fact models in drl.
+     */
     public static final String DRL_MODEL = "model.drl";
-    
+
     public static final String XML = "xml";
-    
+
     public static final String PROPERTIES = "properties";
 
+    public static final String CONFIGURATION = "conf";
+
     public static final String WORKING_SET = "workingset";
-    
+
     public static final String RULE_TEMPLATE = "template";
-    
+
     public static final String DOCUMENTATION = "pdf";
-    
+
     public static final String ZIP = "zip";
-    
+
     public static final String SPRING_CONTEXT = "springContext";
+
     /**
      * The following group the assets together for lists, helpers etc...
      */
     public static final String[] BUSINESS_RULE_FORMATS = new String[]{AssetFormats.BUSINESS_RULE, AssetFormats.DSL_TEMPLATE_RULE, AssetFormats.DECISION_SPREADSHEET_XLS, AssetFormats.DECISION_TABLE_GUIDED, AssetFormats.RULE_TEMPLATE};
-
     /**
      * These define assets that are really package level "things". Used to decide when to flush any caches.
      */
-    private static final String[] PACKAGE_DEPENCENCIES = new String[] {AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL, AssetFormats.WORKING_SET};
+    private static final String[] PACKAGE_DEPENCENCIES = new String[]{AssetFormats.FUNCTION, AssetFormats.DSL, AssetFormats.MODEL, AssetFormats.ENUMERATION, AssetFormats.DRL_MODEL, AssetFormats.WORKING_SET};
 
     /**
      * Will return true if the given asset format is a package dependency (eg a function, DSL, model etc).
@@ -99,7 +125,7 @@ public class AssetFormats {
      */
     public static boolean isPackageDependency(String format) {
         for (String dep : PACKAGE_DEPENCENCIES) {
-            if (dep.equals( format )) {
+            if (dep.equals(format)) {
                 return true;
             }
         }

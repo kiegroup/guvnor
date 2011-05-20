@@ -423,8 +423,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getAssetService().buildAssetSource( p0 );
     }
 
-    public org.drools.guvnor.client.rpc.BuilderResult buildAsset(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().buildAsset( p0 );
+    public org.drools.guvnor.client.rpc.BuilderResult validateAsset(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getAssetService().validateAsset(p0);
     }
 
     public java.lang.String renameAsset(java.lang.String p0,

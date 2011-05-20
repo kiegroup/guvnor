@@ -116,7 +116,7 @@ public interface AssetService extends RemoteService{
      * only to report on the results - it will generally not store any state or
      * apply any changed.
      */
-    public BuilderResult buildAsset(RuleAsset asset) throws SerializationException;
+    public BuilderResult validateAsset(RuleAsset asset) throws SerializationException;
 
     /**
      * Rename an asset.

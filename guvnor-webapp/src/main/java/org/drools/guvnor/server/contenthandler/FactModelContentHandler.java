@@ -35,7 +35,6 @@ import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -45,8 +44,7 @@ public class FactModelContentHandler extends ContentHandler {
 
     @Override
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
-                                     AssetItem item) throws SerializationException {
+            AssetItem item) throws SerializationException {
         try {
             List<FactMetaModel> models = toModel( item.getContent() );
             FactModels ms = new FactModels();
@@ -132,7 +130,7 @@ public class FactModelContentHandler extends ContentHandler {
                 mm.annotations.add( am );
             }
 
-            list.add( mm );
+            list.add(mm);
         }
         return list;
     }

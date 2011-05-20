@@ -21,8 +21,8 @@ import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.repository.AssetItem;
 
 public interface IRuleAsset
-    extends
-    ICompilable {
+        extends
+        ICompilable {
 
     /**
      * This will be called when a rule asset is to render itself to DRL source.

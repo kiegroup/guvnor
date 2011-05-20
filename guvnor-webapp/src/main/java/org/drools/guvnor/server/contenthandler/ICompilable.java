@@ -16,32 +16,24 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.IOException;
-
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
 
+import java.io.IOException;
+
 /**
- * This inferface indicates that an asset is a rule asset content type, 
+ * This interface indicates that an asset is a rule asset content type,
  * ie not a model, dsl etc that supports package compilation.
  */
 public interface ICompilable {
 
     /**
-     * This will be called when the asset is required to compile itself, 
+     * This will be called when the asset is required to compile itself,
      * in the context of the given builder.
      */
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
-                                                                   IOException;
-
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
-                                                                   IOException;
-
+                        AssemblyErrorLogger logger) throws DroolsParserException, IOException;
 }

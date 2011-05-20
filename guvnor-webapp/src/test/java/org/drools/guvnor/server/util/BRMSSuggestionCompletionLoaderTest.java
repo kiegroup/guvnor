@@ -16,14 +16,6 @@
 
 package org.drools.guvnor.server.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -35,6 +27,11 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
 

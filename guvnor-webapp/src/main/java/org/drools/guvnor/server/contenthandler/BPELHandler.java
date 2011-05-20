@@ -16,34 +16,31 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.InputStream;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.InputStream;
 
 
 public class BPELHandler extends ContentHandler {
 
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
-            AssetItem item) throws SerializationException {
+    public void retrieveAssetContent(RuleAsset ruleAsset,
+                                     AssetItem assetItem) throws SerializationException {
 
-        // Get the name
+        InputStream inputStream = assetItem.getBinaryContentAttachment();
 
-        InputStream in = item.getBinaryContentAttachment();
-
-        if (in != null) {
+        if (inputStream != null) {
             RuleContentText text = new RuleContentText();
-            text.content = asset.name;
-            asset.content = text;
+            text.content = ruleAsset.name;
+            ruleAsset.content = text;
         }
 
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset)
             throws SerializationException {
     }
 

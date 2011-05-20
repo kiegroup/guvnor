@@ -15,10 +15,8 @@
  */
 package org.drools.guvnor.server;
 
-import java.util.List;
-import java.util.jar.JarInputStream;
-
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.BRMSSuggestionCompletionLoader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.PackageItem;
@@ -30,21 +28,21 @@ public class SuggestionCompletionEngineLoaderInitializer {
         ClassLoader originalCL = Thread.currentThread().getContextClassLoader();
         try {
             BRMSSuggestionCompletionLoader loader = null;
-            List<JarInputStream> jars = BRMSPackageBuilder.getJars( packageItem );
-            if ( jars != null && !jars.isEmpty() ) {
-                ClassLoader cl = BRMSPackageBuilder.createClassLoader( jars );
+            ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
+            if (classLoaderBuilder.hasJars()) {
+                ClassLoader classLoader = classLoaderBuilder.buildClassLoader();
 
-                Thread.currentThread().setContextClassLoader( cl );
+                Thread.currentThread().setContextClassLoader(classLoader);
 
-                loader = new BRMSSuggestionCompletionLoader( cl );
+                loader = new BRMSSuggestionCompletionLoader(classLoader);
             } else {
                 loader = new BRMSSuggestionCompletionLoader();
             }
 
-            result = loader.getSuggestionEngine( packageItem );
+            result = loader.getSuggestionEngine(packageItem);
 
         } finally {
-            Thread.currentThread().setContextClassLoader( originalCL );
+            Thread.currentThread().setContextClassLoader(originalCL);
         }
         return result;
     }

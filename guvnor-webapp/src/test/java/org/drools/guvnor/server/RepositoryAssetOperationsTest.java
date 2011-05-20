@@ -230,4 +230,5 @@ public class RepositoryAssetOperationsTest {
         verify( packageItem ).listAssetsByFormat(
                                                   assetPageRequest.getFormatInList() );
     }
+
 }

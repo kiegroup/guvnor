@@ -39,7 +39,6 @@ public class ModelContentHandler extends ContentHandler
     ICanHasAttachment {
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
                                      AssetItem item) throws SerializationException {
         // do nothing, as we have an attachment
     }

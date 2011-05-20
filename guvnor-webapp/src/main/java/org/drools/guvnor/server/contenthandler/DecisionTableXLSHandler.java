@@ -16,30 +16,27 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.decisiontable.InputType;
 import org.drools.decisiontable.SpreadsheetCompiler;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 
 /**
  * This is for handling XLS content (classic decision tables).
  */
 public class DecisionTableXLSHandler extends ContentHandler
-    implements
-    IRuleAsset {
+        implements
+        IRuleAsset {
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
                                      AssetItem item) throws SerializationException {
         //do nothing, as we have an attachment
     }
@@ -59,43 +56,31 @@ public class DecisionTableXLSHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuilder stringBuilder) {
-        stringBuilder.append( getRawDRL( asset ) );
+        stringBuilder.append(getRawDRL(asset));
     }
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ErrorLogger logger) throws DroolsParserException,
-                                           IOException {
+                        AssemblyErrorLogger logger) throws DroolsParserException,
+            IOException {
         StringBuilder stringBuilder = new StringBuilder();
 
-        assembleDRL( builder,
-                     asset,
-                     stringBuilder );
-        builder.addPackageFromDrl( new StringReader( stringBuilder.toString() ) );
+        assembleDRL(builder,
+                asset,
+                stringBuilder);
+        builder.addPackageFromDrl(new StringReader(stringBuilder.toString()));
 
-    }
-
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        ErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        assembleDRL( builder,
-                     asset,
-                     stringBuilder );
-        builder.addPackageFromDrl( new StringReader( stringBuilder.toString() ) );
     }
 
     public String getRawDRL(AssetItem asset) {
-        return getDRL( asset.getBinaryContentAttachment() );
+        return getDRL(asset.getBinaryContentAttachment());
     }
 
     private String getDRL(InputStream stream) {
         SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile( false,
-                                   stream,
-                                   InputType.XLS );
+        String drl = comp.compile(false,
+                stream,
+                InputType.XLS);
         return drl;
     }
 
