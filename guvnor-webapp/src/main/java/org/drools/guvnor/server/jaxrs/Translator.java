@@ -44,6 +44,7 @@ public class Translator {
     public static QName UUID = new QName(NS, "uuid");
     public static QName STATE = new QName(NS, "state");
     public static QName FORMAT = new QName(NS, "format");
+    public static QName CATEGORIES = new QName(NS, "categories");
 
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
@@ -250,7 +251,13 @@ public class Translator {
 
         childExtension = extension.addExtension(FORMAT);
         childExtension.addSimpleExtension(VALUE, a.getFormat());
-
+        
+        List<CategoryItem> categories = a.getCategories();
+        childExtension = extension.addExtension(CATEGORIES);
+        for (CategoryItem c : categories) {
+            childExtension.addSimpleExtension(VALUE, c.getName());
+        }
+        
         org.apache.abdera.model.Content content = factory.newContent();
         content.setSrc(base.clone().path("binary").build().toString());
         content.setMimeType("application/octet-stream");
