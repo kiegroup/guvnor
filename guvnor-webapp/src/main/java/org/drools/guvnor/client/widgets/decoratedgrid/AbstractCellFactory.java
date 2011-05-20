@@ -21,6 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.decisiontable.cells.PopupDateEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupNumericEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
+import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
@@ -31,6 +32,8 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
  * A Factory to provide the Cells.
  */
 public abstract class AbstractCellFactory<T> {
+
+    private static final String          DATE_FORMAT = Preferences.getStringPref( "drools.dateformat" );
 
     // The containing MergableGridWidget to which cells will send their updates
     protected MergableGridWidget<T>      grid;
@@ -75,7 +78,7 @@ public abstract class AbstractCellFactory<T> {
 
     // Make a new Cell for Date columns
     protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( PredefinedFormat.DATE_SHORT ) ) );
+        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ) ) );
     }
 
     // Make a new Cell for Numeric columns
