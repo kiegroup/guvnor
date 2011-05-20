@@ -311,9 +311,7 @@ public class BRDRLPersistence
             if ( pattern.getFactPattern() != null ) {
                 generateFactPattern( pattern.getFactPattern() );
             }
-            buf.append( " from\n" );
-            buf.append( indentation );
-            buf.append( "  " );
+            buf.append( " from " );
             renderExpression( pattern.getExpression() );
             buf.append( "\n" );
         }
