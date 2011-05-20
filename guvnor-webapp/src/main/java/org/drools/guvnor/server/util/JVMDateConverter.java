@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.drools.guvnor.client.explorer.Preferences;
 import org.drools.guvnor.client.util.DateConverter;
 
 /**
@@ -29,7 +30,9 @@ public class JVMDateConverter
     implements
     DateConverter {
 
-    private static final SimpleDateFormat formatter = new SimpleDateFormat( "dd-MMM-yyyy" );
+    private static final String           DATE_FORMAT = Preferences.getStringPref( "drools.dateformat" );
+
+    private static final SimpleDateFormat FORMATTER   = new SimpleDateFormat( DATE_FORMAT );
 
     private static DateConverter          INSTANCE;
 
@@ -44,15 +47,15 @@ public class JVMDateConverter
     }
 
     public String format(Date date) {
-        synchronized ( formatter ) {
-            return formatter.format( date );
+        synchronized ( FORMATTER ) {
+            return FORMATTER.format( date );
         }
     }
 
     public Date parse(String text) {
         try {
-            synchronized ( formatter ) {
-                return formatter.parse( text );
+            synchronized ( FORMATTER ) {
+                return FORMATTER.parse( text );
             }
 
         } catch ( ParseException pe ) {

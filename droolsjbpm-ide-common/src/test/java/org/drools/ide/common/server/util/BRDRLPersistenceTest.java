@@ -790,95 +790,139 @@ public class BRDRLPersistenceTest {
     @Test
     public void testRHSDateInsertAction() {
 
-        RuleModel m = new RuleModel();
-        m.name = "RHS Date";
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
 
-        FactPattern p = new FactPattern( "Person" );
-        SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
-        con.setFieldName( "dateOfBirth" );
-        con.setOperator( "==" );
-        con.setValue( "31-Jan-2000" );
-        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
-        p.addConstraint( con );
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
 
-        m.addLhsItem( p );
+            RuleModel m = new RuleModel();
+            m.name = "RHS Date";
 
-        ActionInsertFact ai = new ActionInsertFact( "Birthday" );
-        ai.addFieldValue( new ActionFieldValue( "dob",
-                                                "31-Jan-2000",
-                                                SuggestionCompletionEngine.TYPE_DATE ) );
-        m.addRhsItem( ai );
+            FactPattern p = new FactPattern( "Person" );
+            SingleFieldConstraint con = new SingleFieldConstraint();
+            con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+            con.setFieldName( "dateOfBirth" );
+            con.setOperator( "==" );
+            con.setValue( "31-Jan-2000" );
+            con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+            p.addConstraint( con );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+            m.addLhsItem( p );
 
-        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
-        assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+            ActionInsertFact ai = new ActionInsertFact( "Birthday" );
+            ai.addFieldValue( new ActionFieldValue( "dob",
+                                                    "31-Jan-2000",
+                                                    SuggestionCompletionEngine.TYPE_DATE ) );
+            m.addRhsItem( ai );
+
+            String result = BRDRLPersistence.getInstance().marshal( m );
+
+            assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+            assertTrue( result.indexOf( "fact0.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
 
     }
 
     @Test
     public void testRHSDateModifyAction() {
 
-        RuleModel m = new RuleModel();
-        m.name = "RHS Date";
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
 
-        FactPattern p = new FactPattern( "Person" );
-        p.setBoundName( "$p" );
-        SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
-        con.setFieldName( "dateOfBirth" );
-        con.setOperator( "==" );
-        con.setValue( "31-Jan-2000" );
-        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
-        p.addConstraint( con );
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
 
-        m.addLhsItem( p );
+            RuleModel m = new RuleModel();
+            m.name = "RHS Date";
 
-        ActionUpdateField am = new ActionUpdateField( "$p" );
-        am.addFieldValue( new ActionFieldValue( "dob",
-                                                "31-Jan-2000",
-                                                SuggestionCompletionEngine.TYPE_DATE ) );
-        m.addRhsItem( am );
+            FactPattern p = new FactPattern( "Person" );
+            p.setBoundName( "$p" );
+            SingleFieldConstraint con = new SingleFieldConstraint();
+            con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+            con.setFieldName( "dateOfBirth" );
+            con.setOperator( "==" );
+            con.setValue( "31-Jan-2000" );
+            con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+            p.addConstraint( con );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+            m.addLhsItem( p );
 
-        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
-        assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
-        assertTrue( result.indexOf( "update( $p );" ) != -1 );
+            ActionUpdateField am = new ActionUpdateField( "$p" );
+            am.addFieldValue( new ActionFieldValue( "dob",
+                                                    "31-Jan-2000",
+                                                    SuggestionCompletionEngine.TYPE_DATE ) );
+            m.addRhsItem( am );
+
+            String result = BRDRLPersistence.getInstance().marshal( m );
+
+            assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+            assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+            assertTrue( result.indexOf( "update( $p );" ) != -1 );
+
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
 
     }
 
     @Test
     public void testRHSDateUpdateAction() {
 
-        RuleModel m = new RuleModel();
-        m.name = "RHS Date";
+        String oldValue = System.getProperty( "drools.dateformat" );
+        try {
 
-        FactPattern p = new FactPattern( "Person" );
-        p.setBoundName( "$p" );
-        SingleFieldConstraint con = new SingleFieldConstraint();
-        con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
-        con.setFieldName( "dateOfBirth" );
-        con.setOperator( "==" );
-        con.setValue( "31-Jan-2000" );
-        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
-        p.addConstraint( con );
+            System.setProperty( "drools.dateformat",
+                                "dd-MMM-yyyy" );
 
-        m.addLhsItem( p );
+            RuleModel m = new RuleModel();
+            m.name = "RHS Date";
 
-        ActionSetField au = new ActionSetField( "$p" );
-        au.addFieldValue( new ActionFieldValue( "dob",
-                                                "31-Jan-2000",
-                                                SuggestionCompletionEngine.TYPE_DATE ) );
-        m.addRhsItem( au );
+            FactPattern p = new FactPattern( "Person" );
+            p.setBoundName( "$p" );
+            SingleFieldConstraint con = new SingleFieldConstraint();
+            con.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+            con.setFieldName( "dateOfBirth" );
+            con.setOperator( "==" );
+            con.setValue( "31-Jan-2000" );
+            con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+            p.addConstraint( con );
 
-        String result = BRDRLPersistence.getInstance().marshal( m );
+            m.addLhsItem( p );
 
-        assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
-        assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
-        assertTrue( result.indexOf( "update( $p );" ) == -1 );
+            ActionSetField au = new ActionSetField( "$p" );
+            au.addFieldValue( new ActionFieldValue( "dob",
+                                                    "31-Jan-2000",
+                                                    SuggestionCompletionEngine.TYPE_DATE ) );
+            m.addRhsItem( au );
 
+            String result = BRDRLPersistence.getInstance().marshal( m );
+
+            assertTrue( result.indexOf( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");" ) != -1 );
+            assertTrue( result.indexOf( "$p.setDob( sdf.parse(\"31-Jan-2000\"" ) != -1 );
+            assertTrue( result.indexOf( "update( $p );" ) == -1 );
+
+        } finally {
+            if ( oldValue == null ) {
+                System.clearProperty( "drools.dateformat" );
+            } else {
+                System.setProperty( "drools.dateformat",
+                                    oldValue );
+            }
+        }
     }
 
     @Test
