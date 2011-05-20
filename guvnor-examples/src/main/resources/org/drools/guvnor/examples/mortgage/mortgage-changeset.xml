@@ -3,7 +3,7 @@
   xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
   xs:schemaLocation="http://drools.org/drools-5.0/change-set drools-change-set-5.0.xsd">
   <add>
-    <!-- Note: the host (localhost), port (8080) and contextroot (guvnor) might be different
+    <!-- Note: the host (localhost), port (8080) and context root (guvnor) might be different
          depending on your app server configuration and war filename. -->
     <resource source="http://localhost:8080/guvnor/org.drools.guvnor.Guvnor/package/mortgages/LATEST"
         type="PKG" basicAuthentication="enabled" username="admin" password="admin" />
