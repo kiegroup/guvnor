@@ -44,15 +44,15 @@ public class FactFieldsEditor extends Composite {
 
     @UiField
     VerticalPanel                           fieldsPanel;
-    
+
     @UiField
     AddButton                               addFieldIcon;
-    
+
     @UiField
     AddButton                               addAnnotationIcon;
 
     private final ModelNameHelper           modelNameHelper;
-    
+
     private final List<FieldMetaModel>      fields;
 
     private final List<AnnotationMetaModel> annotations;
@@ -131,7 +131,7 @@ public class FactFieldsEditor extends Composite {
             addAnnotationRow( annotation );
         }
     }
-    
+
     private void addFieldRow(final FieldMetaModel fieldMetaModel) {
         final FactFieldEditor editor = new FactFieldEditor( fieldMetaModel,
                                                             modelNameHelper );
@@ -150,7 +150,7 @@ public class FactFieldsEditor extends Composite {
 
     private void addAnnotationRow(final AnnotationMetaModel annotation) {
         final AnnotationEditor editor = new AnnotationEditor( annotation,
-                                                            annotations );
+                                                              annotations );
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
@@ -161,7 +161,21 @@ public class FactFieldsEditor extends Composite {
             }
         } );
 
-        fieldsPanel.add( editor );
+        fieldsPanel.insert( editor,
+                            findPositionOfLastAnnotation() );
+    }
+
+    //Insert Annotations above field definitions
+    private int findPositionOfLastAnnotation() {
+        int position = 0;
+        for ( int i = 0; i < fieldsPanel.getWidgetCount(); i++ ) {
+            Widget w = fieldsPanel.getWidget( i );
+            if ( w instanceof FactFieldEditor ) {
+                break;
+            }
+            position = i + 1;
+        }
+        return position;
     }
 
 }
