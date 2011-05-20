@@ -164,7 +164,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -187,6 +187,9 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
+        ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+        assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));   
+		
     }
 
     @Test
