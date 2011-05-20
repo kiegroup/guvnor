@@ -17,6 +17,14 @@
 package org.drools.guvnor.server.builder;
 
 
+import org.drools.builder.conf.DefaultPackageNameOption;
+import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.rule.Package;
+import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -25,62 +33,52 @@ import java.util.List;
 import java.util.Properties;
 import java.util.jar.JarInputStream;
 
-import org.drools.lang.descr.PackageDescr;
-import org.drools.lang.dsl.DSLTokenizedMappingFile;
-import org.drools.rule.Package;
-import org.drools.rule.builder.dialect.java.JavaDialectConfiguration;
-import org.drools.builder.conf.DefaultPackageNameOption;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class BRMSPackageBuilderTest {
 
-   @Before
-   public void setUp() {
-       System.getProperties().remove( "drools.dialect.java.compiler" );
-   }
+    @Before
+    public void setUp() {
+        System.getProperties().remove("drools.dialect.java.compiler");
+    }
 
     @After
     public void tearDown() {
-       System.getProperties().remove( "drools.dialect.java.compiler" );
-   }
+        System.getProperties().remove("drools.dialect.java.compiler");
+    }
 
     // @FIXME rule "abc" is null and the Packge has no namespace
     @Test
     public void testPartialPackage() throws Exception {
 
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        List<JarInputStream> l = new ArrayList<JarInputStream>();
-        l.add( jis );
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add(jis);
 
         Properties ps = new Properties();
-        ps.setProperty( DefaultPackageNameOption.PROPERTY_NAME, "foo.bar" );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, ps );
+        ps.setProperty(DefaultPackageNameOption.PROPERTY_NAME, "foo.bar");
+
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(ps, new ClassLoaderBuilder(jarInputStreams).buildClassLoader());
 
         //PackageDescr pc = new PackageDescr("foo.bar");
         //builder.addPackage( pc );
 
         String header = "import com.billasurf.Person\n import com.billasurf.Board";
-        builder.addPackageFromDrl( new StringReader(header) );
+        builder.addPackageFromDrl(new StringReader(header));
         assertFalse(builder.hasErrors());
 
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration("java");
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
 
         String ruleAtom = "rule foo \n when \n Person() \n then \n System.out.println(42); end";
-        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        builder.addPackageFromDrl(new StringReader(ruleAtom));
         if (builder.hasErrors()) {
             System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
         assertFalse(builder.hasErrors());
 
         ruleAtom = "rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
-        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        builder.addPackageFromDrl(new StringReader(ruleAtom));
         if (builder.hasErrors()) {
             System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
@@ -90,7 +88,7 @@ public class BRMSPackageBuilderTest {
 
 
         String functionAtom = "function int fooBar(String x) { return 42; }";
-        builder.addPackageFromDrl( new StringReader(functionAtom) );
+        builder.addPackageFromDrl(new StringReader(functionAtom));
         if (builder.hasErrors()) {
             System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
@@ -99,10 +97,10 @@ public class BRMSPackageBuilderTest {
         Package p = builder.getPackage();
         assertEquals(2, p.getRules().length);
         assertEquals(1, p.getFunctions().size());
-        assertNotNull(p.getRule( "foo2" ));
+        assertNotNull(p.getRule("foo2"));
 
         functionAtom = "xxx";
-        builder.addPackageFromDrl( new StringReader(functionAtom) );
+        builder.addPackageFromDrl(new StringReader(functionAtom));
         assertTrue(builder.hasErrors());
         builder.clearErrors();
         assertFalse(builder.hasErrors());
@@ -111,30 +109,30 @@ public class BRMSPackageBuilderTest {
     @Test
     public void testGeneratedBeans() throws Exception {
 
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        List<JarInputStream> l = new ArrayList<JarInputStream>();
-        l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add(jis);
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(jarInputStreams).buildClassLoader());
 
         PackageDescr pc = new PackageDescr("foo.bar");
-        builder.addPackage( pc );
+        builder.addPackage(pc);
 
         String header = "import com.billasurf.Person\n import com.billasurf.Board\n declare GenBean \n name: String \n end";
-        builder.addPackageFromDrl( new StringReader(header) );
+        builder.addPackageFromDrl(new StringReader(header));
         assertFalse(builder.hasErrors());
 
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration("java");
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
 
         String ruleAtom = "rule foo \n when \n Person() \n GenBean(name=='mike')\n then \n System.out.println(42); end";
-        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        builder.addPackageFromDrl(new StringReader(ruleAtom));
         if (builder.hasErrors()) {
             System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
         assertFalse(builder.hasErrors());
 
         ruleAtom = "rule foo2 \n when \n Person() \n then \n System.out.println(42); end";
-        builder.addPackageFromDrl( new StringReader(ruleAtom) );
+        builder.addPackageFromDrl(new StringReader(ruleAtom));
         if (builder.hasErrors()) {
             System.err.println(builder.getErrors().getErrors()[0].getMessage());
         }
@@ -153,8 +151,8 @@ public class BRMSPackageBuilderTest {
     public void testGetExpander() {
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         List<DSLTokenizedMappingFile> files = new ArrayList<DSLTokenizedMappingFile>();
-        files.add( new DSLTokenizedMappingFile() );
-        builder.setDSLFiles( files );
+        files.add(new DSLTokenizedMappingFile());
+        builder.setDSLFiles(files);
         assertTrue(builder.hasDSL());
         assertNotNull(builder.getDSLExpander());
     }
@@ -162,68 +160,68 @@ public class BRMSPackageBuilderTest {
     @Test
     public void testDefaultCompiler() throws Exception {
 
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
         List<JarInputStream> l = new ArrayList<JarInputStream>();
-        l.add( jis );
-        Properties p = new Properties();
-        p.setProperty("drools.accumulate.function.groupCount", "org.drools.base.accumulators.MaxAccumulateFunction");
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, p );
+        l.add(jis);
+        Properties properties = new Properties();
+        properties.setProperty("drools.accumulate.function.groupCount", "org.drools.base.accumulators.MaxAccumulateFunction");
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(properties, new ClassLoaderBuilder(l).buildClassLoader());
         assertEquals("org.drools.base.accumulators.MaxAccumulateFunction", builder.getPackageBuilderConfiguration().getAccumulateFunction("groupCount").getClass().getName());
 
         PackageDescr pc = new PackageDescr("foo.bar");
-        builder.addPackage( pc );
+        builder.addPackage(pc);
 
         String header = "import com.billasurf.Person\n import com.billasurf.Board";
-        builder.addPackageFromDrl( new StringReader(header) );
+        builder.addPackageFromDrl(new StringReader(header));
         assertFalse(builder.hasErrors());
 
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration("java");
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
     }
 
     @Test
     public void testEclipseCompiler() throws Exception {
 
-        System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        System.setProperty("drools.dialect.java.compiler", "ECLIPSE");
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
         List<JarInputStream> l = new ArrayList<JarInputStream>();
-        l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
+        l.add(jis);
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(l).buildClassLoader());
 
         PackageDescr pc = new PackageDescr("foo.bar");
-        builder.addPackage( pc );
+        builder.addPackage(pc);
 
         String header = "import com.billasurf.Person\n import com.billasurf.Board";
-        builder.addPackageFromDrl( new StringReader(header) );
+        builder.addPackageFromDrl(new StringReader(header));
         assertFalse(builder.hasErrors());
 
-        JavaDialectConfiguration javaConf = ( JavaDialectConfiguration ) builder.getPackageBuilderConfiguration().getDialectConfiguration( "java" );
+        JavaDialectConfiguration javaConf = (JavaDialectConfiguration) builder.getPackageBuilderConfiguration().getDialectConfiguration("java");
         assertEquals(JavaDialectConfiguration.ECLIPSE, javaConf.getCompiler());
     }
 
     @Test
     public void testNamespaceSingle() throws Exception {
 
-        System.setProperty( "drools.dialect.java.compiler", "ECLIPSE" );
-        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        System.setProperty("drools.dialect.java.compiler", "ECLIPSE");
+        JarInputStream jis = new JarInputStream(this.getClass().getResourceAsStream("/billasurf.jar"));
         List<JarInputStream> l = new ArrayList<JarInputStream>();
-        l.add( jis );
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( l, new Properties() );
+        l.add(jis);
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(l).buildClassLoader());
 
         assertFalse(builder.getPackageBuilderConfiguration().isAllowMultipleNamespaces());
     }
 
     @Test
     public void testRuleFlow() throws Exception {
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
-        builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "evaluation.rf" ) ) );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(new ArrayList<JarInputStream>()).buildClassLoader());
+        builder.addProcessFromXml(new InputStreamReader(this.getClass().getResourceAsStream("evaluation.rf")));
         assertFalse(builder.hasErrors());
     }
 
     @Test
     public void testBPMN2Process() throws Exception {
-        BRMSPackageBuilder builder = BRMSPackageBuilder.getInstance( new ArrayList<JarInputStream>(), new Properties() );
-        builder.addProcessFromXml( new InputStreamReader( this.getClass().getResourceAsStream( "Hello.bpmn" ) ) );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(new ArrayList<JarInputStream>()).buildClassLoader());
+        builder.addProcessFromXml(new InputStreamReader(this.getClass().getResourceAsStream("Hello.bpmn")));
         assertFalse(builder.hasErrors());
     }
 

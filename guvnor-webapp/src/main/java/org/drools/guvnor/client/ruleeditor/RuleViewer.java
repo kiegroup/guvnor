@@ -277,13 +277,13 @@ public class RuleViewer extends GuvnorEditor {
                 public void execute() {
                     onSave();
                     LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
-                    RepositoryServiceFactory.getAssetService().buildAsset( asset,
-                                                                      new GenericCallback<BuilderResult>() {
+                    RepositoryServiceFactory.getAssetService().validateAsset(asset,
+                            new GenericCallback<BuilderResult>() {
 
-                                                                          public void onSuccess(BuilderResult results) {
-                                                                              RuleValidatorWrapper.showBuilderErrors( results );
-                                                                          }
-                                                                      } );
+                                public void onSuccess(BuilderResult results) {
+                                    RuleValidatorWrapper.showBuilderErrors(results);
+                                }
+                            });
 
                 }
             } );

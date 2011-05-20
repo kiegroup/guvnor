@@ -17,7 +17,6 @@
 package org.drools.guvnor.server.contenthandler;
 
 
-
 public class DSLDefinitionContentHandler extends PlainTextContentHandler {
 
 }

@@ -16,26 +16,24 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class RuleFlowHandler extends ContentHandler
     implements
@@ -43,7 +41,6 @@ public class RuleFlowHandler extends ContentHandler
     ICanHasAttachment {
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
                                      AssetItem item) throws SerializationException {
 
         RuleFlowProcess process = readProcess( new ByteArrayInputStream( item.getContent().getBytes() ) );
@@ -160,19 +157,12 @@ public class RuleFlowHandler extends ContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ErrorLogger logger) throws DroolsParserException,
+                        AssemblyErrorLogger logger) throws DroolsParserException,
                                            IOException {
         InputStream ins = asset.getBinaryContentAttachment();
         if ( ins != null ) {
             builder.addRuleFlow( new InputStreamReader( asset.getBinaryContentAttachment() ) );
         }
-    }
-
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        ErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        // Nothing to do here, binary content
     }
 
     private static ClassLoader getClassLoader() {

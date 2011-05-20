@@ -30,7 +30,6 @@ public abstract class PlainTextContentHandler extends ContentHandler {
 
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg, 
                                      AssetItem item) throws SerializationException {
         //default to text, goode olde texte, just like mum used to make.
         RuleContentText text = new RuleContentText();

@@ -16,16 +16,16 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.StringTokenizer;
-
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.repository.AssetItem;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.StringTokenizer;
 
 public class DRLFileContentHandler extends PlainTextContentHandler
     implements
@@ -33,7 +33,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                        AssemblyErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
         String content = getRawDRL( asset );
         if ( content != null && !content.trim().equals( "" ) ) {
@@ -43,7 +43,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         RuleAsset asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
+                        AssemblyErrorLogger logger) throws DroolsParserException,
                                                                    IOException {
         String content = ((RuleContentText) asset.getContent()).content;
         if ( content != null && !content.trim().equals( "" ) ) {
@@ -86,12 +86,12 @@ public class DRLFileContentHandler extends PlainTextContentHandler
                 return true;
             }
             //otherwise sniff for a suitable keyword at the start of a line
-            if ( startsWithWord( "package",
-                                 tok ) || startsWithWord( "rule",
-                                                          tok ) || startsWithWord( "end",
-                                                                                   tok ) || startsWithWord( "function",
-                                                                                                            tok ) || startsWithWord( "query",
-                                                                                                                                     tok ) ) {
+            if (startsWithWord("package",
+                    tok) || startsWithWord("rule",
+                    tok) || startsWithWord("end",
+                    tok) || startsWithWord("function",
+                    tok) || startsWithWord("query",
+                    tok)) {
                 return false;
             }
         }

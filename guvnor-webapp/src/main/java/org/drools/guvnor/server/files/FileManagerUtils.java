@@ -35,7 +35,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -214,8 +214,7 @@ public class FileManagerUtils {
         PackageItem item = null;
         if ( isLatest ) {
             item = repository.loadPackage( packageName );
-            ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                       false );
+            PackageDRLAssembler asm = new PackageDRLAssembler( item );
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();
@@ -223,8 +222,7 @@ public class FileManagerUtils {
         } else {
             item = repository.loadPackageSnapshot( packageName,
                                                    packageVersion );
-            ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                       false );
+            PackageDRLAssembler asm = new PackageDRLAssembler( item );
             String drl = asm.getDRL();
             out.write( drl.getBytes() );
             out.flush();

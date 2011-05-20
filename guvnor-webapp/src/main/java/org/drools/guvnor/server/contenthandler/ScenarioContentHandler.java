@@ -28,7 +28,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ScenarioContentHandler extends PlainTextContentHandler {
 
     @Override
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+    public void retrieveAssetContent(RuleAsset asset,
             AssetItem item) throws SerializationException {
         Scenario sc = ScenarioXMLPersistence.getInstance().unmarshal(item.getContent());
         asset.setContent( sc );

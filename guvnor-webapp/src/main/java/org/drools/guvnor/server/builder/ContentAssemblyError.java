@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
-import org.drools.repository.VersionableItem;
-
 /**
  * This class is used to accumulate error reports for asset.
  * This can then be used to feed back to the user where the problems are.
@@ -35,24 +30,12 @@ public class ContentAssemblyError {
     private final boolean isPackageItem;
     private final boolean isAssetItem;
 
-    public ContentAssemblyError(VersionableItem itemInError,
-                                String errorReport) {
-        format = itemInError.getFormat();
-        name = itemInError.getName();
-        uuid = itemInError.getUUID();
-        isPackageItem = itemInError instanceof PackageItem;
-        isAssetItem = itemInError instanceof AssetItem;
-
-        this.errorReport = errorReport;
-    }
-
-    public ContentAssemblyError(RuleAsset itemInError,
-                                String errorReport) {
-        format = itemInError.getMetaData().getFormat();
-        name = itemInError.getName();
-        uuid = itemInError.getUuid();
-        isPackageItem = false;
-        isAssetItem = true;
+    public ContentAssemblyError(String errorReport, String format, String name, String uuid, boolean isPackageItem, boolean isAssetItem) {
+        this.format = format;
+        this.name = name;
+        this.uuid = uuid;
+        this.isPackageItem = isPackageItem;
+        this.isAssetItem = isAssetItem;
 
         this.errorReport = errorReport;
     }

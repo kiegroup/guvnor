@@ -16,30 +16,26 @@
 
 package org.drools.guvnor.server.contenthandler;
 
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.compiler.DroolsParserException;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.server.builder.AssemblyErrorLogger;
+import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.ContentAssemblyError;
+import org.drools.lang.ExpanderException;
+import org.drools.lang.dsl.DefaultExpander;
+import org.drools.repository.AssetItem;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
-import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.server.builder.BRMSPackageBuilder;
-import org.drools.guvnor.server.builder.ContentAssemblyError;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
-import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
-import org.drools.lang.ExpanderException;
-import org.drools.lang.dsl.DefaultExpander;
-import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
-
-import com.google.gwt.user.client.rpc.SerializationException;
-
 public class DSLRuleContentHandler extends ContentHandler
-    implements
-    IRuleAsset {
+        implements
+        IRuleAsset {
 
     public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
                                      AssetItem item) throws SerializationException {
         RuleContentText text = new RuleContentText();
         text.content = item.getContent();
@@ -58,11 +54,11 @@ public class DSLRuleContentHandler extends ContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
-                        ContentPackageAssembler.ErrorLogger logger) throws DroolsParserException,
-                                                                   IOException {
-        DefaultExpander expander = getExpander( builder,
-                                                asset,
-                                                logger );
+                        AssemblyErrorLogger logger) throws DroolsParserException,
+            IOException {
+        DefaultExpander expander = getExpander(builder,
+                asset,
+                logger);
 
         String source = getRawDRL( asset );
 
@@ -71,9 +67,9 @@ public class DSLRuleContentHandler extends ContentHandler
 
         if ( expander.hasErrors() ) {
             List<ExpanderException> exErrs = expander.getErrors();
-            for ( ExpanderException ex : exErrs ) {
-                logger.logError( new ContentAssemblyError( asset,
-                                                           ex.getMessage() ) );
+            for (ExpanderException ex : exErrs) {
+                logger.logError(new ContentAssemblyError(
+                        ex.getMessage(), asset.getFormat(), asset.getName(), asset.getUUID(), false, true));
             }
             return;
         }
@@ -83,11 +79,11 @@ public class DSLRuleContentHandler extends ContentHandler
 
     public void compile(BRMSPackageBuilder builder,
                         RuleAsset asset,
-                        ErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        DefaultExpander expander = getExpander( builder,
-                                                asset,
-                                                logger );
+                        AssemblyErrorLogger logger) throws DroolsParserException,
+            IOException {
+        DefaultExpander expander = getExpander(builder,
+                asset,
+                logger);
 
         RuleContentText text = (RuleContentText) asset.getContent();
         String source = getDRL( text.content,
@@ -99,9 +95,9 @@ public class DSLRuleContentHandler extends ContentHandler
 
         if ( expander.hasErrors() ) {
             List<ExpanderException> exErrs = expander.getErrors();
-            for ( ExpanderException ex : exErrs ) {
-                logger.logError( new ContentAssemblyError( asset,
-                                                           ex.getMessage() ) );
+            for (ExpanderException ex : exErrs) {
+                logger.logError(new ContentAssemblyError(
+                        ex.getMessage(), asset.metaData.format, asset.name, asset.uuid, false, true));
             }
             return;
         }
@@ -111,11 +107,11 @@ public class DSLRuleContentHandler extends ContentHandler
 
     private DefaultExpander getExpander(BRMSPackageBuilder builder,
                                         AssetItem asset,
-                                        ContentPackageAssembler.ErrorLogger logger) {
+                                        AssemblyErrorLogger logger) {
 
-        if ( !builder.hasDSL() ) {
-            logger.logError( new ContentAssemblyError( asset,
-                                                       "This rule asset requires a DSL, yet none were configured in the package." ) );
+        if (!builder.hasDSL()) {
+            logger.logError(new ContentAssemblyError(
+                    "This rule asset requires a DSL, yet none were configured in the package.", asset.getFormat(), asset.getName(), asset.getUUID(), false, true));
         }
 
         return builder.getDSLExpander();
@@ -123,11 +119,11 @@ public class DSLRuleContentHandler extends ContentHandler
 
     private DefaultExpander getExpander(BRMSPackageBuilder builder,
                                         RuleAsset asset,
-                                        ContentPackageAssembler.ErrorLogger logger) {
+                                        AssemblyErrorLogger logger) {
 
-        if ( !builder.hasDSL() ) {
-            logger.logError( new ContentAssemblyError( asset,
-                                                       "This rule asset requires a DSL, yet none were configured in the package." ) );
+        if (!builder.hasDSL()) {
+            logger.logError(new ContentAssemblyError(
+                    "This rule asset requires a DSL, yet none were configured in the package.", asset.metaData.format, asset.name, asset.uuid, false, true));
         }
 
         return builder.getDSLExpander();

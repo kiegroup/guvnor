@@ -1,17 +1,17 @@
 /*
  * Copyright 2011 JBoss Inc
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *         http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 package org.drools.guvnor.server;
 
@@ -50,7 +50,6 @@ import org.drools.guvnor.client.rpc.SnapshotDiffs;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
@@ -223,102 +222,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( packageItem.getName(),
                       reloadedPackage.getName() );
         assertFalse( reloadedPackage.isBinaryUpToDate() );
-    }
-
-    @Test
-    public void testGetHistoryPackageSource() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testGetHistoryPackageSource",
-                                                                   "" );
-
-        //Package version 2 
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
-                                         pkg );
-
-        AssetItem func = pkg.addAsset( "func",
-                                       "" );
-        func.updateFormat( AssetFormats.FUNCTION );
-        func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin( "version 1" );
-
-        AssetItem dsl = pkg.addAsset( "myDSL",
-                                      "" );
-        dsl.updateFormat( AssetFormats.DSL );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz1()" );
-        dsl.checkin( "version 1" );
-
-        AssetItem rule = pkg.addAsset( "rule1",
-                                       "" );
-        rule.updateFormat( AssetFormats.DRL );
-        rule.updateContent( "rule 'foo' when Goo1() then end" );
-        rule.checkin( "version 1" );
-
-        AssetItem rule2 = pkg.addAsset( "rule2",
-                                        "" );
-        rule2.updateFormat( AssetFormats.DSL_TEMPLATE_RULE );
-        rule2.updateContent( "when \n foo \n then \n call a func" );
-        rule2.checkin( "version 1" );
-
-        AssetItem rule3 = pkg.addAsset( "model1",
-                                        "" );
-        rule3.updateFormat( AssetFormats.DRL_MODEL );
-        rule3.updateContent( "declare Album1\n genre1: String \n end" );
-        rule3.checkin( "version 1" );
-
-        pkg.checkin( "version2" );
-
-        //Package version 3
-        DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer2",
-                                         pkg );
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "version 2" );
-        dsl.updateContent( "[then]call a func=foo();\n[when]foo=FooBarBaz2()" );
-        dsl.checkin( "version 2" );
-        rule.updateContent( "rule 'foo' when Goo2() then end" );
-        rule.checkin( "version 2" );
-        rule2.updateContent( "when \n foo \n then \n call a func" );
-        rule2.checkin( "version 2" );
-        rule3.updateContent( "declare Album2\n genre2: String \n end" );
-        rule3.checkin( "version 2" );
-        //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );
-
-        //Verify the latest version
-        PackageItem item = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource" );
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
-        String drl = asm.getDRL();
-
-        System.out.println( drl );
-
-        assertEquals( "version3",
-                      item.getCheckinComment() );
-        assertTrue( drl.indexOf( "global com.billasurf.Person customer2" ) >= 0 );
-        assertTrue( drl.indexOf( "System.out.println(version 2)" ) >= 0 );
-        assertTrue( drl.indexOf( "FooBarBaz2()" ) >= 0 );
-        assertTrue( drl.indexOf( "rule 'foo' when Goo2() then end" ) >= 0 );
-        assertTrue( drl.indexOf( "foo" ) >= 0 );
-        assertTrue( drl.indexOf( "declare Album2" ) >= 0 );
-        //assertEquals(12, item.getCompiledPackageBytes().length);
-
-        //Verify version 2
-        PackageItem item2 = impl.getRulesRepository().loadPackage( "testGetHistoryPackageSource",
-                                                                   2 );
-        ContentPackageAssembler asm2 = new ContentPackageAssembler( item2,
-                                                                    false );
-        String drl2 = asm2.getDRL();
-
-        System.out.println( drl2 );
-
-        assertEquals( "version2",
-                      item2.getCheckinComment() );
-        assertTrue( drl2.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
-        assertTrue( drl2.indexOf( "System.out.println(version 1)" ) >= 0 );
-        assertTrue( drl2.indexOf( "FooBarBaz1()" ) >= 0 );
-        assertTrue( drl2.indexOf( "rule 'foo' when Goo1() then end" ) >= 0 );
-        assertTrue( drl2.indexOf( "foo" ) >= 0 );
-        assertTrue( drl2.indexOf( "declare Album1" ) >= 0 );
     }
 
     @Test

@@ -52,7 +52,7 @@ import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
+import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
@@ -167,8 +167,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response getPackageSource(@PathParam("packageName") String packageName) {
     	PackageItem item = repository.loadPackage( packageName );
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
+        PackageDRLAssembler asm = new PackageDRLAssembler( item );
         String fileName = packageName;
         String drl = asm.getDRL();
         return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();
@@ -258,8 +257,7 @@ public class PackageResource extends Resource {
     public Response getHistoricalPackageSource(@PathParam("packageName") String packageName,
     		@PathParam("versionNumber") long versionNumber) {
     	PackageItem item = repository.loadPackage(packageName,  versionNumber);
-        ContentPackageAssembler asm = new ContentPackageAssembler( item,
-                                                                   false );
+        PackageDRLAssembler asm = new PackageDRLAssembler( item );
         String fileName = packageName;
         String drl = asm.getDRL();
         return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();

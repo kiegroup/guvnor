@@ -31,14 +31,11 @@ import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-public class SpringContextContentHandler extends PlainTextContentHandler
-    implements
-    IValidating {
-    public void retrieveAssetContent(RuleAsset asset,
-                                     PackageItem pkg,
-                                     AssetItem item)
-                                                    throws SerializationException {
-        if ( item.getContent() != null ) {
+
+public class SpringContextContentHandler extends PlainTextContentHandler implements IHasCustomValidator {
+    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item)
+            throws SerializationException {
+        if (item.getContent() != null) {
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
             asset.setContent( text );

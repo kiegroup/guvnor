@@ -174,7 +174,6 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
 
         RuleAsset ass = new RuleAsset();
         ch.retrieveAssetContent( ass,
-                                 pkg,
                                  asset );
         assertTrue( ass.getContent() instanceof FactModels );
         FactModels fm = (FactModels) ass.getContent();
@@ -203,7 +202,6 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
         asset.checkin( "" );
 
         ch.retrieveAssetContent( ass,
-                                 pkg,
                                  asset );
         assertTrue( ass.getContent() instanceof RuleContentText );
 

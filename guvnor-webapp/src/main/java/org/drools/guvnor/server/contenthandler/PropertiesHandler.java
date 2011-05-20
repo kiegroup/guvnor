@@ -35,7 +35,7 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * attachment
  */
 public class PropertiesHandler extends ContentHandler {
-    public void retrieveAssetContent(RuleAsset asset, PackageItem pkg,
+    public void retrieveAssetContent(RuleAsset asset,
             AssetItem item) throws SerializationException {
         if (item.getContent() != null) {
             asset.setContent( PropertiesPersistence.getInstance().unmarshal(

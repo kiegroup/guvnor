@@ -16,19 +16,19 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.jar.JarInputStream;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * This decorates the suggestion completion loader with BRMS specific stuff.
@@ -40,54 +40,53 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     }
 
     public BRMSSuggestionCompletionLoader(ClassLoader classLoader) {
-        super( classLoader );
+        super(classLoader);
     }
 
-    public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg,
+    public SuggestionCompletionEngine getSuggestionEngine(PackageItem packageItem,
                                                           String droolsHeader) {
 
         StringBuilder buf = new StringBuilder();
-        AssetItemIterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.DRL_MODEL} );
-        while ( it.hasNext() ) {
+        AssetItemIterator it = packageItem.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL});
+        while (it.hasNext()) {
             AssetItem as = it.next();
-            buf.append( as.getContent() );
-            buf.append( '\n' );
+            buf.append(as.getContent());
+            buf.append('\n');
         }
 
-        return super.getSuggestionEngine( droolsHeader + "\n" + buf.toString(),
-                                          getJars( pkg ),
-                                          getDSLMappingFiles( pkg ),
-                                          getDataEnums( pkg ) );
+
+        ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
+
+        return super.getSuggestionEngine(droolsHeader + "\n" + buf.toString(),
+                classLoaderBuilder.getJarInputStreams(),
+                getDSLMappingFiles(packageItem),
+                getDataEnums(packageItem));
     }
 
     public SuggestionCompletionEngine getSuggestionEngine(PackageItem pkg) {
-        return getSuggestionEngine( pkg,
-                                    DroolsHeader.getDroolsHeader( pkg ) );
+        return getSuggestionEngine(pkg,
+                DroolsHeader.getDroolsHeader(pkg));
     }
 
     @SuppressWarnings("rawtypes")
     private List<String> getDataEnums(PackageItem pkg) {
-        Iterator it = pkg.listAssetsByFormat( new String[]{AssetFormats.ENUMERATION} );
+        Iterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.ENUMERATION});
         List<String> list = new ArrayList<String>();
-        while ( it.hasNext() ) {
+        while (it.hasNext()) {
             AssetItem item = (AssetItem) it.next();
-            list.add( item.getContent() );
+            list.add(item.getContent());
         }
         return list;
     }
 
     private List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg) {
-        return BRMSPackageBuilder.getDSLMappingFiles( pkg,
-                                                      new BRMSPackageBuilder.DSLErrorEvent() {
+        return BRMSPackageBuilder.getDSLMappingFiles(pkg,
+                new BRMSPackageBuilder.DSLErrorEvent() {
 
-                                                          public void recordError(AssetItem asset,
-                                                                                  String message) {
-                                                              getErrors().add( asset.getName() + " : " + message );
-                                                          }
-                                                      } );
-    }
-
-    private List<JarInputStream> getJars(PackageItem pkg) {
-        return BRMSPackageBuilder.getJars( pkg );
+                    public void recordError(AssetItem asset,
+                                            String message) {
+                        getErrors().add(asset.getName() + " : " + message);
+                    }
+                });
     }
 }

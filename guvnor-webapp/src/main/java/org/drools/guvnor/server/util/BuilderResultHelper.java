@@ -15,22 +15,20 @@
  */
 package org.drools.guvnor.server.util;
 
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.server.builder.ContentAssemblyError;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.server.builder.ContentAssemblyError;
-import org.drools.guvnor.server.builder.ContentPackageAssembler;
-
 public class BuilderResultHelper {
-    public List<BuilderResultLine> generateBuilderResults(ContentPackageAssembler asm) {
-        List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( asm.getErrors().size() );
-        for ( int i = 0; i < asm.getErrors().size(); i++ ) {
-            ContentAssemblyError err = asm.getErrors().get( i );
+    public List<BuilderResultLine> generateBuilderResults(List<ContentAssemblyError> errors) {
+        List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( errors.size() );
+        for ( int i = 0; i < errors.size(); i++ ) {
+            ContentAssemblyError err = errors.get( i );
             BuilderResultLine res = new BuilderResultLine().setAssetName( err.getName() ).setAssetFormat( err.getFormat() ).setMessage( err.getErrorReport() ).setUuid( err.getUUID() );
             result.add( res );
         }
         return result;
     }
-
 }

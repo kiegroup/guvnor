@@ -39,7 +39,7 @@ public abstract class ContentHandler {
      * @param item The source.
      * @throws SerializationException
      */
-    public abstract void retrieveAssetContent(RuleAsset asset, PackageItem pkg, AssetItem item) throws SerializationException;
+    public abstract void retrieveAssetContent(RuleAsset asset, AssetItem item) throws SerializationException;
 
     /**
      * For storing the asset content back into the repo node (any changes).

@@ -38,7 +38,7 @@ public abstract class BaseXStreamContentHandler<T extends PortableObject> extend
     }
 
     @SuppressWarnings("unchecked")
-    public void retrieveAssetContent(RuleAsset ruleAsset, PackageItem packageItem, AssetItem assetItem) throws SerializationException {
+    public void retrieveAssetContent(RuleAsset ruleAsset, AssetItem assetItem) throws SerializationException {
         if (assetItem.getContent() != null && assetItem.getContent().length() > 0) {
             try {
                 ruleAsset.setContent( (T) getXStream().fromXML(assetItem.getContent()) );
