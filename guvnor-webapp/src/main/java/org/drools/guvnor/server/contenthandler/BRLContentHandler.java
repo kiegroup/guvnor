@@ -19,7 +19,6 @@ package org.drools.guvnor.server.contenthandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRDRLPersistence;
