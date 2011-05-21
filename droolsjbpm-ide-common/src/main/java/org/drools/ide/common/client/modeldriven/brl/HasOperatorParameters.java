@@ -60,4 +60,11 @@ public interface HasOperatorParameters
      */
     public Map<String, String> getParameters();
 
+    /**
+     * Set all parameters
+     * 
+     * @param parameters
+     */
+    public void setParameters(Map<String, String> parameters);
+
 }

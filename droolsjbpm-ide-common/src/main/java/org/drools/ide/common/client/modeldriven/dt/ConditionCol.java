@@ -15,29 +15,36 @@
  */
 package org.drools.ide.common.client.modeldriven.dt;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
+
 /**
  * This is the config for a condition column. Typically many of them have their
  * constraints added.
  */
-public class ConditionCol extends DTColumnConfig {
+public class ConditionCol extends DTColumnConfig
+    implements
+    HasOperatorParameters {
 
-    private static final long serialVersionUID = 510l;
+    private static final long   serialVersionUID = 510l;
 
     /**
      * What is displayed at the top
      */
-    private String            header;
+    private String              header;
 
     /**
      * The type of the fact - class - eg Driver, Person, Cheese etc.
      */
-    private String            factType;
+    private String              factType;
 
     /**
      * The name that this gets referenced as. Multiple columns with the same
      * name mean their constraints will be combined.
      */
-    private String            boundName;
+    private String              boundName;
 
     /**
      * The type of the value that is in the cell, eg if it is a formula, or
@@ -45,36 +52,39 @@ public class ConditionCol extends DTColumnConfig {
      * TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
      * operator are ignored).
      */
-    private int               constraintValueType;
+    private int                 constraintValueType;
 
     /**
      * The field of the fact that this pertains to (if its a predicate, ignore
      * it).
      */
-    private String            factField;
+    private String              factField;
 
     /**
      * The data-type of the field in the Fact used in the Condition. Possible
      * values are held within the SuggestionCompletionEngine.TYPE_XXX
      */
 
-    private String            fieldType;
+    private String              fieldType;
 
     /**
      * The operator to use to compare the field with the value (unless its a
      * predicate, in which case this is ignored).
      */
-    private String            operator;
+    private String              operator;
 
     /**
      * Whether the pattern should be negated
      */
-    private boolean           isNegated;
+    private boolean             isNegated;
 
     /**
      * A comma separated list of valid values. Optional.
      */
-    private String            valueList;
+    private String              valueList;
+
+    //Parameters for CEP operators
+    private Map<String, String> parameters       = null;
 
     public void setHeader(String header) {
         this.header = header;
@@ -99,7 +109,7 @@ public class ConditionCol extends DTColumnConfig {
     public String getBoundName() {
         return boundName;
     }
-    
+
     public void setConstraintValueType(int constraintValueType) {
         this.constraintValueType = constraintValueType;
     }
@@ -123,7 +133,7 @@ public class ConditionCol extends DTColumnConfig {
     public String getFieldType() {
         return fieldType;
     }
-    
+
     public void setOperator(String operator) {
         this.operator = operator;
     }
@@ -146,6 +156,39 @@ public class ConditionCol extends DTColumnConfig {
 
     public void setNegated(boolean negated) {
         this.isNegated = negated;
+    }
+
+    public void clearParameters() {
+        this.parameters = null;
+    }
+
+    public String getParameter(String key) {
+        if ( parameters == null ) {
+            return null;
+        }
+        String parameter = parameters.get( key );
+        return parameter;
+    }
+
+    public void setParameter(String key,
+                             String parameter) {
+        if ( parameters == null ) {
+            parameters = new HashMap<String, String>();
+        }
+        parameters.put( key,
+                        parameter );
+    }
+
+    public void deleteParameter(String key) {
+        parameters.remove( key );
+    }
+
+    public Map<String, String> getParameters() {
+        return this.parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 
     @Override
@@ -173,6 +216,8 @@ public class ConditionCol extends DTColumnConfig {
                 && nullOrEqual( this.valueList,
                                 that.valueList )
                 && this.isNegated == that.isNegated
+                && nullOrEqual( this.parameters,
+                                that.parameters )
                 && super.equals( obj );
     }
 
@@ -188,6 +233,7 @@ public class ConditionCol extends DTColumnConfig {
         hash = hash * 31 + (operator == null ? 0 : operator.hashCode());
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
         hash = hash * 31 + (new Boolean( isNegated ).hashCode());
+        hash = hash * 31 + parameters.hashCode();
         hash = hash * 31 + super.hashCode();
         return hash;
     }

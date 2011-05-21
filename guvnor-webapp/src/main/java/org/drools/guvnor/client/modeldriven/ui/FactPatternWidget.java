@@ -25,7 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.AbstractOperatorWidget.OperatorSelection;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.resources.Images;
@@ -645,8 +645,8 @@ public class FactPatternWidget extends RuleModellerWidget {
             String factType = this.pattern.getFactType();
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
                                                                                       fieldName );
-            SingleFieldConstraintOperatorWidget w = new SingleFieldConstraintOperatorWidget( operators,
-                                                                                             c );
+            CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
+                                                               c );
 
             w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 

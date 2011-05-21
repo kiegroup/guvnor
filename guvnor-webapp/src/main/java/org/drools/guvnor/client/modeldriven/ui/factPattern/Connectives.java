@@ -17,8 +17,8 @@
 package org.drools.guvnor.client.modeldriven.ui.factPattern;
 
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.modeldriven.ui.AbstractOperatorWidget.OperatorSelection;
-import org.drools.guvnor.client.modeldriven.ui.ConnectiveConstraintOperatorWidget;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -109,8 +109,8 @@ public class Connectives {
         String factType = this.pattern.getFactType();
         String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
                                                                                      fieldName );
-        ConnectiveConstraintOperatorWidget w = new ConnectiveConstraintOperatorWidget( operators,
-                                                                                       con );
+        CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
+                                                           con );
 
         w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
