@@ -197,11 +197,16 @@ public class BRDRLPersistence
             }
             LHSPatternVisitor visitor = new LHSPatternVisitor( isDSLEnhanced,
                                                                buf,
-                                                               nestedIndentation );
+                                                               nestedIndentation,
+                                                               isNegated );
             for ( IPattern cond : model.lhs ) {
                 visitor.visit( cond );
             }
             if ( model.isNegated() ) {
+                //Delete the spurious " and ", added by LHSPatternVisitor.visitFactPattern, when the rule is negated
+                buf.delete( buf.length() - 5,
+                            buf.length() );
+                buf.append("\n");
                 buf.append( indentation );
                 buf.append( ")\n" );
             }
@@ -245,11 +250,14 @@ public class BRDRLPersistence
 
         private StringBuilder buf;
         private boolean       isDSLEnhanced;
+        private boolean       isPatternNegated;
         private String        indentation;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
                                  StringBuilder b,
-                                 String indentation) {
+                                 String indentation,
+                                 boolean isPatternNegated) {
+            this.isPatternNegated = isPatternNegated;
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
             buf = b;
@@ -262,6 +270,9 @@ public class BRDRLPersistence
                 buf.append( ">" );
             }
             generateFactPattern( pattern );
+            if ( isPatternNegated ) {
+                buf.append( " and " );
+            }
             buf.append( "\n" );
         }
 
