@@ -99,4 +99,8 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint
         return this.parameters;
     }
 
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
 }

@@ -183,4 +183,8 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
         return this.parameters;
     }
 
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
 }

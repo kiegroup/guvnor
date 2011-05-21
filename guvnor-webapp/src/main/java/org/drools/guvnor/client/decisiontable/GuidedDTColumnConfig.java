@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -115,6 +116,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         editingCol.setDefaultValue( col.getDefaultValue() );
         editingCol.setHideColumn( col.isHideColumn() );
         editingCol.setNegated( col.isNegated() );
+        editingCol.setParameters( col.getParameters() );
 
         setTitle( constants.ConditionColumnConfiguration() );
 
@@ -385,11 +387,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         String[] ops = this.sce.getOperatorCompletions(
                                                         editingCol.getFactType(),
                                                         editingCol.getFactField() );
-        final ListBox box = new ListBox();
-        for ( int i = 0; i < ops.length; i++ ) {
-            box.addItem( HumanReadable.getOperatorDisplayName( ops[i] ),
-                         ops[i] );
-        }
+        final CEPOperatorsDropdown box = new CEPOperatorsDropdown( ops,
+                                                                   editingCol );
 
         if ( BaseSingleFieldConstraint.TYPE_LITERAL == this.editingCol
                 .getConstraintValueType() ) {

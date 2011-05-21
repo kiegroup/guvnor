@@ -415,6 +415,7 @@ public class GuidedDTDRLPersistence {
             }
 
         }
+        sfc.setParameters( c.getParameters() );
         sfc.setConstraintValueType( c.getConstraintValueType() );
         sfc.setFieldType( c.getFieldType() );
         return sfc;

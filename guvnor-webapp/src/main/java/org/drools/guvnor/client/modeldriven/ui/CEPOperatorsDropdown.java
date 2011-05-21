@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.AbstractOperatorWidget.OperatorSelection;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -46,10 +46,10 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Abstract Drop-down Widget for Operators including supplementary controls for
- * CEP operator parameters
+ * Drop-down Widget for Operators including supplementary controls for CEP
+ * operator parameters
  */
-public abstract class AbstractOperatorWidget extends Composite
+public class CEPOperatorsDropdown extends Composite
     implements
     HasValueChangeHandlers<OperatorSelection> {
 
@@ -61,6 +61,7 @@ public abstract class AbstractOperatorWidget extends Composite
 
     private String[]                operators;
     private Image                   btnAddCEPOperators;
+    private ListBox                 box;
 
     private HorizontalPanel         container                        = new HorizontalPanel();
     private TextBox[]               parameters                       = new TextBox[4];
@@ -73,7 +74,7 @@ public abstract class AbstractOperatorWidget extends Composite
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String     CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
 
-    public AbstractOperatorWidget(String[] operators,
+    public CEPOperatorsDropdown(String[] operators,
                                   HasOperatorParameters hop) {
         this.operators = operators;
         this.hop = hop;
@@ -100,6 +101,37 @@ public abstract class AbstractOperatorWidget extends Composite
         hp.add( getOperatorExtension() );
 
         initWidget( hp );
+    }
+
+    /**
+     * Add ancillary items to drop-down
+     * 
+     * @param item
+     * @param value
+     */
+    public void addItem(String item,
+                        String value) {
+        box.addItem( item,
+                     value );
+    }
+
+    /**
+     * Gets the index of the currently-selected item.
+     * 
+     * @return
+     */
+    public int getSelectedIndex() {
+        return box.getSelectedIndex();
+    }
+
+    /**
+     * Gets the value associated with the item at a given index.
+     * 
+     * @param index
+     * @return
+     */
+    public String getValue(int index) {
+        return box.getValue( index );
     }
 
     //Additional widget for CEP operator parameters
@@ -155,7 +187,7 @@ public abstract class AbstractOperatorWidget extends Composite
     //Hide\display the additional CEP widget is appropriate
     private void operatorChanged(OperatorSelection selection) {
         String value = selection.getValue();
-        if ( isCEPOperator( value ) ) {
+        if ( SuggestionCompletionEngine.isCEPOperator( value ) ) {
             container.setVisible( true );
             btnAddCEPOperators.setVisible( true );
             parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( value );
@@ -204,15 +236,12 @@ public abstract class AbstractOperatorWidget extends Composite
         }
     }
 
-    //Template method for sub-classes to determine if operator is a CEP operator
-    protected abstract boolean isCEPOperator(String value);
-
     //Actual drop-down
     private Widget getDropDown() {
 
         String selected = "";
         String selectedText = "";
-        final ListBox box = new ListBox();
+        box = new ListBox();
 
         box.addItem( constants.pleaseChoose(),
                          "" );
