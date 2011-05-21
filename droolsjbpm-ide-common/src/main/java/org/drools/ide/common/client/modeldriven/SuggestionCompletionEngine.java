@@ -978,25 +978,15 @@ public class SuggestionCompletionEngine
      * @return True if the operator is a CEP operator
      */
     public static boolean isCEPOperator(String value) {
-        String[] operators = joinArrays( SIMPLE_CEP_OPERATORS,
-                                         COMPLEX_CEP_OPERATORS );
-        for ( int i = 0; i < operators.length; i++ ) {
-            if ( value.equals( operators[i] ) ) {
-                return true;
-            }
+        if ( value == null ) {
+            return false;
         }
-        return false;
-    }
 
-    /**
-     * Check whether an operator is a CEP connective operator
-     * 
-     * @param value
-     * @return True if the operator is a CEP connective operator
-     */
-    public static boolean isCEPConnectiveOperator(String value) {
-        String[] operators = joinArrays( SIMPLE_CEP_CONNECTIVES,
+        String[] operators = joinArrays( SIMPLE_CEP_OPERATORS,
+                                         COMPLEX_CEP_OPERATORS,
+                                         SIMPLE_CEP_CONNECTIVES,
                                          COMPLEX_CEP_CONNECTIVES );
+        
         for ( int i = 0; i < operators.length; i++ ) {
             if ( value.equals( operators[i] ) ) {
                 return true;

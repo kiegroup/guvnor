@@ -24,13 +24,17 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.HasOperator;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -49,13 +53,11 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.resources.Images;
 
 /**
- * This is an editor for constraint values.
- * How this behaves depends on the constraint value type.
- * When the constraint value has no type, it will allow the user to choose the first time.
+ * This is an editor for constraint values. How this behaves depends on the
+ * constraint value type. When the constraint value has no type, it will allow
+ * the user to choose the first time.
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
@@ -108,7 +110,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         refreshEditor();
         initWidget( panel );
     }
-    
+
     public BaseSingleFieldConstraint getConstraint() {
         return constraint;
     }
@@ -116,6 +118,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private void refreshEditor() {
         panel.clear();
         Widget constraintWidget = null;
+        boolean isCEPOperator = false;
+        if ( this.constraint instanceof HasOperator ) {
+            isCEPOperator = SuggestionCompletionEngine.isCEPOperator( ((HasOperator) this.constraint).getOperator() );
+        }
+
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
             Image clickme = new Image( images.edit() );
             clickme.addClickHandler( new ClickHandler() {
@@ -145,7 +152,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                                                    constraint );
                                                                }
                                                            } );
-                            ((Button)constraintWidget).setEnabled(!this.readOnly);
+                            ((Button) constraintWidget).setEnabled( !this.readOnly );
                             break;
                         }
                     }
@@ -154,17 +161,19 @@ public class ConstraintValueEditor extends DirtyableComposite {
                         constraintWidget = new EnumDropDownLabel( this.pattern,
                                                                   this.fieldName,
                                                                   this.sce,
-                                                                  this.constraint, !this.readOnly);
-                        if (!this.readOnly){
-                        	((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand( new Command() {
+                                                                  this.constraint,
+                                                                  !this.readOnly );
+                        if ( !this.readOnly ) {
+                            ((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand( new Command() {
 
                                 public void execute() {
                                     executeOnValueChangeCommand();
                                 }
                             } );
                         }
-                        
-                    } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) ) {
+
+                    } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType )
+                                || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldType ) && isCEPOperator) ) {
 
                         DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
 
@@ -235,25 +244,48 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         int j = 0;
         for ( String var : vars ) {
+            boolean addVariable = false;
             FactPattern f = model.getBoundFact( var );
             String fv = model.getBindingType( var );
-            if ( (f != null && f.getFactType().equals( this.fieldType )) || (fv != null && fv.equals( this.fieldType )) ) {
+
+            if ( (f != null && f.getFactType().equals( this.fieldType ))
+                    || (fv != null && fv.equals( this.fieldType )) ) {
+                //Identical fact- or field-types can be compared
+                addVariable = true;
+
+            } else if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( fv ) ) {
+                //'this' can be compared to bound events if using a CEP operator
+                if ( this.constraint instanceof HasOperator ) {
+                    HasOperator hop = (HasOperator) this.constraint;
+                    if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
+                        addVariable = true;
+                    }
+                }
+
+            } else if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( fv )) ) {
+                //Dates can be compared to bound events if using a CEP operator
+                if ( this.constraint instanceof HasOperator ) {
+                    HasOperator hop = (HasOperator) this.constraint;
+                    if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
+                        addVariable = true;
+                    }
+                }
+            } else {
+                // for collection, present the list of possible bound variable
+                String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+                                                                        this.fieldName );
+                if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType ))
+                        || (factCollectionType != null && factCollectionType.equals( fv )) ) {
+                    addVariable = true;
+                }
+            }
+
+            if ( addVariable ) {
                 box.addItem( var );
                 if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
                     box.setSelectedIndex( j );
                 }
                 j++;
-            } else {
-                // for collection, present the list of possible bound variable
-                String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
-                                                                        this.fieldName );
-                if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fv )) ) {
-                    box.addItem( var );
-                    if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
-                        box.setSelectedIndex( j );
-                    }
-                    j++;
-                }
             }
         }
 
@@ -272,23 +304,23 @@ public class ConstraintValueEditor extends DirtyableComposite {
      * An editor for the retval "formula" (expression).
      */
     private Widget returnValueEditor() {
-    	TextBox box = new BoundTextBox( constraint );
-    	
-    	if ( this.readOnly ) {
+        TextBox box = new BoundTextBox( constraint );
+
+        if ( this.readOnly ) {
             return new SmallLabel( box.getText() );
         }
-    	
+
         String msg = constants.FormulaEvaluateToAValue();
         Image img = new Image( images.functionAssets() );
         img.setTitle( msg );
-        box.setTitle( msg );        
+        box.setTitle( msg );
         box.addChangeHandler( new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
                 executeOnValueChangeCommand();
             }
         } );
-        
+
         Widget ed = widgets( img,
                              box );
         return ed;
@@ -299,7 +331,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
             throw new IllegalArgumentException( "Expected SingleFieldConstraint, but " + constraint.getClass().getName() + " found." );
         }
         ExpressionBuilder builder = new ExpressionBuilder( this.modeller,
-                                                           ((SingleFieldConstraint) this.constraint).getExpressionValue(), this.readOnly );
+                                                           ((SingleFieldConstraint) this.constraint).getExpressionValue(),
+                                                           this.readOnly );
         builder.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
 
             public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
@@ -364,10 +397,26 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 doTypeChosen( form );
             }
         } );
-        form.addAttribute( constants.LiteralValue() + ":",
-                           widgets( lit,
-                                    new InfoPopup( constants.LiteralValue(),
-                                                   constants.LiteralValTip() ) ) );
+
+        boolean showLiteralOrFormula = true;
+        if ( con instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+            if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() );
+            }
+        } else if ( con instanceof ConnectiveConstraint ) {
+            ConnectiveConstraint cc = (ConnectiveConstraint) con;
+            if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                showLiteralOrFormula = SuggestionCompletionEngine.isCEPOperator( cc.getOperator() );
+            }
+        }
+
+        if ( showLiteralOrFormula ) {
+            form.addAttribute( constants.LiteralValue() + ":",
+                               widgets( lit,
+                                        new InfoPopup( constants.LiteralValue(),
+                                                       constants.LiteralValTip() ) ) );
+        }
 
         if ( modeller.isTemplate() ) {
             String templateKeyLabel = constants.TemplateKey();
@@ -386,20 +435,57 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                                        constants.LiteralValTip() ) ) );
         }
 
-        form.addRow( new HTML( "<hr/>" ) );
-        form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
+        if ( showLiteralOrFormula ) {
+            form.addRow( new HTML( "<hr/>" ) );
+            form.addRow( new SmallLabel( constants.AdvancedOptions() ) );
+        }
 
         //only want to show variables if we have some !
-        if ( this.model.getBoundVariablesInScope( this.constraint ).size() > 0 || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
+        if ( this.model.getBoundVariablesInScope( this.constraint ).size() > 0
+                || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
+
             List<String> vars = this.model.getBoundFacts();
             boolean foundABouncVariableThatMatches = false;
             for ( String var : vars ) {
                 FactPattern f = model.getBoundFact( var );
                 String fieldConstraint = model.getBindingType( var );
 
-                if ( (f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType )) || (this.fieldType != null && this.fieldType.equals( fieldConstraint )) ) {
+                if ( (f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType ))
+                        || (this.fieldType != null && this.fieldType.equals( fieldConstraint )) ) {
+
                     foundABouncVariableThatMatches = true;
                     break;
+
+                } else if ( con instanceof SingleFieldConstraint && f != null && f.getFactType() != null ) {
+                    SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+                    if ( SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() ) ) {
+                        if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                                foundABouncVariableThatMatches = true;
+                                break;
+                            }
+                        } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                                foundABouncVariableThatMatches = true;
+                                break;
+                            }
+                        }
+                    }
+                } else if ( con instanceof ConnectiveConstraint && f != null && f.getFactType() != null ) {
+                    ConnectiveConstraint cc = (ConnectiveConstraint) con;
+                    if ( SuggestionCompletionEngine.isCEPOperator( cc.getOperator() ) ) {
+                        if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                                foundABouncVariableThatMatches = true;
+                                break;
+                            } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                                if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                                    foundABouncVariableThatMatches = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 } else {
                     // for collection, present the list of possible bound variable
                     String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
@@ -426,19 +512,21 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
-        Button formula = new Button( constants.NewFormula() );
-        formula.addClickHandler( new ClickHandler() {
+        if ( showLiteralOrFormula ) {
+            Button formula = new Button( constants.NewFormula() );
+            formula.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
-                doTypeChosen( form );
-            }
-        } );
+                public void onClick(ClickEvent event) {
+                    con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
+                    doTypeChosen( form );
+                }
+            } );
 
-        form.addAttribute( constants.AFormula() + ":",
-                           widgets( formula,
-                                    new InfoPopup( constants.AFormula(),
-                                                   constants.FormulaExpressionTip() ) ) );
+            form.addAttribute( constants.AFormula() + ":",
+                               widgets( formula,
+                                        new InfoPopup( constants.AFormula(),
+                                                       constants.FormulaExpressionTip() ) ) );
+        }
 
         Button expression = new Button( constants.ExpressionEditor() );
         expression.addClickHandler( new ClickHandler() {

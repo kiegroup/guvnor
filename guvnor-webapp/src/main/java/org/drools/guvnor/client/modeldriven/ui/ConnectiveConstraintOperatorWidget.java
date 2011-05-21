@@ -32,7 +32,7 @@ public class ConnectiveConstraintOperatorWidget extends AbstractOperatorWidget {
 
     @Override
     protected boolean isCEPOperator(String value) {
-        return SuggestionCompletionEngine.isCEPConnectiveOperator( value );
+        return SuggestionCompletionEngine.isCEPOperator( value );
     }
 
 }

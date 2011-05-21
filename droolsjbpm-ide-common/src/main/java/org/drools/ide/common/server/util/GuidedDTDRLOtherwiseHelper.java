@@ -55,6 +55,7 @@ public class GuidedDTDRLOtherwiseHelper {
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
                         DRLConstraintValueBuilder.buildLHSFieldValue( value,
+                                                                      c.getConstraintValueType(),
                                                                       c.getFieldType(),
                                                                       scv );
                         value.append( ", " );
@@ -97,6 +98,7 @@ public class GuidedDTDRLOtherwiseHelper {
                 if ( scv != null ) {
                     if ( !consumedValues.contains( scv ) ) {
                         DRLConstraintValueBuilder.buildLHSFieldValue( value,
+                                                                      c.getConstraintValueType(),
                                                                       c.getFieldType(),
                                                                       scv );
                         value.append( ", " );

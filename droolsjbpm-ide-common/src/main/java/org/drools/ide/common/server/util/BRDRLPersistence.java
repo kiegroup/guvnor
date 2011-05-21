@@ -574,7 +574,7 @@ public class BRDRLPersistence
 
                         parameters = null;
                         if ( conn instanceof HasOperatorParameters ) {
-                            HasOperatorParameters hop = (HasOperatorParameters) constr;
+                            HasOperatorParameters hop = (HasOperatorParameters) conn;
                             parameters = hop.getParameters();
                         }
 
@@ -621,6 +621,7 @@ public class BRDRLPersistence
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
                             DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                                          type,
                                                                           fieldType,
                                                                           value );
                         }
@@ -633,11 +634,13 @@ public class BRDRLPersistence
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                                  type,
                                                                   fieldType,
                                                                   "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                                                                  type,
                                                                   fieldType,
                                                                   value );
                     break;
