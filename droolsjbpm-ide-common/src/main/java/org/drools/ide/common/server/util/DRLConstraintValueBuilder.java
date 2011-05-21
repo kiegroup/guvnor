@@ -16,6 +16,7 @@
 package org.drools.ide.common.server.util;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 /**
  * A Helper class for building parts of DRL from higher-order representations
@@ -32,10 +33,12 @@ public class DRLConstraintValueBuilder {
      * in these cases the underlying fieldType is a String.
      * 
      * @param buf
+     * @param constraintType
      * @param fieldType
      * @param fieldValue
      */
     public static void buildLHSFieldValue(StringBuilder buf,
+                                          int constraintType,
                                           String fieldType,
                                           String fieldValue) {
         if ( fieldType == null || fieldType.length() == 0 ) {
@@ -56,17 +59,25 @@ public class DRLConstraintValueBuilder {
         if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            buf.append( "\"" );
+            addQuote( constraintType,
+                      buf );
             buf.append( fieldValue );
-            buf.append( "\"" );
+            addQuote( constraintType,
+                      buf );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            buf.append( "\"" );
+            addQuote( constraintType,
+                      buf );
             buf.append( fieldValue );
-            buf.append( "\"" );
+            addQuote( constraintType,
+                      buf );
         } else {
+            addQuote( constraintType,
+                      buf );
             buf.append( fieldValue );
+            addQuote( constraintType,
+                      buf );
         }
 
     }
@@ -117,6 +128,14 @@ public class DRLConstraintValueBuilder {
             buf.append( fieldValue );
         }
 
+    }
+
+    //Add a quote to literal values, if applicable
+    private static void addQuote(int constraintType,
+                                 StringBuilder buf) {
+        if ( constraintType == BaseSingleFieldConstraint.TYPE_LITERAL ) {
+            buf.append( "\"" );
+        }
     }
 
 }
