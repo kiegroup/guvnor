@@ -59,19 +59,15 @@ public class DRLConstraintValueBuilder {
         if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            addQuote( constraintType,
-                      buf );
+            buf.append("\"");
             buf.append( fieldValue );
-            addQuote( constraintType,
-                      buf );
+            buf.append("\"");
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            addQuote( constraintType,
-                      buf );
+            buf.append("\"");
             buf.append( fieldValue );
-            addQuote( constraintType,
-                      buf );
+            buf.append("\"");
         } else {
             addQuote( constraintType,
                       buf );
