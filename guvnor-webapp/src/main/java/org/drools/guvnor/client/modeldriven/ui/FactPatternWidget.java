@@ -443,15 +443,15 @@ public class FactPatternWidget extends RuleModellerWidget {
                                              tabs * 20 ) );
             }
             inner.setWidget( row,
-                             2 + col,
-                             valueEditor( constraint,
-                                          constraint.getFieldType() ) );
-            inner.setWidget( row,
                              1 + col,
                              operatorDropDown( constraint,
                                                inner,
                                                row,
                                                2 + col ) );
+            inner.setWidget( row,
+                             2 + col,
+                             valueEditor( constraint,
+                                          constraint.getFieldType() ) );
             inner.setWidget( row,
                              3 + col,
                              connectives.connectives( constraint,
@@ -512,7 +512,9 @@ public class FactPatternWidget extends RuleModellerWidget {
                     inner.setWidget( row,
                                      1 + col,
                                      operatorDropDown( constraint,
-                                                       event.getNewType() ) );
+                                                       inner,
+                                                       row,
+                                                       2 + col ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -629,14 +631,6 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Widget operatorDropDown(final SingleFieldConstraint c,
-                                    String type) {
-        return operatorDropDown( c,
-                                 null,
-                                 -1,
-                                 -1 );
-    }
-
-    private Widget operatorDropDown(final SingleFieldConstraint c,
                                     final DirtyableFlexTable inner,
                                     final int row,
                                     final int col) {
@@ -663,8 +657,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                         if ( inner != null ) {
                             inner.getWidget( row,
                                              col ).setVisible( false );
-                            ((ConstraintValueEditor) inner.getWidget( row,
-                                                                      col )).getConstraint().setValue( "" );
                         }
                     } else {
                         if ( inner != null ) {
