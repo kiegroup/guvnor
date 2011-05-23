@@ -33,10 +33,14 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -53,26 +57,29 @@ public class CEPOperatorsDropdown extends Composite
     implements
     HasValueChangeHandlers<OperatorSelection> {
 
-    protected HasOperatorParameters hop;
+    private static final Constants         constants                        = ((Constants) GWT.create( Constants.class ));
+    private static final OperatorsResource resources                        = GWT.create( OperatorsResource.class );
+    private static final OperatorsCss      css                              = resources.operatorsCss();
 
-    private Constants               constants                        = ((Constants) GWT.create( Constants.class ));
-    private OperatorsResource       resources                        = GWT.create( OperatorsResource.class );
-    private OperatorsCss            css                              = resources.operatorsCss();
+    // A valid Operator parameter expression
+    private static final RegExp            VALID                            = RegExp.compile( "^\\d+(d|h|m?s?)?$" );
 
-    private String[]                operators;
-    private Image                   btnAddCEPOperators;
-    private ListBox                 box;
+    protected HasOperatorParameters        hop;
 
-    private HorizontalPanel         container                        = new HorizontalPanel();
-    private TextBox[]               parameters                       = new TextBox[4];
-    private int                     visibleParameterSet              = 0;
-    private List<Integer>           parameterSets;
+    private String[]                       operators;
+    private Image                          btnAddCEPOperators;
+    private ListBox                        box;
+
+    private HorizontalPanel                container                        = new HorizontalPanel();
+    private TextBox[]                      parameters                       = new TextBox[4];
+    protected int                          visibleParameterSet              = 0;
+    protected List<Integer>                parameterSets;
 
     //Parameter key to store the current parameter set (i.e. which parameters are visible)
-    private static final String     VISIBLE_PARAMETER_SET            = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
+    private static final String            VISIBLE_PARAMETER_SET            = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
-    private static final String     CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
+    private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
 
     public CEPOperatorsDropdown(String[] operators,
                                   HasOperatorParameters hop) {
@@ -171,6 +178,37 @@ public class CEPOperatorsDropdown extends Composite
             public void onChange(ChangeEvent event) {
                 hop.setParameter( Integer.toString( index ),
                                   txt.getText() );
+            }
+
+        } );
+        txt.addKeyPressHandler( new KeyPressHandler() {
+
+            public void onKeyPress(KeyPressEvent event) {
+
+                // Permit navigation
+                int keyCode = event.getNativeEvent().getKeyCode();
+                if ( event.isControlKeyDown()
+                        || keyCode == KeyCodes.KEY_BACKSPACE
+                        || keyCode == KeyCodes.KEY_DELETE
+                        || keyCode == KeyCodes.KEY_LEFT
+                        || keyCode == KeyCodes.KEY_RIGHT
+                        || keyCode == KeyCodes.KEY_TAB ) {
+                    return;
+                }
+
+                // Get new value and validate
+                int charCode = event.getCharCode();
+                String oldValue = txt.getValue();
+                String newValue = oldValue.substring( 0,
+                                                      txt.getCursorPos() );
+                newValue = newValue
+                           + ((char) charCode);
+                newValue = newValue
+                           + oldValue.substring( txt.getCursorPos() + txt.getSelectionLength() );
+                if ( !VALID.test( String.valueOf( newValue ) ) ) {
+                    event.preventDefault();
+                }
+
             }
 
         } );
