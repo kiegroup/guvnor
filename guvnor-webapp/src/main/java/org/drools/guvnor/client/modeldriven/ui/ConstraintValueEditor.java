@@ -473,8 +473,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                        widgets( variable,
                                                 new InfoPopup( constants.ABoundVariable(),
                                                                constants.BoundVariableTip() ) ) );
+                    break;
                 }
-                break;
             }
         }
 
