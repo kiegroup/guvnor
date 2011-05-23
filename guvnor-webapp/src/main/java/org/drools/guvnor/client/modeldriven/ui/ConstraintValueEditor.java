@@ -253,6 +253,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 //Identical fact- or field-types can be compared
                 addVariable = true;
 
+            } else if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                //'this' can be compared to bound facts and fields of the same type
+                if ( f != null && f.getFactType().equals( this.pattern.getFactType() ) ) {
+                    addVariable = true;
+                }
+                if ( fv != null && fv.equals( this.pattern.getFactType() ) ) {
+                    addVariable = true;
+                }
+
             } else if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( fv ) ) {
                 //'this' can be compared to bound events if using a CEP operator
                 if ( this.constraint instanceof HasOperator ) {
@@ -445,70 +454,27 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
             List<String> vars = this.model.getBoundFacts();
-            boolean foundABouncVariableThatMatches = false;
             for ( String var : vars ) {
                 FactPattern f = model.getBoundFact( var );
                 String fieldConstraint = model.getBindingType( var );
+                if ( isBoundVariableApplicable( con,
+                                                f,
+                                                fieldConstraint ) ) {
 
-                if ( (f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType ))
-                        || (this.fieldType != null && this.fieldType.equals( fieldConstraint )) ) {
+                    Button variable = new Button( constants.BoundVariable() );
+                    variable.addClickHandler( new ClickHandler() {
 
-                    foundABouncVariableThatMatches = true;
-                    break;
-
-                } else if ( con instanceof SingleFieldConstraint && f != null && f.getFactType() != null ) {
-                    SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-                    if ( SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() ) ) {
-                        if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                                foundABouncVariableThatMatches = true;
-                                break;
-                            }
-                        } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                                foundABouncVariableThatMatches = true;
-                                break;
-                            }
+                        public void onClick(ClickEvent event) {
+                            con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                            doTypeChosen( form );
                         }
-                    }
-                } else if ( con instanceof ConnectiveConstraint && f != null && f.getFactType() != null ) {
-                    ConnectiveConstraint cc = (ConnectiveConstraint) con;
-                    if ( SuggestionCompletionEngine.isCEPOperator( cc.getOperator() ) ) {
-                        if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                            if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                                foundABouncVariableThatMatches = true;
-                                break;
-                            } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                                if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                                    foundABouncVariableThatMatches = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // for collection, present the list of possible bound variable
-                    String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
-                                                                            this.fieldName );
-                    if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fieldConstraint )) ) {
-                        foundABouncVariableThatMatches = true;
-                        break;
-                    }
+                    } );
+                    form.addAttribute( constants.AVariable(),
+                                       widgets( variable,
+                                                new InfoPopup( constants.ABoundVariable(),
+                                                               constants.BoundVariableTip() ) ) );
                 }
-            }
-            if ( foundABouncVariableThatMatches ) {
-                Button variable = new Button( constants.BoundVariable() );
-                variable.addClickHandler( new ClickHandler() {
-
-                    public void onClick(ClickEvent event) {
-                        con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
-                        doTypeChosen( form );
-                    }
-                } );
-                form.addAttribute( constants.AVariable(),
-                                   widgets( variable,
-                                            new InfoPopup( constants.ABoundVariable(),
-                                                           constants.BoundVariableTip() ) ) );
+                break;
             }
         }
 
@@ -574,4 +540,80 @@ public class ConstraintValueEditor extends DirtyableComposite {
     public void setOnValueChangeCommand(Command onValueChangeCommand) {
         this.onValueChangeCommand = onValueChangeCommand;
     }
+
+    private boolean isBoundVariableApplicable(BaseSingleFieldConstraint con,
+                                              FactPattern f,
+                                              String fieldConstraint) {
+
+        //If Fact Types equal we can compare to bound Fact
+        if ( f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType ) ) {
+            return true;
+        }
+
+        //If Field Types equal we can compare to bound Field
+        if ( this.fieldType != null && this.fieldType.equals( fieldConstraint ) ) {
+            return true;
+        }
+
+        if ( con instanceof SingleFieldConstraint && f != null && f.getFactType() != null ) {
+            SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+
+            //'this' and Dates can be compared to Events if using a CEP operator
+            if ( SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() ) ) {
+                if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                        return true;
+                    }
+                } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                        return true;
+                    }
+                }
+            } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+
+                //'this' can be compared to bound Fact Types of the same data-type
+                if ( f.getFactType().equals( this.pattern.getFactType() ) ) {
+                    return true;
+                }
+
+                //'this' can be compared to bound Fact Fields of the same data-type
+                if ( fieldConstraint != null && fieldConstraint.equals( this.pattern.getFactType() ) ) {
+                    return true;
+                }
+            }
+        }
+
+        //Repeat of SingleFieldConstraint checks but for ConnectiveContraints (oh why don't they extend a single common ancestor)
+        if ( con instanceof ConnectiveConstraint && f != null && f.getFactType() != null ) {
+            ConnectiveConstraint cc = (ConnectiveConstraint) con;
+            if ( SuggestionCompletionEngine.isCEPOperator( cc.getOperator() ) ) {
+                if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                        return true;
+                    } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                        if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
+                            return true;
+                        }
+                    }
+                }
+            } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                if ( f.getFactType().equals( this.pattern.getFactType() ) ) {
+                    return true;
+                }
+                if ( fieldConstraint != null && fieldConstraint.equals( this.pattern.getFactType() ) ) {
+                    return true;
+                }
+            }
+        }
+
+        //For collection, present the list of possible bound variable
+        String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+                                                                    this.fieldName );
+        if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fieldConstraint )) ) {
+            return true;
+        }
+
+        return false;
+    }
+
 }
