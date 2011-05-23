@@ -117,8 +117,8 @@ public class BPMN2ProcessHandler extends ContentHandler
             }
             if ( content.getJson() != null ) {
                 try {
-                    String xml = serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
-                                            content.getJson() );
+                    String xml = serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
+                            URLEncoder.encode( content.getPreprocessingdata(), "UTF-8" ), content.getJson() );
                     content.setXml( xml );
                     repoAsset.updateContent( content.getXml() );
                 } catch ( Exception e ) {
@@ -219,8 +219,8 @@ public class BPMN2ProcessHandler extends ContentHandler
         } else if ( content.getJson() != null && content.getJson().length() > 0 ) {
             // convert the json to xml
             try {
-                String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML",
-                                                            content.getJson() );
+                String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
+                        URLEncoder.encode( content.getPreprocessingdata(), "UTF-8" ), content.getJson() );
                 stringBuilder.append( StringEscapeUtils.escapeXml( xml ) );
             } catch ( IOException e ) {
                 log.error( "Exception converting to xml: " + e.getMessage() );

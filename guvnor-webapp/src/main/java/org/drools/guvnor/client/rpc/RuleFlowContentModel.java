@@ -32,7 +32,8 @@ public class RuleFlowContentModel
     private List<TransferNode>             nodes       = new ArrayList<TransferNode>();
     private Collection<TransferConnection> connections = new ArrayList<TransferConnection>();
     private String                         xml;
-    private String                           json;
+    private String                         json;
+    private String                         preprocessingdata;
 
     public void setNodes(List<TransferNode> nodes) {
         this.nodes = nodes;
@@ -64,6 +65,14 @@ public class RuleFlowContentModel
 
     public String getJson() {
         return json;
+    }
+
+    public String getPreprocessingdata() {
+        return preprocessingdata;
+    }
+
+    public void setPreprocessingdata(String preprocessingdata) {
+        this.preprocessingdata = preprocessingdata;
     }
 
 }
