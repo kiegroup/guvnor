@@ -70,18 +70,23 @@ public class BusinessProcessEditor extends DirtyableComposite
     }
 
     private final native String callSave(Document frameDoc) /*-{
-        //window.alert("JSON: " + frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON());
         return frameDoc.defaultView.ORYX.EDITOR.getSerializedJSON();
+    }-*/;
+    
+    private final native String callPreprocessingData(Document frameDoc) /*-{
+        return frameDoc.defaultView.ORYX.PREPROCESSING;
     }-*/;
     
     public void onSave() {
         try {
             String s = callSave( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
+            String p = callPreprocessingData( ((IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement())).getContentDocument() );
             if ( asset.content == null ) {
                 asset.content = new RuleFlowContentModel();
             }
             ((RuleFlowContentModel) asset.content).setXml( null );
             ((RuleFlowContentModel) asset.content).setJson( s );
+            ((RuleFlowContentModel) asset.content).setPreprocessingdata(p);
         } catch(Exception e) {
             GWT.log("JSNI method callSave() threw an exception:", e);
             Window.alert("JSNI method callSave() threw an exception: " + e);
