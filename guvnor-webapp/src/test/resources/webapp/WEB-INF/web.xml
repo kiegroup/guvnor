@@ -24,7 +24,6 @@
 -->
 <!-- START SNIPPET: webxml -->
 <web-app>
-<web-app>
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
