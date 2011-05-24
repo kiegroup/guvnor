@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.HasOperator;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -65,13 +66,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private static Images                    images    = GWT.create( Images.class );
 
     private final FactPattern                pattern;
-    private final String                     fieldName;
+    private String                           fieldName;
     private final SuggestionCompletionEngine sce;
     private final BaseSingleFieldConstraint  constraint;
     private final Panel                      panel;
     private final RuleModel                  model;
     private final RuleModeller               modeller;
-    private final boolean                    numericValue;
+    private boolean                          isNumeric;
     private DropDownData                     dropDownData;
     private String                           fieldType;
     private boolean                          readOnly;
@@ -82,29 +83,29 @@ public class ConstraintValueEditor extends DirtyableComposite {
                                  String fieldName,
                                  BaseSingleFieldConstraint con,
                                  RuleModeller modeller,
-                                 String valueType,
                                  boolean readOnly) {
         this.pattern = pattern;
-        this.fieldName = fieldName;
         this.sce = modeller.getSuggestionCompletions();
         this.constraint = con;
         this.panel = new SimplePanel();
         this.model = modeller.getModel();
         this.modeller = modeller;
-
-        valueType = sce.getFieldType( pattern.getFactType(),
-                                      fieldName );
-        this.fieldType = valueType;
-        this.numericValue = SuggestionCompletionEngine.TYPE_NUMERIC.equals( valueType );
-
         this.readOnly = readOnly;
-        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( valueType ) ) {
-            this.dropDownData = DropDownData.create( new String[]{"true", "false"} ); //NON-NLS
-            isDropDownDataEnum = false;
+
+        if ( con instanceof SingleFieldConstraintEBLeftSide ) {
+            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) con;
+            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
+
+        } else if ( con instanceof ConnectiveConstraint ) {
+            ConnectiveConstraint cc = (ConnectiveConstraint) con;
+            this.fieldName = cc.getFieldName();
+            this.fieldType = cc.getFieldType();
+
         } else {
-            this.dropDownData = sce.getEnums( pattern,
-                                              fieldName );
-            isDropDownDataEnum = true;
+            this.fieldName = fieldName;
+            this.fieldType = sce.getFieldType( pattern.getFactType(),
+                                               fieldName );
         }
 
         refreshEditor();
@@ -118,9 +119,25 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private void refreshEditor() {
         panel.clear();
         Widget constraintWidget = null;
-        boolean isCEPOperator = false;
-        if ( this.constraint instanceof HasOperator ) {
-            isCEPOperator = SuggestionCompletionEngine.isCEPOperator( ((HasOperator) this.constraint).getOperator() );
+
+        //Expressions' fieldName and hence fieldType can change without creating a new ConstraintValueEditor. 
+        //SingleFieldConstraints and their ConnectiveConstraints cannot have the fieldName or fieldType changed 
+        //without first deleting and re-creating.
+        if ( this.constraint instanceof SingleFieldConstraintEBLeftSide ) {
+            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) this.constraint;
+            this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
+            this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
+        }
+
+        //Set applicable flags and reference data depending upon type
+        this.isNumeric = SuggestionCompletionEngine.TYPE_NUMERIC.equals( this.fieldType );
+        if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( this.fieldType ) ) {
+            this.isDropDownDataEnum = false;
+            this.dropDownData = DropDownData.create( new String[]{"true", "false"} );
+        } else {
+            this.isDropDownDataEnum = true;
+            this.dropDownData = sce.getEnums( pattern,
+                                              fieldName );
         }
 
         if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_UNDEFINED ) {
@@ -138,75 +155,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 case SingleFieldConstraint.TYPE_LITERAL :
                 case SingleFieldConstraint.TYPE_ENUM :
 
-                    if ( this.constraint instanceof SingleFieldConstraint ) {
-                        final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
-                        CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getPackageName(),
-                                                                                                                                      pattern.getFactType(),
-                                                                                                                                      fieldName );
-                        if ( customFormConfiguration != null ) {
-                            constraintWidget = new Button( con.getValue(),
-                                                           new ClickHandler() {
-
-                                                               public void onClick(ClickEvent event) {
-                                                                   showTypeChoice( (Widget) event.getSource(),
-                                                                                   constraint );
-                                                               }
-                                                           } );
-                            ((Button) constraintWidget).setEnabled( !this.readOnly );
-                            break;
-                        }
-                    }
-
-                    if ( this.dropDownData != null ) {
-                        constraintWidget = new EnumDropDownLabel( this.pattern,
-                                                                  this.fieldName,
-                                                                  this.sce,
-                                                                  this.constraint,
-                                                                  !this.readOnly );
-                        if ( !this.readOnly ) {
-                            ((EnumDropDownLabel) constraintWidget).setOnValueChangeCommand( new Command() {
-
-                                public void execute() {
-                                    executeOnValueChangeCommand();
-                                }
-                            } );
-                        }
-
-                    } else if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType )
-                                || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldType ) && isCEPOperator) ) {
-
-                        DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
-
-                        // Set the default time
-                        this.constraint.setValue( datePicker.getDateString() );
-
-                        if ( !this.readOnly ) {
-                            datePicker.addValueChanged( new ValueChanged() {
-
-                                public void valueChanged(String newValue) {
-                                    executeOnValueChangeCommand();
-                                    constraint.setValue( newValue );
-                                }
-                            } );
-
-                            constraintWidget = datePicker;
-                        } else {
-                            constraintWidget = new SmallLabel( this.constraint.getValue() );
-                        }
-                    } else {
-                        if ( !this.readOnly ) {
-                            constraintWidget = new DefaultLiteralEditor( this.constraint,
-                                                                         this.numericValue );
-                            ((DefaultLiteralEditor) constraintWidget).setOnValueChangeCommand( new Command() {
-
-                                public void execute() {
-                                    executeOnValueChangeCommand();
-                                }
-                            } );
-                        } else {
-                            constraintWidget = new SmallLabel( this.constraint.getValue() );
-                        }
-                    }
+                    constraintWidget = literalEditor();
                     break;
                 case SingleFieldConstraint.TYPE_RET_VALUE :
                     constraintWidget = returnValueEditor();
@@ -226,6 +175,91 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
         panel.add( constraintWidget );
+    }
+
+    private Widget literalEditor() {
+
+        //Custom screen
+        if ( this.constraint instanceof SingleFieldConstraint ) {
+            final SingleFieldConstraint con = (SingleFieldConstraint) this.constraint;
+            CustomFormConfiguration customFormConfiguration = WorkingSetManager.getInstance().getCustomFormConfiguration( modeller.getAsset().getMetaData().getPackageName(),
+                                                                                                                          pattern.getFactType(),
+                                                                                                                          fieldName );
+            if ( customFormConfiguration != null ) {
+                Button btnCustom = new Button( con.getValue(),
+                                               new ClickHandler() {
+
+                                                   public void onClick(ClickEvent event) {
+                                                       showTypeChoice( (Widget) event.getSource(),
+                                                                       constraint );
+                                                   }
+                                               } );
+                btnCustom.setEnabled( !this.readOnly );
+                return btnCustom;
+            }
+        }
+
+        //Enumeration
+        if ( this.dropDownData != null ) {
+            EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.pattern,
+                                                                    this.fieldName,
+                                                                    this.sce,
+                                                                    this.constraint,
+                                                                    !this.readOnly );
+            if ( !this.readOnly ) {
+                enumDropDown.setOnValueChangeCommand( new Command() {
+
+                    public void execute() {
+                        executeOnValueChangeCommand();
+                    }
+                } );
+            }
+            return enumDropDown;
+        }
+
+        //Date picker
+        boolean isCEPOperator = false;
+        if ( this.constraint instanceof HasOperator ) {
+            isCEPOperator = SuggestionCompletionEngine.isCEPOperator( ((HasOperator) this.constraint).getOperator() );
+        }
+        if ( SuggestionCompletionEngine.TYPE_DATE.equals( this.fieldType ) || (SuggestionCompletionEngine.TYPE_THIS.equals( this.fieldType ) && isCEPOperator) ) {
+
+            DatePickerLabel datePicker = new DatePickerLabel( constraint.getValue() );
+            this.constraint.setValue( datePicker.getDateString() );
+
+            if ( !this.readOnly ) {
+                datePicker.addValueChanged( new ValueChanged() {
+
+                    public void valueChanged(String newValue) {
+                        executeOnValueChangeCommand();
+                        constraint.setValue( newValue );
+                    }
+                } );
+
+                return datePicker;
+
+            } else {
+                return new SmallLabel( this.constraint.getValue() );
+            }
+        }
+
+        //Default editor
+        if ( !this.readOnly ) {
+            DefaultLiteralEditor dle = new DefaultLiteralEditor( this.constraint,
+                                                                 this.isNumeric );
+            dle.setOnValueChangeCommand( new Command() {
+
+                public void execute() {
+                    executeOnValueChangeCommand();
+                }
+            } );
+
+            return dle;
+
+        } else {
+            return new SmallLabel( this.constraint.getValue() );
+        }
+
     }
 
     private Widget variableEditor() {
@@ -402,7 +436,6 @@ public class ConstraintValueEditor extends DirtyableComposite {
         lit.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
                 con.setConstraintValueType( isDropDownDataEnum && dropDownData != null ? SingleFieldConstraint.TYPE_ENUM : SingleFieldConstraint.TYPE_LITERAL );
-
                 doTypeChosen( form );
             }
         } );

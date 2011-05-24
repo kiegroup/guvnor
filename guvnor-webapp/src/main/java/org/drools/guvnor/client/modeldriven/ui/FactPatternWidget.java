@@ -620,7 +620,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                                                  c.getFieldName(),
                                                                                  c,
                                                                                  this.getModeller(),
-                                                                                 c.getFieldType(),
                                                                                  this.readOnly );
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {

@@ -93,13 +93,11 @@ public class Connectives {
     private Widget connectiveValueEditor(final BaseSingleFieldConstraint con,
                                          String factClass,
                                          String fieldName) {
-        String typeNumeric = this.modeller.getSuggestionCompletions().getFieldType( factClass,
-                                                                                    fieldName );
+
         return new ConstraintValueEditor( pattern,
                                           fieldName,
                                           con,
                                           this.modeller,
-                                          typeNumeric,
                                           false );
     }
 

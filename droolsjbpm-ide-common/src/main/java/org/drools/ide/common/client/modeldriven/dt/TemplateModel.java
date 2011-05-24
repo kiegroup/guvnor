@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -44,6 +45,7 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 public class TemplateModel extends RuleModel
     implements
@@ -65,7 +67,7 @@ public class TemplateModel extends RuleModel
             this.varName = varName;
             this.dataType = dataType;
         }
-        
+
         public InterpolationVariable(String varName,
                                      String dataType,
                                      String factType,
@@ -149,11 +151,12 @@ public class TemplateModel extends RuleModel
 
         private IFactPattern                        factPattern;
         private Map<InterpolationVariable, Integer> vars;
-        private RuleModel model;
+        private RuleModel                           model;
 
-        public RuleModelVisitor(RuleModel model, Map<InterpolationVariable, Integer> vars) {
+        public RuleModelVisitor(RuleModel model,
+                                Map<InterpolationVariable, Integer> vars) {
             this.vars = vars;
-            this.model=model;
+            this.model = model;
         }
 
         private void parseStringPattern(String text) {
@@ -189,6 +192,8 @@ public class TemplateModel extends RuleModel
                 visitFactPattern( (FactPattern) o );
             } else if ( o instanceof CompositeFieldConstraint ) {
                 visitCompositeFieldConstraint( (CompositeFieldConstraint) o );
+            } else if ( o instanceof SingleFieldConstraintEBLeftSide ) {
+                visitSingleFieldConstraint( (SingleFieldConstraintEBLeftSide) o );
             } else if ( o instanceof SingleFieldConstraint ) {
                 visitSingleFieldConstraint( (SingleFieldConstraint) o );
             } else if ( o instanceof CompositeFactPattern ) {
@@ -226,7 +231,7 @@ public class TemplateModel extends RuleModel
                 }
             }
         }
-        
+
         private void visitActionFieldList(ActionSetField afl) {
             String factType = model.getBindingType( afl.variable );
             for ( ActionFieldValue afv : afl.fieldValues ) {
@@ -327,7 +332,50 @@ public class TemplateModel extends RuleModel
                 vars.put( var,
                           vars.size() );
             }
+
+            //Visit Connection constraints
+            if ( sfc.connectives != null ) {
+                for ( int i = 0; i < sfc.connectives.length; i++ ) {
+                    final ConnectiveConstraint cc = sfc.connectives[i];
+                    if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( cc.getValue() ) ) {
+                        InterpolationVariable var = new InterpolationVariable( cc.getValue(),
+                                                                               cc.getFieldType(),
+                                                                               factPattern.getFactType(),
+                                                                               cc.getFieldName() );
+                        vars.put( var,
+                                  vars.size() );
+                    }
+                }
+            }
         }
+
+        private void visitSingleFieldConstraint(SingleFieldConstraintEBLeftSide sfexp) {
+            if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == sfexp.getConstraintValueType() && !vars.containsKey( sfexp.getValue() ) ) {
+                InterpolationVariable var = new InterpolationVariable( sfexp.getValue(),
+                                                                       sfexp.getExpressionLeftSide().getGenericType(),
+                                                                       factPattern.getFactType(),
+                                                                       sfexp.getFieldName() );
+                vars.put( var,
+                          vars.size() );
+            }
+
+            //Visit Connection constraints
+            if ( sfexp.connectives != null ) {
+                for ( int i = 0; i < sfexp.connectives.length; i++ ) {
+                    final ConnectiveConstraint cc = sfexp.connectives[i];
+                    if ( BaseSingleFieldConstraint.TYPE_TEMPLATE == cc.getConstraintValueType() && !vars.containsKey( cc.getValue() ) ) {
+                        InterpolationVariable var = new InterpolationVariable( cc.getValue(),
+                                                                               sfexp.getExpressionLeftSide().getGenericType(),
+                                                                               factPattern.getFactType(),
+                                                                               cc.getFieldName() );
+                        vars.put( var,
+                                  vars.size() );
+                    }
+                }
+            }
+
+        }
+
     }
 
     public static final String        ID_COLUMN_NAME = "__ID_KOL_NAME__";
@@ -387,7 +435,8 @@ public class TemplateModel extends RuleModel
 
     private Map<InterpolationVariable, Integer> getInterpolationVariables() {
         Map<InterpolationVariable, Integer> result = new HashMap<InterpolationVariable, Integer>();
-        new RuleModelVisitor( this, result ).visit( this );
+        new RuleModelVisitor( this,
+                              result ).visit( this );
 
         InterpolationVariable id = new InterpolationVariable( ID_COLUMN_NAME,
                                                               SuggestionCompletionEngine.TYPE_NUMERIC );

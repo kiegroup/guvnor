@@ -81,9 +81,13 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
      * This adds a new connective.
      */
     public void addNewConnective() {
+
+        String fieldName = this.fieldName;
+        String fieldType = this.fieldType;
+
         if ( this.connectives == null ) {
-            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( this.getFieldName(),
-                                                                                    this.getFieldType(),
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( fieldName,
+                                                                                    fieldType,
                                                                                     null,
                                                                                     null )};
         } else {
@@ -91,8 +95,8 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
             for ( int i = 0; i < this.connectives.length; i++ ) {
                 newList[i] = this.connectives[i];
             }
-            newList[this.connectives.length] = new ConnectiveConstraint( this.getFieldName(),
-                                                                         this.getFieldType(),
+            newList[this.connectives.length] = new ConnectiveConstraint( fieldName,
+                                                                         fieldType,
                                                                          null,
                                                                          null );
             this.connectives = newList;

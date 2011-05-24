@@ -16,19 +16,22 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
 
     public SingleFieldConstraintEBLeftSide() {
         super();
     }
 
-    public SingleFieldConstraintEBLeftSide(String field, String fieldType, FieldConstraint parent) {
-        super(field, fieldType, parent);
+    public SingleFieldConstraintEBLeftSide(String field,
+                                           String fieldType,
+                                           FieldConstraint parent) {
+        super( field,
+               fieldType,
+               parent );
     }
 
     public SingleFieldConstraintEBLeftSide(String field) {
-        super(field);
+        super( field );
     }
 
     private ExpressionFormLine expLeftSide = new ExpressionFormLine();
@@ -39,7 +42,7 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     public boolean isBound() {
         return expLeftSide != null && expLeftSide.isBound();
     }
-    
+
     public ExpressionFormLine getExpressionLeftSide() {
         return expLeftSide;
     }
@@ -47,20 +50,47 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     public void setExpressionLeftSide(ExpressionFormLine expression) {
         this.expLeftSide = expression;
     }
-    
+
     @Override
     public String getFieldBinding() {
         return getExpressionLeftSide().getBinding();
     }
-    
+
     @Override
     public void setFieldBinding(String fieldBinding) {
-        getExpressionLeftSide().setBinding(fieldBinding);
+        getExpressionLeftSide().setBinding( fieldBinding );
     }
-    
+
     @Override
     public String getFieldType() {
         return getExpressionLeftSide().getClassType();
+    }
+
+    /**
+     * This adds a new connective.
+     */
+    @Override
+    public void addNewConnective() {
+
+        String fieldName = getExpressionLeftSide().getFieldName();
+        String fieldType = getExpressionLeftSide().getGenericType();
+
+        if ( this.connectives == null ) {
+            this.connectives = new ConnectiveConstraint[]{new ConnectiveConstraint( fieldName,
+                                                                                    fieldType,
+                                                                                    null,
+                                                                                    null )};
+        } else {
+            final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length + 1];
+            for ( int i = 0; i < this.connectives.length; i++ ) {
+                newList[i] = this.connectives[i];
+            }
+            newList[this.connectives.length] = new ConnectiveConstraint( fieldName,
+                                                                         fieldType,
+                                                                         null,
+                                                                         null );
+            this.connectives = newList;
+        }
     }
 
 }
