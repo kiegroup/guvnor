@@ -21,7 +21,9 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -46,18 +48,19 @@ public class EnumDropDownLabel extends Composite {
 
     private final Button       okButton  = new Button( constants.OK() );
 
-    private Command onValueChangeCommand;
+    private Command            onValueChangeCommand;
 
     public EnumDropDownLabel(FactPattern pattern,
                              String fieldName,
                              SuggestionCompletionEngine sce,
-                             BaseSingleFieldConstraint constraint, boolean enabled) {
-        this.textWidget = getTextLabel(enabled);        
+                             BaseSingleFieldConstraint constraint,
+                             boolean enabled) {
+        this.textWidget = getTextLabel( enabled );
         this.enumDropDown = getEnumDropDown( constraint,
                                              sce,
                                              pattern,
                                              fieldName );
-        this.enumDropDown.setEnabled(enabled);
+        this.enumDropDown.setEnabled( enabled );
         panel.add( textWidget );
 
         initWidget( panel );
@@ -67,16 +70,16 @@ public class EnumDropDownLabel extends Composite {
     private Label getTextLabel(boolean enabled) {
         Label label = new Label();
         label.setStyleName( "form-field" );
-        if (enabled){
-	        label.addClickHandler(new ClickHandler() {
-	
-	            public void onClick(ClickEvent event) {
-	                showPopup();
-	
-	            }
-	        });
+        if ( enabled ) {
+            label.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    showPopup();
+
+                }
+            } );
         }
-        
+
         if ( label.getText() == null && "".equals( label.getText() ) ) {
             label.setText( constants.Value() );
         }
@@ -92,7 +95,7 @@ public class EnumDropDownLabel extends Composite {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
 
-        okButton.addClickHandler(new ClickHandler() {
+        okButton.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 executeOnValueChangeCommand();
@@ -101,8 +104,8 @@ public class EnumDropDownLabel extends Composite {
                 popup.hide();
 
             }
-        });
- 
+        } );
+
         horizontalPanel.add( enumDropDown );
         horizontalPanel.add( okButton );
 
@@ -116,8 +119,18 @@ public class EnumDropDownLabel extends Composite {
                                          SuggestionCompletionEngine sce,
                                          FactPattern pattern,
                                          String fieldName) {
-        String valueType = sce.getFieldType( pattern.getFactType(),
-                                             fieldName );
+
+        String valueType;
+        if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
+            SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
+            valueType = sfexp.getExpressionLeftSide().getGenericType();
+        } else if ( constraint instanceof ConnectiveConstraint ) {
+            ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
+            valueType = cc.getFieldType();
+        } else {
+            valueType = sce.getFieldType( pattern.getFactType(),
+                                          fieldName );
+        }
 
         final DropDownData dropDownData;
         if ( SuggestionCompletionEngine.TYPE_BOOLEAN.equals( valueType ) ) {
@@ -132,7 +145,7 @@ public class EnumDropDownLabel extends Composite {
                                                        public void valueChanged(String newText,
                                                                                 String newValue) {
                                                            textWidget.setText( newText );
-                                                           constraint.setValue(newValue);
+                                                           constraint.setValue( newValue );
                                                            okButton.click();
                                                        }
                                                    },
@@ -147,8 +160,8 @@ public class EnumDropDownLabel extends Composite {
         return box;
     }
 
-    private void executeOnValueChangeCommand(){
-        if (this.onValueChangeCommand != null){
+    private void executeOnValueChangeCommand() {
+        if ( this.onValueChangeCommand != null ) {
             this.onValueChangeCommand.execute();
         }
     }

@@ -206,7 +206,7 @@ public class BRDRLPersistence
                 //Delete the spurious " and ", added by LHSPatternVisitor.visitFactPattern, when the rule is negated
                 buf.delete( buf.length() - 5,
                             buf.length() );
-                buf.append("\n");
+                buf.append( "\n" );
                 buf.append( indentation );
                 buf.append( ")\n" );
             }
@@ -530,8 +530,7 @@ public class BRDRLPersistence
             }
         }
 
-        private void generateSingleFieldConstraint(
-                                                   final SingleFieldConstraint constr,
+        private void generateSingleFieldConstraint(final SingleFieldConstraint constr,
                                                    StringBuilder buf) {
             if ( constr.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                 buf.append( "eval( " );
@@ -570,13 +569,24 @@ public class BRDRLPersistence
                     parameters = hop.getParameters();
                 }
 
-                addFieldRestriction( buf,
-                                     constr.getConstraintValueType(),
-                                     constr.getFieldType(),
-                                     constr.getOperator(),
-                                     parameters,
-                                     constr.getValue(),
-                                     constr.getExpressionValue() );
+                if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
+                    SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constr;
+                    addFieldRestriction( buf,
+                                         sfexp.getConstraintValueType(),
+                                         sfexp.getExpressionLeftSide().getGenericType(),
+                                         sfexp.getOperator(),
+                                         parameters,
+                                         sfexp.getValue(),
+                                         sfexp.getExpressionValue() );
+                } else {
+                    addFieldRestriction( buf,
+                                         constr.getConstraintValueType(),
+                                         constr.getFieldType(),
+                                         constr.getOperator(),
+                                         parameters,
+                                         constr.getValue(),
+                                         constr.getExpressionValue() );
+                }
 
                 // and now do the connectives.
                 if ( constr.connectives != null ) {

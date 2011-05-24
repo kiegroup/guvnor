@@ -82,6 +82,10 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
         return parts.isEmpty() ? null : parts.getLast().getGenericType();
     }
 
+    public String getFieldName() {
+        return parts.isEmpty() ? null : parts.getLast().getName();
+    }
+    
     public String getPreviousGenericType() {
         ExpressionPart prev = getPreviousPart().getPrevious();
         return prev == null ? null : prev.getGenericType();
