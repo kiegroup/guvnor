@@ -25,6 +25,7 @@ import java.util.List;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
@@ -128,13 +129,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
         StringBuilder stringBuilder = new StringBuilder();
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         // now we load up the DSL files
-        builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
-                                                                    new BRMSPackageBuilder.DSLErrorEvent() {
-                                                                        public void recordError(AssetItem asset,
-                                                                                                String message) {
-                                                                            // ignore at this point...
-                                                                        }
-                                                                    } ) );
+        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
         ((IRuleAsset) handler).assembleDRL( builder,
                                             item,
                                             stringBuilder );

@@ -19,51 +19,115 @@ package org.drools.guvnor.server.builder;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.contenthandler.FactModelContentHandler;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
-import org.drools.repository.VersionedAssetItemIterator;
+import org.drools.repository.*;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
+
+import javax.jcr.NodeIterator;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class AssetItemValidatorTest {
 
     private PackageItem packageItem;
+    private AssetItem unsavedAssetItem;
+    private AssetItem savedAssetItem;
+
+
+    @Before
+    public void setUp() throws Exception {
+        setUpPackageItem();
+        setUpUnsavedAssetItem();
+        setUpSavedAssetItem();
+        setUpAssetItemIterator();
+    }
 
     @Test
     public void testValidateDRLModel() throws Exception {
-        AssetItem assetItem = setUpAssetItem();
-
-        setUpPropertiesAndConfiguration();
 
         FactModelContentHandler factModelContentHandler = new FactModelContentHandler();
 
-        AssetItemValidator assetItemValidator = new AssetItemValidator(factModelContentHandler);
-        BuilderResult builderResult = assetItemValidator.validate(assetItem);
+        AssetItemValidator assetItemValidator = new AssetItemValidator(factModelContentHandler, unsavedAssetItem);
+        BuilderResult builderResult = assetItemValidator.validate();
 
         assertTrue(builderResult.getLines().isEmpty());
+        verify(unsavedAssetItem).getContent();
+        verify(savedAssetItem, never()).getContent();
     }
 
-    private AssetItem setUpAssetItem() {
+    // TODO: validate other asset types -Rikkola-
+    // TODO: test failing validations -Rikkola-
+    // TODO: test custom validators -Rikkola-
+
+    private void setUpPackageItem() {
         packageItem = mock(PackageItem.class);
+
         when(packageItem.getName()).thenReturn("mock");
-        AssetItem assetItem = mock(AssetItem.class);
-        when(assetItem.getPackage()).thenReturn(packageItem);
-        return assetItem;
     }
 
-    private void setUpPropertiesAndConfiguration() {
-        AssetItemIterator assetItemIterator = mock(VersionedAssetItemIterator.class);
-        when(assetItemIterator.hasNext()).thenReturn(false);
-        setUpIterator(assetItemIterator, AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION);
+    private void setUpUnsavedAssetItem() {
+        unsavedAssetItem = mock(AssetItem.class);
+        when(unsavedAssetItem.getPackage()).thenReturn(packageItem);
+        when(unsavedAssetItem.getContent()).thenReturn("");
+        when(unsavedAssetItem.getUUID()).thenReturn("mock");
     }
 
-    private void setUpIterator(AssetItemIterator assetItemIterator, String... formats) {
-        when(packageItem.listAssetsByFormat(formats)).thenReturn(assetItemIterator);
+    private void setUpSavedAssetItem() {
+        savedAssetItem = mock(AssetItem.class);
+        when(savedAssetItem.getPackage()).thenReturn(packageItem);
+        when(savedAssetItem.getContent()).thenReturn("");
+        when(savedAssetItem.getUUID()).thenReturn("mock");
     }
 
+    private void setUpAssetItemIterator() {
+        AssetItemIterator assetItemIterator = createMockAssetItemIterator();
+        when(
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)
+        ).thenReturn(
+                assetItemIterator
+        );
+        when(
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(Matchers.<String[]>any())
+        ).thenReturn(
+                assetItemIterator
+        );
 
+        MockAssetItemIterator dslMockAssetItemIterator = createMockAssetItemIterator(savedAssetItem);
+        when(
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DSL)
+        ).thenReturn(
+                dslMockAssetItemIterator
+        );
+    }
+
+    private MockAssetItemIterator createMockAssetItemIterator(AssetItem... assetItems) {
+        MockAssetItemIterator mockAssetItemIterator = new MockAssetItemIterator(mock(NodeIterator.class), mock(RulesRepository.class), new String[0]);
+        mockAssetItemIterator.setAssets(assetItems);
+        return mockAssetItemIterator;
+    }
+
+    class MockAssetItemIterator extends VersionedAssetItemIterator {
+
+        private Iterator<AssetItem> assetItems;
+
+        public MockAssetItemIterator(NodeIterator nodes, RulesRepository repo, String[] dependencies) {
+            super(nodes, repo, dependencies);
+        }
+
+        public boolean hasNext() {
+            return assetItems.hasNext();
+        }
+
+        public AssetItem next() {
+            return assetItems.next();
+        }
+
+        public void setAssets(AssetItem[] assetItems) {
+            this.assetItems = Arrays.asList(assetItems).iterator();
+        }
+    }
 }

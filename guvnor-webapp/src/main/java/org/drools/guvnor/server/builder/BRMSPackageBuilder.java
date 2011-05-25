@@ -21,17 +21,20 @@ import org.drools.compiler.PackageBuilder;
 import org.drools.compiler.PackageBuilderConfiguration;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.lang.dsl.DSLMappingFile;
-import org.drools.lang.dsl.DSLMappingParseException;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.lang.dsl.DefaultExpander;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.util.ChainedProperties;
 import org.jbpm.bpmn2.xml.BPMNDISemanticModule;
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * This decorates the drools-compiler PackageBuilder
@@ -79,38 +82,6 @@ public class BRMSPackageBuilder extends PackageBuilder {
 
     public List<DSLTokenizedMappingFile> getDSLMappingFiles() {
         return Collections.unmodifiableList(this.dslFiles);
-    }
-
-    /**
-     * Load up all the DSL mappping files for the given package.
-     */
-    public static List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg, DSLErrorEvent err) {
-        List<DSLTokenizedMappingFile> result = new ArrayList<DSLTokenizedMappingFile>();
-        AssetItemIterator it = pkg.listAssetsByFormat(new String[]{AssetFormats.DSL});
-        ((VersionedAssetItemIterator) it).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
-        while (it.hasNext()) {
-            AssetItem item = it.next();
-            if (!item.getDisabled()) {
-                String dslData = item.getContent();
-                DSLTokenizedMappingFile file = new DSLTokenizedMappingFile();
-                try {
-                    if (file.parseAndLoad(new StringReader(dslData))) {
-                        result.add(file);
-                    } else {
-                        for (Iterator iter = file.getErrors().iterator(); iter.hasNext();) {
-                            DSLMappingParseException e = (DSLMappingParseException) iter.next();
-                            err.recordError(item, "Line " + e.getLine() + " : " + e.getMessage());
-                        }
-                    }
-
-                } catch (IOException e) {
-                    throw new RulesRepositoryException(e);
-                }
-            }
-
-        }
-
-        return result;
     }
 
     public static Properties getProperties(AssetItemIterator assetItemIterator, String packageName) {

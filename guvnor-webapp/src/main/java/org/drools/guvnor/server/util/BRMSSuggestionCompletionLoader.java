@@ -19,6 +19,7 @@ package org.drools.guvnor.server.util;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
+import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
@@ -79,7 +80,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
     }
 
     private List<DSLTokenizedMappingFile> getDSLMappingFiles(PackageItem pkg) {
-        return BRMSPackageBuilder.getDSLMappingFiles(pkg,
+        return DSLLoader.loadDSLMappingFiles(pkg,
                 new BRMSPackageBuilder.DSLErrorEvent() {
 
                     public void recordError(AssetItem asset,

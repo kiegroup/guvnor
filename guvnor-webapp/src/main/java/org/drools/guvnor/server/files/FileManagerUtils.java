@@ -35,6 +35,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
+import org.drools.guvnor.server.builder.DSLLoader;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -404,13 +405,7 @@ public class FileManagerUtils {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             //now we load up the DSL files
-            builder.setDSLFiles( BRMSPackageBuilder.getDSLMappingFiles( item.getPackage(),
-                                                                        new BRMSPackageBuilder.DSLErrorEvent() {
-                                                                            public void recordError(AssetItem asset,
-                                                                                                    String message) {
-                                                                                //ignore at this point...
-                                                                            }
-                                                                        } ) );
+            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
             ((IRuleAsset) handler).assembleDRL( builder,
                                                 item,
                                                 stringBuilder );
