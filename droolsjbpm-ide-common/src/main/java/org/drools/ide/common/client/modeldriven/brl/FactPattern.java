@@ -16,22 +16,23 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 import java.util.List;
 
 /**
- * A fact pattern is a declaration of a fact type, and its constraint,
- * and perhaps a variable that is it bound to
- * It is the equivalent of a "pattern" in drools terms.
+ * A fact pattern is a declaration of a fact type, and its constraint, and
+ * perhaps a variable that is it bound to It is the equivalent of a "pattern" in
+ * drools terms.
  */
 public class FactPattern
     implements
-    IFactPattern {
+    IFactPattern,
+    HasCEPWindow {
 
     public CompositeFieldConstraint constraintList;
-    private String       factType;
-    private String       boundName;
-    private boolean isNegated;
+    private String                  factType;
+    private String                  boundName;
+    private boolean                 isNegated;
+    private CEPWindow               window;
 
     public FactPattern() {
         //this.constraints = new CompositeFieldConstraint();
@@ -62,7 +63,7 @@ public class FactPattern
      * This will add a top level constraint.
      */
     public void addConstraint(final FieldConstraint constraint) {
-        if (constraintList == null) constraintList = new CompositeFieldConstraint();
+        if ( constraintList == null ) constraintList = new CompositeFieldConstraint();
         this.constraintList.addConstraint( constraint );
     }
 
@@ -74,37 +75,38 @@ public class FactPattern
      * Returns true if there is a variable bound to this fact.
      */
     public boolean isBound() {
-        return this.boundName != null && !"".equals( this.boundName ) ;
+        return this.boundName != null && !"".equals( this.boundName );
     }
 
     /**
      * This will return the list of field constraints that are in the root
-     * CompositeFieldConstraint object.
-     * If there is no root, then an empty array will be returned.
-     *
-     * @return an empty array, or the list of constraints (which may be composites).
+     * CompositeFieldConstraint object. If there is no root, then an empty array
+     * will be returned.
+     * 
+     * @return an empty array, or the list of constraints (which may be
+     *         composites).
      */
     public FieldConstraint[] getFieldConstraints() {
-        if (this.constraintList == null) {
+        if ( this.constraintList == null ) {
             return new FieldConstraint[0];
         }
         return this.constraintList.constraints;
     }
 
     public void setFieldConstraints(final List sortedConstraints) {
-        if (sortedConstraints != null) {
-            if (this.constraintList != null) {
+        if ( sortedConstraints != null ) {
+            if ( this.constraintList != null ) {
                 this.constraintList.constraints = new FieldConstraint[sortedConstraints.size()];
-                for (int i = 0; i < sortedConstraints.size(); i++) {
-                    this.constraintList.constraints[i] = (FieldConstraint) sortedConstraints.get(i);
+                for ( int i = 0; i < sortedConstraints.size(); i++ ) {
+                    this.constraintList.constraints[i] = (FieldConstraint) sortedConstraints.get( i );
                 }
-            } else if (sortedConstraints.size() > 0) {
-                throw new IllegalStateException("Cannot have constraints if constraint list is null.");
+            } else if ( sortedConstraints.size() > 0 ) {
+                throw new IllegalStateException( "Cannot have constraints if constraint list is null." );
             }
-            } else {
-                this.constraintList.constraints = null;
-            }
+        } else {
+            this.constraintList.constraints = null;
         }
+    }
 
     public String getFactType() {
         return this.factType;
@@ -112,11 +114,22 @@ public class FactPattern
 
     /**
      * WARNING! This method should only be used for testing purposes!
-     * @param factType 
+     * 
+     * @param factType
      */
     public void setFactType(String factType) {
         this.factType = factType;
     }
-    
-    
+
+    public void setWindow(CEPWindow window) {
+        this.window = window;
+    }
+
+    public CEPWindow getWindow() {
+        if ( this.window == null ) {
+            this.window = new CEPWindow();
+        }
+        return this.window;
+    }
+
 }

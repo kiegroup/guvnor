@@ -70,6 +70,8 @@ public class SuggestionCompletionEngine
     private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincides"};
     private static final String[]                   COMPLEX_CEP_OPERATORS    = new String[]{"during", "finishes", "finishedby", "includes", "meets", "metby", "overlaps", "overlappedby", "starts", "startedby"};
 
+    private static final String[]                   WINDOW_CEP_OPERATORS     = new String[]{"over window:time", "over window:length"};
+
     private static final String[]                   SIMPLE_CEP_CONNECTIVES   = new String[]{"|| after", "|| before", "|| coincides", "&& after", "&& before", "&& coincides"};
     private static final String[]                   COMPLEX_CEP_CONNECTIVES  = new String[]{"|| during", "|| finishes", "|| finishedby", "|| includes", "|| meets", "|| metby", "|| overlaps", "|| overlappedby", "|| starts", "|| startedby",
                                                                                            "&& during", "&& finishes", "&& finishedby", "&& includes", "&& meets", "&& metby", "&& overlaps", "&& overlappedby", "&& starts", "&& startedby"};
@@ -974,11 +976,11 @@ public class SuggestionCompletionEngine
     /**
      * Check whether an operator is a CEP operator
      * 
-     * @param value
+     * @param operator
      * @return True if the operator is a CEP operator
      */
-    public static boolean isCEPOperator(String value) {
-        if ( value == null ) {
+    public static boolean isCEPOperator(String operator) {
+        if ( operator == null ) {
             return false;
         }
 
@@ -986,9 +988,9 @@ public class SuggestionCompletionEngine
                                          COMPLEX_CEP_OPERATORS,
                                          SIMPLE_CEP_CONNECTIVES,
                                          COMPLEX_CEP_CONNECTIVES );
-        
+
         for ( int i = 0; i < operators.length; i++ ) {
-            if ( value.equals( operators[i] ) ) {
+            if ( operator.equals( operators[i] ) ) {
                 return true;
             }
         }
@@ -1016,6 +1018,60 @@ public class SuggestionCompletionEngine
         }
 
         return CEP_OPERATORS_PARAMETERS.get( operator );
+    }
+
+    /**
+     * Return a list of operators applicable to CEP windows
+     * 
+     * @return
+     */
+    public static List<String> getCEPWindowOperators() {
+        return Arrays.asList( WINDOW_CEP_OPERATORS );
+    }
+
+    /**
+     * Check whether an operator is a CEP 'window' operator
+     * 
+     * @param operator
+     * @return True if the operator is a CEP 'window' operator
+     */
+    public static boolean isCEPWindowOperator(String operator) {
+        if ( operator == null ) {
+            return false;
+        }
+
+        for ( int i = 0; i < WINDOW_CEP_OPERATORS.length; i++ ) {
+            if ( operator.equals( WINDOW_CEP_OPERATORS[i] ) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the operator is 'window over:time'
+     * 
+     * @param operator
+     * @return if
+     */
+    public static boolean isCEPWindowOperatorTime(String operator) {
+        if ( operator == null ) {
+            return false;
+        }
+        return WINDOW_CEP_OPERATORS[0].equals( operator );
+    }
+
+    /**
+     * Check if the operator is 'window over:length'
+     * 
+     * @param operator
+     * @return if
+     */
+    public static boolean isCEPWindowOperatorLength(String operator) {
+        if ( operator == null ) {
+            return false;
+        }
+        return WINDOW_CEP_OPERATORS[1].equals( operator );
     }
 
     //Join an arbitrary number of arrays together

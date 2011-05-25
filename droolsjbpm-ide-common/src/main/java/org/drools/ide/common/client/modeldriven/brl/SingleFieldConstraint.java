@@ -28,7 +28,7 @@ import java.util.Map;
 public class SingleFieldConstraint extends BaseSingleFieldConstraint
     implements
     FieldConstraint,
-    HasOperatorParameters {
+    HasParameterizedOperator {
 
     private String                fieldBinding;
     private String                fieldName;
@@ -36,7 +36,7 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     private String                fieldType;
     private FieldConstraint       parent;
 
-    private Map<String, String>   parameters = null;
+    private Map<String, String>   parameters;
 
     /**
      * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
@@ -180,10 +180,16 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     }
 
     public void deleteParameter(String key) {
+        if ( this.parameters == null ) {
+            return;
+        }
         parameters.remove( key );
     }
 
     public Map<String, String> getParameters() {
+        if ( this.parameters == null ) {
+            this.parameters = new HashMap<String, String>();
+        }
         return this.parameters;
     }
 

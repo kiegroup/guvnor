@@ -18,8 +18,8 @@ package org.drools.guvnor.client.modeldriven.ui.factPattern;
 
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
-import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
+import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;

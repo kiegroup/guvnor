@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,61 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.drools.ide.common.client.modeldriven.brl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This is for a connective constraint that adds more options to a field
- * constraint.
+ * Definition of a CEP Window
  */
-public class ConnectiveConstraint extends BaseSingleFieldConstraint
+public class CEPWindow
     implements
+    PortableObject,
     HasParameterizedOperator {
 
-    private String              operator;
-    private String              fieldName;
-    private String              fieldType;
+    protected String              operator;
+    protected Map<String, String> parameters;
 
-    private Map<String, String> parameters;
-
-    public ConnectiveConstraint() {
-    }
-
-    public ConnectiveConstraint(final String fieldName,
-                                final String fieldType,
-                                final String opr,
-                                final String val) {
-        this.fieldName = fieldName;
-        this.fieldType = fieldType;
-        this.operator = opr;
-        this.setValue( val );
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
-
-    public String getFieldType() {
-        return fieldType;
-    }
-
-    public void setFieldType(String fieldType) {
-        this.fieldType = fieldType;
+    public void setOperator(String operator) {
+        this.operator = operator;
     }
 
     public String getOperator() {
         return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
     }
 
     public void clearParameters() {
@@ -107,6 +74,13 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    public boolean isDefined() {
+        if ( parameters == null ) {
+            return false;
+        }
+        return this.parameters.size() > 0;
     }
 
 }
