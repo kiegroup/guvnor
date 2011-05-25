@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Implementations have parameters
  */
-public interface HasOperatorParameters
+public interface HasParameterizedOperator
     extends
     HasOperator {
 

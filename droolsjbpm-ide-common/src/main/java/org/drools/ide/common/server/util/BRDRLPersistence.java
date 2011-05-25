@@ -35,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
@@ -47,7 +48,7 @@ import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactP
 import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
+import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
@@ -476,6 +477,14 @@ public class BRDRLPersistence
                 generateConstraints( pattern );
             }
             buf.append( ")" );
+
+            //TODO
+            CEPWindow window = pattern.getWindow();
+            if ( window.isDefined() ) {
+                buf.append(" ");
+                buf.append(window.getOperator());
+                buf.append( buildOperatorParameterDRL( window.getParameters() ) );
+            }
         }
 
         private void generateConstraints(FactPattern pattern) {
@@ -564,8 +573,8 @@ public class BRDRLPersistence
                 }
 
                 Map<String, String> parameters = null;
-                if ( constr instanceof HasOperatorParameters ) {
-                    HasOperatorParameters hop = (HasOperatorParameters) constr;
+                if ( constr instanceof HasParameterizedOperator ) {
+                    HasParameterizedOperator hop = (HasParameterizedOperator) constr;
                     parameters = hop.getParameters();
                 }
 
@@ -594,8 +603,8 @@ public class BRDRLPersistence
                         final ConnectiveConstraint conn = constr.connectives[j];
 
                         parameters = null;
-                        if ( conn instanceof HasOperatorParameters ) {
-                            HasOperatorParameters hop = (HasOperatorParameters) conn;
+                        if ( conn instanceof HasParameterizedOperator ) {
+                            HasParameterizedOperator hop = (HasParameterizedOperator) conn;
                             parameters = hop.getParameters();
                         }
 
@@ -608,6 +617,7 @@ public class BRDRLPersistence
                                              null );
                     }
                 }
+
             }
         }
 

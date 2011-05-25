@@ -25,13 +25,14 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
@@ -155,6 +156,13 @@ public class FactPatternWidget extends RuleModellerWidget {
         List<FieldConstraint> sortedConst = sortConstraints( pattern.getFieldConstraints() );
         pattern.setFieldConstraints( sortedConst );
         drawConstraints( sortedConst );
+
+        //CEP 'window' widget
+        int row = layout.getRowCount() + 1;
+        layout.setWidget( row,
+                          0,
+                          createCEPWindowWidget( mod,
+                                                 pattern ) );
 
         if ( this.readOnly ) {
             layout.addStyleName( "editor-disabled-widget" );
@@ -473,6 +481,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                  createaAddConnectiveImageButton( modeller,
                                                                   constraint ) );
             }
+
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
             inner.setWidget( row,
                              1,
@@ -496,6 +505,30 @@ public class FactPatternWidget extends RuleModellerWidget {
             }
         } );
         return addConnective;
+    }
+
+    //Widget for CEP 'windows'
+    private Widget createCEPWindowWidget(final RuleModeller modeller,
+                                         final HasCEPWindow c) {
+        if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
+            List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
+            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( operators,
+                                                                             c );
+
+            cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+
+                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                    setModified( true );
+                    OperatorSelection selection = event.getValue();
+                    String selected = selection.getValue();
+                    c.getWindow().setOperator( selected );
+                    getModeller().makeDirty();
+                }
+            } );
+
+            return cwo;
+        }
+        return new HTML();
     }
 
     private void associateExpressionWithChangeHandler(final DirtyableFlexTable inner,

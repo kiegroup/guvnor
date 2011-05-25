@@ -18,7 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
+import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 
 /**
  * This is the config for a condition column. Typically many of them have their
@@ -26,7 +26,7 @@ import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
  */
 public class ConditionCol extends DTColumnConfig
     implements
-    HasOperatorParameters {
+    HasParameterizedOperator {
 
     private static final long   serialVersionUID = 510l;
 

@@ -20,11 +20,10 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown.OperatorSelection;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.HasOperatorParameters;
+import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 import org.drools.ide.common.shared.SharedConstants;
 
 import com.google.gwt.core.client.GWT;
@@ -33,14 +32,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -61,19 +56,15 @@ public class CEPOperatorsDropdown extends Composite
     private static final OperatorsResource resources                        = GWT.create( OperatorsResource.class );
     private static final OperatorsCss      css                              = resources.operatorsCss();
 
-    // A valid Operator parameter expression
-    private static final RegExp            VALID                            = RegExp.compile( "^\\d+(d|h|m?s?)?$" );
-
-    protected HasOperatorParameters        hop;
-
     private String[]                       operators;
     private Image                          btnAddCEPOperators;
     private ListBox                        box;
-
     private HorizontalPanel                container                        = new HorizontalPanel();
     private TextBox[]                      parameters                       = new TextBox[4];
+
     protected int                          visibleParameterSet              = 0;
     protected List<Integer>                parameterSets;
+    protected HasParameterizedOperator     hop;
 
     //Parameter key to store the current parameter set (i.e. which parameters are visible)
     private static final String            VISIBLE_PARAMETER_SET            = "org.drools.guvnor.client.modeldriven.ui.visibleParameterSet";
@@ -82,7 +73,7 @@ public class CEPOperatorsDropdown extends Composite
     private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
 
     public CEPOperatorsDropdown(String[] operators,
-                                  HasOperatorParameters hop) {
+                                  HasParameterizedOperator hop) {
         this.operators = operators;
         this.hop = hop;
 
@@ -171,47 +162,8 @@ public class CEPOperatorsDropdown extends Composite
 
     //TextBox factory
     private TextBox makeTextBox(final int index) {
-        final TextBox txt = new TextBox();
-        txt.setStyleName( css.parameter() );
-        txt.addChangeHandler( new ChangeHandler() {
-
-            public void onChange(ChangeEvent event) {
-                hop.setParameter( Integer.toString( index ),
-                                  txt.getText() );
-            }
-
-        } );
-        txt.addKeyPressHandler( new KeyPressHandler() {
-
-            public void onKeyPress(KeyPressEvent event) {
-
-                // Permit navigation
-                int keyCode = event.getNativeEvent().getKeyCode();
-                if ( event.isControlKeyDown()
-                        || keyCode == KeyCodes.KEY_BACKSPACE
-                        || keyCode == KeyCodes.KEY_DELETE
-                        || keyCode == KeyCodes.KEY_LEFT
-                        || keyCode == KeyCodes.KEY_RIGHT
-                        || keyCode == KeyCodes.KEY_TAB ) {
-                    return;
-                }
-
-                // Get new value and validate
-                int charCode = event.getCharCode();
-                String oldValue = txt.getValue();
-                String newValue = oldValue.substring( 0,
-                                                      txt.getCursorPos() );
-                newValue = newValue
-                           + ((char) charCode);
-                newValue = newValue
-                           + oldValue.substring( txt.getCursorPos() + txt.getSelectionLength() );
-                if ( !VALID.test( String.valueOf( newValue ) ) ) {
-                    event.preventDefault();
-                }
-
-            }
-
-        } );
+        AbstractRestrictedEntryTextBox txt = new CEPTimeParameterTextBox( hop,
+                                                                          index );
 
         if ( parameterSets.size() == 0 ) {
             txt.setVisible( false );
@@ -224,11 +176,11 @@ public class CEPOperatorsDropdown extends Composite
 
     //Hide\display the additional CEP widget is appropriate
     private void operatorChanged(OperatorSelection selection) {
-        String value = selection.getValue();
-        if ( SuggestionCompletionEngine.isCEPOperator( value ) ) {
+        String operator = selection.getValue();
+        if ( SuggestionCompletionEngine.isCEPOperator( operator ) ) {
             container.setVisible( true );
             btnAddCEPOperators.setVisible( true );
-            parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( value );
+            parameterSets = SuggestionCompletionEngine.getCEPOperatorParameterSets( operator );
             hop.setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
                               CEP_OPERATOR_PARAMETER_GENERATOR );
         } else {
@@ -331,30 +283,6 @@ public class CEPOperatorsDropdown extends Composite
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<OperatorSelection> handler) {
         return addHandler( handler,
                            ValueChangeEvent.getType() );
-    }
-
-    /**
-     * Details of section made; wrapping display text and associated value
-     */
-    public static class OperatorSelection {
-
-        private String value;
-        private String displayText;
-
-        OperatorSelection(String value,
-                          String displayText) {
-            this.value = value;
-            this.displayText = displayText;
-        }
-
-        public String getValue() {
-            return value;
-        }
-
-        public String getDisplayText() {
-            return displayText;
-        }
-
     }
 
 }
