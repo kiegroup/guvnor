@@ -23,22 +23,23 @@ import org.drools.guvnor.server.util.BuilderResultHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
+import java.util.Iterator;
+
 public class AssetItemValidator {
 
-    private ContentHandler handler;
+    private final ContentHandler handler;
+    private final AssetItem assetItemUnderValidation;
 
-    public AssetItemValidator(ContentHandler handler) {
+    public AssetItemValidator(ContentHandler handler, AssetItem assetItemUnderValidation) {
         this.handler = handler;
+        this.assetItemUnderValidation = assetItemUnderValidation;
     }
 
-    public BuilderResult validate(AssetItem assetItem) {
+    public BuilderResult validate() {
         if (handler instanceof IHasCustomValidator) {
-            return ((IHasCustomValidator) handler).validateAsset(assetItem);
+            return ((IHasCustomValidator) handler).validateAsset(assetItemUnderValidation);
         } else {
-            // TODO: There is still one flaw here, what if the asset does not affect the build? -Rikkola-
-            BuilderValidator builderValidator = new BuilderValidator(assetItem.getPackage());
-            builderValidator.validate(assetItem);
-            return builderValidator.getResult();
+            return new BuilderValidator(assetItemUnderValidation.getPackage()).validate();
         }
     }
 
@@ -48,16 +49,48 @@ public class AssetItemValidator {
             super(packageItem);
         }
 
-        public void validate(AssetItem assetItem) {
+        public BuilderResult validate() {
             if (setUpPackage()) {
-                buildAsset(assetItem);
+                buildAsset(assetItemUnderValidation);
             }
+            return getResult();
         }
 
         public BuilderResult getResult() {
             BuilderResult result = new BuilderResult();
             result.setLines(new BuilderResultHelper().generateBuilderResults(getErrors()));
             return result;
+        }
+
+        protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
+            return new AssetValidationIterator(super.getAssetItemIterator(formats));
+        }
+    }
+
+    private class AssetValidationIterator implements Iterator<AssetItem> {
+
+        private Iterator<AssetItem> assetItemIterator;
+
+        public AssetValidationIterator(Iterator<AssetItem> assetItemIterator) {
+            this.assetItemIterator = assetItemIterator;
+        }
+
+        public boolean hasNext() {
+            return assetItemIterator.hasNext();
+        }
+
+        public AssetItem next() {
+            AssetItem assetItem = assetItemIterator.next();
+
+            if (assetItem.getUUID().equals(assetItemUnderValidation.getUUID())) {
+                return assetItemUnderValidation;
+            }
+
+            return assetItem;
+        }
+
+        public void remove() {
+            assetItemIterator.remove();
         }
     }
 }

@@ -16,7 +16,9 @@
 
 package org.drools.guvnor.server.builder;
 
+import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.VersionedAssetItemIterator;
 
@@ -59,12 +61,16 @@ abstract class AssemblerBase {
     }
 
     protected void loadDSLFiles() {
-        builder.setDSLFiles(BRMSPackageBuilder.getDSLMappingFiles(packageItem,
+        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(getAssetItemIterator(AssetFormats.DSL),
                 new BRMSPackageBuilder.DSLErrorEvent() {
                     public void recordError(AssetItem asset,
                                             String message) {
                         errorLogger.addError(asset, message);
                     }
                 }));
+    }
+
+    protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
+        return this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(formats);
     }
 }

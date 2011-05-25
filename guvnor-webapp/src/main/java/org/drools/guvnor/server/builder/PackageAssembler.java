@@ -86,7 +86,7 @@ public class PackageAssembler extends PackageAssemblerBase {
     }
 
     private void loadDRLAssets(StringBuilder includedAssets) {
-        Iterator<AssetItem> drlAssetItemIterator = packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DRL);
+        Iterator<AssetItem> drlAssetItemIterator = getAssetItemIterator(AssetFormats.DRL);
         while (drlAssetItemIterator.hasNext()) {
             AssetItem asset = drlAssetItemIterator.next();
             if (assetCanBeAdded(asset)) {

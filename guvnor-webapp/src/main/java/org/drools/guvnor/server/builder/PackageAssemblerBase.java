@@ -31,6 +31,7 @@ import org.drools.repository.RulesRepositoryException;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Iterator;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -127,7 +128,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      * @return
      */
     private StringBuilder getAllFunctionsAsOneString() {
-        AssetItemIterator functionsIterator = this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.FUNCTION);
+        Iterator<AssetItem> functionsIterator = getAssetItemIterator(AssetFormats.FUNCTION);
         StringBuilder stringBuilder = new StringBuilder();
 
         while (functionsIterator.hasNext()) {
@@ -142,7 +143,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     private void searchTheFunctionWithAnError() {
         builder.clearErrors();
-        AssetItemIterator functionsIterator = this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.FUNCTION);
+        Iterator<AssetItem> functionsIterator = getAssetItemIterator(AssetFormats.FUNCTION);
 
         while (functionsIterator.hasNext()) {
             AssetItem function = functionsIterator.next();
@@ -173,7 +174,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
 
     private void loadDeclaredTypes() {
-        AssetItemIterator declaredTypesIterator = this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DRL_MODEL);
+        Iterator<AssetItem> declaredTypesIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
 
         while (declaredTypesIterator.hasNext()) {
             AssetItem assetItem = declaredTypesIterator.next();
