@@ -185,6 +185,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                                                                                  out );
                 } else {
                     if ( req.getRequestURI().endsWith( "SCENARIOS" ) ) {
+                        fileName="TestSecnariosResult.txt";
                         doRunScenarios( helper,
                                         out );
                     } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
