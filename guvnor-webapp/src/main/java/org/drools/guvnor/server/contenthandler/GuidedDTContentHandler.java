@@ -62,19 +62,6 @@ public class GuidedDTContentHandler extends ContentHandler
         builder.addPackageFromDrl( new StringReader( drl ) );
     }
 
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        AssemblyErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.getContent();
-
-        String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
-
-        if ( drl.equals( "" ) ) return;
-        builder.addPackageFromDrl( new StringReader( drl ) );
-
-    }
-
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {

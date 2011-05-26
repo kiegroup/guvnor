@@ -60,15 +60,6 @@ public class BRLContentHandler extends ContentHandler
                                                                    builder ) ) );
     }
 
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        AssemblyErrorLogger logger) throws DroolsParserException,
-                                           IOException {
-        builder.addPackageFromDrl( new StringReader( getSourceDRL( (RuleModel) asset.getContent(),
-                                                                   builder ) ) );
-
-    }
-
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {

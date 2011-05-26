@@ -91,7 +91,6 @@ public class ContentManager {
 
     }
 
-
     public static ContentManager getInstance() {
         if (INSTANCE == null) {
             //have to do this annoying thing, as in some cases, letting the classloader
@@ -103,8 +102,6 @@ public class ContentManager {
         }
         return INSTANCE;
     }
-
-
 
     public static ContentHandler getHandler(String format) {
         ContentHandler h = ContentManager.getInstance().getContentHandlers().get( format );

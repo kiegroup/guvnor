@@ -18,13 +18,16 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.server.contenthandler.FactModelContentHandler;
+import org.drools.guvnor.server.contenthandler.*;
 import org.drools.repository.*;
+import org.drools.repository.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
 import javax.jcr.NodeIterator;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -43,24 +46,134 @@ public class AssetItemValidatorTest {
         setUpPackageItem();
         setUpUnsavedAssetItem();
         setUpSavedAssetItem();
-        setUpAssetItemIterator();
     }
 
     @Test
-    public void testValidateDRLModel() throws Exception {
+    public void testValidateBRL() throws Exception {
+        testValidate(AssetFormats.BUSINESS_RULE, new BRLContentHandler());
+    }
 
-        FactModelContentHandler factModelContentHandler = new FactModelContentHandler();
+    @Test
+    public void testValidateDRL() throws Exception {
+        testValidate(AssetFormats.DRL, new DRLFileContentHandler());
+    }
 
-        AssetItemValidator assetItemValidator = new AssetItemValidator(factModelContentHandler, unsavedAssetItem);
-        BuilderResult builderResult = assetItemValidator.validate();
+    @Test
+    public void testValidateEnumeration() throws Exception {
+        testValidate(AssetFormats.ENUMERATION, new EnumerationContentHandler());
+    }
 
-        assertTrue(builderResult.getLines().isEmpty());
+    @Test
+    public void testValidateDecisionTableGuided() throws Exception {
+        testValidate(AssetFormats.DECISION_TABLE_GUIDED, new GuidedDTContentHandler());
+    }
+
+    @Test
+    public void testValidateDrlModel() throws Exception {
+        testValidate(AssetFormats.DRL_MODEL, new FactModelContentHandler());
+    }
+
+    @Test
+    public void testValidateDsl() throws Exception {
+        testValidate(AssetFormats.DSL, new DSLDefinitionContentHandler());
+    }
+
+    @Test
+    public void testValidateFunction() throws Exception {
+        testValidate(AssetFormats.FUNCTION, new FunctionContentHandler());
+    }
+
+    @Test
+    public void testValidateRuleTemplate() throws Exception {
+        testValidate(AssetFormats.RULE_TEMPLATE, new RuleTemplateHandler());
+    }
+
+    @Test
+    public void testValidateDslTemplateRule() throws Exception {
+        setUpMockAssets(AssetFormats.DSL_TEMPLATE_RULE);
+        setUpAssetItemIterators(AssetFormats.DSL_TEMPLATE_RULE);
+        setUpMockDSL();
+        verifyValidate(new DSLRuleContentHandler());
+    }
+
+    @Test
+    public void testValidateDecisionSpreadsheetXLS() throws Exception {
+        InputStream in = this.getClass().getResourceAsStream("EmptyDecisionTable.xls");
+        when(savedAssetItem.getFormat()).thenReturn(AssetFormats.DECISION_SPREADSHEET_XLS);
+        when(savedAssetItem.getBinaryContentAttachment()).thenReturn(in);
+        when(unsavedAssetItem.getFormat()).thenReturn(AssetFormats.DECISION_SPREADSHEET_XLS);
+        when(unsavedAssetItem.getBinaryContentAttachment()).thenReturn(in);
+
+        setUpAssetItemIterators(AssetFormats.DECISION_SPREADSHEET_XLS);
+
+        runValidate(new DSLRuleContentHandler());
+        verify(unsavedAssetItem).getBinaryContentAttachment();
+        verify(savedAssetItem, never()).getBinaryContentAttachment();
+    }
+
+    @Test
+    public void testValidateSpringContext() throws Exception {
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream("org/drools/guvnor/server/contenthandler/valid-spring-context.xml");
+        StringWriter stringWriter = new StringWriter();
+        IOUtils.copy(resourceAsStream, stringWriter);
+
+
+        setUpMockAssets(AssetFormats.SPRING_CONTEXT, stringWriter.toString());
+        setUpAssetItemIterators(AssetFormats.SPRING_CONTEXT);
+
+        SpringContextContentHandler contentHandler = spy(new SpringContextContentHandler());
+        runValidate(contentHandler);
+
+
+        verify(contentHandler).validateAsset(Matchers.<AssetItem>any());
         verify(unsavedAssetItem).getContent();
         verify(savedAssetItem, never()).getContent();
     }
 
-    // TODO: validate other asset types -Rikkola-
-    // TODO: test failing validations -Rikkola-
+    private void setUpMockDSL() {
+        AssetItem dslAssetItem = mock(AssetItem.class);
+        when(dslAssetItem.getUUID()).thenReturn("TempMockUUID");
+        when(dslAssetItem.getFormat()).thenReturn(AssetFormats.DSL);
+        when(dslAssetItem.getContent()).thenReturn("");
+        MockAssetItemIterator mockAssetItemIterator = createMockAssetItemIterator(dslAssetItem);
+        when(
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DSL)
+        ).thenReturn(
+                mockAssetItemIterator
+        );
+    }
+
+    public void testValidate(String assetFormat, ContentHandler contentHandler) throws Exception {
+        setUpMockAssets(assetFormat);
+        setUpAssetItemIterators(assetFormat);
+        verifyValidate(contentHandler);
+    }
+
+    private void setUpMockAssets(String assetFormat, String content) {
+        when(unsavedAssetItem.getFormat()).thenReturn(assetFormat);
+        when(unsavedAssetItem.getContent()).thenReturn(content);
+        when(savedAssetItem.getFormat()).thenReturn(assetFormat);
+        when(savedAssetItem.getContent()).thenReturn(content);
+    }
+
+    private void setUpMockAssets(String assetFormat) {
+        when(unsavedAssetItem.getFormat()).thenReturn(assetFormat);
+        when(savedAssetItem.getFormat()).thenReturn(assetFormat);
+    }
+
+    private void verifyValidate(ContentHandler contentHandler) {
+        runValidate(contentHandler);
+        verify(unsavedAssetItem).getContent();
+        verify(savedAssetItem, never()).getContent();
+    }
+
+    private void runValidate(ContentHandler contentHandler) {
+        AssetItemValidator assetItemValidator = new AssetItemValidator(contentHandler, unsavedAssetItem);
+        BuilderResult builderResult = assetItemValidator.validate();
+
+        assertTrue(builderResult.getLines().isEmpty());
+    }
+
     // TODO: test custom validators -Rikkola-
 
     private void setUpPackageItem() {
@@ -83,24 +196,36 @@ public class AssetItemValidatorTest {
         when(savedAssetItem.getUUID()).thenReturn("mock");
     }
 
-    private void setUpAssetItemIterator() {
+    private void setUpAssetItemIterators(String assetFormat) {
         AssetItemIterator assetItemIterator = createMockAssetItemIterator();
+        setUpConfigurations(assetItemIterator);
+        setUpAnIteratorForAllAssetFormats(assetItemIterator);
+
+        setUpAssetIteratorForAssetFormat(assetFormat);
+    }
+
+    private void setUpAssetIteratorForAssetFormat(String assetFormat) {
+        MockAssetItemIterator mockAssetItemIterator = createMockAssetItemIterator(savedAssetItem);
         when(
-                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(assetFormat)
         ).thenReturn(
-                assetItemIterator
+                mockAssetItemIterator
         );
+    }
+
+    private void setUpAnIteratorForAllAssetFormats(AssetItemIterator assetItemIterator) {
         when(
                 packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(Matchers.<String[]>any())
         ).thenReturn(
                 assetItemIterator
         );
+    }
 
-        MockAssetItemIterator dslMockAssetItemIterator = createMockAssetItemIterator(savedAssetItem);
+    private void setUpConfigurations(AssetItemIterator assetItemIterator) {
         when(
-                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.DSL)
+                packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.PROPERTIES, AssetFormats.CONFIGURATION)
         ).thenReturn(
-                dslMockAssetItemIterator
+                assetItemIterator
         );
     }
 

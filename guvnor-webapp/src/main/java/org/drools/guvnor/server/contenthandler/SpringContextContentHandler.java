@@ -66,16 +66,6 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
                                     asset.getUUID() );
     }
 
-    public BuilderResult validateAsset(RuleAsset asset) {
-
-        String message = validate( ((RuleContentText) asset.getContent()).content );
-
-        return createBuilderResult( message,
-                                    asset.getName(),
-                                    asset.getMetaData().getFormat(),
-                                    asset.getUuid() );
-    }
-
     private BuilderResult createBuilderResult(String message,
                                               String name,
                                               String format,

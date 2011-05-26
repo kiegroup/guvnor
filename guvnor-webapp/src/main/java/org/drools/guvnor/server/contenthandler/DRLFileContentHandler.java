@@ -41,16 +41,6 @@ public class DRLFileContentHandler extends PlainTextContentHandler
         }
     }
 
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        AssemblyErrorLogger logger) throws DroolsParserException,
-                                                                   IOException {
-        String content = ((RuleContentText) asset.getContent()).content;
-        if ( content != null && !content.trim().equals( "" ) ) {
-            builder.addPackageFromDrl( new StringReader( content ) );
-        }
-    }
-
     String wrapRuleDeclaration(String name,
                                String parentName,
                                String content) {

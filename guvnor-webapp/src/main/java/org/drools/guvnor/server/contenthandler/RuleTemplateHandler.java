@@ -20,7 +20,7 @@ import org.drools.guvnor.server.util.BRDRTPersistence;
 import org.drools.guvnor.server.util.BRDRTXMLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;
 
-public class TemplateModelHandler extends BRLContentHandler {
+public class RuleTemplateHandler extends BRLContentHandler {
 
     @Override
     protected BRLPersistence getBrlDrlPersistence() {
