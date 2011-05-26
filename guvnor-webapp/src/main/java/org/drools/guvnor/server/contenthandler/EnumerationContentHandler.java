@@ -56,31 +56,4 @@ public class EnumerationContentHandler extends PlainTextContentHandler
             return result;
         }
     }
-
-    public BuilderResult validateAsset(RuleAsset asset) {
-        String content = ((RuleContentText) asset.content).content;
-        DataEnumLoader loader = new DataEnumLoader( content );
-        if ( !loader.hasErrors() ) {
-            return new BuilderResult();
-        } else {
-            List<BuilderResultLine> errors = new ArrayList<BuilderResultLine>();
-            List<String> errs = loader.getErrors();
-
-            for ( String message : errs ) {
-
-                BuilderResultLine result = new BuilderResultLine();
-                result.setAssetName(asset.name);
-                result.setAssetFormat(asset.metaData.format);
-                result.setUuid(asset.uuid);
-                result.setMessage(message);
-                errors.add( result );
-            }
-
-            BuilderResult result = new BuilderResult();
-            result.setLines( errors );
-
-            return result;
-        }
-    }
-
 }

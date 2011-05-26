@@ -60,12 +60,12 @@ public class DSLRuleContentHandler extends ContentHandler
                 asset,
                 logger);
 
-        String source = getRawDRL( asset );
+        String source = getRawDRL(asset);
 
         //expand and check for errors
-        String drl = expander.expand( source );
+        String drl = expander.expand(source);
 
-        if ( expander.hasErrors() ) {
+        if (expander.hasErrors()) {
             List<ExpanderException> exErrs = expander.getErrors();
             for (ExpanderException ex : exErrs) {
                 logger.logError(new ContentAssemblyError(
@@ -74,35 +74,7 @@ public class DSLRuleContentHandler extends ContentHandler
             return;
         }
 
-        builder.addPackageFromDrl( new StringReader( drl ) );
-    }
-
-    public void compile(BRMSPackageBuilder builder,
-                        RuleAsset asset,
-                        AssemblyErrorLogger logger) throws DroolsParserException,
-            IOException {
-        DefaultExpander expander = getExpander(builder,
-                asset,
-                logger);
-
-        RuleContentText text = (RuleContentText) asset.content;
-        String source = getDRL( text.content,
-                                asset.name,
-                                null );
-
-        //expand and check for errors
-        String drl = expander.expand( source );
-
-        if ( expander.hasErrors() ) {
-            List<ExpanderException> exErrs = expander.getErrors();
-            for (ExpanderException ex : exErrs) {
-                logger.logError(new ContentAssemblyError(
-                        ex.getMessage(), asset.metaData.format, asset.name, asset.uuid, false, true));
-            }
-            return;
-        }
-
-        builder.addPackageFromDrl( new StringReader( drl ) );
+        builder.addPackageFromDrl(new StringReader(drl));
     }
 
     private DefaultExpander getExpander(BRMSPackageBuilder builder,
@@ -112,18 +84,6 @@ public class DSLRuleContentHandler extends ContentHandler
         if (!builder.hasDSL()) {
             logger.logError(new ContentAssemblyError(
                     "This rule asset requires a DSL, yet none were configured in the package.", asset.getFormat(), asset.getName(), asset.getUUID(), false, true));
-        }
-
-        return builder.getDSLExpander();
-    }
-
-    private DefaultExpander getExpander(BRMSPackageBuilder builder,
-                                        RuleAsset asset,
-                                        AssemblyErrorLogger logger) {
-
-        if (!builder.hasDSL()) {
-            logger.logError(new ContentAssemblyError(
-                    "This rule asset requires a DSL, yet none were configured in the package.", asset.metaData.format, asset.name, asset.uuid, false, true));
         }
 
         return builder.getDSLExpander();
@@ -140,24 +100,24 @@ public class DSLRuleContentHandler extends ContentHandler
                          null );
 
         DefaultExpander expander = builder.getDSLExpander();
-        stringBuilder.append( expander.expand( source ) );
+        stringBuilder.append(expander.expand(source));
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,
                             AssetItem asset,
                             StringBuilder stringBuilder) {
         //add the rule keyword if its 'stand alone'
-        String source = getRawDRL( asset );
+        String source = getRawDRL(asset);
 
         DefaultExpander expander = builder.getDSLExpander();
-        stringBuilder.append( expander.expand( source ) );
+        stringBuilder.append(expander.expand(source));
 
     }
 
     private String wrapRule(String assetName,
                             String parentName,
                             String source) {
-        if ( parentName == null || "".equals( parentName ) ) {
+        if (parentName == null || "".equals(parentName)) {
             return "rule '" + assetName + "' \n" + source + "\nend";
         } else {
             return "rule '" + assetName + "' extends " + parentName + " \n" + source + "\nend";
@@ -167,11 +127,11 @@ public class DSLRuleContentHandler extends ContentHandler
 
     public String getRawDRL(AssetItem asset) {
         String source = asset.getContent();
-        String parentName = this.parentNameFromCategory( asset,
-                                                         "" );
-        source = getDRL( source,
-                         asset.getName(),
-                         parentName );
+        String parentName = this.parentNameFromCategory(asset,
+                "");
+        source = getDRL(source,
+                asset.getName(),
+                parentName);
 
         return source;
     }
@@ -179,10 +139,10 @@ public class DSLRuleContentHandler extends ContentHandler
     public String getDRL(String source,
                          String assetName,
                          String parentName) {
-        if ( DRLFileContentHandler.isStandAloneRule( source ) ) {
-            source = wrapRule( assetName,
-                               parentName,
-                               source );
+        if (DRLFileContentHandler.isStandAloneRule(source)) {
+            source = wrapRule(assetName,
+                    parentName,
+                    source);
         }
 
         return source;
