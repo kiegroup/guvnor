@@ -56,14 +56,14 @@ public class CEPWindowOperatorsDropdown extends Composite
     private ListBox                        box;
     private HorizontalPanel                container                        = new HorizontalPanel();
 
-    protected CEPWindow                    window;
+    protected HasCEPWindow                 hcw;
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPWindowOperatorParameterDRLBuilder";
 
     public CEPWindowOperatorsDropdown(List<String> operators,
                                       HasCEPWindow hcw) {
-        this.window = hcw.getWindow();
+        this.hcw = hcw;
         this.operators = operators;
 
         HorizontalPanel hp = new HorizontalPanel();
@@ -105,37 +105,37 @@ public class CEPWindowOperatorsDropdown extends Composite
         String operator = selection.getValue();
 
         if ( SuggestionCompletionEngine.isCEPWindowOperatorTime( operator ) ) {
-            AbstractRestrictedEntryTextBox txt = new CEPTimeParameterTextBox( window,
+            AbstractRestrictedEntryTextBox txt = new CEPTimeParameterTextBox( hcw.getWindow(),
                                                                               1 );
             initialiseTextBox( txt );
         } else if ( SuggestionCompletionEngine.isCEPWindowOperatorLength( operator ) ) {
-            AbstractRestrictedEntryTextBox txt = new CEPLengthParameterTextBox( window,
+            AbstractRestrictedEntryTextBox txt = new CEPLengthParameterTextBox( hcw.getWindow(),
                                                                                 1 );
             initialiseTextBox( txt );
         } else {
             container.setVisible( false );
-            window.clearParameters();
+            hcw.getWindow().clearParameters();
         }
     }
 
     private void initialiseTextBox(AbstractRestrictedEntryTextBox txt) {
         String key = String.valueOf( 1 );
-        String value = window.getParameter( key );
+        String value = hcw.getWindow().getParameter( key );
         if ( value == null ) {
             value = "";
-            window.setParameter( key,
-                                 value );
+            hcw.getWindow().setParameter( key,
+                                          value );
         }
         if ( !txt.isValidValue( value ) ) {
             value = "";
-            window.setParameter( key,
-                                 value );
+            hcw.getWindow().setParameter( key,
+                                          value );
         }
         txt.setText( value );
         container.add( txt );
         container.setVisible( true );
-        window.setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
-                             CEP_OPERATOR_PARAMETER_GENERATOR );
+        hcw.getWindow().setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
+                                      CEP_OPERATOR_PARAMETER_GENERATOR );
 
     }
 
@@ -146,18 +146,19 @@ public class CEPWindowOperatorsDropdown extends Composite
         String selectedText = "";
         box = new ListBox();
 
-        box.addItem( "<no window>",
+        box.addItem( constants.noCEPWindow(),
                      "" );
         for ( int i = 0; i < operators.size(); i++ ) {
             String op = operators.get( i );
             box.addItem( HumanReadable.getOperatorDisplayName( op ),
                          op );
-            if ( op.equals( window.getOperator() ) ) {
+            if ( op.equals( hcw.getWindow().getOperator() ) ) {
                 selected = op;
                 selectedText = HumanReadable.getOperatorDisplayName( op );
                 box.setSelectedIndex( i + 1 );
             }
         }
+        selectItem( hcw.getWindow().getOperator() );
 
         //Fire event to ensure parent Widgets correct their state depending on selection
         final HasValueChangeHandlers<OperatorSelection> source = this;
@@ -196,6 +197,31 @@ public class CEPWindowOperatorsDropdown extends Composite
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<OperatorSelection> handler) {
         return addHandler( handler,
                            ValueChangeEvent.getType() );
+    }
+
+    /**
+     * Select a given item in the drop-down
+     * 
+     * @param operator
+     *            The DRL operator, not the HumanReadable form
+     */
+    public void selectItem(String operator) {
+        String currentOperator = box.getValue( box.getSelectedIndex() );
+        if ( currentOperator.equals( operator ) ) {
+            return;
+        }
+        for ( int i = 0; i < box.getItemCount(); i++ ) {
+            String op = box.getValue( i );
+            if ( op.equals( operator ) ) {
+                box.setSelectedIndex( i );
+                break;
+            }
+        }
+        String selected = box.getValue( box.getSelectedIndex() );
+        String selectedText = box.getItemText( box.getSelectedIndex() );
+        OperatorSelection selection = new OperatorSelection( selected,
+                                                             selectedText );
+        operatorChanged( selection );
     }
 
 }

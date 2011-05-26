@@ -60,14 +60,25 @@ public class FormStylePopup extends Popup {
         this.form.clear();
     }
 
-    public void addAttribute(String label,
+    public int addAttribute(String label,
                              Widget wid) {
-        form.addAttribute( label,
-                           wid );
+        return form.addAttribute( label,
+                                  wid );
     }
 
-    public void addRow(Widget wid) {
-        form.addRow( wid );
+    public int addRow(Widget wid) {
+        return form.addRow( wid );
+    }
+    
+    /**
+     * Set the visibility of an Attribute
+     * 
+     * @param row
+     * @param isVisible
+     */
+    public void setAttributeVisibility(int row,
+                                       boolean isVisible) {
+        form.setAttributeVisibility( row, isVisible );
     }
 
 }

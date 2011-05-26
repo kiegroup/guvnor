@@ -18,6 +18,8 @@ package org.drools.ide.common.client.modeldriven.dt;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
+import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 
 /**
@@ -26,65 +28,52 @@ import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
  */
 public class ConditionCol extends DTColumnConfig
     implements
-    HasParameterizedOperator {
+    HasParameterizedOperator,
+    HasCEPWindow {
 
     private static final long   serialVersionUID = 510l;
 
-    /**
-     * What is displayed at the top
-     */
+    // What is displayed at the top
     private String              header;
 
-    /**
-     * The type of the fact - class - eg Driver, Person, Cheese etc.
-     */
+    // The type of the fact - class - eg Driver, Person, Cheese etc.
     private String              factType;
 
-    /**
-     * The name that this gets referenced as. Multiple columns with the same
-     * name mean their constraints will be combined.
-     */
+    // The name that this gets referenced as. Multiple columns with the same
+    // name mean their constraints will be combined.
     private String              boundName;
 
-    /**
-     * The type of the value that is in the cell, eg if it is a formula, or
-     * literal value etc. The valid types are from ISingleFieldConstraint:
-     * TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
-     * operator are ignored).
-     */
+    // The type of the value that is in the cell, eg if it is a formula, or
+    // literal value etc. The valid types are from ISingleFieldConstraint:
+    // TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
+    // operator are ignored).
     private int                 constraintValueType;
 
-    /**
-     * The field of the fact that this pertains to (if its a predicate, ignore
-     * it).
-     */
+    // The field of the fact that this pertains to (if its a predicate, ignore it).
     private String              factField;
 
-    /**
-     * The data-type of the field in the Fact used in the Condition. Possible
-     * values are held within the SuggestionCompletionEngine.TYPE_XXX
-     */
-
+    // The data-type of the field in the Fact used in the Condition. Possible
+    // values are held within the SuggestionCompletionEngine.TYPE_XXX
     private String              fieldType;
 
-    /**
-     * The operator to use to compare the field with the value (unless its a
-     * predicate, in which case this is ignored).
-     */
+    // The operator to use to compare the field with the value (unless its a
+    // predicate, in which case this is ignored).
     private String              operator;
 
-    /**
-     * Whether the pattern should be negated
-     */
+    // Whether the pattern should be negated
     private boolean             isNegated;
 
-    /**
-     * A comma separated list of valid values. Optional.
-     */
+    // A comma separated list of valid values. Optional.
     private String              valueList;
 
-    //Parameters for CEP operators
-    private Map<String, String> parameters       = null;
+    //CEP operators' parameters
+    private Map<String, String> parameters;
+
+    //CEP 'window' definition
+    private CEPWindow           window;
+
+    //Entry-point name
+    private String              entryPointName;
 
     public void setHeader(String header) {
         this.header = header;
@@ -180,15 +169,40 @@ public class ConditionCol extends DTColumnConfig
     }
 
     public void deleteParameter(String key) {
+        if ( this.parameters == null ) {
+            return;
+        }
         parameters.remove( key );
     }
 
     public Map<String, String> getParameters() {
+        if ( this.parameters == null ) {
+            this.parameters = new HashMap<String, String>();
+        }
         return this.parameters;
     }
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    public void setWindow(CEPWindow window) {
+        this.window = window;
+    }
+
+    public CEPWindow getWindow() {
+        if ( this.window == null ) {
+            this.window = new CEPWindow();
+        }
+        return this.window;
+    }
+
+    public String getEntryPointName() {
+        return entryPointName;
+    }
+
+    public void setEntryPointName(String entryPointName) {
+        this.entryPointName = entryPointName;
     }
 
     @Override
@@ -218,6 +232,8 @@ public class ConditionCol extends DTColumnConfig
                 && this.isNegated == that.isNegated
                 && nullOrEqual( this.parameters,
                                 that.parameters )
+                && nullOrEqual( this.window,
+                                that.window )
                 && super.equals( obj );
     }
 
@@ -234,6 +250,7 @@ public class ConditionCol extends DTColumnConfig
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
         hash = hash * 31 + (new Boolean( isNegated ).hashCode());
         hash = hash * 31 + parameters.hashCode();
+        hash = hash * 31 + window.hashCode();
         hash = hash * 31 + super.hashCode();
         return hash;
     }

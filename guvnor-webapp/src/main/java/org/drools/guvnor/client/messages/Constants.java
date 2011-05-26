@@ -2325,5 +2325,17 @@ public interface Constants
     String Dependencies();
 
     String missingGlobalsWarning();
+    
+    String OverCEPWindow();
 
+    String OverCEPWindowTime();
+
+    String OverCEPWindowLength();
+
+    String noCEPWindow();
+
+    String DTLabelOverCEPWindow();
+    
+    String DTLabelFromEntryPoint();
+    
 }
