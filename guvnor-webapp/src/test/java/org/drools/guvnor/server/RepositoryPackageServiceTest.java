@@ -754,7 +754,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("This test is broken. Suspect changes for new Workspaces and versionable packages could have broken.")
     public void testPackageConfSave() throws Exception {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
@@ -765,6 +764,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         data.setDescription( "new desc" );
         data.setHeader( "wa" );
         data.setExternalURI( "new URI" );
+        repositoryPackageService.savePackage(data);
 
         ValidatedResponse res = repositoryPackageService.validatePackageConfiguration( data );
         assertNotNull( res );
@@ -803,38 +803,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryPackageService.removePackage( p.getUUID() );
         assertEquals( n,
                       repositoryPackageService.listPackages().length );
-    }
-
-    @Test
-    @Ignore("Repository being imported does not exist. Need to create one!")
-    public void testImportPackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        try {
-            PackageItem item = impl.getRulesRepository().loadPackage( "testExportPackage" );
-            fail();
-            assertNull( item );
-        } catch ( Exception e ) {
-            // expected
-        }
-
-        //impl.createCategory( "/", "testExportPackageCat1", "desc" );
-        //impl.createCategory( "/", "testExportPackageCat2", "desc" );
-
-        File file = new File( "testExportPackage.xml" );
-
-        FileInputStream fis = new FileInputStream( file );
-        byte[] byteArray = new byte[fis.available()];
-        fis.read( byteArray );
-
-        repositoryPackageService.importPackages( byteArray,
-                                                 true );
-
-        PackageItem item = impl.getRulesRepository().loadPackage( "testExportPackage" );
-        assertNotNull( item );
-        assertEquals( "desc",
-                      item.getDescription() );
-        file.delete();
     }
 
     @Test
