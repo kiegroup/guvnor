@@ -39,6 +39,8 @@ public class ScalabilityTest extends RepositoryTestCase {
 
     @Test
     @Ignore("Legacy code, needs to be refactored.")
+    //This test is not appropriate for unit tests. Actually I do not see how this can be justified as a 
+    //test, as it does not check for any particular errors nor any performance numbers. 
     public void testRun() throws Exception {
         Properties properties = new Properties();
         properties.put( JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
