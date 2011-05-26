@@ -1710,9 +1710,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       res.getResult() );
     }
 
-    //GUVNOR-296
     @Test
-    @Ignore("This test is broken. Suspect changes for new Workspaces and versionable packages could have broken.")
+    @Ignore("To be fixed: GUVNOR-296")
     public void testHistoryAfterReImportSampleRepository() throws Exception {
 
         QueryPageRequest request;
