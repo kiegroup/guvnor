@@ -144,7 +144,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("This test is broken. Suspect changes for new Workspaces and versionable packages could have broken.")
     public void testLinkedAssetItemHistoryRelated() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
@@ -195,7 +194,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         TableDataResult result = repositoryAssetService.loadItemHistory( uuidLink );
         assertNotNull( result );
         TableDataRow[] rows = result.data;
-        assertEquals( 3,
+        assertEquals( 4,
                       rows.length );
         assertFalse( rows[0].id.equals( uuidLink ) );
         assertFalse( rows[1].id.equals( uuidLink ) );
@@ -220,7 +219,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         result = repositoryAssetService.loadItemHistory( uuid );
         assertNotNull( result );
         rows = result.data;
-        assertEquals( 3,
+        assertEquals( 4,
                       rows.length );
         assertFalse( rows[0].id.equals( uuid ) );
         assertFalse( rows[1].id.equals( uuid ) );
@@ -490,7 +489,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("This test is broken. Suspect changes for new Workspaces and versionable packages could have broken.")
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
         ServiceImplementation impl = getServiceImplementation();
@@ -530,7 +528,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         TableDataResult result = repositoryAssetService.loadItemHistory( uuid );
         assertNotNull( result );
         TableDataRow[] rows = result.data;
-        assertEquals( 2,
+        assertEquals( 3,
                       rows.length );
         assertFalse( rows[0].id.equals( uuid ) );
         assertFalse( rows[1].id.equals( uuid ) );
