@@ -29,7 +29,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -222,11 +222,9 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Iterator<ConditionCol> iterator = dtable.getModel()
-                .getConditionCols().iterator(); iterator.hasNext(); ) {
-            ConditionCol col = (ConditionCol) iterator.next();
-            if ( col.getBoundName().equals( boundName ) ) {
-                return col.getFactType();
+        for ( Pattern p : this.dtable.getModel().getConditionPatterns() ) {
+            if ( p.getBoundName().equals( boundName ) ) {
+                return p.getFactType();
             }
         }
         return "";
@@ -244,10 +242,9 @@ public class ActionSetColumn extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( int i = 0; i < this.dtable.getModel().getConditionCols().size(); i++ ) {
-            ConditionCol c = (ConditionCol) dtable.getModel().getConditionCols().get( i );
-            if ( !c.isNegated() ) {
-                facts.add( c.getBoundName() );
+        for ( Pattern p : this.dtable.getModel().getConditionPatterns() ) {
+            if ( !p.isNegated() ) {
+                facts.add( p.getBoundName() );
             }
         }
 

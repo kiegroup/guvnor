@@ -20,11 +20,11 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -43,7 +43,7 @@ public class GuidedDTXMLPersistence {
         xt.alias( "attribute-column",
                   AttributeCol.class );
         xt.alias( "condition-column",
-                  ConditionCol.class );
+                  ConditionCol52.class );
         xt.alias( "set-field-col",
                   ActionSetFieldCol.class );
         xt.alias( "retract-fact-column",
@@ -59,7 +59,7 @@ public class GuidedDTXMLPersistence {
                          "org.drools.ide.common.client" );
 
         xt.alias( "dtable",
-                  TypeSafeGuidedDecisionTable.class );
+                  GuidedDecisionTable52.class );
         xt.alias( "value",
                   DTCellValue.class );
     }
@@ -68,23 +68,23 @@ public class GuidedDTXMLPersistence {
         return INSTANCE;
     }
 
-    public String marshal(TypeSafeGuidedDecisionTable dt) {
+    public String marshal(GuidedDecisionTable52 dt) {
         return xt.toXML( dt );
     }
 
-    public TypeSafeGuidedDecisionTable unmarshal(String xml) {
+    public GuidedDecisionTable52 unmarshal(String xml) {
         if ( xml == null || xml.trim().equals( "" ) ) {
-            return new TypeSafeGuidedDecisionTable();
+            return new GuidedDecisionTable52();
         }
 
         //Upgrade DTModel to new class
         Object model = xt.fromXML( xml );
-        TypeSafeGuidedDecisionTable newDTModel;
+        GuidedDecisionTable52 newDTModel;
         if ( model instanceof GuidedDecisionTable ) {
             GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
             newDTModel = RepositoryUpgradeHelper.convertGuidedDTModel( legacyDTModel );
         } else {
-            newDTModel = (TypeSafeGuidedDecisionTable) model;
+            newDTModel = (GuidedDecisionTable52) model;
         }
         return newDTModel;
     }

@@ -32,7 +32,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This works by taking the column definitions, and combining them with the
  * table of data to produce rule models.
  * 
- * This has been deprecated in preference of {@link TypeSafeGuidedDecisionTable}
+ * This has been deprecated in preference of {@link GuidedDecisionTable52}
  * which supports type-safe values for the Decision Table cell values.
  */
 @Deprecated
@@ -73,7 +73,7 @@ public class GuidedDecisionTable
 
     private List<AttributeCol> attributeCols     = new ArrayList<AttributeCol>();
 
-    private List<ConditionCol> conditionCols     = new ArrayList<ConditionCol>();
+    private List<ConditionCol52> conditionCols     = new ArrayList<ConditionCol52>();
 
     private List<ActionCol>    actionCols        = new ArrayList<ActionCol>();
 
@@ -95,7 +95,7 @@ public class GuidedDecisionTable
         return attributeCols;
     }
 
-    public List<ConditionCol> getConditionCols() {
+    public List<ConditionCol52> getConditionCols() {
         return conditionCols;
     }
 
@@ -140,8 +140,8 @@ public class GuidedDecisionTable
         if ( col instanceof AttributeCol ) {
             AttributeCol at = (AttributeCol) col;
             type = at.getAttribute();
-        } else if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
+        } else if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 c = (ConditionCol52) col;
             type = sce.getFieldType( c.getFactType(),
                                      c.getFactField() );
         } else if ( col instanceof ActionSetFieldCol ) {
@@ -169,10 +169,10 @@ public class GuidedDecisionTable
                  || "enabled".equals( at.getAttribute() ) ) {
                 return new String[]{"true", "false"};
             }
-        } else if ( col instanceof ConditionCol ) {
+        } else if ( col instanceof ConditionCol52 ) {
             // conditions: if its a formula etc, just return String[0],
             // otherwise check with the sce
-            ConditionCol c = (ConditionCol) col;
+            ConditionCol52 c = (ConditionCol52) col;
             if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
                     || c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
                 return new String[0];
@@ -241,8 +241,8 @@ public class GuidedDecisionTable
         if ( col instanceof AttributeCol ) {
             return true;
         }
-        if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
+        if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 c = (ConditionCol52) col;
             if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
                 if ( c.getFactField() == null
                      || c.getFactField().equals( "" ) ) {
@@ -309,9 +309,9 @@ public class GuidedDecisionTable
     }
 
     private String getBoundFactType(String boundName) {
-        for ( Iterator<ConditionCol> iterator = getConditionCols().iterator(); iterator
+        for ( Iterator<ConditionCol52> iterator = getConditionCols().iterator(); iterator
                 .hasNext(); ) {
-            ConditionCol c = iterator.next();
+            ConditionCol52 c = iterator.next();
             if ( c.getBoundName().equals( boundName ) ) {
                 return c.getFactType();
             }
@@ -338,8 +338,8 @@ public class GuidedDecisionTable
             throw new IllegalArgumentException(
                                                 "Only ConditionCol and Actions permitted. Consider using one of the public is<DataType> methods." );
         }
-        if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
+        if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 c = (ConditionCol52) col;
             if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
                 if ( c.getOperator() == null
                      || "".equals( c.getOperator() ) ) {

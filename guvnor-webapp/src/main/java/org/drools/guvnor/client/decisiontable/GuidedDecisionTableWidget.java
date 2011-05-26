@@ -38,10 +38,11 @@ import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -71,7 +72,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
 
-    private TypeSafeGuidedDecisionTable guidedDecisionTable;
+    private GuidedDecisionTable52 guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
     private VerticalPanel               attributeConfigWidget;
@@ -89,7 +90,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     public GuidedDecisionTableWidget(RuleAsset asset) {
 
-        this.guidedDecisionTable = (TypeSafeGuidedDecisionTable) asset.getContent();
+        this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.packageName = asset.getMetaData().getPackageName();
         this.guidedDecisionTable.setTableName( asset.getName() );
 
@@ -296,20 +297,21 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshConditionsWidget() {
         this.conditionsConfigWidget.clear();
-        for ( int i = 0; i < guidedDecisionTable.getConditionCols().size(); i++ ) {
-            ConditionCol c = guidedDecisionTable.getConditionCols().get( i );
-            HorizontalPanel hp = new HorizontalPanel();
-            hp.add( removeCondition( c ) );
-            hp.add( editCondition( c ) );
-            hp.add( new SmallLabel( c.getHeader() ) );
-            conditionsConfigWidget.add( hp );
+        for ( Pattern p : guidedDecisionTable.getConditionPatterns() ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
+                HorizontalPanel hp = new HorizontalPanel();
+                hp.add( removeCondition( c ) );
+                hp.add( editCondition( c ) );
+                hp.add( new SmallLabel( c.getHeader() ) );
+                conditionsConfigWidget.add( hp );
+            }
         }
         conditionsConfigWidget.add( newCondition() );
         setupColumnsNote();
     }
 
     private Widget newCondition() {
-        final ConditionCol newCol = new ConditionCol();
+        final ConditionCol52 newCol = new ConditionCol52();
         newCol.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         AddButton addButton = new AddButton();
         addButton.setText( constants.NewColumn() );
@@ -334,7 +336,7 @@ public class GuidedDecisionTableWidget extends Composite
         return addButton;
     }
 
-    private Widget editCondition(final ConditionCol c) {
+    private Widget editCondition(final ConditionCol52 c) {
         return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
@@ -345,7 +347,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                 new ColumnCentricCommand() {
                                                                                                     public void execute(DTColumnConfig column) {
                                                                                                         dtable.updateColumn( c,
-                                                                                                                             (ConditionCol) column );
+                                                                                                                             (ConditionCol52) column );
                                                                                                         dtable.scrapeColumns();
                                                                                                         refreshConditionsWidget();
                                                                                                     }
@@ -365,7 +367,7 @@ public class GuidedDecisionTableWidget extends Composite
         return sce;
     }
 
-    private Widget removeCondition(final ConditionCol c) {
+    private Widget removeCondition(final ConditionCol52 c) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisConditionColumn(),
                                      new ClickHandler() {
@@ -507,9 +509,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                    final FormStylePopup pop = new FormStylePopup( images.config(),
                                                                                                   constants.AddAnOptionToTheRule() );
                                                    final ListBox list = RuleAttributeWidget.getAttributeList();
-                                                   
+
                                                    //This attribute is only used for Decision Tables
-                                                   list.addItem(TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR);
+                                                   list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
 
                                                    // Remove any attributes
                                                    // already added
@@ -622,13 +624,14 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void setupColumnsNote() {
         configureColumnsNote.setVisible( guidedDecisionTable.getAttributeCols().size() == 0
-                                         && guidedDecisionTable.getConditionCols().size() == 0
+                                         && guidedDecisionTable.getConditionsCount() == 0
                                          && guidedDecisionTable.getActionCols().size() == 0 );
     }
 
     private void setupDecisionTable() {
         if ( dtable == null ) {
-            dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(), getSCE() );
+            dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
+                                                      getSCE() );
             dtable.setPixelSize( 1000,
                                  400 );
             dtable.setModel( guidedDecisionTable );

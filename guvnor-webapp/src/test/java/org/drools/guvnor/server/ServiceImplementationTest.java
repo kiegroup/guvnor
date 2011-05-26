@@ -70,8 +70,9 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.RepositoryUpgradeHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
@@ -1199,15 +1200,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rule1.checkin( "" );
         repo.save();
 
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p" );
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p" );
+        p1.setFactType( "Person" );
+
+        ConditionCol52 col = new ConditionCol52();
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col.setFactField( "hair" );
-        col.setFactType( "Person" );
         col.setOperator( "==" );
-        dt.getConditionCols().add( col );
+        p1.getConditions().add( col );
+
+        dt.getConditionPatterns().add( p1 );
 
         ActionSetFieldCol ac = new ActionSetFieldCol();
         ac.setBoundName( "p" );

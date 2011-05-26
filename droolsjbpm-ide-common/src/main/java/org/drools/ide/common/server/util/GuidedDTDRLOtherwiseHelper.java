@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 
@@ -38,7 +38,7 @@ public class GuidedDTDRLOtherwiseHelper {
     public static class EqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
         @Override
-        FieldConstraint constructSingleFieldConstraint(ConditionCol c,
+        FieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
                                                        List<DTCellValue> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
@@ -81,7 +81,7 @@ public class GuidedDTDRLOtherwiseHelper {
     public static class NotEqualsOtherwiseBuilder extends AbstractOtherwiseBuilder {
 
         @Override
-        SingleFieldConstraint constructSingleFieldConstraint(ConditionCol c,
+        SingleFieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
                                                              List<DTCellValue> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
@@ -136,7 +136,7 @@ public class GuidedDTDRLOtherwiseHelper {
          *            Decision Table values
          * @return
          */
-        FieldConstraint makeFieldConstraint(ConditionCol c,
+        FieldConstraint makeFieldConstraint(ConditionCol52 c,
                                             List<DTColumnConfig> allColumns,
                                             List<List<DTCellValue>> data);
 
@@ -153,7 +153,7 @@ public class GuidedDTDRLOtherwiseHelper {
         implements
         OtherwiseBuilder {
 
-        public FieldConstraint makeFieldConstraint(ConditionCol c,
+        public FieldConstraint makeFieldConstraint(ConditionCol52 c,
                                                    List<DTColumnConfig> allColumns,
                                                    List<List<DTCellValue>> data) {
             int index = allColumns.indexOf( c );
@@ -164,7 +164,7 @@ public class GuidedDTDRLOtherwiseHelper {
         }
 
         //Template pattern, provide method for implementations to override
-        abstract FieldConstraint constructSingleFieldConstraint(ConditionCol c,
+        abstract FieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
                                                                 List<DTCellValue> columnData);
 
     }
@@ -175,7 +175,7 @@ public class GuidedDTDRLOtherwiseHelper {
      * @param c
      * @return
      */
-    public static OtherwiseBuilder getBuilder(ConditionCol c) {
+    public static OtherwiseBuilder getBuilder(ConditionCol52 c) {
 
         if ( c.getOperator().equals( "==" ) ) {
             return new EqualsOtherwiseBuilder();

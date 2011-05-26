@@ -17,16 +17,19 @@ package org.drools.ide.common.server.util;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
@@ -40,9 +43,9 @@ public class RepositoryUpgradeHelper {
      * @param legacyDTModel
      * @return The new DTModel
      */
-    public static TypeSafeGuidedDecisionTable convertGuidedDTModel(GuidedDecisionTable legacyDTModel) {
+    public static GuidedDecisionTable52 convertGuidedDTModel(GuidedDecisionTable legacyDTModel) {
 
-        TypeSafeGuidedDecisionTable newDTModel = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 newDTModel = new GuidedDecisionTable52();
 
         newDTModel.setTableName( legacyDTModel.getTableName() );
         newDTModel.setParentName( legacyDTModel.getParentName() );
@@ -62,10 +65,28 @@ public class RepositoryUpgradeHelper {
         }
 
         //Legacy decision tables did not have Condition field data-types. Set all Condition 
-        //fields to a *sensible* default of String (as this matches legacy behaviour). 
-        for ( ConditionCol c : legacyDTModel.getConditionCols() ) {
+        //fields to a *sensible* default of String (as this matches legacy behaviour).
+        assertConditionColumnPatternGrouping( legacyDTModel );
+        Map<String, Pattern> patterns = new HashMap<String, Pattern>();
+        for ( int i = 0; i < legacyDTModel.getConditionCols().size(); i++ ) {
+            ConditionCol52 c = legacyDTModel.getConditionCols().get( i );
+            String boundName = c.getBoundName();
+            Pattern p = patterns.get( boundName );
+            if ( p == null ) {
+                p = new Pattern();
+                p.setBoundName( boundName );
+                p.setFactType( c.getFactType() );
+                patterns.put( boundName,
+                              p );
+            }
+            if ( p.getFactType() != null && !p.getFactType().equals( c.getFactType() ) ) {
+                throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
+            }
             c.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-            newDTModel.getConditionCols().add( c );
+            p.getConditions().add( c );
+        }
+        for ( Pattern p : patterns.values() ) {
+            newDTModel.getConditionPatterns().add( p );
         }
 
         //Action columns have a discrete data-type. No conversion action required.
@@ -77,6 +98,65 @@ public class RepositoryUpgradeHelper {
         newDTModel.setData( makeDataLists( legacyDTModel.getData() ) );
 
         return newDTModel;
+    }
+
+    // Ensure Condition columns are grouped by pattern (as we merge equal
+    // patterns in the UI). This operates on the original Model data and
+    // therefore should be called before the Decision Table's internal data
+    // representation (i.e. DynamicData, DynamicDataRow and CellValue) is
+    // populated
+    private static void assertConditionColumnPatternGrouping(GuidedDecisionTable model) {
+
+        class ConditionColData {
+            ConditionCol52 col;
+            String[]     data;
+        }
+
+        // Offset into Model's data array
+        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.getAttributeCols().size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
+        Map<String, List<ConditionColData>> groups = new HashMap<String, List<ConditionColData>>();
+        final int DATA_ROWS = model.getData().length;
+
+        // Copy conditions and related data into temporary groups
+        for ( int iCol = 0; iCol < model.getConditionCols().size(); iCol++ ) {
+
+            ConditionCol52 col = model.getConditionCols().get( iCol );
+            String pattern = col.getBoundName();
+            if ( !groups.containsKey( pattern ) ) {
+                List<ConditionColData> groupCols = new ArrayList<ConditionColData>();
+                groups.put( pattern,
+                            groupCols );
+            }
+            List<ConditionColData> groupCols = groups.get( pattern );
+
+            // Make a ConditionColData object
+            ConditionColData ccd = new ConditionColData();
+            int colIndex = DATA_COLUMN_OFFSET + iCol;
+            ccd.data = new String[DATA_ROWS];
+            for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
+                String[] row = model.getData()[iRow];
+                ccd.data[iRow] = row[colIndex];
+            }
+            ccd.col = col;
+            groupCols.add( ccd );
+
+        }
+
+        // Copy temporary groups back into the model
+        int iCol = 0;
+        model.getConditionCols().clear();
+        for ( Map.Entry<String, List<ConditionColData>> me : groups.entrySet() ) {
+            for ( ConditionColData ccd : me.getValue() ) {
+                model.getConditionCols().add( ccd.col );
+                int colIndex = DATA_COLUMN_OFFSET + iCol;
+                for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
+                    String[] row = model.getData()[iRow];
+                    row[colIndex] = ccd.data[iRow];
+                }
+                iCol++;
+            }
+        }
+
     }
 
     /**
@@ -121,4 +201,5 @@ public class RepositoryUpgradeHelper {
         }
         return row;
     }
+
 }

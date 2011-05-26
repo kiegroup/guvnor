@@ -39,20 +39,21 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void test2Rules() throws Exception {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -60,40 +61,44 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        ConditionCol con = new ConditionCol();
-        con.setBoundName( "f1" );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Driver" );
+
+        ConditionCol52 con = new ConditionCol52();
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con.setFactField( "age" );
-        con.setFactType( "Driver" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        dt.getConditionCols().add( con );
+        p1.getConditions().add( con );
 
-        ConditionCol con2 = new ConditionCol();
-        con2.setBoundName( "f1" );
+        ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
-        con2.setFactType( "Driver" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "==" );
-        dt.getConditionCols().add( con2 );
+        p1.getConditions().add( con2 );
 
-        ConditionCol con3 = new ConditionCol();
-        con3.setBoundName( "f1" );
+        ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
-        con3.setFactType( "Driver" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        dt.getConditionCols().add( con3 );
+        p1.getConditions().add( con3 );
 
-        ConditionCol con4 = new ConditionCol();
-        con4.setBoundName( "f2" );
+        dt.getConditionPatterns().add( p1 );
+
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "f2" );
+        p2.setFactType( "Driver" );
+
+        ConditionCol52 con4 = new ConditionCol52();
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        con4.setFactType( "Driver" );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "(not needed)" );
-        dt.getConditionCols().add( con4 );
+        p2.getConditions().add( con4 );
+
+        dt.getConditionPatterns().add( p2 );
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
         ins.setBoundName( "ins" );
@@ -131,8 +136,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "rating == ( age * 0.2 )" ) > 0 );
         assertTrue( drl.indexOf( "f2 : Driver( eval( age > 7 ))" ) > 0 );
         assertTrue( drl.indexOf( "rating == ( age * 0.3 )" ) > drl.indexOf( "rating == ( age * 0.2 )" ) );
-        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 ); // for
-                                                                   // default
+        assertTrue( drl.indexOf( "f1.setGoo2( \"whee\" )" ) > 0 ); // for default
         assertTrue( drl.indexOf( "salience 66" ) > 0 ); // for default
 
     }
@@ -221,7 +225,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testInOperator() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -229,40 +233,38 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        ConditionCol con = new ConditionCol();
-        con.setBoundName( "f1" );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Driver" );
+
+        ConditionCol52 con = new ConditionCol52();
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con.setFactField( "age" );
-        con.setFactType( "Driver" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        dt.getConditionCols().add( con );
+        p1.getConditions().add( con );
 
-        ConditionCol con2 = new ConditionCol();
-        con2.setBoundName( "f1" );
+        ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
-        con2.setFactType( "Driver" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "in" );
-        dt.getConditionCols().add( con2 );
+        p1.getConditions().add( con2 );
 
-        ConditionCol con3 = new ConditionCol();
-        con3.setBoundName( "f1" );
+        ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
-        con3.setFactType( "Driver" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        dt.getConditionCols().add( con3 );
+        p1.getConditions().add( con3 );
 
-        ConditionCol con4 = new ConditionCol();
-        con4.setBoundName( "f2" );
+        ConditionCol52 con4 = new ConditionCol52();
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        con4.setFactType( "Driver" );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "(not needed)" );
-        dt.getConditionCols().add( con4 );
+        p1.getConditions().add( con4 );
+
+        dt.getConditionPatterns().add( p1 );
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
         ins.setBoundName( "ins" );
@@ -302,7 +304,7 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testInterpolate() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
         AttributeCol attr = new AttributeCol();
@@ -310,40 +312,44 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        ConditionCol con = new ConditionCol();
-        con.setBoundName( "f1" );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "f1" );
+        p1.setFactType( "Driver" );
+
+        ConditionCol52 con = new ConditionCol52();
         con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con.setFactField( "age" );
-        con.setFactType( "Driver" );
         con.setHeader( "Driver f1 age" );
         con.setOperator( "==" );
-        dt.getConditionCols().add( con );
+        p1.getConditions().add( con );
 
-        ConditionCol con2 = new ConditionCol();
-        con2.setBoundName( "f1" );
+        ConditionCol52 con2 = new ConditionCol52();
         con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         con2.setFactField( "name" );
-        con2.setFactType( "Driver" );
         con2.setHeader( "Driver f1 name" );
         con2.setOperator( "==" );
-        dt.getConditionCols().add( con2 );
+        p1.getConditions().add( con2 );
 
-        ConditionCol con3 = new ConditionCol();
-        con3.setBoundName( "f1" );
+        ConditionCol52 con3 = new ConditionCol52();
         con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         con3.setFactField( "rating" );
-        con3.setFactType( "Driver" );
         con3.setHeader( "Driver rating" );
         con3.setOperator( "==" );
-        dt.getConditionCols().add( con3 );
+        p1.getConditions().add( con3 );
 
-        ConditionCol con4 = new ConditionCol();
-        con4.setBoundName( "f2" );
+        dt.getConditionPatterns().add( p1 );
+
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "f2" );
+        p2.setFactType( "Driver" );
+
+        ConditionCol52 con4 = new ConditionCol52();
         con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        con4.setFactType( "Driver" );
         con4.setHeader( "Driver 2 pimp" );
         con4.setFactField( "this.hasSomething($param)" );
-        dt.getConditionCols().add( con4 );
+        p2.getConditions().add( con4 );
+
+        dt.getConditionPatterns().add( p2 );
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
         ins.setBoundName( "ins" );
@@ -396,46 +402,51 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
         allColumns.add( new MetadataCol() );
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
+
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "name" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setOperator( "==" );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p1" );
-        col2.setFactType( "Person" );
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
-        cols.add( col2 );
+        p1.getConditions().add( col2 );
+        allColumns.add( col2 );
 
-        ConditionCol col3 = new ConditionCol();
-        col3.setBoundName( "p1" );
-        col3.setFactType( "Person" );
+        ConditionCol52 col3 = new ConditionCol52();
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        cols.add( col3 );
+        p1.getConditions().add( col3 );
+        allColumns.add( col3 );
 
-        ConditionCol col4 = new ConditionCol();
-        col4.setBoundName( "c" );
-        col4.setFactType( "Cheese" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c" );
+        p2.setFactType( "Cheese" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col4 = new ConditionCol52();
         col4.setFactField( "type" );
         col4.setOperator( "==" );
         col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cols.add( col4 );
+        p2.getConditions().add( col4 );
+        allColumns.add( col4 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -505,49 +516,52 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
         allColumns.add( new MetadataCol() );
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        Pattern p1 = new Pattern();
+        p1.setNegated( true );
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
+
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "name" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setOperator( "==" );
-        col.setNegated( true );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p1" );
-        col2.setFactType( "Person" );
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
         col2.setOperator( "<" );
-        col2.setNegated( true );
-        cols.add( col2 );
+        p1.getConditions().add( col2 );
+        allColumns.add( col2 );
 
-        ConditionCol col3 = new ConditionCol();
-        col3.setBoundName( "p1" );
-        col3.setFactType( "Person" );
+        ConditionCol52 col3 = new ConditionCol52();
         col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        col3.setNegated( true );
-        cols.add( col3 );
+        p1.getConditions().add( col3 );
+        allColumns.add( col3 );
 
-        ConditionCol col4 = new ConditionCol();
-        col4.setBoundName( "c" );
-        col4.setFactType( "Cheese" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c" );
+        p2.setFactType( "Cheese" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col4 = new ConditionCol52();
         col4.setFactField( "type" );
         col4.setOperator( "==" );
         col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        cols.add( col4 );
+        p2.getConditions().add( col4 );
+        allColumns.add( col4 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -639,34 +653,40 @@ public class GuidedDTDRLPersistenceTest {
         data[1] = row[1];
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
 
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "alive" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
         col.setOperator( "==" );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p2" );
-        col2.setFactType( "Person" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "p2" );
+        p2.setFactType( "Person" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "alive" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
         col2.setOperator( "!=" );
-        cols.add( col2 );
+        p2.getConditions().add( col2 );
+        allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel0,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -687,7 +707,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p2 : Person( alive != false )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel1,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -729,34 +749,40 @@ public class GuidedDTDRLPersistenceTest {
         data[2] = row[2];
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
 
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "dateOfBirth" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         col.setOperator( "==" );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p2" );
-        col2.setFactType( "Person" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "p2" );
+        p2.setFactType( "Person" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "dateOfBirth" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
         col2.setOperator( "!=" );
-        cols.add( col2 );
+        p2.getConditions().add( col2 );
+        allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel0,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -777,7 +803,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p2 : Person( dateOfBirth != \"20-Jun-1985\" )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel1,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -798,7 +824,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p2 : Person( dateOfBirth != \"21-Jun-1986\" )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel2,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -840,34 +866,40 @@ public class GuidedDTDRLPersistenceTest {
         data[2] = row[2];
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
 
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "age" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         col.setOperator( "==" );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p2" );
-        col2.setFactType( "Person" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "p2" );
+        p2.setFactType( "Person" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "age" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
         col2.setOperator( "!=" );
-        cols.add( col2 );
+        p2.getConditions().add( col2 );
+        allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel0,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -888,7 +920,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p2 : Person( age != 1 )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel1,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -909,7 +941,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p2 : Person( age != 2 )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel2,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -951,34 +983,40 @@ public class GuidedDTDRLPersistenceTest {
         data[2] = row[2];
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
 
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
 
-        ConditionCol col = new ConditionCol();
-        col.setBoundName( "p1" );
-        col.setFactType( "Person" );
+        ConditionCol52 col = new ConditionCol52();
         col.setFactField( "name" );
         col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col.setOperator( "==" );
-        cols.add( col );
+        p1.getConditions().add( col );
+        allColumns.add( col );
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p2" );
-        col2.setFactType( "Person" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "p2" );
+        p2.setFactType( "Person" );
+        allPatterns.add( p2 );
+
+        ConditionCol52 col2 = new ConditionCol52();
         col2.setFactField( "name" );
         col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         col2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
         col2.setOperator( "!=" );
-        cols.add( col2 );
+        p2.getConditions().add( col2 );
+        allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel0,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -999,7 +1037,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl0.indexOf( "p2 : Person( name != \"Michael1\" )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel1,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -1020,7 +1058,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl1.indexOf( "p2 : Person( name != \"Michael2\" )" ) > 0 );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         rowDTModel2,
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -1116,12 +1154,18 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testNoConstraints() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
-        ConditionCol c = new ConditionCol();
-        c.setBoundName( "x" );
-        c.setFactType( "Context" );
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c );
+        p1.getConditions().add( c );
+
+        dt.getConditionPatterns().add( p1 );
+
         ActionSetFieldCol asf = new ActionSetFieldCol();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
@@ -1135,8 +1179,6 @@ public class GuidedDTDRLPersistenceTest {
         dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
-
-        // System.err.println(drl);
 
         assertTrue( drl.indexOf( "Context( )" ) > -1 );
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
@@ -1159,24 +1201,27 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
         allColumns.add( new MetadataCol() );
-        List<ConditionCol> cols = new ArrayList<ConditionCol>();
 
-        ConditionCol col2 = new ConditionCol();
-        col2.setBoundName( "p1" );
-        col2.setFactType( "Person" );
-        col2.setFactField( "age" );
-        col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        col2.setOperator( "" );
-        cols.add( col2 );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
+
+        ConditionCol52 col1 = new ConditionCol52();
+        col1.setFactField( "age" );
+        col1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col1.setOperator( "" );
+        p1.getConditions().add( col1 );
+        allColumns.add( col1 );
 
         RuleModel rm = new RuleModel();
-        allColumns.addAll( cols );
 
         p.doConditions( allColumns,
-                        cols,
+                        allPatterns,
                         RepositoryUpgradeHelper.makeDataRowList( row ),
                         RepositoryUpgradeHelper.makeDataLists( data ),
                         rm );
@@ -1195,7 +1240,7 @@ public class GuidedDTDRLPersistenceTest {
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
         allColumns.add( new MetadataCol() );
-        allColumns.add( new ConditionCol() );
+        allColumns.add( new ConditionCol52() );
         List<ActionCol> cols = new ArrayList<ActionCol>();
 
         ActionSetFieldCol asf1 = new ActionSetFieldCol();
@@ -1291,12 +1336,17 @@ public class GuidedDTDRLPersistenceTest {
 
     @Test
     public void testUpdateModify() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
-        ConditionCol c = new ConditionCol();
-        c.setBoundName( "x" );
-        c.setFactType( "Context" );
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "x" );
+        p1.setFactType( "Context" );
+
+        ConditionCol52 c = new ConditionCol52();
         c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c );
+        p1.getConditions().add( c );
+        dt.getConditionPatterns().add( p1 );
+
         ActionSetFieldCol asf = new ActionSetFieldCol();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
@@ -1311,8 +1361,6 @@ public class GuidedDTDRLPersistenceTest {
         dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
-
-        System.err.println( drl );
 
         assertTrue( drl.indexOf( "Context( )" ) > -1 );
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );

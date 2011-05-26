@@ -31,10 +31,11 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,15 +45,15 @@ import org.junit.Test;
 public class CellValueFactoryTests {
 
     private SuggestionCompletionEngine    sce     = null;
-    private TypeSafeGuidedDecisionTable   dt      = null;
+    private GuidedDecisionTable52   dt      = null;
     private DecisionTableCellValueFactory factory = null;
 
     private AttributeCol                  at1     = null;
     private AttributeCol                  at2     = null;
-    private ConditionCol                  c1      = null;
-    private ConditionCol                  c2      = null;
-    private ConditionCol                  c3      = null;
-    private ConditionCol                  c4      = null;
+    private ConditionCol52                  c1      = null;
+    private ConditionCol52                  c2      = null;
+    private ConditionCol52                  c3      = null;
+    private ConditionCol52                  c4      = null;
     private ActionSetFieldCol             a1      = null;
     private ActionInsertFactCol           a2      = null;
 
@@ -85,7 +86,7 @@ public class CellValueFactoryTests {
             }
         } );
 
-        dt = new TypeSafeGuidedDecisionTable();
+        dt = new GuidedDecisionTable52();
 
         at1 = new AttributeCol();
         at1.setAttribute( "salience" );
@@ -95,37 +96,49 @@ public class CellValueFactoryTests {
         dt.getAttributeCols().add( at1 );
         dt.getAttributeCols().add( at2 );
 
-        c1 = new ConditionCol();
-        c1.setBoundName( "c1" );
-        c1.setFactType( "Driver" );
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
+
+        c1 = new ConditionCol52();
         c1.setFactField( "name" );
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1 );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
 
-        c2 = new ConditionCol();
-        c2.setBoundName( "c2" );
-        c2.setFactType( "Driver" );
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c2" );
+        p2.setFactType( "Driver" );
+
+        c2 = new ConditionCol52();
         c2.setFactField( "age" );
         c2.setOperator( "==" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c2 );
+        p2.getConditions().add( c2 );
+        dt.getConditionPatterns().add( p2 );
 
-        c3 = new ConditionCol();
-        c3.setBoundName( "c3" );
-        c3.setFactType( "Driver" );
+        Pattern p3 = new Pattern();
+        p3.setBoundName( "c3" );
+        p3.setFactType( "Driver" );
+
+        c3 = new ConditionCol52();
         c3.setFactField( "dateOfBirth" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c3 );
+        p3.getConditions().add( c3 );
+        dt.getConditionPatterns().add( p3 );
 
-        c4 = new ConditionCol();
-        c4.setBoundName( "c4" );
-        c4.setFactType( "Driver" );
+        Pattern p4 = new Pattern();
+        p4.setBoundName( "c4" );
+        p4.setFactType( "Driver" );
+
+        c4 = new ConditionCol52();
         c4.setFactField( "approved" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c4 );
+        p4.getConditions().add( c4 );
+        dt.getConditionPatterns().add( p4 );
 
         a1 = new ActionSetFieldCol();
         a1.setBoundName( "c1" );

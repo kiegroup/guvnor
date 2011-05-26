@@ -42,13 +42,14 @@ import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -67,7 +68,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasSystemControlledColumns {
 
     // Decision Table data
-    protected TypeSafeGuidedDecisionTable         model;
+    protected GuidedDecisionTable52         model;
     protected DecoratedGridWidget<DTColumnConfig> widget;
     protected SuggestionCompletionEngine          sce;
     protected DecisionTableCellFactory            cellFactory;
@@ -153,7 +154,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * 
      * @return The DecisionTable data model
      */
-    public TypeSafeGuidedDecisionTable getModel() {
+    public GuidedDecisionTable52 getModel() {
         return this.model;
     }
 
@@ -221,7 +222,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Clear existing definition
         model.getMetadataCols().clear();
         model.getAttributeCols().clear();
-        model.getConditionCols().clear();
+        model.getConditionPatterns().clear();
         model.getActionCols().clear();
 
         RowNumberCol rnCol = null;
@@ -246,9 +247,13 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 AttributeCol tc = (AttributeCol) modelCol;
                 model.getAttributeCols().add( tc );
 
-            } else if ( modelCol instanceof ConditionCol ) {
-                ConditionCol tc = (ConditionCol) modelCol;
-                model.getConditionCols().add( tc );
+            } else if ( modelCol instanceof ConditionCol52 ) {
+                ConditionCol52 tc = (ConditionCol52) modelCol;
+                Pattern p = tc.getPattern();
+                if ( !model.getConditionPatterns().contains( p ) ) {
+                    model.getConditionPatterns().add( p );
+                }
+                p.getConditions().add( tc );
 
             } else if ( modelCol instanceof ActionCol ) {
                 ActionCol tc = (ActionCol) modelCol;
@@ -309,7 +314,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * 
      * @param data
      */
-    public void setModel(TypeSafeGuidedDecisionTable model) {
+    public void setModel(GuidedDecisionTable52 model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -396,21 +401,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Initialise CellTable's Condition columns
-        assertConditionColumnGrouping( model );
-        for ( DTColumnConfig col : model.getConditionCols() ) {
-            DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      cellFactory.getCell( col ),
-                                                                                      colIndex );
-            column.setVisible( !col.isHideColumn() );
-            widget.appendColumn( column,
-                                 makeColumnData( col,
-                                                 colIndex++ ),
-                                 false );
+        for ( Pattern p : model.getConditionPatterns() ) {
+            for ( DTColumnConfig col : p.getConditions() ) {
+                DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
+                                                                                          cellFactory.getCell( col ),
+                                                                                          colIndex );
+                column.setVisible( !col.isHideColumn() );
+                widget.appendColumn( column,
+                                     makeColumnData( col,
+                                                     colIndex++ ),
+                                     false );
 
-            //Ensure field data-type is set (field did not exist before 5.2)
-            ConditionCol cc = (ConditionCol) col;
-            cc.setFieldType( sce.getFieldType( cc.getFactType(),
-                                               cc.getFactField() ) );
+                //Ensure field data-type is set (field did not exist before 5.2)
+                ConditionCol52 cc = (ConditionCol52) col;
+                cc.setFieldType( sce.getFieldType( p.getFactType(),
+                                                   cc.getFactField() ) );
+            }
         }
 
         // Initialise CellTable's Action columns
@@ -631,8 +637,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            A copy (not clone) of the original column containing the
      *            modified values
      */
-    public void updateColumn(final ConditionCol origColumn,
-                             final ConditionCol editColumn) {
+    public void updateColumn(final ConditionCol52 origColumn,
+                             final ConditionCol52 editColumn) {
         if ( origColumn == null ) {
             throw new IllegalArgumentException( "origColumn cannot be null" );
         }
@@ -662,8 +668,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
-        if ( !isEqualOrNull( origColumn.getBoundName(),
-                             editColumn.getBoundName() ) ) {
+        if ( !isEqualOrNull( origColumn.getPattern().getBoundName(),
+                             editColumn.getPattern().getBoundName() ) ) {
             // Change in bound name requires column to be repositioned
             bRedrawHeader = true;
             addColumn( editColumn,
@@ -675,8 +681,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
             // If the FactType, FieldType and ConstraintValueType are unchanged
             // we can copy cell values from the old column into the new
-            if ( isEqualOrNull( origColumn.getFactType(),
-                                editColumn.getFactType() )
+            if ( isEqualOrNull( origColumn.getPattern().getFactType(),
+                                editColumn.getPattern().getFactType() )
                  && isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() )
                  && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
@@ -702,8 +708,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             widget.getGridWidget().redrawColumns( editColIndex,
                                                   origColIndex );
 
-        } else if ( !isEqualOrNull( origColumn.getFactType(),
-                                    editColumn.getFactType() )
+        } else if ( !isEqualOrNull( origColumn.getPattern().getFactType(),
+                                    editColumn.getPattern().getFactType() )
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() )
                     || !isEqualOrNull( origColumn.getFieldType(),
@@ -789,74 +795,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             index = findMetadataColumnIndex();
         } else if ( modelColumn instanceof AttributeCol ) {
             index = findAttributeColumnIndex();
-        } else if ( modelColumn instanceof ConditionCol ) {
-            index = findConditionColumnIndex( (ConditionCol) modelColumn );
+        } else if ( modelColumn instanceof ConditionCol52 ) {
+            index = findConditionColumnIndex( (ConditionCol52) modelColumn );
         } else if ( modelColumn instanceof ActionCol ) {
             index = findActionColumnIndex();
         }
         insertColumnBefore( modelColumn,
                             index,
                             bRedraw );
-    }
-
-    // Ensure Condition columns are grouped by pattern (as we merge equal
-    // patterns in the UI). This operates on the original Model data and
-    // therefore should be called before the Decision Table's internal data
-    // representation (i.e. DynamicData, DynamicDataRow and CellValue) is
-    // populated
-    private void assertConditionColumnGrouping(TypeSafeGuidedDecisionTable model) {
-
-        class ConditionColData {
-            ConditionCol  col;
-            DTCellValue[] data;
-        }
-
-        // Offset into Model's data array
-        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.getAttributeCols().size() + TypeSafeGuidedDecisionTable.INTERNAL_ELEMENTS;
-        Map<String, List<ConditionColData>> groups = new HashMap<String, List<ConditionColData>>();
-        final int DATA_ROWS = model.getData().size();
-
-        // Copy conditions and related data into temporary groups
-        for ( int iCol = 0; iCol < model.getConditionCols().size(); iCol++ ) {
-
-            ConditionCol col = model.getConditionCols().get( iCol );
-            String pattern = col.getBoundName();
-            if ( !groups.containsKey( pattern ) ) {
-                List<ConditionColData> groupCols = new ArrayList<ConditionColData>();
-                groups.put( pattern,
-                            groupCols );
-            }
-            List<ConditionColData> groupCols = groups.get( pattern );
-
-            // Make a ConditionColData object
-            ConditionColData ccd = new ConditionColData();
-            int colIndex = DATA_COLUMN_OFFSET + iCol;
-            ccd.data = new DTCellValue[DATA_ROWS];
-            for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                List<DTCellValue> row = model.getData().get( iRow );
-                ccd.data[iRow] = row.get( colIndex );
-            }
-            ccd.col = col;
-            groupCols.add( ccd );
-
-        }
-
-        // Copy temporary groups back into the model
-        int iCol = 0;
-        model.getConditionCols().clear();
-        for ( Map.Entry<String, List<ConditionColData>> me : groups.entrySet() ) {
-            for ( ConditionColData ccd : me.getValue() ) {
-                model.getConditionCols().add( ccd.col );
-                int colIndex = DATA_COLUMN_OFFSET + iCol;
-                for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                    List<DTCellValue> row = model.getData().get( iRow );
-                    row.set( colIndex,
-                             ccd.data[iRow] );
-                }
-                iCol++;
-            }
-        }
-
     }
 
     /**
@@ -868,10 +814,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private boolean canAcceptOtherwiseValues(DTColumnConfig column) {
 
         //Check the column type is correct
-        if ( !(column instanceof ConditionCol) ) {
+        if ( !(column instanceof ConditionCol52) ) {
             return false;
         }
-        ConditionCol cc = (ConditionCol) column;
+        ConditionCol52 cc = (ConditionCol52) column;
 
         //Check column contains literal values and uses the equals operator
         if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
@@ -915,7 +861,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Find the right-most index for a Condition column
-    private int findConditionColumnIndex(ConditionCol col) {
+    private int findConditionColumnIndex(ConditionCol52 col) {
         int index = 0;
         boolean bMatched = false;
         List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
@@ -930,8 +876,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 index = iCol;
             } else if ( modelColumn instanceof AttributeCol ) {
                 index = iCol;
-            } else if ( modelColumn instanceof ConditionCol ) {
-                if ( isEquivalentConditionColumn( (ConditionCol) modelColumn,
+            } else if ( modelColumn instanceof ConditionCol52 ) {
+                if ( isEquivalentConditionColumn( (ConditionCol52) modelColumn,
                                                   col ) ) {
                     index = iCol;
                     bMatched = true;
@@ -1022,12 +968,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Check whether two ConditionCols are equivalent
-    private boolean isEquivalentConditionColumn(ConditionCol c1,
-                                                ConditionCol c2) {
-        if ( isEqualOrNull( c1.getFactType(),
-                            c2.getFactType() )
-                && isEqualOrNull( c1.getBoundName(),
-                                  c2.getBoundName() ) ) {
+    private boolean isEquivalentConditionColumn(ConditionCol52 c1,
+                                                ConditionCol52 c2) {
+        if ( isEqualOrNull( c1.getPattern().getFactType(),
+                            c2.getPattern().getFactType() )
+                && isEqualOrNull( c1.getPattern().getBoundName(),
+                                  c2.getPattern().getBoundName() ) ) {
             return true;
         }
         return false;
@@ -1095,22 +1041,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
-    private void populateModelColumn(final ConditionCol col,
-                                     final ConditionCol editingCol) {
-        col.setBoundName( editingCol.getBoundName() );
+    private void populateModelColumn(final ConditionCol52 col,
+                                     final ConditionCol52 editingCol) {
+        col.getPattern().setBoundName( editingCol.getPattern().getBoundName() );
+        col.getPattern().setFactType( editingCol.getPattern().getFactType() );
+        col.getPattern().setNegated( editingCol.getPattern().isNegated() );
+        col.getPattern().setWindow( editingCol.getPattern().getWindow() );
+        col.getPattern().setEntryPointName( editingCol.getPattern().getEntryPointName() );
         col.setConstraintValueType( editingCol.getConstraintValueType() );
         col.setFactField( editingCol.getFactField() );
-        col.setFactType( editingCol.getFactType() );
         col.setFieldType( editingCol.getFieldType() );
         col.setHeader( editingCol.getHeader() );
         col.setOperator( editingCol.getOperator() );
         col.setValueList( editingCol.getValueList() );
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
-        col.setNegated( editingCol.isNegated() );
         col.setParameters( editingCol.getParameters() );
-        col.setWindow( editingCol.getWindow() );
-        col.setEntryPointName( editingCol.getEntryPointName() );
     }
 
     //Remove Otherwise state from column cells
