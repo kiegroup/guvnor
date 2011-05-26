@@ -24,8 +24,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.builder.ContentPackageAssembler.ErrorLogger;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.GuidedDTDRLPersistence;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;
@@ -43,7 +42,7 @@ public class GuidedDTContentHandler extends ContentHandler
     public void retrieveAssetContent(RuleAsset asset,
                                      PackageItem pkg,
                                      AssetItem item) throws SerializationException {
-        TypeSafeGuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
+        GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( item.getContent() );
 
         asset.content = model;
 
@@ -51,7 +50,9 @@ public class GuidedDTContentHandler extends ContentHandler
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        TypeSafeGuidedDecisionTable data = (TypeSafeGuidedDecisionTable) asset.content;
+        
+        GuidedDecisionTable52 data = (GuidedDecisionTable52) asset.content;
+
         if ( data.getTableName() == null ) {
             data.setTableName( repoAsset.getName() );
         }
@@ -71,7 +72,8 @@ public class GuidedDTContentHandler extends ContentHandler
                         RuleAsset asset,
                         ErrorLogger logger) throws DroolsParserException,
                                            IOException {
-        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.content;
+        
+        GuidedDecisionTable52 model = (GuidedDecisionTable52) asset.content;
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( model );
 
@@ -83,7 +85,7 @@ public class GuidedDTContentHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
-        TypeSafeGuidedDecisionTable model = (TypeSafeGuidedDecisionTable) asset.content;
+        GuidedDecisionTable52 model = (GuidedDecisionTable52) asset.content;
 
         stringBuilder.append( GuidedDTDRLPersistence.getInstance().marshal( model ) );
     }
@@ -96,7 +98,7 @@ public class GuidedDTContentHandler extends ContentHandler
     }
 
     public String getRawDRL(AssetItem asset) {
-        TypeSafeGuidedDecisionTable model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
+        GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal( asset.getContent() );
         model.setTableName( asset.getName() );
         model.setParentName( this.parentNameFromCategory( asset,
                                                           model.getParentName() ) );

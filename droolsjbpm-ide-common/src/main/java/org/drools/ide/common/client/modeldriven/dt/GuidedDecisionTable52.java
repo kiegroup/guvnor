@@ -16,7 +16,6 @@
 package org.drools.ide.common.client.modeldriven.dt;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -32,7 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This works by taking the column definitions, and combining them with the
  * table of data to produce rule models.
  */
-public class TypeSafeGuidedDecisionTable
+public class GuidedDecisionTable52
     implements
     PortableObject {
 
@@ -72,7 +71,7 @@ public class TypeSafeGuidedDecisionTable
 
     private List<AttributeCol>      attributeCols         = new ArrayList<AttributeCol>();
 
-    private List<ConditionCol>      conditionCols         = new ArrayList<ConditionCol>();
+    private List<Pattern>           conditionPatterns     = new ArrayList<Pattern>();
 
     private List<ActionCol>         actionCols            = new ArrayList<ActionCol>();
 
@@ -83,7 +82,7 @@ public class TypeSafeGuidedDecisionTable
      */
     private List<List<DTCellValue>> data                  = new ArrayList<List<DTCellValue>>();
 
-    public TypeSafeGuidedDecisionTable() {
+    public GuidedDecisionTable52() {
     }
 
     public List<ActionCol> getActionCols() {
@@ -94,8 +93,25 @@ public class TypeSafeGuidedDecisionTable
         return attributeCols;
     }
 
-    public List<ConditionCol> getConditionCols() {
-        return conditionCols;
+    public List<Pattern> getConditionPatterns() {
+        return conditionPatterns;
+    }
+
+    public Pattern getConditionPattern(String boundName) {
+        for ( Pattern p : conditionPatterns ) {
+            if ( p.getBoundName().equals( boundName ) ) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public long getConditionsCount() {
+        long size = 0;
+        for ( Pattern p : this.conditionPatterns ) {
+            size = size + p.getConditions().size();
+        }
+        return size;
     }
 
     public List<List<DTCellValue>> getData() {
@@ -108,7 +124,11 @@ public class TypeSafeGuidedDecisionTable
         columns.add( descriptionCol );
         columns.addAll( metadataCols );
         columns.addAll( attributeCols );
-        columns.addAll( conditionCols );
+        for ( Pattern p : this.conditionPatterns ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
+                columns.add( c );
+            }
+        }
         columns.addAll( actionCols );
         return columns;
     }
@@ -146,115 +166,164 @@ public class TypeSafeGuidedDecisionTable
 
     public String getType(DTColumnConfig col,
                           SuggestionCompletionEngine sce) {
-        String type = null;
-
         if ( col instanceof RowNumberCol ) {
-            type = SuggestionCompletionEngine.TYPE_NUMERIC;
-
+            return getType( (RowNumberCol) col,
+                            sce );
         } else if ( col instanceof DescriptionCol ) {
-            type = SuggestionCompletionEngine.TYPE_STRING;
-
+            return getType( (DescriptionCol) col,
+                            sce );
         } else if ( col instanceof AttributeCol ) {
-            AttributeCol attrCol = (AttributeCol) col;
-            String attrName = attrCol.getAttribute();
-            if ( attrName.equals( TypeSafeGuidedDecisionTable.SALIENCE_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_NUMERIC;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.ENABLED_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NO_LOOP_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DURATION_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_NUMERIC;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.AUTO_FOCUS_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.LOCK_ON_ACTIVE_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_BOOLEAN;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DATE_EFFECTIVE_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_DATE;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DATE_EXPIRES_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_DATE;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.DIALECT_ATTR ) ) {
-                type = SuggestionCompletionEngine.TYPE_STRING;
-            }
-        } else if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
-            type = sce.getFieldType( c.getFactType(),
-                                     c.getFactField() );
-            type = (assertDataType( c,
-                                    sce,
-                                    type ) ? type : null);
+            return getType( (AttributeCol) col,
+                            sce );
+        } else if ( col instanceof ConditionCol52 ) {
+            return getType( (ConditionCol52) col,
+                            sce );
         } else if ( col instanceof ActionSetFieldCol ) {
-            ActionSetFieldCol c = (ActionSetFieldCol) col;
-            type = sce.getFieldType( getBoundFactType( c.getBoundName() ),
-                                     c.getFactField() );
-            type = (assertDataType( c,
-                                    sce,
-                                    type ) ? type : null);
+            return getType( (ActionSetFieldCol) col,
+                            sce );
         } else if ( col instanceof ActionInsertFactCol ) {
-            ActionInsertFactCol c = (ActionInsertFactCol) col;
-            type = sce.getFieldType( c.getFactType(),
-                                     c.getFactField() );
-            type = (assertDataType( c,
-                                    sce,
-                                    type ) ? type : null);
+            return getType( (ActionInsertFactCol) col,
+                            sce );
         }
+        return null;
+    }
 
+    private String getType(RowNumberCol col,
+                           SuggestionCompletionEngine sce) {
+        String type = SuggestionCompletionEngine.TYPE_NUMERIC;
         return type;
     }
 
-    /**
-     * This will return a list of valid values. if there is no such
-     * "enumeration" of values, then it will return an empty array.
-     */
+    private String getType(DescriptionCol col,
+                           SuggestionCompletionEngine sce) {
+        String type = SuggestionCompletionEngine.TYPE_STRING;
+        return type;
+    }
+
+    private String getType(AttributeCol col,
+                           SuggestionCompletionEngine sce) {
+        String type = null;
+        String attrName = col.getAttribute();
+        if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+        } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+        } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+        } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_BOOLEAN;
+        } else if ( attrName.equals( GuidedDecisionTable52.DATE_EFFECTIVE_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_DATE;
+        } else if ( attrName.equals( GuidedDecisionTable52.DATE_EXPIRES_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_DATE;
+        } else if ( attrName.equals( GuidedDecisionTable52.DIALECT_ATTR ) ) {
+            type = SuggestionCompletionEngine.TYPE_STRING;
+        }
+        return type;
+    }
+
+    private String getType(ConditionCol52 col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( col.getPattern().getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(ActionSetFieldCol col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+                                        col.getFactField() );
+        type = (assertDataType( col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(ActionInsertFactCol col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( col.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( col,
+                                    sce,
+                                    type ) ? type : null);
+        return type;
+    }
+
     public String[] getValueList(DTColumnConfig col,
                                  SuggestionCompletionEngine sce) {
         if ( col instanceof AttributeCol ) {
-            AttributeCol at = (AttributeCol) col;
-            if ( "no-loop".equals( at.getAttribute() )
-                 || "enabled".equals( at.getAttribute() ) ) {
-                return new String[]{"true", "false"};
-            }
-        } else if ( col instanceof ConditionCol ) {
-            // conditions: if its a formula etc, just return String[0],
-            // otherwise check with the sce
-            ConditionCol c = (ConditionCol) col;
-            if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
-                    || c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                return new String[0];
-            } else {
-                if ( c.getValueList() != null
-                     && !"".equals( c.getValueList() ) ) {
-                    return c.getValueList().split( "," );
-                } else {
-                    String[] r = sce.getEnumValues( c.getFactType(),
-                                                    c.getFactField() );
-                    return (r != null) ? r : new String[0];
-                }
-            }
+            return getValueList( (AttributeCol) col,
+                                 sce );
+        } else if ( col instanceof ConditionCol52 ) {
+            return getValueList( (ConditionCol52) col,
+                                 sce );
         } else if ( col instanceof ActionSetFieldCol ) {
-            ActionSetFieldCol c = (ActionSetFieldCol) col;
-            if ( c.getValueList() != null
-                 && !"".equals( c.getValueList() ) ) {
-                return c.getValueList().split( "," );
-            } else {
-                String[] r = sce.getEnumValues(
-                                                getBoundFactType( c.getBoundName() ),
-                                                c.getFactField() );
-                return (r != null) ? r : new String[0];
-            }
+            return getValueList( (ActionSetFieldCol) col,
+                                 sce );
         } else if ( col instanceof ActionInsertFactCol ) {
-            ActionInsertFactCol c = (ActionInsertFactCol) col;
-            if ( c.getValueList() != null
-                 && !"".equals( c.getValueList() ) ) {
-                return c.getValueList().split( "," );
+            return getValueList( (ActionInsertFactCol) col,
+                                 sce );
+        }
+        return new String[0];
+    }
+
+    private String[] getValueList(AttributeCol col,
+                                  SuggestionCompletionEngine sce) {
+        if ( "no-loop".equals( col.getAttribute() )
+                 || "enabled".equals( col.getAttribute() ) ) {
+            return new String[]{"true", "false"};
+        }
+        return new String[0];
+    }
+
+    private String[] getValueList(ConditionCol52 col,
+                                  SuggestionCompletionEngine sce) {
+        // If its a formula etc, just return String[0] otherwise check with the sce
+        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
+                    || col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+            return new String[0];
+        } else {
+            if ( col.getValueList() != null
+                     && !"".equals( col.getValueList() ) ) {
+                return col.getValueList().split( "," );
             } else {
-                String[] r = sce.getEnumValues( c.getFactType(),
-                                                c.getFactField() );
+                String[] r = sce.getEnumValues( col.getPattern().getFactType(),
+                                                col.getFactField() );
                 return (r != null) ? r : new String[0];
             }
         }
+    }
 
-        return new String[0];
+    private String[] getValueList(ActionSetFieldCol col,
+                                  SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
+        } else {
+            String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
+                                                col.getFactField() );
+            return (r != null) ? r : new String[0];
+        }
+    }
+
+    private String[] getValueList(ActionInsertFactCol col,
+                                  SuggestionCompletionEngine sce) {
+
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
+        } else {
+            String[] r = sce.getEnumValues( col.getFactType(),
+                                                col.getFactField() );
+            return (r != null) ? r : new String[0];
+        }
     }
 
     public boolean isConstraintValid(DTColumnConfig col,
@@ -271,8 +340,8 @@ public class TypeSafeGuidedDecisionTable
         if ( col instanceof AttributeCol ) {
             return true;
         }
-        if ( col instanceof ConditionCol ) {
-            ConditionCol c = (ConditionCol) col;
+        if ( col instanceof ConditionCol52 ) {
+            ConditionCol52 c = (ConditionCol52) col;
             if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
                 if ( c.getFactField() == null
                      || c.getFactField().equals( "" ) ) {
@@ -313,24 +382,22 @@ public class TypeSafeGuidedDecisionTable
     }
 
     private String getBoundFactType(String boundName) {
-        for ( Iterator<ConditionCol> iterator = getConditionCols().iterator(); iterator
-                .hasNext(); ) {
-            ConditionCol c = iterator.next();
-            if ( c.getBoundName().equals( boundName ) ) {
-                return c.getFactType();
+        for ( Pattern p : this.conditionPatterns ) {
+            if ( p.getBoundName().equals( boundName ) ) {
+                return p.getFactType();
             }
         }
         return null;
     }
 
-    private boolean assertDataType(ConditionCol col,
+    private boolean assertDataType(ConditionCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
                 return false;
             }
-            String ft = sce.getFieldType( col.getFactType(),
+            String ft = sce.getFieldType( col.getPattern().getFactType(),
                                           col.getFactField() );
             if ( ft != null && ft.equals( dataType ) ) {
                 return true;

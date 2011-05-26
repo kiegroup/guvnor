@@ -34,8 +34,9 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -91,7 +92,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     private VerticalDecisionTableWidget dtable;
     private SuggestionCompletionEngine  sce;
-    private ConditionCol                editingCol;
+    private ConditionCol52                editingCol;
     private Label                       patternLabel                = new Label();
     private TextBox                     fieldLabel                  = getFieldLabel();
     private Label                       operatorLabel               = new Label();
@@ -107,27 +108,27 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     public GuidedDTColumnConfig(SuggestionCompletionEngine sce,
                                 final VerticalDecisionTableWidget dtable,
                                 final ColumnCentricCommand refreshGrid,
-                                final ConditionCol col,
+                                final ConditionCol52 col,
                                 final boolean isNew) {
         super();
         this.setModal( false );
         this.dtable = dtable;
         this.sce = sce;
-        this.editingCol = new ConditionCol();
-        editingCol.setBoundName( col.getBoundName() );
+        this.editingCol = new ConditionCol52();
+        editingCol.getPattern().setBoundName( col.getPattern().getBoundName() );
+        editingCol.getPattern().setFactType( col.getPattern().getFactType() );
+        editingCol.getPattern().setNegated( col.getPattern().isNegated() );
+        editingCol.getPattern().setWindow( col.getPattern().getWindow() );
+        editingCol.getPattern().setEntryPointName( col.getPattern().getEntryPointName() );
         editingCol.setConstraintValueType( col.getConstraintValueType() );
         editingCol.setFactField( col.getFactField() );
-        editingCol.setFactType( col.getFactType() );
         editingCol.setFieldType( col.getFieldType() );
         editingCol.setHeader( col.getHeader() );
         editingCol.setOperator( col.getOperator() );
         editingCol.setValueList( col.getValueList() );
         editingCol.setDefaultValue( col.getDefaultValue() );
         editingCol.setHideColumn( col.isHideColumn() );
-        editingCol.setNegated( col.isNegated() );
         editingCol.setParameters( col.getParameters() );
-        editingCol.setWindow( col.getWindow() );
-        editingCol.setEntryPointName( col.getEntryPointName() );
 
         setTitle( constants.ConditionColumnConfiguration() );
 
@@ -222,15 +223,15 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         //Add CEP fields for patterns containing Facts declared as Events
         cepWindowRowIndex = addAttribute( constants.DTLabelOverCEPWindow(),
-                                          createCEPWindowWidget( editingCol ) );
+                                          createCEPWindowWidget( editingCol.getPattern() ) );
         displayCEPOperators();
 
         //Entry point
         final TextBox entryPoint = new TextBox();
-        entryPoint.setText( editingCol.getEntryPointName() );
+        entryPoint.setText( editingCol.getPattern().getEntryPointName() );
         entryPoint.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                editingCol.setEntryPointName( entryPoint.getText() );
+                editingCol.getPattern().setEntryPointName( entryPoint.getText() );
             }
         } );
         addAttribute( constants.DTLabelFromEntryPoint(),
@@ -320,9 +321,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private boolean checkUnique(String fn,
-                                List<ConditionCol> conditionCols) {
-        for ( ConditionCol c : conditionCols ) {
-            if ( c.getBoundName().equals( fn ) ) return false;
+                                List<Pattern> patterns) {
+        for ( Pattern p : patterns ) {
+            if ( p.getBoundName().equals( fn ) ) return false;
         }
         return true;
     }
@@ -331,7 +332,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             fieldLabel.setText( constants.notNeededForPredicate() );
             fieldLabelInterpolationInfo.setVisible( true );
-        } else if ( nil( editingCol.getFactType() ) ) {
+        } else if ( nil( editingCol.getPattern().getFactType() ) ) {
             fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else if ( nil( editingCol.getFactField() ) ) {
@@ -345,7 +346,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             operatorLabel.setText( constants.notNeededForPredicate() );
-        } else if ( nil( editingCol.getFactType() ) ) {
+        } else if ( nil( editingCol.getPattern().getFactType() ) ) {
             operatorLabel.setText( constants.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
             operatorLabel.setText( constants.pleaseChooseAFieldFirst() );
@@ -357,10 +358,10 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private void doPatternLabel() {
-        if ( this.editingCol.getFactType() != null ) {
-            this.patternLabel.setText( (this.editingCol.isNegated() ? constants.negatedPattern() + " " : "")
-                                       + this.editingCol.getFactType() + " ["
-                                       + this.editingCol.getBoundName() + "]" );
+        if ( this.editingCol.getPattern().getFactType() != null ) {
+            this.patternLabel.setText( (this.editingCol.getPattern().isNegated() ? constants.negatedPattern() + " " : "")
+                                       + this.editingCol.getPattern().getFactType() + " ["
+                                       + this.editingCol.getPattern().getBoundName() + "]" );
         }
         doFieldLabel();
         doOperatorLabel();
@@ -385,16 +386,16 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private ListBox loadPatterns() {
         Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
-        for ( int i = 0; i < dtable.getModel().getConditionCols().size(); i++ ) {
-            ConditionCol c = dtable.getModel().getConditionCols().get( i );
-            if ( !vars.contains( c.getBoundName() ) ) {
-                patterns.addItem( (c.isNegated() ? constants.negatedPattern() + " " : "")
-                                          + c.getFactType()
-                                          + " [" + c.getBoundName() + "]",
-                                  c.getFactType()
-                                          + " " + c.getBoundName()
-                                          + " " + c.isNegated() );
-                vars.add( c.getBoundName() );
+        for ( int i = 0; i < dtable.getModel().getConditionPatterns().size(); i++ ) {
+            Pattern p = dtable.getModel().getConditionPatterns().get( i );
+            if ( !vars.contains( p.getBoundName() ) ) {
+                patterns.addItem( (p.isNegated() ? constants.negatedPattern() + " " : "")
+                                          + p.getFactType()
+                                          + " [" + p.getBoundName() + "]",
+                                  p.getFactType()
+                                          + " " + p.getBoundName()
+                                          + " " + p.isNegated() );
+                vars.add( p.getBoundName() );
             }
         }
 
@@ -410,8 +411,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( constants.SetTheOperator() );
         pop.setModal( false );
-        String[] ops = this.sce.getOperatorCompletions(
-                                                        editingCol.getFactType(),
+        String[] ops = this.sce.getOperatorCompletions( editingCol.getPattern().getFactType(),
                                                         editingCol.getFactField() );
         final CEPOperatorsDropdown box = new CEPOperatorsDropdown( ops,
                                                                    editingCol );
@@ -441,8 +441,10 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( ConditionCol o : dtable.getModel().getConditionCols() ) {
-            if ( o.getHeader().equals( header ) ) return false;
+        for ( Pattern p : dtable.getModel().getConditionPatterns() ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( c.getHeader().equals( header ) ) return false;
+            }
         }
         return true;
     }
@@ -478,12 +480,12 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
-                editingCol.setFactType( val[0] );
-                editingCol.setBoundName( val[1] );
-                editingCol.setNegated( Boolean.valueOf( val[2] ) );
+
+                editingCol.getPattern().getConditions().remove( editingCol );
+                Pattern p = dtable.getModel().getConditionPattern( val[1] );
+                p.getConditions().add( editingCol );
                 editingCol.setFactField( null );
-                editingCol.setWindow( getExistingCEPWindowForBoundFact( val[1] ) );
-                cwo.selectItem( editingCol.getWindow().getOperator() );
+                cwo.selectItem( editingCol.getPattern().getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
@@ -491,20 +493,6 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         } );
 
         pop.show();
-    }
-
-    private CEPWindow getExistingCEPWindowForBoundFact(String binding) {
-        CEPWindow window = new CEPWindow();
-        if ( binding == null ) {
-            return window;
-        }
-        for ( ConditionCol c : dtable.getModel().getConditionCols() ) {
-            if ( c.getBoundName().equals( binding ) ) {
-                window = c.getWindow();
-                break;
-            }
-        }
-        return window;
     }
 
     protected void showFieldChange() {
@@ -572,16 +560,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !checkUnique( fn,
-                                          dtable.getModel().getConditionCols() ) ) {
+                                          dtable.getModel().getConditionPatterns() ) ) {
                     Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
-                editingCol.setFactType( ft );
-                editingCol.setBoundName( fn );
+                Pattern p = new Pattern();
+                p.setFactType( ft );
+                p.setBoundName( fn );
+                p.setNegated( chkNegated.getValue() );
+                p.getConditions().add( editingCol );
                 editingCol.setFactField( null );
-                editingCol.setNegated( chkNegated.getValue() );
-                editingCol.setWindow( getExistingCEPWindowForBoundFact( fn ) );
-                cwo.selectItem( editingCol.getWindow().getOperator() );
+                cwo.selectItem( editingCol.getPattern().getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();

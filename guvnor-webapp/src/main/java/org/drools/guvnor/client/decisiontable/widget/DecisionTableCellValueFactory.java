@@ -26,12 +26,12 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -39,7 +39,7 @@ import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
 public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig> {
 
     // Model used to determine data-types etc for cells
-    private TypeSafeGuidedDecisionTable model;
+    private GuidedDecisionTable52 model;
 
     /**
      * Construct a Cell Value Factory for a specific Decision Table
@@ -50,7 +50,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            The Decision Table model to assist data-type derivation
      */
     public DecisionTableCellValueFactory(SuggestionCompletionEngine sce,
-                                         TypeSafeGuidedDecisionTable model) {
+                                         GuidedDecisionTable52 model) {
         super( sce );
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
@@ -262,11 +262,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 dataType = DTDataTypes.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
                 dataType = DTDataTypes.DATE;
-            } else if ( attrName.equals( TypeSafeGuidedDecisionTable.NEGATE_RULE_ATTR ) ) {
+            } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
                 dataType = DTDataTypes.BOOLEAN;
             }
 
-        } else if ( column instanceof ConditionCol ) {
+        } else if ( column instanceof ConditionCol52 ) {
             dataType = derieveDataType( column );
 
         } else if ( column instanceof ActionSetFieldCol ) {

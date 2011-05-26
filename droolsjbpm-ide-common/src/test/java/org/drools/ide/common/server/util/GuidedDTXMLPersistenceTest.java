@@ -23,19 +23,14 @@ import static org.junit.Assert.assertTrue;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GuidedDTXMLPersistenceTest {
-
-    //    public void testXML() {
-
-    //            //final String xml = p.marshal( new RuleModel() );
-    //
-    //    }
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +40,7 @@ public class GuidedDTXMLPersistenceTest {
     @Test
     public void testRoundTrip() {
 
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         dt.getActionCols().add( new ActionInsertFactCol() );
         ActionSetFieldCol set = new ActionSetFieldCol();
@@ -56,7 +51,10 @@ public class GuidedDTXMLPersistenceTest {
 
         dt.getAttributeCols().add( new AttributeCol() );
 
-        dt.getConditionCols().add( new ConditionCol() );
+        Pattern p = new Pattern();
+        ConditionCol52 c = new ConditionCol52();
+        p.getConditions().add( c );
+        dt.getConditionPatterns().add( p );
 
         dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{new String[]{"1", "hola"}} ) );
         dt.setTableName( "blah" );
@@ -71,7 +69,7 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( -1,
                       xml.indexOf( "GuidedDecisionTable" ) );
 
-        TypeSafeGuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
         assertNotNull( dt_ );
         assertEquals( "blah",
                       dt_.getTableName() );
@@ -82,14 +80,16 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( 2,
                       dt_.getActionCols().size() );
         assertEquals( 1,
-                      dt_.getConditionCols().size() );
+                      dt_.getConditionPatterns().size() );
+        assertEquals( 1,
+                      dt_.getConditionPatterns().get( 0 ).getConditions().size() );
 
     }
 
     @Test
     public void testBackwardsCompatability() throws Exception {
         String xml = BRLPersistenceTest.loadResource( "ExistingDecisionTable.xml" );
-        TypeSafeGuidedDecisionTable dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
+        GuidedDecisionTable52 dt_ = GuidedDTXMLPersistence.getInstance().unmarshal( xml );
         assertNotNull( dt_ );
         assertEquals( "blah",
                       dt_.getTableName() );
@@ -100,7 +100,9 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( 2,
                       dt_.getActionCols().size() );
         assertEquals( 1,
-                      dt_.getConditionCols().size() );
+                      dt_.getConditionPatterns().size() );
+        assertEquals( 1,
+                      dt_.getConditionPatterns().get( 0 ).getConditions().size() );
 
         assertTrue( dt_.getActionCols().get( 1 ) instanceof ActionSetFieldCol );
         ActionSetFieldCol asf = (ActionSetFieldCol) dt_.getActionCols().get( 1 );

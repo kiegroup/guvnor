@@ -26,7 +26,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
@@ -304,8 +304,8 @@ public class VerticalDecisionTableHeaderWidget extends
                                             style.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
                 tce.addClassName( style.headerRowIntermediate() );
-            } else if ( modelCol instanceof ConditionCol ) {
-                tce.appendChild( makeLabel( ((ConditionCol) modelCol).getHeader(),
+            } else if ( modelCol instanceof ConditionCol52 ) {
+                tce.appendChild( makeLabel( ((ConditionCol52) modelCol).getHeader(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
             } else if ( modelCol instanceof ActionCol ) {
@@ -338,7 +338,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig modelCol = col.getModelColumn();
-                    if ( modelCol instanceof ConditionCol ) {
+                    if ( modelCol instanceof ConditionCol52 ) {
                         visibleConditionCols.add( col );
                     }
                 }
@@ -348,7 +348,7 @@ public class VerticalDecisionTableHeaderWidget extends
             for ( int iRow = 0; iRow < rowHeaders.length; iRow++ ) {
                 redrawHeaderRow( iRow );
             }
-            
+
             fireResizeEvent();
         }
 
@@ -392,17 +392,17 @@ public class VerticalDecisionTableHeaderWidget extends
                         tre.appendChild( tce );
 
                         DynamicColumn<DTColumnConfig> col = visibleConditionCols.get( iCol );
-                        ConditionCol cc = (ConditionCol) col.getModelColumn();
+                        ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
 
                         // Merging
                         int colSpan = 1;
                         int width = col.getWidth();
                         while ( iCol + colSpan < visibleConditionCols.size() ) {
                             DynamicColumn<DTColumnConfig> mergeCol = visibleConditionCols.get( iCol + colSpan );
-                            ConditionCol mergeCondCol = (ConditionCol) mergeCol.getModelColumn();
+                            ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
 
-                            if ( mergeCondCol.getFactType().equals( cc.getFactType() )
-                                 && mergeCondCol.getBoundName().equals( cc.getBoundName() ) ) {
+                            if ( mergeCondCol.getPattern().getFactType().equals( cc.getPattern().getFactType() )
+                                 && mergeCondCol.getPattern().getBoundName().equals( cc.getPattern().getBoundName() ) ) {
                                 width = width + mergeCol.getWidth();
                                 colSpan++;
                             } else {
@@ -414,9 +414,9 @@ public class VerticalDecisionTableHeaderWidget extends
                         iCol = iCol + colSpan - 1;
                         tce.addClassName( style.headerRowIntermediate() );
                         StringBuilder label = new StringBuilder();
-                        label.append( (cc.isNegated() ? constants.negatedPattern() + " " : "") );
-                        label.append( cc.getFactType() );
-                        label.append( " [" + cc.getBoundName() + "]" );
+                        label.append( (cc.getPattern().isNegated() ? constants.negatedPattern() + " " : "") );
+                        label.append( cc.getPattern().getFactType() );
+                        label.append( " [" + cc.getPattern().getBoundName() + "]" );
                         tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
@@ -432,7 +432,7 @@ public class VerticalDecisionTableHeaderWidget extends
                         tce.addClassName( style.headerText() );
                         tce.addClassName( style.headerRowIntermediate() );
                         tre.appendChild( tce );
-                        ConditionCol cc = (ConditionCol) col.getModelColumn();
+                        ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
                         StringBuilder label = new StringBuilder();
                         label.append( cc.getFactField() );
                         label.append( " [" + cc.getOperator() + "]" );
@@ -621,17 +621,17 @@ public class VerticalDecisionTableHeaderWidget extends
         int iColColumn = 0;
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig> col = widget.visibleConditionCols.get( iCol );
-            ConditionCol cc = (ConditionCol) col.getModelColumn();
+            ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
 
             // Merging
             int colSpan = 1;
             int width = col.getWidth();
             while ( iCol + colSpan < widget.visibleConditionCols.size() ) {
                 DynamicColumn<DTColumnConfig> mergeCol = widget.visibleConditionCols.get( iCol + colSpan );
-                ConditionCol mergeCondCol = (ConditionCol) mergeCol.getModelColumn();
+                ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
 
-                if ( mergeCondCol.getFactType().equals( cc.getFactType() )
-                        && mergeCondCol.getBoundName().equals( cc.getBoundName() ) ) {
+                if ( mergeCondCol.getPattern().getFactType().equals( cc.getPattern().getFactType() )
+                        && mergeCondCol.getPattern().getBoundName().equals( cc.getPattern().getBoundName() ) ) {
                     width = width + mergeCol.getWidth();
                     colSpan++;
                 } else {

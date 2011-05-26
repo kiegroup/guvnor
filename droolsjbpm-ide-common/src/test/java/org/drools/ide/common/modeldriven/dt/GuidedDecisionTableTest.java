@@ -30,49 +30,57 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt.Pattern;
 import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.TypeSafeGuidedDecisionTable;
+import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
 import org.junit.Test;
 
 public class GuidedDecisionTableTest {
 
     @Test
     public void testValueLists() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         // add cols for LHS
-        ConditionCol c1 = new ConditionCol();
-        c1.setBoundName( "c1" );
-        c1.setFactType( "Driver" );
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
         c1.setFactField( "name" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1 );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
 
-        ConditionCol c1_ = new ConditionCol();
-        c1_.setBoundName( "c1" );
-        c1_.setFactType( "Driver" );
+        ConditionCol52 c1_ = new ConditionCol52();
+        Pattern p1_ = new Pattern();
+        p1_.setBoundName( "c1" );
+        p1_.setFactType( "Driver" );
         c1_.setFactField( "name" );
+        p1_.getConditions().add( c1_ );
         c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        dt.getConditionPatterns().add( p1_ );
 
-        dt.getConditionCols().add( c1_ );
-
-        ConditionCol c1__ = new ConditionCol();
-        c1__.setBoundName( "c1" );
-        c1__.setFactType( "Driver" );
+        ConditionCol52 c1__ = new ConditionCol52();
+        Pattern p1__ = new Pattern();
+        p1__.setBoundName( "c1" );
+        p1__.setFactType( "Driver" );
         c1__.setFactField( "name" );
         c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c1__.setValueList( "one,two,three" );
-        dt.getConditionCols().add( c1__ );
+        p1__.getConditions().add( c1__ );
+        dt.getConditionPatterns().add( p1__ );
 
-        ConditionCol c2 = new ConditionCol();
-        c2.setBoundName( "c2" );
-        c2.setFactType( "Driver" );
+        ConditionCol52 c2 = new ConditionCol52();
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c2" );
+        p2.setFactType( "Driver" );
         c2.setFactField( "nothing" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c2 );
+        p2.getConditions().add( c2 );
+        dt.getConditionPatterns().add( p2 );
 
         ActionSetFieldCol asf = new ActionSetFieldCol();
         asf.setBoundName( "c1" );
@@ -227,7 +235,7 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         AttributeCol at = new AttributeCol();
         at.setAttribute( "salience" );
@@ -237,28 +245,34 @@ public class GuidedDecisionTableTest {
         dt.getAttributeCols().add( at );
         dt.getAttributeCols().add( at_ );
 
-        ConditionCol c1 = new ConditionCol();
-        c1.setBoundName( "c1" );
-        c1.setFactType( "Driver" );
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
         c1.setFactField( "name" );
         c1.setOperator( "==" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1 );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
 
-        ConditionCol c1_ = new ConditionCol();
-        c1_.setBoundName( "c1" );
-        c1_.setFactType( "Driver" );
+        ConditionCol52 c1_ = new ConditionCol52();
+        Pattern p1_ = new Pattern();
+        p1_.setBoundName( "c1" );
+        p1_.setFactType( "Driver" );
         c1_.setFactField( "age" );
         c1_.setOperator( "==" );
         c1_.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1_ );
+        p1_.getConditions().add( c1_ );
+        dt.getConditionPatterns().add( p1_ );
 
-        ConditionCol c2 = new ConditionCol();
-        c2.setBoundName( "c1" );
-        c2.setFactType( "Driver" );
+        ConditionCol52 c2 = new ConditionCol52();
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c1" );
+        p2.setFactType( "Driver" );
         c2.setFactField( "age" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c2 );
+        p2.getConditions().add( c2 );
+        dt.getConditionPatterns().add( p2 );
 
         ActionSetFieldCol a = new ActionSetFieldCol();
         a.setBoundName( "c1" );
@@ -342,7 +356,7 @@ public class GuidedDecisionTableTest {
             }
         } );
 
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         AttributeCol salienceAttribute = new AttributeCol();
         salienceAttribute.setAttribute( "salience" );
@@ -352,44 +366,40 @@ public class GuidedDecisionTableTest {
         dt.getAttributeCols().add( salienceAttribute );
         dt.getAttributeCols().add( enabledAttribute );
 
-        ConditionCol conditionColName = new ConditionCol();
-        conditionColName.setBoundName( "c1" );
-        conditionColName.setFactType( "Driver" );
+        Pattern p1 = new Pattern();
+
+        ConditionCol52 conditionColName = new ConditionCol52();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
         conditionColName.setFactField( "name" );
         conditionColName.setOperator( "==" );
         conditionColName.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( conditionColName );
+        p1.getConditions().add( conditionColName );
 
-        ConditionCol conditionColAge = new ConditionCol();
-        conditionColAge.setBoundName( "c1" );
-        conditionColAge.setFactType( "Driver" );
+        ConditionCol52 conditionColAge = new ConditionCol52();
         conditionColAge.setFactField( "age" );
         conditionColAge.setOperator( "==" );
         conditionColAge.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( conditionColAge );
+        p1.getConditions().add( conditionColAge );
 
-        ConditionCol conditionColDate = new ConditionCol();
-        conditionColDate.setBoundName( "c1" );
-        conditionColDate.setFactType( "Driver" );
+        ConditionCol52 conditionColDate = new ConditionCol52();
         conditionColDate.setFactField( "date" );
         conditionColDate.setOperator( "==" );
         conditionColDate.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( conditionColDate );
+        p1.getConditions().add( conditionColDate );
 
-        ConditionCol conditionColApproved = new ConditionCol();
-        conditionColApproved.setBoundName( "c1" );
-        conditionColApproved.setFactType( "Driver" );
+        ConditionCol52 conditionColApproved = new ConditionCol52();
         conditionColApproved.setFactField( "approved" );
         conditionColApproved.setOperator( "==" );
         conditionColApproved.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( conditionColApproved );
+        p1.getConditions().add( conditionColApproved );
 
-        ConditionCol conditionColAge2 = new ConditionCol();
-        conditionColAge2.setBoundName( "c1" );
-        conditionColAge2.setFactType( "Driver" );
+        ConditionCol52 conditionColAge2 = new ConditionCol52();
         conditionColAge2.setFactField( "age" );
         conditionColAge2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( conditionColAge2 );
+        p1.getConditions().add( conditionColAge2 );
+
+        dt.getConditionPatterns().add( p1 );
 
         ActionSetFieldCol a = new ActionSetFieldCol();
         a.setBoundName( "c1" );
@@ -450,21 +460,25 @@ public class GuidedDecisionTableTest {
 
     @Test
     public void testNoConstraintLists() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         // add cols for LHS
-        ConditionCol c1 = new ConditionCol();
-        c1.setBoundName( "c1" );
-        c1.setFactType( "Driver" );
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1 );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
 
-        ConditionCol c2 = new ConditionCol();
-        c2.setBoundName( "c2" );
-        c2.setFactType( "Driver" );
+        ConditionCol52 c2 = new ConditionCol52();
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c2" );
+        p2.setFactType( "Driver" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         c2.setValueList( "a,b,c" );
-        dt.getConditionCols().add( c2 );
+        p2.getConditions().add( c2 );
+        dt.getConditionPatterns().add( p1 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
         sce.putDataEnumList( "Driver.name",
@@ -479,9 +493,10 @@ public class GuidedDecisionTableTest {
 
     }
 
+    @SuppressWarnings("serial")
     @Test
     public void testNoConstraints() {
-        TypeSafeGuidedDecisionTable dt = new TypeSafeGuidedDecisionTable();
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         // add cols for LHS
         RowNumberCol rnc = new RowNumberCol();
@@ -502,45 +517,57 @@ public class GuidedDecisionTableTest {
         aifc.setFactType( "Driver" );
         aifc.setFactField( "age" );
 
-        ConditionCol c1 = new ConditionCol();
-        c1.setBoundName( "c1" );
-        c1.setFactType( "Driver" );
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern p1 = new Pattern();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c1 );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
 
-        ConditionCol c2 = new ConditionCol();
-        c2.setBoundName( "c2" );
-        c2.setFactType( "Driver" );
+        ConditionCol52 c2 = new ConditionCol52();
+        Pattern p2 = new Pattern();
+        p2.setBoundName( "c2" );
+        p2.setFactType( "Driver" );
         c2.setFactField( "age" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c2 );
+        p2.getConditions().add( c2 );
+        dt.getConditionPatterns().add( p2 );
 
-        ConditionCol c3 = new ConditionCol();
-        c3.setBoundName( "c3" );
-        c3.setFactType( "Driver" );
+        ConditionCol52 c3 = new ConditionCol52();
+        Pattern p3 = new Pattern();
+        p3.setBoundName( "c3" );
+        p3.setFactType( "Driver" );
         c3.setOperator( "==" );
         c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c3 );
+        p3.getConditions().add( c3 );
+        dt.getConditionPatterns().add( p3 );
 
-        ConditionCol c4 = new ConditionCol();
-        c4.setBoundName( "c4" );
-        c4.setFactType( "Driver" );
+        ConditionCol52 c4 = new ConditionCol52();
+        Pattern p4 = new Pattern();
+        p4.setBoundName( "c4" );
+        p4.setFactType( "Driver" );
         c4.setFactField( "age" );
         c4.setOperator( "==" );
         c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        dt.getConditionCols().add( c4 );
+        p4.getConditions().add( c4 );
+        dt.getConditionPatterns().add( p4 );
 
-        ConditionCol c5 = new ConditionCol();
-        c5.setBoundName( "c5" );
-        c5.setFactType( "Driver" );
+        ConditionCol52 c5 = new ConditionCol52();
+        Pattern p5 = new Pattern();
+        p5.setBoundName( "c5" );
+        p5.setFactType( "Driver" );
         c5.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        dt.getConditionCols().add( c5 );
+        p5.getConditions().add( c5 );
+        dt.getConditionPatterns().add( p5 );
 
-        ConditionCol c6 = new ConditionCol();
-        c6.setBoundName( "c6" );
-        c6.setFactType( "Driver" );
+        ConditionCol52 c6 = new ConditionCol52();
+        Pattern p6 = new Pattern();
+        p6.setBoundName( "c6" );
+        p6.setFactType( "Driver" );
         c6.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-        dt.getConditionCols().add( c6 );
+        p6.getConditions().add( c6 );
+        dt.getConditionPatterns().add( p6 );
 
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 

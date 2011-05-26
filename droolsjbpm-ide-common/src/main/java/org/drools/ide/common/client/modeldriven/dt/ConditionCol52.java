@@ -18,29 +18,31 @@ package org.drools.ide.common.client.modeldriven.dt;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
-import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
 
 /**
  * This is the config for a condition column. Typically many of them have their
  * constraints added.
  */
-public class ConditionCol extends DTColumnConfig
+public class ConditionCol52 extends DTColumnConfig
     implements
-    HasParameterizedOperator,
-    HasCEPWindow {
+    HasParameterizedOperator {
 
     private static final long   serialVersionUID = 510l;
 
     // What is displayed at the top
     private String              header;
 
+    //Pattern to which the Condition belongs
+    private Pattern             pattern;
+
     // The type of the fact - class - eg Driver, Person, Cheese etc.
+    @Deprecated
     private String              factType;
 
     // The name that this gets referenced as. Multiple columns with the same
     // name mean their constraints will be combined.
+    @Deprecated
     private String              boundName;
 
     // The type of the value that is in the cell, eg if it is a formula, or
@@ -60,20 +62,11 @@ public class ConditionCol extends DTColumnConfig
     // predicate, in which case this is ignored).
     private String              operator;
 
-    // Whether the pattern should be negated
-    private boolean             isNegated;
-
     // A comma separated list of valid values. Optional.
     private String              valueList;
 
     //CEP operators' parameters
     private Map<String, String> parameters;
-
-    //CEP 'window' definition
-    private CEPWindow           window;
-
-    //Entry-point name
-    private String              entryPointName;
 
     public void setHeader(String header) {
         this.header = header;
@@ -83,20 +76,32 @@ public class ConditionCol extends DTColumnConfig
         return header;
     }
 
-    public void setFactType(String factType) {
-        this.factType = factType;
+    public Pattern getPattern() {
+        return pattern;
     }
 
+    void setPattern(Pattern pattern) {
+        this.pattern = pattern;
+    }
+
+    @Deprecated
     public String getFactType() {
         return factType;
     }
 
-    public void setBoundName(String boundName) {
-        this.boundName = boundName;
+    @Deprecated
+    public void setFactType(String factType) {
+        this.factType = factType;
     }
 
+    @Deprecated
     public String getBoundName() {
         return boundName;
+    }
+
+    @Deprecated
+    public void setBoundName(String boundName) {
+        this.boundName = boundName;
     }
 
     public void setConstraintValueType(int constraintValueType) {
@@ -139,14 +144,6 @@ public class ConditionCol extends DTColumnConfig
         return valueList;
     }
 
-    public boolean isNegated() {
-        return isNegated;
-    }
-
-    public void setNegated(boolean negated) {
-        this.isNegated = negated;
-    }
-
     public void clearParameters() {
         this.parameters = null;
     }
@@ -186,34 +183,15 @@ public class ConditionCol extends DTColumnConfig
         this.parameters = parameters;
     }
 
-    public void setWindow(CEPWindow window) {
-        this.window = window;
-    }
-
-    public CEPWindow getWindow() {
-        if ( this.window == null ) {
-            this.window = new CEPWindow();
-        }
-        return this.window;
-    }
-
-    public String getEntryPointName() {
-        return entryPointName;
-    }
-
-    public void setEntryPointName(String entryPointName) {
-        this.entryPointName = entryPointName;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if ( obj == null ) {
             return false;
         }
-        if ( !(obj instanceof ConditionCol) ) {
+        if ( !(obj instanceof ConditionCol52) ) {
             return false;
         }
-        ConditionCol that = (ConditionCol) obj;
+        ConditionCol52 that = (ConditionCol52) obj;
         return nullOrEqual( this.header,
                             that.header )
                 && nullOrEqual( this.factType,
@@ -229,11 +207,10 @@ public class ConditionCol extends DTColumnConfig
                                 that.operator )
                 && nullOrEqual( this.valueList,
                                 that.valueList )
-                && this.isNegated == that.isNegated
                 && nullOrEqual( this.parameters,
                                 that.parameters )
-                && nullOrEqual( this.window,
-                                that.window )
+                && nullOrEqual( this.pattern,
+                                that.pattern )
                 && super.equals( obj );
     }
 
@@ -248,9 +225,8 @@ public class ConditionCol extends DTColumnConfig
         hash = hash * 31 + (fieldType == null ? 0 : fieldType.hashCode());
         hash = hash * 31 + (operator == null ? 0 : operator.hashCode());
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
-        hash = hash * 31 + (new Boolean( isNegated ).hashCode());
-        hash = hash * 31 + parameters.hashCode();
-        hash = hash * 31 + window.hashCode();
+        hash = hash * 31 + (parameters == null ? 0 : parameters.hashCode());
+        hash = hash * 31 + (pattern == null ? 0 : pattern.hashCode());
         hash = hash * 31 + super.hashCode();
         return hash;
     }
