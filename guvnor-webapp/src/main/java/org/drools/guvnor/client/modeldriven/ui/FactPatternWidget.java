@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -511,6 +512,10 @@ public class FactPatternWidget extends RuleModellerWidget {
     private Widget createCEPWindowWidget(final RuleModeller modeller,
                                          final HasCEPWindow c) {
         if ( modeller.getSuggestionCompletions().isFactTypeAnEvent( pattern.getFactType() ) ) {
+            HorizontalPanel hp = new HorizontalPanel();
+            Label lbl = new Label( constants.OverCEPWindow() );
+            lbl.setStyleName( "paddedLabel" );
+            hp.add( lbl );
             List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
             CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( operators,
                                                                              c );
@@ -526,7 +531,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 }
             } );
 
-            return cwo;
+            hp.add( cwo );
+            return hp;
         }
         return new HTML();
     }

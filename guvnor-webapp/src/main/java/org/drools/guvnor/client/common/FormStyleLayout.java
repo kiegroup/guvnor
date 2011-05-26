@@ -28,8 +28,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 
 /**
- * This form style class is to be extended to provide
- * "form style" dialogs (eg in a popup).
+ * This form style class is to be extended to provide "form style" dialogs (eg
+ * in a popup).
  */
 public class FormStyleLayout extends Composite {
 
@@ -62,10 +62,17 @@ public class FormStyleLayout extends Composite {
     }
 
     /**
-     * Add a widget to the "form".
+     * Add a widget to the "form"
+     * 
+     * @param lbl
+     *            The label displayed in column 0
+     * @param editor
+     *            The Widget displayed in column 1
+     * @return Index of row created
      */
-    public void addAttribute(String lbl,
+    public int addAttribute(String lbl,
                              Widget editor) {
+        int row = numInLayout;
         HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
         layout.setWidget( numInLayout,
                           0,
@@ -73,20 +80,28 @@ public class FormStyleLayout extends Composite {
         formatter.setAlignment( numInLayout,
                                 0,
                                 HasHorizontalAlignment.ALIGN_RIGHT,
-                                HasVerticalAlignment.ALIGN_TOP );
+                                HasVerticalAlignment.ALIGN_MIDDLE );
         layout.setWidget( numInLayout,
                           1,
                           editor );
         formatter.setAlignment( numInLayout,
                                 1,
                                 HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_TOP );
+                                HasVerticalAlignment.ALIGN_MIDDLE );
 
         numInLayout++;
+        return row;
     }
 
-    /** Adds a widget that takes up a whole row. */
-    public void addRow(Widget w) {
+    /**
+     * Add a widget to the "form" across an entire row
+     * 
+     * @param w
+     *            The Widget displayed in column 1
+     * @return Index of row created
+     */
+    public int addRow(Widget w) {
+        int row = numInLayout;
         layout.setWidget( numInLayout,
                           0,
                           w );
@@ -94,6 +109,21 @@ public class FormStyleLayout extends Composite {
                               0,
                               2 );
         numInLayout++;
+        return row;
+    }
+
+    /**
+     * Set the visibility of an Attribute
+     * 
+     * @param row
+     * @param isVisible
+     */
+    public void setAttributeVisibility(int row,
+                                       boolean isVisible) {
+        layout.getWidget( row,
+                          0 ).setVisible( isVisible );
+        layout.getWidget( row,
+                          1 ).setVisible( isVisible );
     }
 
     /**
@@ -121,7 +151,7 @@ public class FormStyleLayout extends Composite {
         formatter.setAlignment( 0,
                                 0,
                                 HasHorizontalAlignment.ALIGN_LEFT,
-                                HasVerticalAlignment.ALIGN_TOP );
+                                HasVerticalAlignment.ALIGN_MIDDLE );
         layout.setWidget( 0,
                           1,
                           title );

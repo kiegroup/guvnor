@@ -478,11 +478,11 @@ public class BRDRLPersistence
             }
             buf.append( ")" );
 
-            //TODO
+            //Add CEP window definition
             CEPWindow window = pattern.getWindow();
             if ( window.isDefined() ) {
-                buf.append(" ");
-                buf.append(window.getOperator());
+                buf.append( " " );
+                buf.append( window.getOperator() );
                 buf.append( buildOperatorParameterDRL( window.getParameters() ) );
             }
         }

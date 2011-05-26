@@ -608,3 +608,7 @@ input,.constraint-value-Editor {
     background-color: yellow;
     text-align: center;
 }
+
+.paddedLabel {
+    padding-right: 2px;
+}

@@ -97,6 +97,8 @@ public class HumanReadable {
         operatorDisplayMap.put("&& overlappedby", constants.andOverlappedBy());
         operatorDisplayMap.put("&& starts", constants.andStarts());
         operatorDisplayMap.put("&& startedby", constants.andStartedBy());
+        operatorDisplayMap.put( "over window:time", constants.OverCEPWindowTime());
+        operatorDisplayMap.put( "over window:length", constants.OverCEPWindowLength());
 
         ceDisplayMap.put( "not", constants.ThereIsNo());
         ceDisplayMap.put( "exists", constants.ThereExists());
@@ -104,6 +106,7 @@ public class HumanReadable {
         ceDisplayMap.put( "from", constants.From());
         ceDisplayMap.put( "from accumulate", constants.FromAccumulate());
         ceDisplayMap.put( "from collect", constants.FromCollect());
+        ceDisplayMap.put( "from entry-point", constants.FromEntryPoint());
         ceDisplayMap.put( "from entry-point", constants.FromEntryPoint());
 
         actionDisplayMap.put( "assert", constants.Insert());

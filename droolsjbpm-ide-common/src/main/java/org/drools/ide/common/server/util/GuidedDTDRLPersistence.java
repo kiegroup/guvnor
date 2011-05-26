@@ -30,7 +30,9 @@ import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
+import org.drools.ide.common.client.modeldriven.brl.IFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
@@ -208,7 +210,7 @@ public class GuidedDTDRLPersistence {
                       List<List<DTCellValue>> data,
                       RuleModel rm) {
 
-        List<FactPattern> patterns = new ArrayList<FactPattern>();
+        List<IFactPattern> patterns = new ArrayList<IFactPattern>();
 
         for ( int i = 0; i < conditionCols.size(); i++ ) {
 
@@ -237,16 +239,39 @@ public class GuidedDTDRLPersistence {
             if ( isValid ) {
 
                 // get or create the pattern it belongs too
-                FactPattern fp = findByFactPattern( patterns,
-                                                    c.getBoundName() );
-                if ( fp == null ) {
-                    fp = new FactPattern( c.getFactType() );
+                IFactPattern ifp = findByFactPattern( patterns,
+                                                      c.getBoundName() );
+
+                //If the pattern does not exist create one suitable
+                if ( ifp == null ) {
+                    FactPattern fp = new FactPattern( c.getFactType() );
                     fp.setBoundName( c.getBoundName() );
                     fp.setNegated( c.isNegated() );
-                    patterns.add( fp );
+                    fp.setWindow( c.getWindow() );
+                    if ( c.getEntryPointName() != null && c.getEntryPointName().length() > 0 ) {
+                        FromEntryPointFactPattern fep = new FromEntryPointFactPattern();
+                        fep.setEntryPointName( c.getEntryPointName() );
+                        fep.setFactPattern( fp );
+                        patterns.add( fep );
+                        ifp = fep;
+                    } else {
+                        patterns.add( fp );
+                        ifp = fp;
+                    }
                 }
 
-                // now add the constraint from this cell
+                //Extract the FactPattern from the IFactPattern
+                FactPattern fp;
+                if ( ifp instanceof FactPattern ) {
+                    fp = (FactPattern) ifp;
+                } else if ( ifp instanceof FromEntryPointFactPattern ) {
+                    FromEntryPointFactPattern fep = (FromEntryPointFactPattern) ifp;
+                    fp = fep.getFactPattern();
+                } else {
+                    throw new IllegalArgumentException( "Inexpected IFactPattern implementation found." );
+                }
+
+                //Add the constraint from this cell
                 switch ( c.getConstraintValueType() ) {
                     case BaseSingleFieldConstraint.TYPE_LITERAL :
                     case BaseSingleFieldConstraint.TYPE_RET_VALUE :
@@ -278,6 +303,7 @@ public class GuidedDTDRLPersistence {
                         throw new IllegalArgumentException( "Unknown constraintValueType: "
                                                             + c.getConstraintValueType() );
                 }
+
             }
         }
         rm.lhs = patterns.toArray( new IPattern[patterns.size()] );
@@ -307,11 +333,14 @@ public class GuidedDTDRLPersistence {
         return operator == null || "".equals( operator );
     }
 
-    private FactPattern findByFactPattern(List<FactPattern> patterns,
-                                          String boundName) {
-        for ( FactPattern factPattern : patterns ) {
-            if ( factPattern.getBoundName().equals( boundName ) ) {
-                return factPattern;
+    private IFactPattern findByFactPattern(List<IFactPattern> patterns,
+                                           String boundName) {
+        for ( IFactPattern ifp : patterns ) {
+            if ( ifp instanceof FactPattern ) {
+                FactPattern fp = (FactPattern) ifp;
+                if ( fp.getBoundName().equals( boundName ) ) {
+                    return fp;
+                }
             }
         }
         return null;

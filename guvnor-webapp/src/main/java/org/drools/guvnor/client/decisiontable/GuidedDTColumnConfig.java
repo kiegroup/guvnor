@@ -22,15 +22,18 @@ import java.util.Set;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
+import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
+import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
+import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
 
@@ -39,15 +42,19 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is a configuration editor for a column in a the guided decision table.
@@ -60,8 +67,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     public static HorizontalPanel getDefaultEditor(final DTColumnConfig editingCol) {
         final TextBox defaultValue = new TextBox();
         defaultValue.setText( editingCol.getDefaultValue() );
-        final CheckBox hide = new CheckBox(
-                                            ((Constants) GWT.create( Constants.class )).HideThisColumn() );
+        final CheckBox hide = new CheckBox( ((Constants) GWT.create( Constants.class )).HideThisColumn() );
         hide.setValue( editingCol.isHideColumn() );
         hide.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent sender) {
@@ -80,15 +86,18 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         return hp;
     }
 
-    private Constants                   constants                   = ((Constants) GWT.create( Constants.class ));
-
+    private static Constants            constants                   = ((Constants) GWT.create( Constants.class ));
     private static Images               images                      = (Images) GWT.create( Images.class );
+
     private VerticalDecisionTableWidget dtable;
     private SuggestionCompletionEngine  sce;
     private ConditionCol                editingCol;
-    private SmallLabel                  patternLabel                = new SmallLabel();
+    private Label                       patternLabel                = new Label();
     private TextBox                     fieldLabel                  = getFieldLabel();
-    private SmallLabel                  operatorLabel               = new SmallLabel();
+    private Label                       operatorLabel               = new Label();
+
+    private CEPWindowOperatorsDropdown  cwo;
+    private int                         cepWindowRowIndex;
 
     private InfoPopup                   fieldLabelInterpolationInfo = getPredicateHint();
 
@@ -117,6 +126,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         editingCol.setHideColumn( col.isHideColumn() );
         editingCol.setNegated( col.isNegated() );
         editingCol.setParameters( col.getParameters() );
+        editingCol.setWindow( col.getWindow() );
+        editingCol.setEntryPointName( col.getEntryPointName() );
 
         setTitle( constants.ConditionColumnConfiguration() );
 
@@ -209,6 +220,23 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                       operator );
         doOperatorLabel();
 
+        //Add CEP fields for patterns containing Facts declared as Events
+        cepWindowRowIndex = addAttribute( constants.DTLabelOverCEPWindow(),
+                                          createCEPWindowWidget( editingCol ) );
+        displayCEPOperators();
+
+        //Entry point
+        final TextBox entryPoint = new TextBox();
+        entryPoint.setText( editingCol.getEntryPointName() );
+        entryPoint.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setEntryPointName( entryPoint.getText() );
+            }
+        } );
+        addAttribute( constants.DTLabelFromEntryPoint(),
+                      entryPoint );
+
+        //Optional value list
         final TextBox valueList = new TextBox();
         valueList.setText( editingCol.getValueList() );
         valueList.addChangeHandler( new ChangeHandler() {
@@ -219,11 +247,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         HorizontalPanel vl = new HorizontalPanel();
         vl.add( valueList );
         vl.add( new InfoPopup( constants.ValueList(),
-                               constants
-                                       .ValueListsExplanation() ) );
+                               constants.ValueListsExplanation() ) );
         addAttribute( constants.optionalValueList(),
                       vl );
 
+        //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
         header.addChangeHandler( new ChangeHandler() {
@@ -234,16 +262,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
+        //Default value (and "hide column" check-box for some reason)
         addAttribute( constants.DefaultValue(),
                       getDefaultEditor( editingCol ) );
 
+        //Apply button
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 if ( null == editingCol.getHeader()
                         || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants
-                            .YouMustEnterAColumnHeaderValueDescription() );
+                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
@@ -261,15 +290,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants
-                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants
-                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -325,8 +352,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         } else if ( nil( editingCol.getOperator() ) ) {
             operatorLabel.setText( constants.pleaseSelectAField() );
         } else {
-            operatorLabel.setText( HumanReadable
-                    .getOperatorDisplayName( editingCol.getOperator() ) );
+            operatorLabel.setText( HumanReadable.getOperatorDisplayName( editingCol.getOperator() ) );
         }
     }
 
@@ -451,18 +477,34 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                String[] val = pats.getValue( pats.getSelectedIndex() ).split(
-                                                                               "\\s" );
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
                 editingCol.setFactType( val[0] );
                 editingCol.setBoundName( val[1] );
                 editingCol.setNegated( Boolean.valueOf( val[2] ) );
                 editingCol.setFactField( null );
+                editingCol.setWindow( getExistingCEPWindowForBoundFact( val[1] ) );
+                cwo.selectItem( editingCol.getWindow().getOperator() );
+                displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
             }
         } );
 
         pop.show();
+    }
+
+    private CEPWindow getExistingCEPWindowForBoundFact(String binding) {
+        CEPWindow window = new CEPWindow();
+        if ( binding == null ) {
+            return window;
+        }
+        for ( ConditionCol c : dtable.getModel().getConditionCols() ) {
+            if ( c.getBoundName().equals( binding ) ) {
+                window = c.getWindow();
+                break;
+            }
+        }
+        return window;
     }
 
     protected void showFieldChange() {
@@ -527,20 +569,20 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.PleaseEnterANameForFact() );
                     return;
                 } else if ( fn.equals( ft ) ) {
-                    Window.alert( constants
-                            .PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !checkUnique( fn,
-                                          dtable.getModel()
-                                                  .getConditionCols() ) ) {
-                    Window.alert( constants
-                            .PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                                          dtable.getModel().getConditionCols() ) ) {
+                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
                 editingCol.setFactType( ft );
                 editingCol.setBoundName( fn );
                 editingCol.setFactField( null );
                 editingCol.setNegated( chkNegated.getValue() );
+                editingCol.setWindow( getExistingCEPWindowForBoundFact( fn ) );
+                cwo.selectItem( editingCol.getWindow().getOperator() );
+                displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
             }
@@ -550,6 +592,35 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         pop.show();
 
+    }
+
+    //Widget for CEP 'windows'
+    private Widget createCEPWindowWidget(final HasCEPWindow c) {
+        HorizontalPanel hp = new HorizontalPanel();
+        Label lbl = new Label( constants.OverCEPWindow() );
+        lbl.setStyleName( "paddedLabel" );
+        hp.add( lbl );
+        List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
+        cwo = new CEPWindowOperatorsDropdown( operators,
+                                              c );
+
+        cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+
+            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                OperatorSelection selection = event.getValue();
+                String selected = selection.getValue();
+                c.getWindow().setOperator( selected );
+            }
+        } );
+
+        hp.add( cwo );
+        return hp;
+    }
+
+    private void displayCEPOperators() {
+        boolean isVisible = sce.isFactTypeAnEvent( editingCol.getFactType() );
+        setAttributeVisibility( cepWindowRowIndex,
+                                isVisible );
     }
 
 }

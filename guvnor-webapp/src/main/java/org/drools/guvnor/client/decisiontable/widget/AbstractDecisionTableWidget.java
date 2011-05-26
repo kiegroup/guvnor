@@ -1108,6 +1108,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setNegated( editingCol.isNegated() );
+        col.setParameters( editingCol.getParameters() );
+        col.setWindow( editingCol.getWindow() );
+        col.setEntryPointName( editingCol.getEntryPointName() );
     }
 
     //Remove Otherwise state from column cells

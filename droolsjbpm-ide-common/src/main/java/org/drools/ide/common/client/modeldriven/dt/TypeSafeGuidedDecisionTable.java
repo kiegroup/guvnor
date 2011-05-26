@@ -60,14 +60,10 @@ public class TypeSafeGuidedDecisionTable
     public static final String      DIALECT_ATTR          = "dialect";
     public static final String      NEGATE_RULE_ATTR      = "negate";
 
-    /**
-     * The name - obviously.
-     */
     private String                  tableName;
 
     private String                  parentName;
 
-    // metadata defined for table ( will be represented as a column per table row of DATA
     private RowNumberCol            rowNumberCol          = new RowNumberCol();
 
     private DescriptionCol          descriptionCol        = new DescriptionCol();
