@@ -59,11 +59,6 @@ public class AssetItemValidatorTest {
     }
 
     @Test
-    public void testValidateEnumeration() throws Exception {
-        testValidate(AssetFormats.ENUMERATION, new EnumerationContentHandler());
-    }
-
-    @Test
     public void testValidateDecisionTableGuided() throws Exception {
         testValidate(AssetFormats.DECISION_TABLE_GUIDED, new GuidedDTContentHandler());
     }
@@ -109,6 +104,21 @@ public class AssetItemValidatorTest {
         runValidate(new DSLRuleContentHandler());
         verify(unsavedAssetItem).getBinaryContentAttachment();
         verify(savedAssetItem, never()).getBinaryContentAttachment();
+    }
+
+    @Test
+    public void testValidateEnumeration() throws Exception {
+
+        setUpMockAssets(AssetFormats.ENUMERATION, "");
+        setUpAssetItemIterators(AssetFormats.ENUMERATION);
+
+        EnumerationContentHandler contentHandler = spy(new EnumerationContentHandler());
+        runValidate(contentHandler);
+
+
+        verify(contentHandler).validateAsset(Matchers.<AssetItem>any());
+        verify(unsavedAssetItem).getContent();
+        verify(savedAssetItem, never()).getContent();
     }
 
     @Test
@@ -173,8 +183,6 @@ public class AssetItemValidatorTest {
 
         assertTrue(builderResult.getLines().isEmpty());
     }
-
-    // TODO: test custom validators -Rikkola-
 
     private void setUpPackageItem() {
         packageItem = mock(PackageItem.class);
