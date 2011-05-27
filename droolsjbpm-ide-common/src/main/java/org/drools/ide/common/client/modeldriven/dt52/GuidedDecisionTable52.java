@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -67,13 +68,13 @@ public class GuidedDecisionTable52
 
     private DescriptionCol          descriptionCol        = new DescriptionCol();
 
-    private List<MetadataCol>       metadataCols          = new ArrayList<MetadataCol>();
+    private List<MetadataCol52>     metadataCols          = new ArrayList<MetadataCol52>();
 
-    private List<AttributeCol>      attributeCols         = new ArrayList<AttributeCol>();
+    private List<AttributeCol52>    attributeCols         = new ArrayList<AttributeCol52>();
 
     private List<Pattern>           conditionPatterns     = new ArrayList<Pattern>();
 
-    private List<ActionCol>         actionCols            = new ArrayList<ActionCol>();
+    private List<ActionCol52>       actionCols            = new ArrayList<ActionCol52>();
 
     /**
      * First column is always row number. Second column is description.
@@ -85,11 +86,11 @@ public class GuidedDecisionTable52
     public GuidedDecisionTable52() {
     }
 
-    public List<ActionCol> getActionCols() {
+    public List<ActionCol52> getActionCols() {
         return actionCols;
     }
 
-    public List<AttributeCol> getAttributeCols() {
+    public List<AttributeCol52> getAttributeCols() {
         return attributeCols;
     }
 
@@ -118,8 +119,8 @@ public class GuidedDecisionTable52
         return data;
     }
 
-    public List<DTColumnConfig> getAllColumns() {
-        List<DTColumnConfig> columns = new ArrayList<DTColumnConfig>();
+    public List<DTColumnConfig52> getAllColumns() {
+        List<DTColumnConfig52> columns = new ArrayList<DTColumnConfig52>();
         columns.add( rowNumberCol );
         columns.add( descriptionCol );
         columns.addAll( metadataCols );
@@ -141,9 +142,9 @@ public class GuidedDecisionTable52
         return this.descriptionCol;
     }
 
-    public List<MetadataCol> getMetadataCols() {
+    public List<MetadataCol52> getMetadataCols() {
         if ( null == metadataCols ) {
-            metadataCols = new ArrayList<MetadataCol>();
+            metadataCols = new ArrayList<MetadataCol52>();
         }
         return metadataCols;
     }
@@ -164,7 +165,7 @@ public class GuidedDecisionTable52
         return tableName;
     }
 
-    public String getType(DTColumnConfig col,
+    public String getType(DTColumnConfig52 col,
                           SuggestionCompletionEngine sce) {
         if ( col instanceof RowNumberCol ) {
             return getType( (RowNumberCol) col,
@@ -172,17 +173,17 @@ public class GuidedDecisionTable52
         } else if ( col instanceof DescriptionCol ) {
             return getType( (DescriptionCol) col,
                             sce );
-        } else if ( col instanceof AttributeCol ) {
-            return getType( (AttributeCol) col,
+        } else if ( col instanceof AttributeCol52 ) {
+            return getType( (AttributeCol52) col,
                             sce );
         } else if ( col instanceof ConditionCol52 ) {
             return getType( (ConditionCol52) col,
                             sce );
-        } else if ( col instanceof ActionSetFieldCol ) {
-            return getType( (ActionSetFieldCol) col,
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            return getType( (ActionSetFieldCol52) col,
                             sce );
-        } else if ( col instanceof ActionInsertFactCol ) {
-            return getType( (ActionInsertFactCol) col,
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            return getType( (ActionInsertFactCol52) col,
                             sce );
         }
         return null;
@@ -200,7 +201,7 @@ public class GuidedDecisionTable52
         return type;
     }
 
-    private String getType(AttributeCol col,
+    private String getType(AttributeCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = null;
         String attrName = col.getAttribute();
@@ -236,7 +237,7 @@ public class GuidedDecisionTable52
         return type;
     }
 
-    private String getType(ActionSetFieldCol col,
+    private String getType(ActionSetFieldCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                         col.getFactField() );
@@ -246,7 +247,7 @@ public class GuidedDecisionTable52
         return type;
     }
 
-    private String getType(ActionInsertFactCol col,
+    private String getType(ActionInsertFactCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = sce.getFieldType( col.getFactType(),
                                         col.getFactField() );
@@ -256,25 +257,25 @@ public class GuidedDecisionTable52
         return type;
     }
 
-    public String[] getValueList(DTColumnConfig col,
+    public String[] getValueList(DTColumnConfig52 col,
                                  SuggestionCompletionEngine sce) {
-        if ( col instanceof AttributeCol ) {
-            return getValueList( (AttributeCol) col,
+        if ( col instanceof AttributeCol52 ) {
+            return getValueList( (AttributeCol52) col,
                                  sce );
         } else if ( col instanceof ConditionCol52 ) {
             return getValueList( (ConditionCol52) col,
                                  sce );
-        } else if ( col instanceof ActionSetFieldCol ) {
-            return getValueList( (ActionSetFieldCol) col,
+        } else if ( col instanceof ActionSetFieldCol52 ) {
+            return getValueList( (ActionSetFieldCol52) col,
                                  sce );
-        } else if ( col instanceof ActionInsertFactCol ) {
-            return getValueList( (ActionInsertFactCol) col,
+        } else if ( col instanceof ActionInsertFactCol52 ) {
+            return getValueList( (ActionInsertFactCol52) col,
                                  sce );
         }
         return new String[0];
     }
 
-    private String[] getValueList(AttributeCol col,
+    private String[] getValueList(AttributeCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( "no-loop".equals( col.getAttribute() )
                  || "enabled".equals( col.getAttribute() ) ) {
@@ -301,7 +302,7 @@ public class GuidedDecisionTable52
         }
     }
 
-    private String[] getValueList(ActionSetFieldCol col,
+    private String[] getValueList(ActionSetFieldCol52 col,
                                   SuggestionCompletionEngine sce) {
         if ( col.getValueList() != null
                  && !"".equals( col.getValueList() ) ) {
@@ -313,7 +314,7 @@ public class GuidedDecisionTable52
         }
     }
 
-    private String[] getValueList(ActionInsertFactCol col,
+    private String[] getValueList(ActionInsertFactCol52 col,
                                   SuggestionCompletionEngine sce) {
 
         if ( col.getValueList() != null
@@ -326,7 +327,7 @@ public class GuidedDecisionTable52
         }
     }
 
-    public boolean isConstraintValid(DTColumnConfig col,
+    public boolean isConstraintValid(DTColumnConfig52 col,
                                      SuggestionCompletionEngine sce) {
         if ( col instanceof RowNumberCol ) {
             return true;
@@ -334,10 +335,10 @@ public class GuidedDecisionTable52
         if ( col instanceof DescriptionCol ) {
             return true;
         }
-        if ( col instanceof MetadataCol ) {
+        if ( col instanceof MetadataCol52 ) {
             return true;
         }
-        if ( col instanceof AttributeCol ) {
+        if ( col instanceof AttributeCol52 ) {
             return true;
         }
         if ( col instanceof ConditionCol52 ) {
@@ -355,7 +356,7 @@ public class GuidedDecisionTable52
             }
             return true;
         }
-        if ( col instanceof ActionCol ) {
+        if ( col instanceof ActionCol52 ) {
             return true;
         }
         return false;
@@ -406,7 +407,7 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    private boolean assertDataType(ActionSetFieldCol col,
+    private boolean assertDataType(ActionSetFieldCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
@@ -417,7 +418,7 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    private boolean assertDataType(ActionInsertFactCol col,
+    private boolean assertDataType(ActionInsertFactCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         String ft = sce.getFieldType( col.getFactType(),

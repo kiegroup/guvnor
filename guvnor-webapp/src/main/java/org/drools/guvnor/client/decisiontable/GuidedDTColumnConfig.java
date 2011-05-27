@@ -34,9 +34,9 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -65,7 +65,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     /**
      * An editor for setting the default value.
      */
-    public static HorizontalPanel getDefaultEditor(final DTColumnConfig editingCol) {
+    public static HorizontalPanel getDefaultEditor(final DTColumnConfig52 editingCol) {
         final TextBox defaultValue = new TextBox();
         defaultValue.setText( editingCol.getDefaultValue() );
         final CheckBox hide = new CheckBox( ((Constants) GWT.create( Constants.class )).HideThisColumn() );
@@ -92,7 +92,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     private VerticalDecisionTableWidget dtable;
     private SuggestionCompletionEngine  sce;
-    private ConditionCol52                editingCol;
+    private ConditionCol52              editingCol;
     private Label                       patternLabel                = new Label();
     private TextBox                     fieldLabel                  = getFieldLabel();
     private Label                       operatorLabel               = new Label();
@@ -115,6 +115,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         this.dtable = dtable;
         this.sce = sce;
         this.editingCol = new ConditionCol52();
+        this.editingCol.setPattern( col.getPattern() );
         editingCol.getPattern().setBoundName( col.getPattern().getBoundName() );
         editingCol.getPattern().setFactType( col.getPattern().getFactType() );
         editingCol.getPattern().setNegated( col.getPattern().isNegated() );
@@ -569,6 +570,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 p.setBoundName( fn );
                 p.setNegated( chkNegated.getValue() );
                 p.getConditions().add( editingCol );
+                dtable.getModel().getConditionPatterns().add(p);
                 editingCol.setFactField( null );
                 cwo.selectItem( editingCol.getPattern().getWindow().getOperator() );
                 displayCEPOperators();

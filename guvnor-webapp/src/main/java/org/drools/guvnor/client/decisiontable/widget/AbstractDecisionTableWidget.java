@@ -18,9 +18,7 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.util.GWTDateConverter;
@@ -38,18 +36,18 @@ import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -64,16 +62,16 @@ import com.google.gwt.user.client.ui.Composite;
 public abstract class AbstractDecisionTableWidget extends Composite
     implements
     HasRows,
-    HasColumns<DTColumnConfig>,
+    HasColumns<DTColumnConfig52>,
     HasSystemControlledColumns {
 
     // Decision Table data
-    protected GuidedDecisionTable52         model;
-    protected DecoratedGridWidget<DTColumnConfig> widget;
-    protected SuggestionCompletionEngine          sce;
-    protected DecisionTableCellFactory            cellFactory;
-    protected DecisionTableCellValueFactory       cellValueFactory;
-    protected DecisionTableControlsWidget         dtableCtrls;
+    protected GuidedDecisionTable52                 model;
+    protected DecoratedGridWidget<DTColumnConfig52> widget;
+    protected SuggestionCompletionEngine            sce;
+    protected DecisionTableCellFactory              cellFactory;
+    protected DecisionTableCellValueFactory         cellValueFactory;
+    protected DecisionTableControlsWidget           dtableCtrls;
 
     /**
      * Constructor
@@ -103,7 +101,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param modelColumn
      *            The Decision Table column to insert
      */
-    public void addColumn(DTColumnConfig modelColumn) {
+    public void addColumn(DTColumnConfig52 modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
                                                 "modelColumn cannot be null." );
@@ -125,12 +123,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param modelColumn
      *            The Decision Table column to delete
      */
-    public void deleteColumn(DTColumnConfig modelColumn) {
+    public void deleteColumn(DTColumnConfig52 modelColumn) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException(
                                                 "modelColumn cannot be null." );
         }
-        DynamicColumn<DTColumnConfig> col = getDynamicColumn( modelColumn );
+        DynamicColumn<DTColumnConfig52> col = getDynamicColumn( modelColumn );
         widget.deleteColumn( col );
     }
 
@@ -189,7 +187,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void makeOtherwiseCell() {
 
-        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
+        MergableGridWidget<DTColumnConfig52> grid = widget.getGridWidget();
         List<CellValue< ? >> selections = grid.getSelectedCells();
         CellValue< ? > cell = selections.get( 0 );
 
@@ -229,8 +227,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         DescriptionCol descCol = null;
 
         // Extract column information
-        for ( DynamicColumn<DTColumnConfig> column : widget.getGridWidget().getColumns() ) {
-            DTColumnConfig modelCol = column.getModelColumn();
+        for ( DynamicColumn<DTColumnConfig52> column : widget.getGridWidget().getColumns() ) {
+            DTColumnConfig52 modelCol = column.getModelColumn();
             if ( modelCol instanceof RowNumberCol ) {
                 rnCol = (RowNumberCol) modelCol;
                 model.setRowNumberCol( rnCol );
@@ -239,12 +237,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 descCol = (DescriptionCol) modelCol;
                 model.setDescriptionCol( descCol );
 
-            } else if ( modelCol instanceof MetadataCol ) {
-                MetadataCol tc = (MetadataCol) modelCol;
+            } else if ( modelCol instanceof MetadataCol52 ) {
+                MetadataCol52 tc = (MetadataCol52) modelCol;
                 model.getMetadataCols().add( tc );
 
-            } else if ( modelCol instanceof AttributeCol ) {
-                AttributeCol tc = (AttributeCol) modelCol;
+            } else if ( modelCol instanceof AttributeCol52 ) {
+                AttributeCol52 tc = (AttributeCol52) modelCol;
                 model.getAttributeCols().add( tc );
 
             } else if ( modelCol instanceof ConditionCol52 ) {
@@ -255,8 +253,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 }
                 p.getConditions().add( tc );
 
-            } else if ( modelCol instanceof ActionCol ) {
-                ActionCol tc = (ActionCol) modelCol;
+            } else if ( modelCol instanceof ActionCol52 ) {
+                ActionCol52 tc = (ActionCol52) modelCol;
                 model.getActionCols().add( tc );
 
             }
@@ -275,7 +273,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Copy data
         final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
-        final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        final List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
 
         final int GRID_ROWS = data.size();
         List<List<DTCellValue>> grid = new ArrayList<List<DTCellValue>>();
@@ -286,7 +284,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
                 //Values put back into the Model are type-safe
                 CellValue< ? > cv = dataRow.get( iCol );
-                DTColumnConfig column = columns.get( iCol ).getModelColumn();
+                DTColumnConfig52 column = columns.get( iCol ).getModelColumn();
                 DTCellValue dcv = cellValueFactory.convertToDTModelCell( column,
                                                                               cv );
                 dcv.setOtherwise( cv.isOtherwise() );
@@ -297,13 +295,13 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.model.setData( grid );
     }
 
-    public void setColumnVisibility(DTColumnConfig modelColumn,
+    public void setColumnVisibility(DTColumnConfig52 modelColumn,
                                     boolean isVisible) {
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null" );
         }
 
-        DynamicColumn<DTColumnConfig> col = getDynamicColumn( modelColumn );
+        DynamicColumn<DTColumnConfig52> col = getDynamicColumn( modelColumn );
         widget.setColumnVisibility( col.getColumnIndex(),
                                             isVisible );
     }
@@ -350,14 +348,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Static columns, Row#
         int colIndex = 0;
-        DTColumnConfig colStatic;
-        DynamicColumn<DTColumnConfig> columnStatic;
+        DTColumnConfig52 colStatic;
+        DynamicColumn<DTColumnConfig52> columnStatic;
         colStatic = model.getRowNumberCol();
-        columnStatic = new DynamicColumn<DTColumnConfig>( colStatic,
-                                                          cellFactory.getCell( colStatic ),
-                                                          colIndex,
-                                                          true,
-                                                          false );
+        columnStatic = new DynamicColumn<DTColumnConfig52>( colStatic,
+                                                            cellFactory.getCell( colStatic ),
+                                                            colIndex,
+                                                            true,
+                                                            false );
         columnStatic.setWidth( 24 );
         widget.appendColumn( columnStatic,
                              makeColumnData( colStatic,
@@ -366,19 +364,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Static columns, Description
         colStatic = model.getDescriptionCol();
-        columnStatic = new DynamicColumn<DTColumnConfig>( colStatic,
-                                                          cellFactory.getCell( colStatic ),
-                                                          colIndex );
+        columnStatic = new DynamicColumn<DTColumnConfig52>( colStatic,
+                                                            cellFactory.getCell( colStatic ),
+                                                            colIndex );
         widget.appendColumn( columnStatic,
                              makeColumnData( colStatic,
                                              colIndex++ ),
                              false );
 
         // Initialise CellTable's Metadata columns
-        for ( DTColumnConfig col : model.getMetadataCols() ) {
-            DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      cellFactory.getCell( col ),
-                                                                                      colIndex );
+        for ( DTColumnConfig52 col : model.getMetadataCols() ) {
+            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
+                                                                                          cellFactory.getCell( col ),
+                                                                                          colIndex );
             column.setVisible( !col.isHideColumn() );
             widget.appendColumn( column,
                                  makeColumnData( col,
@@ -387,10 +385,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Initialise CellTable's Attribute columns
-        for ( DTColumnConfig col : model.getAttributeCols() ) {
-            DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      cellFactory.getCell( col ),
-                                                                                      colIndex );
+        for ( DTColumnConfig52 col : model.getAttributeCols() ) {
+            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
+                                                                                          cellFactory.getCell( col ),
+                                                                                          colIndex );
             column.setVisible( !col.isHideColumn() );
             column.setSystemControlled( col.isUseRowNumber() );
             column.setSortable( !col.isUseRowNumber() );
@@ -402,10 +400,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Initialise CellTable's Condition columns
         for ( Pattern p : model.getConditionPatterns() ) {
-            for ( DTColumnConfig col : p.getConditions() ) {
-                DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                          cellFactory.getCell( col ),
-                                                                                          colIndex );
+            for ( DTColumnConfig52 col : p.getConditions() ) {
+                DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
+                                                                                              cellFactory.getCell( col ),
+                                                                                              colIndex );
                 column.setVisible( !col.isHideColumn() );
                 widget.appendColumn( column,
                                      makeColumnData( col,
@@ -420,10 +418,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Initialise CellTable's Action columns
-        for ( DTColumnConfig col : model.getActionCols() ) {
-            DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( col,
-                                                                                      cellFactory.getCell( col ),
-                                                                                      colIndex );
+        for ( DTColumnConfig52 col : model.getActionCols() ) {
+            DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
+                                                                                          cellFactory.getCell( col ),
+                                                                                          colIndex );
             column.setVisible( !col.isHideColumn() );
             widget.appendColumn( column,
                                  makeColumnData( col,
@@ -475,8 +473,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            A copy (not clone) of the original column containing the
      *            modified values
      */
-    public void updateColumn(final ActionInsertFactCol origColumn,
-                             final ActionInsertFactCol editColumn) {
+    public void updateColumn(final ActionInsertFactCol52 origColumn,
+                             final ActionInsertFactCol52 editColumn) {
         if ( origColumn == null ) {
             throw new IllegalArgumentException( "origColumn cannot be null" );
         }
@@ -486,7 +484,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
-        DynamicColumn<DTColumnConfig> column = getDynamicColumn( origColumn );
+        DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -558,8 +556,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            A copy (not clone) of the original column containing the
      *            modified values
      */
-    public void updateColumn(final ActionSetFieldCol origColumn,
-                             final ActionSetFieldCol editColumn) {
+    public void updateColumn(final ActionSetFieldCol52 origColumn,
+                             final ActionSetFieldCol52 editColumn) {
         if ( origColumn == null ) {
             throw new IllegalArgumentException( "origColumn cannot be null" );
         }
@@ -569,7 +567,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
-        DynamicColumn<DTColumnConfig> column = getDynamicColumn( origColumn );
+        DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -648,7 +646,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
-        DynamicColumn<DTColumnConfig> column = getDynamicColumn( origColumn );
+        DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -674,8 +672,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bRedrawHeader = true;
             addColumn( editColumn,
                        false );
-            DynamicColumn<DTColumnConfig> origCol = getDynamicColumn( origColumn );
-            DynamicColumn<DTColumnConfig> editCol = getDynamicColumn( editColumn );
+            DynamicColumn<DTColumnConfig52> origCol = getDynamicColumn( origColumn );
+            DynamicColumn<DTColumnConfig52> editCol = getDynamicColumn( editColumn );
             int origColIndex = widget.getGridWidget().getColumns().indexOf( origCol );
             int editColIndex = widget.getGridWidget().getColumns().indexOf( editCol );
 
@@ -757,20 +755,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
     public void updateSystemControlledColumnValues() {
 
         final DynamicData data = widget.getGridWidget().getData();
-        final List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        final List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
 
-        for ( DynamicColumn<DTColumnConfig> col : columns ) {
+        for ( DynamicColumn<DTColumnConfig52> col : columns ) {
 
-            DTColumnConfig modelColumn = col.getModelColumn();
+            DTColumnConfig52 modelColumn = col.getModelColumn();
 
             if ( modelColumn instanceof RowNumberCol ) {
                 updateRowNumberColumnValues( data,
                                              col.getColumnIndex() );
 
-            } else if ( modelColumn instanceof AttributeCol ) {
+            } else if ( modelColumn instanceof AttributeCol52 ) {
 
                 // Update Salience values
-                AttributeCol attrCol = (AttributeCol) modelColumn;
+                AttributeCol52 attrCol = (AttributeCol52) modelColumn;
                 if ( attrCol.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                     if ( attrCol.isUseRowNumber() ) {
                         updateSalienceColumnValues( data,
@@ -788,16 +786,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Add column to table with optional redraw
-    private void addColumn(DTColumnConfig modelColumn,
+    private void addColumn(DTColumnConfig52 modelColumn,
                            boolean bRedraw) {
         int index = 0;
-        if ( modelColumn instanceof MetadataCol ) {
+        if ( modelColumn instanceof MetadataCol52 ) {
             index = findMetadataColumnIndex();
-        } else if ( modelColumn instanceof AttributeCol ) {
+        } else if ( modelColumn instanceof AttributeCol52 ) {
             index = findAttributeColumnIndex();
         } else if ( modelColumn instanceof ConditionCol52 ) {
             index = findConditionColumnIndex( (ConditionCol52) modelColumn );
-        } else if ( modelColumn instanceof ActionCol ) {
+        } else if ( modelColumn instanceof ActionCol52 ) {
             index = findActionColumnIndex();
         }
         insertColumnBefore( modelColumn,
@@ -811,7 +809,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param column
      * @return true if the Column can accept "otherwise" values
      */
-    private boolean canAcceptOtherwiseValues(DTColumnConfig column) {
+    private boolean canAcceptOtherwiseValues(DTColumnConfig52 column) {
 
         //Check the column type is correct
         if ( !(column instanceof ConditionCol52) ) {
@@ -843,17 +841,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Find the right-most index for a Attribute column
     private int findAttributeColumnIndex() {
         int index = 0;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DynamicColumn<DTColumnConfig> column = columns.get( iCol );
-            DTColumnConfig modelColumn = column.getModelColumn();
+            DynamicColumn<DTColumnConfig52> column = columns.get( iCol );
+            DTColumnConfig52 modelColumn = column.getModelColumn();
             if ( modelColumn instanceof RowNumberCol ) {
                 index = iCol;
             } else if ( modelColumn instanceof DescriptionCol ) {
                 index = iCol;
-            } else if ( modelColumn instanceof MetadataCol ) {
+            } else if ( modelColumn instanceof MetadataCol52 ) {
                 index = iCol;
-            } else if ( modelColumn instanceof AttributeCol ) {
+            } else if ( modelColumn instanceof AttributeCol52 ) {
                 index = iCol;
             }
         }
@@ -864,17 +862,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private int findConditionColumnIndex(ConditionCol52 col) {
         int index = 0;
         boolean bMatched = false;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DynamicColumn<DTColumnConfig> column = columns.get( iCol );
-            DTColumnConfig modelColumn = column.getModelColumn();
+            DynamicColumn<DTColumnConfig52> column = columns.get( iCol );
+            DTColumnConfig52 modelColumn = column.getModelColumn();
             if ( modelColumn instanceof RowNumberCol ) {
                 index = iCol;
             } else if ( modelColumn instanceof DescriptionCol ) {
                 index = iCol;
-            } else if ( modelColumn instanceof MetadataCol ) {
+            } else if ( modelColumn instanceof MetadataCol52 ) {
                 index = iCol;
-            } else if ( modelColumn instanceof AttributeCol ) {
+            } else if ( modelColumn instanceof AttributeCol52 ) {
                 index = iCol;
             } else if ( modelColumn instanceof ConditionCol52 ) {
                 if ( isEquivalentConditionColumn( (ConditionCol52) modelColumn,
@@ -892,15 +890,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Find the right-most index for a Metadata column
     private int findMetadataColumnIndex() {
         int index = 0;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DynamicColumn<DTColumnConfig> column = columns.get( iCol );
-            DTColumnConfig modelColumn = column.getModelColumn();
+            DynamicColumn<DTColumnConfig52> column = columns.get( iCol );
+            DTColumnConfig52 modelColumn = column.getModelColumn();
             if ( modelColumn instanceof RowNumberCol ) {
                 index = iCol;
             } else if ( modelColumn instanceof DescriptionCol ) {
                 index = iCol;
-            } else if ( modelColumn instanceof MetadataCol ) {
+            } else if ( modelColumn instanceof MetadataCol52 ) {
                 index = iCol;
             }
         }
@@ -909,10 +907,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     // Retrieves the DynamicColumn relating to the Model column or null if it
     // cannot be found
-    private DynamicColumn<DTColumnConfig> getDynamicColumn(DTColumnConfig modelCol) {
-        DynamicColumn<DTColumnConfig> column = null;
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
-        for ( DynamicColumn<DTColumnConfig> dc : columns ) {
+    private DynamicColumn<DTColumnConfig52> getDynamicColumn(DTColumnConfig52 modelCol) {
+        DynamicColumn<DTColumnConfig52> column = null;
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
+        for ( DynamicColumn<DTColumnConfig52> dc : columns ) {
             if ( dc.getModelColumn().equals( modelCol ) ) {
                 column = dc;
                 break;
@@ -922,16 +920,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Insert a new model column at the specified index
-    private void insertColumnBefore(DTColumnConfig modelColumn,
+    private void insertColumnBefore(DTColumnConfig52 modelColumn,
                                     int index,
                                     boolean bRedraw) {
 
         // Create new column for grid
-        DynamicColumn<DTColumnConfig> column = new DynamicColumn<DTColumnConfig>( modelColumn,
-                                                                                  cellFactory.getCell( modelColumn ),
-                                                                                  index );
+        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( modelColumn,
+                                                                                      cellFactory.getCell( modelColumn ),
+                                                                                      index );
         column.setVisible( !modelColumn.isHideColumn() );
-        DynamicColumn<DTColumnConfig> columnBefore = widget.getGridWidget().getColumns().get( index );
+        DynamicColumn<DTColumnConfig52> columnBefore = widget.getGridWidget().getColumns().get( index );
 
         // Create column data
         DynamicData data = widget.getGridWidget().getData();
@@ -980,7 +978,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Make a row of data for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeColumnData(DTColumnConfig column,
+    private List<CellValue< ? extends Comparable< ? >>> makeColumnData(DTColumnConfig52 column,
                                                                        int colIndex) {
         int dataSize = model.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
@@ -1000,9 +998,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Construct a new row for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
         List<CellValue< ? extends Comparable< ? >>> rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        List<DynamicColumn<DTColumnConfig>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DTColumnConfig col = columns.get( iCol ).getModelColumn();
+            DTColumnConfig52 col = columns.get( iCol ).getModelColumn();
             DTCellValue dcv = new DTCellValue( col.getDefaultValue() );
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
                                                                                        0,
@@ -1014,8 +1012,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
-    private void populateModelColumn(final ActionInsertFactCol col,
-                                     final ActionInsertFactCol editingCol) {
+    private void populateModelColumn(final ActionInsertFactCol52 col,
+                                     final ActionInsertFactCol52 editingCol) {
         col.setBoundName( editingCol.getBoundName() );
         col.setType( editingCol.getType() );
         col.setFactField( editingCol.getFactField() );
@@ -1028,8 +1026,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
-    private void populateModelColumn(final ActionSetFieldCol col,
-                                     final ActionSetFieldCol editingCol) {
+    private void populateModelColumn(final ActionSetFieldCol52 col,
+                                     final ActionSetFieldCol52 editingCol) {
         col.setBoundName( editingCol.getBoundName() );
         col.setType( editingCol.getType() );
         col.setFactField( editingCol.getFactField() );
@@ -1060,7 +1058,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     //Remove Otherwise state from column cells
-    private void removeOtherwiseStates(final DynamicColumn<DTColumnConfig> column) {
+    private void removeOtherwiseStates(final DynamicColumn<DTColumnConfig52> column) {
 
         //Grouping needs to be removed
         if ( widget.getGridWidget().getData().isMerged() ) {
@@ -1077,8 +1075,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Ensure the Column cell type and corresponding values are correct
-    private void updateCellsForDataType(final DTColumnConfig editColumn,
-                                        final DynamicColumn<DTColumnConfig> column) {
+    private void updateCellsForDataType(final DTColumnConfig52 editColumn,
+                                        final DynamicColumn<DTColumnConfig52> column) {
 
         //Grouping needs to be removed
         if ( widget.getGridWidget().getData().isMerged() ) {
@@ -1098,8 +1096,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Ensure the values in a column are within the Value List
-    private boolean updateCellsForOptionValueList(final DTColumnConfig editColumn,
-                                                  final DynamicColumn<DTColumnConfig> column) {
+    private boolean updateCellsForOptionValueList(final DTColumnConfig52 editColumn,
+                                                  final DynamicColumn<DTColumnConfig52> column) {
         boolean bRedrawRequired = false;
         DynamicData data = widget.getGridWidget().getData();
         List<String> vals = Arrays.asList( model.getValueList( editColumn,
@@ -1189,8 +1187,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     protected boolean canAcceptOtherwiseValues(CellValue< ? > cell) {
         Coordinate c = cell.getCoordinate();
-        MergableGridWidget<DTColumnConfig> grid = widget.getGridWidget();
-        DynamicColumn<DTColumnConfig> column = grid.getColumns().get( c.getCol() );
+        MergableGridWidget<DTColumnConfig52> grid = widget.getGridWidget();
+        DynamicColumn<DTColumnConfig52> column = grid.getColumns().get( c.getCol() );
         return canAcceptOtherwiseValues( column.getModelColumn() );
     }
 

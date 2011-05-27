@@ -34,15 +34,15 @@ import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -72,7 +72,7 @@ public class GuidedDecisionTableWidget extends Composite
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
 
-    private GuidedDecisionTable52 guidedDecisionTable;
+    private GuidedDecisionTable52       guidedDecisionTable;
     private VerticalPanel               layout;
     private PrettyFormLayout            configureColumnsNote;
     private VerticalPanel               attributeConfigWidget;
@@ -146,7 +146,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshActionsWidget() {
         this.actionsConfigWidget.clear();
-        for ( ActionCol c : guidedDecisionTable.getActionCols() ) {
+        for ( ActionCol52 c : guidedDecisionTable.getActionCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
@@ -157,34 +157,34 @@ public class GuidedDecisionTableWidget extends Composite
         setupColumnsNote();
     }
 
-    private Widget editAction(final ActionCol c) {
+    private Widget editAction(final ActionCol52 c) {
         return new ImageButton( images.edit(),
                                 constants.EditThisActionColumnConfiguration(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
-                                        if ( c instanceof ActionSetFieldCol ) {
-                                            final ActionSetFieldCol asf = (ActionSetFieldCol) c;
+                                        if ( c instanceof ActionSetFieldCol52 ) {
+                                            final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
                                             ActionSetColumn ed = new ActionSetColumn( getSCE(),
                                                                                       dtable,
                                                                                       new ColumnCentricCommand() {
-                                                                                          public void execute(DTColumnConfig column) {
+                                                                                          public void execute(DTColumnConfig52 column) {
                                                                                               dtable.updateColumn( asf,
-                                                                                                                   (ActionSetFieldCol) column );
+                                                                                                                   (ActionSetFieldCol52) column );
                                                                                               refreshActionsWidget();
                                                                                           }
                                                                                       },
                                                                                       asf,
                                                                                       false );
                                             ed.show();
-                                        } else if ( c instanceof ActionInsertFactCol ) {
-                                            final ActionInsertFactCol asf = (ActionInsertFactCol) c;
+                                        } else if ( c instanceof ActionInsertFactCol52 ) {
+                                            final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
                                             ActionInsertColumn ed = new ActionInsertColumn(
                                                                                             getSCE(),
                                                                                             dtable,
                                                                                             new ColumnCentricCommand() {
-                                                                                                public void execute(DTColumnConfig column) {
+                                                                                                public void execute(DTColumnConfig52 column) {
                                                                                                     dtable.updateColumn( asf,
-                                                                                                                         (ActionInsertFactCol) column );
+                                                                                                                         (ActionInsertFactCol52) column );
                                                                                                     refreshActionsWidget();
                                                                                                 }
                                                                                             },
@@ -226,13 +226,13 @@ public class GuidedDecisionTableWidget extends Composite
                     }
 
                     private void showInsert() {
-                        final ActionInsertFactCol afc = new ActionInsertFactCol();
+                        final ActionInsertFactCol52 afc = new ActionInsertFactCol52();
                         ActionInsertColumn ins = new ActionInsertColumn(
                                                                          getSCE(),
                                                                          dtable,
                                                                          new ColumnCentricCommand() {
-                                                                             public void execute(DTColumnConfig column) {
-                                                                                 newActionAdded( (ActionCol) column );
+                                                                             public void execute(DTColumnConfig52 column) {
+                                                                                 newActionAdded( (ActionCol52) column );
                                                                              }
                                                                          },
                                                                          afc,
@@ -241,12 +241,12 @@ public class GuidedDecisionTableWidget extends Composite
                     }
 
                     private void showSet() {
-                        final ActionSetFieldCol afc = new ActionSetFieldCol();
+                        final ActionSetFieldCol52 afc = new ActionSetFieldCol52();
                         ActionSetColumn set = new ActionSetColumn( getSCE(),
                                                                    dtable,
                                                                    new ColumnCentricCommand() {
-                                                                       public void execute(DTColumnConfig column) {
-                                                                           newActionAdded( (ActionCol) column );
+                                                                       public void execute(DTColumnConfig52 column) {
+                                                                           newActionAdded( (ActionCol52) column );
                                                                        }
                                                                    },
                                                                    afc,
@@ -254,7 +254,7 @@ public class GuidedDecisionTableWidget extends Composite
                         set.show();
                     }
 
-                    private void newActionAdded(ActionCol column) {
+                    private void newActionAdded(ActionCol52 column) {
                         dtable.addColumn( column );
                         dtable.scrapeColumns();
                         refreshActionsWidget();
@@ -272,7 +272,7 @@ public class GuidedDecisionTableWidget extends Composite
         return addButton;
     }
 
-    private Widget removeAction(final ActionCol c) {
+    private Widget removeAction(final ActionCol52 c) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisActionColumn(),
                                      new ClickHandler() {
@@ -322,7 +322,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                         getSCE(),
                                                                         dtable,
                                                                         new ColumnCentricCommand() {
-                                                                            public void execute(DTColumnConfig column) {
+                                                                            public void execute(DTColumnConfig52 column) {
                                                                                 dtable.addColumn( column );
                                                                                 dtable.scrapeColumns();
                                                                                 refreshConditionsWidget();
@@ -345,7 +345,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                 getSCE(),
                                                                                                 dtable,
                                                                                                 new ColumnCentricCommand() {
-                                                                                                    public void execute(DTColumnConfig column) {
+                                                                                                    public void execute(DTColumnConfig52 column) {
                                                                                                         dtable.updateColumn( c,
                                                                                                                              (ConditionCol52) column );
                                                                                                         dtable.scrapeColumns();
@@ -399,13 +399,13 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( new SmallLabel( constants.Metadata() ) );
             attributeConfigWidget.add( hp );
         }
-        for ( MetadataCol atc : guidedDecisionTable.getMetadataCols() ) {
+        for ( MetadataCol52 atc : guidedDecisionTable.getMetadataCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeMeta( atc ) );
             hp.add( new SmallLabel( atc.getMetadata() ) );
 
-            final MetadataCol at = atc;
+            final MetadataCol52 at = atc;
             final CheckBox hide = new CheckBox();
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
@@ -428,8 +428,8 @@ public class GuidedDecisionTableWidget extends Composite
             attributeConfigWidget.add( hp );
         }
 
-        for ( AttributeCol atc : guidedDecisionTable.getAttributeCols() ) {
-            final AttributeCol at = atc;
+        for ( AttributeCol52 atc : guidedDecisionTable.getAttributeCols() ) {
+            final AttributeCol52 at = atc;
             HorizontalPanel hp = new HorizontalPanel();
 
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
@@ -515,7 +515,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    // Remove any attributes
                                                    // already added
-                                                   for ( AttributeCol col : guidedDecisionTable.getAttributeCols() ) {
+                                                   for ( AttributeCol52 col : guidedDecisionTable.getAttributeCols() ) {
                                                        for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
                                                            if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
                                                                list.removeItem( iItem );
@@ -532,7 +532,7 @@ public class GuidedDecisionTableWidget extends Composite
 
                                                    list.addChangeHandler( new ChangeHandler() {
                                                        public void onChange(ChangeEvent event) {
-                                                           AttributeCol attr = new AttributeCol();
+                                                           AttributeCol52 attr = new AttributeCol52();
                                                            attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
                                                            dtable.addColumn( attr );
                                                            dtable.scrapeColumns();
@@ -551,7 +551,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                                Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                                                                return;
                                                            }
-                                                           MetadataCol met = new MetadataCol();
+                                                           MetadataCol52 met = new MetadataCol52();
                                                            met.setHideColumn( true );
                                                            met.setMetadata( metadata );
                                                            dtable.addColumn( met );
@@ -561,7 +561,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                        }
 
                                                        private boolean isUnique(String metadata) {
-                                                           for ( MetadataCol mc : guidedDecisionTable.getMetadataCols() ) {
+                                                           for ( MetadataCol52 mc : guidedDecisionTable.getMetadataCols() ) {
                                                                if ( metadata.equals( mc.getMetadata() ) ) {
                                                                    return false;
                                                                }
@@ -588,7 +588,7 @@ public class GuidedDecisionTableWidget extends Composite
         return h;
     }
 
-    private Widget removeAttr(final AttributeCol at) {
+    private Widget removeAttr(final AttributeCol52 at) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisAttribute(),
                                      new ClickHandler() {
@@ -605,7 +605,7 @@ public class GuidedDecisionTableWidget extends Composite
         return del;
     }
 
-    private Widget removeMeta(final MetadataCol md) {
+    private Widget removeMeta(final MetadataCol52 md) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisMetadata(),
                                      new ClickHandler() {

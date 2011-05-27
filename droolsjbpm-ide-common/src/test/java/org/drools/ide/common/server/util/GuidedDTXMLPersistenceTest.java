@@ -20,13 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -42,14 +42,14 @@ public class GuidedDTXMLPersistenceTest {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        dt.getActionCols().add( new ActionInsertFactCol() );
-        ActionSetFieldCol set = new ActionSetFieldCol();
+        dt.getActionCols().add( new ActionInsertFactCol52() );
+        ActionSetFieldCol52 set = new ActionSetFieldCol52();
         set.setFactField( "foo" );
         dt.getActionCols().add( set );
 
-        dt.getMetadataCols().add( new MetadataCol() );
+        dt.getMetadataCols().add( new MetadataCol52() );
 
-        dt.getAttributeCols().add( new AttributeCol() );
+        dt.getAttributeCols().add( new AttributeCol52() );
 
         Pattern p = new Pattern();
         ConditionCol52 c = new ConditionCol52();
@@ -104,8 +104,8 @@ public class GuidedDTXMLPersistenceTest {
         assertEquals( 1,
                       dt_.getConditionPatterns().get( 0 ).getConditions().size() );
 
-        assertTrue( dt_.getActionCols().get( 1 ) instanceof ActionSetFieldCol );
-        ActionSetFieldCol asf = (ActionSetFieldCol) dt_.getActionCols().get( 1 );
+        assertTrue( dt_.getActionCols().get( 1 ) instanceof ActionSetFieldCol52 );
+        ActionSetFieldCol52 asf = (ActionSetFieldCol52) dt_.getActionCols().get( 1 );
         assertEquals( "foo",
                       asf.getFactField() );
         assertEquals( false,

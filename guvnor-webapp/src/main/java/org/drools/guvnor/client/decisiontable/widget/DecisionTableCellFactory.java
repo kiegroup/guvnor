@@ -24,18 +24,18 @@ import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
-public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig> {
+public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig52> {
 
     private static String[]             DIALECTS = {"java", "mvel"};
 
@@ -53,7 +53,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            The Decision Table model to assist data-type derivation
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
-                                    MergableGridWidget<DTColumnConfig> grid,
+                                    MergableGridWidget<DTColumnConfig52> grid,
                                     GuidedDecisionTable52 model) {
         super( sce,
                grid );
@@ -70,7 +70,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            The Decision Table model column
      * @return A Cell
      */
-    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(DTColumnConfig column) {
+    public DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> getCell(DTColumnConfig52 column) {
 
         //This is the cell that will be used to edit values; its type can differ to the "fieldType" 
         //of the underlying model. For example a "Guvnor-enum" requires a drop-down list of potential 
@@ -80,8 +80,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         if ( column instanceof RowNumberCol ) {
             cell = makeRowNumberCell();
 
-        } else if ( column instanceof AttributeCol ) {
-            AttributeCol attrCol = (AttributeCol) column;
+        } else if ( column instanceof AttributeCol52 ) {
+            AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 if ( attrCol.isUseRowNumber() ) {
@@ -112,10 +112,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveNewCellFromModel( column );
             
-        } else if ( column instanceof ActionSetFieldCol ) {
+        } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveNewCellFromModel( column );
 
-        } else if ( column instanceof ActionInsertFactCol ) {
+        } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveNewCellFromModel( column );
 
         }
@@ -126,7 +126,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     }
 
     // Make a new Cell for Condition and Actions columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig col) {
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig52 col) {
 
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
         String type = model.getType( col,

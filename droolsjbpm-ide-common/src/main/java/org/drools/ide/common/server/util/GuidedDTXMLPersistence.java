@@ -20,11 +20,11 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -43,7 +43,7 @@ public class GuidedDTXMLPersistence {
         xt.alias( "attribute-column",
                   AttributeCol.class );
         xt.alias( "condition-column",
-                  ConditionCol52.class );
+                  ConditionCol.class );
         xt.alias( "set-field-col",
                   ActionSetFieldCol.class );
         xt.alias( "retract-fact-column",
@@ -52,9 +52,6 @@ public class GuidedDTXMLPersistence {
                   ActionInsertFactCol.class );
 
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        xt.aliasField( "attr",
-                       AttributeCol.class,
-                       "attribute" );
         xt.aliasPackage( "org.drools.guvnor.client",
                          "org.drools.ide.common.client" );
 

@@ -28,14 +28,14 @@ import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,14 +48,14 @@ public class CellValueFactoryTests {
     private GuidedDecisionTable52   dt      = null;
     private DecisionTableCellValueFactory factory = null;
 
-    private AttributeCol                  at1     = null;
-    private AttributeCol                  at2     = null;
+    private AttributeCol52                  at1     = null;
+    private AttributeCol52                  at2     = null;
     private ConditionCol52                  c1      = null;
     private ConditionCol52                  c2      = null;
     private ConditionCol52                  c3      = null;
     private ConditionCol52                  c4      = null;
-    private ActionSetFieldCol             a1      = null;
-    private ActionInsertFactCol           a2      = null;
+    private ActionSetFieldCol52             a1      = null;
+    private ActionInsertFactCol52           a2      = null;
 
     @Before
     @SuppressWarnings("serial")
@@ -88,9 +88,9 @@ public class CellValueFactoryTests {
 
         dt = new GuidedDecisionTable52();
 
-        at1 = new AttributeCol();
+        at1 = new AttributeCol52();
         at1.setAttribute( "salience" );
-        at2 = new AttributeCol();
+        at2 = new AttributeCol52();
         at2.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( at1 );
@@ -140,12 +140,12 @@ public class CellValueFactoryTests {
         p4.getConditions().add( c4 );
         dt.getConditionPatterns().add( p4 );
 
-        a1 = new ActionSetFieldCol();
+        a1 = new ActionSetFieldCol52();
         a1.setBoundName( "c1" );
         a1.setFactField( "name" );
         dt.getActionCols().add( a1 );
 
-        a2 = new ActionInsertFactCol();
+        a2 = new ActionInsertFactCol52();
         a2.setBoundName( "a2" );
         a2.setFactType( "Driver" );
         a2.setFactField( "name" );

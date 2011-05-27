@@ -23,13 +23,25 @@ import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
+import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
@@ -45,57 +57,57 @@ public class RepositoryUpgradeHelper {
      */
     public static GuidedDecisionTable52 convertGuidedDTModel(GuidedDecisionTable legacyDTModel) {
 
+        assertConditionColumnPatternGrouping( legacyDTModel );
+        
         GuidedDecisionTable52 newDTModel = new GuidedDecisionTable52();
 
-        newDTModel.setTableName( legacyDTModel.getTableName() );
-        newDTModel.setParentName( legacyDTModel.getParentName() );
+        newDTModel.setTableName( legacyDTModel.tableName );
+        newDTModel.setParentName( legacyDTModel.parentName );
 
-        newDTModel.setRowNumberCol( legacyDTModel.getRowNumberCol() );
-        newDTModel.setDescriptionCol( legacyDTModel.getDescriptionCol() );
+        newDTModel.setRowNumberCol( new RowNumberCol() );
+        newDTModel.setDescriptionCol( new DescriptionCol() );
 
         //Metadata columns' data-type is implicitly defined in the metadata value. For example
         //a String metadata attribute is: "value", a numerical: 1. No conversion action required
         for ( MetadataCol c : legacyDTModel.getMetadataCols() ) {
-            newDTModel.getMetadataCols().add( c );
+            newDTModel.getMetadataCols().add( makeNewColumn( c ) );
         }
 
         //Attribute columns' data-type is based upon the attribute name
-        for ( AttributeCol c : legacyDTModel.getAttributeCols() ) {
-            newDTModel.getAttributeCols().add( c );
+        for ( AttributeCol c : legacyDTModel.attributeCols ) {
+            newDTModel.getAttributeCols().add( makeNewColumn( c ) );
         }
 
         //Legacy decision tables did not have Condition field data-types. Set all Condition 
         //fields to a *sensible* default of String (as this matches legacy behaviour).
-        assertConditionColumnPatternGrouping( legacyDTModel );
         Map<String, Pattern> patterns = new HashMap<String, Pattern>();
-        for ( int i = 0; i < legacyDTModel.getConditionCols().size(); i++ ) {
-            ConditionCol52 c = legacyDTModel.getConditionCols().get( i );
-            String boundName = c.getBoundName();
+        for ( int i = 0; i < legacyDTModel.conditionCols.size(); i++ ) {
+            ConditionCol c = legacyDTModel.conditionCols.get( i );
+            String boundName = c.boundName;
             Pattern p = patterns.get( boundName );
             if ( p == null ) {
                 p = new Pattern();
                 p.setBoundName( boundName );
-                p.setFactType( c.getFactType() );
+                p.setFactType( c.factType );
                 patterns.put( boundName,
                               p );
             }
-            if ( p.getFactType() != null && !p.getFactType().equals( c.getFactType() ) ) {
+            if ( p.getFactType() != null && !p.getFactType().equals( c.factType ) ) {
                 throw new IllegalArgumentException( "Inconsistent FactTypes for ConditionCols bound to '" + boundName + "' detected." );
             }
-            c.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
-            p.getConditions().add( c );
+            p.getConditions().add( makeNewColumn( c ) );
         }
         for ( Pattern p : patterns.values() ) {
             newDTModel.getConditionPatterns().add( p );
         }
 
         //Action columns have a discrete data-type. No conversion action required.
-        for ( ActionCol c : legacyDTModel.getActionCols() ) {
-            newDTModel.getActionCols().add( c );
+        for ( ActionCol c : legacyDTModel.actionCols ) {
+            newDTModel.getActionCols().add( makeNewColumn( c ) );
         }
 
         //Copy across data
-        newDTModel.setData( makeDataLists( legacyDTModel.getData() ) );
+        newDTModel.setData( makeDataLists( legacyDTModel.data ) );
 
         return newDTModel;
     }
@@ -108,20 +120,20 @@ public class RepositoryUpgradeHelper {
     private static void assertConditionColumnPatternGrouping(GuidedDecisionTable model) {
 
         class ConditionColData {
-            ConditionCol52 col;
+            ConditionCol col;
             String[]     data;
         }
 
         // Offset into Model's data array
-        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.getAttributeCols().size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
+        final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
         Map<String, List<ConditionColData>> groups = new HashMap<String, List<ConditionColData>>();
-        final int DATA_ROWS = model.getData().length;
+        final int DATA_ROWS = model.data.length;
 
         // Copy conditions and related data into temporary groups
-        for ( int iCol = 0; iCol < model.getConditionCols().size(); iCol++ ) {
+        for ( int iCol = 0; iCol < model.conditionCols.size(); iCol++ ) {
 
-            ConditionCol52 col = model.getConditionCols().get( iCol );
-            String pattern = col.getBoundName();
+            ConditionCol col = model.conditionCols.get( iCol );
+            String pattern = col.boundName;
             if ( !groups.containsKey( pattern ) ) {
                 List<ConditionColData> groupCols = new ArrayList<ConditionColData>();
                 groups.put( pattern,
@@ -134,7 +146,7 @@ public class RepositoryUpgradeHelper {
             int colIndex = DATA_COLUMN_OFFSET + iCol;
             ccd.data = new String[DATA_ROWS];
             for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                String[] row = model.getData()[iRow];
+                String[] row = model.data[iRow];
                 ccd.data[iRow] = row[colIndex];
             }
             ccd.col = col;
@@ -144,13 +156,13 @@ public class RepositoryUpgradeHelper {
 
         // Copy temporary groups back into the model
         int iCol = 0;
-        model.getConditionCols().clear();
+        model.conditionCols.clear();
         for ( Map.Entry<String, List<ConditionColData>> me : groups.entrySet() ) {
             for ( ConditionColData ccd : me.getValue() ) {
-                model.getConditionCols().add( ccd.col );
+                model.conditionCols.add( ccd.col );
                 int colIndex = DATA_COLUMN_OFFSET + iCol;
                 for ( int iRow = 0; iRow < DATA_ROWS; iRow++ ) {
-                    String[] row = model.getData()[iRow];
+                    String[] row = model.data[iRow];
                     row[colIndex] = ccd.data[iRow];
                 }
                 iCol++;
@@ -200,6 +212,107 @@ public class RepositoryUpgradeHelper {
             row.add( dcv );
         }
         return row;
+    }
+
+    private static AttributeCol52 makeNewColumn(AttributeCol c) {
+        AttributeCol52 nc = new AttributeCol52();
+        nc.setAttribute( c.attr );
+        nc.setDefaultValue( c.defaultValue );
+        nc.setHideColumn( c.hideColumn );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setWidth( c.width );
+        return nc;
+    }
+
+    private static MetadataCol52 makeNewColumn(MetadataCol c) {
+        MetadataCol52 nc = new MetadataCol52();
+        nc.setDefaultValue( c.defaultValue );
+        nc.setHideColumn( c.hideColumn );
+        nc.setMetadata( c.attr );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setWidth( c.width );
+        return nc;
+    }
+
+    private static ConditionCol52 makeNewColumn(ConditionCol c) {
+        ConditionCol52 nc = new ConditionCol52();
+        nc.setConstraintValueType( c.constraintValueType );
+        nc.setDefaultValue( c.defaultValue );
+        nc.setFactField( c.factField );
+        nc.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        nc.setHeader( c.header );
+        nc.setHideColumn( c.hideColumn );
+        nc.setOperator( c.operator );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setValueList( c.valueList );
+        nc.setWidth( c.width );
+        return nc;
+    }
+
+    private static ActionCol52 makeNewColumn(ActionCol c) {
+        if ( c instanceof ActionInsertFactCol ) {
+            return makeNewColumn( (ActionInsertFactCol) c );
+        } else if ( c instanceof ActionRetractFactCol ) {
+            return makeNewColumn( (ActionRetractFactCol) c );
+        } else if ( c instanceof ActionSetFieldCol ) {
+            return makeNewColumn( (ActionSetFieldCol) c );
+        }
+        ActionCol52 nc = new ActionCol52();
+        nc.setDefaultValue( c.defaultValue );
+        nc.setHeader( c.header );
+        nc.setHideColumn( c.hideColumn );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setWidth( c.width );
+        return nc;
+    }
+
+    private static ActionInsertFactCol52 makeNewColumn(ActionInsertFactCol c) {
+        ActionInsertFactCol52 nc = new ActionInsertFactCol52();
+        nc.setBoundName( c.boundName );
+        nc.setDefaultValue( c.defaultValue );
+        nc.setFactField( c.factField );
+        nc.setFactType( c.factType );
+        nc.setHeader( c.header );
+        nc.setHideColumn( c.hideColumn );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setType( c.type );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setValueList( c.valueList );
+        nc.setWidth( c.width );
+        return nc;
+    }
+
+    private static ActionRetractFactCol52 makeNewColumn(ActionRetractFactCol c) {
+        ActionRetractFactCol52 nc = new ActionRetractFactCol52();
+        nc.setBoundName( c.boundName );
+        nc.setDefaultValue( c.defaultValue );
+        nc.setHeader( c.header );
+        nc.setHideColumn( c.hideColumn );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setWidth( c.width );
+        return nc;
+
+    }
+
+    private static ActionSetFieldCol52 makeNewColumn(ActionSetFieldCol c) {
+        ActionSetFieldCol52 nc = new ActionSetFieldCol52();
+        nc.setBoundName( c.boundName );
+        nc.setDefaultValue( c.defaultValue );
+        nc.setFactField( c.factField );
+        nc.setHeader( c.header );
+        nc.setHideColumn( c.hideColumn );
+        nc.setReverseOrder( c.reverseOrder );
+        nc.setType( c.type );
+        nc.setUpdate( c.update );
+        nc.setUseRowNumber( c.useRowNumber );
+        nc.setValueList( c.valueList );
+        nc.setWidth( c.width );
+        return nc;
     }
 
 }

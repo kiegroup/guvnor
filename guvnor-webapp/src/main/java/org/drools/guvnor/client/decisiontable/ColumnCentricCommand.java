@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 /**
  * Interface defining commands relating to Column operations
@@ -28,5 +28,5 @@ public interface ColumnCentricCommand {
      * @param column
      *            The column on which the command should operate
      */
-    public void execute(DTColumnConfig column);
+    public void execute(DTColumnConfig52 column);
 }

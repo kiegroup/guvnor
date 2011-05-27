@@ -23,20 +23,20 @@ import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
-import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 
 /**
  * A Factory to create CellValues applicable to given columns.
  */
-public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig> {
+public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig52> {
 
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
@@ -67,7 +67,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            UI CellValue to convert into Model CellValue
      * @return
      */
-    public DTCellValue convertToDTModelCell(DTColumnConfig column,
+    public DTCellValue convertToDTModelCell(DTColumnConfig52 column,
                                             CellValue< ? > cell) {
         DTDataTypes dt = getDataType( column );
         DTCellValue dtCell = null;
@@ -102,7 +102,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            The Model cell containing the value
      * @return A CellValue
      */
-    public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig column,
+    public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig52 column,
                                                                int iRow,
                                                                int iCol,
                                                                DTCellValue dcv) {
@@ -133,8 +133,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                     cell = makeNewNumericCellValue( iRow,
                                                     iCol,
                                                     dcv.getNumericValue() );
-                    if ( column instanceof AttributeCol ) {
-                        AttributeCol at = (AttributeCol) column;
+                    if ( column instanceof AttributeCol52 ) {
+                        AttributeCol52 at = (AttributeCol52) column;
                         if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                             if ( at.isUseRowNumber() ) {
                                 cell = makeNewRowNumberCellValue( iRow,
@@ -148,8 +148,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 cell = makeNewStringCellValue( iRow,
                                                iCol,
                                                dcv.getStringValue() );
-                if ( column instanceof AttributeCol ) {
-                    AttributeCol ac = (AttributeCol) column;
+                if ( column instanceof AttributeCol52 ) {
+                    AttributeCol52 ac = (AttributeCol52) column;
                     if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
                         cell = makeNewDialectCellValue( iRow,
                                                         iCol,
@@ -209,7 +209,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes derieveDataType(DTColumnConfig col) {
+    private DTDataTypes derieveDataType(DTColumnConfig52 col) {
 
         DTDataTypes dataType = DTDataTypes.STRING;
         String type = model.getType( col,
@@ -236,15 +236,15 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     // Get the Data Type corresponding to a given column
-    protected DTDataTypes getDataType(DTColumnConfig column) {
+    protected DTDataTypes getDataType(DTColumnConfig52 column) {
 
         DTDataTypes dataType = DTDataTypes.STRING;
 
         if ( column instanceof RowNumberCol ) {
             dataType = DTDataTypes.NUMERIC;
 
-        } else if ( column instanceof AttributeCol ) {
-            AttributeCol attrCol = (AttributeCol) column;
+        } else if ( column instanceof AttributeCol52 ) {
+            AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 dataType = DTDataTypes.NUMERIC;
@@ -269,10 +269,10 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         } else if ( column instanceof ConditionCol52 ) {
             dataType = derieveDataType( column );
 
-        } else if ( column instanceof ActionSetFieldCol ) {
+        } else if ( column instanceof ActionSetFieldCol52 ) {
             dataType = derieveDataType( column );
 
-        } else if ( column instanceof ActionInsertFactCol ) {
+        } else if ( column instanceof ActionInsertFactCol52 ) {
             dataType = derieveDataType( column );
 
         }

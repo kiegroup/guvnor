@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 /**
  * Utility class to build Field Constraints for cells with "Otherwise" values
@@ -137,7 +137,7 @@ public class GuidedDTDRLOtherwiseHelper {
          * @return
          */
         FieldConstraint makeFieldConstraint(ConditionCol52 c,
-                                            List<DTColumnConfig> allColumns,
+                                            List<DTColumnConfig52> allColumns,
                                             List<List<DTCellValue>> data);
 
     }
@@ -154,7 +154,7 @@ public class GuidedDTDRLOtherwiseHelper {
         OtherwiseBuilder {
 
         public FieldConstraint makeFieldConstraint(ConditionCol52 c,
-                                                   List<DTColumnConfig> allColumns,
+                                                   List<DTColumnConfig52> allColumns,
                                                    List<List<DTCellValue>> data) {
             int index = allColumns.indexOf( c );
             List<DTCellValue> columnData = extractColumnData( data,

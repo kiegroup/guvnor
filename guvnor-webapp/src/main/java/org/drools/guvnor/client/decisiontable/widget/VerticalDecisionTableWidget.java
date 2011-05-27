@@ -23,7 +23,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeHandler;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -40,9 +40,9 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         VerticalPanel vp = new VerticalPanel();
 
         // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<DTColumnConfig>();
-        DecoratedGridHeaderWidget<DTColumnConfig> header = new VerticalDecisionTableHeaderWidget( widget );
-        DecoratedGridSidebarWidget<DTColumnConfig> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig>( widget,
+        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>();
+        DecoratedGridHeaderWidget<DTColumnConfig52> header = new VerticalDecisionTableHeaderWidget( widget );
+        DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( widget,
                                                                                                                      this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );

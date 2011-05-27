@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.List;
 
@@ -40,13 +40,18 @@ public class Pattern
     private boolean       isNegated;
 
     //Field restrictions. The Collection used ensures a ConditionCol has a back-reference to this Pattern
-    private ConditionCols conditions = new ConditionCols( this );
+    private ConditionCols conditions;
 
     //CEP 'window' definition
     private CEPWindow     window;
 
     //Entry-point name
     private String        entryPointName;
+
+    public Pattern() {
+        this.conditions = new ConditionCols();
+        this.conditions.setPattern( this );
+    }
 
     public String getFactType() {
         return factType;

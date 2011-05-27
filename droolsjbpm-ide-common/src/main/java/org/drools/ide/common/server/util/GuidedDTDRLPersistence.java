@@ -38,17 +38,17 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 import org.drools.ide.common.server.util.GuidedDTDRLOtherwiseHelper.OtherwiseBuilder;
 
 /**
@@ -65,7 +65,7 @@ public class GuidedDTDRLPersistence {
         StringBuilder sb = new StringBuilder();
 
         List<List<DTCellValue>> data = dt.getData();
-        List<DTColumnConfig> allColumns = dt.getAllColumns();
+        List<DTColumnConfig52> allColumns = dt.getAllColumns();
 
         for ( int i = 0; i < data.size(); i++ ) {
             List<DTCellValue> row = data.get( i );
@@ -111,13 +111,13 @@ public class GuidedDTDRLPersistence {
 
     }
 
-    void doActions(List<DTColumnConfig> allColumns,
-                   List<ActionCol> actionCols,
+    void doActions(List<DTColumnConfig52> allColumns,
+                   List<ActionCol52> actionCols,
                    List<DTCellValue> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( int i = 0; i < actionCols.size(); i++ ) {
-            ActionCol c = actionCols.get( i );
+            ActionCol52 c = actionCols.get( i );
             int index = allColumns.indexOf( c );
 
             String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
@@ -127,8 +127,8 @@ public class GuidedDTDRLPersistence {
             }
 
             if ( validCell( cell ) ) {
-                if ( c instanceof ActionInsertFactCol ) {
-                    ActionInsertFactCol ac = (ActionInsertFactCol) c;
+                if ( c instanceof ActionInsertFactCol52 ) {
+                    ActionInsertFactCol52 ac = (ActionInsertFactCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
                                                              ac.getBoundName() );
                     if ( a == null ) {
@@ -150,8 +150,8 @@ public class GuidedDTDRLPersistence {
                                                                  cell,
                                                                  ac.getType() );
                     ins.addFieldValue( val );
-                } else if ( c instanceof ActionRetractFactCol ) {
-                    ActionRetractFactCol rf = (ActionRetractFactCol) c;
+                } else if ( c instanceof ActionRetractFactCol52 ) {
+                    ActionRetractFactCol52 rf = (ActionRetractFactCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
                                                              rf.getBoundName() );
                     if ( a == null ) {
@@ -160,8 +160,8 @@ public class GuidedDTDRLPersistence {
                         a.boundName = rf.getBoundName();
                         actions.add( a );
                     }
-                } else if ( c instanceof ActionSetFieldCol ) {
-                    ActionSetFieldCol sf = (ActionSetFieldCol) c;
+                } else if ( c instanceof ActionSetFieldCol52 ) {
+                    ActionSetFieldCol52 sf = (ActionSetFieldCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
                                                              sf.getBoundName() );
                     if ( a == null ) {
@@ -205,7 +205,7 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doConditions(List<DTColumnConfig> allColumns,
+    void doConditions(List<DTColumnConfig52> allColumns,
                       List<Pattern> conditionPatterns,
                       List<DTCellValue> row,
                       List<List<DTCellValue>> data,
@@ -351,13 +351,13 @@ public class GuidedDTDRLPersistence {
         return null;
     }
 
-    void doAttribs(List<DTColumnConfig> allColumns,
-                   List<AttributeCol> attributeCols,
+    void doAttribs(List<DTColumnConfig52> allColumns,
+                   List<AttributeCol52> attributeCols,
                    List<DTCellValue> row,
                    RuleModel rm) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
-            AttributeCol at = attributeCols.get( j );
+            AttributeCol52 at = attributeCols.get( j );
             int index = allColumns.indexOf( at );
 
             String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
@@ -381,8 +381,8 @@ public class GuidedDTDRLPersistence {
         }
     }
 
-    void doMetadata(List<DTColumnConfig> allColumns,
-                    List<MetadataCol> metadataCols,
+    void doMetadata(List<DTColumnConfig52> allColumns,
+                    List<MetadataCol52> metadataCols,
                     List<DTCellValue> row,
                     RuleModel rm) {
 
@@ -390,7 +390,7 @@ public class GuidedDTDRLPersistence {
         List<RuleMetadata> metadataList = new ArrayList<RuleMetadata>();
 
         for ( int j = 0; j < metadataCols.size(); j++ ) {
-            MetadataCol meta = metadataCols.get( j );
+            MetadataCol52 meta = metadataCols.get( j );
             int index = allColumns.indexOf( meta );
 
             String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
@@ -457,7 +457,7 @@ public class GuidedDTDRLPersistence {
 
     //Build a SingleFieldConstraint for an otherwise cell value
     private FieldConstraint makeSingleFieldConstraint(ConditionCol52 c,
-                                                      List<DTColumnConfig> allColumns,
+                                                      List<DTColumnConfig52> allColumns,
                                                       List<List<DTCellValue>> data) {
 
         OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );

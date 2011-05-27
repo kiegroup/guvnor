@@ -34,19 +34,19 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt.DTColumnConfig;
-import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
@@ -56,7 +56,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
-        AttributeCol attr = new AttributeCol();
+        AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
@@ -100,24 +100,24 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p2 );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
         ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         dt.getActionCols().add( ins );
 
-        ActionRetractFactCol ret = new ActionRetractFactCol();
+        ActionRetractFactCol52 ret = new ActionRetractFactCol52();
         ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
-        ActionSetFieldCol set = new ActionSetFieldCol();
+        ActionSetFieldCol52 set = new ActionSetFieldCol52();
         set.setBoundName( "f1" );
         set.setFactField( "goo1" );
         set.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set );
 
-        ActionSetFieldCol set2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
         set2.setDefaultValue( "whee" );
@@ -146,10 +146,10 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", ""};
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        List<AttributeCol> attributeCols = new ArrayList<AttributeCol>();
+        List<AttributeCol52> attributeCols = new ArrayList<AttributeCol52>();
 
         RuleModel rm = new RuleModel();
         RuleAttribute[] orig = rm.attributes;
@@ -161,9 +161,9 @@ public class GuidedDTDRLPersistenceTest {
         assertSame( orig,
                     rm.attributes );
 
-        AttributeCol col1 = new AttributeCol();
+        AttributeCol52 col1 = new AttributeCol52();
         col1.setAttribute( "salience" );
-        AttributeCol col2 = new AttributeCol();
+        AttributeCol52 col2 = new AttributeCol52();
         col2.setAttribute( "agenda-group" );
         attributeCols.add( col1 );
         attributeCols.add( col2 );
@@ -228,7 +228,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
-        AttributeCol attr = new AttributeCol();
+        AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
@@ -266,24 +266,24 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p1 );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
         ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         dt.getActionCols().add( ins );
 
-        ActionRetractFactCol ret = new ActionRetractFactCol();
+        ActionRetractFactCol52 ret = new ActionRetractFactCol52();
         ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
-        ActionSetFieldCol set = new ActionSetFieldCol();
+        ActionSetFieldCol52 set = new ActionSetFieldCol52();
         set.setBoundName( "f1" );
         set.setFactField( "goo1" );
         set.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set );
 
-        ActionSetFieldCol set2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
         set2.setDefaultValue( "whee" );
@@ -307,7 +307,7 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableName( "michael" );
 
-        AttributeCol attr = new AttributeCol();
+        AttributeCol52 attr = new AttributeCol52();
         attr.setAttribute( "salience" );
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
@@ -351,24 +351,24 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p2 );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "ins" );
         ins.setFactType( "Cheese" );
         ins.setFactField( "price" );
         ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         dt.getActionCols().add( ins );
 
-        ActionRetractFactCol ret = new ActionRetractFactCol();
+        ActionRetractFactCol52 ret = new ActionRetractFactCol52();
         ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
-        ActionSetFieldCol set = new ActionSetFieldCol();
+        ActionSetFieldCol52 set = new ActionSetFieldCol52();
         set.setBoundName( "f1" );
         set.setFactField( "goo1" );
         set.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set );
 
-        ActionSetFieldCol set2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 set2 = new ActionSetFieldCol52();
         set2.setBoundName( "f1" );
         set2.setFactField( "goo2" );
         set2.setDefaultValue( "whee" );
@@ -401,11 +401,11 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        allColumns.add( new MetadataCol() );
+        allColumns.add( new MetadataCol52() );
 
         Pattern p1 = new Pattern();
         p1.setBoundName( "p1" );
@@ -515,11 +515,11 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        allColumns.add( new MetadataCol() );
+        allColumns.add( new MetadataCol52() );
 
         Pattern p1 = new Pattern();
         p1.setNegated( true );
@@ -652,7 +652,7 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[1] = row[1];
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
@@ -748,7 +748,7 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
@@ -865,7 +865,7 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
@@ -982,7 +982,7 @@ public class GuidedDTDRLPersistenceTest {
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
@@ -1085,10 +1085,10 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "bar", ""};
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        List<MetadataCol> metadataCols = new ArrayList<MetadataCol>();
+        List<MetadataCol52> metadataCols = new ArrayList<MetadataCol52>();
 
         RuleModel rm = new RuleModel();
         RuleMetadata[] orig = rm.metadataList;
@@ -1102,9 +1102,9 @@ public class GuidedDTDRLPersistenceTest {
         assertSame( orig,
                     rm.metadataList );
 
-        MetadataCol col1 = new MetadataCol();
+        MetadataCol52 col1 = new MetadataCol52();
         col1.setMetadata( "foo" );
-        MetadataCol col2 = new MetadataCol();
+        MetadataCol52 col2 = new MetadataCol52();
         col2.setMetadata( "foo2" );
         metadataCols.add( col1 );
         metadataCols.add( col2 );
@@ -1166,7 +1166,7 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p1 );
 
-        ActionSetFieldCol asf = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
         asf.setType( SuggestionCompletionEngine.TYPE_STRING );
@@ -1200,11 +1200,11 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[1][];
         data[0] = row;
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         List<Pattern> allPatterns = new ArrayList<Pattern>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        allColumns.add( new MetadataCol() );
+        allColumns.add( new MetadataCol52() );
 
         Pattern p1 = new Pattern();
         p1.setBoundName( "p1" );
@@ -1236,39 +1236,39 @@ public class GuidedDTDRLPersistenceTest {
         GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
         String[] row = new String[]{"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
 
-        List<DTColumnConfig> allColumns = new ArrayList<DTColumnConfig>();
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
         allColumns.add( new RowNumberCol() );
         allColumns.add( new DescriptionCol() );
-        allColumns.add( new MetadataCol() );
+        allColumns.add( new MetadataCol52() );
         allColumns.add( new ConditionCol52() );
-        List<ActionCol> cols = new ArrayList<ActionCol>();
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
 
-        ActionSetFieldCol asf1 = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf1 = new ActionSetFieldCol52();
         asf1.setBoundName( "a" );
         asf1.setFactField( "field1" );
 
         asf1.setType( SuggestionCompletionEngine.TYPE_STRING );
         cols.add( asf1 );
 
-        ActionSetFieldCol asf2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf2 = new ActionSetFieldCol52();
         asf2.setBoundName( "a" );
         asf2.setFactField( "field2" );
         asf2.setUpdate( true );
         asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cols.add( asf2 );
 
-        ActionRetractFactCol ret = new ActionRetractFactCol();
+        ActionRetractFactCol52 ret = new ActionRetractFactCol52();
         ret.setBoundName( "ret" );
         cols.add( ret );
 
-        ActionInsertFactCol ins1 = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins1 = new ActionInsertFactCol52();
         ins1.setBoundName( "ins" );
         ins1.setFactType( "Cheese" );
         ins1.setFactField( "price" );
         ins1.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
         cols.add( ins1 );
 
-        ActionInsertFactCol ins2 = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins2 = new ActionInsertFactCol52();
         ins2.setBoundName( "ins" );
         ins2.setFactType( "Cheese" );
         ins2.setFactField( "type" );
@@ -1347,7 +1347,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( c );
         dt.getConditionPatterns().add( p1 );
 
-        ActionSetFieldCol asf = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "x" );
         asf.setFactField( "age" );
         asf.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
