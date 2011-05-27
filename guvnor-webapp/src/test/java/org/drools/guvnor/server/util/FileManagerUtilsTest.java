@@ -492,8 +492,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     }
 
     @Test
-    //@Ignore("This test is broken. The approach needs to be revised - i.e. not use FileManagerUtils to handle repository sessions.")
-    //call repository.logout() will close the current JCR session. Comment out this line will make this 
+    //Calling repository.logout() will close the current JCR session. Commenting out this line makes this 
     //test run. But we probably want to remove this test later as this is not a good designed test anyway (the
     //purpose of this test is to detect memory leak?)
     public void testHeadOOME() throws Exception {
