@@ -62,6 +62,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -92,16 +93,21 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
-    @Ignore("This needs a little re-work as it does not work as expected")
+    //@Ignore("This needs a little re-work as it does not work as expected")
     public void testInboxEvents() throws Exception {
 
         try {
             RepositoryStartupService.registerCheckinListener();
-            ServiceImplementation impl = getServiceImplementation();
+            ServiceImplementation impl = getServiceImplementation();            
+
+            //Init MailboxService
+            MailboxService service = MailboxService.getInstance();
+            service.init( impl.getRulesRepository() );
+            
             RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
             assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
-            //this should trigger the fact that the original user edited something
+            //this should trigger the fact that the first user edited something
             AssetItem as = impl.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
                                                                                     "" );
             as.checkin( "" );
@@ -122,8 +128,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             }
             assertFalse( found );
 
-            //Now, another user comes along, makes a change...
-            RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "thirdpartyuser" ) );
+            //Now, the second user comes along, makes a change...
+            RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "seconduser" ) );
             AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
             as2.updateContent( "hey" );
             as2.checkin( "here we go again !" );
@@ -142,18 +148,18 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             assertNotNull( rowMatch );
             assertEquals( as.getName(),
                           rowMatch.values[0] );
-            assertEquals( "thirdpartyuser",
+            assertEquals( "seconduser",
                           rowMatch.values[2] ); //should be "from" that user name...
 
-            //shouldn't be in thirdpartyusers inbox
-            UserInbox ib = new UserInbox( repo2 );
-            ib.loadIncoming();
+            //shouldn't be in second user's inbox
+            UserInbox secondUsersInbox = new UserInbox( repo2 );
+            secondUsersInbox.loadIncoming();
             assertEquals( 0,
-                          ib.loadIncoming().size() );
+                          secondUsersInbox.loadIncoming().size() );
             assertEquals( 1,
-                          ib.loadRecentEdited().size() );
+                          secondUsersInbox.loadRecentEdited().size() );
 
-            //ok lets create another user...
+            //ok lets create a third user...
             RulesRepository repo3 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "fourthuser" ) );
             AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
             as3.updateContent( "hey22" );
@@ -161,11 +167,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
             Thread.sleep( 250 );
 
-            //so should be in thirdpartyuser inbox
+            //so should be in second user's inbox
             assertEquals( 1,
-                          ib.loadIncoming().size() );
+                          secondUsersInbox.loadIncoming().size() );
 
-            //and also still in the original user...
+            //and also still in the first user's...
             found = false;
             res = impl.loadInbox( ExplorerNodeConfig.INCOMING_ID );
             for ( TableDataRow row : res.data ) {
