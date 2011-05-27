@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 /**
@@ -39,7 +39,7 @@ public class GuidedDTDRLOtherwiseHelper {
 
         @Override
         FieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
-                                                       List<DTCellValue> columnData) {
+                                                       List<DTCellValue52> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
 
@@ -48,7 +48,7 @@ public class GuidedDTDRLOtherwiseHelper {
             List<String> consumedValues = new ArrayList<String>();
             StringBuilder value = new StringBuilder();
             value.append( "( " );
-            for ( DTCellValue cv : columnData ) {
+            for ( DTCellValue52 cv : columnData ) {
 
                 //Ensure cell values start and end with quotes
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
@@ -82,7 +82,7 @@ public class GuidedDTDRLOtherwiseHelper {
 
         @Override
         SingleFieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
-                                                             List<DTCellValue> columnData) {
+                                                             List<DTCellValue52> columnData) {
             SingleFieldConstraint sfc = new SingleFieldConstraint( c.getFactField() );
             sfc.setConstraintValueType( c.getConstraintValueType() );
 
@@ -91,7 +91,7 @@ public class GuidedDTDRLOtherwiseHelper {
             List<String> consumedValues = new ArrayList<String>();
             StringBuilder value = new StringBuilder();
             value.append( "( " );
-            for ( DTCellValue cv : columnData ) {
+            for ( DTCellValue52 cv : columnData ) {
 
                 //Ensure cell values start and end with quotes
                 String scv = GuidedDTDRLUtilities.convertDTCellValueToString( cv );
@@ -138,7 +138,7 @@ public class GuidedDTDRLOtherwiseHelper {
          */
         FieldConstraint makeFieldConstraint(ConditionCol52 c,
                                             List<DTColumnConfig52> allColumns,
-                                            List<List<DTCellValue>> data);
+                                            List<List<DTCellValue52>> data);
 
     }
 
@@ -155,17 +155,17 @@ public class GuidedDTDRLOtherwiseHelper {
 
         public FieldConstraint makeFieldConstraint(ConditionCol52 c,
                                                    List<DTColumnConfig52> allColumns,
-                                                   List<List<DTCellValue>> data) {
+                                                   List<List<DTCellValue52>> data) {
             int index = allColumns.indexOf( c );
-            List<DTCellValue> columnData = extractColumnData( data,
-                                                              index );
+            List<DTCellValue52> columnData = extractColumnData( data,
+                                                                index );
             return constructSingleFieldConstraint( c,
                                                    columnData );
         }
 
         //Template pattern, provide method for implementations to override
         abstract FieldConstraint constructSingleFieldConstraint(ConditionCol52 c,
-                                                                List<DTCellValue> columnData);
+                                                                List<DTCellValue52> columnData);
 
     }
 
@@ -186,10 +186,10 @@ public class GuidedDTDRLOtherwiseHelper {
     }
 
     //Extract data relating to a single column
-    private static List<DTCellValue> extractColumnData(List<List<DTCellValue>> data,
-                                                       int columnIndex) {
-        List<DTCellValue> columnData = new ArrayList<DTCellValue>();
-        for ( List<DTCellValue> row : data ) {
+    private static List<DTCellValue52> extractColumnData(List<List<DTCellValue52>> data,
+                                                         int columnIndex) {
+        List<DTCellValue52> columnData = new ArrayList<DTCellValue52>();
+        for ( List<DTCellValue52> row : data ) {
             columnData.add( row.get( columnIndex ) );
         }
         return columnData;

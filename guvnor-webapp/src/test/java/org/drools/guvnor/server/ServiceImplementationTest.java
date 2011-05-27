@@ -72,7 +72,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.RepositoryUpgradeHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
@@ -97,12 +97,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         try {
             RepositoryStartupService.registerCheckinListener();
-            ServiceImplementation impl = getServiceImplementation();            
+            ServiceImplementation impl = getServiceImplementation();
 
             //Init MailboxService
             MailboxService service = MailboxService.getInstance();
             service.init( impl.getRulesRepository() );
-            
+
             RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
             assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
@@ -1202,7 +1202,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p" );
         p1.setFactType( "Person" );
 

@@ -30,14 +30,14 @@ import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
  */
 public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig52> {
 
-    private static String[]             DIALECTS = {"java", "mvel"};
+    private static String[]       DIALECTS = {"java", "mvel"};
 
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
@@ -77,7 +77,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         //values whereas the "fieldType" may be a String. 
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
 
-        if ( column instanceof RowNumberCol ) {
+        if ( column instanceof RowNumberCol52 ) {
             cell = makeRowNumberCell();
 
         } else if ( column instanceof AttributeCol52 ) {
@@ -111,7 +111,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveNewCellFromModel( column );
-            
+
         } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveNewCellFromModel( column );
 

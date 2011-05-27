@@ -33,18 +33,6 @@ public class ConditionCol52 extends DTColumnConfig52
     // What is displayed at the top
     private String              header;
 
-    //Pattern to which the Condition belongs
-    private Pattern             pattern;
-
-    // The type of the fact - class - eg Driver, Person, Cheese etc.
-    @Deprecated
-    private String              factType;
-
-    // The name that this gets referenced as. Multiple columns with the same
-    // name mean their constraints will be combined.
-    @Deprecated
-    private String              boundName;
-
     // The type of the value that is in the cell, eg if it is a formula, or
     // literal value etc. The valid types are from ISingleFieldConstraint:
     // TYPE_LITERAL TYPE_RET_VALUE TYPE_PREDICATE (in this case, the field and
@@ -68,44 +56,12 @@ public class ConditionCol52 extends DTColumnConfig52
     //CEP operators' parameters
     private Map<String, String> parameters;
 
-    public ConditionCol52() {
-        this.pattern = new Pattern();
-    }
-
     public void setHeader(String header) {
         this.header = header;
     }
 
     public String getHeader() {
         return header;
-    }
-
-    public Pattern getPattern() {
-        return pattern;
-    }
-
-    public void setPattern(Pattern pattern) {
-        this.pattern = pattern;
-    }
-
-    @Deprecated
-    public String getFactType() {
-        return factType;
-    }
-
-    @Deprecated
-    public void setFactType(String factType) {
-        this.factType = factType;
-    }
-
-    @Deprecated
-    public String getBoundName() {
-        return boundName;
-    }
-
-    @Deprecated
-    public void setBoundName(String boundName) {
-        this.boundName = boundName;
     }
 
     public void setConstraintValueType(int constraintValueType) {
@@ -198,10 +154,6 @@ public class ConditionCol52 extends DTColumnConfig52
         ConditionCol52 that = (ConditionCol52) obj;
         return nullOrEqual( this.header,
                             that.header )
-                && nullOrEqual( this.factType,
-                                that.factType )
-                && nullOrEqual( this.boundName,
-                                that.boundName )
                 && this.constraintValueType == that.constraintValueType
                 && nullOrEqual( this.factField,
                                 that.factField )
@@ -213,8 +165,6 @@ public class ConditionCol52 extends DTColumnConfig52
                                 that.valueList )
                 && nullOrEqual( this.parameters,
                                 that.parameters )
-                && nullOrEqual( this.pattern,
-                                that.pattern )
                 && super.equals( obj );
     }
 
@@ -222,15 +172,12 @@ public class ConditionCol52 extends DTColumnConfig52
     public int hashCode() {
         int hash = 1;
         hash = hash * 31 + (header == null ? 0 : header.hashCode());
-        hash = hash * 31 + (factType == null ? 0 : factType.hashCode());
-        hash = hash * 31 + (boundName == null ? 0 : boundName.hashCode());
         hash = hash * 31 + constraintValueType;
         hash = hash * 31 + (factField == null ? 0 : factField.hashCode());
         hash = hash * 31 + (fieldType == null ? 0 : fieldType.hashCode());
         hash = hash * 31 + (operator == null ? 0 : operator.hashCode());
         hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
         hash = hash * 31 + (parameters == null ? 0 : parameters.hashCode());
-        hash = hash * 31 + (pattern == null ? 0 : pattern.hashCode());
         hash = hash * 31 + super.hashCode();
         return hash;
     }

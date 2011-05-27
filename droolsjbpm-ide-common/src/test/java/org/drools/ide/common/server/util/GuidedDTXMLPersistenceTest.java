@@ -26,7 +26,7 @@ import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +51,7 @@ public class GuidedDTXMLPersistenceTest {
 
         dt.getAttributeCols().add( new AttributeCol52() );
 
-        Pattern p = new Pattern();
+        Pattern52 p = new Pattern52();
         ConditionCol52 c = new ConditionCol52();
         p.getConditions().add( c );
         dt.getConditionPatterns().add( p );

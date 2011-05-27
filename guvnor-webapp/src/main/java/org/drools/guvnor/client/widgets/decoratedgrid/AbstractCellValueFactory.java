@@ -20,7 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.util.DateConverter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -64,7 +64,7 @@ public abstract class AbstractCellValueFactory<T> {
     public CellValue< ? extends Comparable< ? >> makeCellValue(T column,
                                                                int iRow,
                                                                int iCol) {
-        DTDataTypes dataType = getDataType( column );
+        DTDataTypes52 dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
         switch ( dataType ) {
@@ -89,7 +89,7 @@ public abstract class AbstractCellValueFactory<T> {
     }
 
     // Get the Data Type corresponding to a given column
-    protected abstract DTDataTypes getDataType(T column);
+    protected abstract DTDataTypes52 getDataType(T column);
 
     protected CellValue<Boolean> makeNewBooleanCellValue(int iRow,
                                                          int iCol) {

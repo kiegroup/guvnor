@@ -21,7 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -49,7 +49,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
      */
     public String convertValueToString(TemplateDataColumn column,
                                        CellValue< ? > cv) {
-        DTDataTypes dataType = getDataType( column );
+        DTDataTypes52 dataType = getDataType( column );
 
         switch ( dataType ) {
             case BOOLEAN :
@@ -83,7 +83,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                                                                int iRow,
                                                                int iCol,
                                                                String initialValue) {
-        DTDataTypes dataType = getDataType( column );
+        DTDataTypes52 dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
         switch ( dataType ) {
@@ -157,7 +157,7 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
     }
 
     // Get the Data Type corresponding to a given column
-    protected DTDataTypes getDataType(TemplateDataColumn column) {
+    protected DTDataTypes52 getDataType(TemplateDataColumn column) {
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = null;
@@ -167,20 +167,20 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
             vals = sce.getEnumValues( factType,
                                       factField );
             if ( vals != null && vals.length > 0 ) {
-                return DTDataTypes.STRING;
+                return DTDataTypes52.STRING;
             }
         }
 
         //Otherwise use data type extracted from model
         String dataType = column.getDataType();
         if ( dataType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            return DTDataTypes.BOOLEAN;
+            return DTDataTypes52.BOOLEAN;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            return DTDataTypes.DATE;
+            return DTDataTypes52.DATE;
         } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            return DTDataTypes.NUMERIC;
+            return DTDataTypes52.NUMERIC;
         } else {
-            return DTDataTypes.STRING;
+            return DTDataTypes52.STRING;
         }
     }
 

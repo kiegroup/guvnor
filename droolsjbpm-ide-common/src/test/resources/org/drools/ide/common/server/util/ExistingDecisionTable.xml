@@ -28,7 +28,11 @@
   <data>
     <string-array>
       <string>1</string>
-      <string>hola</string>
+      <string>metadata1</string>
+      <string>attribute1</string>
+      <string>condition1</string>
+      <string>action1</string>
+      <string>action2</string>
     </string-array>
   </data>
   <descriptionWidth>42</descriptionWidth>

@@ -15,23 +15,22 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-
 /**
  * This is a rule description
  */
-public class DescriptionCol extends DTColumnConfig52 {
+public class DescriptionCol52 extends DTColumnConfig52 {
 
     private static final long serialVersionUID = -306736594255777798L;
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
+        if ( obj == null ) {
             return false;
         }
-        if (!(obj instanceof DescriptionCol)) {
+        if ( !(obj instanceof DescriptionCol52) ) {
             return false;
         }
-        return super.equals(obj);
+        return super.equals( obj );
     }
 
     @Override

@@ -28,9 +28,11 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
-import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.Scheduler;
@@ -73,7 +75,7 @@ public class VerticalDecisionTableHeaderWidget extends
          */
         private class HeaderSorter extends FocusPanel {
 
-            private final HorizontalPanel               hp = new HorizontalPanel();
+            private final HorizontalPanel                 hp = new HorizontalPanel();
             private final DynamicColumn<DTColumnConfig52> col;
 
             private HeaderSorter(final DynamicColumn<DTColumnConfig52> col) {
@@ -242,11 +244,11 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         // Child Widgets used in this Widget
-        private List<HeaderSorter>                  sorters              = new ArrayList<HeaderSorter>();
-        private HeaderSplitter                      splitter             = new HeaderSplitter();
+        private List<HeaderSorter>                    sorters              = new ArrayList<HeaderSorter>();
+        private HeaderSplitter                        splitter             = new HeaderSplitter();
 
         // UI Components
-        private Element[]                           rowHeaders           = new Element[5];
+        private Element[]                             rowHeaders           = new Element[5];
 
         private List<DynamicColumn<DTColumnConfig52>> visibleCols          = new ArrayList<DynamicColumn<DTColumnConfig52>>();
         private List<DynamicColumn<DTColumnConfig52>> visibleConditionCols = new ArrayList<DynamicColumn<DTColumnConfig52>>();
@@ -280,13 +282,13 @@ public class VerticalDecisionTableHeaderWidget extends
                                               Element tce) {
 
             DTColumnConfig52 modelCol = col.getModelColumn();
-            if ( modelCol instanceof RowNumberCol ) {
+            if ( modelCol instanceof RowNumberCol52 ) {
                 tce.appendChild( makeLabel( "#",
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
                 tce.addClassName( style.headerRowIntermediate() );
-            } else if ( modelCol instanceof DescriptionCol ) {
+            } else if ( modelCol instanceof DescriptionCol52 ) {
                 tce.appendChild( makeLabel( constants.Description(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
@@ -393,6 +395,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
                         DynamicColumn<DTColumnConfig52> col = visibleConditionCols.get( iCol );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
+                        Pattern52 ccPattern = model.getPattern( cc );
 
                         // Merging
                         int colSpan = 1;
@@ -400,9 +403,10 @@ public class VerticalDecisionTableHeaderWidget extends
                         while ( iCol + colSpan < visibleConditionCols.size() ) {
                             DynamicColumn<DTColumnConfig52> mergeCol = visibleConditionCols.get( iCol + colSpan );
                             ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
+                            Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
-                            if ( mergeCondCol.getPattern().getFactType().equals( cc.getPattern().getFactType() )
-                                 && mergeCondCol.getPattern().getBoundName().equals( cc.getPattern().getBoundName() ) ) {
+                            if ( mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
+                                 && mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
                                 width = width + mergeCol.getWidth();
                                 colSpan++;
                             } else {
@@ -414,9 +418,9 @@ public class VerticalDecisionTableHeaderWidget extends
                         iCol = iCol + colSpan - 1;
                         tce.addClassName( style.headerRowIntermediate() );
                         StringBuilder label = new StringBuilder();
-                        label.append( (cc.getPattern().isNegated() ? constants.negatedPattern() + " " : "") );
-                        label.append( cc.getPattern().getFactType() );
-                        label.append( " [" + cc.getPattern().getBoundName() + "]" );
+                        label.append( (ccPattern.isNegated() ? constants.negatedPattern() + " " : "") );
+                        label.append( ccPattern.getFactType() );
+                        label.append( " [" + ccPattern.getBoundName() + "]" );
                         tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
@@ -502,7 +506,9 @@ public class VerticalDecisionTableHeaderWidget extends
     }
 
     // UI Components
-    private HeaderWidget widget;
+    private HeaderWidget          widget;
+
+    private GuidedDecisionTable52 model;
 
     /**
      * Construct a "Header" for the provided DecisionTable
@@ -511,6 +517,18 @@ public class VerticalDecisionTableHeaderWidget extends
      */
     public VerticalDecisionTableHeaderWidget(final DecoratedGridWidget<DTColumnConfig52> grid) {
         super( grid );
+    }
+
+    /**
+     * Inject the model
+     * 
+     * @param model
+     */
+    void setModel(GuidedDecisionTable52 model) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+        this.model = model;
     }
 
     @Override
@@ -622,6 +640,7 @@ public class VerticalDecisionTableHeaderWidget extends
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig52> col = widget.visibleConditionCols.get( iCol );
             ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
+            Pattern52 ccPattern = model.getPattern( cc );
 
             // Merging
             int colSpan = 1;
@@ -629,9 +648,10 @@ public class VerticalDecisionTableHeaderWidget extends
             while ( iCol + colSpan < widget.visibleConditionCols.size() ) {
                 DynamicColumn<DTColumnConfig52> mergeCol = widget.visibleConditionCols.get( iCol + colSpan );
                 ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
+                Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
-                if ( mergeCondCol.getPattern().getFactType().equals( cc.getPattern().getFactType() )
-                        && mergeCondCol.getPattern().getBoundName().equals( cc.getPattern().getBoundName() ) ) {
+                if ( mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
+                        && mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
                     width = width + mergeCol.getWidth();
                     colSpan++;
                 } else {

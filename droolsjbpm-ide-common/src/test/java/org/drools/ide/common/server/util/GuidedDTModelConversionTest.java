@@ -33,9 +33,7 @@ import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.junit.Test;
 
@@ -165,7 +163,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "age",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ) ).getFactType() );
         assertEquals( "Driver f1 age",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getHeader() );
         assertEquals( "==",
@@ -176,7 +174,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "name",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ) ).getFactType() );
         assertEquals( "Driver f1 name",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getHeader() );
         assertEquals( "==",
@@ -187,7 +185,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "rating",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ) ).getFactType() );
         assertEquals( "Driver rating",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 2 ).getHeader() );
         assertEquals( "==",
@@ -198,7 +196,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "(not needed)",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ) ).getFactType() );
         assertEquals( "Driver 2 pimp",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getHeader() );
 
@@ -369,7 +367,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "age",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ) ).getFactType() );
         assertEquals( "Driver f1 age",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 0 ).getHeader() );
         assertEquals( "==",
@@ -380,7 +378,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "rating",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactField() );
         assertEquals( "Driver",
-                      tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ) ).getFactType() );
         assertEquals( "Driver rating",
                       tsdt.getConditionPattern( "f1" ).getConditions().get( 1 ).getHeader() );
         assertEquals( "==",
@@ -391,7 +389,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "name",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactField() );
         assertEquals( "Person",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ) ).getFactType() );
         assertEquals( "Person f2 name",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 0 ).getHeader() );
         assertEquals( "==",
@@ -402,7 +400,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( "(not needed)",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getFactField() );
         assertEquals( "Person",
-                      tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getFactType() );
+                      tsdt.getPattern( tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ) ).getFactType() );
         assertEquals( "Person f2 not needed",
                       tsdt.getConditionPattern( "f2" ).getConditions().get( 1 ).getHeader() );
         assertEquals( null,
@@ -445,6 +443,17 @@ public class GuidedDTModelConversionTest {
 
         assertEquals( 2,
                       tsdt.getData().size() );
+
+        for ( int i = 0; i < 2; i++ ) {
+            System.out.println( "Row-" + i );
+            StringBuilder sb = new StringBuilder();
+            for ( DTCellValue52 c : tsdt.getData().get( i ) ) {
+                sb.append( c.getStringValue() + ", " );
+            }
+            sb.delete( sb.lastIndexOf( "," ),
+                       sb.length() );
+            System.out.println( sb.toString() );
+        }
 
         assertEquals( new BigDecimal( 1 ),
                       tsdt.getData().get( 0 ).get( 0 ).getNumericValue() );
@@ -503,7 +512,7 @@ public class GuidedDTModelConversionTest {
 
     }
 
-    private void isRowEquivalent(List<DTCellValue> row,
+    private void isRowEquivalent(List<DTCellValue52> row,
                                     String[] array) {
         assertEquals( row.size(),
                       array.length );
@@ -514,7 +523,7 @@ public class GuidedDTModelConversionTest {
                       oldRowNum );
 
         for ( int iCol = 1; iCol < row.size(); iCol++ ) {
-            DTCellValue cell = row.get( iCol );
+            DTCellValue52 cell = row.get( iCol );
             String v1 = cell.getStringValue();
             String v2 = array[iCol];
             assertTrue( isEqualOrNull( v1,

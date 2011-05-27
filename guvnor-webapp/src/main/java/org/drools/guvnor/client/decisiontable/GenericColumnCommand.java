@@ -20,7 +20,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 /**
  * Interface defining commands relating to Column operations
  */
-public interface ColumnCentricCommand {
+public interface GenericColumnCommand {
 
     /**
      * Causes the Command to perform its encapsulated behaviour.

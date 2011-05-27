@@ -23,13 +23,13 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -47,22 +47,22 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetColumn extends FormStylePopup {
 
-    private Constants                   constants    = GWT.create( Constants.class );
-    private static Images               images       = (Images) GWT.create( Images.class );
+    private Constants                  constants    = GWT.create( Constants.class );
+    private static Images              images       = (Images) GWT.create( Images.class );
 
-    private ActionSetFieldCol52           editingCol;
-    private SmallLabel                  bindingLabel = new SmallLabel();
-    private TextBox                     fieldLabel   = getFieldLabel();
-    private VerticalDecisionTableWidget dtable;
-    private SuggestionCompletionEngine  sce;
+    private ActionSetFieldCol52        editingCol;
+    private SmallLabel                 bindingLabel = new SmallLabel();
+    private TextBox                    fieldLabel   = getFieldLabel();
+    private GuidedDecisionTable52      model;
+    private SuggestionCompletionEngine sce;
 
     public ActionSetColumn(SuggestionCompletionEngine sce,
-                           final VerticalDecisionTableWidget dtable,
-                           final ColumnCentricCommand refreshGrid,
+                           final GuidedDecisionTable52 model,
+                           final GenericColumnCommand refreshGrid,
                            final ActionSetFieldCol52 col,
                            final boolean isNew) {
         this.editingCol = new ActionSetFieldCol52();
-        this.dtable = dtable;
+        this.model = model;
         this.sce = sce;
 
         editingCol.setBoundName( col.getBoundName() );
@@ -222,7 +222,7 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private String getFactType(String boundName) {
-        for ( Pattern p : this.dtable.getModel().getConditionPatterns() ) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p.getFactType();
             }
@@ -242,7 +242,7 @@ public class ActionSetColumn extends FormStylePopup {
 
     private ListBox loadBoundFacts() {
         Set<String> facts = new HashSet<String>();
-        for ( Pattern p : this.dtable.getModel().getConditionPatterns() ) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
             if ( !p.isNegated() ) {
                 facts.add( p.getBoundName() );
             }
@@ -316,7 +316,7 @@ public class ActionSetColumn extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( ActionCol52 o : dtable.getModel().getActionCols() ) {
+        for ( ActionCol52 o : model.getActionCols() ) {
             if ( o.getHeader().equals( header ) ) return false;
         }
         return true;

@@ -15,6 +15,7 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
@@ -22,35 +23,34 @@ import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
- * 
+ * A Fact Pattern to which column definitions can be added
  */
-public class Pattern
+public class Pattern52
     implements
     PortableObject,
     HasCEPWindow {
 
     // The type of the fact - class - eg Driver, Person, Cheese etc.
-    private String        factType;
+    private String               factType;
 
     // The name that this gets referenced as. Multiple columns with the same
     // name mean their constraints will be combined.
-    private String        boundName;
+    private String               boundName;
 
     // Whether the pattern should be negated
-    private boolean       isNegated;
+    private boolean              isNegated;
 
     //Field restrictions. The Collection used ensures a ConditionCol has a back-reference to this Pattern
-    private ConditionCols conditions;
+    private List<ConditionCol52> conditions;
 
     //CEP 'window' definition
-    private CEPWindow     window;
+    private CEPWindow            window;
 
     //Entry-point name
-    private String        entryPointName;
+    private String               entryPointName;
 
-    public Pattern() {
-        this.conditions = new ConditionCols();
-        this.conditions.setPattern( this );
+    public Pattern52() {
+        this.conditions = new ArrayList<ConditionCol52>();
     }
 
     public String getFactType() {
