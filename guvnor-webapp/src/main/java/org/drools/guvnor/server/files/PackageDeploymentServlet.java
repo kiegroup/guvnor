@@ -220,7 +220,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                              outEM.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 " +
                                      "Transitional//EN\">\n" +
                                      "<HTML>\n" +
-                                     "<HEAD><TITLE>Empty Model</TITLE></HEAD>\n" +
+                                     "<HEAD><TITLE>Empty POJO Model(jar)</TITLE></HEAD>\n" +
                                      "<BODY>\n" +
                                      "<H1>EMPTY MODEL</H1>\n" +
                              "</BODY></HTML>");
