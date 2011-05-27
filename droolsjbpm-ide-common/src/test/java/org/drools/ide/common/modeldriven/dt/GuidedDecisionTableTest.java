@@ -27,15 +27,16 @@ import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DescriptionCol;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
-import org.drools.ide.common.client.modeldriven.dt.RowNumberCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
 import org.junit.Test;
 
 public class GuidedDecisionTableTest {
@@ -82,30 +83,30 @@ public class GuidedDecisionTableTest {
         p2.getConditions().add( c2 );
         dt.getConditionPatterns().add( p2 );
 
-        ActionSetFieldCol asf = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf = new ActionSetFieldCol52();
         asf.setBoundName( "c1" );
         asf.setFactField( "name" );
         dt.getActionCols().add( asf );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactField( "rating" );
         ins.setFactType( "Person" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol ins_ = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactField( "rating" );
         ins_.setFactType( "Person" );
         ins_.setValueList( "one,two,three" );
         dt.getActionCols().add( ins_ );
 
-        ActionSetFieldCol asf_ = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf_ = new ActionSetFieldCol52();
         asf_.setBoundName( "c1" );
         asf_.setFactField( "goo" );
         dt.getActionCols().add( asf_ );
 
-        ActionSetFieldCol asf__ = new ActionSetFieldCol();
+        ActionSetFieldCol52 asf__ = new ActionSetFieldCol52();
         asf__.setBoundName( "c1" );
         asf__.setFactField( "goo" );
         asf__.setValueList( "one,two,three" );
@@ -189,7 +190,7 @@ public class GuidedDecisionTableTest {
         assertEquals( "three",
                       r[2] );
 
-        AttributeCol at = new AttributeCol();
+        AttributeCol52 at = new AttributeCol52();
         at.setAttribute( "no-loop" );
         dt.getAttributeCols().add( at );
 
@@ -237,9 +238,9 @@ public class GuidedDecisionTableTest {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        AttributeCol at = new AttributeCol();
+        AttributeCol52 at = new AttributeCol52();
         at.setAttribute( "salience" );
-        AttributeCol at_ = new AttributeCol();
+        AttributeCol52 at_ = new AttributeCol52();
         at_.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( at );
@@ -274,23 +275,23 @@ public class GuidedDecisionTableTest {
         p2.getConditions().add( c2 );
         dt.getConditionPatterns().add( p2 );
 
-        ActionSetFieldCol a = new ActionSetFieldCol();
+        ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
         a.setFactField( "name" );
         dt.getActionCols().add( a );
 
-        ActionSetFieldCol a2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
         a2.setBoundName( "c1" );
         a2.setFactField( "age" );
         dt.getActionCols().add( a2 );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactType( "Driver" );
         ins.setFactField( "name" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol ins_ = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactType( "Driver" );
         ins_.setFactField( "age" );
@@ -358,9 +359,9 @@ public class GuidedDecisionTableTest {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        AttributeCol salienceAttribute = new AttributeCol();
+        AttributeCol52 salienceAttribute = new AttributeCol52();
         salienceAttribute.setAttribute( "salience" );
-        AttributeCol enabledAttribute = new AttributeCol();
+        AttributeCol52 enabledAttribute = new AttributeCol52();
         enabledAttribute.setAttribute( "enabled" );
 
         dt.getAttributeCols().add( salienceAttribute );
@@ -401,23 +402,23 @@ public class GuidedDecisionTableTest {
 
         dt.getConditionPatterns().add( p1 );
 
-        ActionSetFieldCol a = new ActionSetFieldCol();
+        ActionSetFieldCol52 a = new ActionSetFieldCol52();
         a.setBoundName( "c1" );
         a.setFactField( "name" );
         dt.getActionCols().add( a );
 
-        ActionSetFieldCol a2 = new ActionSetFieldCol();
+        ActionSetFieldCol52 a2 = new ActionSetFieldCol52();
         a2.setBoundName( "c1" );
         a2.setFactField( "age" );
         dt.getActionCols().add( a2 );
 
-        ActionInsertFactCol ins = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins = new ActionInsertFactCol52();
         ins.setBoundName( "x" );
         ins.setFactType( "Driver" );
         ins.setFactField( "name" );
         dt.getActionCols().add( ins );
 
-        ActionInsertFactCol ins_ = new ActionInsertFactCol();
+        ActionInsertFactCol52 ins_ = new ActionInsertFactCol52();
         ins_.setBoundName( "x" );
         ins_.setFactType( "Driver" );
         ins_.setFactField( "age" );
@@ -502,17 +503,17 @@ public class GuidedDecisionTableTest {
         RowNumberCol rnc = new RowNumberCol();
         DescriptionCol dc = new DescriptionCol();
 
-        MetadataCol mdc = new MetadataCol();
+        MetadataCol52 mdc = new MetadataCol52();
         mdc.setMetadata( "cheese" );
 
-        AttributeCol ac = new AttributeCol();
+        AttributeCol52 ac = new AttributeCol52();
         ac.setAttribute( "salience" );
 
-        ActionSetFieldCol asfc = new ActionSetFieldCol();
+        ActionSetFieldCol52 asfc = new ActionSetFieldCol52();
         asfc.setBoundName( "d1" );
         asfc.setFactField( "age" );
 
-        ActionInsertFactCol aifc = new ActionInsertFactCol();
+        ActionInsertFactCol52 aifc = new ActionInsertFactCol52();
         aifc.setBoundName( "d2" );
         aifc.setFactType( "Driver" );
         aifc.setFactField( "age" );

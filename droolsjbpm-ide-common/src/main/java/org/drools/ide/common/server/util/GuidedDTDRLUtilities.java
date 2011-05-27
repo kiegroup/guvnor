@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
 
 /**
  * Utilities to support Guided Decision Table operations

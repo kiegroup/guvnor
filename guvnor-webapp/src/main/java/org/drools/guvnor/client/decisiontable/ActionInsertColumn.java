@@ -27,8 +27,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.ActionCol;
-import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -55,19 +55,19 @@ public class ActionInsertColumn extends FormStylePopup {
 
     private VerticalDecisionTableWidget dtable;
     private SuggestionCompletionEngine  sce;
-    private ActionInsertFactCol         editingCol;
+    private ActionInsertFactCol52         editingCol;
     private SmallLabel                  patternLabel = new SmallLabel();
     private TextBox                     fieldLabel   = getFieldLabel();
 
     public ActionInsertColumn(SuggestionCompletionEngine sce,
                               final VerticalDecisionTableWidget dtable,
                               final ColumnCentricCommand refreshGrid,
-                              final ActionInsertFactCol col,
+                              final ActionInsertFactCol52 col,
                               final boolean isNew) {
         this.setModal( false );
         this.dtable = dtable;
         this.sce = sce;
-        this.editingCol = new ActionInsertFactCol();
+        this.editingCol = new ActionInsertFactCol52();
         editingCol.setBoundName( col.getBoundName() );
         editingCol.setType( col.getType() );
         editingCol.setFactField( col.getFactField() );
@@ -209,9 +209,9 @@ public class ActionInsertColumn extends FormStylePopup {
         ListBox patterns = new ListBox();
 
         for ( Object o : dtable.getModel().getActionCols() ) {
-            ActionCol col = (ActionCol) o;
-            if ( col instanceof ActionInsertFactCol ) {
-                ActionInsertFactCol c = (ActionInsertFactCol) col;
+            ActionCol52 col = (ActionCol52) o;
+            if ( col instanceof ActionInsertFactCol52 ) {
+                ActionInsertFactCol52 c = (ActionInsertFactCol52) col;
                 if ( !vars.contains( c.getBoundName() ) ) {
                     patterns.addItem( c.getFactType()
                                               + " ["
@@ -264,7 +264,7 @@ public class ActionInsertColumn extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( ActionCol o : dtable.getModel().getActionCols() ) {
+        for ( ActionCol52 o : dtable.getModel().getActionCols() ) {
             if ( o.getHeader().equals( header ) ) return false;
         }
         return true;

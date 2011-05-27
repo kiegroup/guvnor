@@ -13,22 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.drools.ide.common.client.modeldriven.brl.PortableObject;
+
 /**
  * 
  */
-public class ConditionCols extends ArrayList<ConditionCol52> {
+public class ConditionCols extends ArrayList<ConditionCol52>
+    implements
+    PortableObject {
 
     private Pattern pattern;
 
-    public ConditionCols(Pattern pattern) {
+    public ConditionCols() {
+    }
+    
+    public void setPattern(Pattern pattern) {
         this.pattern = pattern;
     }
+
 
     @Override
     public boolean add(ConditionCol52 col) {

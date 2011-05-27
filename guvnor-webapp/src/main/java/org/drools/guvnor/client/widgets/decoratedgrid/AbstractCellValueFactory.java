@@ -20,7 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.util.DateConverter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
 
 /**
  * A Factory to create CellValues applicable to given columns.

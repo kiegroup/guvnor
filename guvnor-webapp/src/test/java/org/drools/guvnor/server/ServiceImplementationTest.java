@@ -99,9 +99,10 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -3773,7 +3774,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         dt.getConditionPatterns().add( p1 );
 
-        ActionSetFieldCol ac = new ActionSetFieldCol();
+        ActionSetFieldCol52 ac = new ActionSetFieldCol52();
         ac.setBoundName( "p" );
         ac.setFactField( "likes" );
         ac.setType( SuggestionCompletionEngine.TYPE_STRING );

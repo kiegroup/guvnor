@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt52;
+
 
 /**
- * This is a rule index column (i.e. just displays row's number)
+ * This is a rule description
  */
-public class RowNumberCol extends DTColumnConfig {
+public class DescriptionCol extends DTColumnConfig52 {
 
-    private static final long serialVersionUID = -2272148755430209968L;
+    private static final long serialVersionUID = -306736594255777798L;
 
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
         }
-        if (!(obj instanceof RowNumberCol)) {
+        if (!(obj instanceof DescriptionCol)) {
             return false;
         }
         return super.equals(obj);

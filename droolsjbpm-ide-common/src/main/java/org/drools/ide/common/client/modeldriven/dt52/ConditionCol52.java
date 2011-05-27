@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt;
+package org.drools.ide.common.client.modeldriven.dt52;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
  * This is the config for a condition column. Typically many of them have their
  * constraints added.
  */
-public class ConditionCol52 extends DTColumnConfig
+public class ConditionCol52 extends DTColumnConfig52
     implements
     HasParameterizedOperator {
 
@@ -68,6 +68,10 @@ public class ConditionCol52 extends DTColumnConfig
     //CEP operators' parameters
     private Map<String, String> parameters;
 
+    public ConditionCol52() {
+        this.pattern = new Pattern();
+    }
+
     public void setHeader(String header) {
         this.header = header;
     }
@@ -80,7 +84,7 @@ public class ConditionCol52 extends DTColumnConfig
         return pattern;
     }
 
-    void setPattern(Pattern pattern) {
+    public void setPattern(Pattern pattern) {
         this.pattern = pattern;
     }
 

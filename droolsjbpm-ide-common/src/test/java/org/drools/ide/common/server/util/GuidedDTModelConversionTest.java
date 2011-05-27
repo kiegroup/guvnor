@@ -27,11 +27,16 @@ import org.drools.ide.common.client.modeldriven.dt.ActionInsertFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionRetractFactCol;
 import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
-import org.drools.ide.common.client.modeldriven.dt.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.junit.Test;
 
 @SuppressWarnings("deprecation")
@@ -41,81 +46,81 @@ public class GuidedDTModelConversionTest {
     public void testConversion() {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
-        dt.setTableName( "michael" );
+        dt.tableName = "michael";
 
         MetadataCol md = new MetadataCol();
-        md.setMetadata( "legacy" );
-        md.setDefaultValue( "yes" );
+        md.attr = "legacy";
+        md.defaultValue = "yes";
         dt.getMetadataCols().add( md );
 
         AttributeCol attr = new AttributeCol();
-        attr.setAttribute( "salience" );
-        attr.setDefaultValue( "66" );
-        dt.getAttributeCols().add( attr );
+        attr.attr = "salience";
+        attr.defaultValue = "66";
+        dt.attributeCols.add( attr );
 
-        ConditionCol52 con = new ConditionCol52();
-        con.setBoundName( "f1" );
-        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        con.setFactField( "age" );
-        con.setFactType( "Driver" );
-        con.setHeader( "Driver f1 age" );
-        con.setOperator( "==" );
-        dt.getConditionCols().add( con );
+        ConditionCol con = new ConditionCol();
+        con.boundName = "f1";
+        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con.factField = "age";
+        con.factType = "Driver";
+        con.header = "Driver f1 age";
+        con.operator = "==";
+        dt.conditionCols.add( con );
 
-        ConditionCol52 con2 = new ConditionCol52();
-        con2.setBoundName( "f1" );
-        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        con2.setFactField( "name" );
-        con2.setFactType( "Driver" );
-        con2.setHeader( "Driver f1 name" );
-        con2.setOperator( "==" );
-        dt.getConditionCols().add( con2 );
+        ConditionCol con2 = new ConditionCol();
+        con2.boundName = "f1";
+        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con2.factField = "name";
+        con2.factType = "Driver";
+        con2.header = "Driver f1 name";
+        con2.operator = "==";
+        dt.conditionCols.add( con2 );
 
-        ConditionCol52 con3 = new ConditionCol52();
-        con3.setBoundName( "f1" );
-        con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-        con3.setFactField( "rating" );
-        con3.setFactType( "Driver" );
-        con3.setHeader( "Driver rating" );
-        con3.setOperator( "==" );
-        dt.getConditionCols().add( con3 );
+        ConditionCol con3 = new ConditionCol();
+        con3.boundName = "f1";
+        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
+        con3.factField = "rating";
+        con3.factType = "Driver";
+        con3.header = "Driver rating";
+        con3.operator = "==";
+        dt.conditionCols.add( con3 );
 
-        ConditionCol52 con4 = new ConditionCol52();
-        con4.setBoundName( "f2" );
-        con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        con4.setFactType( "Driver" );
-        con4.setHeader( "Driver 2 pimp" );
-        con4.setFactField( "(not needed)" );
-        dt.getConditionCols().add( con4 );
+        ConditionCol con4 = new ConditionCol();
+        con4.boundName = "f2";
+        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
+        con4.factType = "Driver";
+        con4.header = "Driver 2 pimp";
+        con4.factField = "(not needed)";
+        dt.conditionCols.add( con4 );
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.setBoundName( "ins" );
-        ins.setFactType( "Cheese" );
-        ins.setFactField( "price" );
-        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
-        dt.getActionCols().add( ins );
+        ins.boundName = "ins";
+        ins.factType = "Cheese";
+        ins.factField = "price";
+        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
-        ret.setBoundName( "f2" );
-        dt.getActionCols().add( ret );
+        ret.boundName = "f2";
+        dt.actionCols.add( ret );
 
         ActionSetFieldCol set = new ActionSetFieldCol();
-        set.setBoundName( "f1" );
-        set.setFactField( "goo1" );
-        set.setType( SuggestionCompletionEngine.TYPE_STRING );
-        dt.getActionCols().add( set );
+        set.boundName = "f1";
+        set.factField = "goo1";
+        set.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add( set );
 
         ActionSetFieldCol set2 = new ActionSetFieldCol();
-        set2.setBoundName( "f1" );
-        set2.setFactField( "goo2" );
-        set2.setDefaultValue( "whee" );
-        set2.setType( SuggestionCompletionEngine.TYPE_STRING );
-        dt.getActionCols().add( set2 );
+        set2.boundName = "f1";
+        set2.factField = "goo2";
+        set2.defaultValue = "whee";
+        set2.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add( set2 );
 
-        dt.setData( new String[][]{
+        dt.data = new String[][]{
                 new String[]{"1", "desc", "metar1", "saliencer1", "c1r1", "c2r1", "c3r1", "c4r1", "a1r1", "a2r1", "a3r1", "a4r1"},
                 new String[]{"2", "desc", "metar2", "saliencer2", "c1r2", "c2r2", "c3r2", "c4r2", "a1r2", "a2r2", "a3r2", "a4r2"}
-        } );
+        };
 
         GuidedDecisionTable52 tsdt = RepositoryUpgradeHelper.convertGuidedDTModel( dt );
 
@@ -200,7 +205,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( 4,
                       tsdt.getActionCols().size() );
 
-        ActionInsertFactCol a1 = (ActionInsertFactCol) tsdt.getActionCols().get( 0 );
+        ActionInsertFactCol52 a1 = (ActionInsertFactCol52) tsdt.getActionCols().get( 0 );
         assertEquals( "ins",
                       a1.getBoundName() );
         assertEquals( "Cheese",
@@ -210,11 +215,11 @@ public class GuidedDTModelConversionTest {
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
                       a1.getType() );
 
-        ActionRetractFactCol a2 = (ActionRetractFactCol) tsdt.getActionCols().get( 1 );
+        ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
         assertEquals( "f2",
                       a2.getBoundName() );
 
-        ActionSetFieldCol a3 = (ActionSetFieldCol) tsdt.getActionCols().get( 2 );
+        ActionSetFieldCol52 a3 = (ActionSetFieldCol52) tsdt.getActionCols().get( 2 );
         assertEquals( "f1",
                       a3.getBoundName() );
         assertEquals( "goo1",
@@ -222,7 +227,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       a3.getType() );
 
-        ActionSetFieldCol a4 = (ActionSetFieldCol) tsdt.getActionCols().get( 3 );
+        ActionSetFieldCol52 a4 = (ActionSetFieldCol52) tsdt.getActionCols().get( 3 );
         assertEquals( "f1",
                       a4.getBoundName() );
         assertEquals( "goo2",
@@ -235,9 +240,9 @@ public class GuidedDTModelConversionTest {
         assertEquals( 2,
                       tsdt.getData().size() );
         isRowEquivalent( tsdt.getData().get( 0 ),
-                         dt.getData()[0] );
+                         dt.data[0] );
         isRowEquivalent( tsdt.getData().get( 1 ),
-                         dt.getData()[1] );
+                         dt.data[1] );
 
     }
 
@@ -245,81 +250,81 @@ public class GuidedDTModelConversionTest {
     public void testConversionPatternGrouping() {
 
         GuidedDecisionTable dt = new GuidedDecisionTable();
-        dt.setTableName( "michael" );
+        dt.tableName = "michael";
 
         MetadataCol md = new MetadataCol();
-        md.setMetadata( "legacy" );
-        md.setDefaultValue( "yes" );
+        md.attr = "legacy";
+        md.defaultValue = "yes";
         dt.getMetadataCols().add( md );
 
         AttributeCol attr = new AttributeCol();
-        attr.setAttribute( "salience" );
-        attr.setDefaultValue( "66" );
-        dt.getAttributeCols().add( attr );
+        attr.attr = "salience";
+        attr.defaultValue = "66";
+        dt.attributeCols.add( attr );
 
-        ConditionCol52 con = new ConditionCol52();
-        con.setBoundName( "f1" );
-        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        con.setFactField( "age" );
-        con.setFactType( "Driver" );
-        con.setHeader( "Driver f1 age" );
-        con.setOperator( "==" );
-        dt.getConditionCols().add( con );
+        ConditionCol con = new ConditionCol();
+        con.boundName = "f1";
+        con.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con.factField = "age";
+        con.factType = "Driver";
+        con.header = "Driver f1 age";
+        con.operator = "==";
+        dt.conditionCols.add( con );
 
-        ConditionCol52 con2 = new ConditionCol52();
-        con2.setBoundName( "f2" );
-        con2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        con2.setFactField( "name" );
-        con2.setFactType( "Person" );
-        con2.setHeader( "Person f2 name" );
-        con2.setOperator( "==" );
-        dt.getConditionCols().add( con2 );
+        ConditionCol con2 = new ConditionCol();
+        con2.boundName = "f2";
+        con2.constraintValueType = BaseSingleFieldConstraint.TYPE_LITERAL;
+        con2.factField = "name";
+        con2.factType = "Person";
+        con2.header = "Person f2 name";
+        con2.operator = "==";
+        dt.conditionCols.add( con2 );
 
-        ConditionCol52 con3 = new ConditionCol52();
-        con3.setBoundName( "f1" );
-        con3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
-        con3.setFactField( "rating" );
-        con3.setFactType( "Driver" );
-        con3.setHeader( "Driver rating" );
-        con3.setOperator( "==" );
-        dt.getConditionCols().add( con3 );
+        ConditionCol con3 = new ConditionCol();
+        con3.boundName = "f1";
+        con3.constraintValueType = BaseSingleFieldConstraint.TYPE_RET_VALUE;
+        con3.factField = "rating";
+        con3.factType = "Driver";
+        con3.header = "Driver rating";
+        con3.operator = "==";
+        dt.conditionCols.add( con3 );
 
-        ConditionCol52 con4 = new ConditionCol52();
-        con4.setBoundName( "f2" );
-        con4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
-        con4.setFactType( "Person" );
-        con4.setHeader( "Person f2 not needed" );
-        con4.setFactField( "(not needed)" );
-        dt.getConditionCols().add( con4 );
+        ConditionCol con4 = new ConditionCol();
+        con4.boundName = "f2";
+        con4.constraintValueType = BaseSingleFieldConstraint.TYPE_PREDICATE;
+        con4.factType = "Person";
+        con4.header = "Person f2 not needed";
+        con4.factField = "(not needed)";
+        dt.conditionCols.add( con4 );
 
         ActionInsertFactCol ins = new ActionInsertFactCol();
-        ins.setBoundName( "ins" );
-        ins.setFactType( "Cheese" );
-        ins.setFactField( "price" );
-        ins.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
-        dt.getActionCols().add( ins );
+        ins.boundName = "ins";
+        ins.factType = "Cheese";
+        ins.factField = "price";
+        ins.type = SuggestionCompletionEngine.TYPE_NUMERIC;
+        dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
-        ret.setBoundName( "f2" );
-        dt.getActionCols().add( ret );
+        ret.boundName = "f2";
+        dt.actionCols.add( ret );
 
         ActionSetFieldCol set = new ActionSetFieldCol();
-        set.setBoundName( "f1" );
-        set.setFactField( "goo1" );
-        set.setType( SuggestionCompletionEngine.TYPE_STRING );
-        dt.getActionCols().add( set );
+        set.boundName = "f1";
+        set.factField = "goo1";
+        set.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add( set );
 
         ActionSetFieldCol set2 = new ActionSetFieldCol();
-        set2.setBoundName( "f1" );
-        set2.setFactField( "goo2" );
-        set2.setDefaultValue( "whee" );
-        set2.setType( SuggestionCompletionEngine.TYPE_STRING );
-        dt.getActionCols().add( set2 );
+        set2.boundName = "f1";
+        set2.factField = "goo2";
+        set2.defaultValue = "whee";
+        set2.type = SuggestionCompletionEngine.TYPE_STRING;
+        dt.actionCols.add( set2 );
 
-        dt.setData( new String[][]{
+        dt.data = new String[][]{
                 new String[]{"1", "desc", "metar1", "saliencer1", "f1c1r1", "f2c1r1", "f1c2r1", "f2c2r1", "a1r1", "a2r1", "a3r1", "a4r1"},
                 new String[]{"2", "desc", "metar2", "saliencer2", "f1c1r2", "f2c1r2", "f1c2r2", "f2c2r2", "a1r2", "a2r2", "a3r2", "a4r2"}
-        } );
+        };
 
         GuidedDecisionTable52 tsdt = RepositoryUpgradeHelper.convertGuidedDTModel( dt );
 
@@ -406,7 +411,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( 4,
                       tsdt.getActionCols().size() );
 
-        ActionInsertFactCol a1 = (ActionInsertFactCol) tsdt.getActionCols().get( 0 );
+        ActionInsertFactCol52 a1 = (ActionInsertFactCol52) tsdt.getActionCols().get( 0 );
         assertEquals( "ins",
                       a1.getBoundName() );
         assertEquals( "Cheese",
@@ -416,11 +421,11 @@ public class GuidedDTModelConversionTest {
         assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
                       a1.getType() );
 
-        ActionRetractFactCol a2 = (ActionRetractFactCol) tsdt.getActionCols().get( 1 );
+        ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
         assertEquals( "f2",
                       a2.getBoundName() );
 
-        ActionSetFieldCol a3 = (ActionSetFieldCol) tsdt.getActionCols().get( 2 );
+        ActionSetFieldCol52 a3 = (ActionSetFieldCol52) tsdt.getActionCols().get( 2 );
         assertEquals( "f1",
                       a3.getBoundName() );
         assertEquals( "goo1",
@@ -428,7 +433,7 @@ public class GuidedDTModelConversionTest {
         assertEquals( SuggestionCompletionEngine.TYPE_STRING,
                       a3.getType() );
 
-        ActionSetFieldCol a4 = (ActionSetFieldCol) tsdt.getActionCols().get( 3 );
+        ActionSetFieldCol52 a4 = (ActionSetFieldCol52) tsdt.getActionCols().get( 3 );
         assertEquals( "f1",
                       a4.getBoundName() );
         assertEquals( "goo2",
@@ -492,9 +497,9 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 1 ).get( 11 ).getStringValue() );
 
         isRowEquivalent( tsdt.getData().get( 0 ),
-                         dt.getData()[0] );
+                         dt.data[0] );
         isRowEquivalent( tsdt.getData().get( 1 ),
-                         dt.getData()[1] );
+                         dt.data[1] );
 
     }
 
