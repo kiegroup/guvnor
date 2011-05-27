@@ -40,13 +40,13 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
-import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
@@ -61,7 +61,7 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Driver" );
 
@@ -88,7 +88,7 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p1 );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
         p2.setFactType( "Driver" );
 
@@ -147,8 +147,8 @@ public class GuidedDTDRLPersistenceTest {
         String[] row = new String[]{"1", "desc", "a", ""};
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         List<AttributeCol52> attributeCols = new ArrayList<AttributeCol52>();
 
         RuleModel rm = new RuleModel();
@@ -233,7 +233,7 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Driver" );
 
@@ -312,7 +312,7 @@ public class GuidedDTDRLPersistenceTest {
         attr.setDefaultValue( "66" );
         dt.getAttributeCols().add( attr );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "f1" );
         p1.setFactType( "Driver" );
 
@@ -339,7 +339,7 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getConditionPatterns().add( p1 );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "f2" );
         p2.setFactType( "Driver" );
 
@@ -402,12 +402,12 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -431,7 +431,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col3 );
         allColumns.add( col3 );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c" );
         p2.setFactType( "Cheese" );
         allPatterns.add( p2 );
@@ -516,12 +516,12 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setNegated( true );
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
@@ -546,7 +546,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col3 );
         allColumns.add( col3 );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c" );
         p2.setFactType( "Cheese" );
         allPatterns.add( p2 );
@@ -643,21 +643,21 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[2][];
         String[][] data = new String[2][];
         row[0] = new String[]{"1", "desc1", "true", "false"};
-        List<DTCellValue> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
         rowDTModel1.get( 2 ).setOtherwise( true );
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[1] = row[1];
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -670,7 +670,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col );
         allColumns.add( col );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "p2" );
         p2.setFactType( "Person" );
         allPatterns.add( p2 );
@@ -735,25 +735,25 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "01-Jan-1980", "20-Jun-1985"};
-        List<DTCellValue> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "01-Feb-1981", "21-Jun-1986"};
-        List<DTCellValue> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -766,7 +766,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col );
         allColumns.add( col );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "p2" );
         p2.setFactType( "Person" );
         allPatterns.add( p2 );
@@ -852,25 +852,25 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "1", "1"};
-        List<DTCellValue> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "2", "2"};
-        List<DTCellValue> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -883,7 +883,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col );
         allColumns.add( col );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "p2" );
         p2.setFactType( "Person" );
         allPatterns.add( p2 );
@@ -969,25 +969,25 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "Michael1", "Michael1"};
-        List<DTCellValue> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "Michael2", "Michael2"};
-        List<DTCellValue> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -1000,7 +1000,7 @@ public class GuidedDTDRLPersistenceTest {
         p1.getConditions().add( col );
         allColumns.add( col );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "p2" );
         p2.setFactType( "Person" );
         allPatterns.add( p2 );
@@ -1086,8 +1086,8 @@ public class GuidedDTDRLPersistenceTest {
         String[] row = new String[]{"1", "desc", "bar", ""};
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         List<MetadataCol52> metadataCols = new ArrayList<MetadataCol52>();
 
         RuleModel rm = new RuleModel();
@@ -1156,7 +1156,7 @@ public class GuidedDTDRLPersistenceTest {
     public void testNoConstraints() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "x" );
         p1.setFactType( "Context" );
 
@@ -1201,12 +1201,12 @@ public class GuidedDTDRLPersistenceTest {
         data[0] = row;
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        List<Pattern> allPatterns = new ArrayList<Pattern>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p1" );
         p1.setFactType( "Person" );
         allPatterns.add( p1 );
@@ -1237,8 +1237,8 @@ public class GuidedDTDRLPersistenceTest {
         String[] row = new String[]{"1", "desc", "a", "a condition", "actionsetfield1", "actionsetfield2", "retract", "actioninsertfact1", "actioninsertfact2"};
 
         List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
-        allColumns.add( new RowNumberCol() );
-        allColumns.add( new DescriptionCol() );
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
         allColumns.add( new MetadataCol52() );
         allColumns.add( new ConditionCol52() );
         List<ActionCol52> cols = new ArrayList<ActionCol52>();
@@ -1338,7 +1338,7 @@ public class GuidedDTDRLPersistenceTest {
     public void testUpdateModify() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "x" );
         p1.setFactType( "Context" );
 

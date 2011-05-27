@@ -27,16 +27,15 @@ import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 import org.junit.Test;
 
 public class GuidedDecisionTableTest {
@@ -47,7 +46,7 @@ public class GuidedDecisionTableTest {
 
         // add cols for LHS
         ConditionCol52 c1 = new ConditionCol52();
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setFactField( "name" );
@@ -56,7 +55,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1 );
 
         ConditionCol52 c1_ = new ConditionCol52();
-        Pattern p1_ = new Pattern();
+        Pattern52 p1_ = new Pattern52();
         p1_.setBoundName( "c1" );
         p1_.setFactType( "Driver" );
         c1_.setFactField( "name" );
@@ -65,7 +64,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1_ );
 
         ConditionCol52 c1__ = new ConditionCol52();
-        Pattern p1__ = new Pattern();
+        Pattern52 p1__ = new Pattern52();
         p1__.setBoundName( "c1" );
         p1__.setFactType( "Driver" );
         c1__.setFactField( "name" );
@@ -75,7 +74,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1__ );
 
         ConditionCol52 c2 = new ConditionCol52();
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
         c2.setFactField( "nothing" );
@@ -247,7 +246,7 @@ public class GuidedDecisionTableTest {
         dt.getAttributeCols().add( at_ );
 
         ConditionCol52 c1 = new ConditionCol52();
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setFactField( "name" );
@@ -257,7 +256,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1 );
 
         ConditionCol52 c1_ = new ConditionCol52();
-        Pattern p1_ = new Pattern();
+        Pattern52 p1_ = new Pattern52();
         p1_.setBoundName( "c1" );
         p1_.setFactType( "Driver" );
         c1_.setFactField( "age" );
@@ -267,7 +266,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1_ );
 
         ConditionCol52 c2 = new ConditionCol52();
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c1" );
         p2.setFactType( "Driver" );
         c2.setFactField( "age" );
@@ -367,7 +366,7 @@ public class GuidedDecisionTableTest {
         dt.getAttributeCols().add( salienceAttribute );
         dt.getAttributeCols().add( enabledAttribute );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
 
         ConditionCol52 conditionColName = new ConditionCol52();
         p1.setBoundName( "c1" );
@@ -465,7 +464,7 @@ public class GuidedDecisionTableTest {
 
         // add cols for LHS
         ConditionCol52 c1 = new ConditionCol52();
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -473,7 +472,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1 );
 
         ConditionCol52 c2 = new ConditionCol52();
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
         c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -500,8 +499,8 @@ public class GuidedDecisionTableTest {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
         // add cols for LHS
-        RowNumberCol rnc = new RowNumberCol();
-        DescriptionCol dc = new DescriptionCol();
+        RowNumberCol52 rnc = new RowNumberCol52();
+        DescriptionCol52 dc = new DescriptionCol52();
 
         MetadataCol52 mdc = new MetadataCol52();
         mdc.setMetadata( "cheese" );
@@ -519,7 +518,7 @@ public class GuidedDecisionTableTest {
         aifc.setFactField( "age" );
 
         ConditionCol52 c1 = new ConditionCol52();
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
         c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
@@ -527,7 +526,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1 );
 
         ConditionCol52 c2 = new ConditionCol52();
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
         c2.setFactField( "age" );
@@ -536,7 +535,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p2 );
 
         ConditionCol52 c3 = new ConditionCol52();
-        Pattern p3 = new Pattern();
+        Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
         p3.setFactType( "Driver" );
         c3.setOperator( "==" );
@@ -545,7 +544,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p3 );
 
         ConditionCol52 c4 = new ConditionCol52();
-        Pattern p4 = new Pattern();
+        Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
         p4.setFactType( "Driver" );
         c4.setFactField( "age" );
@@ -555,7 +554,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p4 );
 
         ConditionCol52 c5 = new ConditionCol52();
-        Pattern p5 = new Pattern();
+        Pattern52 p5 = new Pattern52();
         p5.setBoundName( "c5" );
         p5.setFactType( "Driver" );
         c5.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
@@ -563,7 +562,7 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p5 );
 
         ConditionCol52 c6 = new ConditionCol52();
-        Pattern p6 = new Pattern();
+        Pattern52 p6 = new Pattern52();
         p6.setBoundName( "c6" );
         p6.setFactType( "Driver" );
         c6.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );

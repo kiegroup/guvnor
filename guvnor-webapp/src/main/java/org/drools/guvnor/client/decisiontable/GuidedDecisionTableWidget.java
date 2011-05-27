@@ -34,7 +34,6 @@ import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -42,7 +41,8 @@ import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -165,8 +165,8 @@ public class GuidedDecisionTableWidget extends Composite
                                         if ( c instanceof ActionSetFieldCol52 ) {
                                             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
                                             ActionSetColumn ed = new ActionSetColumn( getSCE(),
-                                                                                      dtable,
-                                                                                      new ColumnCentricCommand() {
+                                                                                      guidedDecisionTable,
+                                                                                      new GenericColumnCommand() {
                                                                                           public void execute(DTColumnConfig52 column) {
                                                                                               dtable.updateColumn( asf,
                                                                                                                    (ActionSetFieldCol52) column );
@@ -180,8 +180,8 @@ public class GuidedDecisionTableWidget extends Composite
                                             final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
                                             ActionInsertColumn ed = new ActionInsertColumn(
                                                                                             getSCE(),
-                                                                                            dtable,
-                                                                                            new ColumnCentricCommand() {
+                                                                                            guidedDecisionTable,
+                                                                                            new GenericColumnCommand() {
                                                                                                 public void execute(DTColumnConfig52 column) {
                                                                                                     dtable.updateColumn( asf,
                                                                                                                          (ActionInsertFactCol52) column );
@@ -229,8 +229,8 @@ public class GuidedDecisionTableWidget extends Composite
                         final ActionInsertFactCol52 afc = new ActionInsertFactCol52();
                         ActionInsertColumn ins = new ActionInsertColumn(
                                                                          getSCE(),
-                                                                         dtable,
-                                                                         new ColumnCentricCommand() {
+                                                                         guidedDecisionTable,
+                                                                         new GenericColumnCommand() {
                                                                              public void execute(DTColumnConfig52 column) {
                                                                                  newActionAdded( (ActionCol52) column );
                                                                              }
@@ -243,8 +243,8 @@ public class GuidedDecisionTableWidget extends Composite
                     private void showSet() {
                         final ActionSetFieldCol52 afc = new ActionSetFieldCol52();
                         ActionSetColumn set = new ActionSetColumn( getSCE(),
-                                                                   dtable,
-                                                                   new ColumnCentricCommand() {
+                                                                   guidedDecisionTable,
+                                                                   new GenericColumnCommand() {
                                                                        public void execute(DTColumnConfig52 column) {
                                                                            newActionAdded( (ActionCol52) column );
                                                                        }
@@ -297,7 +297,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshConditionsWidget() {
         this.conditionsConfigWidget.clear();
-        for ( Pattern p : guidedDecisionTable.getConditionPatterns() ) {
+        for ( Pattern52 p : guidedDecisionTable.getConditionPatterns() ) {
             for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
@@ -320,9 +320,14 @@ public class GuidedDecisionTableWidget extends Composite
             public void onClick(ClickEvent w) {
                 GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
                                                                         getSCE(),
-                                                                        dtable,
-                                                                        new ColumnCentricCommand() {
-                                                                            public void execute(DTColumnConfig52 column) {
+                                                                        guidedDecisionTable,
+                                                                        new ConditionColumnCommand() {
+                                                                            public void execute(Pattern52 pattern,
+                                                                                                ConditionCol52 column) {
+                                                                                if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
+                                                                                    guidedDecisionTable.getConditionPatterns().add( pattern );
+                                                                                }
+                                                                                pattern.getConditions().add( column );
                                                                                 dtable.addColumn( column );
                                                                                 dtable.scrapeColumns();
                                                                                 refreshConditionsWidget();
@@ -336,23 +341,32 @@ public class GuidedDecisionTableWidget extends Composite
         return addButton;
     }
 
-    private Widget editCondition(final ConditionCol52 c) {
+    private Widget editCondition(final ConditionCol52 editCol) {
         return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
                                         GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
                                                                                                 getSCE(),
-                                                                                                dtable,
-                                                                                                new ColumnCentricCommand() {
-                                                                                                    public void execute(DTColumnConfig52 column) {
-                                                                                                        dtable.updateColumn( c,
-                                                                                                                             (ConditionCol52) column );
+                                                                                                guidedDecisionTable,
+                                                                                                new ConditionColumnCommand() {
+                                                                                                    public void execute(Pattern52 pattern,
+                                                                                                                        ConditionCol52 column) {
+                                                                                                        if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
+                                                                                                            guidedDecisionTable.getConditionPatterns().add( pattern );
+                                                                                                        }
+                                                                                                        Pattern52 editPattern = guidedDecisionTable.getPattern( editCol );
+                                                                                                        //                                                                                                        editPattern.getConditions().remove( editCol );
+                                                                                                        //                                                                                                        pattern.getConditions().add( column );
+                                                                                                        dtable.updateColumn( editPattern,
+                                                                                                                             editCol,
+                                                                                                                             pattern,
+                                                                                                                             column );
                                                                                                         dtable.scrapeColumns();
                                                                                                         refreshConditionsWidget();
                                                                                                     }
                                                                                                 },
-                                                                                                c,
+                                                                                                editCol,
                                                                                                 false );
                                         dialog.show();
                                     }

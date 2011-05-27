@@ -27,11 +27,11 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -67,23 +67,23 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      *            UI CellValue to convert into Model CellValue
      * @return
      */
-    public DTCellValue convertToDTModelCell(DTColumnConfig52 column,
-                                            CellValue< ? > cell) {
-        DTDataTypes dt = getDataType( column );
-        DTCellValue dtCell = null;
+    public DTCellValue52 convertToDTModelCell(DTColumnConfig52 column,
+                                              CellValue< ? > cell) {
+        DTDataTypes52 dt = getDataType( column );
+        DTCellValue52 dtCell = null;
 
         switch ( dt ) {
             case BOOLEAN :
-                dtCell = new DTCellValue( (Boolean) cell.getValue() );
+                dtCell = new DTCellValue52( (Boolean) cell.getValue() );
                 break;
             case DATE :
-                dtCell = new DTCellValue( (Date) cell.getValue() );
+                dtCell = new DTCellValue52( (Date) cell.getValue() );
                 break;
             case NUMERIC :
-                dtCell = new DTCellValue( (BigDecimal) cell.getValue() );
+                dtCell = new DTCellValue52( (BigDecimal) cell.getValue() );
                 break;
             default :
-                dtCell = new DTCellValue( (String) cell.getValue() );
+                dtCell = new DTCellValue52( (String) cell.getValue() );
         }
         dtCell.setOtherwise( cell.isOtherwise() );
         return dtCell;
@@ -105,8 +105,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig52 column,
                                                                int iRow,
                                                                int iCol,
-                                                               DTCellValue dcv) {
-        DTDataTypes dataType = getDataType( column );
+                                                               DTCellValue52 dcv) {
+        DTDataTypes52 dataType = getDataType( column );
         CellValue< ? extends Comparable< ? >> cell = null;
 
         //If this is a legacy Decision Table values are always String 
@@ -126,7 +126,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                                              dcv.getDateValue() );
                 break;
             case NUMERIC :
-                if ( column instanceof RowNumberCol ) {
+                if ( column instanceof RowNumberCol52 ) {
                     cell = makeNewRowNumberCellValue( iRow,
                                                       iCol );
                 } else {
@@ -169,8 +169,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     //class then all values are held in the DTCellValue's StringValue. This
     //function attempts to set the correct DTCellValue property based on
     //the DTCellValue's data type.
-    private void assertDTCellValue(DTDataTypes dataType,
-                                   DTCellValue dcv) {
+    private void assertDTCellValue(DTDataTypes52 dataType,
+                                   DTCellValue52 dcv) {
         //If already converted exit
         if ( dcv.getDataType().equals( dataType ) ) {
             return;
@@ -209,9 +209,9 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes derieveDataType(DTColumnConfig52 col) {
+    private DTDataTypes52 derieveDataType(DTColumnConfig52 col) {
 
-        DTDataTypes dataType = DTDataTypes.STRING;
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
         String type = model.getType( col,
                                      sce );
 
@@ -225,45 +225,45 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                                             sce );
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                dataType = DTDataTypes.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                dataType = DTDataTypes.DATE;
+                dataType = DTDataTypes52.DATE;
             }
         }
         return dataType;
     }
 
     // Get the Data Type corresponding to a given column
-    protected DTDataTypes getDataType(DTColumnConfig52 column) {
+    protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
 
-        DTDataTypes dataType = DTDataTypes.STRING;
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
 
-        if ( column instanceof RowNumberCol ) {
-            dataType = DTDataTypes.NUMERIC;
+        if ( column instanceof RowNumberCol52 ) {
+            dataType = DTDataTypes52.NUMERIC;
 
         } else if ( column instanceof AttributeCol52 ) {
             AttributeCol52 attrCol = (AttributeCol52) column;
             String attrName = attrCol.getAttribute();
             if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                dataType = DTDataTypes.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC;
             } else if ( attrName.equals( RuleAttributeWidget.ENABLED_ATTR ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.NO_LOOP_ATTR ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
-                dataType = DTDataTypes.NUMERIC;
+                dataType = DTDataTypes52.NUMERIC;
             } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EFFECTIVE_ATTR ) ) {
-                dataType = DTDataTypes.DATE;
+                dataType = DTDataTypes52.DATE;
             } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
-                dataType = DTDataTypes.DATE;
+                dataType = DTDataTypes52.DATE;
             } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
-                dataType = DTDataTypes.BOOLEAN;
+                dataType = DTDataTypes52.BOOLEAN;
             }
 
         } else if ( column instanceof ConditionCol52 ) {

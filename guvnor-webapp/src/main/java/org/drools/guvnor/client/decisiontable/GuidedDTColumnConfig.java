@@ -22,7 +22,6 @@ import java.util.Set;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
@@ -32,11 +31,11 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -87,40 +86,36 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         return hp;
     }
 
-    private static Constants            constants                   = ((Constants) GWT.create( Constants.class ));
-    private static Images               images                      = (Images) GWT.create( Images.class );
+    private static Constants           constants                   = ((Constants) GWT.create( Constants.class ));
+    private static Images              images                      = (Images) GWT.create( Images.class );
 
-    private VerticalDecisionTableWidget dtable;
-    private SuggestionCompletionEngine  sce;
-    private ConditionCol52              editingCol;
-    private Label                       patternLabel                = new Label();
-    private TextBox                     fieldLabel                  = getFieldLabel();
-    private Label                       operatorLabel               = new Label();
+    private GuidedDecisionTable52      model;
+    private SuggestionCompletionEngine sce;
+    private Pattern52                  editingPattern;
+    private ConditionCol52             editingCol;
+    private Label                      patternLabel                = new Label();
+    private TextBox                    fieldLabel                  = getFieldLabel();
+    private Label                      operatorLabel               = new Label();
 
-    private CEPWindowOperatorsDropdown  cwo;
-    private int                         cepWindowRowIndex;
+    private CEPWindowOperatorsDropdown cwo;
+    private int                        cepWindowRowIndex;
 
-    private InfoPopup                   fieldLabelInterpolationInfo = getPredicateHint();
+    private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
 
     /**
      * Pass in a null col and it will create a new one.
      */
     public GuidedDTColumnConfig(SuggestionCompletionEngine sce,
-                                final VerticalDecisionTableWidget dtable,
-                                final ColumnCentricCommand refreshGrid,
+                                final GuidedDecisionTable52 model,
+                                final ConditionColumnCommand refreshGrid,
                                 final ConditionCol52 col,
                                 final boolean isNew) {
         super();
         this.setModal( false );
-        this.dtable = dtable;
+        this.model = model;
         this.sce = sce;
+        this.editingPattern = model.getPattern( col );
         this.editingCol = new ConditionCol52();
-        this.editingCol.setPattern( col.getPattern() );
-        editingCol.getPattern().setBoundName( col.getPattern().getBoundName() );
-        editingCol.getPattern().setFactType( col.getPattern().getFactType() );
-        editingCol.getPattern().setNegated( col.getPattern().isNegated() );
-        editingCol.getPattern().setWindow( col.getPattern().getWindow() );
-        editingCol.getPattern().setEntryPointName( col.getPattern().getEntryPointName() );
         editingCol.setConstraintValueType( col.getConstraintValueType() );
         editingCol.setFactField( col.getFactField() );
         editingCol.setFieldType( col.getFieldType() );
@@ -224,15 +219,15 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         //Add CEP fields for patterns containing Facts declared as Events
         cepWindowRowIndex = addAttribute( constants.DTLabelOverCEPWindow(),
-                                          createCEPWindowWidget( editingCol.getPattern() ) );
+                                          createCEPWindowWidget( editingPattern ) );
         displayCEPOperators();
 
         //Entry point
         final TextBox entryPoint = new TextBox();
-        entryPoint.setText( editingCol.getPattern().getEntryPointName() );
+        entryPoint.setText( editingPattern.getEntryPointName() );
         entryPoint.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                editingCol.getPattern().setEntryPointName( entryPoint.getText() );
+                editingPattern.setEntryPointName( entryPoint.getText() );
             }
         } );
         addAttribute( constants.DTLabelFromEntryPoint(),
@@ -305,7 +300,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 }
 
                 // Pass new\modified column back for handling
-                refreshGrid.execute( editingCol );
+                refreshGrid.execute( editingPattern,
+                                     editingCol );
                 hide();
 
             }
@@ -322,8 +318,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private boolean checkUnique(String fn,
-                                List<Pattern> patterns) {
-        for ( Pattern p : patterns ) {
+                                List<Pattern52> patterns) {
+        for ( Pattern52 p : patterns ) {
             if ( p.getBoundName().equals( fn ) ) return false;
         }
         return true;
@@ -333,7 +329,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             fieldLabel.setText( constants.notNeededForPredicate() );
             fieldLabelInterpolationInfo.setVisible( true );
-        } else if ( nil( editingCol.getPattern().getFactType() ) ) {
+        } else if ( nil( editingPattern.getFactType() ) ) {
             fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
             fieldLabelInterpolationInfo.setVisible( false );
         } else if ( nil( editingCol.getFactField() ) ) {
@@ -347,7 +343,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private void doOperatorLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             operatorLabel.setText( constants.notNeededForPredicate() );
-        } else if ( nil( editingCol.getPattern().getFactType() ) ) {
+        } else if ( nil( editingPattern.getFactType() ) ) {
             operatorLabel.setText( constants.pleaseSelectAPatternFirst() );
         } else if ( nil( editingCol.getFactField() ) ) {
             operatorLabel.setText( constants.pleaseChooseAFieldFirst() );
@@ -359,10 +355,10 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private void doPatternLabel() {
-        if ( this.editingCol.getPattern().getFactType() != null ) {
-            this.patternLabel.setText( (this.editingCol.getPattern().isNegated() ? constants.negatedPattern() + " " : "")
-                                       + this.editingCol.getPattern().getFactType() + " ["
-                                       + this.editingCol.getPattern().getBoundName() + "]" );
+        if ( this.editingPattern.getFactType() != null ) {
+            this.patternLabel.setText( (this.editingPattern.isNegated() ? constants.negatedPattern() + " " : "")
+                                       + this.editingPattern.getFactType() + " ["
+                                       + this.editingPattern.getBoundName() + "]" );
         }
         doFieldLabel();
         doOperatorLabel();
@@ -387,8 +383,8 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private ListBox loadPatterns() {
         Set<String> vars = new HashSet<String>();
         ListBox patterns = new ListBox();
-        for ( int i = 0; i < dtable.getModel().getConditionPatterns().size(); i++ ) {
-            Pattern p = dtable.getModel().getConditionPatterns().get( i );
+        for ( int i = 0; i < model.getConditionPatterns().size(); i++ ) {
+            Pattern52 p = model.getConditionPatterns().get( i );
             if ( !vars.contains( p.getBoundName() ) ) {
                 patterns.addItem( (p.isNegated() ? constants.negatedPattern() + " " : "")
                                           + p.getFactType()
@@ -412,7 +408,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setTitle( constants.SetTheOperator() );
         pop.setModal( false );
-        String[] ops = this.sce.getOperatorCompletions( editingCol.getPattern().getFactType(),
+        String[] ops = this.sce.getOperatorCompletions( editingPattern.getFactType(),
                                                         editingCol.getFactField() );
         final CEPOperatorsDropdown box = new CEPOperatorsDropdown( ops,
                                                                    editingCol );
@@ -442,7 +438,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private boolean unique(String header) {
-        for ( Pattern p : dtable.getModel().getConditionPatterns() ) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
             for ( ConditionCol52 c : p.getConditions() ) {
                 if ( c.getHeader().equals( header ) ) return false;
             }
@@ -481,12 +477,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
-
-                editingCol.getPattern().getConditions().remove( editingCol );
-                Pattern p = dtable.getModel().getConditionPattern( val[1] );
-                p.getConditions().add( editingCol );
+                editingPattern = model.getConditionPattern( val[1] );
                 editingCol.setFactField( null );
-                cwo.selectItem( editingCol.getPattern().getWindow().getOperator() );
+                cwo.selectItem( editingPattern.getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
@@ -500,7 +493,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         final FormStylePopup pop = new FormStylePopup();
         pop.setModal( false );
         String[] fields = this.sce.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
-                                                        this.editingCol.getFactType() );
+                                                        this.editingPattern.getFactType() );
 
         final ListBox box = new ListBox();
         for ( int i = 0; i < fields.length; i++ ) {
@@ -514,7 +507,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         b.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
-                editingCol.setFieldType( sce.getFieldType( editingCol.getFactType(),
+                editingCol.setFieldType( sce.getFieldType( editingPattern.getFactType(),
                                                            editingCol.getFactField() ) );
                 doFieldLabel();
                 doOperatorLabel();
@@ -561,18 +554,17 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
                 } else if ( !checkUnique( fn,
-                                          dtable.getModel().getConditionPatterns() ) ) {
+                                          model.getConditionPatterns() ) ) {
                     Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
-                Pattern p = new Pattern();
-                p.setFactType( ft );
-                p.setBoundName( fn );
-                p.setNegated( chkNegated.getValue() );
-                p.getConditions().add( editingCol );
-                dtable.getModel().getConditionPatterns().add(p);
+                editingPattern = new Pattern52();
+                editingPattern.setFactType( ft );
+                editingPattern.setBoundName( fn );
+                editingPattern.setNegated( chkNegated.getValue() );
+                editingPattern.getConditions().add( editingCol );
                 editingCol.setFactField( null );
-                cwo.selectItem( editingCol.getPattern().getWindow().getOperator() );
+                cwo.selectItem( editingPattern.getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
@@ -609,7 +601,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private void displayCEPOperators() {
-        boolean isVisible = sce.isFactTypeAnEvent( editingCol.getFactType() );
+        boolean isVisible = sce.isFactTypeAnEvent( editingPattern.getFactType() );
         setAttributeVisibility( cepWindowRowIndex,
                                 isVisible );
     }

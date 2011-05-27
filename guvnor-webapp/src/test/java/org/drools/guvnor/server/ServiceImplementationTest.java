@@ -85,6 +85,7 @@ import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.ContentPackageAssembler;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -98,11 +99,10 @@ import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt.ActionSetFieldCol;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -140,7 +140,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         try {
             RepositoryStartupService.registerCheckinListener();
             ServiceImplementation impl = getServiceImplementation();
-            
+
+            //Init MailboxService
+            MailboxService service = MailboxService.getInstance();
+            service.init( impl.getRulesRepository() );
+
             RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
             assertNotNull( impl.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
@@ -3761,7 +3765,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "p" );
         p1.setFactType( "Person" );
 

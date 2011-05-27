@@ -44,11 +44,11 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.GuidedDTDRLOtherwiseHelper.OtherwiseBuilder;
 
 /**
@@ -64,11 +64,11 @@ public class GuidedDTDRLPersistence {
 
         StringBuilder sb = new StringBuilder();
 
-        List<List<DTCellValue>> data = dt.getData();
+        List<List<DTCellValue52>> data = dt.getData();
         List<DTColumnConfig52> allColumns = dt.getAllColumns();
 
         for ( int i = 0; i < data.size(); i++ ) {
-            List<DTCellValue> row = data.get( i );
+            List<DTCellValue52> row = data.get( i );
             BigDecimal num = row.get( 0 ).getNumericValue();
             String desc = row.get( 1 ).getStringValue();
 
@@ -113,7 +113,7 @@ public class GuidedDTDRLPersistence {
 
     void doActions(List<DTColumnConfig52> allColumns,
                    List<ActionCol52> actionCols,
-                   List<DTCellValue> row,
+                   List<DTCellValue52> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
         for ( int i = 0; i < actionCols.size(); i++ ) {
@@ -206,14 +206,14 @@ public class GuidedDTDRLPersistence {
     }
 
     void doConditions(List<DTColumnConfig52> allColumns,
-                      List<Pattern> conditionPatterns,
-                      List<DTCellValue> row,
-                      List<List<DTCellValue>> data,
+                      List<Pattern52> conditionPatterns,
+                      List<DTCellValue52> row,
+                      List<List<DTCellValue52>> data,
                       RuleModel rm) {
 
         List<IFactPattern> patterns = new ArrayList<IFactPattern>();
 
-        for ( Pattern p : conditionPatterns ) {
+        for ( Pattern52 p : conditionPatterns ) {
 
             List<ConditionCol52> cols = p.getConditions();
 
@@ -221,7 +221,7 @@ public class GuidedDTDRLPersistence {
 
                 int index = allColumns.indexOf( c );
 
-                DTCellValue dcv = row.get( index );
+                DTCellValue52 dcv = row.get( index );
                 String cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
                 boolean isOtherwise = dcv.isOtherwise();
                 boolean isValid = isOtherwise;
@@ -353,7 +353,7 @@ public class GuidedDTDRLPersistence {
 
     void doAttribs(List<DTColumnConfig52> allColumns,
                    List<AttributeCol52> attributeCols,
-                   List<DTCellValue> row,
+                   List<DTCellValue52> row,
                    RuleModel rm) {
         List<RuleAttribute> attribs = new ArrayList<RuleAttribute>();
         for ( int j = 0; j < attributeCols.size(); j++ ) {
@@ -383,7 +383,7 @@ public class GuidedDTDRLPersistence {
 
     void doMetadata(List<DTColumnConfig52> allColumns,
                     List<MetadataCol52> metadataCols,
-                    List<DTCellValue> row,
+                    List<DTCellValue52> row,
                     RuleModel rm) {
 
         // setup temp list
@@ -458,7 +458,7 @@ public class GuidedDTDRLPersistence {
     //Build a SingleFieldConstraint for an otherwise cell value
     private FieldConstraint makeSingleFieldConstraint(ConditionCol52 c,
                                                       List<DTColumnConfig52> allColumns,
-                                                      List<List<DTCellValue>> data) {
+                                                      List<List<DTCellValue52>> data) {
 
         OtherwiseBuilder builder = GuidedDTDRLOtherwiseHelper.getBuilder( c );
         return builder.makeFieldConstraint( c,

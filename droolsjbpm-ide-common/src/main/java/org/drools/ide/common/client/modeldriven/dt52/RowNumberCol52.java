@@ -15,17 +15,29 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
-
 /**
- * Explicit DataTypes handled by the Mergable Grid Widgets
+ * This is a rule index column (i.e. just displays row's number)
  */
-public enum DTDataTypes
-        implements PortableObject {
+public class RowNumberCol52 extends DTColumnConfig52 {
 
-    STRING,
-    NUMERIC,
-    DATE,
-    BOOLEAN
+    private static final long serialVersionUID = -2272148755430209968L;
+
+    @Override
+    public boolean equals(Object obj) {
+        if ( obj == null ) {
+            return false;
+        }
+        if ( !(obj instanceof RowNumberCol52) ) {
+            return false;
+        }
+        return super.equals( obj );
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 1;
+        hash = hash * 31 + super.hashCode();
+        return hash;
+    }
 
 }

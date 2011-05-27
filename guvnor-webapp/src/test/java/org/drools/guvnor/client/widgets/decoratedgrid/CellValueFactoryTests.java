@@ -33,10 +33,10 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,17 +46,17 @@ import org.junit.Test;
 public class CellValueFactoryTests {
 
     private SuggestionCompletionEngine    sce     = null;
-    private GuidedDecisionTable52   dt      = null;
+    private GuidedDecisionTable52         dt      = null;
     private DecisionTableCellValueFactory factory = null;
 
-    private AttributeCol52                  at1     = null;
-    private AttributeCol52                  at2     = null;
-    private ConditionCol52                  c1      = null;
-    private ConditionCol52                  c2      = null;
-    private ConditionCol52                  c3      = null;
-    private ConditionCol52                  c4      = null;
-    private ActionSetFieldCol52             a1      = null;
-    private ActionInsertFactCol52           a2      = null;
+    private AttributeCol52                at1     = null;
+    private AttributeCol52                at2     = null;
+    private ConditionCol52                c1      = null;
+    private ConditionCol52                c2      = null;
+    private ConditionCol52                c3      = null;
+    private ConditionCol52                c4      = null;
+    private ActionSetFieldCol52           a1      = null;
+    private ActionInsertFactCol52         a2      = null;
 
     @Before
     @SuppressWarnings("serial")
@@ -97,7 +97,7 @@ public class CellValueFactoryTests {
         dt.getAttributeCols().add( at1 );
         dt.getAttributeCols().add( at2 );
 
-        Pattern p1 = new Pattern();
+        Pattern52 p1 = new Pattern52();
         p1.setBoundName( "c1" );
         p1.setFactType( "Driver" );
 
@@ -108,7 +108,7 @@ public class CellValueFactoryTests {
         p1.getConditions().add( c1 );
         dt.getConditionPatterns().add( p1 );
 
-        Pattern p2 = new Pattern();
+        Pattern52 p2 = new Pattern52();
         p2.setBoundName( "c2" );
         p2.setFactType( "Driver" );
 
@@ -119,7 +119,7 @@ public class CellValueFactoryTests {
         p2.getConditions().add( c2 );
         dt.getConditionPatterns().add( p2 );
 
-        Pattern p3 = new Pattern();
+        Pattern52 p3 = new Pattern52();
         p3.setBoundName( "c3" );
         p3.setFactType( "Driver" );
 
@@ -130,7 +130,7 @@ public class CellValueFactoryTests {
         p3.getConditions().add( c3 );
         dt.getConditionPatterns().add( p3 );
 
-        Pattern p4 = new Pattern();
+        Pattern52 p4 = new Pattern52();
         p4.setBoundName( "c4" );
         p4.setFactType( "Driver" );
 
@@ -168,25 +168,25 @@ public class CellValueFactoryTests {
                   1 );
         Date dob = cdob.getTime();
 
-        DTCellValue dcv1 = new DTCellValue( Boolean.TRUE );
-        DTCellValue dcv2 = new DTCellValue( dob );
-        DTCellValue dcv3 = new DTCellValue( 1 );
-        DTCellValue dcv4 = new DTCellValue( 1.0 );
-        DTCellValue dcv5 = new DTCellValue( new BigDecimal( 1 ) );
-        DTCellValue dcv6 = new DTCellValue( "Smurf" );
+        DTCellValue52 dcv1 = new DTCellValue52( Boolean.TRUE );
+        DTCellValue52 dcv2 = new DTCellValue52( dob );
+        DTCellValue52 dcv3 = new DTCellValue52( 1 );
+        DTCellValue52 dcv4 = new DTCellValue52( 1.0 );
+        DTCellValue52 dcv5 = new DTCellValue52( new BigDecimal( 1 ) );
+        DTCellValue52 dcv6 = new DTCellValue52( "Smurf" );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes.BOOLEAN );
+                      DTDataTypes52.BOOLEAN );
         assertEquals( dcv2.getDataType(),
-                      DTDataTypes.DATE );
+                      DTDataTypes52.DATE );
         assertEquals( dcv3.getDataType(),
-                      DTDataTypes.NUMERIC );
+                      DTDataTypes52.NUMERIC );
         assertEquals( dcv4.getDataType(),
-                      DTDataTypes.NUMERIC );
+                      DTDataTypes52.NUMERIC );
         assertEquals( dcv5.getDataType(),
-                      DTDataTypes.NUMERIC );
+                      DTDataTypes52.NUMERIC );
         assertEquals( dcv6.getDataType(),
-                      DTDataTypes.STRING );
+                      DTDataTypes52.STRING );
 
     }
 
@@ -246,14 +246,14 @@ public class CellValueFactoryTests {
                   1 );
         Date dob = cdob.getTime();
 
-        DTCellValue dcv1 = new DTCellValue( 1 );
-        DTCellValue dcv2 = new DTCellValue( Boolean.TRUE );
-        DTCellValue dcv3 = new DTCellValue( "Michael" );
-        DTCellValue dcv4 = new DTCellValue( 11 );
-        DTCellValue dcv5 = new DTCellValue( dob );
-        DTCellValue dcv6 = new DTCellValue( Boolean.TRUE );
-        DTCellValue dcv7 = new DTCellValue( "Mike" );
-        DTCellValue dcv8 = new DTCellValue( "Mike" );
+        DTCellValue52 dcv1 = new DTCellValue52( 1 );
+        DTCellValue52 dcv2 = new DTCellValue52( Boolean.TRUE );
+        DTCellValue52 dcv3 = new DTCellValue52( "Michael" );
+        DTCellValue52 dcv4 = new DTCellValue52( 11 );
+        DTCellValue52 dcv5 = new DTCellValue52( dob );
+        DTCellValue52 dcv6 = new DTCellValue52( Boolean.TRUE );
+        DTCellValue52 dcv7 = new DTCellValue52( "Mike" );
+        DTCellValue52 dcv8 = new DTCellValue52( "Mike" );
 
         CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
                                                                              0,
@@ -317,14 +317,14 @@ public class CellValueFactoryTests {
                   1 );
         Date dob = cdob.getTime();
 
-        DTCellValue dcv1 = new DTCellValue( "1" );
-        DTCellValue dcv2 = new DTCellValue( "true" );
-        DTCellValue dcv3 = new DTCellValue( "Michael" );
-        DTCellValue dcv4 = new DTCellValue( "11" );
-        DTCellValue dcv5 = new DTCellValue( "01-JAN-2000" );
-        DTCellValue dcv6 = new DTCellValue( "true" );
-        DTCellValue dcv7 = new DTCellValue( "Mike" );
-        DTCellValue dcv8 = new DTCellValue( "Mike" );
+        DTCellValue52 dcv1 = new DTCellValue52( "1" );
+        DTCellValue52 dcv2 = new DTCellValue52( "true" );
+        DTCellValue52 dcv3 = new DTCellValue52( "Michael" );
+        DTCellValue52 dcv4 = new DTCellValue52( "11" );
+        DTCellValue52 dcv5 = new DTCellValue52( "01-JAN-2000" );
+        DTCellValue52 dcv6 = new DTCellValue52( "true" );
+        DTCellValue52 dcv7 = new DTCellValue52( "Mike" );
+        DTCellValue52 dcv8 = new DTCellValue52( "Mike" );
 
         CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
                                                                              0,
@@ -381,14 +381,14 @@ public class CellValueFactoryTests {
     @Test
     public void testConversionEmptyValues() {
 
-        DTCellValue dcv1 = new DTCellValue( "" );
-        DTCellValue dcv2 = new DTCellValue( "" );
-        DTCellValue dcv3 = new DTCellValue( "" );
-        DTCellValue dcv4 = new DTCellValue( "" );
-        DTCellValue dcv5 = new DTCellValue( "" );
-        DTCellValue dcv6 = new DTCellValue( "" );
-        DTCellValue dcv7 = new DTCellValue( "" );
-        DTCellValue dcv8 = new DTCellValue( "" );
+        DTCellValue52 dcv1 = new DTCellValue52( "" );
+        DTCellValue52 dcv2 = new DTCellValue52( "" );
+        DTCellValue52 dcv3 = new DTCellValue52( "" );
+        DTCellValue52 dcv4 = new DTCellValue52( "" );
+        DTCellValue52 dcv5 = new DTCellValue52( "" );
+        DTCellValue52 dcv6 = new DTCellValue52( "" );
+        DTCellValue52 dcv7 = new DTCellValue52( "" );
+        DTCellValue52 dcv8 = new DTCellValue52( "" );
 
         CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
                                                                              0,
@@ -441,21 +441,21 @@ public class CellValueFactoryTests {
                       null );
 
         assertEquals( dcv1.getDataType(),
-                      DTDataTypes.NUMERIC );
+                      DTDataTypes52.NUMERIC );
         assertEquals( dcv2.getDataType(),
-                      DTDataTypes.BOOLEAN );
+                      DTDataTypes52.BOOLEAN );
         assertEquals( dcv3.getDataType(),
-                      DTDataTypes.STRING );
+                      DTDataTypes52.STRING );
         assertEquals( dcv4.getDataType(),
-                      DTDataTypes.NUMERIC );
+                      DTDataTypes52.NUMERIC );
         assertEquals( dcv5.getDataType(),
-                      DTDataTypes.DATE );
+                      DTDataTypes52.DATE );
         assertEquals( dcv6.getDataType(),
-                      DTDataTypes.BOOLEAN );
+                      DTDataTypes52.BOOLEAN );
         assertEquals( dcv7.getDataType(),
-                      DTDataTypes.STRING );
+                      DTDataTypes52.STRING );
         assertEquals( dcv8.getDataType(),
-                      DTDataTypes.STRING );
+                      DTDataTypes52.STRING );
 
     }
 

@@ -36,17 +36,16 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
-import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern;
-import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
  * Helper class to upgrade model used for Guided Decision Table
  */
-@SuppressWarnings("deprecation")
 public class RepositoryUpgradeHelper {
 
     /**
@@ -58,14 +57,14 @@ public class RepositoryUpgradeHelper {
     public static GuidedDecisionTable52 convertGuidedDTModel(GuidedDecisionTable legacyDTModel) {
 
         assertConditionColumnPatternGrouping( legacyDTModel );
-        
+
         GuidedDecisionTable52 newDTModel = new GuidedDecisionTable52();
 
         newDTModel.setTableName( legacyDTModel.tableName );
         newDTModel.setParentName( legacyDTModel.parentName );
 
-        newDTModel.setRowNumberCol( new RowNumberCol() );
-        newDTModel.setDescriptionCol( new DescriptionCol() );
+        newDTModel.setRowNumberCol( new RowNumberCol52() );
+        newDTModel.setDescriptionCol( new DescriptionCol52() );
 
         //Metadata columns' data-type is implicitly defined in the metadata value. For example
         //a String metadata attribute is: "value", a numerical: 1. No conversion action required
@@ -80,13 +79,13 @@ public class RepositoryUpgradeHelper {
 
         //Legacy decision tables did not have Condition field data-types. Set all Condition 
         //fields to a *sensible* default of String (as this matches legacy behaviour).
-        Map<String, Pattern> patterns = new HashMap<String, Pattern>();
+        Map<String, Pattern52> patterns = new HashMap<String, Pattern52>();
         for ( int i = 0; i < legacyDTModel.conditionCols.size(); i++ ) {
             ConditionCol c = legacyDTModel.conditionCols.get( i );
             String boundName = c.boundName;
-            Pattern p = patterns.get( boundName );
+            Pattern52 p = patterns.get( boundName );
             if ( p == null ) {
-                p = new Pattern();
+                p = new Pattern52();
                 p.setBoundName( boundName );
                 p.setFactType( c.factType );
                 patterns.put( boundName,
@@ -97,7 +96,7 @@ public class RepositoryUpgradeHelper {
             }
             p.getConditions().add( makeNewColumn( c ) );
         }
-        for ( Pattern p : patterns.values() ) {
+        for ( Pattern52 p : patterns.values() ) {
             newDTModel.getConditionPatterns().add( p );
         }
 
@@ -178,11 +177,11 @@ public class RepositoryUpgradeHelper {
      * @param oldData
      * @return New data
      */
-    public static List<List<DTCellValue>> makeDataLists(String[][] oldData) {
-        List<List<DTCellValue>> newData = new ArrayList<List<DTCellValue>>();
+    public static List<List<DTCellValue52>> makeDataLists(String[][] oldData) {
+        List<List<DTCellValue52>> newData = new ArrayList<List<DTCellValue52>>();
         for ( int iRow = 0; iRow < oldData.length; iRow++ ) {
             String[] oldRow = oldData[iRow];
-            List<DTCellValue> newRow = makeDataRowList( oldRow );
+            List<DTCellValue52> newRow = makeDataRowList( oldRow );
             newData.add( newRow );
         }
         return newData;
@@ -195,10 +194,10 @@ public class RepositoryUpgradeHelper {
      * @param oldRow
      * @return New row
      */
-    public static List<DTCellValue> makeDataRowList(String[] oldRow) {
-        List<DTCellValue> row = new ArrayList<DTCellValue>();
+    public static List<DTCellValue52> makeDataRowList(String[] oldRow) {
+        List<DTCellValue52> row = new ArrayList<DTCellValue52>();
 
-        DTCellValue rowDcv = new DTCellValue( new BigDecimal( oldRow[0] ) );
+        DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( oldRow[0] ) );
         row.add( rowDcv );
 
         for ( int iCol = 1; iCol < oldRow.length; iCol++ ) {
@@ -208,7 +207,7 @@ public class RepositoryUpgradeHelper {
             //should occur here but that requires reference to a SuggestionCompletionEngine
             //which requires RepositoryServices. I did not want to make a dependency between
             //common IDE classes and the Repository
-            DTCellValue dcv = new DTCellValue( oldRow[iCol] );
+            DTCellValue52 dcv = new DTCellValue52( oldRow[iCol] );
             row.add( dcv );
         }
         return row;

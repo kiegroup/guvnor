@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
  * Utilities to support Guided Decision Table operations
@@ -32,7 +32,7 @@ public class GuidedDTDRLUtilities {
      * @param dcv
      * @return
      */
-    public static String convertDTCellValueToString(DTCellValue dcv) {
+    public static String convertDTCellValueToString(DTCellValue52 dcv) {
         switch ( dcv.getDataType() ) {
             case BOOLEAN :
                 Boolean booleanValue = dcv.getBooleanValue();

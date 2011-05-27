@@ -23,8 +23,14 @@ import org.drools.ide.common.client.modeldriven.dt.AttributeCol;
 import org.drools.ide.common.client.modeldriven.dt.ConditionCol;
 import org.drools.ide.common.client.modeldriven.dt.GuidedDecisionTable;
 import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -36,6 +42,8 @@ public class GuidedDTXMLPersistence {
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
+
+        //Legacy model
         xt.alias( "decision-table",
                   GuidedDecisionTable.class );
         xt.alias( "metadata-column",
@@ -51,14 +59,27 @@ public class GuidedDTXMLPersistence {
         xt.alias( "insert-fact-column",
                   ActionInsertFactCol.class );
 
+        //Post 5.2 model
+        xt.alias( "decision-table52",
+                  GuidedDecisionTable52.class );
+        xt.alias( "metadata-column52",
+                  MetadataCol52.class );
+        xt.alias( "attribute-column52",
+                  AttributeCol52.class );
+        xt.alias( "condition-column52",
+                  ConditionCol52.class );
+        xt.alias( "set-field-col52",
+                  ActionSetFieldCol52.class );
+        xt.alias( "retract-fact-column52",
+                  ActionRetractFactCol52.class );
+        xt.alias( "insert-fact-column52",
+                  ActionInsertFactCol52.class );
+        xt.alias( "value",
+                  DTCellValue52.class );
+
         //See https://issues.jboss.org/browse/GUVNOR-1115
         xt.aliasPackage( "org.drools.guvnor.client",
                          "org.drools.ide.common.client" );
-
-        xt.alias( "dtable",
-                  GuidedDecisionTable52.class );
-        xt.alias( "value",
-                  DTCellValue.class );
     }
 
     public static GuidedDTXMLPersistence getInstance() {

@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeHandler;
@@ -24,6 +23,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSideb
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -31,6 +31,8 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  * A Vertical Decision Table composed of a VerticalDecoratedGridWidget
  */
 public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
+
+    private VerticalDecisionTableHeaderWidget header;
 
     public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
                                        SuggestionCompletionEngine sce) {
@@ -41,9 +43,9 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedGridWidget<DTColumnConfig52>();
-        DecoratedGridHeaderWidget<DTColumnConfig52> header = new VerticalDecisionTableHeaderWidget( widget );
+        header = new VerticalDecisionTableHeaderWidget( widget );
         DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( widget,
-                                                                                                                     this );
+                                                                                                                         this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );
@@ -61,6 +63,21 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         vp.add( widget );
         vp.add( ctrls );
         initWidget( vp );
+    }
+
+    /**
+     * Set the Decision Table's data and hook-up the Header
+     * 
+     * @param data
+     */
+    @Override
+    public void setModel(GuidedDecisionTable52 model) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+
+        header.setModel( model );
+        super.setModel( model );
     }
 
 }

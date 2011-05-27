@@ -25,7 +25,7 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * therefore does not contain a single property of type Serializable (that would
  * have been ideal). Instead the concrete data types are included separately.
  */
-public class DTCellValue
+public class DTCellValue52
     implements
     PortableObject {
 
@@ -36,39 +36,39 @@ public class DTCellValue
     private Date              valueDate;
     private BigDecimal        valueNumeric;
     private String            valueString;
-    private DTDataTypes       dataType;
+    private DTDataTypes52     dataType;
 
     //Does this cell represent "all other values" to those explicitly defined for the column
     private boolean           isOtherwise;
 
-    public DTCellValue() {
+    public DTCellValue52() {
     }
 
-    public DTCellValue(BigDecimal value) {
+    public DTCellValue52(BigDecimal value) {
         setNumericValue( value );
     }
 
-    public DTCellValue(Boolean value) {
+    public DTCellValue52(Boolean value) {
         setBooleanValue( value );
     }
 
-    public DTCellValue(Date value) {
+    public DTCellValue52(Date value) {
         setDateValue( value );
     }
 
-    public DTCellValue(double value) {
+    public DTCellValue52(double value) {
         setNumericValue( new BigDecimal( value ) );
     }
 
-    public DTCellValue(int value) {
+    public DTCellValue52(int value) {
         setNumericValue( new BigDecimal( value ) );
     }
 
-    public DTCellValue(long value) {
+    public DTCellValue52(long value) {
         setNumericValue( new BigDecimal( value ) );
     }
 
-    public DTCellValue(String value) {
+    public DTCellValue52(String value) {
         setStringValue( value );
     }
 
@@ -76,7 +76,7 @@ public class DTCellValue
         return valueBoolean;
     }
 
-    public DTDataTypes getDataType() {
+    public DTDataTypes52 getDataType() {
         return this.dataType;
     }
 
@@ -99,19 +99,19 @@ public class DTCellValue
     public void setBooleanValue(Boolean value) {
         clearValues();
         this.valueBoolean = value;
-        this.dataType = DTDataTypes.BOOLEAN;
+        this.dataType = DTDataTypes52.BOOLEAN;
     }
 
     public void setDateValue(Date value) {
         clearValues();
         this.valueDate = value;
-        this.dataType = DTDataTypes.DATE;
+        this.dataType = DTDataTypes52.DATE;
     }
 
     public void setNumericValue(BigDecimal value) {
         clearValues();
         this.valueNumeric = value;
-        this.dataType = DTDataTypes.NUMERIC;
+        this.dataType = DTDataTypes52.NUMERIC;
     }
 
     public void setOtherwise(boolean isOtherwise) {
@@ -121,7 +121,7 @@ public class DTCellValue
     public void setStringValue(String value) {
         clearValues();
         this.valueString = value;
-        this.dataType = DTDataTypes.STRING;
+        this.dataType = DTDataTypes52.STRING;
     }
 
     private void clearValues() {

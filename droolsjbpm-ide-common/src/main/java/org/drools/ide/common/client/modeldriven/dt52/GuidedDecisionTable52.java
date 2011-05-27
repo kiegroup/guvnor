@@ -21,7 +21,6 @@ import java.util.List;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
-import org.drools.ide.common.client.modeldriven.dt.MetadataCol;
 
 /**
  * This is a decision table model for a guided editor. It is not template or XLS
@@ -36,52 +35,52 @@ public class GuidedDecisionTable52
     implements
     PortableObject {
 
-    private static final long       serialVersionUID      = 510l;
+    private static final long         serialVersionUID      = 510l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
-    public static final int         INTERNAL_ELEMENTS     = 2;
+    public static final int           INTERNAL_ELEMENTS     = 2;
 
     /**
      * Various attribute names
      */
-    public static final String      SALIENCE_ATTR         = "salience";
-    public static final String      ENABLED_ATTR          = "enabled";
-    public static final String      DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String      DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String      NO_LOOP_ATTR          = "no-loop";
-    public static final String      AGENDA_GROUP_ATTR     = "agenda-group";
-    public static final String      ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String      DURATION_ATTR         = "duration";
-    public static final String      AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String      LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String      RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String      DIALECT_ATTR          = "dialect";
-    public static final String      NEGATE_RULE_ATTR      = "negate";
+    public static final String        SALIENCE_ATTR         = "salience";
+    public static final String        ENABLED_ATTR          = "enabled";
+    public static final String        DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String        DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String        NO_LOOP_ATTR          = "no-loop";
+    public static final String        AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String        ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String        DURATION_ATTR         = "duration";
+    public static final String        AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String        LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String        RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String        DIALECT_ATTR          = "dialect";
+    public static final String        NEGATE_RULE_ATTR      = "negate";
 
-    private String                  tableName;
+    private String                    tableName;
 
-    private String                  parentName;
+    private String                    parentName;
 
-    private RowNumberCol            rowNumberCol          = new RowNumberCol();
+    private RowNumberCol52            rowNumberCol          = new RowNumberCol52();
 
-    private DescriptionCol          descriptionCol        = new DescriptionCol();
+    private DescriptionCol52          descriptionCol        = new DescriptionCol52();
 
-    private List<MetadataCol52>     metadataCols          = new ArrayList<MetadataCol52>();
+    private List<MetadataCol52>       metadataCols          = new ArrayList<MetadataCol52>();
 
-    private List<AttributeCol52>    attributeCols         = new ArrayList<AttributeCol52>();
+    private List<AttributeCol52>      attributeCols         = new ArrayList<AttributeCol52>();
 
-    private List<Pattern>           conditionPatterns     = new ArrayList<Pattern>();
+    private List<Pattern52>           conditionPatterns     = new ArrayList<Pattern52>();
 
-    private List<ActionCol52>       actionCols            = new ArrayList<ActionCol52>();
+    private List<ActionCol52>         actionCols            = new ArrayList<ActionCol52>();
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue>> data                  = new ArrayList<List<DTCellValue>>();
+    private List<List<DTCellValue52>> data                  = new ArrayList<List<DTCellValue52>>();
 
     public GuidedDecisionTable52() {
     }
@@ -94,12 +93,12 @@ public class GuidedDecisionTable52
         return attributeCols;
     }
 
-    public List<Pattern> getConditionPatterns() {
+    public List<Pattern52> getConditionPatterns() {
         return conditionPatterns;
     }
 
-    public Pattern getConditionPattern(String boundName) {
-        for ( Pattern p : conditionPatterns ) {
+    public Pattern52 getConditionPattern(String boundName) {
+        for ( Pattern52 p : conditionPatterns ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p;
             }
@@ -107,15 +106,24 @@ public class GuidedDecisionTable52
         return null;
     }
 
+    public Pattern52 getPattern(ConditionCol52 col) {
+        for ( Pattern52 p : conditionPatterns ) {
+            if ( p.getConditions().contains( col ) ) {
+                return p;
+            }
+        }
+        return new Pattern52();
+    }
+
     public long getConditionsCount() {
         long size = 0;
-        for ( Pattern p : this.conditionPatterns ) {
+        for ( Pattern52 p : this.conditionPatterns ) {
             size = size + p.getConditions().size();
         }
         return size;
     }
 
-    public List<List<DTCellValue>> getData() {
+    public List<List<DTCellValue52>> getData() {
         return data;
     }
 
@@ -125,7 +133,7 @@ public class GuidedDecisionTable52
         columns.add( descriptionCol );
         columns.addAll( metadataCols );
         columns.addAll( attributeCols );
-        for ( Pattern p : this.conditionPatterns ) {
+        for ( Pattern52 p : this.conditionPatterns ) {
             for ( ConditionCol52 c : p.getConditions() ) {
                 columns.add( c );
             }
@@ -134,10 +142,10 @@ public class GuidedDecisionTable52
         return columns;
     }
 
-    public DescriptionCol getDescriptionCol() {
+    public DescriptionCol52 getDescriptionCol() {
         // De-serialising old models sets this field to null
         if ( this.descriptionCol == null ) {
-            this.descriptionCol = new DescriptionCol();
+            this.descriptionCol = new DescriptionCol52();
         }
         return this.descriptionCol;
     }
@@ -153,10 +161,10 @@ public class GuidedDecisionTable52
         return parentName;
     }
 
-    public RowNumberCol getRowNumberCol() {
+    public RowNumberCol52 getRowNumberCol() {
         // De-serialising old models sets this field to null
         if ( this.rowNumberCol == null ) {
-            this.rowNumberCol = new RowNumberCol();
+            this.rowNumberCol = new RowNumberCol52();
         }
         return this.rowNumberCol;
     }
@@ -167,11 +175,11 @@ public class GuidedDecisionTable52
 
     public String getType(DTColumnConfig52 col,
                           SuggestionCompletionEngine sce) {
-        if ( col instanceof RowNumberCol ) {
-            return getType( (RowNumberCol) col,
+        if ( col instanceof RowNumberCol52 ) {
+            return getType( (RowNumberCol52) col,
                             sce );
-        } else if ( col instanceof DescriptionCol ) {
-            return getType( (DescriptionCol) col,
+        } else if ( col instanceof DescriptionCol52 ) {
+            return getType( (DescriptionCol52) col,
                             sce );
         } else if ( col instanceof AttributeCol52 ) {
             return getType( (AttributeCol52) col,
@@ -189,13 +197,13 @@ public class GuidedDecisionTable52
         return null;
     }
 
-    private String getType(RowNumberCol col,
+    private String getType(RowNumberCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = SuggestionCompletionEngine.TYPE_NUMERIC;
         return type;
     }
 
-    private String getType(DescriptionCol col,
+    private String getType(DescriptionCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = SuggestionCompletionEngine.TYPE_STRING;
         return type;
@@ -229,7 +237,10 @@ public class GuidedDecisionTable52
 
     private String getType(ConditionCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = sce.getFieldType( col.getPattern().getFactType(),
+
+        Pattern52 pattern = getPattern( col );
+
+        String type = sce.getFieldType( pattern.getFactType(),
                                         col.getFactField() );
         type = (assertDataType( col,
                                 sce,
@@ -286,6 +297,9 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
+
+        Pattern52 pattern = getPattern( col );
+
         // If its a formula etc, just return String[0] otherwise check with the sce
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
                     || col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
@@ -295,7 +309,7 @@ public class GuidedDecisionTable52
                      && !"".equals( col.getValueList() ) ) {
                 return col.getValueList().split( "," );
             } else {
-                String[] r = sce.getEnumValues( col.getPattern().getFactType(),
+                String[] r = sce.getEnumValues( pattern.getFactType(),
                                                 col.getFactField() );
                 return (r != null) ? r : new String[0];
             }
@@ -329,10 +343,10 @@ public class GuidedDecisionTable52
 
     public boolean isConstraintValid(DTColumnConfig52 col,
                                      SuggestionCompletionEngine sce) {
-        if ( col instanceof RowNumberCol ) {
+        if ( col instanceof RowNumberCol52 ) {
             return true;
         }
-        if ( col instanceof DescriptionCol ) {
+        if ( col instanceof DescriptionCol52 ) {
             return true;
         }
         if ( col instanceof MetadataCol52 ) {
@@ -362,20 +376,36 @@ public class GuidedDecisionTable52
         return false;
     }
 
-    public void setData(List<List<DTCellValue>> data) {
+    public void setData(List<List<DTCellValue52>> data) {
         this.data = data;
     }
 
-    public void setDescriptionCol(DescriptionCol descriptionCol) {
+    public void setRowNumberCol(RowNumberCol52 rowNumberCol) {
+        this.rowNumberCol = rowNumberCol;
+    }
+
+    public void setDescriptionCol(DescriptionCol52 descriptionCol) {
         this.descriptionCol = descriptionCol;
+    }
+
+    public void setMetadataCols(List<MetadataCol52> metadataCols) {
+        this.metadataCols = metadataCols;
+    }
+
+    public void setAttributeCols(List<AttributeCol52> attributeCols) {
+        this.attributeCols = attributeCols;
+    }
+
+    public void setConditionPatterns(List<Pattern52> conditionPatterns) {
+        this.conditionPatterns = conditionPatterns;
+    }
+
+    public void setActionCols(List<ActionCol52> actionCols) {
+        this.actionCols = actionCols;
     }
 
     public void setParentName(String parentName) {
         this.parentName = parentName;
-    }
-
-    public void setRowNumberCol(RowNumberCol rowNumberCol) {
-        this.rowNumberCol = rowNumberCol;
     }
 
     public void setTableName(String tableName) {
@@ -383,7 +413,7 @@ public class GuidedDecisionTable52
     }
 
     private String getBoundFactType(String boundName) {
-        for ( Pattern p : this.conditionPatterns ) {
+        for ( Pattern52 p : this.conditionPatterns ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p.getFactType();
             }
@@ -394,11 +424,14 @@ public class GuidedDecisionTable52
     private boolean assertDataType(ConditionCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
+
+        Pattern52 pattern = getPattern( col );
+
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
                 return false;
             }
-            String ft = sce.getFieldType( col.getPattern().getFactType(),
+            String ft = sce.getFieldType( pattern.getFactType(),
                                           col.getFactField() );
             if ( ft != null && ft.equals( dataType ) ) {
                 return true;
