@@ -1299,7 +1299,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
      * RepoBinPackage.pkg.
      */
     @Test
-    @Ignore("The binary package needs to be updated")
     public void testLoadAndExecBinary() throws Exception {
         Person p = new Person( "fubar" );
         BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
