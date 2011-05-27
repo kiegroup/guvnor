@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.tika.parser.txt.TXTParser;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
@@ -98,6 +99,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private Label                      operatorLabel               = new Label();
 
     private CEPWindowOperatorsDropdown cwo;
+    private TextBox                    entryPointName;
     private int                        cepWindowRowIndex;
 
     private InfoPopup                  fieldLabelInterpolationInfo = getPredicateHint();
@@ -223,15 +225,15 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         displayCEPOperators();
 
         //Entry point
-        final TextBox entryPoint = new TextBox();
-        entryPoint.setText( editingPattern.getEntryPointName() );
-        entryPoint.addChangeHandler( new ChangeHandler() {
+        entryPointName = new TextBox();
+        entryPointName.setText( editingPattern.getEntryPointName() );
+        entryPointName.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                editingPattern.setEntryPointName( entryPoint.getText() );
+                editingPattern.setEntryPointName( entryPointName.getText() );
             }
         } );
         addAttribute( constants.DTLabelFromEntryPoint(),
-                      entryPoint );
+                      entryPointName );
 
         //Optional value list
         final TextBox valueList = new TextBox();
@@ -480,6 +482,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 editingPattern = model.getConditionPattern( val[1] );
                 editingCol.setFactField( null );
                 cwo.selectItem( editingPattern.getWindow().getOperator() );
+                entryPointName.setText( editingPattern.getEntryPointName() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();
@@ -565,6 +568,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                 editingPattern.getConditions().add( editingCol );
                 editingCol.setFactField( null );
                 cwo.selectItem( editingPattern.getWindow().getOperator() );
+                entryPointName.setText( editingPattern.getEntryPointName() );
                 displayCEPOperators();
                 doPatternLabel();
                 pop.hide();

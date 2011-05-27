@@ -346,6 +346,12 @@ public class GuidedDTDRLPersistence {
                 if ( fp.getBoundName().equals( boundName ) ) {
                     return fp;
                 }
+            } else if ( ifp instanceof FromEntryPointFactPattern ) {
+                FromEntryPointFactPattern fefp = (FromEntryPointFactPattern) ifp;
+                FactPattern fp = fefp.getFactPattern();
+                if ( fp.getBoundName().equals( boundName ) ) {
+                    return fp;
+                }
             }
         }
         return null;
