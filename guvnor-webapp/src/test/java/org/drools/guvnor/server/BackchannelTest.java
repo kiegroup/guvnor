@@ -33,7 +33,6 @@ import org.junit.Test;
 public class BackchannelTest {
 
     @Test
-    @Ignore
     public void testPushAll() throws Exception {
 
         final Backchannel backchannel = Backchannel.getInstance();
@@ -87,7 +86,6 @@ public class BackchannelTest {
     }
 
     @Test
-    @Ignore
     public void testSimple() throws Exception {
 
         final Backchannel backchannel = Backchannel.getInstance();
@@ -179,7 +177,6 @@ public class BackchannelTest {
     }
 
     @Test
-    @Ignore
     public void testManyConcurrent() throws Exception {
         final Backchannel backchannel = Backchannel.getInstance();
         for ( int i = 0; i < 1000; i++ ) {
