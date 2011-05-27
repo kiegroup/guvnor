@@ -1292,6 +1292,25 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     }
 
+    /**
+     * this loads up a precompile binary package. If this fails, then it means
+     * it needs to be updated. It gets the package form the BRL example above.
+     * Simply set saveBinPackage to true to save a new version of the
+     * RepoBinPackage.pkg.
+     */
+    @Test
+    @Ignore("The binary package needs to be updated")
+    public void testLoadAndExecBinary() throws Exception {
+        Person p = new Person( "fubar" );
+        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
+        loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
+        RuleBase rb = loader.getRuleBase();
+        StatelessSession sess = rb.newStatelessSession();
+        sess.execute( p );
+        assertEquals( 42,
+                      p.getAge() );
+    }
+    
     @Test
     public void testPackageSource() throws Exception {
         ServiceImplementation impl = getServiceImplementation();

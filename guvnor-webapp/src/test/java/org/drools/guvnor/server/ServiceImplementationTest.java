@@ -60,7 +60,6 @@ import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
@@ -1015,26 +1014,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         d_ = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 1,
                       d_.size() );
-    }
-
-    /**
-     * this loads up a precompile binary package. If this fails, then it means
-     * it needs to be updated. It gets the package form the BRL example above.
-     * Simply set saveBinPackage to true to save a new version of the
-     * RepoBinPackage.pkg.
-     */
-
-    @Test
-    @Ignore("The binary package needs to be updated")
-    public void testLoadAndExecBinary() throws Exception {
-        Person p = new Person( "fubar" );
-        BinaryRuleBaseLoader loader = new BinaryRuleBaseLoader();
-        loader.addPackage( this.getClass().getResourceAsStream( "/RepoBinPackage.pkg" ) );
-        RuleBase rb = loader.getRuleBase();
-        StatelessSession sess = rb.newStatelessSession();
-        sess.execute( p );
-        assertEquals( 42,
-                      p.getAge() );
     }
 
     @Test
