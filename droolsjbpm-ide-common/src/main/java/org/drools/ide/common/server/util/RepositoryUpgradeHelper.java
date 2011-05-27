@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.ActionCol;
@@ -125,14 +126,14 @@ public class RepositoryUpgradeHelper {
 
         // Offset into Model's data array
         final int DATA_COLUMN_OFFSET = model.getMetadataCols().size() + model.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
-        Map<String, List<ConditionColData>> groups = new HashMap<String, List<ConditionColData>>();
+        Map<String, List<ConditionColData>> groups = new TreeMap<String, List<ConditionColData>>();
         final int DATA_ROWS = model.data.length;
 
         // Copy conditions and related data into temporary groups
         for ( int iCol = 0; iCol < model.conditionCols.size(); iCol++ ) {
 
             ConditionCol col = model.conditionCols.get( iCol );
-            String pattern = col.boundName;
+            String pattern = col.boundName + "";
             if ( !groups.containsKey( pattern ) ) {
                 List<ConditionColData> groupCols = new ArrayList<ConditionColData>();
                 groups.put( pattern,
