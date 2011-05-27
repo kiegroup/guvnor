@@ -93,7 +93,6 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
-    //@Ignore("This needs a little re-work as it does not work as expected")
     public void testInboxEvents() throws Exception {
 
         try {
