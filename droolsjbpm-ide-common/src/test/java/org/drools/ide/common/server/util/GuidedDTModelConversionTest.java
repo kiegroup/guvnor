@@ -463,13 +463,13 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 0 ).get( 2 ).getStringValue() );
         assertEquals( "saliencer1",
                       tsdt.getData().get( 0 ).get( 3 ).getStringValue() );
-        assertEquals( "f2c1r1",
-                      tsdt.getData().get( 0 ).get( 4 ).getStringValue() );
-        assertEquals( "f2c2r1",
-                      tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
         assertEquals( "f1c1r1",
-                      tsdt.getData().get( 0 ).get( 6 ).getStringValue() );
+                      tsdt.getData().get( 0 ).get( 4 ).getStringValue() );
         assertEquals( "f1c2r1",
+                      tsdt.getData().get( 0 ).get( 5 ).getStringValue() );
+        assertEquals( "f2c1r1",
+                      tsdt.getData().get( 0 ).get( 6 ).getStringValue() );
+        assertEquals( "f2c2r1",
                       tsdt.getData().get( 0 ).get( 7 ).getStringValue() );
         assertEquals( "a1r1",
                       tsdt.getData().get( 0 ).get( 8 ).getStringValue() );
@@ -488,13 +488,13 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 1 ).get( 2 ).getStringValue() );
         assertEquals( "saliencer2",
                       tsdt.getData().get( 1 ).get( 3 ).getStringValue() );
-        assertEquals( "f2c1r2",
-                      tsdt.getData().get( 1 ).get( 4 ).getStringValue() );
-        assertEquals( "f2c2r2",
-                      tsdt.getData().get( 1 ).get( 5 ).getStringValue() );
         assertEquals( "f1c1r2",
-                      tsdt.getData().get( 1 ).get( 6 ).getStringValue() );
+                      tsdt.getData().get( 1 ).get( 4 ).getStringValue() );
         assertEquals( "f1c2r2",
+                      tsdt.getData().get( 1 ).get( 5 ).getStringValue() );
+        assertEquals( "f2c1r2",
+                      tsdt.getData().get( 1 ).get( 6 ).getStringValue() );
+        assertEquals( "f2c2r2",
                       tsdt.getData().get( 1 ).get( 7 ).getStringValue() );
         assertEquals( "a1r2",
                       tsdt.getData().get( 1 ).get( 8 ).getStringValue() );
