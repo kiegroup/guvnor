@@ -44,6 +44,7 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MigrateRepository;
 import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
@@ -251,7 +252,7 @@ public class FileManagerUtils {
     public void importRulesRepository(InputStream in) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
-                                                 RoleTypes.ADMIN );
+                                                 RoleType.ADMIN.getName() );
         }
         repository.importRulesRepositoryFromStream( in );
 

@@ -240,7 +240,7 @@ public class RepositoryAssetService
                                             String assetName) throws SerializationException {
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
-        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid( assetItem.getPackage().getUUID() );
 
         return repositoryAssetOperations.loadItemHistory( assetItem );
     }
@@ -312,7 +312,7 @@ public class RepositoryAssetService
     public String copyAsset(String assetUUID,
                             String newPackage,
                             String newName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
         return getRulesRepository().copyAsset( assetUUID,
@@ -325,7 +325,7 @@ public class RepositoryAssetService
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         getRulesRepository().moveRuleItemPackage( newPackage,
@@ -350,7 +350,7 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( asset.getMetaData().getPackageName() );
         return repositoryAssetOperations.buildAssetSource( asset );
     }
 
@@ -359,7 +359,7 @@ public class RepositoryAssetService
     public String renameAsset(String uuid,
                               String newName) {
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityIsPackageDeveloper( item );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( item.getPackage().getUUID() );
 
         return repositoryAssetOperations.renameAsset( uuid,
                                                       newName );
@@ -375,8 +375,8 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
-        return repositoryAssetOperations.validateAsset(asset);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( asset.getMetaData().getPackageName() );
+        return repositoryAssetOperations.validateAsset( asset );
     }
 
     public void unArchiveAsset(String uuid) {
@@ -399,7 +399,7 @@ public class RepositoryAssetService
     public void removeAsset(String uuid) {
         try {
             AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-            serviceSecurity.checkSecurityIsPackageDeveloper( item );
+            serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( item.getPackage().getUUID() );
 
             item.remove();
             getRulesRepository().save();
@@ -542,7 +542,7 @@ public class RepositoryAssetService
         try {
             AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
 
-            serviceSecurity.checkSecurityIsPackageDeveloper( item );
+            serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( item.getPackage().getUUID() );
 
             if ( item.getPackage().isArchived() ) {
                 throw new RulesRepositoryException( "The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
@@ -667,7 +667,7 @@ public class RepositoryAssetService
     public void changePackageState(String uuid,
                                    String newState) {
 
-        serviceSecurity.checkSecurityIsPackageDeveloper( uuid );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( uuid );
 
         PackageItem pkg = getRulesRepository().loadPackageByUUID( uuid );
         log.info( "USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]" );

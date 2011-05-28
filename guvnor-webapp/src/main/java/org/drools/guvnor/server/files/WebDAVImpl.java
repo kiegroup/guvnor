@@ -39,6 +39,7 @@ import net.sf.webdav.StoredObject;
 import org.apache.commons.io.IOUtils;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
@@ -789,7 +790,7 @@ public class WebDAVImpl implements IWebdavStore {
     private boolean isAdmin() {
         if ( Contexts.isSessionContextActive() ) {
             try {
-                Identity.instance().checkPermission( new AdminType(), RoleTypes.ADMIN );
+                Identity.instance().checkPermission( new AdminType(), RoleType.ADMIN.getName() );
                 return true;
             } catch ( Exception e ) {
                 return false;

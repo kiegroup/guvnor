@@ -118,7 +118,7 @@ public class RepositoryCategoryService
         // the user has permission to access. The user is considered to has
         // permission to access the particular category when: The user has
         // ANALYST_READ role or higher (i.e., ANALYST) to this category
-        if ( !serviceSecurity.isSecurityIsAnalystRead( new CategoryPathType( request.getCategoryPath() ) ) ) {
+        if ( !serviceSecurity.isSecurityIsAnalystReadWithTargetObject( new CategoryPathType( request.getCategoryPath() ) ) ) {
             return new PageResponse<CategoryPageRow>();
         }
 

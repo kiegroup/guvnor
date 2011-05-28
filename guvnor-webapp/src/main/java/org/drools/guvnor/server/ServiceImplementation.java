@@ -190,7 +190,7 @@ public class ServiceImplementation
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
@@ -232,7 +232,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
 
         log.info( "USER:" + getRulesRepository().getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
@@ -442,7 +442,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
             PackageItem packageItem = getRulesRepository().loadPackage( packageName );
@@ -463,7 +463,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInGlobalArea() throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnly( RulesRepository.RULE_GLOBAL_AREA );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
 

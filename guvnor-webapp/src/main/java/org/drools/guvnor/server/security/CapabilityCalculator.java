@@ -41,20 +41,20 @@ public class CapabilityCalculator {
         Capabilities caps = new Capabilities();
         for ( RoleBasedPermission roleBasedPermission : permissions ) {
             String role = roleBasedPermission.getRole();
-            if ( role.equals( RoleTypes.ADMIN ) ) {
+            if ( role.equals( RoleType.ADMIN.getName() ) ) {
                 return all( features );
-            } else if ( role.equals( RoleTypes.PACKAGE_ADMIN ) ) {
+            } else if ( role.equals( RoleType.PACKAGE_ADMIN.getName() ) ) {
                 addCap( caps, SHOW_PACKAGE_VIEW );
                 addCap( caps, SHOW_CREATE_NEW_ASSET );
                 addCap( caps, SHOW_CREATE_NEW_PACKAGE );
                 addCap( caps, SHOW_DEPLOYMENT );
                 addCap( caps, SHOW_DEPLOYMENT_NEW );
                 addCap( caps, SHOW_QA );
-            } else if ( role.equals( RoleTypes.PACKAGE_DEVELOPER ) ) {
+            } else if ( role.equals( RoleType.PACKAGE_DEVELOPER.getName() ) ) {
                 addCap( caps, SHOW_PACKAGE_VIEW );
                 addCap( caps, SHOW_CREATE_NEW_ASSET );
                 addCap( caps, SHOW_QA );
-            } else if ( role.equals( RoleTypes.PACKAGE_READONLY ) ) {
+            } else if ( role.equals( RoleType.PACKAGE_READONLY.getName() ) ) {
                 addCap( caps, SHOW_PACKAGE_VIEW );
             }
         }

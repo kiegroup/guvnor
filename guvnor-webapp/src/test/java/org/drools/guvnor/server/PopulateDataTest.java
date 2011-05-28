@@ -29,6 +29,7 @@ import java.util.Map;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -77,7 +78,7 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     private void createPermissions(ServiceImplementation serv) {
         Map<String, List<String>> perms = new HashMap<String, List<String>>();
-        perms.put( RoleTypes.ADMIN,
+        perms.put( RoleType.ADMIN.getName(),
                    new ArrayList<String>() );
         serv.updateUserPermissions( "woozle1",
                                     perms );
@@ -86,7 +87,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         List<String> targets = new ArrayList<String>();
         targets.add( "category=/foo/bar" );
         targets.add( "category=/whee" );
-        perms.put( RoleTypes.ANALYST,
+        perms.put( RoleType.ANALYST.getName(),
                    targets );
         serv.updateUserPermissions( "woozle2",
                                     perms );

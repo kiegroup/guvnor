@@ -38,19 +38,19 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_ADMIN,
+                                           RoleType.PACKAGE_ADMIN.getName(),
                                            package1Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            package2Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            "category1" ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            "category2" ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -76,14 +76,14 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
                                             null ) );
 
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            RoleTypes.ANALYST ) );
+                                            RoleType.ANALYST.getName()) );
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            RoleTypes.ANALYST_READ ) );
+                                            RoleType.ANALYST_READ.getName() ) );
 
         assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             RoleTypes.ANALYST_READ ) );
+                                             RoleType.ANALYST_READ.getName() ) );
 
     }
 
@@ -97,19 +97,19 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_ADMIN,
+                                           RoleType.PACKAGE_ADMIN.getName(),
                                            package1Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            package2Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST_READ,
+                                           RoleType.ANALYST_READ.getName(),
                                            null,
                                            categoryPath ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            categoryPath2 ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -132,14 +132,14 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
                                              null ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                            RoleTypes.ANALYST_READ ) );
+                                            RoleType.ANALYST_READ.getName() ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
 
         assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
-                                            RoleTypes.ANALYST ) );
+                                            RoleType.ANALYST.getName() ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
-                                            RoleTypes.ANALYST_READ ) );
+                                            RoleType.ANALYST_READ.getName() ) );
 
     }
 
@@ -150,7 +150,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST_READ,
+                                           RoleType.ANALYST_READ.getName(),
                                            null,
                                            categoryPath ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -167,9 +167,9 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                            RoleTypes.ANALYST_READ ) );
+                                            RoleType.ANALYST_READ.getName() ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
 
     }
 
@@ -208,15 +208,15 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST_READ,
+                                           RoleType.ANALYST_READ.getName(),
                                            null,
                                            "category1/sub1" ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            "category2/sub1/sub2" ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            "category4" ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -237,16 +237,16 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         assertFalse( resolver.hasPermission( new CategoryPathType( "category2" ),
                                              null ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                             RoleTypes.ANALYST_READ ) );
+                                             RoleType.ANALYST_READ.getName() ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( "category2/sub1" ),
-                                             RoleTypes.ANALYST_READ ) );
+                                             RoleType.ANALYST_READ.getName() ) );
         assertFalse( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
 
         assertTrue( resolver.hasPermission( new CategoryPathType( "category1/sub1" ),
-                                            RoleTypes.ANALYST_READ ) );
+                                            RoleType.ANALYST_READ.getName() ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
-                                            RoleTypes.ANALYST ) );
+                                            RoleType.ANALYST.getName() ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
                                             null ) );
 
@@ -275,11 +275,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ADMIN,
+                                           RoleType.ADMIN.getName(),
                                            package1Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            package2Name,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -296,9 +296,9 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleTypes.ADMIN ) );
+                                            RoleType.ADMIN.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( package2Name ),
-                                            RoleTypes.ADMIN ) );
+                                            RoleType.ADMIN.getName() ) );
 
     }
 
@@ -309,7 +309,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_ADMIN,
+                                           RoleType.PACKAGE_ADMIN.getName(),
                                            packageName,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -326,14 +326,14 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleTypes.PACKAGE_ADMIN ) );
+                                            RoleType.PACKAGE_ADMIN.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleTypes.PACKAGE_DEVELOPER ) );
+                                            RoleType.PACKAGE_DEVELOPER.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleTypes.PACKAGE_READONLY ) );
+                                            RoleType.PACKAGE_READONLY.getName() ) );
 
         assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
-                                             RoleTypes.PACKAGE_READONLY ) );
+                                             RoleType.PACKAGE_READONLY.getName() ) );
 
     }
 
@@ -344,7 +344,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "analyst",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            packageName,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -360,12 +360,12 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
         resolver.setEnableRoleBasedAuthorization( true );
         assertFalse( resolver.hasPermission( new WebDavPackageNameType( packageName ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
         assertFalse( resolver.hasPermission( new WebDavPackageNameType( packageName ),
-                                             RoleTypes.ANALYST_READ ) );
+                                             RoleType.ANALYST_READ.getName() ) );
 
         assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
-                                             RoleTypes.PACKAGE_READONLY ) );
+                                             RoleType.PACKAGE_READONLY.getName() ) );
 
     }
 
@@ -377,7 +377,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_DEVELOPER,
+                                           RoleType.PACKAGE_DEVELOPER.getName(),
                                            package1Name,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -394,14 +394,14 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleTypes.PACKAGE_ADMIN ) );
+                                             RoleType.PACKAGE_ADMIN.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleTypes.PACKAGE_DEVELOPER ) );
+                                            RoleType.PACKAGE_DEVELOPER.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleTypes.PACKAGE_READONLY ) );
+                                            RoleType.PACKAGE_READONLY.getName() ) );
 
         assertFalse( resolver.hasPermission( package2Name,
-                                             RoleTypes.PACKAGE_READONLY ) );
+                                             RoleType.PACKAGE_READONLY.getName() ) );
 
     }
 
@@ -413,7 +413,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            package1Name,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -430,14 +430,14 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleTypes.PACKAGE_DEVELOPER ) );
+                                             RoleType.PACKAGE_DEVELOPER.getName() ) );
         assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleTypes.PACKAGE_DEVELOPER ) );
+                                             RoleType.PACKAGE_DEVELOPER.getName() ) );
         assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleTypes.PACKAGE_READONLY ) );
+                                            RoleType.PACKAGE_READONLY.getName() ) );
 
         assertFalse( resolver.hasPermission( package2Name,
-                                             RoleTypes.PACKAGE_READONLY ) );
+                                             RoleType.PACKAGE_READONLY.getName() ) );
 
     }
 
@@ -448,11 +448,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            package1Name,
                                            null ) );
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.ANALYST,
+                                           RoleType.ANALYST.getName(),
                                            null,
                                            "category1" ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -469,11 +469,11 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         resolver.setEnableRoleBasedAuthorization( true );
 
         assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
         assertFalse( resolver.hasPermission( new PackageNameType( package2Name ),
-                                             RoleTypes.ANALYST ) );
+                                             RoleType.ANALYST.getName() ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                            RoleTypes.ANALYST ) );
+                                            RoleType.ANALYST.getName() ) );
 
     }
 

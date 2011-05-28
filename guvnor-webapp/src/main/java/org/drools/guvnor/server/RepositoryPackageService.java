@@ -169,7 +169,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String buildPackageSource(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         return repositoryPackageOperations.buildPackageSource( packageUUID );
     }
 
@@ -184,7 +184,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void removePackage(String uuid) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
         repositoryPackageOperations.removePackage( uuid );
     }
 
@@ -192,7 +192,7 @@ public class RepositoryPackageService
     @Restrict("#{identity.loggedIn}")
     public String renamePackage(String uuid,
                                 String newName) {
-        serviceSecurity.checkSecurityIsPackageAdmin( uuid );
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
 
         return repositoryPackageOperations.renamePackage( uuid,
                                                           newName );
@@ -201,7 +201,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public byte[] exportPackages(String packageName) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         return repositoryPackageOperations.exportPackages( packageName );
     }
 
@@ -249,21 +249,21 @@ public class RepositoryPackageService
         // the uuid passed in is the uuid of that deployment bundle, not the
         // package uudi.
         // we have to figure out the package name.
-        serviceSecurity.checkSecurityNameTypePackageReadOnly( packageItem );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageItem.getName() );
         return repositoryPackageOperations.loadPackageConfig( packageItem );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( data.getUuid() );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         return repositoryPackageOperations.validatePackageConfiguration( data );
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void savePackage(PackageConfigData data) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( data.getUuid() );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         repositoryPackageOperations.savePackage( data );
     }
 
@@ -295,7 +295,7 @@ public class RepositoryPackageService
                                       String category,
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         return repositoryPackageOperations.buildPackage( packageUUID,
                                                          force,
                                                          buildMode,
@@ -314,7 +314,7 @@ public class RepositoryPackageService
                                       String snapshotName,
                                       boolean replaceExisting,
                                       String comment) {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         repositoryPackageOperations.createPackageSnapshot( packageName,
                                                            snapshotName,
                                                            replaceExisting,
@@ -328,7 +328,7 @@ public class RepositoryPackageService
                                      String snapshotName,
                                      boolean delete,
                                      String newSnapshotName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageNameTypeAdmin( packageName );
+        serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
                                                           snapshotName,
                                                           delete,
@@ -338,7 +338,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listRulesInPackage(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         return repositoryPackageOperations.listRulesInPackage( packageName );
     }
 
@@ -367,7 +367,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(packageName);
 
         String[] snaps = getRulesRepository().listPackageSnapshots( packageName );
         SnapshotInfo[] res = new SnapshotInfo[snaps.length];
@@ -501,7 +501,7 @@ public class RepositoryPackageService
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(packageName);
 
         return runScenario( packageName,
                             scenario,
@@ -694,7 +694,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( packageUUID );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
         return runScenariosInPackage( item );
     }

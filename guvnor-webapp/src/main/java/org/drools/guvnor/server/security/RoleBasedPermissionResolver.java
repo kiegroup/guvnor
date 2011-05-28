@@ -97,7 +97,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
 
         if ( hasAdminPermission( permissions ) ) {
             return true;
-        } else if ( RoleTypes.ADMIN.equals( requestedPermission ) ) {
+        } else if ( RoleType.ADMIN.getName().equals( requestedPermission ) ) {
             return hasAdminPermission( permissions );
         }
 
@@ -162,11 +162,11 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
     }
 
     private boolean isPermissionToCurrentDirectory(String requestedPermType, RoleBasedPermission roleBasedPermission) {
-        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleTypes.ANALYST_READ ) && roleBasedPermission.getRole().equals( RoleTypes.ANALYST ));
+        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleType.ANALYST_READ.getName() ) && roleBasedPermission.getRole().equals( RoleTypes.ANALYST ));
     }
 
     private boolean isRoleAnalyst(RoleBasedPermission roleBasedPermission) {
-        return roleBasedPermission.getRole().equals( RoleTypes.ANALYST ) || roleBasedPermission.getRole().equals( RoleTypes.ANALYST_READ );
+        return roleBasedPermission.getRole().equals( RoleType.ANALYST.getName() ) || roleBasedPermission.getRole().equals( RoleType.ANALYST_READ.getName() );
     }
 
     private boolean isCategoryPathMatched(String requestedPath, RoleBasedPermission roleBasedPermission) {
@@ -179,7 +179,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
 
     private boolean hasAdminPermission(List<RoleBasedPermission> permissions) {
         for ( RoleBasedPermission p : permissions ) {
-            if ( RoleTypes.ADMIN.equalsIgnoreCase( p.getRole() ) ) {
+            if ( RoleType.ADMIN.getName().equalsIgnoreCase( p.getRole() ) ) {
                 log.debug( "Requested permission: unknown, Permission granted: Yes" );
                 return true;
             }
@@ -198,22 +198,22 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
     }
 
     private boolean isPermittedPackage(String requestedAction, String role) {
-        if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( role ) ) {
+        if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( role ) ) {
             return true;
-        } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( role ) ) {
-            if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( requestedAction ) ) {
+        } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( role ) ) {
+            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
                 return false;
-            } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( requestedAction ) ) {
+            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
                 return true;
-            } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( requestedAction ) ) {
+            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
                 return true;
             }
-        } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( role ) ) {
-            if ( RoleTypes.PACKAGE_ADMIN.equalsIgnoreCase( requestedAction ) ) {
+        } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( role ) ) {
+            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
                 return false;
-            } else if ( RoleTypes.PACKAGE_DEVELOPER.equalsIgnoreCase( requestedAction ) ) {
+            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
                 return false;
-            } else if ( RoleTypes.PACKAGE_READONLY.equalsIgnoreCase( requestedAction ) ) {
+            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
                 return true;
             }
         }
