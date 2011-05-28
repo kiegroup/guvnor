@@ -43,6 +43,10 @@ public class BuilderResult
         return Collections.unmodifiableList(lines);
     }
 
+    public boolean hasLines() {
+        return !lines.isEmpty();
+    }
+
     public static BuilderResult emptyResult() {
         return new BuilderResult();
     }

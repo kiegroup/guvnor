@@ -472,9 +472,9 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         item.updateContent( " rule abc \n when \n then \n System.out.println(42); \n end" );
         item.checkin( "" );
 
-        BuilderResult res = repositoryPackageService.buildPackage( pkg.getUUID(),
+        BuilderResult builderResult = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                    true );
-        assertNull( res );
+        assertFalse(builderResult.hasLines());
 
         repositoryPackageService.createPackageSnapshot( "testSnapshotRebuild",
                                                         "SNAP",
@@ -1100,7 +1100,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         BuilderResult result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                       true );
-        assertNull( result );
+        assertFalse( result.hasLines() );
 
         pkg = repo.loadPackage( "testBinaryPackageCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1151,7 +1151,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                         true );
-        assertNull( result );
+        assertFalse( result.hasLines() );
 
     }
 
@@ -1206,7 +1206,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                 System.err.println( result.getLines().get( i ).getMessage() );
             }
         }
-        assertNull( result );
+        assertFalse( result.hasLines() );
 
         pkg = repo.loadPackage( "testBinaryPackageCompileBRL" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1266,7 +1266,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                         "SNAP1" );
         result = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                         true );
-        assertNull( result );
+        assertFalse( result.hasLines() );
 
         // check that the rule name in the model is being set
         AssetItem asset2 = pkg.addAsset( "testSetRuleName",

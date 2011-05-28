@@ -1106,7 +1106,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
-        assertNull( results );
+        assertFalse( results.hasLines() );
 
         pkg = repo.loadPackage( "testBinaryPackageUpToDate" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1235,7 +1235,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
-        assertNull( results );
+        assertFalse( results.hasLines() );
 
         pkg = repo.loadPackage( "testGuidedDTCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
@@ -1687,7 +1687,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testImportSampleRepository() throws Exception {
-        ServiceImplementation serv = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         repositoryPackageService.installSampleRepository();
         PackageConfigData[] cfgs = repositoryPackageService.listPackages();
@@ -1695,9 +1694,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       cfgs.length );
         assertTrue( cfgs[0].getName().equals( "mortgages" ) || cfgs[1].getName().equals( "mortgages" ) );
         String puuid = (cfgs[0].getName().equals( "mortgages" )) ? cfgs[0].getUuid() : cfgs[1].getUuid();
-        BulkTestRunResult res = repositoryPackageService.runScenariosInPackage( puuid );
-        assertEquals( null,
-                      res.getResult() );
+        BulkTestRunResult bulkTestRunResult = repositoryPackageService.runScenariosInPackage( puuid );
+        assertNull(bulkTestRunResult.getResult());
     }
 
     @Test

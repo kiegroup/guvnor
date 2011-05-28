@@ -16,34 +16,33 @@
 
 package org.drools.guvnor.client.qa;
 
+import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-
-import com.google.gwt.user.client.Command;
 
 /**
  * This presents the results of a bulk run.
  */
 public class BulkRunResult
-    implements
-    BulkRunResultView.Presenter {
+        implements
+        BulkRunResultView.Presenter {
 
     private BulkTestRunResult result;
-    private Command           closeCommand;
+    private Command closeCommand;
 
     private BulkRunResultView display;
 
-    private int               grandTotal    = 0;
-    private int               totalFailures = 0;
+    private int grandTotal = 0;
+    private int totalFailures = 0;
 
     public BulkRunResult(BulkRunResultView display) {
         this.display = display;
 
-        display.setPresenter( this );
+        display.setPresenter(this);
     }
 
     private void bind() {
-        if ( resultHasErrors() ) {
+        if (resultHasErrors()) {
             showErrors();
         } else {
             showResult();
@@ -51,7 +50,7 @@ public class BulkRunResult
     }
 
     private void showErrors() {
-        display.showErrors( result.getResult() );
+        display.showErrors(result.getResult());
     }
 
     private void showResult() {
@@ -69,11 +68,11 @@ public class BulkRunResult
     }
 
     private void showRulesCoveredPercent() {
-        display.setRulesCoveredPercent( result.getPercentCovered() );
+        display.setRulesCoveredPercent(result.getPercentCovered());
     }
 
     private void showResultPercent() {
-        display.setResultsPercent( calculatePercentage() );
+        display.setResultsPercent(calculatePercentage());
     }
 
     private int calculatePercentage() {
@@ -81,15 +80,15 @@ public class BulkRunResult
     }
 
     private void showFailuresOutOfExpetations() {
-        display.setFailuresOutOfExpectation( totalFailures,
-                                             grandTotal );
+        display.setFailuresOutOfExpectation(totalFailures,
+                grandTotal);
     }
 
     private void countTestsAndFailures() {
         ScenarioResultSummary[] scenarioResultSummaries = result.getResults();
 
-        if ( scenarioResultSummaries != null ) {
-            for ( ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries ) {
+        if (scenarioResultSummaries != null) {
+            for (ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries) {
                 grandTotal = grandTotal + scenarioResultSummary.getTotal();
                 totalFailures = totalFailures + scenarioResultSummary.getFailures();
             }
@@ -99,15 +98,15 @@ public class BulkRunResult
     private void showSummaries() {
         ScenarioResultSummary[] scenarioResultSummaries = result.getResults();
 
-        if ( scenarioResultSummaries != null ) {
-            for ( ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries ) {
-                display.addSummary( scenarioResultSummary );
+        if (scenarioResultSummaries != null) {
+            for (ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries) {
+                display.addSummary(scenarioResultSummary);
             }
         }
     }
 
     private void showOverAllStatus() {
-        if ( hasFailures() ) {
+        if (hasFailures()) {
             display.setFailed();
         } else {
             display.setSuccess();
@@ -120,15 +119,19 @@ public class BulkRunResult
 
     private void showUncoveredRules() {
         String[] rulesNotCovered = result.getRulesNotCovered();
-        if ( rulesNotCovered != null ) {
-            for ( String ruleName : rulesNotCovered ) {
-                display.addUncoveredRules( ruleName );
+        if (rulesNotCovered != null) {
+            for (String ruleName : rulesNotCovered) {
+                display.addUncoveredRules(ruleName);
             }
         }
     }
 
     private boolean resultHasErrors() {
-        return result != null && result.getResult() != null && result.getResult().getLines() != null && result.getResult().getLines().size() > 0;
+        if (result != null && result.getResult() != null) {
+            return result.getResult().hasLines();
+        } else {
+            return false;
+        }
     }
 
     public void onClose() {

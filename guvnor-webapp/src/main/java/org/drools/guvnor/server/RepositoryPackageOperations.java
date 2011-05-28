@@ -497,26 +497,40 @@ public class RepositoryPackageOperations {
             // we can just return all OK if its up to date.
             return BuilderResult.emptyResult();
         }
-        PackageAssembler asm = new PackageAssembler(item,
+        PackageAssembler packageAssembler = new PackageAssembler(item,
                 packageAssemblerConfiguration);
-        asm.compile();
-        if (asm.hasErrors()) {
+
+        packageAssembler.compile();
+
+        if (packageAssembler.hasErrors()) {
             BuilderResult result = new BuilderResult();
             BuilderResultHelper builderResultHelper = new BuilderResultHelper();
-            result.addLines(builderResultHelper.generateBuilderResults(asm.getErrors()));
+            result.addLines(builderResultHelper.generateBuilderResults(packageAssembler.getErrors()));
             return result;
         }
+
+        updatePackageBinaries(item, packageAssembler);
+
+        return BuilderResult.emptyResult();
+    }
+
+    private void updatePackageBinaries(PackageItem item, PackageAssembler packageAssembler) throws DetailedSerializationException {
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
             ObjectOutput out = new DroolsObjectOutputStream(bout);
-            out.writeObject(asm.getBinaryPackage());
+            out.writeObject(packageAssembler.getBinaryPackage());
 
             item.updateCompiledPackage(new ByteArrayInputStream(bout.toByteArray()));
             out.flush();
             out.close();
 
-            updateBinaryPackage(item,
-                    asm);
+            item.updateBinaryUpToDate(true);
+
+            RuleBase ruleBase = RuleBaseFactory.newRuleBase(
+                    new RuleBaseConfiguration(getClassLoaders(packageAssembler))
+            );
+            ruleBase.addPackage(packageAssembler.getBinaryPackage());
+
             getRulesRepository().save();
         } catch (Exception e) {
             e.printStackTrace();
@@ -524,8 +538,6 @@ public class RepositoryPackageOperations {
             throw new DetailedSerializationException("An error occurred building the package.",
                     e.getMessage());
         }
-
-        return BuilderResult.emptyResult();
     }
 
     private PackageAssemblerConfiguration createConfiguration(String buildMode, String statusOperator, String statusDescriptionValue, boolean enableStatusSelector, String categoryOperator, String category, boolean enableCategorySelector, String selectorConfigName) {
@@ -541,16 +553,9 @@ public class RepositoryPackageOperations {
         return packageAssemblerConfiguration;
     }
 
-    private void updateBinaryPackage(PackageItem item,
-                                     PackageAssembler asm) throws SerializationException {
-        item.updateBinaryUpToDate(true);
-
-        // adding the MapBackedClassloader that is the classloader from the
-        // rulebase classloader
-        Collection<ClassLoader> loaders = asm.getBuilder().getRootClassLoader().getClassLoaders();
-        RuleBaseConfiguration conf = new RuleBaseConfiguration(loaders.toArray(new ClassLoader[loaders.size()]));
-        RuleBase rb = RuleBaseFactory.newRuleBase(conf);
-        rb.addPackage(asm.getBinaryPackage());
+    private ClassLoader[] getClassLoaders(PackageAssembler packageAssembler) {
+        Collection<ClassLoader> loaders = packageAssembler.getBuilder().getRootClassLoader().getClassLoaders();
+        return loaders.toArray(new ClassLoader[loaders.size()]);
     }
 
     private String getCurrentUserName() {

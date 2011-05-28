@@ -15,12 +15,6 @@
  */
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -42,7 +36,9 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
-public class RepositoyScenarioTest extends GuvnorTestBase {
+import static org.junit.Assert.*;
+
+public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenario() throws Exception {
         ServiceImplementation impl = getServiceImplementation();

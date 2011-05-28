@@ -48,7 +48,7 @@ public class BulkTestRunResult
     }
 
     public String toString() {
-        if ( getResult() != null && getResult().getLines().size() > 0 ) return "Unable to run tests"; //NON-NLS
+        if ( getResult() != null && getResult().hasLines() ) return "Unable to run tests"; //NON-NLS
         if ( getResults() == null || getResults().length == 0 ) return "No test scenarios found."; //NON-NLS
         String res = "";
         if ( getResults() != null ) {

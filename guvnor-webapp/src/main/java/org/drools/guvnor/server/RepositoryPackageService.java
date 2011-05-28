@@ -353,10 +353,10 @@ public class RepositoryPackageService
             for ( String snapName : snaps ) {
                 PackageItem snap = getRulesRepository().loadPackageSnapshot( pkg.getName(),
                                                                              snapName );
-                BuilderResult res = this.buildPackage( snap.getUUID(),
+                BuilderResult builderResult = this.buildPackage( snap.getUUID(),
                                                        true );
-                if ( res != null ) {
-                    StringBuilder stringBuilder = createStringBuilderFrom( res );
+                if ( builderResult.hasLines() ) {
+                    StringBuilder stringBuilder = createStringBuilderFrom( builderResult );
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
                                                               stringBuilder.toString() + "]" );
                 }
