@@ -18,6 +18,7 @@ package org.drools.ide.common.client.modeldriven.dt;
 
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
+@Deprecated
 public class DTColumnConfig implements PortableObject {
 
     /**

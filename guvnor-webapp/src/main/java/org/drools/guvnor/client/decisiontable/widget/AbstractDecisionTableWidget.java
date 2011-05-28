@@ -410,7 +410,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              false );
 
         // Initialise CellTable's Metadata columns
-        for ( DTColumnConfig52 col : model.getMetadataCols() ) {
+        for ( MetadataCol52 col : model.getMetadataCols() ) {
             DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
                                                                                           cellFactory.getCell( col ),
                                                                                           colIndex );
@@ -422,7 +422,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Initialise CellTable's Attribute columns
-        for ( DTColumnConfig52 col : model.getAttributeCols() ) {
+        for ( AttributeCol52 col : model.getAttributeCols() ) {
             DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
                                                                                           cellFactory.getCell( col ),
                                                                                           colIndex );
@@ -437,7 +437,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Initialise CellTable's Condition columns
         for ( Pattern52 p : model.getConditionPatterns() ) {
-            for ( DTColumnConfig52 col : p.getConditions() ) {
+            for ( ConditionCol52 col : p.getConditions() ) {
                 DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
                                                                                               cellFactory.getCell( col ),
                                                                                               colIndex );
@@ -455,7 +455,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Initialise CellTable's Action columns
-        for ( DTColumnConfig52 col : model.getActionCols() ) {
+        for ( ActionCol52 col : model.getActionCols() ) {
             DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( col,
                                                                                           cellFactory.getCell( col ),
                                                                                           colIndex );
@@ -679,8 +679,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              final ConditionCol52 origColumn,
                              final Pattern52 editPattern,
                              final ConditionCol52 editColumn) {
+        if ( origPattern == null ) {
+            throw new IllegalArgumentException( "origPattern cannot be null" );
+        }
         if ( origColumn == null ) {
             throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editPattern == null ) {
+            throw new IllegalArgumentException( "editPattern cannot be null" );
         }
         if ( editColumn == null ) {
             throw new IllegalArgumentException( "editColumn cannot be null" );

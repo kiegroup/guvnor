@@ -32,10 +32,8 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * This works by taking the column definitions, and combining them with the
  * table of data to produce rule models.
- * 
- * 
- * @author Michael Neale
  */
+@Deprecated
 public class GuidedDecisionTable implements PortableObject {
 
     /**

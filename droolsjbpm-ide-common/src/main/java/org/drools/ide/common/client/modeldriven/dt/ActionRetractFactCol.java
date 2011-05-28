@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.client.modeldriven.dt;
 
+@Deprecated
 public class ActionRetractFactCol extends ActionCol {
 
     /**

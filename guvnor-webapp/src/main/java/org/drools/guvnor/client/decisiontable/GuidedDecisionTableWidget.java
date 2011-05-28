@@ -324,12 +324,17 @@ public class GuidedDecisionTableWidget extends Composite
                                                                         new ConditionColumnCommand() {
                                                                             public void execute(Pattern52 pattern,
                                                                                                 ConditionCol52 column) {
+
+                                                                                //Add pattern to model, if applicable
                                                                                 if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
                                                                                     guidedDecisionTable.getConditionPatterns().add( pattern );
                                                                                 }
+
+                                                                                //Add new column to pattern
                                                                                 pattern.getConditions().add( column );
+
+                                                                                //Update UI
                                                                                 dtable.addColumn( column );
-                                                                                dtable.scrapeColumns();
                                                                                 refreshConditionsWidget();
                                                                             }
                                                                         },
@@ -341,7 +346,7 @@ public class GuidedDecisionTableWidget extends Composite
         return addButton;
     }
 
-    private Widget editCondition(final ConditionCol52 editCol) {
+    private Widget editCondition(final ConditionCol52 origCol) {
         return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
@@ -352,21 +357,31 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                 new ConditionColumnCommand() {
                                                                                                     public void execute(Pattern52 pattern,
                                                                                                                         ConditionCol52 column) {
+
+                                                                                                        //Add pattern to model, if applicable
                                                                                                         if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
                                                                                                             guidedDecisionTable.getConditionPatterns().add( pattern );
                                                                                                         }
-                                                                                                        Pattern52 editPattern = guidedDecisionTable.getPattern( editCol );
-                                                                                                        //                                                                                                        editPattern.getConditions().remove( editCol );
-                                                                                                        //                                                                                                        pattern.getConditions().add( column );
-                                                                                                        dtable.updateColumn( editPattern,
-                                                                                                                             editCol,
+
+                                                                                                        //Move column from original pattern to new pattern, if applicable
+                                                                                                        Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
+                                                                                                        if ( !origPattern.getBoundName().equals( pattern.getBoundName() ) ) {
+                                                                                                            origPattern.getConditions().remove( origCol );
+                                                                                                            if ( origPattern.getConditions().size() == 0 ) {
+                                                                                                                guidedDecisionTable.getConditionPatterns().remove( origPattern );
+                                                                                                            }
+                                                                                                            pattern.getConditions().add( column );
+                                                                                                        }
+
+                                                                                                        //Update UI
+                                                                                                        dtable.updateColumn( origPattern,
+                                                                                                                             origCol,
                                                                                                                              pattern,
                                                                                                                              column );
-                                                                                                        dtable.scrapeColumns();
                                                                                                         refreshConditionsWidget();
                                                                                                     }
                                                                                                 },
-                                                                                                editCol,
+                                                                                                origCol,
                                                                                                 false );
                                         dialog.show();
                                     }
@@ -381,15 +396,25 @@ public class GuidedDecisionTableWidget extends Composite
         return sce;
     }
 
-    private Widget removeCondition(final ConditionCol52 c) {
+    private Widget removeCondition(final ConditionCol52 origCol) {
         Image del = new ImageButton( images.deleteItemSmall(),
                                      constants.RemoveThisConditionColumn(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
-                                             String cm = constants.DeleteConditionColumnWarning( c.getHeader() );
+                                             String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
-                                                 dtable.deleteColumn( c );
-                                                 dtable.scrapeColumns();
+
+                                                 //Remove condition from pattern
+                                                 Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
+                                                 origPattern.getConditions().remove( origCol );
+
+                                                 //Remove pattern if it contains zero conditions
+                                                 if ( origPattern.getConditions().size() == 0 ) {
+                                                     guidedDecisionTable.getConditionPatterns().remove( origPattern );
+                                                 }
+
+                                                 //Update UI
+                                                 dtable.deleteColumn( origCol );
                                                  refreshConditionsWidget();
                                              }
                                          }
