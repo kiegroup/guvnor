@@ -58,7 +58,7 @@ public class AssetItemValidator {
 
         public BuilderResult getResult() {
             BuilderResult result = new BuilderResult();
-            result.setLines(new BuilderResultHelper().generateBuilderResults(getErrors()));
+            result.addLines(new BuilderResultHelper().generateBuilderResults(getErrors()));
             return result;
         }
 

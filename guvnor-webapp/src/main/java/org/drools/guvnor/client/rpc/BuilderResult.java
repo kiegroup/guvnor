@@ -19,6 +19,7 @@ package org.drools.guvnor.client.rpc;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,11 +31,19 @@ public class BuilderResult
 
     private List<BuilderResultLine> lines = new ArrayList<BuilderResultLine>();
 
-    public void setLines(List<BuilderResultLine> lines) {
-        this.lines = lines;
+    public void addLines(List<BuilderResultLine> lines) {
+        this.lines.addAll(lines);
+    }
+
+    public void addLine(BuilderResultLine builderResultLine) {
+        this.lines.add(builderResultLine);
     }
 
     public List<BuilderResultLine> getLines() {
-        return lines;
+        return Collections.unmodifiableList(lines);
+    }
+
+    public static BuilderResult emptyResult() {
+        return new BuilderResult();
     }
 }

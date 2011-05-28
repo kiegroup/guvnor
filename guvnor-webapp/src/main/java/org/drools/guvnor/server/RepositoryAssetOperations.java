@@ -85,7 +85,7 @@ public class RepositoryAssetOperations {
             log.error("Unable to build asset.",
                     e);
             BuilderResult result = new BuilderResult();
-            result.getLines().add(createBuilderResultLine(asset));
+            result.addLine(createBuilderResultLine(asset));
             return result;
         }
     }

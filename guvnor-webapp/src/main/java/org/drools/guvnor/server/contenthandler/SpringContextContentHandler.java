@@ -80,7 +80,7 @@ public class SpringContextContentHandler extends PlainTextContentHandler impleme
             errors.add( result );
 
             BuilderResult builderResult = new BuilderResult();
-            builderResult.setLines( errors );
+            builderResult.addLines(errors);
 
             return builderResult;
         }
