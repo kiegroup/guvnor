@@ -16,7 +16,7 @@
 
 package org.drools.ide.common.client.modeldriven.dt;
 
-
+@Deprecated
 public class ActionCol extends DTColumnConfig {
 
     /**

@@ -15,13 +15,43 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-
 /**
  * This is a rule attribute - eg salience, no-loop etc.
  */
 public class AttributeCol52 extends DTColumnConfig52 {
 
-    private String attribute;
+    //Attribute name
+    private String  attribute;
+
+    // To use the reverse order of the row number as the salience attribute
+    private boolean reverseOrder = false;
+
+    // To use the row number as number for the salience attribute.
+    private boolean useRowNumber = false;
+
+    public String getAttribute() {
+        return attribute;
+    }
+
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
+
+    public boolean isUseRowNumber() {
+        return useRowNumber;
+    }
+
+    public void setUseRowNumber(boolean useRowNumber) {
+        this.useRowNumber = useRowNumber;
+    }
+
+    public boolean isReverseOrder() {
+        return reverseOrder;
+    }
+
+    public void setReverseOrder(boolean reverseOrder) {
+        this.reverseOrder = reverseOrder;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -34,27 +64,19 @@ public class AttributeCol52 extends DTColumnConfig52 {
         AttributeCol52 that = (AttributeCol52) obj;
         return nullOrEqual( this.attribute,
                             that.attribute )
-               && super.equals( obj );
-    }
-
-    public String getAttribute() {
-        return attribute;
+                            && this.useRowNumber == that.useRowNumber
+                            && this.reverseOrder == that.reverseOrder
+                            && super.equals( obj );
     }
 
     @Override
     public int hashCode() {
         int hash = 1;
-        hash = hash
-               * 31
-               + (attribute == null ? 0 : attribute.hashCode());
-        hash = hash
-               * 31
-               + super.hashCode();
+        hash = hash * 31 + (attribute == null ? 0 : attribute.hashCode());
+        hash = hash * 31 + (useRowNumber ? 1 : 0);
+        hash = hash * 31 + (reverseOrder ? 1 : 0);
+        hash = hash * 31 + super.hashCode();
         return hash;
-    }
-
-    public void setAttribute(String attribute) {
-        this.attribute = attribute;
     }
 
     private boolean nullOrEqual(Object thisAttr,

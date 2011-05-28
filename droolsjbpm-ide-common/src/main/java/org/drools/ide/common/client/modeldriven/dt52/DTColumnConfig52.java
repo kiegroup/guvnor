@@ -29,12 +29,7 @@ public class DTColumnConfig52
     // To hide the column (eg if it has a mandatory default)
     private boolean           hideColumn       = false;
 
-    // To use the reverse order of the row number as the salience attribute
-    private boolean           reverseOrder     = false;
-
-    // To use the row number as number for the salience attribute.
-    private boolean           useRowNumber     = false;
-
+    //Column width
     private int               width            = -1;
 
     @Override
@@ -49,9 +44,7 @@ public class DTColumnConfig52
         return this.width == that.width
                 && nullOrEqual( this.defaultValue,
                                 that.defaultValue )
-                && this.hideColumn == that.hideColumn
-                && this.useRowNumber == that.useRowNumber
-                && this.reverseOrder == that.reverseOrder;
+                && this.hideColumn == that.hideColumn;
     }
 
     public String getDefaultValue() {
@@ -68,21 +61,11 @@ public class DTColumnConfig52
         hash = hash * 31 + width;
         hash = hash * 31 + (defaultValue == null ? 0 : defaultValue.hashCode());
         hash = hash * 31 + (hideColumn ? 1 : 0);
-        hash = hash * 31 + (useRowNumber ? 1 : 0);
-        hash = hash * 31 + (reverseOrder ? 1 : 0);
         return hash;
     }
 
     public boolean isHideColumn() {
         return hideColumn;
-    }
-
-    public boolean isReverseOrder() {
-        return reverseOrder;
-    }
-
-    public boolean isUseRowNumber() {
-        return useRowNumber;
     }
 
     public void setDefaultValue(String defaultValue) {
@@ -91,14 +74,6 @@ public class DTColumnConfig52
 
     public void setHideColumn(boolean hideColumn) {
         this.hideColumn = hideColumn;
-    }
-
-    public void setReverseOrder(boolean reverseOrder) {
-        this.reverseOrder = reverseOrder;
-    }
-
-    public void setUseRowNumber(boolean useRowNumber) {
-        this.useRowNumber = useRowNumber;
     }
 
     public void setWidth(int width) {

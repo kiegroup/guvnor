@@ -47,6 +47,7 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 /**
  * Helper class to upgrade model used for Guided Decision Table
  */
+@SuppressWarnings("deprecation")
 public class RepositoryUpgradeHelper {
 
     /**
@@ -230,8 +231,6 @@ public class RepositoryUpgradeHelper {
         nc.setDefaultValue( c.defaultValue );
         nc.setHideColumn( c.hideColumn );
         nc.setMetadata( c.attr );
-        nc.setReverseOrder( c.reverseOrder );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setWidth( c.width );
         return nc;
     }
@@ -245,8 +244,6 @@ public class RepositoryUpgradeHelper {
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
         nc.setOperator( c.operator );
-        nc.setReverseOrder( c.reverseOrder );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setValueList( c.valueList );
         nc.setWidth( c.width );
         return nc;
@@ -264,8 +261,6 @@ public class RepositoryUpgradeHelper {
         nc.setDefaultValue( c.defaultValue );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
-        nc.setReverseOrder( c.reverseOrder );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setWidth( c.width );
         return nc;
     }
@@ -278,9 +273,7 @@ public class RepositoryUpgradeHelper {
         nc.setFactType( c.factType );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
-        nc.setReverseOrder( c.reverseOrder );
         nc.setType( c.type );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setValueList( c.valueList );
         nc.setWidth( c.width );
         return nc;
@@ -292,8 +285,6 @@ public class RepositoryUpgradeHelper {
         nc.setDefaultValue( c.defaultValue );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
-        nc.setReverseOrder( c.reverseOrder );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setWidth( c.width );
         return nc;
 
@@ -306,10 +297,8 @@ public class RepositoryUpgradeHelper {
         nc.setFactField( c.factField );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );
-        nc.setReverseOrder( c.reverseOrder );
         nc.setType( c.type );
         nc.setUpdate( c.update );
-        nc.setUseRowNumber( c.useRowNumber );
         nc.setValueList( c.valueList );
         nc.setWidth( c.width );
         return nc;

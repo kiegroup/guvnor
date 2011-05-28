@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.tika.parser.txt.TXTParser;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
@@ -127,6 +126,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         editingCol.setDefaultValue( col.getDefaultValue() );
         editingCol.setHideColumn( col.isHideColumn() );
         editingCol.setParameters( col.getParameters() );
+        editingCol.setWidth( col.getWidth() );
 
         setTitle( constants.ConditionColumnConfiguration() );
 
@@ -478,13 +478,21 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+
                 String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
                 editingPattern = model.getConditionPattern( val[1] );
+
+                //Clear Field and Operator when pattern changes
                 editingCol.setFactField( null );
-                cwo.selectItem( editingPattern.getWindow().getOperator() );
+                editingCol.setOperator( null );
+
+                //Set-up UI
                 entryPointName.setText( editingPattern.getEntryPointName() );
+                cwo.selectItem( editingPattern.getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
+                doOperatorLabel();
+
                 pop.hide();
             }
         } );
@@ -561,16 +569,24 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }
+
+                //Create new pattern
                 editingPattern = new Pattern52();
                 editingPattern.setFactType( ft );
                 editingPattern.setBoundName( fn );
                 editingPattern.setNegated( chkNegated.getValue() );
-                editingPattern.getConditions().add( editingCol );
+
+                //Clear Field and Operator when pattern changes
                 editingCol.setFactField( null );
-                cwo.selectItem( editingPattern.getWindow().getOperator() );
+                editingCol.setOperator( null );
+
+                //Set-up UI
                 entryPointName.setText( editingPattern.getEntryPointName() );
+                cwo.selectItem( editingPattern.getWindow().getOperator() );
                 displayCEPOperators();
                 doPatternLabel();
+                doOperatorLabel();
+
                 pop.hide();
             }
         } );
