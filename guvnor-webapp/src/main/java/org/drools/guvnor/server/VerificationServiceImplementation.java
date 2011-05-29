@@ -30,7 +30,6 @@ import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.VerifierRunner;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;

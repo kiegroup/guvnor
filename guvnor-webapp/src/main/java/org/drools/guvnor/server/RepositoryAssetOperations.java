@@ -15,10 +15,31 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.builder.AssetItemValidator;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
@@ -33,16 +54,25 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.util.*;
-import org.drools.repository.*;
+import org.drools.guvnor.server.util.AssetFormatHelper;
+import org.drools.guvnor.server.util.AssetLockManager;
+import org.drools.guvnor.server.util.Discussion;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.guvnor.server.util.MetaDataMapper;
+import org.drools.guvnor.server.util.TableDisplayHandler;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.CategoryItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
-import java.text.DateFormat;
-import java.util.*;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for Assets

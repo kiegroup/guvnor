@@ -16,8 +16,9 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -26,8 +27,8 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet

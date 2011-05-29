@@ -27,7 +27,6 @@ import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
