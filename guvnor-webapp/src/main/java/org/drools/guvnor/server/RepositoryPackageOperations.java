@@ -27,6 +27,7 @@ import org.drools.guvnor.server.builder.PackageAssemblerConfiguration;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.builder.pagerow.SnapshotComparisonPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
@@ -145,11 +146,11 @@ public class RepositoryPackageOperations {
                                         List<PackageConfigData> result,
                                         PackageConfigData data) {
         if (!archive && (filter == null || filter.accept(data,
-                RoleTypes.PACKAGE_READONLY)) && (workspace == null || isWorkspace(workspace,
+                RoleType.PACKAGE_READONLY.getName())) && (workspace == null || isWorkspace(workspace,
                 data.getWorkspaces()))) {
             result.add(data);
         } else if (archive && data.isArchived() && (filter == null || filter.accept(data,
-                RoleTypes.PACKAGE_READONLY)) && (workspace == null || isWorkspace(workspace,
+                RoleType.PACKAGE_READONLY.getName())) && (workspace == null || isWorkspace(workspace,
                 data.getWorkspaces()))) {
             result.add(data);
         }

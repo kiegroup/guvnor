@@ -79,7 +79,7 @@ public class SecurityServiceImplTest {
 
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            "packagename",
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -121,7 +121,7 @@ public class SecurityServiceImplTest {
         Lifecycle.beginApplication( application );
         Lifecycle.beginCall();
         MockIdentity midentity = new MockIdentity();
-        midentity.addRole( RoleTypes.ADMIN );
+        midentity.addRole( RoleType.ADMIN.getName() );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
 

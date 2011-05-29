@@ -32,6 +32,7 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
@@ -359,7 +360,7 @@ public class RepositoryAssetOperations {
         while (it.hasNext()) {
             AssetItem ai = it.next();
             if (filter.accept(ai,
-                    RoleTypes.PACKAGE_READONLY)) {
+                    RoleType.PACKAGE_READONLY.getName())) {
                 resultList.add(ai);
             }
         }
@@ -394,7 +395,7 @@ public class RepositoryAssetOperations {
             PackageConfigData data = new PackageConfigData();
             data.setUuid(assetItem.getPackage().getUUID());
             if (filter.accept(data,
-                    RoleTypes.PACKAGE_READONLY)) {
+                    RoleType.PACKAGE_READONLY.getName())) {
                 resultList.add(assetItem);
             }
         }

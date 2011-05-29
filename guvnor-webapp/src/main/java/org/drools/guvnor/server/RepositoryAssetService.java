@@ -43,6 +43,7 @@ import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -122,7 +123,7 @@ public class RepositoryAssetService
 
             try {
                 Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ),
-                                                     RoleTypes.PACKAGE_READONLY );
+                                                     RoleType.PACKAGE_READONLY.getName() );
             } catch ( RuntimeException e ) {
                 handleExceptionAndVerifyCategoryBasedPermission( asset );
             }
@@ -183,18 +184,18 @@ public class RepositoryAssetService
 
             try {
                 Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ),
-                                                     RoleTypes.PACKAGE_DEVELOPER );
+                                                     RoleType.PACKAGE_DEVELOPER.getName() );
             } catch ( RuntimeException e ) {
                 if ( asset.getMetaData().getCategories().length == 0 ) {
                     Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                         RoleTypes.ANALYST );
+                                                         RoleType.ANALYST.getName() );
                 } else {
                     RuntimeException exception = null;
 
                     for ( String cat : asset.getMetaData().getCategories() ) {
                         try {
                             Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                                 RoleTypes.ANALYST );
+                                                                 RoleType.ANALYST.getName() );
                             passed = true;
                         } catch ( RuntimeException re ) {
                             exception = re;
@@ -338,7 +339,7 @@ public class RepositoryAssetService
     public void promoteAssetToGlobalArea(String uuid) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( RulesRepository.RULE_GLOBAL_AREA ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
+                                                 RoleType.PACKAGE_DEVELOPER.getName() );
         }
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]" );
@@ -505,14 +506,14 @@ public class RepositoryAssetService
     private void handleExceptionAndVerifyCategoryBasedPermission(RuleAsset asset) {
         if ( asset.getMetaData().getCategories().length == 0 ) {
             Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                 RoleTypes.ANALYST_READ );
+                                                 RoleType.ANALYST_READ.getName() );
         } else {
             RuntimeException exception = null;
             boolean passed = false;
             for ( String cat : asset.getMetaData().getCategories() ) {
                 try {
                     Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                         RoleTypes.ANALYST_READ );
+                                                         RoleType.ANALYST_READ.getName() );
                     passed = true;
                 } catch ( RuntimeException re ) {
                     exception = re;
@@ -623,18 +624,18 @@ public class RepositoryAssetService
 
             try {
                 Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
-                                                         RoleTypes.PACKAGE_DEVELOPER );
+                                                         RoleType.PACKAGE_DEVELOPER.getName() );
             } catch ( RuntimeException e ) {
                 if ( asset.getCategories().size() == 0 ) {
                     Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                             RoleTypes.ANALYST );
+                                                             RoleType.ANALYST.getName() );
                 } else {
                     RuntimeException exception = null;
 
                     for ( CategoryItem cat : asset.getCategories() ) {
                         try {
                             Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
-                                                                     RoleTypes.ANALYST );
+                                                                     RoleType.ANALYST.getName() );
                             passed = true;
                         } catch ( RuntimeException re ) {
                             exception = re;

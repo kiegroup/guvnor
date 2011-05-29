@@ -122,7 +122,7 @@ public class WebDAVImpl implements IWebdavStore {
         //for mac OSX, ignore these annoying things
         if ( uri.endsWith( ".DS_Store" ) ) return;
         String[] path = getPath( uri );
-        if ( isPackages( path ) && checkPackagePermission( path[1], RoleTypes.PACKAGE_ADMIN ) ) {
+        if ( isPackages( path ) && checkPackagePermission( path[1], RoleType.PACKAGE_ADMIN.getName() ) ) {
             if ( path.length > 3 ) {
                 throw new UnsupportedOperationException( "Can't do nested packages." );
             }
@@ -247,7 +247,7 @@ public class WebDAVImpl implements IWebdavStore {
         while ( it.hasNext() ) {
             PackageItem pkg = it.next();
             String packageName = pkg.getName();
-            if ( !pkg.isArchived() && checkPackagePermission( packageName, RoleTypes.PACKAGE_READONLY ) ) {
+            if ( !pkg.isArchived() && checkPackagePermission( packageName, RoleType.PACKAGE_READONLY.getName() ) ) {
                 result.add( packageName );
             }
         }
@@ -850,11 +850,11 @@ public class WebDAVImpl implements IWebdavStore {
     }
 
     private boolean checkPackagePermissionIfReadOnly(String[] path) {
-        return checkPackagePermission( path[1], RoleTypes.PACKAGE_READONLY );
+        return checkPackagePermission( path[1], RoleType.PACKAGE_READONLY.getName() );
     }
 
     private boolean checkPackagePermissionIfDeveloper(String[] path) {
-        return checkPackagePermission( path[1], RoleTypes.PACKAGE_DEVELOPER );
+        return checkPackagePermission( path[1], RoleType.PACKAGE_DEVELOPER.getName() );
     }
 
     private boolean isPackages(String[] path) {

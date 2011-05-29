@@ -61,6 +61,7 @@ import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
 import org.drools.guvnor.server.util.DateUtil;
@@ -259,7 +260,7 @@ public class ServiceImplementation
     public void deleteUncheckedRule(String uuid) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new AdminType(),
-                                                 RoleTypes.PACKAGE_ADMIN );
+                                                 RoleType.PACKAGE_ADMIN.getName() );
         }
 
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
@@ -356,9 +357,9 @@ public class ServiceImplementation
             AssetItem ai = it.next();
             if ( checkPackagePermissionHelper( packageFilter,
                                                ai,
-                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
+                                               RoleType.PACKAGE_READONLY.getName() ) || checkCategoryPermissionHelper( categoryFilter,
                                                                                                               ai,
-                                                                                                              RoleTypes.ANALYST_READ ) ) {
+                                                                                                              RoleType.ANALYST_READ.getName() ) ) {
                 resultList.add( ai );
             }
         }
@@ -618,6 +619,12 @@ public class ServiceImplementation
     public String[] listAvailablePermissionTypes() {
         serviceSecurity.checkSecurityIsAdmin();
         return RoleTypes.listAvailableTypes();
+    }
+    
+    @Restrict("#{identity.loggedIn}")
+    public RoleType[] listAvailablePermissionRoleTypes() {
+        serviceSecurity.checkSecurityIsAdmin();
+        return RoleType.values();
     }
 
     @Restrict("#{identity.loggedIn}")

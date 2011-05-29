@@ -35,7 +35,7 @@ public class CapabilityCalculatorTest {
     public void testAdmin() {
         CapabilityCalculator loader = new CapabilityCalculator();
         List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("s", RoleTypes.ADMIN, null, null  ));
+        perms.add(new RoleBasedPermission("s", RoleType.ADMIN.getName(), null, null  ));
 
         Map<String,String> hm = new HashMap<String,String>();
         Capabilities caps = loader.calcCapabilities(perms, hm);
@@ -48,30 +48,30 @@ public class CapabilityCalculatorTest {
         Map<String,String> hm = new HashMap<String,String>();
         CapabilityCalculator loader = new CapabilityCalculator();
         List<RoleBasedPermission> perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_DEVELOPER, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.ANALYST, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_DEVELOPER.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.ANALYST.getName(), null, null));
         Capabilities caps = loader.calcCapabilities(perms, hm);
         assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));
         assertSame(hm, caps.prefs);
 
         perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_ADMIN, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_ADMIN.getName(), null, null));
         caps = loader.calcCapabilities(perms, hm);
         assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));
         assertSame(hm, caps.prefs);
 
         perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
         caps = loader.calcCapabilities(perms, hm);
         assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));
         assertEquals(1, caps.list.size());
         assertSame(hm, caps.prefs);
 
         perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.ANALYST_READ, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_DEVELOPER, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.ANALYST_READ.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_DEVELOPER.getName(), null, null));
         caps = loader.calcCapabilities(perms, hm);
         assertSame(hm, caps.prefs);
         assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));
@@ -81,10 +81,10 @@ public class CapabilityCalculatorTest {
         assertEquals(3, caps.list.size());
 
         perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.ANALYST, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_ADMIN, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.ANALYST.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_ADMIN.getName(), null, null));
         caps = loader.calcCapabilities(perms, hm);
         assertSame(hm, caps.prefs);
         assertTrue(caps.list.contains(Capabilities.SHOW_PACKAGE_VIEW));
@@ -97,10 +97,10 @@ public class CapabilityCalculatorTest {
         assertEquals(6, caps.list.size());
 
         perms = new ArrayList<RoleBasedPermission>();
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_READONLY, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.ADMIN, null, null));
-        perms.add(new RoleBasedPermission("", RoleTypes.PACKAGE_ADMIN, null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.ADMIN.getName(), null, null));
+        perms.add(new RoleBasedPermission("", RoleType.PACKAGE_ADMIN.getName(), null, null));
         caps = loader.calcCapabilities(perms, hm);
         assertSame(hm, caps.prefs);
         assertEquals(7, caps.list.size());

@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.server.PackageFilter;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
@@ -50,7 +51,7 @@ public class QueryFullTextPageRowBuilder
             // Filter surplus assets
             if ( checkPackagePermissionHelper( filter,
                                                assetItem,
-                                               RoleTypes.PACKAGE_READONLY ) ) {
+                                               RoleType.PACKAGE_READONLY.getName() ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the

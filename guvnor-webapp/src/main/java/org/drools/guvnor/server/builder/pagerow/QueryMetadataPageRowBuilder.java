@@ -9,6 +9,7 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.server.CategoryFilter;
 import org.drools.guvnor.server.PackageFilter;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
@@ -37,9 +38,9 @@ public class QueryMetadataPageRowBuilder
             // Filter surplus assets
             if ( checkPackagePermissionHelper( packageFilter,
                                                assetItem,
-                                               RoleTypes.PACKAGE_READONLY ) || checkCategoryPermissionHelper( categoryFilter,
+                                               RoleType.PACKAGE_READONLY.getName() ) || checkCategoryPermissionHelper( categoryFilter,
                                                                                                               assetItem,
-                                                                                                              RoleTypes.ANALYST_READ ) ) {
+                                                                                                              RoleType.ANALYST_READ.getName() ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the

@@ -38,6 +38,7 @@ import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -92,7 +93,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                "testLoadRuleAssetAnalystCat1" ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -165,7 +166,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package1Name,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -286,7 +287,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_ADMIN,
+                                               RoleType.PACKAGE_ADMIN.getName(),
                                                packageName,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -355,7 +356,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                "testLoadRuleAssetNoCategoryAnalystCat2" ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -431,7 +432,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -493,7 +494,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category1 ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -560,11 +561,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                "category1" ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_ADMIN,
+                                               RoleType.PACKAGE_ADMIN.getName(),
                                                packageUuid,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -622,7 +623,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             public boolean hasPermission(Object arg0,
                                          String arg1) {
-                return (arg1.equals( RoleTypes.PACKAGE_DEVELOPER ));
+                return (arg1.equals( RoleType.PACKAGE_DEVELOPER.getName() ));
             }
 
         } );
@@ -678,7 +679,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           impl );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_READONLY,
+                                           RoleType.PACKAGE_READONLY.getName(),
                                            packageUuid,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -747,7 +748,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           impl );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleTypes.PACKAGE_DEVELOPER,
+                                           RoleType.PACKAGE_DEVELOPER.getName(),
                                            packageName,
                                            null ) );
         MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -817,7 +818,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package3Name,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -897,15 +898,15 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package7Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category7Name ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category8Name ) );
 
@@ -994,11 +995,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package5Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package6Name,
                                                null ) );
 
@@ -1087,11 +1088,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category9Name ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category10Name ) );
 
@@ -1180,11 +1181,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category11Name ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category12Name ) );
 
@@ -1317,11 +1318,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_ADMIN,
+                                               RoleType.PACKAGE_ADMIN.getName(),
                                                package1Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category1Name ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -1389,7 +1390,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST,
+                                               RoleType.ANALYST.getName(),
                                                null,
                                                category1Name ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -1467,11 +1468,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package1Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_DEVELOPER,
+                                               RoleType.PACKAGE_DEVELOPER.getName(),
                                                package2Name,
                                                null ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -1552,15 +1553,15 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_READONLY,
+                                               RoleType.PACKAGE_READONLY.getName(),
                                                package1Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.PACKAGE_DEVELOPER,
+                                               RoleType.PACKAGE_DEVELOPER.getName(),
                                                package2Name,
                                                null ) );
             pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleTypes.ANALYST_READ,
+                                               RoleType.ANALYST_READ.getName(),
                                                null,
                                                category1Name ) );
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );

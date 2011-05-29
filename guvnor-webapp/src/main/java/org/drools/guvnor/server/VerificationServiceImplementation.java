@@ -29,6 +29,7 @@ import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.VerifierRunner;
@@ -66,7 +67,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageUUIDType( packageUUID ), RoleType.PACKAGE_DEVELOPER.getName() );
         }
 
         PackageItem packageItem = getAssetService().getRulesRepository().loadPackageByUUID( packageUUID );
@@ -96,7 +97,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         long startTime = System.currentTimeMillis();
 
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ), RoleTypes.PACKAGE_DEVELOPER );
+            Identity.instance().checkPermission( new PackageNameType( asset.getMetaData().getPackageName() ), RoleType.PACKAGE_DEVELOPER.getName() );
         }
 
         PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.getMetaData().getPackageName() );

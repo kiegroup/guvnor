@@ -32,6 +32,7 @@ import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
@@ -388,7 +389,7 @@ public class RepositoryPackageService
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageUUIDType( packageUUID ),
-                                                 RoleTypes.PACKAGE_READONLY );
+                                                 RoleType.PACKAGE_READONLY.getName() );
         }
 
         PackageItem pkg = this.getRulesRepository().loadPackageByUUID( packageUUID );

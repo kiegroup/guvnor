@@ -26,6 +26,7 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -110,7 +111,7 @@ public class RepositoryCategoryOperations {
         // First check the user has permission to access this categoryPath.
         if ( Contexts.isSessionContextActive() ) {
             if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
-                                                     RoleTypes.ANALYST_READ ) ) {
+                                                     RoleType.ANALYST_READ.getName() ) ) {
 
                 TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
                 return handler.loadRuleListTable( new AssetItemPageResult() );

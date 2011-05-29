@@ -35,6 +35,7 @@ import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
@@ -148,7 +149,7 @@ public class FeedServlet extends RepositoryServlet {
     void checkCategoryPermission(String cat) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                 RoleTypes.ANALYST_READ );
+                                                 RoleType.ANALYST_READ.getName() );
         }
     }
 
@@ -195,7 +196,7 @@ public class FeedServlet extends RepositoryServlet {
     void checkPackageReadPermission(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
-                                                 RoleTypes.PACKAGE_READONLY );
+                                                 RoleType.PACKAGE_READONLY.getName() );
         }
     }
 

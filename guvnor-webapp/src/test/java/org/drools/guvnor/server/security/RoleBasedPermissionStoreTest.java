@@ -45,32 +45,32 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
         store.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
-                                                                         RoleTypes.PACKAGE_ADMIN,
+                                                                         RoleType.PACKAGE_ADMIN.getName(),
                                                                          "package1Name",
                                                                          null ) );
         store.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
-                                                                         RoleTypes.PACKAGE_READONLY,
+                                                                         RoleType.PACKAGE_READONLY.getName(),
                                                                          "package2Name",
                                                                          null ) );
         store.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
-                                                                         RoleTypes.PACKAGE_READONLY,
+                                                                         RoleType.PACKAGE_READONLY.getName(),
                                                                          "package3Name",
                                                                          null ) );
         store.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
-                                                                         RoleTypes.ANALYST,
+                                                                         RoleType.ANALYST.getName(),
                                                                          null,
                                                                          "category1" ) );
         store.addRoleBasedPermissionForTesting( "john",
                                                 new RoleBasedPermission( "john",
-                                                                         RoleTypes.ANALYST,
+                                                                         RoleType.ANALYST.getName(),
                                                                          null,
                                                                          "category2" ) );
         store.addRoleBasedPermissionForTesting( "johnson",
                                                 new RoleBasedPermission( "johnson",
-                                                                         RoleTypes.ADMIN,
+                                                                         RoleType.ADMIN.getName(),
                                                                          null,
                                                                          null ) );
 
@@ -78,19 +78,19 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
         assertTrue( perms.size() == 4 );
         List<RoleBasedPermission> expectedPerms = new ArrayList<RoleBasedPermission>();
         expectedPerms.add( new RoleBasedPermission( "jervis",
-                                                    RoleTypes.PACKAGE_ADMIN,
+                                                    RoleType.PACKAGE_ADMIN.getName(),
                                                     "package1Name",
                                                     null ) );
         expectedPerms.add( new RoleBasedPermission( "jervis",
-                                                    RoleTypes.PACKAGE_READONLY,
+                                                    RoleType.PACKAGE_READONLY.getName(),
                                                     "package2Name",
                                                     null ) );
         expectedPerms.add( new RoleBasedPermission( "jervis",
-                                                    RoleTypes.PACKAGE_READONLY,
+                                                    RoleType.PACKAGE_READONLY.getName(),
                                                     "package3Name",
                                                     null ) );
         expectedPerms.add( new RoleBasedPermission( "jervis",
-                                                    RoleTypes.ANALYST,
+                                                    RoleType.ANALYST.getName(),
                                                     null,
                                                     "category1" ) );
         for ( RoleBasedPermission perm : perms ) {
@@ -108,12 +108,12 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
         perms = store.getRoleBasedPermissionsByUserName( "john" );
         assertTrue( perms.size() == 1 );
-        assertTrue( perms.get( 0 ).getRole().equals( RoleTypes.ANALYST ) );
+        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ANALYST ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "john" ) );
 
         perms = store.getRoleBasedPermissionsByUserName( "johnson" );
         assertTrue( perms.size() == 1 );
-        assertTrue( perms.get( 0 ).getRole().equals( RoleTypes.ADMIN ) );
+        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ADMIN ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "johnson" ) );
     }
 

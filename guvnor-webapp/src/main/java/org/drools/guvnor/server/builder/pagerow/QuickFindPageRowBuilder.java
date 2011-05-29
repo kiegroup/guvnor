@@ -22,6 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.server.AssetItemFilter;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
@@ -45,7 +46,7 @@ public class QuickFindPageRowBuilder implements PageRowBuilder<PageRequest, Iter
 
             // Filter surplus assets
             if ( filter.accept( assetItem,
-                                RoleTypes.PACKAGE_READONLY ) ) {
+                                RoleType.PACKAGE_READONLY.getName() ) ) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the

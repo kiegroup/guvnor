@@ -58,8 +58,8 @@ public class RoleBasedPermissionStore {
                                     List<RoleBasedPermission> permissions,
                                     Map.Entry<String, List<String>> permEntry) {
         String roleType = permEntry.getKey();
-        if (RoleTypes.ADMIN.equals(roleType)) {
-            permissions.add(new RoleBasedPermission(userName, RoleTypes.ADMIN,
+        if (RoleType.ADMIN.getName().equals(roleType)) {
+            permissions.add(new RoleBasedPermission(userName, RoleType.ADMIN.getName(),
                     null, null));
         }
 

@@ -132,7 +132,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
 
     private boolean handleCategoryPathPermission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
         String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
-        String requestedPermType = (requestedPermission == null) ? RoleTypes.ANALYST : requestedPermission;
+        String requestedPermType = (requestedPermission == null) ? RoleType.ANALYST.getName() : requestedPermission;
         if ( requestedPermType.equals( "navigate" ) ) {
             for ( RoleBasedPermission roleBasedPermission : permissions ) {
                 if ( roleBasedPermission.getCategoryPath() != null ) {
@@ -162,7 +162,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
     }
 
     private boolean isPermissionToCurrentDirectory(String requestedPermType, RoleBasedPermission roleBasedPermission) {
-        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleType.ANALYST_READ.getName() ) && roleBasedPermission.getRole().equals( RoleTypes.ANALYST ));
+        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleType.ANALYST_READ.getName() ) && roleBasedPermission.getRole().equals( RoleType.ANALYST.getName() ));
     }
 
     private boolean isRoleAnalyst(RoleBasedPermission roleBasedPermission) {

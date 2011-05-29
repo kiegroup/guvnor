@@ -125,7 +125,7 @@ public class SecurityServiceImpl
     public Capabilities getUserCapabilities() {
 
         if ( Contexts.isApplicationContextActive() ) {
-            if ( Identity.instance().hasRole( RoleTypes.ADMIN ) ) {
+            if ( Identity.instance().hasRole( RoleType.ADMIN.getName() ) ) {
                 return Capabilities.all( PREFERENCES );
             }
 
