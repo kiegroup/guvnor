@@ -7,18 +7,19 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <section>
-    <title>The fact model</title>
+  <title>The Fact Model</title>
 
-    <para>For any rule base application, a fact model is needed to drive the
-    rules. The fact model typically overlaps with the applications domain
-    model, but in general it will be decoupled from it (as it makes the rules
-    easier to manage over time). There are no technical limitations on using
-    your domain model as your fact model, however this introduces tighter
-    coupling between your business domain (domain model) and your knowledge
-    domain (fact model). Consequentially if your domain model were to change
-    you would need to, at the very least, revisit your rule
-    definitions.</para>
+  <para>For any rule base application, a fact model is needed to drive the
+  rules. The fact model typically overlaps with the applications domain model,
+  but in general it will be decoupled from it (as it makes the rules easier to
+  manage over time). There are no technical limitations on using your domain
+  model as your fact model, however this introduces tighter coupling between
+  your business domain (domain model) and your knowledge domain (fact model).
+  Consequentially if your domain model were to change you would need to, at
+  the very least, revisit your rule definitions.</para>
+
+  <section>
+    <title>Ways to define a Fact Model</title>
 
     <para>There are two ways to do define your fact model; each of which will
     be discussed in more detail in the following sections.</para>
@@ -223,12 +224,12 @@
         annotation" button. Annotations are listed under the Fact title,
         before the fields, by convention. Annotations are prefixed with the
         "@" symbol. This not only makes them instantly recognisable but is
-        also consistent with their definition in DRL. </para>
+        also consistent with their definition in DRL.</para>
 
         <para>The annotation "Name" and "Value" are mandatory whereas the
         "Key" is optional. If a "Key" is not given a default value of "value"
         will be assigned. This is consistent with how annotations are held
-        within Drools Expert. </para>
+        within Drools Expert.</para>
 
         <para>An existing Fact Annotation can be edited by clicking the
         "pencil" icon on the same row as the Fact Annotation name. Furthermore
