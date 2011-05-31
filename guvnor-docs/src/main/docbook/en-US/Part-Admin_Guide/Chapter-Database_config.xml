@@ -19,9 +19,10 @@
 
       <para>
       Assuming you are using on of the JBoss platforms, running Guvnor for the first time will create a
-      database in the <filename>bin/</filename> directory of the application server. There will be a
-      <filename>repository.xml</filename> file, and a <filename>repository</filename> directory that are
-      automatically created.
+      database in the <filename>bin/</filename> directory of the application server. There you will find 
+      the default Jackrabbit configuration file, namely <filename>repository.xml</filename>, and a 
+      <filename>repository</filename> directory which contains your repository data. Both of these are 
+      created automatically for you.
       </para>
 
       <para>
@@ -32,32 +33,35 @@
       </para>
 
       <para>
-      To change the location, unzip the WAR file, and locate the <filename>components.xml</filename> file in
-      the <filename>WEB-INF</filename> directory. This is a JBoss Seam configuration file (Seam is the
+      To change the location, unzip the Guvnor WAR file, and locate the <filename>components.xml</filename> file in
+      the <filename>WEB-INF</filename> directory. This is a JBoss Seam configuration file (Seam 2 is the
       framework used) which allows various parts of the system to be customized. When you have located the
       <filename>components.xml</filename> file, you should see something like the following:
       </para>
 
-      <programlisting language="XML"><![CDATA[<component name="repositoryConfiguration">
-   <!--
-   *** This is for configuring the "home" directory for the repository storage. the directory must exist. ***
-   <property name="homeDirectory">/home/michael/RulesRepository_001</property>
-   -->  
-   ...
+      <programlisting language="XML"><![CDATA[
+<component name="repositoryConfiguration">
+   <!-- JackRabbit  -->
+      <property name="properties">
+         <key>org.drools.repository.configurator</key><value>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</value>
+         <!--  the root directory for the repo storage the directory must exist. -->
+         <!--  <key>repository.root.directory</key><value>/opt/yourpath</value>  -->
+      </property>
+      ...
 </component>]]></programlisting>
 
-      <para>Find the component with a name of <literal>repositoryConfiguration</literal> and
-      the property with the name of <literal>homeDirectory</literal>.</para>
+      <para>Find the component with a name of <literal>repositoryConfiguration</literal> and its section for JackRabbit configuration,
+      then the key property with the name of <literal>repository.root.directory</literal>.</para>
 
-      <para>If you un-comment this (as in the example above it is commented
-      out), you can set whatever path you need for the repository data to be
+      <para>If you un-comment this key element (as in the example above it is commented
+      out), you can set whatever file-system path you need for the repository data to be
       stored in. You can also use this to move the repository around. In that
       case, when you have set the location in the <filename>components.xml</filename> you can
       simply move the <filename>repository.xml</filename> AND the repository directory to the new
       location that you set in the <filename>components.xml</filename>.</para>
 
-      <para>If there is no repository at the location specified (or in the
-      default location) then Guvnor will create a new empty one.</para>
+      <para>If there is no repository.xml configuration file, or the repository directory at the location 
+      specified (or in the default location) then Guvnor will create new empty ones.</para>
 
       <para>There are many more options which can be configured in the
       <filename>repository.xml</filename>, but for the most part, it is not recommended to change
@@ -69,28 +73,91 @@
 
       <para>
       In some cases it may be a requirement that you use an external RDBMS, such as Oracle, MySQL, or
-      Microsoft SQL Server as the data store - this is permitted. In this case, the easiest thing to do is to
-      start up Guvnor with defaults (or with a suitable home directory as specified above) to let it generate
-      the default <filename>repository.xml</filename>.
-      </para>
-
-      <para>Locate the <filename>repository.xml</filename> file that was generated, and open it -
+      Microsoft SQL Server as the data store - this is permitted and recommended as storing your repository data in an 
+      external RDBMS is much more reliable than the default file-system storage option. The JackRabbit <filename>repository.xml</filename>
+      file contains the information where your repository data is stored, so changes to this file are necessary for 
+      RDBMS setup. You have two options to make changes to <filename>repository.xml</filename>, namely make all changes
+      manually, or use the Guvnor Repository Configuration Manager.</para>
+      
+      <para>If you opt for the manual configuration, the easiest thing
+      to do is to start up Guvnor with defaults (or with a suitable repository.root.directory directory as specified above) 
+      to let it generate the default <filename>repository.xml</filename>. Locate the <filename>repository.xml</filename>
+      file that was generated, and open it -
       it will be annotated with comments describing many of the different
       options. From here on, you will need to know a little about Jackrabbit
       Persistence managers, <ulink url="http://wiki.apache.org/jackrabbit/PersistenceManagerFAQ" />.
-      </para>
-
-      <para>There are a few persistence managers, some are database specific
+      There are a few persistence managers, some are database specific
       (eg Oracle). There is a SimpleDBPersistenceManager which works with any
       database that supports JDBC - you also specify the database type, so it
       uses the specific DDL to create the table structure (all major databases
-      are supported).</para>
-
-      <para>Guvnor will create the tables the first time it is started up if
+      are supported).After you have added your configuraiton options, start the Guvnor application again. Guvnor will 
+      then create the database tables the first time it is started up if
       it is running against a fresh (empty) RDBMS - so its important to note
       that the user credentials supplied have permissions to create tables (at
       least initially, on first run, after that they could be locked
       down).</para>
+      
+      <para>Using the Repository Configuration Manager in Guvnor is often a lot easier and a less error-prone options
+      to make the necessary configuration changes in <filename>repository.xml</filename>. With Guvnor application running,
+      select the Administration tab in the left-hand-side navigation bar, then select the Repository Configuration link.</para>
+      
+      <figure>
+        <title>Finding the Repository Configuration Manager in the Administration section</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/RepoConfigAdminSection.png"
+                   format="PNG" scalefit="0"></imagedata>
+            </imageobject>
+          </mediaobject>
+      </figure>      
+      
+      <para>Repository Configuration Manager includes template configuration files for many external RDBMS types. The 
+      first thing you have to do is the select the RDBMS type from the dropdown menu and select if you are using JNDI to 
+      look up your data source or not.</para>
+    
+      <figure>
+        <title>Select RDBMS type</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/RepoConfigManagerDBTypes.png"
+                   format="PNG" scalefit="0"></imagedata>
+            </imageobject>
+          </mediaobject>
+      </figure>  
+      
+    <para>If you opt to use JNDI, you have to enter the JNDI name configured in your deployed data source. Otherwise you 
+    need to enter your RDBMS information.</para>
+    
+    <figure>
+        <title>RDBMS information</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/RepoConfigManagerDBInfo.png"
+                   format="PNG" scalefit="0"></imagedata>
+            </imageobject>
+          </mediaobject>
+      </figure>
+    
+    <para>At this point you are ready to generate your <filename>repository.xml</filename> give your RDBMS information.
+    Click on the "Generate repository config" button. </para>
+    
+    <figure>
+        <title>Generated repository.xml</title>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/RepoConfigManagerGeneratedRepoXML.png"
+                   format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+      </figure>
+      
+    <para>You can download the generated <filename>repository.xml</filename> file by clicking the "Save Configuration"
+    button, or copy/paste the generated text manually. Replace your existing <filename>repository.xml</filename> with
+    the generated one and restart Guvnor for the changes to get picked up.</para>
     </section>
 
     <section>
