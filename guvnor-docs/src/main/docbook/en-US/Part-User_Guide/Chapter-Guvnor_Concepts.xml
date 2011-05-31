@@ -828,7 +828,7 @@ end</programlisting></para>
       <section>
         <title>Cell grouping</title>
 
-        <para>Cells that have been merged and be further collapsed into a
+        <para>Cells that have been merged can be further collapsed into a
         single row. Clicking the [+\-] icon in the top left of a merged cell
         collapses the corresponding rows into a single entry. Cells in other
         columns spanning the collapsed rows that have identical values are
@@ -1084,8 +1084,8 @@ end</programlisting></para>
 
       <para>To create a template for a rule simply select the "New Rule
       Template" from the Knowlegde Bases "Create New" popup menu. The create
-      new asset popup window will appear from which the normal asset
-      attributes can be defined; such as name, category and
+      "New Rule Template" asset popup window will appear from which the normal
+      asset attributes can be defined; such as name, category and
       description.</para>
 
       <figure>
@@ -1101,7 +1101,7 @@ end</programlisting></para>
       </figure>
 
       <figure>
-        <title>Rule template asset popup</title>
+        <title>Create "New Rule Template" popup</title>
 
         <mediaobject>
           <imageobject>
@@ -1157,17 +1157,25 @@ end</programlisting></para>
     <section>
       <title>Defining the template data</title>
 
-      <para>Once a rule template has been defined you need to enter the data
-      that will be used to interpolate the "Template Key" place-holders.
-      Drools Guvnor provides the facility to enter data in a flexible grid
-      within the guided editor screen. The grid editor can be launched by
-      pressing the "Load Template Data" button on the guided editor
-      screen.</para>
+      <para>When you have completed the definition of your rule template you
+      need to enter the data that will be used to interpolate the "Template
+      Key" place-holders. Drools Guvnor provides the facility to enter data in
+      a flexible grid within the guided editor screen. The grid editor can be
+      launched by pressing the "Load Template Data" button on the guided
+      editor screen.</para>
 
       <para>The rule template data grid is very flexible; with different
       pop-up editors for the underlying fields' data-types. Columns can be
       resized and sorted; and cells can be merged and grouped to facilitate
       rapid data entry.</para>
+
+      <para>One row of data interpolates the "Template Key" place-holders for
+      a single rule; thus one row becomes one rule.</para>
+
+      <note>
+        <para>If any cells for a row are left blank a rule for the applicable
+        row is not generated.</para>
+      </note>
 
       <figure>
         <title>Template data grid</title>
@@ -1207,7 +1215,7 @@ end</programlisting></para>
       <section>
         <title>Cell grouping</title>
 
-        <para>Cells that have been merged and be further collapsed into a
+        <para>Cells that have been merged can be further collapsed into a
         single row. Clicking the [+\-] icon in the top left of a merged cell
         collapses the corresponding rows into a single entry. Cells in other
         columns spanning the collapsed rows that have identical values are
@@ -1235,11 +1243,11 @@ end</programlisting></para>
     <section>
       <title>Generated DRL</title>
 
-      <para>After defining your "Rule Template" and providing data to
-      interpolate your place-holders you can view the DRL that will be
-      generated. This feature and operation is no different to that for other
-      assets. Select the "Source" -&gt; "View Source" menu item from the Asset
-      Editor screen.</para>
+      <para>Whilst not necessary, rule authors can view the DRL that will be
+      generated for a "Rule Template" and associated data. This feature and
+      its operation is no different to that for other assets. Select the
+      "Source" -&gt; "View Source" menu item from the Asset Editor screen. The
+      DRL for all rules will be displayed.</para>
 
       <figure>
         <title>Generated DRL</title>
