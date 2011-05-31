@@ -28,6 +28,54 @@
    from the data (and thus guaranteed to be in sync).
    </para>
  </section>
+ 
+ <section>
+   <title>Repository Data Migration</title>
+   
+   <para>It is often needed to migrate your existing repository from one persistence manager schema to another.
+   A typical scenario for this case is if you have existing rule assets in a repository using the default file-system
+   configuration and would like to move to storing your existing data to a RDBMS. In these cases you can use the 
+   drools-ant JackrabbitMigrationAntTask which can easily convert all your repository data from one repository 
+   configuration to another repository configuration. Example configuration for this ant task can be:</para>
+   
+   <programlisting language="XML"><![CDATA[<project default="migraterepo">
+  <path id="migration.classpath">
+    <pathelement path="${classpath}" />
+    <fileset dir="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/server/default/deploy/drools-guvnor.war/WEB-INF/lib">
+        <include name="**/*.jar"/>
+     </fileset>
+    <filelist refid="drools-ant" />
+    <filelist refid="db-driver-jars" />
+  </path>
+
+  <filelist id="db-driver-jars" dir="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/server/default/lib">
+    <file name="mysql-connector-java-5.1.11-bin.jar" />
+  </filelist>
+
+  <filelist id="drools-ant" dir="lib">
+    <file name="drools-ant-5.2.0.jar" />
+  </filelist>
+
+  <taskdef name="migrate" classname="org.drools.contrib.JackrabbitMigrationAntTask"
+    classpathref="migration.classpath" />
+
+  <target name="migraterepo">
+    <record name="migration-log.txt"/>
+    <migrate verbose="true"
+        sourcedir="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/bin/repository/"
+        sourceconfig="/Users/tihomir/development/droolsjbpm/jboss-4.2.3.GA/bin/repository.xml"
+        targetdir="/Users/tihomir/demo-jrmigration/targetrepo/"
+        targetconfig="/Users/tihomir/demo-jrmigration/targetrepo/repository.xml" />
+  </target>
+</project>]]></programlisting>
+
+<para>In the above scenario JackrabbitMigrationAntTask is going to migrate all repository data configured in 
+<filename>repository.xml</filename> defined in the sourcedir attribute, to the repository configured in 
+<filename>repository.xml</filename> defined in the targetconfig attribute. Note that this data migration is a full
+migration, which means it migrates the entire repository which also makes it a good tool to use for backups as well.
+The blog post http://blog.athico.com/2011/03/using-drools-ant-to-migrateback-up.html contains a video showing 
+a full example on how to use the JackrabbitMigrationAntTask for repository migration.</para>
+ </section>
 
  <section>
    <title>Selectors for package building</title>
