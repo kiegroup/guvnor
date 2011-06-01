@@ -43,7 +43,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/ModelChooseType.png"
-                     format="PNG" scalefit="1"></imagedata>
+                     format="PNG" scalefit="0"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -71,7 +71,7 @@
           <imageobject>
             <imagedata align="center"
                        fileref="images/Chapter-Guvnor/ModelUploadJAR.png"
-                       format="PNG" scalefit="1"></imagedata>
+                       format="PNG" scalefit="0"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -101,6 +101,14 @@
 
   <section>
     <title>Declarative model</title>
+
+    <para>Why would you chose declared types over JAR files: generally this
+    reinforces the fact that the model "belongs" to the KnowledgeBase, rather
+    then the application, and allows the model to have a lifecycle separate
+    from the application. It also allows Java types to be enriched with Rule
+    specific annotations. Additionally it also removes the burden of keeping
+    JAR files syncronised between rules and the applications that use the
+    rules.</para>
 
     <para>Declarative models can be either:-</para>
 
@@ -146,7 +154,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative1.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG" scalefit="0"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -184,7 +192,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative3.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG" scalefit="0"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -215,7 +223,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative5.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG" scalefit="0"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -243,7 +251,7 @@
             <imageobject>
               <imagedata align="center"
                          fileref="images/Chapter-Guvnor/ModelDeclarative6.png"
-                         format="PNG" scalefit="1"></imagedata>
+                         format="PNG" scalefit="0"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
@@ -264,30 +272,53 @@
       <section>
         <title>Consuming a declarative model from Java</title>
 
-        <para>Declarative Fact Models can be used like normal fact objects,
-        however the way you create them is different (as they are not on your
-        applications classpath). To create these objects, they are available
-        from the KnowledgeBase instance.</para>
+        <para>Declared types are generated at knowledge base compilation time,
+        i.e. the application will only have access to them at application run
+        time. Therefore, these classes are not available for direct reference
+        from the application.</para>
 
-        <programlisting language="Java">// Retrieve the generated fact type
-FactType cheeseFact = knowledgeBase.getFactType( "org.drools.generatedbeans.Cheese" );
+        <para>Declarative types can be used like normal fact objects, but the
+        way you create them is different (as they are not on your applications
+        classpath). To create these objects, they are available from the
+        KnowledgeBase instance.</para>
 
-// Create a new Fact instance
-Object cheese = cheeseFact.newInstance();
+        <example>
+          <title>Handling declared fact types through the API</title>
 
-cheeseFact.set( cheese, "type", "stilton" );</programlisting>
+          <programlisting>// get a reference to a knowledge base with a declared type:
+KnowledgeBase kbase = ...
 
-        <para>The "cheese" object above can then be inserted into working
-        memory just like a normal POJO based fact. Note that the namespace of
-        the declared type is the package namespace where it was declared (i.e.
-        <code>org.drools.generatedbeans</code> in the above example).</para>
+// get the declared FactType
+FactType personType = kbase.getFactType( "org.drools.examples",
+                                         "Person" );
 
-        <para>Why would you chose declared types over JAR files: generally
-        this reinforces the fact that the model "belongs" to the rulebase,
-        rather then the application, and allows the model to have a lifecycle
-        separate from the application. It also removed the hassle of keeping
-        jar files in sync between rules and the applications that use the
-        rules.</para>
+// handle the type as necessary:
+// create instances:
+Object bob = personType.newInstance();
+
+// set attributes values
+personType.set( bob,
+                "name",
+                "Bob" );
+personType.set( bob,
+                "age",
+                42 );
+
+// insert fact into a session
+StatefulKnowledgeSession ksession = ...
+ksession.insert( bob );
+ksession.fireAllRules();
+
+// read attributes
+String name = personType.get( bob, "name" );
+int age = personType.get( bob, "age" );</programlisting>
+        </example>
+
+        <note>
+          <para>The namespace of the declared type is the package namespace
+          where it was declared (i.e. <code>org.drools.examples</code> in the
+          above example).</para>
+        </note>
       </section>
     </section>
   </section>
