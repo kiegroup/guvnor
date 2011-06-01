@@ -224,9 +224,6 @@
       <para>IMPORTANT: to use the BRL guided editor, someone will need to have
       you package configured before hand.</para>
 
-      <para>Also note that there is a guided editor in the Eclipse plug in,
-      most of the details in this section can also apply to it.</para>
-
       <figure>
         <title>The guided BRL editor</title>
 
@@ -240,37 +237,62 @@
       </figure>
 
       <para>The above diagram shows the editor in action. The following
-      description apply to the letter boxes in the diagram above:</para>
+      descriptions apply to the lettered boxes in the diagram:-</para>
 
-      <para>A: The different parts of a rule. The "WHEN" part is the
-      condition, "THEN" action, and "(options)" are optional attributes that
-      may effect the operation of the rule.</para>
+      <para>A: The different parts of a rule:-<itemizedlist>
+          <listitem>
+            <para>The "WHEN" part, or conditions, of the rule.</para>
+          </listitem>
+
+          <listitem>
+            <para>The "THEN" action part of the rule.</para>
+          </listitem>
+
+          <listitem>
+            <para>Optional attributes that may effect the operation of the
+            rule.</para>
+          </listitem>
+        </itemizedlist></para>
 
       <para>B: This shows a pattern which is declaring that the rule is
-      looking for a "Driver" fact (the fields are listed below, in this case
-      just "age"). Clicking in the fact name (Driver) will popup a list of
-      options to add to the fact declaration: you can add more fields (e.g.
-      their "location"), or you can assign a variable name to the fact (which
-      you can use later on if needs be). As well as adding more fields to this
-      pattern - you can add "multiple field" constraints - i.e. constraints
-      that span across fields (e.g. age &gt; 42 or risk &gt; 2). The popup
-      dialog shows the options.</para>
+      looking for a "LoanApplication" fact (the fields are listed below, in
+      this case none). Another pattern, "Applicant", is listed below
+      "LoanApplication". Fields "creditRating" and "applicationDate" are
+      listed. Clicking on the fact name ("LoanApplication") will pop-up a list
+      of options to add to the fact declaration:-<itemizedlist>
+          <listitem>
+            <para>Add more fields (e.g. their "location").</para>
+          </listitem>
 
-      <para>C: The small triangle indicates you can remove something. In this
-      case it would remove the whole Driver fact declaration. If its the one
-      below, it would remove just the age constraint.</para>
+          <listitem>
+            <para>Assign a variable name to the fact (which you can use later
+            on if needs be)</para>
+          </listitem>
 
-      <para>D: The "+" symbols allow you to add more patterns to the condition
-      or the action part of the rule, or more attributes. In all cases, a
-      popup option box is provided. For the "WHEN" part of the rule, you can
-      choose from a list of Conditional Elements to add: <itemizedlist
-          spacing="compact">
+          <listitem>
+            <para>Add "multiple field" constraints - i.e. constraints that
+            span across fields (e.g. age &gt; 42 or risk &gt; 2).</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>C: The "minus" icon ("[-]") indicates you can remove something. In
+      this case it would remove the whole "LoanApplication" fact declaration.
+      Depending upon the placement of the icon different components of the
+      rule declaration can be removed, for example a Fact Pattern, Field
+      Constraint, other Conditional Element ("exists", "not exists", "from"
+      etc) or an Action.</para>
+
+      <para>D: The "plus" icon ("+") allows you to add more patterns to the
+      condition or the action part of the rule, or more attributes. In all
+      cases, a popup option box is provided. For the "WHEN" part of the rule,
+      you can choose from a list of Conditional Elements to add: <itemizedlist
+          spacing="normal">
           <listitem>
              A Constraint on a Fact: it will give you a list of facts. 
           </listitem>
 
           <listitem>
-             "The following does not exist": the fact+constraints must not exist. 
+             "The following does not exist": the fact plus constraints must not exist. 
           </listitem>
 
           <listitem>
@@ -294,30 +316,50 @@
           </listitem>
 
           <listitem>
+             "From Entry-point": this allows you to define an Entry Point for the pattern. 
+          </listitem>
+
+          <listitem>
              "Free Form DRL": this will let you insert a free chunk of DRL. 
           </listitem>
         </itemizedlist> If you just put a fact (like is shown above) then all
       the patterns are combined together so they are all true ("and").</para>
 
-      <para>E: This shows the constraint for the "age" field. Looking from
-      left to right you find: <itemizedlist spacing="compact">
+      <para>E: This shows the constraint for the "creditRating" field. Looking
+      from left to right you find:-<itemizedlist spacing="normal">
           <listitem>
-             The field name: Clicking on it you can assign a variable name to it, or access nested properties of it. 
+             The field name: "creditRating". Clicking on it you can assign a variable name to it, or access nested properties of it. 
           </listitem>
 
           <listitem>
-             A list of constraint operations: The content of this list changes depending on the field's data type. 
+             A list of constraint operations ("equal to" being selected): The content of this list changes depending on the field's data type. 
           </listitem>
 
           <listitem>
-             The value field: It could be on of 
+            <orderedlist>
+              <para>The value field: It could be one of the following:-</para>
 
-            <orderedlist spacing="compact">
               <listitem>
                 <para>A literal value: depending on the field's data type
-                different components will be displayed: String or Number -&gt;
-                textbox, Date -&gt; calendar, Enumeration -&gt; combobox,
-                Boolean -&gt; checkbox</para>
+                different components will be displayed:</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>String or Number -&gt; TextBox</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Date -&gt; Calendar</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Enumeration -&gt; Combobox</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Boolean -&gt; Checkbox</para>
+                  </listitem>
+                </itemizedlist>
               </listitem>
 
               <listitem>
@@ -331,39 +373,82 @@
                 only basic expressions are supported)</para>
               </listitem>
             </orderedlist>
-
-             
           </listitem>
         </itemizedlist></para>
 
-      <para>F: This shows an "action" of the rule, the Right Hand Side of a
-      rule consists in a list of actions. In this case, we are
-      asserting/inserting a new fact, which is a Rejection (with the "reason"
-      field set to an explanation). There are quite a few other types of
-      actions you can use: you can modify an existing fact (which tells the
-      engine the fact has changed) - or you can simply set a field on a fact
-      (in which case the engine doesn't know about the change - normally
-      because you are setting a result). You can also retract a fact. In most
-      cases, just like in Fact Types, you can click in the Fact name to get a
-      list of its attributes or to bound it to a variable name. The values you
-      enter are "literal" - in the sense that what you type is what the value
-      is. If it needs to be a calculation, then add an "=" at the start of the
-      value - this will be interpreted as a "formula" (for advanced users
-      only) ! and the calculation will be performed (not unlike a
-      spreadsheet). You can also perform a logical insert of Facts, add Facts
-      to existing global lists, call a method on a variable or write some free
-      form chunk of code.</para>
+      <para>F: This shows the constraint for the "applicationDate" field.
+      Looking from left to right you find: <itemizedlist spacing="normal">
+          <listitem>
+             The field name: "applicationDate". 
+          </listitem>
 
-      <para>G: This is where the rule options live. In this case, only
-      salience is used which is a numeric value representing the rules
-      "priority". This would probably be the most common option to use.</para>
+          <listitem>
+             A list of constraint operations: "after" being selected. 
+          </listitem>
 
-      <para>H: Pattern/Action toolbar. Next to each Pattern or Action you will
+          <listitem>
+             A "clock" icon. Since the "applicationDate" is a Date data-type the list of available operators includes those relating to Complex Event Processing (CEP). When a CEP operator is used this additional icon is displayed to allow you to enter additional CEP operator parameters. Clicking the "clock" will cycle the available combinations of CEP operator parameters. 
+          </listitem>
+        </itemizedlist><note>
+          <para>Complex Event Processing operators are also available when the
+          Fact has been declared as an event. Refer to the "Fact Model"
+          chapter of this user-guide for details on how to add annotations to
+          your Fact model. Events have access to the full range of CEP
+          operators; Date field-types are restricted to "after", "before" and
+          "coincides".</para>
+        </note><note>
+          <para>Facts annotated as Events can also have CEP sliding windows
+          defined.</para>
+        </note></para>
+
+      <para>G: Pattern/Action toolbar. Next to each Pattern or Action you will
       find a toolbar containing 3 buttons. The first button lets you insert a
       new Pattern/Action below the one you selected, the other two buttons
-      will move the current Pattern/Action up or down. The toolbars are
-      translucent by default; they get active when you move the mouse cursor
-      inside one of them.</para>
+      will move the current Pattern/Action up or down.</para>
+
+      <para>H: This shows an "action" of the rule, the Right Hand Side of a
+      rule consists in a list of actions. In this case, we are updating the
+      "explanation" field of the "LoanApplication" fact. There are quite a few
+      other types of actions you can use:-<itemizedlist>
+          <listitem>
+            <para>Insert a completely new Fact</para>
+          </listitem>
+
+          <listitem>
+            <para>Logically insert a completely new Fact (see "Truth
+            Maintenance" in the Expert documentation).</para>
+          </listitem>
+
+          <listitem>
+            <para>Modify an existing fact (which tells the engine the fact has
+            changed).</para>
+          </listitem>
+
+          <listitem>
+            <para>Set a field on a fact (in which case the engine doesn't know
+            about the change - normally because you are setting a
+            result).</para>
+          </listitem>
+
+          <listitem>
+            <para>Retract a fact.</para>
+          </listitem>
+
+          <listitem>
+            <para>Add Facts to existing global lists.</para>
+          </listitem>
+
+          <listitem>
+            <para>Call a method on a variable.</para>
+          </listitem>
+
+          <listitem>
+            <para>Write a chunk of free form code.</para>
+          </listitem>
+        </itemizedlist></para>
+
+      <para>In most cases you can click on the Fact name to get a list of its
+      attributes or to bind it to a variable name.</para>
 
       <section>
         <title>User driven drop down lists</title>
@@ -526,17 +611,17 @@
         the type of Pattern to add by selecting one of the list items. In the
         list you will have an entry for each defined Fact Type, in addition to
         the already mentioned Conditional Elements like "exists", "doesn't
-        exist", "from", "collect", "accumulate" and "free form DRL". Once you
-        have selected one of this elements, you can add a new Pattern by
-        clicking on the "Ok" button. The new pattern will be added at the
-        bottom of the rule's left hand side. If you wan't to choose a
-        different position, you can use the combobox placed at the top of the
-        popup.</para>
+        exist", "from", "collect", "accumulate", "from entry-point" and "free
+        form DRL". Once you have selected one of this elements, you can add a
+        new Pattern by clicking on the "Ok" button. The new pattern will be
+        added at the bottom of the rule's left hand side. If you wan't to
+        choose a different position, you can use the combobox placed at the
+        top of the popup.</para>
 
-        <para>You can also open this popup by clicking in the + button from a
-        Pattern's action toolbar. If that is the case, the popup that appears
-        wouldn't containt the position combobox, because the new Pattern will
-        be added just after the Pattern where you clicked.</para>
+        <para>You can also open this popup by clicking in the [+] button from
+        a Pattern's action toolbar. If that is the case, the pop-up that
+        appears wouldn't containt the position combobox, because the new
+        Pattern will be added just after the Pattern where you clicked.</para>
 
         <figure>
           <title>Adding constraints</title>
@@ -551,15 +636,15 @@
         </figure>
 
         <para>The above dialog is what you will get when you want to add
-        constraints to the Person fact. In the top half are the simple
-        options: you can either add a field constraint straight away (a list
-        of fields of the Person fact will be shown), or you can add a
-        "Multiple field constraint" using AND or OR operands. In the bottom
-        half of the window you have the Advanced options: you can add a
-        formula (which resolves to True or False - this is like in the example
-        above: "... salary &gt; (2500 * 4.1)". You can also assign a Variable
-        name to the Person fact (which means you can then access that variable
-        on the action part of the rule, to set a value etc).</para>
+        constraints to a fact. In the top half are the simple options: you can
+        either add a field constraint straight away (a list of fields of the
+        applicable fact will be shown), or you can add a "Multiple field
+        constraint" using AND or OR operands. In the bottom half of the window
+        you have the Advanced options: you can add a formula (which resolves
+        to True or False - this is like in the example above: "... salary &gt;
+        (2500 * 4.1)". You can also assign a Variable name to the fact (which
+        means you can then access that variable on the action part of the
+        rule, to set a value etc).</para>
       </section>
     </section>
 
