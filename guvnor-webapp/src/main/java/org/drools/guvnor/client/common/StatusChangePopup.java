@@ -53,7 +53,7 @@ public class StatusChangePopup extends FormStylePopup {
         this.uuid = uuid;
         this.isPackage = isPackage;
 
-        super.addRow( new HTML( "<img src='" + images.statusSmall() + "'/><b>" + constants.ChangeStatus() + "</b>" ) );
+        super.addRow( new HTML( "<img src='" + images.statusSmall().getURL() + "'/><b>" + constants.ChangeStatus() + "</b>" ) );
 
         HorizontalPanel horiz = new HorizontalPanel();
         final ListBox box = new ListBox();
