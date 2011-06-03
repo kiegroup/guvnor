@@ -352,7 +352,7 @@ public class RuleViewer extends GuvnorEditor {
         pop.setCommand( new Command() {
 
             public void execute() {
-                doCheckin( pop.getCheckinComment() );
+                doCheckin( pop.getCheckinComment(),closeAfter );
                 if ( afterCheckinEvent != null ) {
                     afterCheckinEvent.execute();
                 }
@@ -364,11 +364,11 @@ public class RuleViewer extends GuvnorEditor {
         pop.show();
     }
 
-    public void doCheckin(String comment) {
+    public void doCheckin(String comment, boolean closeAfter) {
         if ( editor instanceof SaveEventListener ) {
             ((SaveEventListener) editor).onSave();
         }
-        performCheckIn( comment );
+        performCheckIn( comment, closeAfter );
         if ( editor instanceof SaveEventListener ) {
             ((SaveEventListener) editor).onAfterSave();
         }
@@ -461,7 +461,7 @@ public class RuleViewer extends GuvnorEditor {
                                                             } );
     }
 
-    private void performCheckIn(String comment) {
+    private void performCheckIn(String comment, final boolean closeAfter) {
         this.asset.setCheckinComment( comment );
         final boolean[] saved = {false};
 
@@ -490,7 +490,9 @@ public class RuleViewer extends GuvnorEditor {
                                                                       saved[0] = true;
 
                                                                       showInfoMessage( constants.SavedOK() );
-                                                                      refreshCommand.execute();
+                                                                      if(!closeAfter){
+                                                                        refreshCommand.execute();
+                                                                      }
                                                                   }
                                                               } );
     }
