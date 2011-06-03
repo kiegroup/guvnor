@@ -22,25 +22,20 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.customform.CustomFormConfiguration;
 import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomFormsEditorPanel extends Composite {
     private Constants constants = GWT.create(Constants.class);
@@ -100,10 +95,10 @@ public class CustomFormsEditorPanel extends Composite {
                 int w;
                 int h;
 
-                try{
+                try {
                     w = Integer.parseInt(customFormWidth.getText());
                     h = Integer.parseInt(customFormHeight.getText());
-                } catch (NumberFormatException ex){
+                } catch (NumberFormatException ex) {
                     Window.alert("Width and Height must be integer values!"); //TODO: I18N
                     return;
                 }
@@ -114,7 +109,7 @@ public class CustomFormsEditorPanel extends Composite {
 
                 String factType = factsCombo.getItemText(factsCombo.getSelectedIndex());
                 String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
-                
+
                 CustomFormConfiguration newCustomFormConfiguration = CustomFormsContainer.getEmptyCustomFormConfiguration();
                 newCustomFormConfiguration.setFactType(factType);
                 newCustomFormConfiguration.setFieldName(fieldName);
@@ -179,17 +174,17 @@ public class CustomFormsEditorPanel extends Composite {
     }
 
     private void fillFieldConstrains() {
-        if (fieldsCombo.getSelectedIndex() != -1) {
+        if (fieldsCombo.getSelectedIndex() > 0 && factsCombo.getSelectedIndex() > 0) {
             String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
             String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
             contraintsMap.clear();
 
-            if (this.workingSetEditor.getCustomFormsContainer().containsCustomFormFor(factField, fieldName)){
+            if (this.workingSetEditor.getCustomFormsContainer().containsCustomFormFor(factField, fieldName)) {
                 CustomFormConfiguration customForm = this.workingSetEditor.getCustomFormsContainer().getCustomForm(factField, fieldName);
                 this.customFormURL.setText(customForm.getCustomFormURL());
                 this.customFormWidth.setText(String.valueOf(customForm.getCustomFormWidth()));
                 this.customFormHeight.setText(String.valueOf(customForm.getCustomFormHeight()));
-            }else{
+            } else {
                 this.customFormURL.setText("");
                 this.customFormWidth.setText("");
                 this.customFormHeight.setText("");
@@ -201,7 +196,7 @@ public class CustomFormsEditorPanel extends Composite {
         return SuggestionCompletionCache.getInstance().getEngineFromCache(workingSet.metaData.packageName);
     }
 
-    public void notifyValidFactsChanged(){
+    public void notifyValidFactsChanged() {
         this.validFactsChanged = true;
     }
 }

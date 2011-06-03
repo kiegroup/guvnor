@@ -61,7 +61,7 @@ public class PackagesNewMenu {
             }
         });
 
-        createNewMenu.addItem(Util.getHeader(images.newPackage(), constants.NewWorkingSet()),
+        createNewMenu.addItem(Util.getHeader(images.workingset(), constants.NewWorkingSet()),
                 true,
                 new Command() {
             public void execute() {
