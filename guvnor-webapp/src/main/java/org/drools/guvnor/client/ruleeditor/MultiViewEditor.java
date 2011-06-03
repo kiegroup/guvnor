@@ -281,7 +281,7 @@ public class MultiViewEditor extends GuvnorEditor {
             public void execute() {
                 String comment = pop.getCheckinComment();
                 for ( RuleViewer ruleViewer : ruleViews.values() ) {
-                    ruleViewer.doCheckin( comment );
+                    ruleViewer.doCheckin( comment, false);
                 }
                 if ( closeAfter ) {
                     close();
