@@ -302,7 +302,7 @@ public class PackageBuilderWidget extends Composite {
                                                                     new GenericCallback<BuilderResult>() {
                                                                         public void onSuccess(BuilderResult result) {
                                                                             LoadingPopup.close();
-                                                                            if ( result == null ) {
+                                                                            if ( result == null || !result.hasLines()) {
                                                                                 showSuccessfulBuild( buildResults );
                                                                             } else {
                                                                                 showBuilderErrors( result,
@@ -461,7 +461,7 @@ public class PackageBuilderWidget extends Composite {
         VerticalPanel vert = new VerticalPanel();
 
         vert.add( new HTML( "<img src='"
-                            + images.greenTick()
+                            + images.greenTick().getURL()
                             + "'/><i>"
                             + constants.PackageBuiltSuccessfully()
                             + " "
