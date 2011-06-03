@@ -16,9 +16,7 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.rpc.PageRequest;
-import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
@@ -37,73 +35,52 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * Widget with a table of Permission entries.
  */
-public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow> {
+public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPageRow> {
+    private static Constants constants = GWT.create(Constants.class);
 
     // UI
-    interface PermissionsPagedTableBinder
-        extends
-        UiBinder<Widget, PermissionsPagedTable> {
+    interface PermissionsPagedTableViewBinder extends
+            UiBinder<Widget, PermissionsPagedTableView> {
     }
 
     @UiField()
-    protected Button                                   createNewUserButton;
+    protected Button createNewUserButton;
 
     @UiField()
-    protected Button                                   deleteSelectedUserButton;
+    protected Button deleteSelectedUserButton;
 
     @UiField()
-    protected Button                                   openSelectedUserButton;
+    protected Button openSelectedUserButton;
 
-    private static PermissionsPagedTableBinder         uiBinder  = GWT.create( PermissionsPagedTableBinder.class );
+    private static PermissionsPagedTableViewBinder uiBinder = GWT
+            .create(PermissionsPagedTableViewBinder.class);
 
     // Commands for UI
-    private Command                                    newUserCommand;
-    private Command                                    deleteUserCommand;
-    private OpenItemCommand                            openSelectedCommand;
-
+    private Command newUserCommand;
+    private Command deleteUserCommand;
+    private OpenItemCommand openSelectedCommand;
+    private AsyncDataProvider<PermissionsPageRow> dataProvider;
+    
     // Other stuff
     private static final int                           PAGE_SIZE = 10;
 
     protected SingleSelectionModel<PermissionsPageRow> selectionModel;
 
+    interface Presenter {
+    }
+    
     /**
      * Constructor
-     * 
-     * @param newUserCommand
-     * @param deleteUserCommand
-     * @param openSelectedCommand
      */
-    public PermissionsPagedTable(Command newUserCommand,
-                                 Command deleteUserCommand,
-                                 OpenItemCommand openSelectedCommand) {
+    public PermissionsPagedTableView() {
         super( PAGE_SIZE );
-        this.newUserCommand = newUserCommand;
-        this.deleteUserCommand = deleteUserCommand;
-        this.openSelectedCommand = openSelectedCommand;
-        setDataProvider( new AsyncDataProvider<PermissionsPageRow>() {
-            protected void onRangeChanged(HasData<PermissionsPageRow> display) {
-                PageRequest request = new PageRequest();
-                request.setStartRowIndex( pager.getPageStart() );
-                request.setPageSize( pageSize );
-                repositoryService.listUserPermissions( request,
-                                                             new GenericCallback<PageResponse<PermissionsPageRow>>() {
-                                                                 public void onSuccess(PageResponse<PermissionsPageRow> response) {
-                                                                     updateRowCount( response.getTotalRowSize(),
-                                                                                     response.isTotalRowSizeExact() );
-                                                                     updateRowData( response.getStartRowIndex(),
-                                                                                    response.getPageRowList() );
-                                                                 }
-                                                             } );
-            }
-        } );
-    }
+   }
 
     public SingleSelectionModel<PermissionsPageRow> getSelectionModel() {
         return this.selectionModel;
@@ -165,7 +142,6 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
 
     @Override
     protected void doCellTable() {
-
         ProvidesKey<PermissionsPageRow> providesKey = new ProvidesKey<PermissionsPageRow>() {
             public Object getKey(PermissionsPageRow row) {
                 return row.getUserName();
@@ -203,8 +179,8 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
 
         cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
-    }
-
+    }    
+   
     @Override
     protected Widget makeWidget() {
         return uiBinder.createAndBindUi( this );
@@ -231,4 +207,16 @@ public class PermissionsPagedTable extends AbstractPagedTable<PermissionsPageRow
         refresh();
     }
 
+    public void setNewUserCommand(Command newUserCommand) {
+        this.newUserCommand = newUserCommand;
+    }
+    public void setDeleteUserCommand(Command deleteUserCommand) {
+        this.deleteUserCommand = deleteUserCommand;
+    }    
+    public void setOpenSelectedCommand(OpenItemCommand openSelectedCommand) {
+        this.openSelectedCommand = openSelectedCommand;
+    }   
+    public void setOpenSelectedCommand(AsyncDataProvider<PermissionsPageRow> dataProvider) {
+        this.dataProvider = dataProvider;
+    } 
 }
