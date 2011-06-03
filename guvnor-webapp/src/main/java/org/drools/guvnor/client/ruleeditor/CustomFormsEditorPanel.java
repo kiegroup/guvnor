@@ -43,6 +43,10 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 public class CustomFormsEditorPanel extends Composite {
     private Constants                            constants         = GWT.create( Constants.class );
     private ListBox                              factsCombo        = new ListBox( false );
@@ -187,9 +191,9 @@ public class CustomFormsEditorPanel extends Composite {
     }
 
     private void fillFieldConstrains() {
-        if ( fieldsCombo.getSelectedIndex() != -1 ) {
-            String fieldName = fieldsCombo.getItemText( fieldsCombo.getSelectedIndex() );
-            String factField = factsCombo.getItemText( factsCombo.getSelectedIndex() );
+        if (fieldsCombo.getSelectedIndex() > 0 && factsCombo.getSelectedIndex() > 0) {
+            String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
+            String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
             contraintsMap.clear();
 
             if ( this.workingSetEditor.getCustomFormsContainer().containsCustomFormFor( factField,

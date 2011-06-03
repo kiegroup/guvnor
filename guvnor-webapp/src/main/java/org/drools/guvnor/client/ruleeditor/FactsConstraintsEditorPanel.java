@@ -16,12 +16,12 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -30,37 +30,26 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.helper.ConstraintsContainer;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.*;
 
 public class FactsConstraintsEditorPanel extends Composite {
 
-    private Constants                            constants         = GWT.create( Constants.class );
-    private static Images                        images            = GWT.create( Images.class );
+    private Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
-    private static int                           idGenerator       = 0;
-    private ListBox                              factsCombo        = new ListBox( false );
-    private ListBox                              fieldsCombo       = new ListBox( false );
-    private ListBox                              constraintsCombo  = new ListBox( false );
-    private VerticalPanel                        vpConstraintConf  = new VerticalPanel();
-    private boolean                              validFactsChanged = true;
-    private Map<String, ConstraintConfiguration> contraintsMap     = new HashMap<String, ConstraintConfiguration>();
-    private final RuleAsset                      workingSet;
-    private final WorkingSetEditor               workingSetEditor;
+    private static int idGenerator = 0;
+    private ListBox factsCombo = new ListBox(false);
+    private ListBox fieldsCombo = new ListBox(false);
+    private ListBox constraintsCombo = new ListBox(false);
+    private VerticalPanel vpConstraintConf = new VerticalPanel();
+    private boolean validFactsChanged = true;
+    private Map<String, ConstraintConfiguration> contraintsMap = new HashMap<String, ConstraintConfiguration>();
+    private final RuleAsset workingSet;
+    private final WorkingSetEditor workingSetEditor;
 
     public FactsConstraintsEditorPanel(WorkingSetEditor workingSetEditor) {
 
@@ -68,148 +57,149 @@ public class FactsConstraintsEditorPanel extends Composite {
 
         this.workingSet = workingSetEditor.getWorkingSet();
 
-        factsCombo.setVisibleItemCount( 1 );
-        fieldsCombo.setVisibleItemCount( 1 );
-        constraintsCombo.setVisibleItemCount( 5 );
+        factsCombo.setVisibleItemCount(1);
+        fieldsCombo.setVisibleItemCount(1);
+        constraintsCombo.setVisibleItemCount(5);
 
-        factsCombo.addChangeHandler( new ChangeHandler() {
+        factsCombo.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 fillSelectedFactFields();
             }
-        } );
+        });
 
-        fieldsCombo.addChangeHandler( new ChangeHandler() {
+        fieldsCombo.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 fillFieldConstrains();
             }
-        } );
+        });
 
-        Image addNewConstraint = new ImageButton( images.newItem() );
-        addNewConstraint.setTitle( constants.AddNewConstraint() );
+        Image addNewConstraint = new ImageButton(images.newItem());
+        addNewConstraint.setTitle(constants.AddNewConstraint());
 
-        addNewConstraint.addClickHandler( new ClickHandler() {
+        addNewConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 showNewConstrainPop();
             }
-        } );
+        });
 
-        Image removeConstraint = new Image( images.trash() );
-        removeConstraint.setTitle( constants.removeConstraint() );
-        removeConstraint.addClickHandler( new ClickHandler() {
+        Image removeConstraint = new Image(images.trash());
+        removeConstraint.setTitle(constants.removeConstraint());
+        removeConstraint.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 removeConstraint();
             }
-        } );
+        });
 
         final FlexTable table = new FlexTable();
 
         VerticalPanel vp = new VerticalPanel();
-        vp.add( new SmallLabel( constants.FactTypes() ) );
-        vp.add( factsCombo );
-        table.setWidget( 0,
-                         0,
-                         vp );
+        vp.add(new SmallLabel(constants.FactTypes()));
+        vp.add(factsCombo);
+        table.setWidget(0,
+                0,
+                vp);
 
         vp = new VerticalPanel();
-        vp.add( new SmallLabel( constants.Field() ) );
-        vp.add( fieldsCombo );
-        table.setWidget( 1,
-                         0,
-                         vp );
+        vp.add(new SmallLabel(constants.Field()));
+        vp.add(fieldsCombo);
+        table.setWidget(1,
+                0,
+                vp);
 
         vp = new VerticalPanel();
         HorizontalPanel hp = new HorizontalPanel();
-        vp.add( new SmallLabel( constants.Constraints() ) );
-        hp.add( constraintsCombo );
+        vp.add(new SmallLabel(constants.Constraints()));
+        hp.add(constraintsCombo);
 
         VerticalPanel btnPanel = new VerticalPanel();
-        btnPanel.add( addNewConstraint );
-        btnPanel.add( removeConstraint );
-        hp.add( btnPanel );
-        vp.add( hp );
-        table.setWidget( 2,
-                         0,
-                         vp );
-        table.getFlexCellFormatter().setRowSpan( 2,
-                                                 0,
-                                                 3 );
-        constraintsCombo.addChangeHandler( new ChangeHandler() {
+        btnPanel.add(addNewConstraint);
+        btnPanel.add(removeConstraint);
+        hp.add(btnPanel);
+        vp.add(hp);
+        table.setWidget(2,
+                0,
+                vp);
+        table.getFlexCellFormatter().setRowSpan(2,
+                0,
+                3);
+        constraintsCombo.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 showConstraintConfig();
             }
-        } );
+        });
 
-        vpConstraintConf.add( new SmallLabel( constants.ConstraintsParameters() ) );
-        vpConstraintConf.add( new SmallLabel( "" ) );
-        table.setWidget( 0,
-                         1,
-                         vpConstraintConf );
-        table.getFlexCellFormatter().setRowSpan( 0,
-                                                 1,
-                                                 5 );
+        vpConstraintConf.add(new SmallLabel(constants.ConstraintsParameters()));
+        vpConstraintConf.add(new SmallLabel(""));
+        table.setWidget(0,
+                1,
+                vpConstraintConf);
+        table.getFlexCellFormatter().setRowSpan(0,
+                1,
+                5);
 
         fillSelectedFacts();
         fillSelectedFactFields();
         fillFieldConstrains();
         showConstraintConfig();
 
-        this.initWidget( table );
+        this.initWidget(table);
     }
 
     protected final void fillSelectedFacts() {
-        if ( validFactsChanged ) {
-            String s = factsCombo.getSelectedIndex() != -1 ? factsCombo.getItemText( factsCombo.getSelectedIndex() ) : "";
+        if (validFactsChanged) {
+            String s = factsCombo.getSelectedIndex() != -1 ? factsCombo.getItemText(factsCombo.getSelectedIndex()) : "";
             factsCombo.clear();
             validFactsChanged = false;
-            for ( int i = 0; i < workingSetEditor.getValidFactsListBox().getItemCount(); i++ ) {
-                String itemText = workingSetEditor.getValidFactsListBox().getItemText( i );
-                factsCombo.addItem( itemText );
-                if ( s.equals( itemText ) ) {
-                    factsCombo.setSelectedIndex( i );
+            for (int i = 0; i < workingSetEditor.getValidFactsListBox().getItemCount(); i++) {
+                String itemText = workingSetEditor.getValidFactsListBox().getItemText(i);
+                factsCombo.addItem(itemText);
+                if (s.equals(itemText)) {
+                    factsCombo.setSelectedIndex(i);
                 }
             }
-            if ( factsCombo.getSelectedIndex() == -1 && factsCombo.getItemCount() > 0 ) {
-                factsCombo.setSelectedIndex( 0 );
+            if (factsCombo.getSelectedIndex() == -1 && factsCombo.getItemCount() > 0) {
+                factsCombo.setSelectedIndex(0);
             }
             fillSelectedFactFields();
         }
     }
 
     private void fillSelectedFactFields() {
-        if ( factsCombo.getSelectedIndex() != -1 ) {
-            String fact = factsCombo.getItemText( factsCombo.getSelectedIndex() );
+        if (factsCombo.getSelectedIndex() != -1) {
+            String fact = factsCombo.getItemText(factsCombo.getSelectedIndex());
             fieldsCombo.clear();
-            for ( String field : getCompletionEngine().getFieldCompletions( fact ) ) {
-                fieldsCombo.addItem( field );
+            for (String field : getCompletionEngine().getFieldCompletions(fact)) {
+                fieldsCombo.addItem(field);
             }
         }
-        if ( fieldsCombo.getSelectedIndex() == -1 && fieldsCombo.getItemCount() > 0 ) {
-            fieldsCombo.setSelectedIndex( 0 );
+        if (fieldsCombo.getSelectedIndex() == -1 && fieldsCombo.getItemCount() > 0) {
+            fieldsCombo.setSelectedIndex(0);
         }
         fillFieldConstrains();
     }
 
     private void fillFieldConstrains() {
-        if ( fieldsCombo.getSelectedIndex() != -1 ) {
-            String fieldName = fieldsCombo.getItemText( fieldsCombo.getSelectedIndex() );
-            String factField = factsCombo.getItemText( factsCombo.getSelectedIndex() );
+        if (fieldsCombo.getSelectedIndex() > 0 && factsCombo.getSelectedIndex() > 0) {
+            String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
+
+            String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
             constraintsCombo.clear();
             contraintsMap.clear();
-            for ( ConstraintConfiguration c : this.workingSetEditor.getConstraintsConstrainer().getConstraints( factField,
-                                                                                                                fieldName ) ) {
-                constraintsCombo.addItem( c.getConstraintName(),
-                                          addContrainsMap( c ) );
+            for (ConstraintConfiguration c : this.workingSetEditor.getConstraintsConstrainer().getConstraints(factField,
+                    fieldName)) {
+                constraintsCombo.addItem(c.getConstraintName(),
+                        addContrainsMap(c));
             }
-            vpConstraintConf.remove( vpConstraintConf.getWidgetCount() - 1 );
-            vpConstraintConf.add( new SmallLabel() );
+            vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
+            vpConstraintConf.add(new SmallLabel());
         }
         showConstraintConfig();
     }
 
     synchronized private String addContrainsMap(ConstraintConfiguration c) {
-        String constraintId = String.valueOf( idGenerator++ );
-        contraintsMap.put( constraintId,
-                           c );
+        String constraintId = String.valueOf(idGenerator++);
+        contraintsMap.put(constraintId,
+                c);
         return constraintId;
     }
 
@@ -222,41 +212,41 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private void showConstraintConfig() {
-        if ( constraintsCombo.getItemCount() == 0 ) {
-            vpConstraintConf.remove( vpConstraintConf.getWidgetCount() - 1 );
-            vpConstraintConf.add( new SmallLabel() );
+        if (constraintsCombo.getItemCount() == 0) {
+            vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
+            vpConstraintConf.add(new SmallLabel());
             return;
         }
-        if ( constraintsCombo.getSelectedIndex() != -1 ) {
-            ConstraintConfiguration c = contraintsMap.get( constraintsCombo.getValue( constraintsCombo.getSelectedIndex() ) );
-            ConstraintEditor editor = new ConstraintEditor( c );
-            vpConstraintConf.remove( vpConstraintConf.getWidgetCount() - 1 );
-            vpConstraintConf.add( editor );
+        if (constraintsCombo.getSelectedIndex() != -1) {
+            ConstraintConfiguration c = contraintsMap.get(constraintsCombo.getValue(constraintsCombo.getSelectedIndex()));
+            ConstraintEditor editor = new ConstraintEditor(c);
+            vpConstraintConf.remove(vpConstraintConf.getWidgetCount() - 1);
+            vpConstraintConf.add(editor);
         }
     }
 
     private void showNewConstrainPop() {
-        final FormStylePopup pop = new FormStylePopup( images.config(),
-                                                       constants.AddNewConstraint() );
-        final Button addbutton = new Button( constants.OK() );
-        final ListBox consDefsCombo = new ListBox( false );
+        final FormStylePopup pop = new FormStylePopup(images.config(),
+                constants.AddNewConstraint());
+        final Button addbutton = new Button(constants.OK());
+        final ListBox consDefsCombo = new ListBox(false);
 
-        consDefsCombo.setVisibleItemCount( 5 );
+        consDefsCombo.setVisibleItemCount(5);
 
-        addbutton.setTitle( constants.AddNewConstraint() );
+        addbutton.setTitle(constants.AddNewConstraint());
 
-        List<String> names = new ArrayList<String>( ConstraintsContainer.getAllConfigurations().keySet() );
-        Collections.sort( names );
-        for ( String name : names ) {
-            consDefsCombo.addItem( name );
+        List<String> names = new ArrayList<String>(ConstraintsContainer.getAllConfigurations().keySet());
+        Collections.sort(names);
+        for (String name : names) {
+            consDefsCombo.addItem(name);
         }
 
-        addbutton.addClickHandler( new ClickHandler() {
+        addbutton.addClickHandler(new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                String name = consDefsCombo.getItemText( consDefsCombo.getSelectedIndex() );
-                ConstraintConfiguration config = ConstraintsContainer.getEmptyConfiguration( name );
-                if ( config != null ) {
+                String name = consDefsCombo.getItemText(consDefsCombo.getSelectedIndex());
+                ConstraintConfiguration config = ConstraintsContainer.getEmptyConfiguration(name);
+                if (config != null) {
 
                     String factName = factsCombo.getItemText( factsCombo.getSelectedIndex() );
                     String fieldName = fieldsCombo.getItemText( fieldsCombo.getSelectedIndex() );
@@ -273,12 +263,12 @@ public class FactsConstraintsEditorPanel extends Composite {
                 }
                 pop.hide();
             }
-        } );
+        });
 
-        pop.addAttribute( constants.WillExtendTheFollowingRuleCalled(),
-                          consDefsCombo );
-        pop.addAttribute( "",
-                          addbutton );
+        pop.addAttribute(constants.WillExtendTheFollowingRuleCalled(),
+                consDefsCombo);
+        pop.addAttribute("",
+                addbutton);
 
         pop.show();
     }

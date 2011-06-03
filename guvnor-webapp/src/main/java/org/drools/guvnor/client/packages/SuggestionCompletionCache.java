@@ -47,7 +47,9 @@ public class SuggestionCompletionCache {
 
 
     public static SuggestionCompletionCache getInstance() {
-        if (INSTANCE == null) INSTANCE = new SuggestionCompletionCache();
+        if (INSTANCE == null){
+            INSTANCE = new SuggestionCompletionCache();
+        }
         return INSTANCE;
     }
 
