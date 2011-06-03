@@ -43,6 +43,7 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -91,6 +92,12 @@ public class QueryWidget extends Composite {
         final TextBox tx = new TextBox();
         ts.addAttribute( constants.SearchFor(),
                          tx );
+
+        final CheckBox caseSensitiveBox = new CheckBox();
+        caseSensitiveBox.setValue( false );
+        ts.addAttribute( constants.IsSearchCaseSensitive(),
+                             caseSensitiveBox );
+
         Button go = new Button();
         go.setText( constants.Search1() );
         ts.addAttribute( "",
@@ -108,6 +115,7 @@ public class QueryWidget extends Composite {
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable( tx.getText(),
                                                              false,
+                                                             caseSensitiveBox.getValue(),
                                                              editEvent );
                 resultsP.add( table );
             }
@@ -137,7 +145,7 @@ public class QueryWidget extends Composite {
 
         VerticalPanel container = new VerticalPanel();
         VerticalPanel criteria = new VerticalPanel();
-        
+
         final Map<String, MetaDataQuery> atts = new HashMap<String, MetaDataQuery>() {
             private static final long serialVersionUID = 510l;
 
@@ -240,10 +248,10 @@ public class QueryWidget extends Composite {
                 }
             }
         } );
-        
+
         criteria.add( fm );
-        container.add(criteria);
-        container.add(resultsP);
+        container.add( criteria );
+        container.add( resultsP );
         advancedDisclosure.setContent( container );
 
         layout.add( advancedDisclosure );

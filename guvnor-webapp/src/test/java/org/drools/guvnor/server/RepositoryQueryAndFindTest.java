@@ -39,6 +39,7 @@ import org.drools.type.DateFormatsImpl;
 import org.junit.Test;
 
 public class RepositoryQueryAndFindTest extends GuvnorTestBase {
+
     @Test
     public void testQueryFullTextPagedResults() throws Exception {
 
@@ -55,10 +56,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search." );
 
         impl.createNewRule( "testTextRule1",
-                                          "desc",
-                                          cat,
-                                          "testTextSearch",
-                                          AssetFormats.DRL );
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
 
         impl.createNewRule( "testTextRule2",
                             "desc",
@@ -81,8 +82,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -90,8 +93,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
-        assertTrue( response.getPageRowList().size() == 1 );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -109,10 +114,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search." );
 
         impl.createNewRule( "testTextRule1",
-                                          "desc",
-                                          cat,
-                                          "testTextSearch",
-                                          AssetFormats.DRL );
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
 
         impl.createNewRule( "testTextRule2",
                             "desc",
@@ -135,8 +140,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == 3 );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -156,10 +163,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search." );
 
         impl.createNewRule( "testTextRule1",
-                                          "desc",
-                                          cat,
-                                          "testTextSearch",
-                                          AssetFormats.DRL );
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
 
         impl.createNewRule( "testTextRule2",
                             "desc",
@@ -183,8 +190,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -192,8 +201,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
-        assertTrue( response.getPageRowList().size() == 1 );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -211,10 +222,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search." );
 
         impl.createNewRule( "testTextRule1",
-                                          "desc",
-                                          cat,
-                                          "testTextSearch",
-                                          AssetFormats.DRL );
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
 
         impl.createNewRule( "testTextRule2",
                             "desc",
@@ -238,8 +249,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == 3 );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -272,7 +285,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
                                                                          DateUtils.parseDate( "10-Jul-1974",
-                                                                                                       new DateFormatsImpl() ),
+                                                                                              new DateFormatsImpl() ),
                                                                          null,
                                                                          null,
                                                                          null,
@@ -285,8 +298,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -294,8 +309,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
-        assertTrue( response.getPageRowList().size() == 1 );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -326,7 +343,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         List<MetaDataQuery> metadata = Arrays.asList( qr );
         QueryMetadataPageRequest request = new QueryMetadataPageRequest( metadata,
                                                                          DateUtils.parseDate( "10-Jul-1974",
-                                                                                                       new DateFormatsImpl() ),
+                                                                                              new DateFormatsImpl() ),
                                                                          null,
                                                                          null,
                                                                          null,
@@ -339,8 +356,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == 3 );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -388,8 +407,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == PAGE_SIZE );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
@@ -397,8 +418,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == PAGE_SIZE );
-        assertTrue( response.getPageRowList().size() == 1 );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -443,8 +466,10 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
-        assertTrue( response.getPageRowList().size() == 3 );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
         assertTrue( response.isLastPage() );
     }
 
@@ -478,6 +503,224 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         assertEquals( 1,
                       response.getPageRowList().size() );
+    }
+
+    @Test
+    public void testQuickFindAssetCaseInsensitiveFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        String cat = "testTextSearch";
+        repositoryCategoryService.createCategory( "/",
+                                                  cat,
+                                                  "qkfnd" );
+        repositoryPackageService.createPackage( "testTextSearch",
+                                                "for testing search." );
+
+        impl.createNewRule( "testTextRule",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "TESTTEXTRULE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "tEsTtExTrUlE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule",
+                                                         false,
+                                                         false,
+                                                         0,
+                                                         null );
+        PageResponse<QueryPageRow> response;
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+        response = repositoryAssetService.quickFindAsset( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( 3,
+                      response.getPageRowList().size() );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    public void testQuickFindAssetCaseInsensitivePagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        String cat = "testTextSearch";
+        repositoryCategoryService.createCategory( "/",
+                                                  cat,
+                                                  "qkfnd" );
+        repositoryPackageService.createPackage( "testTextSearch",
+                                                "for testing search." );
+
+        impl.createNewRule( "testTextRule",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "TESTTEXTRULE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "tEsTtExTrUlE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule",
+                                                         false,
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<QueryPageRow> response;
+        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+        response = repositoryAssetService.quickFindAsset( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    public void testQueryFullTextCaseInsensitiveFullResults() throws Exception {
+
+        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        String cat = "testTextSearch";
+        repositoryCategoryService.createCategory( "/",
+                                                  cat,
+                                                  "qkfnd" );
+        repositoryPackageService.createPackage( "testTextSearch",
+                                                "for testing search." );
+
+        impl.createNewRule( "testTextRule",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "TESTTEXTRULE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "tEsTtExTrUlE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule",
+                                                         false,
+                                                         false,
+                                                         0,
+                                                         null );
+        PageResponse<QueryPageRow> response;
+        response = impl.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue( response.getPageRowList().size() == 3 );
+        assertTrue( response.isLastPage() );
+    }
+
+    @Test
+    public void testQueryFullTextCaseInsensitivePagedResults() throws Exception {
+
+        final int PAGE_SIZE = 2;
+
+        ServiceImplementation impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
+        String cat = "testTextSearch";
+        repositoryCategoryService.createCategory( "/",
+                                                  cat,
+                                                  "qkfnd" );
+        repositoryPackageService.createPackage( "testTextSearch",
+                                                "for testing search." );
+
+        impl.createNewRule( "testTextRule",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "TESTTEXTRULE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        impl.createNewRule( "tEsTtExTrUlE",
+                            "desc",
+                            cat,
+                            "testTextSearch",
+                            AssetFormats.DRL );
+
+        QueryPageRequest request = new QueryPageRequest( "testTextRule*",
+                                                         false,
+                                                         false,
+                                                         0,
+                                                         PAGE_SIZE );
+        PageResponse<QueryPageRow> response;
+        response = impl.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertEquals( 0,
+                      response.getStartRowIndex() );
+        assertEquals( PAGE_SIZE,
+                      response.getPageRowList().size() );
+        assertFalse( response.isLastPage() );
+
+        request.setStartRowIndex( PAGE_SIZE );
+        response = impl.queryFullText( request );
+
+        assertNotNull( response );
+        assertNotNull( response.getPageRowList() );
+        assertEquals( PAGE_SIZE,
+                      response.getStartRowIndex() );
+        assertEquals( 1,
+                      response.getPageRowList().size() );
+        assertTrue( response.isLastPage() );
     }
 
 }

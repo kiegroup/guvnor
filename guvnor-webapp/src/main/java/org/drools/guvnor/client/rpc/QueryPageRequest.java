@@ -22,6 +22,7 @@ public class QueryPageRequest extends PageRequest {
 
     private String  searchText;
     private Boolean searchArchived;
+    private Boolean isCaseSensitive = true;
 
     // For GWT serialisation
     public QueryPageRequest() {
@@ -31,9 +32,22 @@ public class QueryPageRequest extends PageRequest {
                             Boolean searchArchived,
                             int startRowIndex,
                             Integer pageSize) {
-        super(startRowIndex, pageSize);
+        super( startRowIndex,
+               pageSize );
         this.searchText = searchText;
         this.searchArchived = searchArchived;
+    }
+
+    public QueryPageRequest(String searchText,
+                            Boolean searchArchived,
+                            Boolean isCaseSensitive,
+                            int startRowIndex,
+                            Integer pageSize) {
+        this( searchText,
+              searchArchived,
+              startRowIndex,
+              pageSize );
+        this.isCaseSensitive = isCaseSensitive;
     }
 
     // ************************************************************************
@@ -54,6 +68,14 @@ public class QueryPageRequest extends PageRequest {
 
     public void setSearchText(String searchText) {
         this.searchText = searchText;
+    }
+
+    public Boolean isCaseSensitive() {
+        return isCaseSensitive;
+    }
+
+    public void setIsCaseSensitive(Boolean isCaseSensitive) {
+        this.isCaseSensitive = isCaseSensitive;
     }
 
 }

@@ -55,8 +55,7 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
      * @param searchArchived
      * @param event
      */
-    public QueryPagedTable(
-                           final List<MetaDataQuery> metadata,
+    public QueryPagedTable(final List<MetaDataQuery> metadata,
                            final Date createdAfter,
                            final Date createdBefore,
                            final Date lastModifiedAfter,
@@ -106,6 +105,41 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                 QueryPageRequest request = new QueryPageRequest();
                 request.setSearchText( searchText );
                 request.setSearchArchived( searchArchived );
+                request.setStartRowIndex( pager.getPageStart() );
+                request.setPageSize( pageSize );
+                assetService.quickFindAsset( request,
+                                                  new GenericCallback<PageResponse<QueryPageRow>>() {
+                                                      public void onSuccess(PageResponse<QueryPageRow> response) {
+                                                          updateRowCount( response.getTotalRowSize(),
+                                                                          response.isTotalRowSizeExact() );
+                                                          updateRowData( response.getStartRowIndex(),
+                                                                         response.getPageRowList() );
+                                                      }
+                                                  } );
+            }
+        } );
+    }
+
+    /**
+     * Constructor
+     * 
+     * @param searchText
+     * @param searchArchived
+     * @param isCaseSensitive
+     * @param event
+     */
+    public QueryPagedTable(final String searchText,
+                           final Boolean searchArchived,
+                           final Boolean isCaseSensitive,
+                           final OpenItemCommand editEvent) {
+        super( PAGE_SIZE,
+               editEvent );
+        setDataProvider( new AsyncDataProvider<QueryPageRow>() {
+            protected void onRangeChanged(HasData<QueryPageRow> display) {
+                QueryPageRequest request = new QueryPageRequest();
+                request.setSearchText( searchText );
+                request.setSearchArchived( searchArchived );
+                request.setIsCaseSensitive( isCaseSensitive );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
                 assetService.quickFindAsset( request,

@@ -1389,6 +1389,8 @@ public interface Constants
     String FindItemsWithANameMatching();
 
     String IncludeArchivedAssetsInResults();
+    
+    String IsSearchCaseSensitive();
 
     String EnterSearchString();
 

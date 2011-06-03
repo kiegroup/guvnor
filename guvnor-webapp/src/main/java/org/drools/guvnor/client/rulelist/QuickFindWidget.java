@@ -61,6 +61,7 @@ public class QuickFindWidget extends Composite {
 
     private SuggestBox       searchBox;
     private CheckBox         archiveBox;
+    private CheckBox         caseSensitiveBox;
 
     public QuickFindWidget(final OpenItemCommand editEvent) {
 
@@ -75,6 +76,7 @@ public class QuickFindWidget extends Composite {
                                            Callback cb) {
                 loadShortList( r.getQuery(),
                                archiveBox.getValue(),
+                               caseSensitiveBox.getValue(),
                                r,
                                cb );
 
@@ -89,6 +91,7 @@ public class QuickFindWidget extends Composite {
                 resultsP.clear();
                 QueryPagedTable table = new QueryPagedTable( searchBox.getValue(),
                                                              archiveBox.getValue(),
+                                                             caseSensitiveBox.getValue(),
                                                              editEvent );
                 resultsP.add( table );
             }
@@ -109,19 +112,24 @@ public class QuickFindWidget extends Composite {
         layout.addAttribute( constants.IncludeArchivedAssetsInResults(),
                              archiveBox );
 
+        caseSensitiveBox = new CheckBox();
+        caseSensitiveBox.setValue( false );
+        layout.addAttribute( constants.IsSearchCaseSensitive(),
+                             caseSensitiveBox );
+
         Button go = new Button( constants.Search() );
         go.addClickHandler( cl );
         layout.addAttribute( "",
                              go );
 
         HorizontalPanel searchTitle = new HorizontalPanel();
-        searchTitle.add(new Image(images.information()));
-        searchTitle.add(new Label(constants.EnterSearchString()));
+        searchTitle.add( new Image( images.information() ) );
+        searchTitle.add( new Label( constants.EnterSearchString() ) );
         FlexTable listPanel = new FlexTable();
         listPanel.setWidget( 0,
                              0,
-                             searchTitle);
-                             
+                             searchTitle );
+
         PrettyFormLayout pfl = new PrettyFormLayout();
         pfl.startSection();
         pfl.addRow( listPanel );
@@ -140,36 +148,38 @@ public class QuickFindWidget extends Composite {
      */
     protected void loadShortList(String searchText,
                                  Boolean searchArchived,
+                                 Boolean isCaseSensitive,
                                  final Request r,
                                  final Callback cb) {
         final QueryPageRequest queryRequest = new QueryPageRequest( searchText,
                                                                     searchArchived,
+                                                                    isCaseSensitive,
                                                                     0,
                                                                     5 );
         RepositoryServiceFactory.getAssetService().quickFindAsset( queryRequest,
-                                                              new GenericCallback<PageResponse<QueryPageRow>>() {
+                                                                   new GenericCallback<PageResponse<QueryPageRow>>() {
 
-                                                                  public void onSuccess(PageResponse<QueryPageRow> result) {
-                                                                      List<SuggestOracle.Suggestion> items = new ArrayList<SuggestOracle.Suggestion>();
-                                                                      for ( QueryPageRow row : result.getPageRowList() ) {
-                                                                          final String name = row.getName();
-                                                                          items.add( new SuggestOracle.Suggestion() {
+                                                                       public void onSuccess(PageResponse<QueryPageRow> result) {
+                                                                           List<SuggestOracle.Suggestion> items = new ArrayList<SuggestOracle.Suggestion>();
+                                                                           for ( QueryPageRow row : result.getPageRowList() ) {
+                                                                               final String name = row.getName();
+                                                                               items.add( new SuggestOracle.Suggestion() {
 
-                                                                              public String getDisplayString() {
-                                                                                  return name;
-                                                                              }
+                                                                                   public String getDisplayString() {
+                                                                                       return name;
+                                                                                   }
 
-                                                                              public String getReplacementString() {
-                                                                                  return name;
-                                                                              }
+                                                                                   public String getReplacementString() {
+                                                                                       return name;
+                                                                                   }
 
-                                                                          } );
-                                                                      }
-                                                                      cb.onSuggestionsReady( r,
-                                                                                             new SuggestOracle.Response( items ) );
-                                                                  }
+                                                                               } );
+                                                                           }
+                                                                           cb.onSuggestionsReady( r,
+                                                                                                  new SuggestOracle.Response( items ) );
+                                                                       }
 
-                                                              } );
+                                                                   } );
 
     }
 

@@ -210,10 +210,10 @@ public class RulesRepository {
             } catch ( PathNotFoundException e ) {
                 if ( tries == 1 ) {
                     // hmm...repository must have gotten screwed up. This can be caused by importing an old
-                	//repository dump which does not contain certain schemas required by the new version  
-                	//of Guvnor. Normally this exception will be handled by the upper layer (for example, create the 
-                	//missing node when the exception is caught.
-                    throw new RulesRepositoryException( "Unable to get node ["+areaName+"]. Repository is not setup correctly.",
+                    //repository dump which does not contain certain schemas required by the new version  
+                    //of Guvnor. Normally this exception will be handled by the upper layer (for example, create the 
+                    //missing node when the exception is caught.
+                    throw new RulesRepositoryException( "Unable to get node [" + areaName + "]. Repository is not setup correctly.",
                                                         e );
                 } else {
                     log.error( "The repository appears to have become corrupted. Unable to correct repository corruption" );
@@ -1606,17 +1606,65 @@ public class RulesRepository {
      */
     public AssetItemIterator findAssetsByName(String name,
                                               boolean seekArchived) {
+        return findAssetsByName( name,
+                                 seekArchived,
+                                 true );
+    }
+
+    /**
+     * This will search assets, looking for matches against the name.
+     * 
+     * @param name
+     *            The search text
+     * @param seekArchived
+     *            True is Archived Assets should be included
+     * @param isCaseSensitive
+     *            True is the search is case-sensitive
+     */
+    public AssetItemIterator findAssetsByName(String name,
+                                              boolean seekArchived,
+                                              boolean isCaseSensitive) {
         try {
 
-            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE " + AssetItem.TITLE_PROPERTY_NAME + " LIKE '" + name + "'";
-            sql += " AND jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
+            StringBuilder sb = new StringBuilder();
+            sb.append( "SELECT " );
+            sb.append( AssetItem.TITLE_PROPERTY_NAME );
+            sb.append( ", " );
+            sb.append( AssetItem.DESCRIPTION_PROPERTY_NAME );
+            sb.append( ", " );
+            sb.append( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG );
+            sb.append( " " );
+            sb.append( "FROM " );
+            sb.append( AssetItem.RULE_NODE_TYPE_NAME );
+            sb.append( " " );
+            sb.append( "WHERE " );
+            if ( isCaseSensitive ) {
+                sb.append( AssetItem.TITLE_PROPERTY_NAME );
+                sb.append( " " );
+                sb.append( "LIKE '" );
+                sb.append( name );
+                sb.append( "' " );
+            } else {
+                sb.append( "LOWER(" );
+                sb.append( AssetItem.TITLE_PROPERTY_NAME );
+                sb.append( ") " );
+                sb.append( "LIKE '" );
+                sb.append( name.toLowerCase() );
+                sb.append( "' " );
+            }
+            sb.append( "AND jcr:path LIKE '/" );
+            sb.append( RULES_REPOSITORY_NAME );
+            sb.append( "/" );
+            sb.append( RULE_PACKAGE_AREA );
+            sb.append( "/%'" );
 
             if ( seekArchived == false ) {
-                sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
+                sb.append( " AND " );
+                sb.append( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG );
+                sb.append( " = 'false'" );
             }
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery( sql,
+            Query q = this.session.getWorkspace().getQueryManager().createQuery( sb.toString(),
                                                                                  Query.SQL );
 
             QueryResult res = q.execute();
