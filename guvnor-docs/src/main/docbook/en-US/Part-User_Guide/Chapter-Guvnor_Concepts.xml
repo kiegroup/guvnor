@@ -113,95 +113,115 @@
   </section>
 
   <section>
-    <title>The asset editor</title>
+    <title>The Asset Editor</title>
 
-    <figure>
-      <title>The Asset editor view</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Chapter-Guvnor/AssetEditor.png"
-                     format="PNG" scalefit="1"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>
-
-    <para>The above diagram shows the "asset editor" with some annotated
-    areas. The asset editor is where all rule changes are made. Below is a
-    list which describes the different parts of the editor.</para>
+    <para>The Asset Editor is the principle component of Guvnor's
+    User-Interface. It consists of two tabs:-</para>
 
     <itemizedlist>
       <listitem>
-        <para>A</para>
+        <para>Attributes</para>
 
-        <para>This is where the "editor widget" lives - exactly what form the
-        editor takes depends on the asset or rule type.</para>
+        <figure>
+          <title>The Asset Editor - Attributes tab</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <itemizedlist>
+          <listitem>
+            <para>A : This section contains meta data (from the "Dublin Core"
+            standard):-</para>
+
+            <para>"Last modified:" The last modified date.</para>
+
+            <para>"By:" Who made the last change.</para>
+
+            <para>"Note:" A comment made when the Asset was last updated (i.e.
+            why a change was made)</para>
+
+            <para>"Created on:" The date and time the Asset was
+            created.</para>
+
+            <para>"Created by:" Who initially authored the Asset.</para>
+
+            <para>"Format:" The short format name of the type of Asset.</para>
+
+            <para>"Package:" The package to which the Asset belongs.</para>
+
+            <para>"Is Disabled:" Whether the Asset has been disabled from
+            inclusion in a binary package.</para>
+
+            <para>"UUID:" A unique identifier for the Asset version.</para>
+          </listitem>
+
+          <listitem>
+            <para>B : Version history of the Asset.</para>
+          </listitem>
+
+          <listitem>
+            <para>C : Free-format documentation\description for the Asset. It
+            is encouraged, but not mandatory, to record a description of the
+            Asset before editing.</para>
+          </listitem>
+
+          <listitem>
+            <para>D : Discussions regarding development of the Asset can be
+            recored here.</para>
+          </listitem>
+
+          <listitem>
+            <para>E : The Category, or Categories, to which the Asset
+            belongs.</para>
+          </listitem>
+
+          <listitem>
+            <para>F : The Package to which the Asset belongs.</para>
+          </listitem>
+
+          <listitem>
+            <para>G : View the Asset's version history.</para>
+          </listitem>
+        </itemizedlist>
       </listitem>
 
       <listitem>
-        <para>B</para>
+        <para>Edit</para>
 
-        <para>This is the documentation area - a free text area where
-        descriptions of the rule can live. It is encouraged to write a plain
-        description in the rule here before editing.</para>
-      </listitem>
+        <figure>
+          <title>The Asset Editor - Edit tab</title>
 
-      <listitem>
-        <para>C</para>
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-edit.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
 
-        <para>These are the actions - for saving, archiving, changing status
-        etc. Archiving is the equivalent of deleting an asset.</para>
-      </listitem>
+        <itemizedlist>
+          <listitem>
+            <para>A : The Asset editor is where the "editor widget" lives -
+            exactly what form the editor takes depends on the Asset
+            type.</para>
+          </listitem>
 
-      <listitem>
-        <para>D</para>
+          <listitem>
+            <para>B : These are menus contains various actions for the Asset;
+            such as Saving, Archiving, changing Status etc.</para>
+          </listitem>
 
-        <para>This has the asset name, as well as the list of categories that
-        the asset belongs to.</para>
-      </listitem>
-
-      <listitem>
-        <para>E</para>
-
-        <para>This section contains read-only meta data, including when
-        changes were made, and by whom.</para>
-
-        <para>"Modified on:" - this is the last modified date.</para>
-
-        <para>"By:" - who made the last change.</para>
-
-        <para>"Note:" - this is the comment made when the asset was last
-        updated (i.e. why a change was made)</para>
-
-        <para>"Version:" - this is a number which is incremented by 1 each
-        time a change is checked in (saved).</para>
-
-        <para>"Created on:" - the date and time the asset was created.</para>
-
-        <para>"Created by:" - this initial author of the asset.</para>
-
-        <para>"Format:" - the short format name of the type of asset.</para>
-      </listitem>
-
-      <listitem>
-        <para>F</para>
-
-        <para>This shows what package the asset belong to (you can also change
-        it from here).</para>
-      </listitem>
-
-      <listitem>
-        <para>G</para>
-
-        <para>This is some more (optional) meta data (taken from the Dublin
-        Core meta data standard)</para>
-      </listitem>
-
-      <listitem>
-        <para>H</para>
-
-        <para>This will show the version history list when requested.</para>
+          <listitem>
+            <para>C : The current status of the Asset.</para>
+          </listitem>
+        </itemizedlist>
       </listitem>
     </itemizedlist>
   </section>
@@ -221,8 +241,10 @@
       input based on knowledge of the object model. This can also be augmented
       with DSL sentences.</para>
 
-      <para>IMPORTANT: to use the BRL guided editor, someone will need to have
-      you package configured before hand.</para>
+      <note>
+        <para>To use the BRL guided editor, someone will need to have you
+        package configured before hand.</para>
+      </note>
 
       <figure>
         <title>The guided BRL editor</title>
@@ -230,7 +252,7 @@
         <mediaobject>
           <imageobject>
             <imagedata align="center"
-                       fileref="images/Chapter-Guvnor/GuidedEditor.png"
+                       fileref="images/Chapter-Guvnor/GuidedEditor-overview.png"
                        format="PNG" scalefit="1"></imagedata>
           </imageobject>
         </mediaobject>
@@ -239,7 +261,7 @@
       <para>The above diagram shows the editor in action. The following
       descriptions apply to the lettered boxes in the diagram:-</para>
 
-      <para>A: The different parts of a rule:-<itemizedlist>
+      <para>A : The different parts of a rule:-<itemizedlist>
           <listitem>
             <para>The "WHEN" part, or conditions, of the rule.</para>
           </listitem>
@@ -254,7 +276,7 @@
           </listitem>
         </itemizedlist></para>
 
-      <para>B: This shows a pattern which is declaring that the rule is
+      <para>B : This shows a pattern which is declaring that the rule is
       looking for a "LoanApplication" fact (the fields are listed below, in
       this case none). Another pattern, "Applicant", is listed below
       "LoanApplication". Fields "creditRating" and "applicationDate" are
@@ -275,14 +297,14 @@
           </listitem>
         </itemizedlist></para>
 
-      <para>C: The "minus" icon ("[-]") indicates you can remove something. In
-      this case it would remove the whole "LoanApplication" fact declaration.
-      Depending upon the placement of the icon different components of the
-      rule declaration can be removed, for example a Fact Pattern, Field
-      Constraint, other Conditional Element ("exists", "not exists", "from"
-      etc) or an Action.</para>
+      <para>C : The "minus" icon ("[-]") indicates you can remove something.
+      In this case it would remove the whole "LoanApplication" fact
+      declaration. Depending upon the placement of the icon different
+      components of the rule declaration can be removed, for example a Fact
+      Pattern, Field Constraint, other Conditional Element ("exists", "not
+      exists", "from" etc) or an Action.</para>
 
-      <para>D: The "plus" icon ("+") allows you to add more patterns to the
+      <para>D : The "plus" icon ("+") allows you to add more patterns to the
       condition or the action part of the rule, or more attributes. In all
       cases, a popup option box is provided. For the "WHEN" part of the rule,
       you can choose from a list of Conditional Elements to add: <itemizedlist
@@ -325,8 +347,8 @@
         </itemizedlist> If you just put a fact (like is shown above) then all
       the patterns are combined together so they are all true ("and").</para>
 
-      <para>E: This shows the constraint for the "creditRating" field. Looking
-      from left to right you find:-<itemizedlist spacing="normal">
+      <para>E : This shows the constraint for the "creditRating" field.
+      Looking from left to right you find:-<itemizedlist spacing="normal">
           <listitem>
              The field name: "creditRating". Clicking on it you can assign a variable name to it, or access nested properties of it. 
           </listitem>
@@ -376,7 +398,7 @@
           </listitem>
         </itemizedlist></para>
 
-      <para>F: This shows the constraint for the "applicationDate" field.
+      <para>F : This shows the constraint for the "applicationDate" field.
       Looking from left to right you find: <itemizedlist spacing="normal">
           <listitem>
              The field name: "applicationDate". 
@@ -401,12 +423,12 @@
           defined.</para>
         </note></para>
 
-      <para>G: Pattern/Action toolbar. Next to each Pattern or Action you will
-      find a toolbar containing 3 buttons. The first button lets you insert a
-      new Pattern/Action below the one you selected, the other two buttons
-      will move the current Pattern/Action up or down.</para>
+      <para>G : Pattern/Action toolbar. Next to each Pattern or Action you
+      will find a toolbar containing 3 buttons. The first button lets you
+      insert a new Pattern/Action below the one you selected, the other two
+      buttons will move the current Pattern/Action up or down.</para>
 
-      <para>H: This shows an "action" of the rule, the Right Hand Side of a
+      <para>H : This shows an "action" of the rule, the Right Hand Side of a
       rule consists in a list of actions. In this case, we are updating the
       "explanation" field of the "LoanApplication" fact. There are quite a few
       other types of actions you can use:-<itemizedlist>
