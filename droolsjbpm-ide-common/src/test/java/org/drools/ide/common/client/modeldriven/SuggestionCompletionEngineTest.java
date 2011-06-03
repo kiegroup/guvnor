@@ -16,27 +16,27 @@
 
 package org.drools.ide.common.client.modeldriven;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarInputStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.ide.common.client.modeldriven.DropDownData;
-import org.drools.ide.common.client.modeldriven.FactTypeFilter;
-import org.drools.ide.common.client.modeldriven.ModelField;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.server.rules.SuggestionCompletionLoader;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.junit.Test;
 
 public class SuggestionCompletionEngineTest {
 
@@ -89,7 +89,7 @@ public class SuggestionCompletionEngineTest {
                                            "name" ) );
 
         assertEquals( 3,
-                      engine.getDataEnumListsSize());
+                      engine.getDataEnumListsSize() );
         String[] items = engine.getDataEnumList( "Person.age" );
         assertEquals( 2,
                       items.length );
@@ -115,7 +115,7 @@ public class SuggestionCompletionEngineTest {
                                        "else" ) );
 
     }
-    
+
     @Test
     public void testDataEnums3() {
         String pkg = "package org.test\n import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngineTest.NestedClass";
@@ -136,7 +136,7 @@ public class SuggestionCompletionEngineTest {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint f1 = new SingleFieldConstraint( "f1" );
-        f1.setValue("a1");
+        f1.setValue( "a1" );
         pat.addConstraint( f1 );
         pat.addConstraint( new SingleFieldConstraint( "f2" ) );
 
@@ -211,39 +211,54 @@ public class SuggestionCompletionEngineTest {
                       items[1] );
 
     }
-    
+
     @Test
     public void testCompletions() {
 
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
-        com.setFactTypes(new String[]{"Person", "Vehicle"});
-        
-        com.setFieldsForTypes(new HashMap<String,ModelField[]>() {
+        com.setFactTypes( new String[]{"Person", "Vehicle"} );
+
+        com.setFieldsForTypes( new HashMap<String, ModelField[]>() {
             {
                 put( "Person",
                      new ModelField[]{
-                        new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
-                        new ModelField("rank", Integer.class.getName(),FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_COMPARABLE),
-                        new ModelField("name", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
+                             new ModelField( "age",
+                                             Integer.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_NUMERIC ),
+                             new ModelField( "rank",
+                                             Integer.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_COMPARABLE ),
+                             new ModelField( "name",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING )
                 } );
 
                 put( "Vehicle",
                      new ModelField[]{
-                        new ModelField("make", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING),
-                        new ModelField("type", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING)
+                             new ModelField( "make",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING ),
+                             new ModelField( "type",
+                                             String.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_STRING )
                 } );
             }
-        });
+        } );
 
-        com.setGlobalVariables(new HashMap<String, String>() {
+        com.setGlobalVariables( new HashMap<String, String>() {
             {
                 put( "bar",
                      "Person" );
                 put( "baz",
                      "Vehicle" );
             }
-        });
+        } );
 
         String[] c = com.getConditionalElements();
         assertEquals( "not",
@@ -358,17 +373,343 @@ public class SuggestionCompletionEngineTest {
     }
 
     @Test
+    @SuppressWarnings("serial")
+    public void testCEPCompletions() {
+
+        final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
+
+        com.setFactTypes( new String[]{"NotAnEvent", "AnEvent"} );
+
+        com.setFieldsForTypes( new HashMap<String, ModelField[]>() {
+            {
+                put( "NotAnEvent",
+                     new ModelField[]{
+                             new ModelField( "dateField",
+                                             Date.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_DATE )
+                } );
+
+                put( "AnEvent",
+                     new ModelField[]{
+                             new ModelField( "this",
+                                             Object.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_THIS ),
+                             new ModelField( "dateField",
+                                             Date.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_DATE )
+                } );
+
+            }
+        } );
+
+        //Set-up annotation for Type 'AnEvent'
+        Map<String, List<ModelAnnotation>> annotations = new HashMap<String, List<ModelAnnotation>>();
+        List<ModelAnnotation> eventAnnotations = new ArrayList<ModelAnnotation>();
+        ModelAnnotation ma = new ModelAnnotation();
+        ma.setAnnotationName( "role" );
+        Map<String, String> mav = new HashMap<String, String>();
+        mav.put( "value",
+                 "event" );
+        ma.setAnnotationValues( mav );
+        eventAnnotations.add( ma );
+        annotations.put( "AnEvent",
+                         eventAnnotations );
+        com.setAnnotationsForTypes( annotations );
+
+        //Check completions
+        String[] c = com.getFactTypes();
+        assertEquals( 2,
+                      c.length );
+        assertContains( "NotAnEvent",
+                        c );
+        assertContains( "AnEvent",
+                        c );
+
+        c = com.getOperatorCompletions( "NotAnEvent",
+                                        "dateField" );
+        assertEquals( 11,
+                      c.length );
+        assertEquals( c[0],
+                      "==" );
+        assertEquals( c[1],
+                      "!=" );
+        assertEquals( c[2],
+                      "<" );
+        assertEquals( c[3],
+                      ">" );
+        assertEquals( c[4],
+                      "<=" );
+        assertEquals( c[5],
+                      ">=" );
+        assertEquals( c[6],
+                      "== null" );
+        assertEquals( c[7],
+                      "!= null" );
+        assertEquals( c[8],
+                      "after" );
+        assertEquals( c[9],
+                      "before" );
+        assertEquals( c[10],
+                      "coincides" );
+
+        c = com.getOperatorCompletions( "AnEvent",
+                                        "this" );
+        assertEquals( 17,
+                      c.length );
+        assertEquals( c[0],
+                      "==" );
+        assertEquals( c[1],
+                      "!=" );
+        assertEquals( c[2],
+                      "== null" );
+        assertEquals( c[3],
+                      "!= null" );
+        assertEquals( c[4],
+                      "after" );
+        assertEquals( c[5],
+                      "before" );
+        assertEquals( c[6],
+                      "coincides" );
+        assertEquals( c[7],
+                      "during" );
+        assertEquals( c[8],
+                      "finishes" );
+        assertEquals( c[9],
+                      "finishedby" );
+        assertEquals( c[10],
+                      "includes" );
+        assertEquals( c[11],
+                      "meets" );
+        assertEquals( c[12],
+                      "metby" );
+        assertEquals( c[13],
+                      "overlaps" );
+        assertEquals( c[14],
+                      "overlappedby" );
+        assertEquals( c[15],
+                      "starts" );
+        assertEquals( c[16],
+                      "startedby" );
+
+    }
+
+    @Test
+    @SuppressWarnings("serial")
+    public void testCEPParameterCompletions() {
+
+        final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
+
+        com.setFactTypes( new String[]{"AnEvent"} );
+
+        com.setFieldsForTypes( new HashMap<String, ModelField[]>() {
+            {
+                put( "AnEvent",
+                     new ModelField[]{
+                             new ModelField( "this",
+                                             Object.class.getName(),
+                                             FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                             SuggestionCompletionEngine.TYPE_THIS )
+                } );
+
+            }
+        } );
+
+        //Set-up annotation for Type 'AnEvent'
+        Map<String, List<ModelAnnotation>> annotations = new HashMap<String, List<ModelAnnotation>>();
+        List<ModelAnnotation> eventAnnotations = new ArrayList<ModelAnnotation>();
+        ModelAnnotation ma = new ModelAnnotation();
+        ma.setAnnotationName( "role" );
+        Map<String, String> mav = new HashMap<String, String>();
+        mav.put( "value",
+                 "event" );
+        ma.setAnnotationValues( mav );
+        eventAnnotations.add( ma );
+        annotations.put( "AnEvent",
+                         eventAnnotations );
+        com.setAnnotationsForTypes( annotations );
+
+        //Check completions
+        List<Integer> c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "after" );
+        assertEquals( 3,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "before" );
+        assertEquals( 3,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "coincides" );
+        assertEquals( 3,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "during" );
+        assertEquals( 4,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+        assertEquals( 4,
+                      c.get( 3 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "finishes" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "finishedby" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "includes" );
+        assertEquals( 4,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+        assertEquals( 4,
+                      c.get( 3 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "meets" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "metby" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "overlaps" );
+        assertEquals( 3,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "overlappedby" );
+        assertEquals( 3,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+        assertEquals( 2,
+                      c.get( 2 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "starts" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+        c = SuggestionCompletionEngine.getCEPOperatorParameterSets( "startedby" );
+        assertEquals( 2,
+                      c.size() );
+        assertEquals( 0,
+                      c.get( 0 ).intValue() );
+        assertEquals( 1,
+                      c.get( 1 ).intValue() );
+
+    }
+
+    @Test
+    public void testCEPOperatorValidation() {
+
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "==" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "!=" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "<" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( ">" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "<=" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( ">=" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "== null" ) );
+        assertFalse( SuggestionCompletionEngine.isCEPOperator( "!= null" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "after" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "before" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "coincides" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "during" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "finishes" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "finishedby" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "includes" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "meets" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "metby" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "overlaps" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "overlappedby" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "starts" ) );
+        assertTrue( SuggestionCompletionEngine.isCEPOperator( "startedby" ) );
+
+    }
+
+    @Test
+    public void testCEPWindowOperators() {
+
+        List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
+        assertEquals( 2,
+                      operators.size() );
+        assertEquals( "over window:time",
+                      operators.get( 0 ) );
+        assertEquals( "over window:length",
+                      operators.get( 1 ) );
+    }
+
+    @Test
     public void testAdd() {
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
-        com.setFactTypes(new String[]{"Foo"});
-        com.setFieldsForTypes(new HashMap<String,ModelField[]>() {
+        com.setFactTypes( new String[]{"Foo"} );
+        com.setFieldsForTypes( new HashMap<String, ModelField[]>() {
             {
                 put( "Foo",
                      new ModelField[]{
-                        new ModelField("a", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, "String")
-                });
+                        new ModelField( "a",
+                                        String.class.getName(),
+                                        FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                        "String" )
+                } );
             }
-        });
+        } );
 
         assertEquals( 1,
                       com.getFactTypes().length );
@@ -385,7 +726,7 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testSmartEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.type",
                                new String[]{"sex", "colour"} );
         sce.putDataEnumList( "Fact.value[type=sex]",
@@ -395,7 +736,7 @@ public class SuggestionCompletionEngineTest {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "type" );
-        sfc.setValue("sex");
+        sfc.setValue( "sex" );
         pat.addConstraint( sfc );
         String[] result = sce.getEnums( pat,
                                         "value" ).fixedList;
@@ -408,7 +749,7 @@ public class SuggestionCompletionEngineTest {
 
         pat = new FactPattern( "Fact" );
         sfc = new SingleFieldConstraint( "type" );
-        sfc.setValue("colour");
+        sfc.setValue( "colour" );
         pat.addConstraint( sfc );
 
         result = sce.getEnums( pat,
@@ -458,7 +799,7 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testSmartEnumsDependingOfSeveralFieldsTwo() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.field1",
                                new String[]{"a1", "a2"} );
         sce.putDataEnumList( "Fact.field2",
@@ -470,10 +811,10 @@ public class SuggestionCompletionEngineTest {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "field1" );
-        sfc.setValue("a1");
+        sfc.setValue( "a1" );
         pat.addConstraint( sfc );
         SingleFieldConstraint sfc2 = new SingleFieldConstraint( "field2" );
-        sfc2.setValue("b1");
+        sfc2.setValue( "b1" );
         pat.addConstraint( sfc2 );
 
         String[] result = sce.getEnums( pat,
@@ -492,7 +833,7 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testSmartEnumsDependingOfSeveralFieldsFive() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.field1",
                                new String[]{"a1", "a2"} );
         sce.putDataEnumList( "Fact.field2",
@@ -508,23 +849,23 @@ public class SuggestionCompletionEngineTest {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "field1" );
-        sfc.setValue("a1");
+        sfc.setValue( "a1" );
         pat.addConstraint( sfc );
         SingleFieldConstraint sfc2 = new SingleFieldConstraint( "field2" );
-        sfc2.setValue("b2");
+        sfc2.setValue( "b2" );
         pat.addConstraint( sfc2 );
         SingleFieldConstraint sfc3 = new SingleFieldConstraint( "field3" );
-        sfc3.setValue("c3");
+        sfc3.setValue( "c3" );
         pat.addConstraint( sfc3 );
         SingleFieldConstraint sfc4 = new SingleFieldConstraint( "longerField4" );
-        sfc4.setValue("d1");
+        sfc4.setValue( "d1" );
         pat.addConstraint( sfc4 );
 
         assertNull( sce.getEnums( pat,
                                   "field6" ) );
 
         SingleFieldConstraint sfc5 = new SingleFieldConstraint( "field5" );
-        sfc5.setValue("e2");
+        sfc5.setValue( "e2" );
         pat.addConstraint( sfc5 );
 
         String[] result2 = sce.getEnums( pat,
@@ -540,7 +881,7 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testSmarterLookupEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.type",
                                new String[]{"sex", "colour"} );
         sce.putDataEnumList( "Fact.value[f1, f2]",
@@ -569,10 +910,10 @@ public class SuggestionCompletionEngineTest {
 
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "f1" );
-        sfc.setValue("f1val");
+        sfc.setValue( "f1val" );
         pat.addConstraint( sfc );
         sfc = new SingleFieldConstraint( "f2" );
-        sfc.setValue("f2val");
+        sfc.setValue( "f2val" );
         pat.addConstraint( sfc );
 
         DropDownData dd = sce.getEnums( pat,
@@ -618,24 +959,24 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testSmarterLookupEnumsDifferentOrder() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.type",
                                new String[]{"sex", "colour"} );
         sce.putDataEnumList( "Fact.value[e1, e2]",
                                new String[]{"select something from database where x=@{e1} and y=@{e2}"} );
         sce.putDataEnumList( "Fact.value[f1, f2]",
                                new String[]{"select something from database where x=@{f1} and y=@{f2}"} );
-        
+
         FactPattern fp = new FactPattern( "Fact" );
         String[] drops = sce.getEnums( fp,
-            "type" ).fixedList;
+                                       "type" ).fixedList;
         assertEquals( 2,
                       drops.length );
         assertEquals( "sex",
                       drops[0] );
         assertEquals( "colour",
                       drops[1] );
-        
+
         Map<String, Object> lookupFields = sce.loadDataEnumLookupFields();
         assertEquals( 1,
                       lookupFields.size() );
@@ -646,21 +987,21 @@ public class SuggestionCompletionEngineTest {
                       flds[0] );
         assertEquals( "f2",
                       flds[1] );
-        
+
         FactPattern pat = new FactPattern( "Fact" );
         SingleFieldConstraint sfc = new SingleFieldConstraint( "f1" );
-        sfc.setValue("f1val");
+        sfc.setValue( "f1val" );
         pat.addConstraint( sfc );
         sfc = new SingleFieldConstraint( "f2" );
-        sfc.setValue("f2val");
+        sfc.setValue( "f2val" );
         pat.addConstraint( sfc );
-        
+
         DropDownData dd = sce.getEnums( pat,
-        "value" );
+                                        "value" );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
-        
+
         assertEquals( 2,
                       dd.valuePairs.length );
         assertEquals( "select something from database where x=@{f1} and y=@{f2}",
@@ -669,18 +1010,18 @@ public class SuggestionCompletionEngineTest {
                       dd.valuePairs[0] );
         assertEquals( "f2=f2val",
                       dd.valuePairs[1] );
-        
+
         //and now for the RHS
         ActionFieldValue[] vals = new ActionFieldValue[2];
         vals[0] = new ActionFieldValue( "f1",
                                         "f1val",
-        "blah" );
+                                        "blah" );
         vals[1] = new ActionFieldValue( "f2",
                                         "f2val",
-        "blah" );
+                                        "blah" );
         dd = sce.getEnums( "Fact",
                            vals,
-        "value" );
+                           "value" );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
@@ -692,13 +1033,13 @@ public class SuggestionCompletionEngineTest {
                       dd.valuePairs[0] );
         assertEquals( "f2=f2val",
                       dd.valuePairs[1] );
-        
+
     }
 
     @Test
     public void testSimpleEnums() {
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
-        sce.setDataEnumLists(new HashMap<String, String[]>());
+        sce.setDataEnumLists( new HashMap<String, String[]>() );
         sce.putDataEnumList( "Fact.type",
                                new String[]{"sex", "colour"} );
         assertEquals( 2,
@@ -729,20 +1070,24 @@ public class SuggestionCompletionEngineTest {
     public void testGlobalAndFacts() {
         final SuggestionCompletionEngine com = new SuggestionCompletionEngine();
 
-        com.setGlobalVariables(new HashMap<String, String>() {
+        com.setGlobalVariables( new HashMap<String, String>() {
             {
-                put( "y", "Foo" );
+                put( "y",
+                     "Foo" );
             }
-        });
+        } );
 
-        com.setFieldsForTypes(new HashMap<String,ModelField[]>() {
+        com.setFieldsForTypes( new HashMap<String, ModelField[]>() {
             {
                 put( "Foo",
                      new ModelField[]{
-                        new ModelField("a", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, "String")
-                });
+                        new ModelField( "a",
+                                        String.class.getName(),
+                                        FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                        "String" )
+                } );
             }
-        });
+        } );
 
         assertFalse( com.isGlobalVariable( "x" ) );
         assertTrue( com.isGlobalVariable( "y" ) );
@@ -751,9 +1096,11 @@ public class SuggestionCompletionEngineTest {
     @Test
     public void testDataDropDown() {
         assertNull( DropDownData.create( null ) );
-        assertNull( DropDownData.create( null, null ) );
-        assertNotNull( DropDownData.create( new String[]{"hey"} ));
-        assertNotNull( DropDownData.create( "abc", new String[]{"hey"} ) );
+        assertNull( DropDownData.create( null,
+                                         null ) );
+        assertNotNull( DropDownData.create( new String[]{"hey"} ) );
+        assertNotNull( DropDownData.create( "abc",
+                                            new String[]{"hey"} ) );
 
     }
 
@@ -762,41 +1109,52 @@ public class SuggestionCompletionEngineTest {
 
         final SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
-        sce.setFactTypes(new String[]{"Person", "Vehicle"});
-        
-        sce.setFieldsForTypes(new HashMap<String,ModelField[]>() {
+        sce.setFactTypes( new String[]{"Person", "Vehicle"} );
+
+        sce.setFieldsForTypes( new HashMap<String, ModelField[]>() {
             {
                 put( "Person",
                      new ModelField[]{
-                        new ModelField("age", Integer.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_NUMERIC),
+                        new ModelField( "age",
+                                        Integer.class.getName(),
+                                        FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                        SuggestionCompletionEngine.TYPE_NUMERIC ),
                 } );
 
                 put( "Vehicle",
                      new ModelField[]{
-                        new ModelField("make", String.class.getName(), FIELD_CLASS_TYPE.REGULAR_CLASS, SuggestionCompletionEngine.TYPE_STRING),
+                        new ModelField( "make",
+                                        String.class.getName(),
+                                        FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                        SuggestionCompletionEngine.TYPE_STRING ),
                 } );
             }
-        });
-        
-        assertEquals(2, sce.getFactTypes().length);
-        sce.setFactTypeFilter(new FactTypeFilter() {
+        } );
+
+        assertEquals( 2,
+                      sce.getFactTypes().length );
+        sce.setFactTypeFilter( new FactTypeFilter() {
             public boolean filter(String originalFact) {
-                return "Person".equals(originalFact);
+                return "Person".equals( originalFact );
             }
-        });
+        } );
 
-        assertEquals(1, sce.getFactTypes().length);
-        sce.setFilteringFacts(false);
+        assertEquals( 1,
+                      sce.getFactTypes().length );
+        sce.setFilteringFacts( false );
 
-        assertEquals(2, sce.getFactTypes().length);
-        sce.setFilteringFacts(true);
-        assertEquals(1, sce.getFactTypes().length);
+        assertEquals( 2,
+                      sce.getFactTypes().length );
+        sce.setFilteringFacts( true );
+        assertEquals( 1,
+                      sce.getFactTypes().length );
 
-        sce.setFactTypeFilter(null);
-        assertEquals(2, sce.getFactTypes().length);
+        sce.setFactTypeFilter( null );
+        assertEquals( 2,
+                      sce.getFactTypes().length );
 
     }
-    
+
     public static class NestedClass {
         private String name;
 

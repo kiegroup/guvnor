@@ -244,7 +244,6 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     }
 
     @Test
-    @Ignore("MVEL error")
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
 
