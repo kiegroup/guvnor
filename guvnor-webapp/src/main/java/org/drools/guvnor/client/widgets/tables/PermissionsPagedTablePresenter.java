@@ -160,64 +160,57 @@ public class PermissionsPagedTablePresenter implements Presenter {
         RepositoryServiceFactory.getService().retrieveUserPermissions( userName,
                                                                        new GenericCallback<Map<String, List<String>>>() {
                                                                            public void onSuccess(final Map<String, List<String>> perms) {
-                                                                               final FormStylePopup editor = new FormStylePopup( images.management(),
-                                                                                                                                 constants.EditUser0( userName ) );
-                                                                               editor.addRow( new HTML( "<i>"
-                                                                                                        + constants.UserAuthenticationTip()
-                                                                                                        + "</i>" ) );
-                                                                               // now
-                                                                               // render
-                                                                               // the
-                                                                               // actual
-                                                                               // permissions...
-                                                                               VerticalPanel vp = new VerticalPanel();
-                                                                               editor.addAttribute( "",
-                                                                                                    doPermsPanel( perms,
-                                                                                                                  vp ) );
-
-                                                                               HorizontalPanel hp = new HorizontalPanel();
-                                                                               Button save = new Button( constants.SaveChanges() );
-                                                                               hp.add( save );
-                                                                               editor.addAttribute( "",
-                                                                                                    hp );
-                                                                               save.addClickHandler( createClickHandlerForSaveButton( userName,
-                                                                                                                                      perms,
-                                                                                                                                      editor ) );
-
-                                                                               Button cancel = new Button( constants.Cancel() );
-                                                                               hp.add( cancel );
-                                                                               cancel.addClickHandler( new ClickHandler() {
-                                                                                   public void onClick(ClickEvent w) {
-                                                                                       editor.hide();
-                                                                                   }
-                                                                               } );
-
-                                                                               editor.show();
+                                                                               doPermissionEditor(userName ,perms);
                                                                                LoadingPopup.close();
                                                                            }
 
-                                                                           private ClickHandler createClickHandlerForSaveButton(final String userName,
-                                                                                                                                final Map<String, List<String>> perms,
-                                                                                                                                final FormStylePopup editor) {
-                                                                               return new ClickHandler() {
-                                                                                   public void onClick(ClickEvent w) {
-                                                                                       LoadingPopup.showMessage( constants.Updating() );
-                                                                                       RepositoryServiceFactory.getService().updateUserPermissions( userName,
-                                                                                                                                                    perms,
-                                                                                                                                                    new GenericCallback<java.lang.Void>() {
-                                                                                                                                                        public void onSuccess(Void a) {
-                                                                                                                                                            LoadingPopup.close();
-                                                                                                                                                            view.refresh();
-                                                                                                                                                            editor.hide();
-                                                                                                                                                        }
-                                                                                                                                                    } );
-
-                                                                                   }
-                                                                               };
-                                                                           }
                                                                        } );
     }
     
+    private Widget doPermissionEditor(final String userName, final Map<String, List<String>> perms) {
+        final FormStylePopup editor = new FormStylePopup(images.management(),
+                constants.EditUser0(userName));
+        editor.addRow(new HTML("<i>" + constants.UserAuthenticationTip()
+                + "</i>"));
+        // now render the actual permissions...
+        VerticalPanel vp = new VerticalPanel();
+        editor.addAttribute("", doPermsPanel(perms, vp));
+
+        HorizontalPanel hp = new HorizontalPanel();
+        Button save = new Button(constants.SaveChanges());
+        hp.add(save);
+        editor.addAttribute("", hp);
+        save.addClickHandler(createClickHandlerForSaveButton(userName, perms,
+                editor));
+
+        Button cancel = new Button(constants.Cancel());
+        hp.add(cancel);
+        cancel.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editor.hide();
+            }
+        });
+        
+        return editor;
+    }
+
+    private ClickHandler createClickHandlerForSaveButton(final String userName,
+            final Map<String, List<String>> perms, final FormStylePopup editor) {
+        return new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                LoadingPopup.showMessage(constants.Updating());
+                RepositoryServiceFactory.getService().updateUserPermissions(
+                        userName, perms, new GenericCallback<java.lang.Void>() {
+                            public void onSuccess(Void a) {
+                                LoadingPopup.close();
+                                view.refresh();
+                                editor.hide();
+                            }
+                        });
+            }
+        };
+    }
+
     /**
      * The permissions panel.
      */

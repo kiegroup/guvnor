@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
@@ -219,4 +220,5 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
     public void setOpenSelectedCommand(AsyncDataProvider<PermissionsPageRow> dataProvider) {
         this.dataProvider = dataProvider;
     } 
+
 }
