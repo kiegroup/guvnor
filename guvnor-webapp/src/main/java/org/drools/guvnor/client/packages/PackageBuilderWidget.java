@@ -290,31 +290,31 @@ public class PackageBuilderWidget extends Composite {
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
                 RepositoryServiceFactory.getPackageService().buildPackage( conf.uuid,
-                                                                    true,
-                                                                    buildMode,
-                                                                    statusOperator,
-                                                                    statusValue,
-                                                                    enableStatusSelector,
-                                                                    categoryOperator,
-                                                                    category,
-                                                                    enableCategorySelector,
-                                                                    customSelector,
-                                                                    new GenericCallback<BuilderResult>() {
-                                                                        public void onSuccess(BuilderResult result) {
-                                                                            LoadingPopup.close();
-                                                                            if ( result == null || !result.hasLines()) {
-                                                                                showSuccessfulBuild( buildResults );
-                                                                            } else {
-                                                                                showBuilderErrors( result,
-                                                                                                   buildResults );
-                                                                            }
-                                                                        }
+                                                                           true,
+                                                                           buildMode,
+                                                                           statusOperator,
+                                                                           statusValue,
+                                                                           enableStatusSelector,
+                                                                           categoryOperator,
+                                                                           category,
+                                                                           enableCategorySelector,
+                                                                           customSelector,
+                                                                           new GenericCallback<BuilderResult>() {
+                                                                               public void onSuccess(BuilderResult result) {
+                                                                                   LoadingPopup.close();
+                                                                                   if ( result == null || result.getLines().size() == 0 ) {
+                                                                                       showSuccessfulBuild( buildResults );
+                                                                                   } else {
+                                                                                       showBuilderErrors( result,
+                                                                                                          buildResults );
+                                                                                   }
+                                                                               }
 
-                                                                        public void onFailure(Throwable t) {
-                                                                            buildResults.clear();
-                                                                            super.onFailure( t );
-                                                                        }
-                                                                    } );
+                                                                               public void onFailure(Throwable t) {
+                                                                                   buildResults.clear();
+                                                                                   super.onFailure( t );
+                                                                               }
+                                                                           } );
             }
         } );
 
@@ -331,12 +331,12 @@ public class PackageBuilderWidget extends Composite {
         scheduler.scheduleDeferred( new Command() {
             public void execute() {
                 RepositoryServiceFactory.getPackageService().buildPackageSource( uuid,
-                                                                          new GenericCallback<java.lang.String>() {
-                                                                              public void onSuccess(String content) {
-                                                                                  showSource( content,
-                                                                                              name );
-                                                                              }
-                                                                          } );
+                                                                                 new GenericCallback<java.lang.String>() {
+                                                                                     public void onSuccess(String content) {
+                                                                                         showSource( content,
+                                                                                                     name );
+                                                                                     }
+                                                                                 } );
             }
         } );
     }
@@ -543,34 +543,34 @@ public class PackageBuilderWidget extends Composite {
                                        + ": ";
 
         RepositoryServiceFactory.getPackageService().listSnapshots( packageName,
-                                                             new GenericCallback<SnapshotInfo[]>() {
-                                                                 public void onSuccess(SnapshotInfo[] result) {
-                                                                     for ( int i = 0; i < result.length; i++ ) {
-                                                                         RadioButton existing = new RadioButton( "snapshotNameGroup",
-                                                                                                                 result[i].name ); // NON-NLS
-                                                                         radioList.add( existing );
-                                                                         vert.add( existing );
-                                                                     }
-                                                                     HorizontalPanel newSnap = new HorizontalPanel();
+                                                                    new GenericCallback<SnapshotInfo[]>() {
+                                                                        public void onSuccess(SnapshotInfo[] result) {
+                                                                            for ( int i = 0; i < result.length; i++ ) {
+                                                                                RadioButton existing = new RadioButton( "snapshotNameGroup",
+                                                                                                                        result[i].name ); // NON-NLS
+                                                                                radioList.add( existing );
+                                                                                vert.add( existing );
+                                                                            }
+                                                                            HorizontalPanel newSnap = new HorizontalPanel();
 
-                                                                     final RadioButton newSnapRadio = new RadioButton( "snapshotNameGroup",
-                                                                                                                       newSnapshotText ); // NON-NLS
-                                                                     newSnap.add( newSnapRadio );
-                                                                     newName.setEnabled( false );
-                                                                     newSnapRadio.addClickHandler( new ClickHandler() {
-                                                                         public void onClick(ClickEvent event) {
-                                                                             newName.setEnabled( true );
-                                                                         }
+                                                                            final RadioButton newSnapRadio = new RadioButton( "snapshotNameGroup",
+                                                                                                                              newSnapshotText ); // NON-NLS
+                                                                            newSnap.add( newSnapRadio );
+                                                                            newName.setEnabled( false );
+                                                                            newSnapRadio.addClickHandler( new ClickHandler() {
+                                                                                public void onClick(ClickEvent event) {
+                                                                                    newName.setEnabled( true );
+                                                                                }
 
-                                                                     } );
+                                                                            } );
 
-                                                                     newSnap.add( newName );
-                                                                     radioList.add( newSnapRadio );
-                                                                     vert.add( newSnap );
+                                                                            newSnap.add( newName );
+                                                                            radioList.add( newSnapRadio );
+                                                                            vert.add( newSnap );
 
-                                                                     LoadingPopup.close();
-                                                                 }
-                                                             } );
+                                                                            LoadingPopup.close();
+                                                                        }
+                                                                    } );
 
         final TextBox comment = new TextBox();
         form.addAttribute( constants.Comment(),
@@ -605,19 +605,19 @@ public class PackageBuilderWidget extends Composite {
 
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
                 RepositoryServiceFactory.getPackageService().createPackageSnapshot( packageName,
-                                                                             name,
-                                                                             replace,
-                                                                             comment.getText(),
-                                                                             new GenericCallback<java.lang.Void>() {
-                                                                                 public void onSuccess(Void v) {
-                                                                                     Window.alert( constants.TheSnapshotCalled0WasSuccessfullyCreated( name ) );
-                                                                                     form.hide();
-                                                                                     if ( refreshCmd != null ) {
-                                                                                         refreshCmd.execute();
-                                                                                     }
-                                                                                     LoadingPopup.close();
-                                                                                 }
-                                                                             } );
+                                                                                    name,
+                                                                                    replace,
+                                                                                    comment.getText(),
+                                                                                    new GenericCallback<java.lang.Void>() {
+                                                                                        public void onSuccess(Void v) {
+                                                                                            Window.alert( constants.TheSnapshotCalled0WasSuccessfullyCreated( name ) );
+                                                                                            form.hide();
+                                                                                            if ( refreshCmd != null ) {
+                                                                                                refreshCmd.execute();
+                                                                                            }
+                                                                                            LoadingPopup.close();
+                                                                                        }
+                                                                                    } );
             }
         } );
         form.show();
