@@ -164,7 +164,9 @@ public class ExplorerViewCenterPanel extends Composite {
 
         int widgetIndex = tabLayoutPanel.getWidgetIndex(tpi);
         if (widgetIndex == tabLayoutPanel.getSelectedIndex()) {
-            tabLayoutPanel.selectTab(widgetIndex - 1);
+            if(widgetIndex>0) {
+                tabLayoutPanel.selectTab(widgetIndex - 1);
+            }
         }
 
         tabLayoutPanel.remove(widgetIndex);
