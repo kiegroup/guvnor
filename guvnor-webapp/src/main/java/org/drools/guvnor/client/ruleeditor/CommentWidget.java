@@ -51,9 +51,7 @@ public class CommentWidget extends DirtyableComposite {
             }
         } );
 
-        //if ( isDescriptionUnSet( artifact ) ) {
-        disclosurePanel.setOpen( true );
-        //}
+        disclosurePanel.setOpen( false );
 
         initWidget( disclosurePanel );
     }

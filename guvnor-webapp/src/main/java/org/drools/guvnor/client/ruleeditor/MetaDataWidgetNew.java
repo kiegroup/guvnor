@@ -27,17 +27,23 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
+import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.MetaDataWidget.FieldBinding;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
@@ -49,12 +55,13 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * This displays the metadata for a versionable artifact.
- * It also captures edits, but it does not load or save anything itself.
+ * This displays the metadata for a versionable artifact. It also captures
+ * edits, but it does not load or save anything itself.
  */
 public class MetaDataWidgetNew extends Composite {
     private Constants       constants = GWT.create( Constants.class );
@@ -158,11 +165,14 @@ public class MetaDataWidgetNew extends Composite {
         addAttribute( "UUID:",
                       readOnlyText( uuid ) );
 
-        endSection( true );
+        endSection( false );
 
-        /*        startSection( constants.OtherMetaData() );
+        if ( artifact instanceof RuleAsset ) {
 
-                addAttribute( constants.SubjectMetaData(),
+            final MetaData data = ((RuleAsset) artifact).getMetaData();
+            startSection( constants.OtherMetaData() );
+
+            addAttribute( constants.SubjectMetaData(),
                               editableText( new FieldBinding() {
                                                 public String getValue() {
                                                     return data.subject;
@@ -174,7 +184,7 @@ public class MetaDataWidgetNew extends Composite {
                                             },
                                             constants.AShortDescriptionOfTheSubjectMatter() ) );
 
-                addAttribute( constants.TypeMetaData(),
+            addAttribute( constants.TypeMetaData(),
                               editableText( new FieldBinding() {
                                                 public String getValue() {
                                                     return data.type;
@@ -187,7 +197,7 @@ public class MetaDataWidgetNew extends Composite {
                                             },
                                             constants.TypeTip() ) );
 
-                addAttribute( constants.ExternalLinkMetaData(),
+            addAttribute( constants.ExternalLinkMetaData(),
                               editableText( new FieldBinding() {
                                                 public String getValue() {
                                                     return data.externalRelation;
@@ -200,7 +210,7 @@ public class MetaDataWidgetNew extends Composite {
                                             },
                                             constants.ExternalLinkTip() ) );
 
-                addAttribute( constants.SourceMetaData(),
+            addAttribute( constants.SourceMetaData(),
                               editableText( new FieldBinding() {
                                                 public String getValue() {
                                                     return data.externalSource;
@@ -213,8 +223,9 @@ public class MetaDataWidgetNew extends Composite {
                                             },
                                             constants.SourceMetaDataTip() ) );
 
-                endSection( true );
-        */
+            endSection( true );
+        }
+
         startSection( constants.VersionHistory() );
         //Do not show version feed for asset due to GUVNOR-1308
         if ( !(artifact instanceof RuleAsset) ) {
@@ -249,7 +260,7 @@ public class MetaDataWidgetNew extends Composite {
     private void endSection(boolean collapsed) {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
         advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setOpen( collapsed );
+        advancedDisclosure.setOpen( !collapsed );
         advancedDisclosure.setContent( this.currentSection );
         layout.add( advancedDisclosure );
     }
@@ -357,9 +368,11 @@ public class MetaDataWidgetNew extends Composite {
 
     /**
      * This binds a field, and returns a check box editor for it.
-     *
-     * @param bind Interface to bind to.
-     * @param toolTip tool tip.
+     * 
+     * @param bind
+     *            Interface to bind to.
+     * @param toolTip
+     *            tool tip.
      * @return
      */
     private Widget editableBoolean(final FieldBooleanBinding bind,
@@ -383,6 +396,37 @@ public class MetaDataWidgetNew extends Composite {
             box.setEnabled( false );
 
             return box;
+        }
+    }
+
+    /**
+     * This binds a field, and returns a TextBox editor for it.
+     * 
+     * @param bind
+     *            Interface to bind to.
+     * @param toolTip
+     *            tool tip.
+     * @return
+     */
+    private Widget editableText(final FieldBinding bind,
+                                   String toolTip) {
+        if ( !readOnly ) {
+            final TextBox tbox = new TextBox();
+            tbox.setTitle( toolTip );
+            tbox.setText( bind.getValue() );
+            tbox.setVisibleLength( 10 );
+            ChangeHandler listener = new ChangeHandler() {
+
+                public void onChange(ChangeEvent event) {
+                    String txt = tbox.getText();
+                    bind.setValue( txt );
+                }
+
+            };
+            tbox.addChangeHandler( listener );
+            return tbox;
+        } else {
+            return new Label( bind.getValue() );
         }
     }
 
