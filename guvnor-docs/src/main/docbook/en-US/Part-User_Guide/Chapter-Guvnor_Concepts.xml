@@ -122,22 +122,9 @@
       <listitem>
         <para>Attributes</para>
 
-        <figure>
-          <title>The Asset Editor - Attributes tab</title>
-
-          <mediaobject>
-            <imageobject>
-              <imagedata align="center"
-                         fileref="images/Chapter-Guvnor/AssetEditor-attributes.png"
-                         format="PNG" scalefit="1"></imagedata>
-            </imageobject>
-          </mediaobject>
-        </figure>
-
         <itemizedlist>
           <listitem>
-            <para>A : This section contains meta data (from the "Dublin Core"
-            standard):-</para>
+            <para>A : Meta data (from the "Dublin Core" standard):-</para>
 
             <para>"Last modified:" The last modified date.</para>
 
@@ -162,49 +149,88 @@
           </listitem>
 
           <listitem>
-            <para>B : Version history of the Asset.</para>
+            <para>B : Other miscellaneous meta data for the Asset.</para>
           </listitem>
 
           <listitem>
-            <para>C : Free-format documentation\description for the Asset. It
+            <para>C : Version history of the Asset.</para>
+          </listitem>
+
+          <listitem>
+            <para>D : Free-format documentation\description for the Asset. It
             is encouraged, but not mandatory, to record a description of the
             Asset before editing.</para>
           </listitem>
 
           <listitem>
-            <para>D : Discussions regarding development of the Asset can be
+            <para>E : Discussions regarding development of the Asset can be
             recored here.</para>
           </listitem>
-
-          <listitem>
-            <para>E : The Category, or Categories, to which the Asset
-            belongs.</para>
-          </listitem>
-
-          <listitem>
-            <para>F : The Package to which the Asset belongs.</para>
-          </listitem>
-
-          <listitem>
-            <para>G : View the Asset's version history.</para>
-          </listitem>
         </itemizedlist>
-      </listitem>
-
-      <listitem>
-        <para>Edit</para>
 
         <figure>
-          <title>The Asset Editor - Edit tab</title>
+          <title>The Asset Editor - Attributes tab</title>
 
           <mediaobject>
             <imageobject>
               <imagedata align="center"
-                         fileref="images/Chapter-Guvnor/AssetEditor-edit.png"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes-1.png"
                          format="PNG" scalefit="1"></imagedata>
             </imageobject>
           </mediaobject>
         </figure>
+
+        <figure>
+          <title>The Asset Editor - Other meta data</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes-2.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>The Asset Editor - Version history</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes-3.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>The Asset Editor - Description</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes-4.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>The Asset Editor - Discussion</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-attributes-5.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+      </listitem>
+
+      <listitem>
+        <para>Edit</para>
 
         <itemizedlist>
           <listitem>
@@ -222,6 +248,18 @@
             <para>C : The current status of the Asset.</para>
           </listitem>
         </itemizedlist>
+
+        <figure>
+          <title>The Asset Editor - Edit tab</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/AssetEditor-edit.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
       </listitem>
     </itemizedlist>
   </section>
@@ -310,39 +348,50 @@
       you can choose from a list of Conditional Elements to add: <itemizedlist
           spacing="normal">
           <listitem>
-             A Constraint on a Fact: it will give you a list of facts. 
+            <para>A Constraint on a Fact: it will give you a list of
+            facts.</para>
           </listitem>
 
           <listitem>
-             "The following does not exist": the fact plus constraints must not exist. 
+            <para>"The following does not exist": the fact plus constraints
+            must not exist.</para>
           </listitem>
 
           <listitem>
-             "The following exists": at least one match should exist (but there only needs to be one - it will not trigger for each match). 
+            <para>"The following exists": at least one match should exist (but
+            there only needs to be one - it will not trigger for each
+            match).</para>
           </listitem>
 
           <listitem>
-             "Any of the following are true": any of the patterns can match (you then add patterns to these higher level patterns). 
+            <para>"Any of the following are true": any of the patterns can
+            match (you then add patterns to these higher level
+            patterns).</para>
           </listitem>
 
           <listitem>
-             "From": this will insert a new From Conditional Element to the rule. 
+            <para>"From": this will insert a new From Conditional Element to
+            the rule.</para>
           </listitem>
 
           <listitem>
-             "From Accumulate": this will insert a new Accumulate Conditional Element to the rule. 
+            <para>"From Accumulate": this will insert a new Accumulate
+            Conditional Element to the rule.</para>
           </listitem>
 
           <listitem>
-             "From Collect": this will insert a new Collect Conditional Element to the rule. 
+            <para>"From Collect": this will insert a new Collect Conditional
+            Element to the rule.</para>
           </listitem>
 
           <listitem>
-             "From Entry-point": this allows you to define an Entry Point for the pattern. 
+            <para>"From Entry-point": this allows you to define an Entry Point
+            for the pattern.</para>
           </listitem>
 
           <listitem>
-             "Free Form DRL": this will let you insert a free chunk of DRL. 
+            <para>"Free Form DRL": this will let you insert a free chunk of
+            DRL.</para>
           </listitem>
         </itemizedlist> If you just put a fact (like is shown above) then all
       the patterns are combined together so they are all true ("and").</para>
@@ -350,11 +399,15 @@
       <para>E : This shows the constraint for the "creditRating" field.
       Looking from left to right you find:-<itemizedlist spacing="normal">
           <listitem>
-             The field name: "creditRating". Clicking on it you can assign a variable name to it, or access nested properties of it. 
+            <para>The field name: "creditRating". Clicking on it you can
+            assign a variable name to it, or access nested properties of
+            it.</para>
           </listitem>
 
           <listitem>
-             A list of constraint operations ("equal to" being selected): The content of this list changes depending on the field's data type. 
+            <para>A list of constraint operations ("equal to" being selected):
+            The content of this list changes depending on the field's data
+            type.</para>
           </listitem>
 
           <listitem>
@@ -401,15 +454,21 @@
       <para>F : This shows the constraint for the "applicationDate" field.
       Looking from left to right you find: <itemizedlist spacing="normal">
           <listitem>
-             The field name: "applicationDate". 
+            <para>The field name: "applicationDate".</para>
           </listitem>
 
           <listitem>
-             A list of constraint operations: "after" being selected. 
+            <para>A list of constraint operations: "after" being
+            selected.</para>
           </listitem>
 
           <listitem>
-             A "clock" icon. Since the "applicationDate" is a Date data-type the list of available operators includes those relating to Complex Event Processing (CEP). When a CEP operator is used this additional icon is displayed to allow you to enter additional CEP operator parameters. Clicking the "clock" will cycle the available combinations of CEP operator parameters. 
+            <para>A "clock" icon. Since the "applicationDate" is a Date
+            data-type the list of available operators includes those relating
+            to Complex Event Processing (CEP). When a CEP operator is used
+            this additional icon is displayed to allow you to enter additional
+            CEP operator parameters. Clicking the "clock" will cycle the
+            available combinations of CEP operator parameters.</para>
           </listitem>
         </itemizedlist><note>
           <para>Complex Event Processing operators are also available when the
