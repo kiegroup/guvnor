@@ -167,7 +167,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                                                                        } );
     }
     
-    private Widget doPermissionEditor(final String userName, final Map<String, List<String>> perms) {
+    private void doPermissionEditor(final String userName, final Map<String, List<String>> perms) {
         final FormStylePopup editor = new FormStylePopup(images.management(),
                 constants.EditUser0(userName));
         editor.addRow(new HTML("<i>" + constants.UserAuthenticationTip()
@@ -190,8 +190,7 @@ public class PermissionsPagedTablePresenter implements Presenter {
                 editor.hide();
             }
         });
-        
-        return editor;
+        editor.show();
     }
 
     private ClickHandler createClickHandlerForSaveButton(final String userName,
