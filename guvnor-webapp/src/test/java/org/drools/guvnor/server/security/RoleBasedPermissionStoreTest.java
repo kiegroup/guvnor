@@ -108,12 +108,12 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
         perms = store.getRoleBasedPermissionsByUserName( "john" );
         assertTrue( perms.size() == 1 );
-        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ANALYST ) );
+        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ANALYST.getName() ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "john" ) );
 
         perms = store.getRoleBasedPermissionsByUserName( "johnson" );
         assertTrue( perms.size() == 1 );
-        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ADMIN ) );
+        assertTrue( perms.get( 0 ).getRole().equals( RoleType.ADMIN.getName() ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "johnson" ) );
     }
 
