@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -716,6 +717,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.lang.String[] listAvailablePermissionTypes() {
         return getService().listAvailablePermissionTypes();
+    }
+    
+    public List<String> listAvailablePermissionRoleTypes() {
+        return getService().listAvailablePermissionRoleTypes();
     }
 
     public void deleteUser(java.lang.String p0) {

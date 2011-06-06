@@ -615,6 +615,7 @@ public class ServiceImplementation
         getRulesRepository().save();
     }
 
+    @Deprecated
     @Restrict("#{identity.loggedIn}")
     public String[] listAvailablePermissionTypes() {
         serviceSecurity.checkSecurityIsAdmin();
@@ -622,9 +623,14 @@ public class ServiceImplementation
     }
     
     @Restrict("#{identity.loggedIn}")
-    public RoleType[] listAvailablePermissionRoleTypes() {
+    public List<String> listAvailablePermissionRoleTypes() {
         serviceSecurity.checkSecurityIsAdmin();
-        return RoleType.values();
+        RoleType[] roleTypes = RoleType.values();
+        List<String> values = new ArrayList<String>();
+        for(RoleType roleType: roleTypes){
+            values.add( roleType.getName() );
+        }
+        return values;
     }
 
     @Restrict("#{identity.loggedIn}")

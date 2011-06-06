@@ -302,12 +302,12 @@ public class PermissionsPagedTablePresenter implements Presenter {
                 pop.addAttribute( constants.PermissionType(),
                                   hp );
 
-                RepositoryServiceFactory.getService().listAvailablePermissionTypes( new GenericCallback<String[]>() {
-                    public void onSuccess(String[] items) {
+                RepositoryServiceFactory.getService().listAvailablePermissionRoleTypes( new GenericCallback<List<String>>() {
+                    public void onSuccess(List<String> items) {
                         permTypeBox.clear();
                         permTypeBox.addItem( constants.pleaseChoose1() );
-                        for ( String s : items ) {
-                            permTypeBox.addItem( s );
+                        for ( String roleType : items ) {
+                            permTypeBox.addItem( roleType );
                         }
                     }
                 } );

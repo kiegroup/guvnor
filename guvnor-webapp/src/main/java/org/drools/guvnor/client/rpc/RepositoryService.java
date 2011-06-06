@@ -270,10 +270,18 @@ public interface RepositoryService
 
     /**
      * List the available permission types.
+     * @deprecated in favour of {@link listAvailablePermissionRoleTypes()}
      * 
      * @return
      */
     public String[] listAvailablePermissionTypes();
+    
+    /**
+     * List the available permission types.
+     * 
+     * @return
+     */
+    public List<String> listAvailablePermissionRoleTypes();
 
     /**
      * Removes user security data.

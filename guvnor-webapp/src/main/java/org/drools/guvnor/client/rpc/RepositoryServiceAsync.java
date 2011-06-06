@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.rpc;
 
+import java.util.List;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -60,6 +62,7 @@ public interface RepositoryServiceAsync {
     public void retrieveUserPermissions(java.lang.String p0, AsyncCallback cb);
     public void updateUserPermissions(java.lang.String p0, java.util.Map p1, AsyncCallback cb);
     public void listAvailablePermissionTypes(AsyncCallback<java.lang.String[]> cb);
+    public void listAvailablePermissionRoleTypes(AsyncCallback<List<String>> callback);
     public void deleteUser(java.lang.String p0, AsyncCallback cb);
     public void createUser(java.lang.String p0, AsyncCallback cb);
     public void subscribe(AsyncCallback cb);
@@ -68,5 +71,6 @@ public interface RepositoryServiceAsync {
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
+    
 }
 
