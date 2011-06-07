@@ -27,6 +27,7 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
@@ -57,6 +58,12 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
                    launchServer(CXFJAXRSServer.class, true));
 
         ServiceImplementation impl = restTestingBase.getServiceImplementation();
+        
+
+        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
+        cat.addCategory( "AssetPackageResourceTestCategory",
+                         "yeah" );
+        
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
@@ -90,7 +97,10 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         rule2.checkin( "version 1" );
 
         AssetItem rule3 = pkg.addAsset( "model1",
-                                        "desc for model1" );
+                                        "desc for model1",
+                                        "AssetPackageResourceTestCategory",
+                                        AssetFormats.DRL_MODEL
+                                        );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
         rule3.checkin( "version 1" );
@@ -164,7 +174,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        //System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
