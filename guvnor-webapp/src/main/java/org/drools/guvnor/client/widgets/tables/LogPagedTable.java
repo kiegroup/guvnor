@@ -18,35 +18,32 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.admin.EventLogPresenter.EventLogView;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.LogPageRow;
-import org.drools.guvnor.client.rpc.PageRequest;
-import org.drools.guvnor.client.rpc.PageResponse;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
 
 /**
  * Widget with a table of Log entries.
  */
-public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
+public class LogPagedTable extends AbstractPagedTable<LogPageRow>
+    implements
+    EventLogView {
 
     // UI
     interface LogPagedTableBinder
@@ -56,6 +53,9 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
 
     @UiField()
     protected Button                   cleanButton;
+
+    @UiField()
+    protected Button                   refreshButton;
 
     private static LogPagedTableBinder uiBinder        = GWT.create( LogPagedTableBinder.class );
 
@@ -68,9 +68,6 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
         return prototype.getHTML();
     }
 
-    // Commands for UI
-    private Command          cleanCommand;
-
     // Other stuff
     private static final int PAGE_SIZE = 10;
 
@@ -79,25 +76,8 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
      * 
      * @param cleanCommand
      */
-    public LogPagedTable(Command cleanCommand) {
+    public LogPagedTable() {
         super( PAGE_SIZE );
-        this.cleanCommand = cleanCommand;
-        setDataProvider( new AsyncDataProvider<LogPageRow>() {
-            protected void onRangeChanged(HasData<LogPageRow> display) {
-                PageRequest request = new PageRequest();
-                request.setStartRowIndex( pager.getPageStart() );
-                request.setPageSize( pageSize );
-                repositoryService.showLog( request,
-                                                             new GenericCallback<PageResponse<LogPageRow>>() {
-                                                                 public void onSuccess(PageResponse<LogPageRow> response) {
-                                                                     updateRowCount( response.getTotalRowSize(),
-                                                                                     response.isTotalRowSizeExact() );
-                                                                     updateRowData( response.getStartRowIndex(),
-                                                                                    response.getPageRowList() );
-                                                                 }
-                                                             } );
-            }
-        } );
     }
 
     @Override
@@ -161,14 +141,28 @@ public class LogPagedTable extends AbstractPagedTable<LogPageRow> {
         return uiBinder.createAndBindUi( this );
     }
 
-    @UiHandler("cleanButton")
-    void clean(ClickEvent e) {
-        cleanCommand.execute();
+    public HasClickHandlers getClearEventLogButton() {
+        return this.cleanButton;
     }
 
-    @UiHandler("refreshButton")
-    void refresh(ClickEvent e) {
-        refresh();
+    public HasClickHandlers getRefreshEventLogButton() {
+        return this.refreshButton;
+    }
+
+    public void showClearingLogMessage() {
+        LoadingPopup.showMessage( constants.CleaningLogMessages() );
+    }
+
+    public void hideClearingLogMessage() {
+        LoadingPopup.close();
+    }
+
+    public int getStartRowIndex() {
+        return this.pager.getPageStart();
+    }
+
+    public int getPageSize() {
+        return PAGE_SIZE;
     }
 
 }

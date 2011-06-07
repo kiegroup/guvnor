@@ -246,7 +246,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * 
      * @param dataProvider
      */
-    protected void setDataProvider(AsyncDataProvider<T> dataProvider) {
+    public void setDataProvider(AsyncDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
         this.dataProvider.addDataDisplay( cellTable );
     }

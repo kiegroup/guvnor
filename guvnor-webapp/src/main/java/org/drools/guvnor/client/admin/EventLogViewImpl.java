@@ -16,22 +16,26 @@
 
 package org.drools.guvnor.client.admin;
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.widgets.tables.LogPagedTable;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.user.client.Command;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.view.client.AsyncDataProvider;
 
-public class LogViewer extends Composite {
+/**
+ * View for Event Log
+ */
+public class EventLogViewImpl extends Composite
+    implements
+    EventLogPresenter.EventLogView {
 
     private static Images images    = (Images) GWT.create( Images.class );
     private Constants     constants = ((Constants) GWT.create( Constants.class )); ;
@@ -39,7 +43,7 @@ public class LogViewer extends Composite {
     private VerticalPanel layout;
     private LogPagedTable table;
 
-    public LogViewer() {
+    public EventLogViewImpl() {
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
@@ -64,28 +68,40 @@ public class LogViewer extends Composite {
     }
 
     private void setupWidget() {
-
-        final Command cleanCommand = new Command() {
-
-            public void execute() {
-                cleanLog();
-            }
-
-        };
-
-        this.table = new LogPagedTable( cleanCommand );
+        this.table = new LogPagedTable();
         layout.add( table );
-
     }
 
-    private void cleanLog() {
-        LoadingPopup.showMessage( constants.CleaningLogMessages() );
-        RepositoryServiceFactory.getService().cleanLog( new GenericCallback<java.lang.Void>() {
-            public void onSuccess(Void v) {
-                table.refresh();
-                LoadingPopup.close();
-            }
-        } );
+    public HasClickHandlers getClearEventLogButton() {
+        return this.table.getClearEventLogButton();
+    }
+
+    public HasClickHandlers getRefreshEventLogButton() {
+        return this.table.getRefreshEventLogButton();
+    }
+
+    public void setDataProvider(AsyncDataProvider<LogPageRow> provider) {
+        this.table.setDataProvider( provider );
+    }
+
+    public void refresh() {
+        this.table.refresh();
+    }
+
+    public void showClearingLogMessage() {
+        this.table.showClearingLogMessage();
+    }
+
+    public void hideClearingLogMessage() {
+        this.table.hideClearingLogMessage();
+    }
+
+    public int getStartRowIndex() {
+        return this.table.getStartRowIndex();
+    }
+
+    public int getPageSize() {
+        return this.table.getPageSize();
     }
 
 }

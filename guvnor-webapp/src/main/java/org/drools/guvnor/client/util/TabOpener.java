@@ -21,7 +21,9 @@ import java.util.List;
 import org.drools.guvnor.client.admin.ArchivedAssetManager;
 import org.drools.guvnor.client.admin.BackupManager;
 import org.drools.guvnor.client.admin.CategoryManager;
-import org.drools.guvnor.client.admin.LogViewer;
+import org.drools.guvnor.client.admin.EventLogPresenter;
+import org.drools.guvnor.client.admin.EventLogPresenter.EventLogView;
+import org.drools.guvnor.client.admin.EventLogViewImpl;
 import org.drools.guvnor.client.admin.PermissionViewer;
 import org.drools.guvnor.client.admin.PerspectivesManager;
 import org.drools.guvnor.client.admin.PerspectivesManagerView;
@@ -50,6 +52,7 @@ import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PushClient;
 import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
@@ -346,8 +349,12 @@ public class TabOpener {
 
             case 4 :
                 if ( !explorerViewCenterPanel.showIfOpen( ERROR_LOG ) ) {
+                    EventLogView eventLogView = new EventLogViewImpl();
+                    RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
+                    new EventLogPresenter( repositoryService,
+                                           eventLogView );
                     explorerViewCenterPanel.addTab( constants.EventLog(),
-                                                    new LogViewer(),
+                                                    eventLogView,
                                                     ERROR_LOG );
                 }
                 break;
