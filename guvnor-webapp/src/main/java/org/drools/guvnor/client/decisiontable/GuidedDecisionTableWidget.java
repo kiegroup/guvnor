@@ -435,7 +435,7 @@ public class GuidedDecisionTableWidget extends Composite
         if ( guidedDecisionTable.getMetadataCols().size() > 0 ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
-            hp.add( new SmallLabel( constants.Metadata() ) );
+            hp.add( new SmallLabel( constants.Metadata1() ) );
             attributeConfigWidget.add( hp );
         }
         for ( MetadataCol52 atc : guidedDecisionTable.getMetadataCols() ) {
