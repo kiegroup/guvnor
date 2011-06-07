@@ -346,7 +346,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
         for ( final FieldData f : this.field.collectionFieldList ) {
             listContent.append( ',' );
             if ( f.getValue() != null ) {
-                listContent.append( f.getValue().substring( 1 ) );
+                listContent.append( f.getValue() );
             }
         }
         this.field.setValue( "=[" + listContent.substring( 1 ) + "]" );
