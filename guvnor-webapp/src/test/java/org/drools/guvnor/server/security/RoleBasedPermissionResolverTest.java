@@ -76,7 +76,7 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
                                             null ) );
 
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            RoleType.ANALYST.getName()) );
+                                            RoleType.ANALYST.getName() ) );
         assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
                                             RoleType.ANALYST_READ.getName() ) );
 
@@ -175,29 +175,29 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
     @Test
     public void testIsSubPath() {
-        RoleBasedPermissionResolver pr = new RoleBasedPermissionResolver();
-        assertTrue( pr.isSubPath( "foo",
-                                  "foo/bar" ) );
-        assertTrue( pr.isSubPath( "foo",
-                                  "/foo/bar" ) );
-        assertTrue( pr.isSubPath( "/foo/bar",
-                                  "/foo/bar" ) );
-        assertFalse( pr.isSubPath( "/foo/bar",
-                                   "foo" ) );
 
-        assertTrue( pr.isSubPath( "foo",
-                                  "foo/bar/baz" ) );
-        assertTrue( pr.isSubPath( "foo/bar",
-                                  "foo/bar/baz" ) );
-        assertFalse( pr.isSubPath( "wang",
-                                   "foo/bar/baz" ) );
-        assertFalse( pr.isSubPath( "wang/whee",
-                                   "foo/bar/baz" ) );
+        assertTrue( PathHelper.isSubPath( "foo",
+                                          "foo/bar" ) );
+        assertTrue( PathHelper.isSubPath( "foo",
+                                          "/foo/bar" ) );
+        assertTrue( PathHelper.isSubPath( "/foo/bar",
+                                          "/foo/bar" ) );
+        assertFalse( PathHelper.isSubPath( "/foo/bar",
+                                           "foo" ) );
 
-        assertFalse( pr.isSubPath( "foo1",
-                                   "foo2" ) );
-        assertTrue( pr.isSubPath( "foo1",
-                                  "foo1" ) );
+        assertTrue( PathHelper.isSubPath( "foo",
+                                          "foo/bar/baz" ) );
+        assertTrue( PathHelper.isSubPath( "foo/bar",
+                                          "foo/bar/baz" ) );
+        assertFalse( PathHelper.isSubPath( "wang",
+                                           "foo/bar/baz" ) );
+        assertFalse( PathHelper.isSubPath( "wang/whee",
+                                           "foo/bar/baz" ) );
+
+        assertFalse( PathHelper.isSubPath( "foo1",
+                                           "foo2" ) );
+        assertTrue( PathHelper.isSubPath( "foo1",
+                                          "foo1" ) );
     }
 
     /**

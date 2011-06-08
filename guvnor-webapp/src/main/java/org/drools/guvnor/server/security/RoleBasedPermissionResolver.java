@@ -19,10 +19,14 @@ package org.drools.guvnor.server.security;
 import static org.jboss.seam.ScopeType.APPLICATION;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.security.rules.CategoryPathTypePermissionRule;
+import org.drools.guvnor.server.security.rules.PermissionRule;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
@@ -59,10 +63,20 @@ import org.jboss.seam.security.permission.PermissionResolver;
 @BypassInterceptors
 @Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
 @Startup
-public class RoleBasedPermissionResolver implements PermissionResolver, Serializable {
-    private static final LoggingHelper log                          = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
+public class RoleBasedPermissionResolver
+    implements
+    PermissionResolver,
+    Serializable {
+    private static final LoggingHelper      log                          = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
-    private boolean                    enableRoleBasedAuthorization = false;
+    private boolean                         enableRoleBasedAuthorization = false;
+
+    private Map<Class< ? >, PermissionRule> permissionRules              = new HashMap<Class< ? >, PermissionRule>();
+
+    public RoleBasedPermissionResolver() {
+        permissionRules.put( CategoryPathType.class,
+                             new CategoryPathTypePermissionRule() );
+    }
 
     @Create
     public void create() {
@@ -82,7 +96,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
      * @return true if the permission can be granted on the requested object with the
      * requested role; return false otherwise.
      */
-    public boolean hasPermission(Object requestedObject, String requestedPermission) {
+    public boolean hasPermission(Object requestedObject,
+                                 String requestedPermission) {
         if ( isInvalidInstance( requestedObject ) ) {
             log.debug( "Requested permission is not an instance of CategoryPathType|PackageNameType|WebDavPackageNameType|AdminType|PackageUUIDType" );
             return false;
@@ -101,8 +116,11 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         }
 
         if ( requestedObject instanceof CategoryPathType ) {
-            return handleCategoryPathPermission( requestedObject, requestedPermission, permissions );
+            return permissionRules.get( CategoryPathType.class ).hasPermission( requestedObject,
+                                                                                requestedPermission,
+                                                                                permissions );
         }
+
         String targetName = "";
 
         if ( requestedObject instanceof PackageUUIDType ) {
@@ -118,7 +136,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         }
 
         for ( RoleBasedPermission pbp : permissions ) {
-            if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission, pbp.getRole() ) ) {
+            if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
+                                                                                            pbp.getRole() ) ) {
                 log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes" );
                 return true;
             }
@@ -131,49 +150,6 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
         return ((RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" )).getRoleBasedPermission();
-    }
-
-    private boolean handleCategoryPathPermission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
-        String requestedPath = ((CategoryPathType) requestedObject).getCategoryPath();
-        String requestedPermType = (requestedPermission == null) ? RoleType.ANALYST.getName() : requestedPermission;
-        if ( requestedPermType.equals( "navigate" ) ) {
-            for ( RoleBasedPermission roleBasedPermission : permissions ) {
-                if ( roleBasedPermission.getCategoryPath() != null ) {
-                    if ( isCategoryPathMatched( requestedPath, roleBasedPermission ) ) {
-                        return true;
-                    }
-                    if ( isSubPath( requestedPath, roleBasedPermission.getCategoryPath() ) ) {
-                        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                        return true;
-                    } else if ( isSubPath( roleBasedPermission.getCategoryPath(), requestedPath ) ) {
-                        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                        return true;
-                    }
-                }
-            }
-            log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
-            return false;
-        }
-        for ( RoleBasedPermission roleBasedPermission : permissions ) {
-            if ( isRoleAnalyst( roleBasedPermission ) && isPermissionToCurrentDirectory( requestedPermType, roleBasedPermission ) && isPermittedCategoryPath( requestedPath, roleBasedPermission.getCategoryPath() ) ) {
-                log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: Yes" );
-                return true;
-            }
-        }
-        log.debug( "Requested permission: " + requestedPermType + ", Requested object: " + requestedPath + " , Permission granted: No" );
-        return false;
-    }
-
-    private boolean isPermissionToCurrentDirectory(String requestedPermType, RoleBasedPermission roleBasedPermission) {
-        return requestedPermType.equals( roleBasedPermission.getRole() ) || (requestedPermType.equals( RoleType.ANALYST_READ.getName() ) && roleBasedPermission.getRole().equals( RoleType.ANALYST.getName() ));
-    }
-
-    private boolean isRoleAnalyst(RoleBasedPermission roleBasedPermission) {
-        return roleBasedPermission.getRole().equals( RoleType.ANALYST.getName() ) || roleBasedPermission.getRole().equals( RoleType.ANALYST_READ.getName() );
-    }
-
-    private boolean isCategoryPathMatched(String requestedPath, RoleBasedPermission roleBasedPermission) {
-        return roleBasedPermission.getCategoryPath().equals( requestedPath );
     }
 
     private boolean isInvalidInstance(Object requestedObject) {
@@ -191,16 +167,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         return false;
     }
 
-    private boolean isPermittedCategoryPath(String requestedPath, String allowedPath) {
-        if ( requestedPath == null && allowedPath == null ) {
-            return true;
-        } else if ( requestedPath == null || allowedPath == null ) {
-            return false;
-        }
-        return requestedPath.equals( allowedPath ) || isSubPath( allowedPath, requestedPath );
-    }
-
-    private boolean isPermittedPackage(String requestedAction, String role) {
+    private boolean isPermittedPackage(String requestedAction,
+                                       String role) {
         if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( role ) ) {
             return true;
         } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( role ) ) {
@@ -224,24 +192,8 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         return false;
     }
 
-    public boolean isSubPath(String parentPath, String subPath) {
-        parentPath = (parentPath.startsWith( "/" )) ? parentPath.substring( 1 ) : parentPath;
-        subPath = (subPath.startsWith( "/" )) ? subPath.substring( 1 ) : subPath;
-        String[] parentTags = parentPath.split( "/" );
-        String[] subTags = subPath.split( "/" );
-        if ( parentTags.length > subTags.length ) {
-            return false;
-        }
-        for ( int i = 0; i < parentTags.length; i++ ) {
-            if ( !parentTags[i].equals( subTags[i] ) ) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    public void filterSetByAction(Set<Object> targets, String action) {
+    public void filterSetByAction(Set<Object> targets,
+                                  String action) {
     }
 
     public boolean isEnableRoleBasedAuthorization() {
