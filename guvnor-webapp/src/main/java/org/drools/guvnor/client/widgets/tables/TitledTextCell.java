@@ -1,5 +1,7 @@
 package org.drools.guvnor.client.widgets.tables;
 
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.TitledTextCellCss;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.AbstractSafeHtmlCell;
@@ -13,6 +15,8 @@ import com.google.gwt.text.shared.SafeHtmlRenderer;
  * being the title and the other being narrative.
  */
 public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
+
+    protected static final TitledTextCellCss css = GuvnorResources.INSTANCE.titledTextCellCss();
 
     /**
      * Constructs a TitledTextCell that uses a
@@ -65,7 +69,6 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
             return description;
         }
 
-     
         public int compareTo(TitledText o) {
             return title.compareTo( o.title );
         }
@@ -92,22 +95,23 @@ public class TitledTextCell extends AbstractSafeHtmlCell<TitledText> {
         private TitledTextSafeHtmlRenderer() {
         }
 
-       
         public SafeHtml render(TitledText object) {
-            String html = "<div>"
-                          + object.title
-                          + "</div>";
-            if ( object.description != null
-                 && !"".equals( object.description ) ) {
-                html = html
-                       + "<div style='font-size: smaller; font-style:italic;'>"
-                                             + object.description
-                       + "</div>";
+            boolean bHasDescription = object.description != null && !"".equals( object.description );
+
+            if ( bHasDescription ) {
+                String html = "<div class='" + css.container() + "'>";
+                html = html + "<div>" + object.title + "</div>";
+                html = html + "<div class='" + css.description() + "'>" + object.description + "</div>";
+                html = html + "</div>";
+                return SafeHtmlUtils.fromTrustedString( html );
+            } else {
+                String html = "<div class='" + css.container() + "'>";
+                html = html + "<div>" + object.title + "</div>";
+                html = html + "</div>";
+                return SafeHtmlUtils.fromTrustedString( html );
             }
-            return SafeHtmlUtils.fromTrustedString( html );
         }
 
-      
         public void render(TitledText object,
                            SafeHtmlBuilder builder) {
             builder.append( render( object ) );

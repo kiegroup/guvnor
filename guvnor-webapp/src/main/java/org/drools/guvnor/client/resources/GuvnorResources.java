@@ -34,4 +34,7 @@ public interface GuvnorResources
     @Source("css/Header.css")
     HeaderCss headerCss();
 
+    @Source("css/TitledTextCell.css")
+    TitledTextCellCss titledTextCellCss();
+
 }
