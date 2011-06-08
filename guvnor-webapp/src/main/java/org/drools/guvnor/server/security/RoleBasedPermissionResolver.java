@@ -92,8 +92,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
             return true;
         }
 
-        RoleBasedPermissionManager roleBasedPermissionManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
-        List<RoleBasedPermission> permissions = roleBasedPermissionManager.getRoleBasedPermission();
+        List<RoleBasedPermission> permissions = fetchAllRoleBasedPermissionsForCurrentUser();
 
         if ( hasAdminPermission( permissions ) ) {
             return true;
@@ -128,6 +127,10 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
         log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No" );
         return false;
 
+    }
+
+    private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
+        return ((RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" )).getRoleBasedPermission();
     }
 
     private boolean handleCategoryPathPermission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions) {
