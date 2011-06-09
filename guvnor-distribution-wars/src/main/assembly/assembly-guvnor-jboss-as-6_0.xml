@@ -32,6 +32,8 @@
           <exclude>WEB-INF/lib/cxf-rt-bindings-xml-*.jar</exclude>
           <exclude>WEB-INF/lib/cxf-rt-core-*.jar</exclude>
           <exclude>WEB-INF/lib/cxf-rt-transports-http-*.jar</exclude>
+          <!-- HACK in 5.2.x to fix GUVNOR-1471 WEB-INF/deploy dir that makes the war unnecessary big -->
+          <exclude>WEB-INF/deploy/**</exclude>
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
