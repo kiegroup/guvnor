@@ -22,6 +22,7 @@
   <xi:include href="Chapter-Advanced_Config_Options_in_Rule_Package.xml" />
   <xi:include href="Chapter-Deployment.xml" />
   <xi:include href="Chapter-WebDAV_HTTP.xml" />
+  <xi:include href="Chapter-REST.xml" />
   <xi:include href="Chapter-Inbox_Comments.xml" />
   <xi:include href="Chapter-Eclipse_Integration.xml" />
       
