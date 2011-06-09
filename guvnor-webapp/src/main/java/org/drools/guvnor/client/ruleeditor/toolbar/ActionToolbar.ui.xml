@@ -73,7 +73,7 @@
                   <gwt:MenuItem ui:field="archive">
                     <ui:text from="{i18n.Archive}" />
                   </gwt:MenuItem>
-                  <gwt:MenuItem ui:field="delete" title="i18n.DeleteAssetTooltip">
+                  <gwt:MenuItem ui:field="delete" title="{i18n.DeleteAssetTooltip}">
                     <ui:text from="{i18n.Delete}" />
                   </gwt:MenuItem>
                 </gwt:MenuBar>
