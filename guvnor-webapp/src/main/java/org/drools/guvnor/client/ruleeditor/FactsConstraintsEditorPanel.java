@@ -179,7 +179,7 @@ public class FactsConstraintsEditorPanel extends Composite {
     }
 
     private void fillFieldConstrains() {
-        if (fieldsCombo.getSelectedIndex() > 0 && factsCombo.getSelectedIndex() > 0) {
+        if (fieldsCombo.getSelectedIndex() != -1 && factsCombo.getSelectedIndex() != -1) {
             String fieldName = fieldsCombo.getItemText(fieldsCombo.getSelectedIndex());
 
             String factField = factsCombo.getItemText(factsCombo.getSelectedIndex());
