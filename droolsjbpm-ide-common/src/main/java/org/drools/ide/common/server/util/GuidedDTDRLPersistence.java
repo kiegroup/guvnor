@@ -340,16 +340,20 @@ public class GuidedDTDRLPersistence {
 
     private IFactPattern findByFactPattern(List<IFactPattern> patterns,
                                            String boundName) {
+        if ( boundName == null ) {
+            return null;
+        }
+
         for ( IFactPattern ifp : patterns ) {
             if ( ifp instanceof FactPattern ) {
                 FactPattern fp = (FactPattern) ifp;
-                if ( fp.getBoundName().equals( boundName ) ) {
+                if ( fp.getBoundName() != null && fp.getBoundName().equals( boundName ) ) {
                     return fp;
                 }
             } else if ( ifp instanceof FromEntryPointFactPattern ) {
                 FromEntryPointFactPattern fefp = (FromEntryPointFactPattern) ifp;
                 FactPattern fp = fefp.getFactPattern();
-                if ( fp.getBoundName().equals( boundName ) ) {
+                if ( fp.getBoundName() != null && fp.getBoundName().equals( boundName ) ) {
                     return fp;
                 }
             }

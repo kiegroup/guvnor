@@ -86,6 +86,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     private Label                      patternLabel                = new Label();
     private TextBox                    fieldLabel                  = getFieldLabel();
     private Label                      operatorLabel               = new Label();
+    private ImageButton                changePattern;
+    private ImageButton                editField;
+    private ImageButton                editOp;
 
     private CEPWindowOperatorsDropdown cwo;
     private TextBox                    entryPointName;
@@ -124,13 +127,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         pattern.add( patternLabel );
         doPatternLabel();
 
-        Image changePattern = new ImageButton( images.edit(),
-                                               constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
-                                               new ClickHandler() {
-                                                   public void onClick(ClickEvent w) {
-                                                       showChangePattern( w );
-                                                   }
-                                               } );
+        this.changePattern = new ImageButton( images.edit(),
+                                              constants.ChooseAnExistingPatternThatThisColumnAddsTo(),
+                                              new ClickHandler() {
+                                                  public void onClick(ClickEvent w) {
+                                                      showChangePattern( w );
+                                                  }
+                                              } );
         pattern.add( changePattern );
 
         addAttribute( constants.Pattern(),
@@ -182,13 +185,14 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
         field.add( fieldLabelInterpolationInfo );
-        Image editField = new ImageButton( images.edit(),
-                                           constants.EditTheFieldThatThisColumnOperatesOn(),
-                                           new ClickHandler() {
-                                               public void onClick(ClickEvent w) {
-                                                   showFieldChange();
-                                               }
-                                           } );
+        this.editField = new ImageButton( images.edit(),
+                                          images.editDisabled(),
+                                          constants.EditTheFieldThatThisColumnOperatesOn(),
+                                          new ClickHandler() {
+                                              public void onClick(ClickEvent w) {
+                                                  showFieldChange();
+                                              }
+                                          } );
         field.add( editField );
         addAttribute( constants.Field(),
                       field );
@@ -196,18 +200,19 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         HorizontalPanel operator = new HorizontalPanel();
         operator.add( operatorLabel );
-        Image editOp = new ImageButton(
-                                        images.edit(),
-                                        constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
-                                        new ClickHandler() {
-                                            public void onClick(ClickEvent w) {
-                                                showOperatorChange();
-                                            }
-                                        } );
+        this.editOp = new ImageButton( images.edit(),
+                                       images.editDisabled(),
+                                       constants.EditTheOperatorThatIsUsedToCompareDataWithThisField(),
+                                       new ClickHandler() {
+                                           public void onClick(ClickEvent w) {
+                                               showOperatorChange();
+                                           }
+                                       } );
         operator.add( editOp );
         addAttribute( constants.Operator(),
                       operator );
         doOperatorLabel();
+        doImageButtons();
 
         //Add CEP fields for patterns containing Facts declared as Events
         cepWindowRowIndex = addAttribute( constants.DTLabelOverCEPWindow(),
@@ -265,17 +270,23 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                     return;
                 }
                 if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                    if ( null == editingCol.getFactField()
-                            || "".equals( editingCol.getFactField() ) ) {
+
+                    //Field mandatory for Literals and Formulae
+                    if ( null == editingCol.getFactField() || "".equals( editingCol.getFactField() ) ) {
                         Window.alert( constants.PleaseSelectOrEnterField() );
                         return;
                     }
-                    if ( null == editingCol.getOperator()
-                            || "".equals( editingCol.getOperator() ) ) {
-                        // Operator field optional
+
+                    //Operator optional for Literals and Formulae
+                    if ( null == editingCol.getOperator() || "".equals( editingCol.getOperator() ) ) {
                         Window.alert( constants.NotifyNoSelectedOperator() );
                     }
 
+                } else {
+
+                    //Clear field and operator for predicates
+                    editingCol.setFactField( null );
+                    editingCol.setOperator( null );
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
@@ -307,6 +318,13 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         editingCol.setConstraintValueType( newType );
         doFieldLabel();
         doOperatorLabel();
+        doImageButtons();
+    }
+
+    private void doImageButtons() {
+        int constraintType = editingCol.getConstraintValueType();
+        this.editField.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE );
+        this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE );
     }
 
     private boolean checkUnique(String fn,
