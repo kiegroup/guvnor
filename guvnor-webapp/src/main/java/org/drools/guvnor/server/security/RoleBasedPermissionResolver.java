@@ -24,11 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.rules.CategoryPathTypePermissionRule;
+import org.drools.guvnor.server.security.rules.PackagePermissionRule;
+import org.drools.guvnor.server.security.rules.PackageUUIDTypePermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRule;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.Install;
@@ -76,6 +76,10 @@ public class RoleBasedPermissionResolver
     public RoleBasedPermissionResolver() {
         permissionRules.put( CategoryPathType.class,
                              new CategoryPathTypePermissionRule() );
+        permissionRules.put( PackageUUIDType.class,
+                             new PackageUUIDTypePermissionRule() );
+        permissionRules.put( PackageNameType.class,
+                             new PackagePermissionRule() );
     }
 
     @Create
@@ -109,9 +113,7 @@ public class RoleBasedPermissionResolver
 
         List<RoleBasedPermission> permissions = fetchAllRoleBasedPermissionsForCurrentUser();
 
-        if ( hasAdminPermission( permissions ) ) {
-            return true;
-        } else if ( RoleType.ADMIN.getName().equals( requestedPermission ) ) {
+        if ( hasAdminPermission( permissions ) || RoleType.ADMIN.getName().equals( requestedPermission ) ) {
             return hasAdminPermission( permissions );
         }
 
@@ -119,33 +121,17 @@ public class RoleBasedPermissionResolver
             return permissionRules.get( CategoryPathType.class ).hasPermission( requestedObject,
                                                                                 requestedPermission,
                                                                                 permissions );
-        }
-
-        String targetName = "";
-
-        if ( requestedObject instanceof PackageUUIDType ) {
-            String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
-            try {
-                ServiceImplementation serviceImplementation = (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
-                targetName = serviceImplementation.getRulesRepository().loadPackageByUUID( targetUUID ).getName();
-            } catch ( RulesRepositoryException e ) {
-                return false;
-            }
+        } else if ( requestedObject instanceof PackageUUIDType ) {
+            return permissionRules.get( PackageUUIDType.class ).hasPermission( requestedObject,
+                                                                               requestedPermission,
+                                                                               permissions );
         } else if ( requestedObject instanceof PackageNameType ) {
-            targetName = ((PackageNameType) requestedObject).getPackageName();
+            return permissionRules.get( PackageNameType.class ).hasPermission( ((PackageNameType) requestedObject).getPackageName(),
+                                                                               requestedPermission,
+                                                                               permissions );
         }
 
-        for ( RoleBasedPermission pbp : permissions ) {
-            if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
-                                                                                            pbp.getRole() ) ) {
-                log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes" );
-                return true;
-            }
-        }
-
-        log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No" );
         return false;
-
     }
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
@@ -164,31 +150,6 @@ public class RoleBasedPermissionResolver
             }
         }
         log.debug( "Requested permission: logInAdmin, Permission granted: No" );
-        return false;
-    }
-
-    private boolean isPermittedPackage(String requestedAction,
-                                       String role) {
-        if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( role ) ) {
-            return true;
-        } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( role ) ) {
-            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
-                return false;
-            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
-                return true;
-            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
-                return true;
-            }
-        } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( role ) ) {
-            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
-                return false;
-            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
-                return false;
-            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
-                return true;
-            }
-        }
-
         return false;
     }
 

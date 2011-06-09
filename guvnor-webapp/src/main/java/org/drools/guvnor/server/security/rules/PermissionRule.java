@@ -20,5 +20,7 @@ import java.util.List;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 
 public interface PermissionRule {
-    public boolean hasPermission(Object requestedObject, String requestedPermission, List<RoleBasedPermission> permissions);
+    public boolean hasPermission(Object requestedObject,
+                                 String requestedPermission,
+                                 List<RoleBasedPermission> permissions);
 }
