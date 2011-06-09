@@ -25,9 +25,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.server.security.rules.CategoryPathTypePermissionRule;
+import org.drools.guvnor.server.security.rules.PackageNameTypeConverter;
 import org.drools.guvnor.server.security.rules.PackagePermissionRule;
 import org.drools.guvnor.server.security.rules.PackageUUIDTypePermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRule;
+import org.drools.guvnor.server.security.rules.PermissionRuleObjectConverter;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.Component;
 import org.jboss.seam.annotations.Create;
@@ -67,11 +69,12 @@ public class RoleBasedPermissionResolver
     implements
     PermissionResolver,
     Serializable {
-    private static final LoggingHelper      log                          = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
+    private static final LoggingHelper                     log                            = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
-    private boolean                         enableRoleBasedAuthorization = false;
+    private boolean                                        enableRoleBasedAuthorization   = false;
 
-    private Map<Class< ? >, PermissionRule> permissionRules              = new HashMap<Class< ? >, PermissionRule>();
+    private Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
+    private Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();
 
     public RoleBasedPermissionResolver() {
         permissionRules.put( CategoryPathType.class,
@@ -80,6 +83,12 @@ public class RoleBasedPermissionResolver
                              new PackageUUIDTypePermissionRule() );
         permissionRules.put( PackageNameType.class,
                              new PackagePermissionRule() );
+        permissionRules.put( WebDavPackageNameType.class,
+                             new PackagePermissionRule() );
+        permissionRuleObjectConverters.put( PackageNameType.class,
+                                            new PackageNameTypeConverter() );
+        permissionRuleObjectConverters.put( WebDavPackageNameType.class,
+                                            new PackageNameTypeConverter() );
     }
 
     @Create
@@ -117,21 +126,18 @@ public class RoleBasedPermissionResolver
             return hasAdminPermission( permissions );
         }
 
-        if ( requestedObject instanceof CategoryPathType ) {
-            return permissionRules.get( CategoryPathType.class ).hasPermission( requestedObject,
-                                                                                requestedPermission,
-                                                                                permissions );
-        } else if ( requestedObject instanceof PackageUUIDType ) {
-            return permissionRules.get( PackageUUIDType.class ).hasPermission( requestedObject,
-                                                                               requestedPermission,
-                                                                               permissions );
-        } else if ( requestedObject instanceof PackageNameType ) {
-            return permissionRules.get( PackageNameType.class ).hasPermission( ((PackageNameType) requestedObject).getPackageName(),
-                                                                               requestedPermission,
-                                                                               permissions );
-        }
+        return getPermissionRuleFor( requestedObject ).hasPermission( convertFor( requestedObject ),
+                                                                         requestedPermission,
+                                                                         permissions );
+    }
 
-        return false;
+    private PermissionRule getPermissionRuleFor(Object requestedObject) {
+        return permissionRules.get( requestedObject.getClass() );
+    }
+
+    private Object convertFor(Object requestedObject) {
+        PermissionRuleObjectConverter permissionRuleObjectConverter = permissionRuleObjectConverters.get( requestedObject.getClass() );
+        return permissionRuleObjectConverter == null ? requestedObject : permissionRuleObjectConverter.convert( requestedObject );
     }
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
