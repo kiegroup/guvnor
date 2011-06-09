@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -405,22 +406,29 @@ public class VerticalDecisionTableHeaderWidget extends
                             ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
                             Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
-                            if ( mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
-                                 && mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
-                                width = width + mergeCol.getWidth();
-                                colSpan++;
-                            } else {
+                            //Only merge columns if FactType and BoundName are identical
+                            if ( mergeCondColPattern.getFactType() == null || mergeCondColPattern.getFactType().length() == 0 ) {
                                 break;
                             }
+                            if ( !mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
+                                 || !mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
+                                break;
+                            }
+
+                            width = width + mergeCol.getWidth();
+                            colSpan++;
                         }
 
                         // Make cell
                         iCol = iCol + colSpan - 1;
                         tce.addClassName( style.headerRowIntermediate() );
                         StringBuilder label = new StringBuilder();
-                        label.append( (ccPattern.isNegated() ? constants.negatedPattern() + " " : "") );
-                        label.append( ccPattern.getFactType() );
-                        label.append( " [" + ccPattern.getBoundName() + "]" );
+                        String factType = ccPattern.getFactType();
+                        if ( factType != null && factType.length() > 0 ) {
+                            label.append( (ccPattern.isNegated() ? constants.negatedPattern() + " " : "") );
+                            label.append( ccPattern.getFactType() );
+                            label.append( " [" + ccPattern.getBoundName() + "]" );
+                        }
                         tce.appendChild( makeLabel( label.toString(),
                                                     width,
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
@@ -438,8 +446,13 @@ public class VerticalDecisionTableHeaderWidget extends
                         tre.appendChild( tce );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
                         StringBuilder label = new StringBuilder();
-                        label.append( cc.getFactField() );
-                        label.append( " [" + cc.getOperator() + "]" );
+                        String factField = cc.getFactField();
+                        if ( factField != null && factField.length() > 0 ) {
+                            label.append( factField );
+                        }
+                        if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+                            label.append( " [" + cc.getOperator() + "]" );
+                        }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
                                                     (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
@@ -650,13 +663,17 @@ public class VerticalDecisionTableHeaderWidget extends
                 ConditionCol52 mergeCondCol = (ConditionCol52) mergeCol.getModelColumn();
                 Pattern52 mergeCondColPattern = model.getPattern( mergeCondCol );
 
-                if ( mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
-                        && mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
-                    width = width + mergeCol.getWidth();
-                    colSpan++;
-                } else {
+                //Only merge columns if FactType and BoundName are identical
+                if ( mergeCondColPattern.getFactType() == null || mergeCondColPattern.getFactType().length() == 0 ) {
                     break;
                 }
+                if ( !mergeCondColPattern.getFactType().equals( ccPattern.getFactType() )
+                     || !mergeCondColPattern.getBoundName().equals( ccPattern.getBoundName() ) ) {
+                    break;
+                }
+
+                width = width + mergeCol.getWidth();
+                colSpan++;
             }
 
             // Make cell
