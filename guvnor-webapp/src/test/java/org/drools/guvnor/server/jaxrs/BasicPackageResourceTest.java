@@ -16,21 +16,8 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import java.io.*;
-import java.net.*;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import org.apache.abdera.Abdera;
-import org.apache.abdera.model.Document;
-import org.apache.abdera.model.Entry;
-import org.apache.abdera.model.ExtensibleElement;
-import org.apache.abdera.model.Feed;
-import org.apache.abdera.model.Link;
+import org.apache.abdera.model.*;
 import org.apache.abdera.protocol.Response.ResponseType;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
@@ -44,12 +31,20 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.util.codec.Base64;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mvel2.util.StringAppender;
 
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 
 
@@ -105,6 +100,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
         rule3.checkin( "version 1" );
 
+        AssetItem rule4 = pkg.addAsset( "rule4",
+                                        "" );
+        rule3.updateFormat( AssetFormats.DRL_MODEL );
+        rule3.updateContent( "rule 'nheron' when Goo1() then end" );
+        rule3.checkin( "version 1" );
         pkg.checkin( "version2" );
 
         //Package version 3
@@ -689,7 +689,49 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         //String result = GetContent(connection);
         //System.out.println(result);
     }
-    
+
+    @Test
+    public void testUpdateAssetSource() throws Exception {
+        /*
+         *  Get the content of rule4
+         */
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        HttpURLConnection connection1 = (HttpURLConnection) url.openConnection();
+        connection1.setRequestMethod("GET");
+        connection1.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
+        connection1.connect();
+        assertEquals (200, connection1.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection1.getContentType());
+        String newContent =    "rule 'nheron' when Goo1() then end";
+          /*
+           * update the content
+           */
+        URL url2 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        HttpURLConnection connection2 = (HttpURLConnection) url.openConnection();
+        connection2.setDoOutput(true);
+        connection2.setRequestMethod("PUT");
+        connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        OutputStreamWriter out = new OutputStreamWriter(connection2.getOutputStream());
+        out.write(newContent);
+        out.close();
+        connection2.getInputStream();
+        /*
+         * get the content again and verify it was modified
+         */
+        assertEquals (204, connection2.getResponseCode());
+        URL url3 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        HttpURLConnection connection3 = (HttpURLConnection) url3.openConnection();
+        connection3.setRequestMethod("GET");
+        connection3.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
+        connection3.connect();
+
+        assertEquals (200, connection3.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection3.getContentType());
+        String result = GetContent(connection3);
+        assertEquals (result,newContent+"\n");
+    }
+
+
     public String generateBaseUrl() {
     	return "http://localhost:9080";
     }

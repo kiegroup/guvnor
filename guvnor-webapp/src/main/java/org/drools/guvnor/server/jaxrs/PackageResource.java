@@ -16,34 +16,7 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
-import static org.drools.guvnor.server.jaxrs.Translator.ToPackage;
-import static org.drools.guvnor.server.jaxrs.Translator.ToPackageEntryAbdera;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Entry;
@@ -62,7 +35,17 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
 import org.jboss.seam.annotations.Name;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.*;
+
+import static org.drools.guvnor.server.jaxrs.Translator.*;
 
 /**
  * Contract:  Package names and asset names within a package namespace
@@ -432,6 +415,31 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(new RuntimeException ("Package '" + packageName + "' does not exist!"));
         }
     }
+
+    @PUT
+    @Path("{packageName}/assets/{assetName}/source")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String  content) {
+        AssetItem ai = null;
+        System.out.println("User = "+service.getRulesRepository().getSession().getUserID());
+
+        PackageItem pi = repository.loadPackage(packageName);
+        Iterator<AssetItem> iter = pi.getAssets();
+        while (iter.hasNext()) {
+            AssetItem item = iter.next();
+            if (item.getName().equals(assetName)) {
+                ai = item;
+                break;
+            }
+        }
+
+        /* Update asset */
+        ai.checkout();
+        ai.updateContent(content);
+
+        repository.save();
+    }
+
 
     @PUT
     @Path("{packageName}/assets/{assetName}")
