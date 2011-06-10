@@ -111,10 +111,12 @@ public class SuggestionCompletionCache {
      */
     public void refreshPackage(String packageName, Command done) {
         SuggestionCompletionEngine sce = cache.get(packageName);
-        if (sce != null) {
+        //No need to remove sce from cache as this makes sce temporarily unavailable during the 
+        //period between removing sce and putting it back.
+/*        if (sce != null) {
             sce.setFactTypeFilter(null);
             cache.remove( packageName );
-        }
+        }*/
         loadPackage( packageName, done );
     }
 
