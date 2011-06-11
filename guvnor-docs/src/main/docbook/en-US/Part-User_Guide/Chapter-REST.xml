@@ -487,7 +487,7 @@
 
               <entry>Updates the metadata of the rule asset {assetName}
               contained in package {packageName} given in a Atom
-              entry.</entry>
+              Entry.</entry>
             </row>
 
             <row>
@@ -509,7 +509,7 @@
 
               <entry>DELETE</entry>
 
-              <entry>application/json and application/xml</entry>
+              <entry>none</entry>
 
               <entry>none</entry>
 
