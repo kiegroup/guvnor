@@ -104,7 +104,6 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         response.setContentType( "text/html" );
         String packageName = request.getParameter( "packageName" );
         FormData data = FileManagerUtils.getFormData( request );
-        //System.err.println("Filename: " + data.getFile().getName());
 
         try {
             getFileManager().importClassicDRL( data.getFile().getInputStream(),
@@ -189,7 +188,6 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         doRunScenarios( helper,
                                         out );
                     } else if ( req.getRequestURI().endsWith( "ChangeSet.xml" ) ) {
-                        //here be dragons !
                         String url = req.getRequestURL().toString().replace( "/ChangeSet.xml",
                                                                              "" );
                         fileName = "ChangeSet.xml";

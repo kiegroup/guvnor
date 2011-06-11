@@ -45,7 +45,6 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MigrateRepository;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -142,7 +141,7 @@ public class FileManagerUtils {
         out.write( data );
         out.flush();
 
-        return item.getName() + "." + item.getFormat();//item.getBinaryContentAttachmentFileName();
+        return item.getName() + "." + item.getFormat();
     }
 
     /**
@@ -401,13 +400,12 @@ public class FileManagerUtils {
         }
 
         AssetItem item = pkg.loadAsset( assetName );
-        ContentHandler handler = ContentManager.getHandler( item.getFormat() );//new AssetContentFormatHandler();
+        ContentHandler handler = ContentManager.getHandler( item.getFormat() );
         StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
 
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
-            //now we load up the DSL files
-            builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
+            builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( item.getPackage() ) );
             ((IRuleAsset) handler).assembleDRL( builder,
                                                 item,
                                                 stringBuilder );

@@ -27,8 +27,6 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
@@ -38,37 +36,33 @@ import org.slf4j.LoggerFactory;
 @Name("repository")
 public class RulesRepositoryManager {
 
-    private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
-    private static String READ_ONLY_USER = "anonymous";
-    
+    private static String    READ_ONLY_USER = "anonymous";
+
     @In
     RepositoryStartupService repositoryConfiguration;
-    
-    private RulesRepository repository;
-    
-    
+
+    private RulesRepository  repository;
+
     @Create
     public void create() {
         String userName = READ_ONLY_USER;
-        if (Contexts.isApplicationContextActive()) {
+        if ( Contexts.isApplicationContextActive() ) {
             userName = Identity.instance().getCredentials().getUsername();
         }
-        if (userName == null) {
+        if ( userName == null ) {
             userName = READ_ONLY_USER;
         }
-        repository = new RulesRepository(repositoryConfiguration.newSession(userName) );
+        repository = new RulesRepository( repositoryConfiguration.newSession( userName ) );
     }
-    
+
     @Unwrap
     public RulesRepository getRepository() {
         return repository;
     }
-    
+
     @Destroy
     public void close() {
         repository.logout();
     }
-    
 
-    
 }

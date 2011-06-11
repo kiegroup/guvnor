@@ -16,6 +16,10 @@
 
 package org.drools.guvnor.server.builder;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Iterator;
+
 import org.drools.compiler.DroolsError;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -25,13 +29,8 @@ import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
-
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.Iterator;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -41,7 +40,7 @@ import java.util.Iterator;
 abstract class PackageAssemblerBase extends AssemblerBase {
 
     protected PackageAssemblerBase(PackageItem packageItem) {
-        super(packageItem);
+        super( packageItem );
     }
 
     /**
@@ -49,27 +48,32 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      * etc).
      */
     protected void buildAsset(AssetItem asset) {
-        ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
+        ContentHandler contentHandler = ContentManager.getHandler( asset.getFormat() );
 
-        if (contentHandler instanceof ICompilable && !asset.getDisabled()) {
+        if ( contentHandler instanceof ICompilable && !asset.getDisabled() ) {
             try {
-                compile(asset, (ICompilable) contentHandler);
-            } catch (DroolsParserException e) {
-                errorLogger.addError(asset, e.getMessage());
-                throw new RulesRepositoryException(e);
-            } catch (IOException e) {
-                errorLogger.addError(asset, e.getMessage());
+                compile( asset,
+                         (ICompilable) contentHandler );
+            } catch ( DroolsParserException e ) {
+                errorLogger.addError( asset,
+                                      e.getMessage() );
+                throw new RulesRepositoryException( e );
+            } catch ( IOException e ) {
+                errorLogger.addError( asset,
+                                      e.getMessage() );
             }
         }
     }
 
-    private void compile(AssetItem asset, ICompilable contentHandler) throws DroolsParserException, IOException {
-        contentHandler.compile(builder,
-                asset,
-                errorLogger);
+    private void compile(AssetItem asset,
+                         ICompilable contentHandler) throws DroolsParserException,
+                                                    IOException {
+        contentHandler.compile( builder,
+                                asset,
+                                errorLogger );
 
-        if (builder.hasErrors()) {
-            logErrors(asset);
+        if ( builder.hasErrors() ) {
+            logErrors( asset );
         }
     }
 
@@ -82,12 +86,12 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     protected boolean setUpPackage() {
 
         // firstly we loadup the classpath
-        builder.addPackage(new PackageDescr(packageItem.getName()));
+        builder.addPackage( new PackageDescr( packageItem.getName() ) );
 
         loadDeclaredTypes();
         loadPackageHeader();
 
-        if (doesPackageBuilderHaveAnyErrors()) {
+        if ( doesPackageBuilderHaveAnyErrors() ) {
             return false;
         }
 
@@ -98,9 +102,13 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
 
     private boolean doesPackageBuilderHaveAnyErrors() {
-        if (builder.hasErrors()) {
+        if ( builder.hasErrors() ) {
             // if we have any failures, lets drop out now, no point in going any further
-            recordBuilderErrors(packageItem.getFormat(), packageItem.getName(), packageItem.getUUID(), true, false);
+            recordBuilderErrors( packageItem.getFormat(),
+                                 packageItem.getName(),
+                                 packageItem.getUUID(),
+                                 true,
+                                 false );
             return true;
         }
         return false;
@@ -108,16 +116,18 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     private void loadFunctions() {
         try {
-            addDrl(getAllFunctionsAsOneString().toString());
-        } catch (IOException e) {
-            throw new RulesRepositoryException("Unexpected error when parsing package.", e);
-        } catch (DroolsParserException e) {
+            addDrl( getAllFunctionsAsOneString().toString() );
+        } catch ( IOException e ) {
+            throw new RulesRepositoryException( "Unexpected error when parsing package.",
+                                                e );
+        } catch ( DroolsParserException e ) {
             // TODO: Not really a RulesRepositoryException is it? -Rikkola-
-            throw new RulesRepositoryException("Unexpected error when parsing package.", e);
+            throw new RulesRepositoryException( "Unexpected error when parsing package.",
+                                                e );
         }
 
         // If the function part had errors we need to add them one by one to find out which one is bad.
-        if (builder.hasErrors()) {
+        if ( builder.hasErrors() ) {
             searchTheFunctionWithAnError();
         }
     }
@@ -128,13 +138,13 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      * @return
      */
     private StringBuilder getAllFunctionsAsOneString() {
-        Iterator<AssetItem> functionsIterator = getAssetItemIterator(AssetFormats.FUNCTION);
+        Iterator<AssetItem> functionsIterator = getAssetItemIterator( AssetFormats.FUNCTION );
         StringBuilder stringBuilder = new StringBuilder();
 
-        while (functionsIterator.hasNext()) {
+        while ( functionsIterator.hasNext() ) {
             AssetItem function = functionsIterator.next();
-            if (!function.getDisabled()) {
-                stringBuilder.append(function.getContent());
+            if ( !function.getDisabled() ) {
+                stringBuilder.append( function.getContent() );
             }
         }
 
@@ -143,21 +153,23 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     private void searchTheFunctionWithAnError() {
         builder.clearErrors();
-        Iterator<AssetItem> functionsIterator = getAssetItemIterator(AssetFormats.FUNCTION);
+        Iterator<AssetItem> functionsIterator = getAssetItemIterator( AssetFormats.FUNCTION );
 
-        while (functionsIterator.hasNext()) {
+        while ( functionsIterator.hasNext() ) {
             AssetItem function = functionsIterator.next();
-            if (!function.getDisabled()) {
+            if ( !function.getDisabled() ) {
                 try {
-                    addDrl(function.getContent());
-                } catch (IOException e) {
-                    errorLogger.addError(function, "IOException: " + e.getMessage());
-                } catch (DroolsParserException e) {
-                    errorLogger.addError(packageItem, "Parser exception: " + e.getMessage());
+                    addDrl( function.getContent() );
+                } catch ( IOException e ) {
+                    errorLogger.addError( function,
+                                          "IOException: " + e.getMessage() );
+                } catch ( DroolsParserException e ) {
+                    errorLogger.addError( packageItem,
+                                          "Parser exception: " + e.getMessage() );
                 }
 
-                if (builder.hasErrors()) {
-                    logErrors(function);
+                if ( builder.hasErrors() ) {
+                    logErrors( function );
                 }
             }
         }
@@ -165,26 +177,30 @@ abstract class PackageAssemblerBase extends AssemblerBase {
 
     private void loadPackageHeader() {
         try {
-            addDrl(DroolsHeader.getDroolsHeader(packageItem));
-        } catch (IOException e) {
-            errorLogger.addError(packageItem, "IOException: " + e.getMessage());
-        } catch (DroolsParserException e) {
-            errorLogger.addError(packageItem, "Parser exception: " + e.getMessage());
+            addDrl( DroolsHeader.getDroolsHeader( packageItem ) );
+        } catch ( IOException e ) {
+            errorLogger.addError( packageItem,
+                                  "IOException: " + e.getMessage() );
+        } catch ( DroolsParserException e ) {
+            errorLogger.addError( packageItem,
+                                  "Parser exception: " + e.getMessage() );
         }
     }
 
     private void loadDeclaredTypes() {
-        Iterator<AssetItem> declaredTypesIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
+        Iterator<AssetItem> declaredTypesIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
 
-        while (declaredTypesIterator.hasNext()) {
+        while ( declaredTypesIterator.hasNext() ) {
             AssetItem assetItem = declaredTypesIterator.next();
-            if (!assetItem.getDisabled()) {
+            if ( !assetItem.getDisabled() ) {
                 try {
-                    addDrl(assetItem.getContent());
-                } catch (DroolsParserException e) {
-                    errorLogger.addError(assetItem, "Parser exception: " + e.getMessage());
-                } catch (IOException e) {
-                    errorLogger.addError(assetItem, "IOException: " + e.getMessage());
+                    addDrl( assetItem.getContent() );
+                } catch ( DroolsParserException e ) {
+                    errorLogger.addError( assetItem,
+                                          "Parser exception: " + e.getMessage() );
+                } catch ( IOException e ) {
+                    errorLogger.addError( assetItem,
+                                          "IOException: " + e.getMessage() );
                 }
             }
         }
@@ -201,19 +217,20 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      * @return
      */
     public boolean isPackageConfigurationInError() {
-        if (errorLogger.hasErrors()) {
-            return this.errorLogger.getErrors().get(0).isPackageItem();
+        if ( errorLogger.hasErrors() ) {
+            return this.errorLogger.getErrors().get( 0 ).isPackageItem();
         } else {
             return false;
         }
     }
 
-    private void addDrl(String drl) throws IOException, DroolsParserException {
-        if (isEmpty(drl)) {
+    private void addDrl(String drl) throws IOException,
+                                   DroolsParserException {
+        if ( isEmpty( drl ) ) {
             return;
         }
 
-        builder.addPackageFromDrl(new StringReader(drl));
+        builder.addPackageFromDrl( new StringReader( drl ) );
     }
 
     private void recordBuilderErrors(String format,
@@ -221,14 +238,14 @@ abstract class PackageAssemblerBase extends AssemblerBase {
                                      String uuid,
                                      boolean isPackageItem,
                                      boolean isAssetItem) {
-        for (DroolsError droolsError : builder.getErrors().getErrors()) {
+        for ( DroolsError droolsError : builder.getErrors().getErrors() ) {
             errorLogger.addError(
-                    droolsError.getMessage(),
-                    format,
-                    name,
-                    uuid,
-                    isPackageItem,
-                    isAssetItem);
+                                  droolsError.getMessage(),
+                                  format,
+                                  name,
+                                  uuid,
+                                  isPackageItem,
+                                  isAssetItem );
         }
 
         // clear the errors, so we don't double report.
@@ -236,6 +253,10 @@ abstract class PackageAssemblerBase extends AssemblerBase {
     }
 
     private void logErrors(AssetItem asset) {
-        this.recordBuilderErrors(asset.getFormat(), asset.getName(), asset.getUUID(), false, true);
+        this.recordBuilderErrors( asset.getFormat(),
+                                  asset.getName(),
+                                  asset.getUUID(),
+                                  false,
+                                  true );
     }
 }

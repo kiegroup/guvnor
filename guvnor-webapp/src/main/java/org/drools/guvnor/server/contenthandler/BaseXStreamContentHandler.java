@@ -20,7 +20,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepositoryException;
 import org.slf4j.Logger;
 
@@ -29,34 +28,38 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public abstract class BaseXStreamContentHandler<T extends PortableObject> extends ContentHandler {
-    protected final Logger log = org.slf4j.LoggerFactory.getLogger(getClass());
+    protected final Logger       log = org.slf4j.LoggerFactory.getLogger( getClass() );
 
-    private static final XStream xt = new XStream(new DomDriver());
+    private static final XStream xt  = new XStream( new DomDriver() );
 
     protected XStream getXStream() {
         return xt;
     }
 
     @SuppressWarnings("unchecked")
-    public void retrieveAssetContent(RuleAsset ruleAsset, AssetItem assetItem) throws SerializationException {
-        if (assetItem.getContent() != null && assetItem.getContent().length() > 0) {
+    public void retrieveAssetContent(RuleAsset ruleAsset,
+                                     AssetItem assetItem) throws SerializationException {
+        if ( assetItem.getContent() != null && assetItem.getContent().length() > 0 ) {
             try {
-                ruleAsset.setContent( (T) getXStream().fromXML(assetItem.getContent()) );
-            } catch (RulesRepositoryException e) {
-                log.error("error marshalling asset content: " + ruleAsset.getName(), e);
-                throw new SerializationException(e.getMessage());
+                ruleAsset.setContent( (T) getXStream().fromXML( assetItem.getContent() ) );
+            } catch ( RulesRepositoryException e ) {
+                log.error( "error marshalling asset content: " + ruleAsset.getName(),
+                           e );
+                throw new SerializationException( e.getMessage() );
             }
         } else {
             ruleAsset.setContent( new WorkingSetConfigData() );
         }
     }
 
-    public void storeAssetContent(RuleAsset ruleAsset, AssetItem assetItem) throws SerializationException {
+    public void storeAssetContent(RuleAsset ruleAsset,
+                                  AssetItem assetItem) throws SerializationException {
         try {
-            assetItem.updateContent(getXStream().toXML(ruleAsset.getContent()));
-        } catch (Exception e) {
-            log.error("error marshalling asset content: " + ruleAsset.getName(), e);
-            throw new SerializationException(e.getMessage());
+            assetItem.updateContent( getXStream().toXML( ruleAsset.getContent() ) );
+        } catch ( Exception e ) {
+            log.error( "error marshalling asset content: " + ruleAsset.getName(),
+                       e );
+            throw new SerializationException( e.getMessage() );
         }
     }
 }

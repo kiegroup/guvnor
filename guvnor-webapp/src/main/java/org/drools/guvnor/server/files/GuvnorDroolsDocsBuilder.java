@@ -128,8 +128,7 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
         StringBuilder stringBuilder = new StringBuilder();
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
-        // now we load up the DSL files
-        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
+        builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( item.getPackage() ) );
         ((IRuleAsset) handler).assembleDRL( builder,
                                             item,
                                             stringBuilder );

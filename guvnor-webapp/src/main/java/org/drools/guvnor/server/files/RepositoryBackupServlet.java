@@ -42,8 +42,6 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     private static final LoggingHelper log                               = LoggingHelper.getLogger(RepositoryBackupServlet.class);
     private static final long serialVersionUID = 510l;
 
-    // final FileManagerUtils uploadHelper = new FileManagerUtils();
-
     /**
      * This accepts a repository, and will apply it.
      */

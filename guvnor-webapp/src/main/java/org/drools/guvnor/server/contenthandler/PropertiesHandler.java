@@ -25,10 +25,8 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
 import org.drools.guvnor.server.util.PropertiesPersistence;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
-
 
 /**
  * Handle *.properties file as a content for rule asset instead of a binary
@@ -36,34 +34,35 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class PropertiesHandler extends ContentHandler {
     public void retrieveAssetContent(RuleAsset asset,
-            AssetItem item) throws SerializationException {
-        if (item.getContent() != null) {
+                                     AssetItem item) throws SerializationException {
+        if ( item.getContent() != null ) {
             asset.setContent( PropertiesPersistence.getInstance().unmarshal(
-                    item.getContent()) );
+                                                                             item.getContent() ) );
         }
     }
 
-    public void storeAssetContent(RuleAsset asset, AssetItem repoAsset)
-            throws SerializationException {
+    public void storeAssetContent(RuleAsset asset,
+                                  AssetItem repoAsset)
+                                                      throws SerializationException {
         PropertiesHolder holder = (PropertiesHolder) asset.getContent();
-        String toSave = PropertiesPersistence.getInstance().marshal(holder);
+        String toSave = PropertiesPersistence.getInstance().marshal( holder );
 
         InputStream input = null;
         try {
             try {
-                input = new ByteArrayInputStream(toSave.getBytes("UTF-8"));
-                repoAsset.updateBinaryContentAttachment(input);
+                input = new ByteArrayInputStream( toSave.getBytes( "UTF-8" ) );
+                repoAsset.updateBinaryContentAttachment( input );
             } finally {
-                if (input != null) {
+                if ( input != null ) {
                     input.close();
                 }
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch ( UnsupportedEncodingException e ) {
             e.printStackTrace();
-            throw new RuntimeException(e); // TODO: ?
-        } catch (IOException e) {
+            throw new RuntimeException( e ); // TODO: ?
+        } catch ( IOException e ) {
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 }

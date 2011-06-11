@@ -16,18 +16,13 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-
-
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-
 public abstract class PlainTextContentHandler extends ContentHandler {
-
 
     public void retrieveAssetContent(RuleAsset asset,
                                      AssetItem item) throws SerializationException {
@@ -40,7 +35,7 @@ public abstract class PlainTextContentHandler extends ContentHandler {
 
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset) throws SerializationException {
-        repoAsset.updateContent( ((RuleContentText)asset.getContent()).content );
+        repoAsset.updateContent( ((RuleContentText) asset.getContent()).content );
 
     }
 

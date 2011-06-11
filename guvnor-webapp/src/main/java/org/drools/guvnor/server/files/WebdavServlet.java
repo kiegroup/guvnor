@@ -64,9 +64,6 @@ public class WebdavServlet extends WebDavServletBean {
     protected void service(HttpServletRequest req,
                            HttpServletResponse resp) throws ServletException,
                                                     IOException {
-        //love you
-        long time = System.currentTimeMillis();
-        
         String auth = req.getHeader( "Authorization" );
         if ( !RestAPIServlet.allowUser( auth ) ) {
             resp.setHeader( "WWW-Authenticate",
@@ -76,8 +73,6 @@ public class WebdavServlet extends WebDavServletBean {
             super.service( req,
                            resp );
         }
-
-        //System.err.println("WebDAV servlet time: " + (System.currentTimeMillis() - time));
     }
 
     protected IWebdavStore constructStore(String clazzName,

@@ -16,14 +16,13 @@
 
 package org.drools.guvnor.server.builder;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.repository.AssetItem;
-import org.drools.repository.AssetItemIterator;
-import org.drools.repository.PackageItem;
-import org.drools.repository.VersionedAssetItemIterator;
-
 import java.util.Iterator;
 import java.util.List;
+
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.VersionedAssetItemIterator;
 
 /**
  * This assembles packages in the BRMS into binary package objects, and deals
@@ -32,8 +31,8 @@ import java.util.List;
  */
 abstract class AssemblerBase {
 
-    protected PackageItem packageItem;
-    protected BRMSPackageBuilder builder;
+    protected PackageItem         packageItem;
+    protected BRMSPackageBuilder  builder;
     protected AssemblyErrorLogger errorLogger = new AssemblyErrorLogger();
 
     protected AssemblerBase(PackageItem packageItem) {
@@ -43,7 +42,7 @@ abstract class AssemblerBase {
     }
 
     public void createBuilder() {
-        builder = new BRMSPackageBuilder(packageItem);
+        builder = new BRMSPackageBuilder( packageItem );
     }
 
     public boolean hasErrors() {
@@ -56,21 +55,22 @@ abstract class AssemblerBase {
 
     protected Iterator<AssetItem> getAllAssets() {
         Iterator<AssetItem> iterator = packageItem.getAssets();
-        ((VersionedAssetItemIterator) iterator).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
+        ((VersionedAssetItemIterator) iterator).setReturnAssetsWithVersionsSpecifiedByDependencies( true );
         return iterator;
     }
 
     protected void loadDSLFiles() {
-        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(getAssetItemIterator(AssetFormats.DSL),
-                new BRMSPackageBuilder.DSLErrorEvent() {
-                    public void recordError(AssetItem asset,
-                                            String message) {
-                        errorLogger.addError(asset, message);
-                    }
-                }));
+        builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( getAssetItemIterator( AssetFormats.DSL ),
+                                                            new BRMSPackageBuilder.DSLErrorEvent() {
+                                                                public void recordError(AssetItem asset,
+                                                                                        String message) {
+                                                                    errorLogger.addError( asset,
+                                                                                          message );
+                                                                }
+                                                            } ) );
     }
 
     protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
-        return this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(formats);
+        return this.packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat( formats );
     }
 }
