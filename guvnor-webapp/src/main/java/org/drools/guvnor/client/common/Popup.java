@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.common;
 
+import java.util.Iterator;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
@@ -25,6 +27,9 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FocusWidget;
+import com.google.gwt.user.client.ui.Focusable;
+import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -100,9 +105,41 @@ public abstract class Popup extends PopupPanel {
 
         super.show();
 
+        focusFirstWidget( content );
+
         if ( !fixedLocation ) {
             center();
         }
+    }
+
+    private void focusFirstWidget(Widget content) {
+        if ( content instanceof FormStyleLayout ) {
+            FormStyleLayout fsl = (FormStyleLayout) content;
+            Widget ow = fsl.getWidget();
+            if ( ow instanceof HasWidgets ) {
+                focusFirstWidget( (HasWidgets) ow );
+            }
+        }
+    }
+
+    private boolean focusFirstWidget(HasWidgets container) {
+        boolean bFocused = false;
+        Iterator<Widget> iw = container.iterator();
+        while ( !bFocused && iw.hasNext() ) {
+            Widget w = iw.next();
+            if ( w instanceof HasWidgets ) {
+                bFocused = focusFirstWidget( (HasWidgets) w );
+            } else if ( w instanceof Focusable ) {
+                ((Focusable) w).setFocus( true );
+                bFocused = true;
+                break;
+            } else if ( w instanceof FocusWidget ) {
+                ((FocusWidget) w).setFocus( true );
+                bFocused = true;
+                break;
+            }
+        }
+        return bFocused;
     }
 
     @Override

@@ -183,4 +183,8 @@ public class FormStyleLayout extends Composite {
         return numInLayout;
     }
 
+    public Widget getWidget() {
+        return super.getWidget();
+    }
+
 }
