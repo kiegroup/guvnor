@@ -65,16 +65,13 @@ public class MailboxService {
         executor.shutdown();
 
         try {
-            System.out.println("IS DOWN: " + executor.isTerminated());
             if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                 executor.shutdownNow();
-                System.out.println("IS DOWN2: " + executor.isTerminated());
                 if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
                     System.err.println("executor did not terminate");
                 }
             }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             executor.shutdownNow();
             Thread.currentThread().interrupt();
         }
@@ -95,7 +92,6 @@ public class MailboxService {
 
     /** Process any waiting messages */
     void processOutgoing()  {
-            //log.info("Processing outgoing messages");
             if (repository != null) {
                 UserInbox mailman = new UserInbox(repository, MAILMAN);
                 final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
@@ -103,8 +99,6 @@ public class MailboxService {
                 //wipe out inbox for mailman here...
                 UserInfo.eachUser(this.repository, new UserInfo.Command() {
                     public void process(final String toUser) {
-
-                        //String toUser = userNode.getName();
                         log.debug("Processing any inbound messages for " + toUser);
                         if (toUser.equals(MAILMAN)) return;
                         UserInbox inbox = new UserInbox(repository, toUser);
