@@ -23,7 +23,6 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
-import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
@@ -40,9 +39,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.util.*;
 
 import static org.drools.guvnor.server.jaxrs.Translator.*;
@@ -51,6 +48,13 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
  * Contract:  Package names and asset names within a package namespace
  * must be unique.  REST API avoids use of asset UUIDs through this
  * contract.
+ * Exception handling: At the moment we catch all exceptions thrown from underlying repository and wrap
+ * them with WebApplicationException. We need to set detailed exception message on WebApplicationException.
+ * We also need to set HTTP error code on WebApplicationException if we want a HTTP response code other 
+ * than 500 (Internal Server Error). 
+ * In the future, we may use ExceptionMapper provider to map a checked or runtime exception to a 
+ * HTTP response. When no mappers are found for custom exceptions, they are propagated (wrapped in 
+ * ServletException) to the underlying container as required by the spec.
  */
 @Name("PackageResource")
 @Path("/packages")
@@ -65,17 +69,14 @@ public class PackageResource extends Resource {
         f.setBaseUri(uriInfo.getBaseUriBuilder().path("packages").build().toString());
         PackageIterator iter = repository.listPackages();
         while (iter.hasNext()) {
-            try {
-                PackageItem item = iter.next();
-                Entry e = factory.getAbdera().newEntry();
-                e.setTitle(item.getName());        
-                Link l = factory.newLink();
-                l.setHref(uriInfo.getBaseUriBuilder().path("packages").path(item.getName()).build().toString());
-                e.addLink(l);
-                f.addEntry(e);
-            } catch (Exception e) {
-                throw new WebApplicationException(e);
-            }
+            PackageItem item = iter.next();
+            Entry e = factory.getAbdera().newEntry();
+            e.setTitle(item.getName());
+            Link l = factory.newLink();
+            l.setHref(uriInfo.getBaseUriBuilder().path("packages")
+                    .path(item.getName()).build().toString());
+            e.addLink(l);
+            f.addEntry(e);
         }
 
         return f;
@@ -86,97 +87,144 @@ public class PackageResource extends Resource {
     public Collection<Package> getPackagesAsJAXB() {
         List<Package> ret = new ArrayList<Package>();
         PackageIterator iter = repository.listPackages();
-        while (iter.hasNext())
+        while (iter.hasNext()) {
+            //REVIST: Do not return detailed package info here. Package title and link should be enough. 
             ret.add(ToPackage(iter.next(), uriInfo));
+        }
         return ret;
     }
 
-/*    @POST
+    @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) throws IOException,
-            DroolsParserException
-    {
-         Passes the DRL to the FileManagerUtils and has it import the asset as a package 
-        String packageName = RepositoryServlet.getFileManager().importClassicDRL (is, null);
-        Entry e = ToPackageEntry(repository.loadPackage(packageName), uriInfo);
-        return e;
-    }*/
+    public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) {
+        /*
+         * Passes the DRL to the FileManagerUtils and has it import the asset as
+         * a package
+         */
+        try {
+            String packageName = RepositoryServlet.getFileManager().importClassicDRL(is, null);
+            Entry e = ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
+            return e;
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
-    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Package createPackageFromDRLAndReturnAsJaxB(InputStream is, @Context UriInfo uriInfo) throws IOException,
-            DroolsParserException
-    {
-        /* Passes the DRL to the FileManagerUtils and has it import the asset as a package */
-        String packageName = RepositoryServlet.getFileManager().importClassicDRL (is, null);
-        Package p = ToPackage(repository.loadPackage(packageName), uriInfo);
-        return p;
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Package createPackageFromDRLAndReturnAsJaxB(InputStream is) {
+        /*
+         * Passes the DRL to the FileManagerUtils and has it import the asset as
+         * a package
+         */
+        try {
+            String packageName = RepositoryServlet.getFileManager()
+                    .importClassicDRL(is, null);
+            Package p = ToPackage(repository.loadPackage(packageName), uriInfo);
+            return p;
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     @Produces(MediaType.APPLICATION_ATOM_XML)
-	public Response createPackageFromAtom(Entry entry, @Context UriInfo uriInfo) {
-		repository.createPackage(entry.getTitle(), entry.getSummary());
-		URI uri = uriInfo.getBaseUriBuilder().path("packages").path(entry.getTitle()).build();
-		entry.setBaseUri(uri.toString());
-		return Response.created(uri).entity(entry).build();
+	public Entry createPackageFromAtom(Entry entry) {
+        try {
+            PackageItem packageItem = repository.createPackage(entry.getTitle(), entry.getSummary());
+            Entry e = ToPackageEntryAbdera(packageItem, uriInfo);
+            return e;
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package already exists.
+            throw new WebApplicationException(e);
+        }
 	}
 
     @POST
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void createPackageFromJAXB (Package p) {
-    	repository.createPackage(p.getTitle(), p.getDescription());
+    @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Package createPackageFromJAXB(Package p) {
+        try {
+            PackageItem packageItem = repository.createPackage(p.getTitle(), p.getDescription());
+            Package newPackage = ToPackage(packageItem, uriInfo);
+            return newPackage;
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package already exists.
+            throw new WebApplicationException(e);
+        }    	
     }
 
     @GET
     @Path("{packageName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
-		return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
+        try {
+            PackageItem packageItem = repository.loadPackage(packageName);
+            Entry e = ToPackageEntryAbdera(packageItem, uriInfo);
+            return e;
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
+            throw new WebApplicationException(e);
+        }  
     }
 
     @GET
     @Path("{packageName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public org.drools.guvnor.server.jaxrs.jaxb.Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
-        return ToPackage(repository.loadPackage(packageName), uriInfo);
+    public Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
+        try {
+            PackageItem packageItem = repository.loadPackage(packageName);
+            return ToPackage(packageItem, uriInfo);
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
+            throw new WebApplicationException(e);
+        }   
     }
         
     @GET
     @Path("{packageName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public Response getPackageSource(@PathParam("packageName") String packageName) {
-    	PackageItem item = repository.loadPackage( packageName );
-        PackageDRLAssembler asm = new PackageDRLAssembler( item );
-        String fileName = packageName;
-        String drl = asm.getDRL();
-        return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        try {
+            PackageItem packageItem = repository.loadPackage(packageName);
+            PackageDRLAssembler asm = new PackageDRLAssembler(packageItem);
+            String fileName = packageName;
+            String drl = asm.getDRL();
+            return Response.ok(drl).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
+            throw new WebApplicationException(e);
+        } 
     }
 
     @GET
     @Path("{packageName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getPackageBinary(@PathParam("packageName") String packageName) throws SerializationException {
-        PackageItem p = repository.loadPackage(packageName);
-        String fileName = packageName + ".pkg";
-        byte[] result;
-        if(p.isBinaryUpToDate()) {
-            result = p.getCompiledPackageBytes();
-        } else {
-            StringBuilder errs = new StringBuilder();
-            BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
-            if ( builderResult != null ) {
-                errs.append("Unable to build package name [").append(packageName).append("]\n");
-                StringBuilder buf = createStringBuilderFrom( builderResult );
-                return Response.status(500).entity(buf.toString()).build();
-            }
-            result = repository.loadPackage(packageName).getCompiledPackageBytes(); 
-        }
-        
-        return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        try {            
+            PackageItem p = repository.loadPackage(packageName);
+            String fileName = packageName + ".pkg";
+            byte[] result;
+            if(p.isBinaryUpToDate()) {
+                result = p.getCompiledPackageBytes();
+            } else {
+                StringBuilder errs = new StringBuilder();
+                BuilderResult builderResult = packageService.buildPackage(p.getUUID(), true);
+                if ( builderResult != null ) {
+                    errs.append("Unable to build package name [").append(packageName).append("]\n");
+                    StringBuilder buf = createStringBuilderFrom( builderResult );
+                    return Response.status(500).entity(buf.toString()).build();
+                }
+                result = repository.loadPackage(packageName).getCompiledPackageBytes(); 
+            }            
+            return Response.ok(result).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
+            throw new WebApplicationException(e);
+        } 
     }
     
     private StringBuilder createStringBuilderFrom(BuilderResult res) {
@@ -260,159 +308,166 @@ public class PackageResource extends Resource {
             return Response.status(500).entity("This package version has no compiled binary").type("text/plain").build();
         }
     }
-    
-    @GET
-    @Path("{packageName}/assets")
-    @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
-        Factory factory = Abdera.getNewFactory();
-        Feed feed = factory.getAbdera().newFeed();
-        PackageItem p = repository.loadPackage(packageName);
-        feed.setTitle(p.getTitle() + "-asset-feed");
-        Iterator<AssetItem> iter = p.getAssets();
-        while (iter.hasNext())
-        	feed.addEntry(ToAssetEntryAbdera(iter.next(), uriInfo));
-        return feed;
+
+    @PUT
+    @Path("{packageName}")
+    @Consumes(MediaType.APPLICATION_ATOM_XML)
+    public void updatePackageFromAtom (@PathParam("packageName") String packageName, Entry entry) {
+        try {
+            PackageItem p = repository.loadPackage(packageName);
+            p.checkout();
+            // TODO: support rename package.
+            // p.updateTitle(entry.getTitle());
+            
+            if (entry.getSummary() != null) {
+                p.updateDescription(entry.getSummary());
+            }
+            // TODO: support LastContributor
+            if (entry.getAuthor() != null) {
+            }
+
+            ExtensibleElement metadataExtension = entry
+                    .getExtension(Translator.METADATA);
+            if (metadataExtension != null) {
+                ExtensibleElement archivedExtension = metadataExtension
+                        .getExtension(Translator.ARCHIVED);
+                if (archivedExtension != null) {
+                    p.archiveItem(Boolean.getBoolean(archivedExtension
+                            .getSimpleExtension(Translator.VALUE)));
+                }
+
+                // TODO: Package state is not fully supported yet
+                /*
+                 * ExtensibleElement stateExtension =
+                 * metadataExtension.getExtension(Translator.STATE);
+                 * if(stateExtension != null) {
+                 * p.updateState(stateExtension.getSimpleExtension
+                 * (Translator.STATE)); }
+                 */
+            }
+
+            p.checkin("Updated from ATOM.");
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
     }
 
     @PUT
     @Path("{packageName}")
-    @Consumes (MediaType.APPLICATION_ATOM_XML)
-    public void updatePackageFromAtom (@PathParam("packageName") String packageName, org.apache.abdera.model.Entry entry) {
-        PackageItem p = repository.loadPackage(packageName);
-        p.checkout();
-        //TODO: support rename package. 
-        //p.updateTitle(entry.getTitle());
-       	if(entry.getSummary() != null) {
-            p.updateDescription(entry.getSummary());
-		}
-        //TODO: support LastContributor 
-       	if(entry.getAuthor() != null) {       		
-       	}
-        
-		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
-		if(metadataExtension != null) {
-            ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);  
-            if(archivedExtension != null) {
-            	p.archiveItem(Boolean.getBoolean(archivedExtension.getSimpleExtension(Translator.VALUE)));
-            }
-            
-            //TODO: Package state is not fully supported yet
-/*            ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);  
-            if(stateExtension != null) {
-            	p.updateState(stateExtension.getSimpleExtension(Translator.STATE));
-            }   */     
-            
-		}
-
-        p.checkin("Update from ATOM.");
-        repository.save();
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void updatePackageFromJAXB (@PathParam("packageName") String packageName, Package p) {
+        try {
+            PackageItem item = repository.loadPackage(packageName);
+            item.checkout();
+            item.updateDescription(p.getDescription());
+            item.updateTitle(p.getTitle());
+            /* TODO: add more updates to package item from JSON */
+            item.checkin(p.getCheckInComment());
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
     }
     
     @DELETE
     @Path("{packageName}")
     public void deletePackage (@PathParam("packageName") String packageName) {
-        PackageItem p = repository.loadPackage(packageName);
-        packageService.removePackage(p.getUUID());
+        try {
+            //Throws RulesRepositoryException if the package does not exist
+            PackageItem p = repository.loadPackage(packageName);
+            packageService.removePackage(p.getUUID());
+        } catch (Exception e) {
+            // catch RulesRepositoryException and other exceptions.
+            throw new WebApplicationException(e);
+        }
+    }
+    
+    @GET
+    @Path("{packageName}/assets")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
+        try {
+            Factory factory = Abdera.getNewFactory();
+            Feed feed = factory.getAbdera().newFeed();
+            PackageItem p = repository.loadPackage(packageName);
+            feed.setTitle(p.getTitle() + "-asset-feed");
+            Iterator<AssetItem> iter = p.getAssets();
+            while (iter.hasNext())
+                feed.addEntry(ToAssetEntryAbdera(iter.next(), uriInfo));
+            return feed;
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
     }
     
     @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("packageName") String packageName) {
-        List<Asset> ret = Collections.EMPTY_LIST;
-        PackageItem p = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = p.getAssets();
-        if (iter.hasNext())
-            ret = new ArrayList<Asset>();
-        while (iter.hasNext())
-            ret.add(ToAsset(iter.next(), uriInfo));
-        return ret;
-    }
-
-    @PUT
-    @Path("{packageName}")
-    @Consumes ({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updatePackageFromJAXB (@PathParam("packageName") String packageName, Package p) {
-        PackageItem item = repository.loadPackage(packageName);
-        item.checkout();
-        item.updateDescription(p.getDescription());
-        item.updateTitle(p.getTitle());
-        /* TODO: add more updates to package item from JSON */
-        item.checkin(p.getCheckInComment());
-        repository.save();
+        try {
+            List<Asset> ret = new ArrayList<Asset>();
+            PackageItem p = repository.loadPackage(packageName);
+            Iterator<AssetItem> iter = p.getAssets();
+            if (iter.hasNext())
+                ret = new ArrayList<Asset>();
+            while (iter.hasNext())
+                ret.add(ToAsset(iter.next(), uriInfo));
+            return ret;
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
     }
        
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getAssetAsAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-    	Entry ret = null;
-        PackageItem item = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
-            AssetItem a = iter.next();
-            if (a.getName().equals(assetName)) {
-                ret = ToAssetEntryAbdera(a, uriInfo);
-                break;
-            }
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            return ToAssetEntryAbdera(asset, uriInfo);
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-        return ret;
     }
 
     @GET
     @Path("{packageName}/assets/{assetName}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Asset getAssetAsJaxB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-        Asset ret = null;
-        PackageItem item = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
-            AssetItem a = iter.next();
-            if (a.getName().equals(assetName)) {
-                ret = ToAsset(a, uriInfo);
-                break;
-            }
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            return ToAsset(asset, uriInfo);
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-        return ret;
-    }
+     }
 
     @GET
     @Path("{packageName}/assets/{assetName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public InputStream getAssetBinary(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-        InputStream ret = null;
-        PackageItem item = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
-            AssetItem a = iter.next();
-            if (a.getName().equals(assetName)) {
-                ret = a.getBinaryContentAttachment();
-                break;
-            }
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            return asset.getBinaryContentAttachment();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-        return ret;
     }
 
     @GET
     @Path("{packageName}/assets/{assetName}/source")
     @Produces(MediaType.TEXT_PLAIN)
     public String getAssetSource(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-        String ret = null;
-        if (repository.containsPackage(packageName)) {
-            PackageItem item = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = item.getAssets();
-            while (iter.hasNext()) {
-                AssetItem a = iter.next();
-                if (a.getName().equals(assetName)) {
-                    ret = a.getContent();
-                    break;
-                }
-            }
-
-            return ret;
-        } else {
-            throw new WebApplicationException(new RuntimeException ("Package '" + packageName + "' does not exist!"));
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            return asset.getContent();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
     }
 
@@ -420,90 +475,69 @@ public class PackageResource extends Resource {
     @Path("{packageName}/assets/{assetName}/source")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String  content) {
-        AssetItem ai = null;
-        System.out.println("User = "+service.getRulesRepository().getSession().getUserID());
-
-        PackageItem pi = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = pi.getAssets();
-        while (iter.hasNext()) {
-            AssetItem item = iter.next();
-            if (item.getName().equals(assetName)) {
-                ai = item;
-                break;
-            }
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            asset.checkout();
+            asset.updateContent(content);
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-
-        /* Update asset */
-        ai.checkout();
-        ai.updateContent(content);
-
-        repository.save();
     }
-
 
     @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
-    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry)
-    {
-        AssetItem ai = null;
-        PackageItem item = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
-            AssetItem a = iter.next();
-            if (a.getName().equals(assetName)) {
-                ai = a;
-                break;
-            }
+    public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+            //  Update asset 
+            ai.checkout();
+            ai.updateTitle(assetEntry.getTitle());
+            ai.updateDescription(assetEntry.getSummary());
+            ai.updateContent(assetEntry.getContent());
+            ai.checkin("Check-in (summary): " + assetEntry.getSummary());
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-
-        //  Update asset 
-        ai.checkout();
-        ai.updateTitle(assetEntry.getTitle());
-        ai.updateDescription(assetEntry.getSummary());
-        ai.updateContent(assetEntry.getContent());
-        ai.checkin("Check-in (summary): " + assetEntry.getSummary());
-        repository.save();
-    }
+     }
 
     @PUT
     @Path("{packageName}/assets/{assetName}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updateAssetFromJAXB(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Asset asset)
-    {
-        AssetItem ai = null;
-        PackageItem pi = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = pi.getAssets();
-        while (iter.hasNext()) {
-            AssetItem item = iter.next();
-            if (item.getName().equals(assetName)) {
-                ai = item;
-                break;
-            }
+    @Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+    public void updateAssetFromJAXB(
+            @PathParam("packageName") String packageName,
+            @PathParam("assetName") String assetName, Asset asset) {        
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+            /* Update asset */
+            ai.checkout();
+            ai.updateTitle(asset.getMetadata().getTitle());
+            ai.updateDescription(asset.getDescription());
+            ai.checkin(asset.getCheckInComment());
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-
-        /* Update asset */
-        ai.checkout();
-        ai.updateTitle(asset.getMetadata().getTitle());
-        ai.updateDescription(asset.getDescription());
-        ai.checkin(asset.getCheckInComment());
-        repository.save();
     }
 
     @DELETE
     @Path("{packageName}/assets/{assetName}/")
-    public void deleteAsset(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName) {
-        AssetItem asset = null;
-        PackageItem item = repository.loadPackage(packageName);
-        Iterator<AssetItem> iter = item.getAssets();
-        while (iter.hasNext()) {
-            AssetItem a = iter.next();
-            if (a.getName().equals(assetName)) {
-                asset = a;
-                break;
-            }
+    public void deleteAsset(@PathParam("packageName") String packageName,
+            @PathParam("assetName") String assetName) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+            // assetService.archiveAsset(ai.getUUID());
+            assetService.removeAsset(ai.getUUID());
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
         }
-        assetService.archiveAsset(asset.getUUID());
     }
 }
 

@@ -52,16 +52,16 @@
 
     <para>The Guvnor Rest API is divided in two groups of services : one
     around getting rule assets by categories and the second getting rule
-    assets by their name and package.</para>
+    assets by their names and packages.</para>
 
     <para>A rule asset represents all elements that can be stored and handled
-    in Guvnor : a guided rule, a web decision table, a scenario tests,
+    in Guvnor : a guided rule, a web decision table, a scenario test,
     etc..</para>
 
-    <para>The http adress to use as base address is
+    <para>The http address to use as base address is
     http://{ServerName}/{httpPort}/{drools-Guvnor}/rest where ServerName is
     the host name on the server on which Guvnor is deployed, httpPort the port
-    number (8080 by default development ), drools-guvnor the name of the
+    number (8080 by default development), drools-guvnor the name of the
     archived deployed (guvnor-webapp-5.3.0 for version 5.3.0).</para>
 
     <section>
@@ -102,12 +102,12 @@
 
               <entry>application/atom/xml</entry>
 
-              <entry>Retrieves an Rss feed to all Rule assets that have the
+              <entry>Retrieves an Atom feed to all Rule assets that have the
               category {categoryName}</entry>
             </row>
 
             <row>
-              <entry>/{categoryName}</entry>
+              <entry>/categories/{categoryName}</entry>
 
               <entry>GET</entry>
 
@@ -136,7 +136,7 @@
       </table>
 
       <figure>
-        <title>UML representation of the Assert Object</title>
+        <title>UML representation of the Asset Object</title>
 
         <mediaobject>
           <imageobject>
@@ -188,12 +188,11 @@
 
               <entry>GET</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
-              <entry>Retrieves an Rss feed of all packages contained in the
-              Guvnor repository</entry>
+              <entry>Returns all packages contained in the Guvnor repository in Atom Feed format</entry>
             </row>
 
             <row>
@@ -205,8 +204,7 @@
 
               <entry>none</entry>
 
-              <entry>Retrieve the list of package contained in the Guvnor
-              repository</entry>
+              <entry>Returns all packages contained in the Guvnor repository in JSON or XML format</entry>
             </row>
 
             <row>
@@ -214,25 +212,35 @@
 
               <entry>POST</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
-              <entry>application/octet/stream</entry>
+              <entry>application/octet-stream</entry>
 
-              <entry>As en entry this method takes a octet stream (like a java
-              input stream) and in returns sends a Package class.</entry>
+              <entry>Creates a new package from an input stream of DRL. Returns the newly created package in Atom Entry format.</entry>
             </row>
-
+            
             <row>
               <entry>/packages</entry>
 
               <entry>POST</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/json and application/xml</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/octet-stream</entry>
 
-              <entry>Creates a package in Guvnor given an atom feed entry. As
-              an ouput, gives the package resulting.</entry>
+              <entry>Creates a package from an input stream of DRL. Returns the newly created package in JSON or XML format.</entry>
+            </row>
+            
+            <row>
+              <entry>/packages</entry>
+
+              <entry>POST</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>Creates a package from an Atom Entry. Returns the newly created package in Atom Entry format</entry>
             </row>
 
             <row>
@@ -244,9 +252,7 @@
 
               <entry>none</entry>
 
-              <entry>As an entry, this method requires an object Package (see
-              the UML represetation further) and Guvnor will create a new
-              package in the repository.</entry>
+              <entry>Creates a package from JSON or XML. Returns the newly created package in JSON or XML format.</entry>
             </row>
 
             <row>
@@ -254,12 +260,11 @@
 
               <entry>GET</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
-              <entry>Returns the metadata of the package {packageName} as a
-              Atom entry.</entry>
+              <entry>Returns the metadata of the package {packageName} as an Atom Entry.</entry>
             </row>
 
             <row>
@@ -272,7 +277,7 @@
               <entry>none</entry>
 
               <entry>Returns the metadata of the package {packageName} as a
-              Package element (see UML representatin below.</entry>
+              Package element (see UML representatin below).</entry>
             </row>
 
             <row>
@@ -293,12 +298,12 @@
 
               <entry>GET</entry>
 
-              <entry>application/octet/stream</entry>
+              <entry>application/octet-stream</entry>
 
               <entry>none</entry>
 
-              <entry>Returns the package {packageName} as a binary stream
-              (java stream) .</entry>
+              <entry>Returns the compiled binary of the package {packageName} as a binary stream. If the package has not 
+              been compiled yet or its binary is not up to date, this will compile the package first.</entry>
             </row>
 
             <row>
@@ -306,12 +311,12 @@
 
               <entry>GET</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
               <entry>Returns the list of versions of package {packageName} as
-              an atom feed .</entry>
+              an Atom Feed .</entry>
             </row>
 
             <row>
@@ -319,12 +324,12 @@
 
               <entry>GET</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
               <entry>Returns the metadata of package {packageName} and of
-              version {version} as an atom entry .</entry>
+              version {version} as an Atom Entry .</entry>
             </row>
 
             <row>
@@ -345,26 +350,13 @@
 
               <entry>GET</entry>
 
-              <entry>application/octet/stream</entry>
+              <entry>application/octet-stream</entry>
 
               <entry>none</entry>
 
               <entry>Returns the binary (compiled code) of package
-              {packageName} and of version {version} as a octet stream. If the
-              package was never built, it throws an exception.</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Returns the list of rule asset contained in package
-              {packageName} as a list of an atom feed.</entry>
+              {packageName} and of version {version} as an octet stream. If the
+              package was never built, it returns HTTP code 500 with an error message.</entry>
             </row>
 
             <row>
@@ -372,12 +364,12 @@
 
               <entry>PUT</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
-              <entry>Updates the metadata of package {packageName} wit a given
-              atom entry.</entry>
+              <entry>Updates the metadata of package {packageName} with a given
+              Atom Entry.</entry>
             </row>
 
             <row>
@@ -385,11 +377,24 @@
 
               <entry>DELETE</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>none</entry>
 
               <entry>none</entry>
 
               <entry>Deletes package {packageName}.</entry>
+            </row>
+            
+            <row>
+              <entry>/packages/{packageName}/assets</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>none</entry>
+
+              <entry>Returns the list of rule assets contained in package
+              {packageName} as an Atom Feed.</entry>
             </row>
 
             <row>
@@ -401,22 +406,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns the list of rule asset contained in package
-              {packageName} as an Asset (see the UML representation
-              below).</entry>
-            </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>none</entry>
-
-              <entry>updates the package metadata {packageName} as a Package
-              (see the UML representation below).</entry>
+              <entry>Returns the list of rule assets contained in package
+              {packageName}in JSON or XML format</entry>
             </row>
 
             <row>
@@ -424,12 +415,12 @@
 
               <entry>GET</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
               <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as an atom feed.</entry>
+              {packageName} as an Atom Entry.</entry>
             </row>
 
             <row>
@@ -490,7 +481,7 @@
 
               <entry>PUT</entry>
 
-              <entry>application/atom/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
