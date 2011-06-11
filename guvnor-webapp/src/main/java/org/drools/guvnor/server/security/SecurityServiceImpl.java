@@ -129,14 +129,11 @@ public class SecurityServiceImpl
                 return Capabilities.all( PREFERENCES );
             }
 
-            RoleBasedPermissionResolver resolver = (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
-            if ( !resolver.isEnableRoleBasedAuthorization() ) {
+            if ( !createRoleBasedPermissionResolver().isEnableRoleBasedAuthorization() ) {
                 return Capabilities.all( PREFERENCES );
             }
-
-            RoleBasedPermissionManager permManager = (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
-
-            List<RoleBasedPermission> permissions = permManager.getRoleBasedPermission();
+            
+            List<RoleBasedPermission> permissions = createRoleBasedPermissionManager().getRoleBasedPermission();
             if ( permissions.size() == 0 ) {
                 Identity.instance().logout();
                 throw new AuthorizationException( "This user has no permissions setup." );
@@ -154,6 +151,14 @@ public class SecurityServiceImpl
             }
             return Capabilities.all( PREFERENCES );
         }
+    }
+
+    private RoleBasedPermissionManager createRoleBasedPermissionManager() {
+        return (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
+    }
+
+    private RoleBasedPermissionResolver createRoleBasedPermissionResolver() {
+        return (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
     }
 
     private boolean invalidSecuritySerilizationSetup() {
