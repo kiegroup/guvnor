@@ -46,8 +46,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-
-
 public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     private Abdera abdera = new Abdera();
     private static RestTestingBase restTestingBase;
@@ -102,9 +100,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         AssetItem rule4 = pkg.addAsset( "rule4",
                                         "" );
-        rule3.updateFormat( AssetFormats.DRL_MODEL );
-        rule3.updateContent( "rule 'nheron' when Goo1() then end" );
-        rule3.checkin( "version 1" );
+        rule4.updateFormat( AssetFormats.DRL );
+        rule4.updateContent( "rule 'nheron' when Goo1() then end" );
+        rule4.checkin( "version 1" );
         pkg.checkin( "version2" );
 
         //Package version 3
@@ -674,8 +672,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
         assertTrue( result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
         assertTrue( result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
-        //TODO
-        //assertTrue( result.indexOf( "declare Album1" ) >= 0 );
+        assertTrue( result.indexOf( "declare Album1" ) >= 0 );
     }
     
     @Test 
