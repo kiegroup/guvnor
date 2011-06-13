@@ -457,6 +457,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         e.addAuthor("Test McTesty");		
         resp = client.put(generateBaseUrl() + "/packages/testCreatePackageFromAtom", e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
+        assertEquals(204, resp.getStatus());
 
         //NOTE: could not figure out why the code below always returns -1 as the ResponseCode.
 /*        URL url = new URL(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
@@ -486,7 +487,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("testCreatePackageFromAtom", entry.getTitle());
 		assertTrue(entry.getPublished() != null);
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
-
         
 		//Roll back changes. 
 		resp = client.delete(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
@@ -548,7 +548,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
 
-        assertEquals (200, connection.getResponseCode());
+        assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
         System.out.println(GetContent(connection));
     }
@@ -572,13 +572,13 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setDoOutput(true);
 
         //Send request
-        DataOutputStream wr = new DataOutputStream (
-              connection.getOutputStream ());
-        wr.writeBytes (xml);
-        wr.flush ();
-        wr.close ();
+        DataOutputStream wr = new DataOutputStream(
+              connection.getOutputStream());
+        wr.writeBytes(xml);
+        wr.flush();
+        wr.close();
 
-        assertEquals (204, connection.getResponseCode());
+        assertEquals(204, connection.getResponseCode());
     }
 
     @Ignore @Test
@@ -626,7 +626,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
-        assertEquals (200, connection.getResponseCode());
+        assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
         //System.out.println(GetContent(connection));
         
@@ -663,16 +663,16 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
 
-        assertEquals (200, connection.getResponseCode());
+        assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
         String result = GetContent(connection);
         System.out.println(result);
        
-        assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
-        assertTrue( result.indexOf( "import com.billasurf.Board" ) >= 0 );
-        assertTrue( result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
-        assertTrue( result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
-        assertTrue( result.indexOf( "declare Album1" ) >= 0 );
+        assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
+        assertTrue(result.indexOf( "import com.billasurf.Board" ) >= 0 );
+        assertTrue(result.indexOf( "global com.billasurf.Person customer1" ) >= 0 );
+        assertTrue(result.indexOf( "function void foo() { System.out.println(version 1); }" ) >= 0 );
+        assertTrue(result.indexOf( "declare Album1" ) >= 0 );
     }
     
     @Test 
@@ -699,9 +699,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection1.setRequestMethod("GET");
         connection1.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection1.connect();
-        assertEquals (200, connection1.getResponseCode());
+        assertEquals(200, connection1.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection1.getContentType());
-        String newContent =    "rule 'nheron' when Goo1() then end";
+        String newContent = "rule 'nheron' when Goo1() then end";
           /*
            * update the content
            */
@@ -714,23 +714,190 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         out.write(newContent);
         out.close();
         connection2.getInputStream();
+        assertEquals(204, connection2.getResponseCode());
         /*
          * get the content again and verify it was modified
          */
-        assertEquals (204, connection2.getResponseCode());
         URL url3 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection3 = (HttpURLConnection) url3.openConnection();
         connection3.setRequestMethod("GET");
         connection3.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection3.connect();
 
-        assertEquals (200, connection3.getResponseCode());
+        assertEquals(200, connection3.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection3.getContentType());
         String result = GetContent(connection3);
-        assertEquals (result,newContent+"\n");
+        assertEquals(result,newContent+"\n");
     }
+    
+    @Test
+    public void testCreateAndUpdateAssetFromBinary() throws Exception {      
+        //Query if the asset exist
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        //The asset should not exist
+        assertEquals(500, connection.getResponseCode());
 
+        //Create the asset from binary
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Slug", "Error-image");
+        connection.setDoOutput(true);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] data = new byte[1000];
+        int count = 0;
+        InputStream is = this.getClass().getResourceAsStream("Error-image.gif");
+        while((count = is.read(data,0,1000)) != -1) {
+            out.write(data, 0, count);
+        }
+        connection.getOutputStream ().write(out.toByteArray());
+        out.close();
+        assertEquals(200, connection.getResponseCode());
+        
+        //Get the asset meta data and verify
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        //System.out.println(GetContent(connection));
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+        Document<Entry> doc = abdera.getParser().parse(in);
+        Entry entry = doc.getRoot();
+        assertEquals("Error-image", entry.getTitle());
+        assertTrue(entry.getPublished() != null);
+        
+        //Get the asset binary and verify
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image/binary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection.connect();
+        //System.out.println(GetContent(connection));
+        assertEquals(200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
+        in = connection.getInputStream();
+        assertNotNull(in);
+                
+        //Update asset binary
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image/binary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+        byte[] data2 = new byte[1000];
+        int count2 = 0;
+        InputStream is2 = this.getClass().getResourceAsStream("Error-image-new.gif");
+        while((count2 = is2.read(data2,0,1000)) != -1) {
+            out2.write(data2, 0, count2);
+        }
+        connection.getOutputStream ().write(out2.toByteArray());
+        out2.close();
+        assertEquals(204, connection.getResponseCode());
+        
+        //Roll back changes. 
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+        System.out.println(GetContent(connection));
+        assertEquals(204, connection.getResponseCode());
 
+        //Verify the package is indeed deleted
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals(500, connection.getResponseCode());
+    }
+    
+    @Test
+    public void testGetSourceContentFromBinaryAsset() throws Exception {      
+        //Query if the asset exist
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        //The asset should not exist
+        assertEquals(500, connection.getResponseCode());
+
+        //Create the asset from binary
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Slug", "Error-image-new");
+        connection.setDoOutput(true);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] data = new byte[1000];
+        int count = 0;
+        InputStream is = this.getClass().getResourceAsStream("Error-image.gif");
+        while((count = is.read(data,0,1000)) != -1) {
+            out.write(data, 0, count);
+        }
+        connection.getOutputStream ().write(out.toByteArray());
+        out.close();
+        assertEquals(200, connection.getResponseCode());
+        
+        //Get the asset source. this will return the binary data as a byte array.
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new/source");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
+        String result = GetContent(connection);
+        assertNotNull(result);
+         
+        //Roll back changes. 
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.connect();
+        System.out.println(GetContent(connection));
+        assertEquals(204, connection.getResponseCode());
+
+        //Verify the package is indeed deleted
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals(500, connection.getResponseCode());
+    }
+    
+    @Test
+    public void testGetBinaryContentFromNonBinaryAsset() throws Exception {    
+        //Get the asset binary. If this asset has no binary content, this will return its 
+        //source content instead
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/binary");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
+        String result = GetContent(connection);
+        assertTrue(result.indexOf("declare Album2") > -1);
+    }
+    
     public String generateBaseUrl() {
     	return "http://localhost:9080";
     }

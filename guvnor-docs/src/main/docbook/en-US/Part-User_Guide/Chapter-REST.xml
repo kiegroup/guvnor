@@ -420,7 +420,7 @@
               <entry>none</entry>
 
               <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as an Atom Entry.</entry>
+              {packageName} in Atom Entry format.</entry>
             </row>
 
             <row>
@@ -433,7 +433,7 @@
               <entry>none</entry>
 
               <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as an Asset (see the UML representation
+              {packageName} as an Asset in JSON or XML format (see the UML representation
               below).</entry>
             </row>
 
@@ -442,12 +442,12 @@
 
               <entry>GET</entry>
 
-              <entry>application/octet/binary</entry>
+              <entry>application/octet-stream</entry>
 
               <entry>none</entry>
 
-              <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as a binary (java stream)</entry>
+              <entry>Returns the binary content of rule asset {assetName} contained in package
+              {packageName}. If this asset has no binary content, this will return its source content instead</entry>
             </row>
 
             <row>
@@ -459,9 +459,36 @@
 
               <entry>none</entry>
 
-              <entry>Returns the source code of the rule asset {assetName}
-              contained in package {packageName}.</entry>
+              <entry>Returns the content of rule asset {assetName}
+              contained in package {packageName}. If this is a binary asset, this will 
+              return the binary data as a byte array.</entry>
             </row>
+            
+            <row>
+              <entry>/packages/{packageName}/assets</entry>
+
+              <entry>POST</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>Creates an asset in package {packageName} from the Atom Entry provided. Following info are required 
+              from the input Atom Entry: asset name, asset description, asset initial category, asset format</entry>
+            </row>  
+            
+            <row>
+              <entry>/packages/{packageName}/assets</entry>
+
+              <entry>POST</entry>
+
+              <entry>application/octet-stream</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>Creates a binary asset in package {packageName} from the input stream. The value of Slug header is used to 
+              indicate the name of the asset. This returns HTTP 500 error is the slug header is missing. </entry>
+            </row>           
 
             <row>
               <entry>/packages/{packageName}/assets/{assetName}/source</entry>
@@ -475,21 +502,7 @@
               <entry>Updates the source code of the rule asset {assetName}
               contained in package {packageName}.</entry>
             </row>
-
-            <row>
-              <entry>/packages/{packageName}/assets/{assetName}</entry>
-
-              <entry>PUT</entry>
-
-              <entry>application/atom+xml</entry>
-
-              <entry>none</entry>
-
-              <entry>Updates the metadata of the rule asset {assetName}
-              contained in package {packageName} given in a Atom
-              Entry.</entry>
-            </row>
-
+            
             <row>
               <entry>/packages/{packageName}/assets/{assetName}</entry>
 

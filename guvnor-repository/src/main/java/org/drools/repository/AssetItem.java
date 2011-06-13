@@ -108,7 +108,9 @@ public class AssetItem extends CategorisableItem {
      * 
      * returns the string contents of the rule node. If this is a binary asset,
      * this will return null (use getBinaryContent instead).
-     */
+     */    
+    //REVISIT: This return the binary data as a byte array if its binary asset. 
+    //Return null is better?
     public String getContent(Boolean fromRepo) throws RulesRepositoryException {
         try {
 

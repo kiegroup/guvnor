@@ -36,7 +36,9 @@ import org.jboss.seam.annotations.Name;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.io.InputStream;
@@ -53,13 +55,19 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
  * We also need to set HTTP error code on WebApplicationException if we want a HTTP response code other 
  * than 500 (Internal Server Error). 
  * In the future, we may use ExceptionMapper provider to map a checked or runtime exception to a 
- * HTTP response. When no mappers are found for custom exceptions, they are propagated (wrapped in 
- * ServletException) to the underlying container as required by the spec.
+ * HTTP response. Note, if there are no mappers found for custom exceptions, they will be propagated 
+ * (wrapped in ServletException) to the underlying container as required by the spec.
  */
 @Name("PackageResource")
 @Path("/packages")
 public class PackageResource extends Resource {
+    private HttpHeaders headers;
 
+    @Context
+    public void setHttpHeaders(HttpHeaders theHeaders) {
+        headers = theHeaders;
+    }
+    
     @GET
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getPackagesAsFeed() {
@@ -409,10 +417,9 @@ public class PackageResource extends Resource {
             List<Asset> ret = new ArrayList<Asset>();
             PackageItem p = repository.loadPackage(packageName);
             Iterator<AssetItem> iter = p.getAssets();
-            if (iter.hasNext())
-                ret = new ArrayList<Asset>();
-            while (iter.hasNext())
+            while (iter.hasNext()) {
                 ret.add(ToAsset(iter.next(), uriInfo));
+            }
             return ret;
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -452,7 +459,8 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
-            return asset.getBinaryContentAttachment();
+            InputStream is = asset.getBinaryContentAttachment();
+            return is;
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -469,35 +477,83 @@ public class PackageResource extends Resource {
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
-    }
+    }    
 
-    @PUT
-    @Path("{packageName}/assets/{assetName}/source")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String  content) {
+    @POST
+    @Path("{packageName}/assets")
+    @Consumes(MediaType.APPLICATION_ATOM_XML)
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry createAssetFromAtom(@PathParam ("packageName") String packageName, Entry entry) {
         try {
-            //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
-            asset.checkout();
-            asset.updateContent(content);
-            repository.save();
+            String format = null;
+            String initialCategory = null;            
+            ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+            if(metadataExtension != null) {
+                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;   
+                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+                initialCategory = formatExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;   
+            }
+            
+            AssetItem ai = repository.loadPackage(packageName).addAsset(entry.getTitle(), entry.getSummary(), initialCategory, format);
+            Entry e = ToAssetEntryAbdera(ai, uriInfo);
+            return e;
         } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
         }
     }
 
+    @POST
+    @Path("{packageName}/assets")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry createAssetFromBinary(@PathParam ("packageName") String packageName, InputStream is) {
+        try {
+            String assetName = getHttpHeader(headers, "slug");
+            if(assetName == null) {
+                throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
+            }        
+            AssetItem ai = repository.loadPackage(packageName).addAsset(assetName, "");
+            ai.checkout();
+            ai.updateBinaryContentAttachment(is);
+            ai.checkin("update binary");
+            repository.save();
+            Entry e = ToAssetEntryAbdera(ai, uriInfo);
+            return e;
+        } catch (Exception e) {
+            //catch RulesRepositoryException and other exceptions. For example when the package already exists.
+            throw new WebApplicationException(e);
+        }
+    }
+    
     @PUT
     @Path("{packageName}/assets/{assetName}")
     @Consumes(MediaType.APPLICATION_ATOM_XML)
     public void updateAssetFromAtom(@PathParam ("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry) {
         try {
+            String format = null;
+            String initialCategory = null;            
+            ExtensibleElement metadataExtension  = assetEntry.getExtension(Translator.METADATA); 
+            if(metadataExtension != null) {
+                ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+                format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;   
+                ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+                initialCategory = formatExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;   
+            }
+            
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
-            //  Update asset 
+            //Update asset 
             ai.checkout();
             ai.updateTitle(assetEntry.getTitle());
             ai.updateDescription(assetEntry.getSummary());
-            ai.updateContent(assetEntry.getContent());
+            if(format != null) {
+                ai.updateFormat(format);                
+            }
+            if(assetEntry.getContent() != null){
+                ai.updateContent(assetEntry.getContent());               
+            }
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             repository.save();
         } catch (Exception e) {
@@ -525,6 +581,37 @@ public class PackageResource extends Resource {
         }
     }
 
+    @PUT
+    @Path("{packageName}/assets/{assetName}/source")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public void updateAssetSource(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, String  content) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            asset.checkout();
+            asset.updateContent(content);
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
+    
+    @PUT
+    @Path("{packageName}/assets/{assetName}/binary")
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public void updateAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, InputStream is) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            asset.checkout();
+            asset.updateBinaryContentAttachment(is);
+            asset.checkin("Update binary");
+            repository.save();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
+    
     @DELETE
     @Path("{packageName}/assets/{assetName}/")
     public void deleteAsset(@PathParam("packageName") String packageName,
@@ -538,6 +625,26 @@ public class PackageResource extends Resource {
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
+    }
+    
+    //HTTP header names are case-insensitive
+    private String getHttpHeader(HttpHeaders headers, String headerName) {
+
+        MultivaluedMap<String, String> heads = headers.getRequestHeaders();
+        Iterator<String> it = heads.keySet().iterator();
+        while(it.hasNext()) {
+            String key = it.next();
+            if(headerName.equalsIgnoreCase(key)) {
+                List<String> h = heads.get(key);
+                
+                if(h != null && h.size() > 0) {
+                    String value = h.get(0);
+                    return value;
+                }               
+            }
+        }
+        
+        return null;    
     }
 }
 

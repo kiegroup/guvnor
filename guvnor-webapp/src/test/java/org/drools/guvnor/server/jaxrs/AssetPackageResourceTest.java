@@ -198,8 +198,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
         ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
-        assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));   
-		
+        assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));		
     }
 
     @Test
