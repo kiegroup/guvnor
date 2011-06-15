@@ -24,7 +24,7 @@ import java.util.List;
 
 public class AssemblyErrorLogger {
 
-    protected List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
+    private final List<ContentAssemblyError> errors = new ArrayList<ContentAssemblyError>();
 
     public AssemblyErrorLogger() {
     }

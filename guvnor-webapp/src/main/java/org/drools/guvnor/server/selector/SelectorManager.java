@@ -45,8 +45,8 @@ public class SelectorManager {
         try {
             props.load(this.getClass().getResourceAsStream(configPath));
             props.put("BuiltInSelector", "org.drools.guvnor.server.selector.BuiltInSelector");
-            for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
-                String selectorName = (String) iter.next();
+            for (Object o : props.keySet()) {
+                String selectorName = (String) o;
                 String val = props.getProperty(selectorName);
                 try {
                     if (val.endsWith("drl")) {

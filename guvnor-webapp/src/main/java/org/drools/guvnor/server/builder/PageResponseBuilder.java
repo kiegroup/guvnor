@@ -15,65 +15,65 @@
  */
 package org.drools.guvnor.server.builder;
 
-import java.util.List;
-
 import org.drools.guvnor.client.rpc.AbstractPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
 
+import java.util.List;
+
 public class PageResponseBuilder<T extends AbstractPageRow> {
-    PageResponse<T> pageResponse = new PageResponse<T>();
+    final PageResponse<T> pageResponse = new PageResponse<T>();
 
     public PageResponseBuilder<T> withStartRowIndex(int startRowIndex) {
-        pageResponse.setStartRowIndex( startRowIndex );
+        pageResponse.setStartRowIndex(startRowIndex);
         return this;
     }
 
     public PageResponseBuilder<T> withPageRowList(final List<T> assetPageRowList) {
-        pageResponse.setPageRowList( assetPageRowList );
+        pageResponse.setPageRowList(assetPageRowList);
         return this;
     }
 
     public PageResponseBuilder<T> withLastPage(final boolean isLastPage) {
-        pageResponse.setLastPage( isLastPage );
+        pageResponse.setLastPage(isLastPage);
         return this;
     }
 
     public PageResponseBuilder<T> withTotalRowSize(final int totalRowSize) {
-        pageResponse.setTotalRowSize( totalRowSize );
+        pageResponse.setTotalRowSize(totalRowSize);
         return this;
     }
 
     public PageResponseBuilder<T> withTotalRowSizeHelper(final int totalRowCount) {
-        fixTotalRowSize( totalRowCount );
+        fixTotalRowSize(totalRowCount);
         return this;
     }
 
     public PageResponseBuilder<T> withTotalRowSizeExact() {
-        pageResponse.setTotalRowSizeExact( true );
+        pageResponse.setTotalRowSizeExact(true);
         return this;
     }
 
     public void fixTotalRowSize(long totalRowsCount) {
 
         // CellTable only handles integer row counts
-        if ( totalRowsCount > Integer.MAX_VALUE ) {
-            throw new IllegalStateException( "The totalRowSize (" + totalRowsCount + ") is too big." );
+        if (totalRowsCount > Integer.MAX_VALUE) {
+            throw new IllegalStateException("The totalRowSize (" + totalRowsCount + ") is too big.");
         }
 
         // Unable to ascertain size of whole data-set
-        if ( totalRowsCount == -1 ) {
+        if (totalRowsCount == -1) {
 
             // Last page, we can be derive absolute size
-            if ( pageResponse.isLastPage() ) {
-                pageResponse.setTotalRowSize( pageResponse.getStartRowIndex() + pageResponse.getPageRowList().size() );
-                pageResponse.setTotalRowSizeExact( true );
+            if (pageResponse.isLastPage()) {
+                pageResponse.setTotalRowSize(pageResponse.getStartRowIndex() + pageResponse.getPageRowList().size());
+                pageResponse.setTotalRowSizeExact(true);
             } else {
-                pageResponse.setTotalRowSize( -1 );
-                pageResponse.setTotalRowSizeExact( false );
+                pageResponse.setTotalRowSize(-1);
+                pageResponse.setTotalRowSizeExact(false);
             }
         } else {
-            pageResponse.setTotalRowSize( (int) totalRowsCount );
-            pageResponse.setTotalRowSizeExact( true );
+            pageResponse.setTotalRowSize((int) totalRowsCount);
+            pageResponse.setTotalRowSizeExact(true);
         }
     }
 
@@ -82,7 +82,7 @@ public class PageResponseBuilder<T extends AbstractPageRow> {
     }
 
     public PageResponse<T> buildWithTotalRowCount(final long totalRowCount) {
-        fixTotalRowSize( totalRowCount );
+        fixTotalRowSize(totalRowCount);
         return pageResponse;
     }
 

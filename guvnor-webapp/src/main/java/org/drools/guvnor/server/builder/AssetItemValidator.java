@@ -69,7 +69,7 @@ public class AssetItemValidator {
 
     private class AssetValidationIterator implements Iterator<AssetItem> {
 
-        private Iterator<AssetItem> assetItemIterator;
+        private final Iterator<AssetItem> assetItemIterator;
 
         public AssetValidationIterator(Iterator<AssetItem> assetItemIterator) {
             this.assetItemIterator = assetItemIterator;

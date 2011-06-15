@@ -16,23 +16,22 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Properties;
-
 import org.drools.repository.utils.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * This configures the content handlers based on a props file.
  */
 public class ContentManager {
 
-    private static final Logger log = LoggerFactory.getLogger( ContentManager.class );
+    private static final Logger log = LoggerFactory.getLogger(ContentManager.class);
     public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
     private static ContentManager INSTANCE;
 
@@ -40,7 +39,6 @@ public class ContentManager {
      * This is a map of the contentHandlers to use.
      */
     private final Map<String, ContentHandler> contentHandlers = new HashMap<String, ContentHandler>();
-
 
 
     @SuppressWarnings("rawtypes")
@@ -51,11 +49,11 @@ public class ContentManager {
         try {
             in = getClass().getResourceAsStream(configPath);
             props.load(in);
-            for (Iterator iter = props.keySet().iterator(); iter.hasNext();) {
-                String contentHandler = (String) iter.next();
+            for (Object o : props.keySet()) {
+                String contentHandler = (String) o;
                 String val = props.getProperty(contentHandler);
 
-                contentHandlers.put(contentHandler, loadContentHandlerImplementation( val ));
+                contentHandlers.put(contentHandler, loadContentHandlerImplementation(val));
             }
         } catch (IOException e) {
             log.error("UNABLE to load content handlers. Ahem, nothing will actually work. Ignore subsequent errors until this is resolved.", e);
@@ -76,16 +74,16 @@ public class ContentManager {
     private ContentHandler loadContentHandlerImplementation(String val) throws IOException {
 
         try {
-            return (ContentHandler) Thread.currentThread().getContextClassLoader().loadClass( val ).newInstance();
+            return (ContentHandler) Thread.currentThread().getContextClassLoader().loadClass(val).newInstance();
 
-        } catch ( InstantiationException e ) {
-            log.error( "Unable to load content handler implementation.", e );
+        } catch (InstantiationException e) {
+            log.error("Unable to load content handler implementation.", e);
             return null;
-        } catch ( IllegalAccessException e ) {
-            log.error( "Unable to load content handler implementation.", e );
+        } catch (IllegalAccessException e) {
+            log.error("Unable to load content handler implementation.", e);
             return null;
-        } catch ( ClassNotFoundException e ) {
-            log.error( "Unable to load content handler implementation.", e );
+        } catch (ClassNotFoundException e) {
+            log.error("Unable to load content handler implementation.", e);
             return null;
         }
 
@@ -104,8 +102,9 @@ public class ContentManager {
     }
 
     public static ContentHandler getHandler(String format) {
-        ContentHandler h = ContentManager.getInstance().getContentHandlers().get( format );
-        if (h == null) h = new DefaultContentHandler();//throw new IllegalArgumentException("Unable to handle the content type: " + format);
+        ContentHandler h = ContentManager.getInstance().getContentHandlers().get(format);
+        if (h == null)
+            h = new DefaultContentHandler();//throw new IllegalArgumentException("Unable to handle the content type: " + format);
         return h;
     }
 }

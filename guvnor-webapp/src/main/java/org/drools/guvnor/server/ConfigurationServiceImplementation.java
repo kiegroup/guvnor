@@ -16,9 +16,8 @@
 
 package org.drools.guvnor.server;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -27,14 +26,14 @@ import org.drools.repository.RulesRepository;
 import org.jboss.seam.Component;
 import org.jboss.seam.contexts.Contexts;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet
         implements ConfigurationService {
 
-    private ServiceSecurity serviceSecurity = new ServiceSecurity();
+    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
 
     public String save(IFramePerspectiveConfiguration configuration) {
         serviceSecurity.checkSecurityIsAdmin();
@@ -103,12 +102,10 @@ public class ConfigurationServiceImplementation
 
     protected RulesRepository getRepository() {
         if (Contexts.isApplicationContextActive()) {
-            RulesRepository repo = (RulesRepository) Component.getInstance("repository");
-            return repo;
+            return (RulesRepository) Component.getInstance("repository");
         } else {
             try {
-                RulesRepository repo = new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-                return repo;
+                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
             } catch (Exception e) {
                 throw new IllegalStateException("Unable to get repo to run tests", e);
             }

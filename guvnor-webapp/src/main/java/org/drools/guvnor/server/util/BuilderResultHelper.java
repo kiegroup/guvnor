@@ -23,11 +23,10 @@ import java.util.List;
 
 public class BuilderResultHelper {
     public List<BuilderResultLine> generateBuilderResults(List<ContentAssemblyError> errors) {
-        List<BuilderResultLine> result = new ArrayList<BuilderResultLine>( errors.size() );
-        for ( int i = 0; i < errors.size(); i++ ) {
-            ContentAssemblyError err = errors.get( i );
-            BuilderResultLine res = new BuilderResultLine().setAssetName( err.getName() ).setAssetFormat( err.getFormat() ).setMessage( err.getErrorReport() ).setUuid( err.getUUID() );
-            result.add( res );
+        List<BuilderResultLine> result = new ArrayList<BuilderResultLine>(errors.size());
+        for (ContentAssemblyError err : errors) {
+            BuilderResultLine res = new BuilderResultLine().setAssetName(err.getName()).setAssetFormat(err.getFormat()).setMessage(err.getErrorReport()).setUuid(err.getUUID());
+            result.add(res);
         }
         return result;
     }

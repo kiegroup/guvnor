@@ -16,27 +16,11 @@
 
 package org.drools.guvnor.server.files;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.drools.core.util.StringUtils;
 import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.repository.AssetItem;
@@ -47,6 +31,13 @@ import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.mvel2.templates.TemplateRuntime;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
+
 public class FeedServlet extends RepositoryServlet {
 
     private static final String VIEW_URL = "viewUrl";
@@ -54,163 +45,163 @@ public class FeedServlet extends RepositoryServlet {
     @Override
     protected void doGet(final HttpServletRequest request,
                          final HttpServletResponse response) throws ServletException,
-                                                            IOException {
+            IOException {
         try {
             String url = request.getRequestURI();
-            if ( url.indexOf( "feed/package" ) > -1 ) {
-                doAuthorizedAction( request,
-                                    response,
-                                    new Command() {
-                                        public void execute() throws Exception {
-                                            doPackageFeed( request,
-                                                           response );
-                                        }
-                                    } );
-            } else if ( url.indexOf( "feed/category" ) > -1 ) {
-                doAuthorizedAction( request,
-                                    response,
-                                    new Command() {
-                                        public void execute() throws Exception {
-                                            doCategoryFeed( request,
-                                                            response );
-                                        }
-                                    } );
-            } else if ( url.indexOf( "feed/discussion" ) > -1 ) {
-                doAuthorizedAction( request,
-                                    response,
-                                    new Command() {
-                                        public void execute() throws Exception {
-                                            doDiscussionFeed( request,
-                                                              response );
-                                        }
-                                    } );
+            if (url.indexOf("feed/package") > -1) {
+                doAuthorizedAction(request,
+                        response,
+                        new Command() {
+                            public void execute() throws Exception {
+                                doPackageFeed(request,
+                                        response);
+                            }
+                        });
+            } else if (url.indexOf("feed/category") > -1) {
+                doAuthorizedAction(request,
+                        response,
+                        new Command() {
+                            public void execute() throws Exception {
+                                doCategoryFeed(request,
+                                        response);
+                            }
+                        });
+            } else if (url.indexOf("feed/discussion") > -1) {
+                doAuthorizedAction(request,
+                        response,
+                        new Command() {
+                            public void execute() throws Exception {
+                                doDiscussionFeed(request,
+                                        response);
+                            }
+                        });
             }
-        } catch ( AuthorizationException e ) {
-            response.setHeader( "WWW-Authenticate",
-                                "BASIC realm=\"users\"" );
-            response.sendError( HttpServletResponse.SC_UNAUTHORIZED );
+        } catch (AuthorizationException e) {
+            response.setHeader("WWW-Authenticate",
+                    "BASIC realm=\"users\"");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
     }
 
     private void doDiscussionFeed(HttpServletRequest request,
                                   HttpServletResponse response) throws IOException {
-        String assetName = request.getParameter( "assetName" );
-        String packageName = request.getParameter( "package" );
-        AssetItem asset = getFileManager().getRepository().loadPackage( packageName ).loadAsset( assetName );
-        checkPackageReadPermission( asset.getPackageName() );
+        String assetName = request.getParameter("assetName");
+        String packageName = request.getParameter("package");
+        AssetItem asset = getFileManager().getRepository().loadPackage(packageName).loadAsset(assetName);
+        checkPackageReadPermission(asset.getPackageName());
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
-        entries.add( new AtomFeed.AtomEntry( request,
-                                             asset ) );
-        List<DiscussionRecord> drs = new Discussion().fromString( asset.getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
-        for ( DiscussionRecord dr : drs ) {
-            entries.add( new AtomFeed.AtomEntry( request,
-                                                 asset,
-                                                 dr ) );
+        entries.add(new AtomFeed.AtomEntry(request,
+                asset));
+        List<DiscussionRecord> drs = new Discussion().fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
+        for (DiscussionRecord dr : drs) {
+            entries.add(new AtomFeed.AtomEntry(request,
+                    asset,
+                    dr));
         }
-        AtomFeed feed = new AtomFeed( "Discussion of: " + packageName + "/" + assetName,
-                                      Calendar.getInstance(),
-                                      request.getServerName() + "/" + packageName + "/" + assetName,
-                                      request.getParameter( VIEW_URL ),
-                                      request.getRequestURL().toString(),
-                                      entries,
-                                      "A list of updated discussion content." );
-        response.setContentType( "application/atom+xml; charset=UTF-8" );
-        response.getWriter().print( feed.getAtom() );
+        AtomFeed feed = new AtomFeed("Discussion of: " + packageName + "/" + assetName,
+                Calendar.getInstance(),
+                request.getServerName() + "/" + packageName + "/" + assetName,
+                request.getParameter(VIEW_URL),
+                request.getRequestURL().toString(),
+                entries,
+                "A list of updated discussion content.");
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
     private void doCategoryFeed(HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
-        String cat = request.getParameter( "name" );
-        String status = request.getParameter( "status" );
-        checkCategoryPermission( cat );
-        AssetItemPageResult pg = getFileManager().getRepository().findAssetsByCategory( cat,
-                                                                                        false,
-                                                                                        0,
-                                                                                        -1 );
+        String cat = request.getParameter("name");
+        String status = request.getParameter("status");
+        checkCategoryPermission(cat);
+        AssetItemPageResult pg = getFileManager().getRepository().findAssetsByCategory(cat,
+                false,
+                0,
+                -1);
         Iterator<AssetItem> it = pg.assets.iterator();
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
-        buildEntries( request,
-                      entries,
-                      it,
-                      status );
-        AtomFeed feed = new AtomFeed( "Category: " + cat,
-                                      Calendar.getInstance(),
-                                      request.getServerName() + cat,
-                                      request.getParameter( VIEW_URL ),
-                                      request.getRequestURL().toString(),
-                                      entries,
-                                      "Guvnor category of items: " + cat );
-        response.setContentType( "application/atom+xml; charset=UTF-8" );
-        response.getWriter().print( feed.getAtom() );
+        buildEntries(request,
+                entries,
+                it,
+                status);
+        AtomFeed feed = new AtomFeed("Category: " + cat,
+                Calendar.getInstance(),
+                request.getServerName() + cat,
+                request.getParameter(VIEW_URL),
+                request.getRequestURL().toString(),
+                entries,
+                "Guvnor category of items: " + cat);
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
     void checkCategoryPermission(String cat) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                 RoleType.ANALYST_READ.getName() );
+        if (Contexts.isSessionContextActive()) {
+            Identity.instance().checkPermission(new CategoryPathType(cat),
+                    RoleType.ANALYST_READ.getName());
         }
     }
 
     private void doPackageFeed(HttpServletRequest request,
                                HttpServletResponse response) throws IOException {
-        String packageName = request.getParameter( "name" );
-        checkPackageReadPermission( packageName );
+        String packageName = request.getParameter("name");
+        checkPackageReadPermission(packageName);
 
-        PackageItem pkg = getFileManager().getRepository().loadPackage( packageName );
+        PackageItem pkg = getFileManager().getRepository().loadPackage(packageName);
 
         List<AtomFeed.AtomEntry> entries = new ArrayList<AtomFeed.AtomEntry>();
         Iterator<AssetItem> it = pkg.getAssets();
-        buildEntries( request,
-                      entries,
-                      it,
-                      request.getParameter( "status" ) );
+        buildEntries(request,
+                entries,
+                it,
+                request.getParameter("status"));
 
-        AtomFeed feed = new AtomFeed( "Knowledge package: " + pkg.getName(),
-                                      pkg.getLastModified(),
-                                      pkg.getUUID(),
-                                      request.getParameter( VIEW_URL ),
-                                      request.getRequestURL().toString(),
-                                      entries,
-                                      pkg.getDescription() );
-        response.setContentType( "application/atom+xml; charset=UTF-8" );
-        response.getWriter().print( feed.getAtom() );
+        AtomFeed feed = new AtomFeed("Knowledge package: " + pkg.getName(),
+                pkg.getLastModified(),
+                pkg.getUUID(),
+                request.getParameter(VIEW_URL),
+                request.getRequestURL().toString(),
+                entries,
+                pkg.getDescription());
+        response.setContentType("application/atom+xml; charset=UTF-8");
+        response.getWriter().print(feed.getAtom());
     }
 
     private void buildEntries(HttpServletRequest request,
                               List<AtomFeed.AtomEntry> entries,
                               Iterator<AssetItem> it,
                               String status) {
-        while ( it.hasNext() ) {
+        while (it.hasNext()) {
             AssetItem as = it.next();
-            if ( !as.isArchived() && !as.getDisabled() ) {
-                if ( status == null || status.equals( "*" ) || as.getStateDescription().equals( status ) ) {
-                    entries.add( new AtomFeed.AtomEntry( request,
-                                                         as ) );
+            if (!as.isArchived() && !as.getDisabled()) {
+                if (status == null || status.equals("*") || as.getStateDescription().equals(status)) {
+                    entries.add(new AtomFeed.AtomEntry(request,
+                            as));
                 }
             }
         }
     }
 
     void checkPackageReadPermission(String packageName) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( packageName ),
-                                                 RoleType.PACKAGE_READONLY.getName() );
+        if (Contexts.isSessionContextActive()) {
+            Identity.instance().checkPermission(new PackageNameType(packageName),
+                    RoleType.PACKAGE_READONLY.getName());
         }
     }
 
     public static class AtomFeed {
 
-        private static String         TEMPLATE = StringUtils.readFileAsString( new InputStreamReader( AtomFeed.class.getResourceAsStream( "/atom-feed-template.xml" ) ) );
+        private static final String TEMPLATE = StringUtils.readFileAsString(new InputStreamReader(AtomFeed.class.getResourceAsStream("/atom-feed-template.xml")));
 
-        private String                feedTitle;
-        private String                feedUpdated;
-        private String                feedId;
-        private String                feedAlternate;
-        private String                feedSelf;
-        private String                subtitle;
-        private Collection<AtomEntry> entries;
+        private final String feedTitle;
+        private final String feedUpdated;
+        private final String feedId;
+        private final String feedAlternate;
+        private final String feedSelf;
+        private final String subtitle;
+        private final Collection<AtomEntry> entries;
 
         public AtomFeed(String title,
                         Calendar whenUpdate,
@@ -220,7 +211,7 @@ public class FeedServlet extends RepositoryServlet {
                         Collection<AtomEntry> entries,
                         String subtitle) {
             this.feedTitle = title;
-            this.feedUpdated = ISO8601.format( whenUpdate );
+            this.feedUpdated = ISO8601.format(whenUpdate);
             this.feedId = feedId;
             this.feedAlternate = feedAlternate;
             this.feedSelf = feedSelf;
@@ -230,10 +221,10 @@ public class FeedServlet extends RepositoryServlet {
 
         public String getAtom() {
             Map<String, AtomFeed> m = new HashMap<String, AtomFeed>();
-            m.put( "feed",
-                   this );
-            return (String) TemplateRuntime.eval( TEMPLATE,
-                                                  m );
+            m.put("feed",
+                    this);
+            return (String) TemplateRuntime.eval(TEMPLATE,
+                    m);
         }
 
         public String getSubtitle() {
@@ -266,16 +257,16 @@ public class FeedServlet extends RepositoryServlet {
         }
 
         public static class AtomEntry {
-            private String name;
-            private String webURL;
-            private String id;
-            private String updated;
-            private String published;
-            private String author;
-            private String contributor;
-            private String description;
-            private String checkinComment;
-            private String format;
+            private final String name;
+            private final String webURL;
+            private final String id;
+            private final String updated;
+            private final String published;
+            private final String author;
+            private final String contributor;
+            private final String description;
+            private final String checkinComment;
+            private final String format;
 
             /**
              * We are creating an entry for each asset.
@@ -285,39 +276,41 @@ public class FeedServlet extends RepositoryServlet {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
                 //Escape & with %26 to make generated XML safe.
-                this.webURL = req.getParameter( VIEW_URL ) + "#asset=" + asset.getUUID() + "%26nochrome";
+                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
                 //Each history version of asset has its unique UUID. &version is not needed here. Plus &version
                 //is not being parsed on the server side
                 //this.id = asset.getUUID() + "&version=" + asset.getVersionNumber();
                 this.id = asset.getUUID();
-                this.updated = ISO8601.format( asset.getLastModified() );
-                this.published = ISO8601.format( asset.getCreatedDate() );
+                this.updated = ISO8601.format(asset.getLastModified());
+                this.published = ISO8601.format(asset.getCreatedDate());
                 this.author = asset.getCreator();
                 this.contributor = asset.getLastContributor();
                 this.description = asset.getDescription();
                 this.checkinComment = asset.getCheckinComment();
             }
 
-            /** We are creating entries for each discussion record */
+            /**
+             * We are creating entries for each discussion record
+             */
             public AtomEntry(HttpServletRequest req,
                              AssetItem asset,
                              DiscussionRecord discussionRec) {
                 this.name = asset.getName();
                 this.format = asset.getFormat();
-                this.webURL = req.getParameter( VIEW_URL ) + "#asset=" + asset.getUUID() + "%26nochrome";
+                this.webURL = req.getParameter(VIEW_URL) + "#asset=" + asset.getUUID() + "%26nochrome";
                 this.id = asset.getUUID();
                 Calendar c = Calendar.getInstance();
-                c.setTime( new Date( discussionRec.timestamp ) );
-                this.updated = ISO8601.format( c );
-                this.published = ISO8601.format( c );
+                c.setTime(new Date(discussionRec.timestamp));
+                this.updated = ISO8601.format(c);
+                this.published = ISO8601.format(c);
                 this.author = discussionRec.author;
                 this.contributor = asset.getLastContributor();
                 this.description = "Discussion comment was added by: " + discussionRec.author;
-                String noteLines[] = discussionRec.note.split( "\\r?\\n" );
+                String noteLines[] = discussionRec.note.split("\\r?\\n");
                 String wn = "";
-                for ( int i = 0; i < noteLines.length; i++ ) {
+                for (int i = 0; i < noteLines.length; i++) {
                     wn += noteLines[i];
-                    if ( i != noteLines.length - 1 ) {
+                    if (i != noteLines.length - 1) {
                         wn += "<br/>";
                     }
                 }

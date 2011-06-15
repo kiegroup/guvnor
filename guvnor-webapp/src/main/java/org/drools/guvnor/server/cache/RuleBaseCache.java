@@ -15,11 +15,11 @@
  */
 package org.drools.guvnor.server.cache;
 
+import org.drools.RuleBase;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.drools.RuleBase;
 
 public class RuleBaseCache {
 
@@ -28,9 +28,9 @@ public class RuleBaseCache {
      * Used for a simple cache of binary packages to avoid serialization from
      * the database - for test scenarios.
      */
-    private Map<String, RuleBase> ruleBaseCache = Collections
-                                                        .synchronizedMap( new HashMap<String, RuleBase>() );
-    private static RuleBaseCache  instance      = new RuleBaseCache();
+    private final Map<String, RuleBase> ruleBaseCache = Collections
+            .synchronizedMap(new HashMap<String, RuleBase>());
+    private static final RuleBaseCache instance = new RuleBaseCache();
 
     private RuleBaseCache() {
     }
@@ -41,12 +41,12 @@ public class RuleBaseCache {
 
     public void put(final String uuid,
                     final RuleBase ruleBase) {
-        this.ruleBaseCache.put( uuid,
-                                ruleBase );
+        this.ruleBaseCache.put(uuid,
+                ruleBase);
     }
 
     public void remove(final String uuid) {
-        this.ruleBaseCache.remove( uuid );
+        this.ruleBaseCache.remove(uuid);
     }
 
     public void clearCache() {
@@ -54,10 +54,10 @@ public class RuleBaseCache {
     }
 
     public RuleBase get(final String uuid) {
-        return this.ruleBaseCache.get( uuid );
+        return this.ruleBaseCache.get(uuid);
     }
 
     public boolean contains(final String uuid) {
-        return this.ruleBaseCache.containsKey( uuid );
+        return this.ruleBaseCache.containsKey(uuid);
     }
 }

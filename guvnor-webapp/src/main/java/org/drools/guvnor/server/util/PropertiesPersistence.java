@@ -15,18 +15,19 @@
  */
 
 package org.drools.guvnor.server.util;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
 import org.drools.guvnor.client.ruleeditor.PropertyHolder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * used to convert PropertiesHolder to text and back
  */
 public class PropertiesPersistence {
 
-    private static PropertiesPersistence INSTANCE = new PropertiesPersistence();
+    private static final PropertiesPersistence INSTANCE = new PropertiesPersistence();
 
     private PropertiesPersistence() {
     }

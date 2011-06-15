@@ -15,16 +15,15 @@
  */
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class StandaloneEditorServlet extends HttpServlet {
 
@@ -53,8 +52,8 @@ public class StandaloneEditorServlet extends HttpServlet {
         GE_CLIENT_NAME_PARAMETER_NAME(
                 "client", false);
 
-        private String  parameterName;
-        private boolean multipleValues;
+        private final String parameterName;
+        private final boolean multipleValues;
 
         private STANDALONE_EDITOR_SERVLET_PARAMETERS(String parameterName,
                                                      boolean multipleValues) {
@@ -74,26 +73,26 @@ public class StandaloneEditorServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest req,
                         HttpServletResponse resp) throws ServletException,
-                                                 IOException {
-        HttpSession session = req.getSession( true );
+            IOException {
+        HttpSession session = req.getSession(true);
         //Each request uses its own parameters map (this allows concurrent requests
         //from the same cilent)
         Map<String, Object> parameters = new HashMap<String, Object>();
         //copy each registered parameter from request to session
-        for ( STANDALONE_EDITOR_SERVLET_PARAMETERS parameter : STANDALONE_EDITOR_SERVLET_PARAMETERS.values() ) {
-            if ( parameter.isMultipleValues() ) {
-                parameters.put( parameter.getParameterName(),
-                                req.getParameterValues( parameter.getParameterName() ) );
+        for (STANDALONE_EDITOR_SERVLET_PARAMETERS parameter : STANDALONE_EDITOR_SERVLET_PARAMETERS.values()) {
+            if (parameter.isMultipleValues()) {
+                parameters.put(parameter.getParameterName(),
+                        req.getParameterValues(parameter.getParameterName()));
             } else {
-                parameters.put( parameter.getParameterName(),
-                                req.getParameter( parameter.getParameterName() ) );
+                parameters.put(parameter.getParameterName(),
+                        req.getParameter(parameter.getParameterName()));
             }
         }
 
         String parametersUUID = UUID.randomUUID().toString();
-        session.setAttribute( parametersUUID,
-                              parameters );
+        session.setAttribute(parametersUUID,
+                parameters);
 
-        resp.sendRedirect( "StandaloneEditor.html?pUUID=" + parametersUUID + "&" + req.getQueryString() );
+        resp.sendRedirect("StandaloneEditor.html?pUUID=" + parametersUUID + "&" + req.getQueryString());
     }
 }

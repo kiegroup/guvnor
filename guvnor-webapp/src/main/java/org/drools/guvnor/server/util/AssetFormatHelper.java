@@ -16,12 +16,12 @@
 
 package org.drools.guvnor.server.util;
 
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.repository.RulesRepositoryException;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.repository.RulesRepositoryException;
 
 /**
  * Needed to list what registered format types there are.
@@ -32,8 +32,8 @@ public class AssetFormatHelper {
         try {
             Field[] flds = AssetFormats.class.getFields();
             List<String> r = new ArrayList<String>();
-            for (int i = 0; i < flds.length; i++) {
-                Object val =  flds[i].get(AssetFormats.class);
+            for (Field fld : flds) {
+                Object val = fld.get(AssetFormats.class);
                 if (val instanceof String) {
                     r.add((String) val);
                 }

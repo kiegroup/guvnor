@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.builder;
 
-import java.util.Iterator;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -26,12 +24,14 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 
+import java.util.Iterator;
+
 public class PackageDRLAssembler extends AssemblerBase {
 
     private StringBuilder src;
 
     public PackageDRLAssembler(PackageItem packageItem) {
-        super( packageItem );
+        super(packageItem);
     }
 
     public String getDRL() {
@@ -47,47 +47,47 @@ public class PackageDRLAssembler extends AssemblerBase {
     }
 
     private void loadHeader() {
-        src.append( "package " + this.packageItem.getName() + "\n" );
-        src.append( DroolsHeader.getDroolsHeader( this.packageItem ) + "\n\n" );
+        src.append("package ").append(this.packageItem.getName()).append("\n");
+        src.append(DroolsHeader.getDroolsHeader(this.packageItem)).append("\n\n");
     }
 
     private void loadDeclaredTypes() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.DRL_MODEL );
-        while ( assetItemIterator.hasNext() ) {
-            addAsset( assetItemIterator.next() );
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.DRL_MODEL);
+        while (assetItemIterator.hasNext()) {
+            addAsset(assetItemIterator.next());
         }
     }
 
     private void loadFunctions() {
-        Iterator<AssetItem> assetItemIterator = getAssetItemIterator( AssetFormats.FUNCTION );
-        while ( assetItemIterator.hasNext() ) {
-            addAsset( assetItemIterator.next() );
+        Iterator<AssetItem> assetItemIterator = getAssetItemIterator(AssetFormats.FUNCTION);
+        while (assetItemIterator.hasNext()) {
+            addAsset(assetItemIterator.next());
         }
     }
 
     private void loadRuleAssets() {
         Iterator<AssetItem> assetItemIterator = getAllAssets();
-        while ( assetItemIterator.hasNext() ) {
-            addRuleAsset( assetItemIterator.next() );
+        while (assetItemIterator.hasNext()) {
+            addRuleAsset(assetItemIterator.next());
         }
     }
 
     private void addRuleAsset(AssetItem asset) {
-        if ( !asset.isArchived() && !asset.getDisabled() ) {
-            ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
-            if ( handler.isRuleAsset() ) {
+        if (!asset.isArchived() && !asset.getDisabled()) {
+            ContentHandler handler = ContentManager.getHandler(asset.getFormat());
+            if (handler.isRuleAsset()) {
                 IRuleAsset ruleAsset = (IRuleAsset) handler;
-                ruleAsset.assembleDRL( builder,
-                                       asset,
-                                       src );
+                ruleAsset.assembleDRL(builder,
+                        asset,
+                        src);
             }
-            src.append( "\n\n" );
+            src.append("\n\n");
         }
     }
 
     private void addAsset(AssetItem assetItem) {
-        if ( !assetItem.isArchived() && !assetItem.getDisabled() ) {
-            src.append( assetItem.getContent() ).append( "\n\n" );
+        if (!assetItem.isArchived() && !assetItem.getDisabled()) {
+            src.append(assetItem.getContent()).append("\n\n");
         }
     }
 

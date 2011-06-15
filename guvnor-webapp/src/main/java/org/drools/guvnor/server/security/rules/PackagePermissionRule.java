@@ -15,52 +15,52 @@
  */
 package org.drools.guvnor.server.security.rules;
 
-import java.util.List;
-
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.LoggingHelper;
 
-public class PackagePermissionRule
-    implements
-    PermissionRule {
+import java.util.List;
 
-    private static final LoggingHelper log = LoggingHelper.getLogger( PackagePermissionRule.class );
+public class PackagePermissionRule
+        implements
+        PermissionRule {
+
+    private static final LoggingHelper log = LoggingHelper.getLogger(PackagePermissionRule.class);
 
     public boolean hasPermission(Object requestedObject,
                                  String requestedPermission,
                                  List<RoleBasedPermission> permissions) {
         String targetName = (String) requestedObject;
-        for ( RoleBasedPermission pbp : permissions ) {
-            if ( targetName.equalsIgnoreCase( pbp.getPackageName() ) && isPermittedPackage( requestedPermission,
-                                                                                            pbp.getRole() ) ) {
-                log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes" );
+        for (RoleBasedPermission pbp : permissions) {
+            if (targetName.equalsIgnoreCase(pbp.getPackageName()) && isPermittedPackage(requestedPermission,
+                    pbp.getRole())) {
+                log.debug("Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: Yes");
                 return true;
             }
         }
 
-        log.debug( "Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No" );
+        log.debug("Requested permission: " + requestedPermission + ", Requested object: " + targetName + " , Permission granted: No");
         return false;
     }
 
     private boolean isPermittedPackage(String requestedAction,
                                        String role) {
-        if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( role ) ) {
+        if (RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase(role)) {
             return true;
-        } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( role ) ) {
-            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
+        } else if (RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase(role)) {
+            if (RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase(requestedAction)) {
                 return false;
-            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
+            } else if (RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase(requestedAction)) {
                 return true;
-            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
+            } else if (RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase(requestedAction)) {
                 return true;
             }
-        } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( role ) ) {
-            if ( RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase( requestedAction ) ) {
+        } else if (RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase(role)) {
+            if (RoleType.PACKAGE_ADMIN.getName().equalsIgnoreCase(requestedAction)) {
                 return false;
-            } else if ( RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase( requestedAction ) ) {
+            } else if (RoleType.PACKAGE_DEVELOPER.getName().equalsIgnoreCase(requestedAction)) {
                 return false;
-            } else if ( RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase( requestedAction ) ) {
+            } else if (RoleType.PACKAGE_READONLY.getName().equalsIgnoreCase(requestedAction)) {
                 return true;
             }
         }

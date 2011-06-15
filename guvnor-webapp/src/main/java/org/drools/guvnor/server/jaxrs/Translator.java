@@ -29,22 +29,22 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 
-import java.net.URI;
-import java.util.*;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
+import java.net.URI;
+import java.util.*;
 
 
 public class Translator {
-    public static String NS = "";
-    public static QName METADATA = new QName(NS, "metadata");
-    public static QName VALUE = new QName(NS, "value");
-    public static QName ARCHIVED = new QName(NS, "archived");
-    public static QName UUID = new QName(NS, "uuid");
-    public static QName STATE = new QName(NS, "state");
-    public static QName FORMAT = new QName(NS, "format");
-    public static QName CATEGORIES = new QName(NS, "categories");
+    public static final String NS = "";
+    public static final QName METADATA = new QName(NS, "metadata");
+    public static final QName VALUE = new QName(NS, "value");
+    public static final QName ARCHIVED = new QName(NS, "archived");
+    public static final QName UUID = new QName(NS, "uuid");
+    public static final QName STATE = new QName(NS, "state");
+    public static final QName FORMAT = new QName(NS, "format");
+    public static final QName CATEGORIES = new QName(NS, "categories");
 
     public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
@@ -57,10 +57,10 @@ public class Translator {
         metadata.setFormat(a.getFormat());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         List<CategoryItem> categories = a.getCategories();
-        String[] cats = new String [categories.size()];
+        String[] cats = new String[categories.size()];
         int counter = 0;
         for (CategoryItem c : categories) {
-            cats [ counter++ ] = c.getName();
+            cats[counter++] = c.getName();
         }
 
         Asset ret = new Asset();
@@ -70,7 +70,7 @@ public class Translator {
         ret.setDescription(a.getDescription());
         UriBuilder builder = uriInfo.getBaseUriBuilder();
         ret.setRefLink(
-            builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName()).build());
+                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName()).build());
         builder = uriInfo.getBaseUriBuilder();
         ret.setBinaryLink(
                 builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName() + "/binary").build());
@@ -115,26 +115,26 @@ public class Translator {
         ret.setAssets(assets);
         return ret;
     }
-    
+
     public static Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
-        if(p.isHistoricalVersion()) {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+        if (p.isHistoricalVersion()) {
+            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
         } else {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
         }
-        
+
         Factory factory = Abdera.getNewFactory();
 
         org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setBaseUri(base.clone().build().toString());       
+        e.setBaseUri(base.clone().build().toString());
         e.addAuthor(p.getLastContributor());
 
         e.setId(base.clone().build().toString());
-        
+
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
             AssetItem item = i.next();
@@ -149,29 +149,29 @@ public class Translator {
         ExtensibleElement extension = e.addExtension(METADATA);
         ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
         //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, p.isArchived()?"true":"false");
-        
+        childExtension.addSimpleExtension(VALUE, p.isArchived() ? "true" : "false");
+
         childExtension = extension.addExtension(UUID);
         childExtension.addSimpleExtension(VALUE, p.getUUID());
-       	
+
         childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, p.getState()== null?"" : p.getState().getName());
+        childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
 
         org.apache.abdera.model.Content content = factory.newContent();
         content.setSrc(base.clone().path("binary").build().toString());
         content.setMimeType("application/octet-stream");
         content.setContentType(Type.MEDIA);
-		e.setContentElement(content);
+        e.setContentElement(content);
 
-		return e;
+        return e;
     }
-    
-/*    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
+
+    /*    public static Entry ToPackageEntry(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if(p.isHistoricalVersion()) {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
         } else {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
         }        
 
         //NOTE: Entry extension is not supported in RESTEasy. We need to either use Abdera or get extension 
@@ -210,61 +210,61 @@ public class Translator {
     }*/
     public static Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
         UriBuilder base;
-        if(a.isHistoricalVersion()) {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path("versions").path(Long.toString(a.getVersionNumber()));
+        if (a.isHistoricalVersion()) {
+            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path("versions").path(Long.toString(a.getVersionNumber()));
         } else {
-        	base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName());
+            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName());
         }
-        
+
         Factory factory = Abdera.getNewFactory();
 
         org.apache.abdera.model.Entry e = factory.getAbdera().newEntry();
         e.setTitle(a.getTitle());
         e.setSummary(a.getDescription());
         e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
-        e.setBaseUri(base.clone().build().toString());       
+        e.setBaseUri(base.clone().build().toString());
         e.addAuthor(a.getLastContributor());
 
         e.setId(base.clone().build().toString());
-        
+
 /*        Iterator<AssetItem> i = p.getAssets();
-        while (i.hasNext()) {
-            AssetItem item = i.next();
-            org.apache.abdera.model.Link l = factory.newLink();
-            l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
-            l.setTitle(item.getTitle());
-            l.setRel("asset");
-            e.addLink(l);
-        }*/
+while (i.hasNext()) {
+    AssetItem item = i.next();
+    org.apache.abdera.model.Link l = factory.newLink();
+    l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
+    l.setTitle(item.getTitle());
+    l.setRel("asset");
+    e.addLink(l);
+}*/
 
         //generate meta data
         ExtensibleElement extension = e.addExtension(METADATA);
         ExtensibleElement childExtension = extension.addExtension(ARCHIVED);
         //childExtension.setAttributeValue("type", ArtifactsRepository.METADATA_TYPE_STRING);
-        childExtension.addSimpleExtension(VALUE, a.isArchived()?"true":"false");
-        
+        childExtension.addSimpleExtension(VALUE, a.isArchived() ? "true" : "false");
+
         childExtension = extension.addExtension(UUID);
         childExtension.addSimpleExtension(VALUE, a.getUUID());
-       	
+
         childExtension = extension.addExtension(STATE);
-        childExtension.addSimpleExtension(VALUE, a.getState()== null?"" : a.getState().getName());
+        childExtension.addSimpleExtension(VALUE, a.getState() == null ? "" : a.getState().getName());
 
         childExtension = extension.addExtension(FORMAT);
         childExtension.addSimpleExtension(VALUE, a.getFormat());
-        
+
         List<CategoryItem> categories = a.getCategories();
         childExtension = extension.addExtension(CATEGORIES);
         for (CategoryItem c : categories) {
             childExtension.addSimpleExtension(VALUE, c.getName());
         }
-        
+
         org.apache.abdera.model.Content content = factory.newContent();
         content.setSrc(base.clone().path("binary").build().toString());
         content.setMimeType("application/octet-stream");
         content.setContentType(Type.MEDIA);
-		e.setContentElement(content);
+        e.setContentElement(content);
 
-		return e;
+        return e;
     }
 
 /*    public static Entry ToAssetEntry(AssetItem a, UriInfo uriInfo) {

@@ -17,23 +17,23 @@
 package org.drools.guvnor.server.jaxrs;
 
 
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.repository.RulesRepository;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
+
 public class Resource {
     @Context
     UriInfo uriInfo;
 
-    ServiceImplementation service;
-    RepositoryPackageService packageService;
-    RepositoryAssetService assetService;
-    RulesRepository repository;
+    final ServiceImplementation service;
+    final RepositoryPackageService packageService;
+    final RepositoryAssetService assetService;
+    final RulesRepository repository;
 
     public Resource() {
         service = RepositoryServiceServlet.getService();

@@ -16,12 +16,7 @@
 
 package org.drools.guvnor.server.util;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Iterator;
-import java.util.List;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.TableConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
@@ -29,48 +24,55 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
  * This utility class handles loading of tables.
- *
+ * <p/>
  * This is to give some flexibility in what fields are displayed.
  * rulelist.properties and archivedrulelist.properties are the files used.
- * 
+ *
  * @deprecated in favour of {@link AbstractPagedTable}
  */
 public class TableDisplayHandler {
 
-    /** how many rows we show on a grid page */
+    /**
+     * how many rows we show on a grid page
+     */
 
     private static final int ROWS_PER_PAGE = 40;
-    private RowLoader          ASSET_LIST;
+    private final RowLoader ASSET_LIST;
 
 
     /**
      * Produce a table dataset for a given iterator.
-     * @param list The iterator.
+     *
+     * @param list    The iterator.
      * @param numRows The number of rows to go to. -1 means don't stop.
      * @throws SerializationException
      */
 
     public TableDisplayHandler(String tableconfig) {
-        ASSET_LIST = new RowLoader( tableconfig );
+        ASSET_LIST = new RowLoader(tableconfig);
     }
 
     public TableDataResult loadRuleListTable(AssetItemPageResult list) throws SerializationException {
         List<TableDataRow> data = loadRows(list.assets.iterator(), -1);
         TableDataResult result = new TableDataResult();
-        result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
-        result.currentPosition  = list.currentPosition;
+        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.currentPosition = list.currentPosition;
         result.hasNext = list.hasNext;
         return result;
     }
 
     private TableDataResult loadRuleListTable(
             List<AssetItem> assetList, long curPos, boolean hasNext)
-        throws SerializationException {
+            throws SerializationException {
         List<TableDataRow> data = loadRows(assetList.iterator(), -1);
         TableDataResult result = new TableDataResult();
         result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
@@ -119,8 +121,8 @@ public class TableDisplayHandler {
         }
         List<TableDataRow> data = loadRows(it, numRows);
         TableDataResult result = new TableDataResult();
-        result.data = (TableDataRow[]) data.toArray( new TableDataRow[data.size()] );
-        result.total  = it.getSize();
+        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.total = it.getSize();
         result.hasNext = it.hasNext();
         result.currentPosition = it.getPosition();
         return result;
@@ -129,16 +131,16 @@ public class TableDisplayHandler {
     private List<TableDataRow> loadRows(Iterator<AssetItem> it, int numRows) {
         List<TableDataRow> data = new ArrayList<TableDataRow>();
 
-        for ( Iterator<AssetItem> iter = it; iter.hasNext(); ) {
+        for (Iterator<AssetItem> iter = it; iter.hasNext(); ) {
             AssetItem r = (AssetItem) iter.next();
             TableDataRow row = new TableDataRow();
 
             row.id = r.getUUID();
             row.format = r.getFormat();
-            row.values = ASSET_LIST.getRow( r );
-            data.add( row );
-            if ( numRows != -1 ) {
-                if ( data.size() == numRows ) {
+            row.values = ASSET_LIST.getRow(r);
+            data.add(row);
+            if (numRows != -1) {
+                if (data.size() == numRows) {
                     break;
                 }
             }
@@ -149,7 +151,7 @@ public class TableDisplayHandler {
     public String formatDate(Calendar cal) {
         DateFormat localFormat = DateFormat.getDateInstance();
 
-        return localFormat.format( cal.getTime() );
+        return localFormat.format(cal.getTime());
     }
 
     public TableConfig loadTableConfig() {

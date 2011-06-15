@@ -28,18 +28,18 @@ import org.drools.guvnor.server.ServiceImplementation;
  */
 public class NewRuleAssetProvider implements RuleAssetProvider {
 
-    private String packageName;
-    private String categoryName;
-    private String assetName;
-    private String assetFormat;
+    private final String packageName;
+    private final String categoryName;
+    private final String assetName;
+    private final String assetFormat;
 
     public NewRuleAssetProvider(String packageName, String categoryName, String assetName, String assetFormat) {
         this.packageName = packageName;
         this.categoryName = categoryName;
         this.assetName = assetName;
-        this.assetFormat = assetFormat != null?assetFormat:AssetFormats.BUSINESS_RULE;
+        this.assetFormat = assetFormat != null ? assetFormat : AssetFormats.BUSINESS_RULE;
     }
-    
+
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
             //creates a new empty asset with the given name and format in the
@@ -57,7 +57,7 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
     private ServiceImplementation getService() {
         return RepositoryServiceServlet.getService();
     }
-    
+
     private RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
     }

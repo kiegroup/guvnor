@@ -16,14 +16,14 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Startup;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages the locks for assets.
@@ -36,32 +36,31 @@ public class AssetLockManager {
     private static final long LOCK_EXPIRATION_TIME = 1200000;
 
     // UUID, Lock
-    private Map<String, Lock> map                  = new HashMap<String, Lock>();
+    private final Map<String, Lock> map = new HashMap<String, Lock>();
 
     class Lock {
-        String userName;
-        long   timeStamp;
+        final String userName;
+        final long timeStamp;
 
         Lock(String userName) {
             this.userName = userName;
             timeStamp = System.currentTimeMillis();
         }
     }
-    
-    public static AssetLockManager instance()
-    {
+
+    public static AssetLockManager instance() {
         return (AssetLockManager) Component.getInstance("assetLockManager");
     }
-    
+
     public boolean isAssetLocked(String uuid) {
-        if ( map.keySet().contains( uuid ) ) {
-            long timeStamp = map.get( uuid ).timeStamp;
+        if (map.keySet().contains(uuid)) {
+            long timeStamp = map.get(uuid).timeStamp;
             long currentTime = System.currentTimeMillis();
 
             // Check if time expiration time has passed
-            if ( (currentTime - timeStamp) > LOCK_EXPIRATION_TIME ) {
+            if ((currentTime - timeStamp) > LOCK_EXPIRATION_TIME) {
                 // Remove the lock
-                map.remove( uuid );
+                map.remove(uuid);
 
                 return false;
 
@@ -75,13 +74,13 @@ public class AssetLockManager {
 
     /**
      * Return the lockers user name.
-     * 
+     *
      * @param uuid Id of the asset.
      * @return Lockers user name or null  if there is no lock with this uuid.
      */
     public String getAssetLockerUserName(String uuid) {
-        if ( isAssetLocked( uuid ) ) {
-            return map.get( uuid ).userName;
+        if (isAssetLocked(uuid)) {
+            return map.get(uuid).userName;
         } else {
             return null;
         }
@@ -89,17 +88,17 @@ public class AssetLockManager {
 
     /**
      * Locks the asset, if a lock already exists this over writes it.
-     * 
-     * @param uuid Id of the asset.
+     *
+     * @param uuid     Id of the asset.
      * @param userName User name of the user that is locking the asset.
      */
     public void lockAsset(String uuid,
                           String userName) {
-        map.put( uuid,
-                 new Lock( userName ) );
+        map.put(uuid,
+                new Lock(userName));
     }
 
     public void unLockAsset(String uuid) {
-        map.remove( uuid );
+        map.remove(uuid);
     }
 }

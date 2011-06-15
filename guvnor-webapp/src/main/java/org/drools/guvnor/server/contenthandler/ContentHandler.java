@@ -16,16 +16,14 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * All content handlers must implement this, and be registered in content_types.properties
@@ -34,8 +32,9 @@ public abstract class ContentHandler {
 
     /**
      * When loading asset content.
+     *
      * @param asset The target.
-     * @param item The source.
+     * @param item  The source.
      * @throws SerializationException
      */
     public abstract void retrieveAssetContent(RuleAsset asset,
@@ -43,6 +42,7 @@ public abstract class ContentHandler {
 
     /**
      * For storing the asset content back into the repo node (any changes).
+     *
      * @param asset
      * @param repoAsset
      * @throws SerializationException
@@ -52,9 +52,9 @@ public abstract class ContentHandler {
 
     /**
      * @return true if the current content type is for a rule asset.
-     * If it is a rule asset, then it can be assembled into a package.
-     * If its not, then it is there, nominally to support compiling or
-     * validation/testing of the package (eg a model, or a dsl file).
+     *         If it is a rule asset, then it can be assembled into a package.
+     *         If its not, then it is there, nominally to support compiling or
+     *         validation/testing of the package (eg a model, or a dsl file).
      */
     public boolean isRuleAsset() {
         return this instanceof IRuleAsset;
@@ -63,22 +63,22 @@ public abstract class ContentHandler {
     private String findParentCategory(AssetItem asset,
                                       String currentCat) {
         //Start your search at the top
-        CategoryItem item = asset.getRulesRepository().loadCategory( "/" );
-        return findCategoryInChild( item,
-                                    currentCat );
+        CategoryItem item = asset.getRulesRepository().loadCategory("/");
+        return findCategoryInChild(item,
+                currentCat);
     }
 
     @SuppressWarnings("rawtypes")
     private String findCategoryInChild(CategoryItem item,
                                        String currentCat) {
         List children = item.getChildTags();
-        for ( int i = 0; i < children.size(); i++ ) {
-            if ( ((CategoryItem) children.get( i )).getName().equals( currentCat ) ) {
+        for (Object aChildren : children) {
+            if (((CategoryItem) aChildren).getName().equals(currentCat)) {
                 return item.getName();
             } else {
-                String check = findCategoryInChild( (CategoryItem) children.get( i ),
-                                                    currentCat );
-                if ( check != null && check.length() > 0 ) {
+                String check = findCategoryInChild((CategoryItem) aChildren,
+                        currentCat);
+                if (check != null && check.length() > 0) {
                     return check;
                 }
             }
@@ -90,10 +90,10 @@ public abstract class ContentHandler {
     @SuppressWarnings("rawtypes")
     private String findKeyforValue(HashMap<String, String> catRules,
                                    String catToFind) {
-        for ( Iterator i = catRules.entrySet().iterator(); i.hasNext(); ) {
-            Map.Entry entry = (Map.Entry) i.next();
+        for (Map.Entry<String, String> stringStringEntry : catRules.entrySet()) {
+            Map.Entry entry = (Map.Entry) stringStringEntry;
             //Found rule name that should be used to extend current rule as defined in the Category Rule
-            if ( entry.getValue().equals( catToFind ) ) {
+            if (entry.getValue().equals(catToFind)) {
                 return (String) entry.getKey();
             }
         }
@@ -104,6 +104,7 @@ public abstract class ContentHandler {
      * Search Categories in a package against the current rule to see if the current rule should be extended,
      * via another rule. IE rule rule1 extends rule2
      * This is an implementation of that DRL feature, via Category to Rule mappings in Guvnor
+     *
      * @param asset
      * @return rule that should be extended, based on categories
      */
@@ -112,27 +113,27 @@ public abstract class ContentHandler {
 
         List<CategoryItem> cats = asset.getCategories();
         String catName = null;
-        if ( cats.size() > 0 ) {
+        if (cats.size() > 0) {
 
-            catName = cats.get( 0 ).getName();
+            catName = cats.get(0).getName();
         }
         //get all Category Rules for Package
         HashMap<String, String> categoryRules = asset.getPackage().getCategoryRules();
 
         String newParent = currentParent;
-        if ( null != categoryRules && null != catName ) {
+        if (null != categoryRules && null != catName) {
             //Asset or Rule is actually used in the Category Rule, so ignore the category of the normal rule
             //Either extend from the parent category rule or none at all
             String ruleName = asset.getName();
-            if ( categoryRules.containsKey( ruleName ) ) {
+            if (categoryRules.containsKey(ruleName)) {
                 //find Cat for your rule
-                String parentCategory = findParentCategory( asset,
-                                                            categoryRules.get( ruleName ) );
+                String parentCategory = findParentCategory(asset,
+                        categoryRules.get(ruleName));
                 //This rule name is in our Category Rules
                 //See if there is a Parent and it has a rule defined, if so extend that rule, to create a chain
-                if ( parentCategory != null && parentCategory.length() > 0 && categoryRules.containsValue( parentCategory ) ) {
-                    newParent = findKeyforValue( categoryRules,
-                                                 parentCategory );
+                if (parentCategory != null && parentCategory.length() > 0 && categoryRules.containsValue(parentCategory)) {
+                    newParent = findKeyforValue(categoryRules,
+                            parentCategory);
                 } else {
                     //Must be blank to avoid circular reference
                     newParent = "";
@@ -141,13 +142,13 @@ public abstract class ContentHandler {
 
                 //If the rule is not defined in the Category Rule, check to make sure currentParent isnt already set
                 //If you wanted to override the Category Rule, with a extends on the rule manually, honor it
-            } else if ( currentParent != null && currentParent.length() > 0 ) {
+            } else if (currentParent != null && currentParent.length() > 0) {
                 newParent = currentParent;
                 //Normal use case
                 //Category of the current asset has been defined in Category Rules for the current package
-            } else if ( categoryRules.containsValue( catName ) ) {
-                newParent = findKeyforValue( categoryRules,
-                                             catName );
+            } else if (categoryRules.containsValue(catName)) {
+                newParent = findKeyforValue(categoryRules,
+                        catName);
             }
         }
         return newParent;

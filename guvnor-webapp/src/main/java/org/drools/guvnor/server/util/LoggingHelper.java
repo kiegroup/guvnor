@@ -16,10 +16,10 @@
 
 package org.drools.guvnor.server.util;
 
-import java.util.Date;
-
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.slf4j.LoggerFactory;
+
+import java.util.Date;
 
 /**
  * Collects messages for displaying in the GUI as well as providing a logger.
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 public class LoggingHelper {
     private final org.slf4j.Logger log;
 
-    static final MessageList       messages = new MessageList();
+    static final MessageList messages = new MessageList();
 
     public static LogEntry[] getMessages() {
         return messages.getMessages();
@@ -37,48 +37,48 @@ public class LoggingHelper {
         messages.cleanEntry();
     }
 
-    public static LoggingHelper getLogger(Class< ? > cls) {
-        return new LoggingHelper( cls );
+    public static LoggingHelper getLogger(Class<?> cls) {
+        return new LoggingHelper(cls);
     }
 
-    private LoggingHelper(Class< ? > cls) {
-        log = LoggerFactory.getLogger( cls );
+    private LoggingHelper(Class<?> cls) {
+        log = LoggerFactory.getLogger(cls);
     }
 
     public void info(String message) {
-        log.info( message );
-        messages.add( message,
-                      1 );
+        log.info(message);
+        messages.add(message,
+                1);
     }
 
     public void info(String message,
                      Throwable error) {
-        log.info( message,
-                  error );
-        messages.add( message + " " + error.getMessage(),
-                      1 );
+        log.info(message,
+                error);
+        messages.add(message + " " + error.getMessage(),
+                1);
     }
 
     public void debug(String message) {
-        log.debug( message );
+        log.debug(message);
     }
 
     public void error(String message) {
-        log.error( message );
-        messages.add( message,
-                      0 );
+        log.error(message);
+        messages.add(message,
+                0);
     }
 
     public void error(String message,
                       Throwable error) {
-        log.error( message,
-                   error );
-        messages.add( message + " " + error.getMessage(),
-                      0 );
+        log.error(message,
+                error);
+        messages.add(message + " " + error.getMessage(),
+                0);
     }
 
     public void warn(String message) {
-        log.warn( message );
+        log.warn(message);
     }
 
     public boolean isDebugEnabled() {
@@ -88,9 +88,9 @@ public class LoggingHelper {
 }
 
 class MessageList {
-    static int MAX      = 500;
+    static final int MAX = 500;
     LogEntry[] messages = new LogEntry[MAX];
-    int        current  = 0;
+    int current = 0;
 
     public MessageList() {
 
@@ -103,7 +103,7 @@ class MessageList {
         entry.timestamp = new Date();
         entry.severity = severity;
 
-        if ( current == MAX ) {
+        if (current == MAX) {
             current = 0;
         }
         messages[current++] = entry;
@@ -113,12 +113,12 @@ class MessageList {
         //JDK1.5 Incompatible. 
         //return Arrays.copyOf( messages, current );
         LogEntry[] result = new LogEntry[current];
-        System.arraycopy( messages,
-                          0,
-                          result,
-                          0,
-                          Math.min( messages.length,
-                                    current ) );
+        System.arraycopy(messages,
+                0,
+                result,
+                0,
+                Math.min(messages.length,
+                        current));
         return result;
     }
 

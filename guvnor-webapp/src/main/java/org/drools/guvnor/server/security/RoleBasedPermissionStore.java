@@ -16,15 +16,15 @@
 
 package org.drools.guvnor.server.security;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Name("org.drools.guvnor.server.security.RoleBasedPermissionStore")
 @AutoCreate
@@ -45,9 +45,9 @@ public class RoleBasedPermissionStore {
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
         for (Map.Entry<String, List<String>> permEntry : perms.entrySet()) {
-            resolvePermissionsAndAdd( userName,
-                                permissions,
-                                permEntry );
+            resolvePermissionsAndAdd(userName,
+                    permissions,
+                    permEntry);
         }
 
         return permissions;
@@ -55,8 +55,8 @@ public class RoleBasedPermissionStore {
 
 
     private void resolvePermissionsAndAdd(String userName,
-                                    List<RoleBasedPermission> permissions,
-                                    Map.Entry<String, List<String>> permEntry) {
+                                          List<RoleBasedPermission> permissions,
+                                          Map.Entry<String, List<String>> permEntry) {
         String roleType = permEntry.getKey();
         if (RoleType.ADMIN.getName().equals(roleType)) {
             permissions.add(new RoleBasedPermission(userName, RoleType.ADMIN.getName(),

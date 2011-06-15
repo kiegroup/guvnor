@@ -16,10 +16,7 @@
 
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.security.Capabilities;
@@ -27,7 +24,8 @@ import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.AuthorizationException;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * Wrapper for GWT RPC.
@@ -35,8 +33,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class SecurityServiceServlet extends RemoteServiceServlet implements
         SecurityService {
 
-    private static final LoggingHelper log              = LoggingHelper.getLogger(SecurityServiceServlet.class);
-    SecurityService service = new SecurityServiceImpl();
+    private static final LoggingHelper log = LoggingHelper.getLogger(SecurityServiceServlet.class);
+    final SecurityService service = new SecurityServiceImpl();
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
@@ -44,13 +42,13 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements
             log.info(e.getMessage(), e);
             HttpServletResponse response = getThreadLocalResponse();
             try {
-              response.setContentType("text/plain");
-              response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-              response.getWriter().write(e.getCause().getMessage());
+                response.setContentType("text/plain");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write(e.getCause().getMessage());
             } catch (IOException ex) {
-              getServletContext().log(
-                  "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-                  ex);
+                getServletContext().log(
+                        "respondWithUnexpectedFailure failed while sending the previous failure to the client",
+                        ex);
             }
         } else {
             log.error(e.getMessage(), e.getCause());

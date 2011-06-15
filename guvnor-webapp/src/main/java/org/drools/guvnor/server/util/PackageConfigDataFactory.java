@@ -20,34 +20,33 @@ import org.drools.repository.PackageItem;
 
 public class PackageConfigDataFactory {
     public static PackageConfigData createPackageConfigDataWithDependencies(PackageItem item) {
-        PackageConfigData data = create( item );
-        data.setDependencies( item.getDependencies() );
+        PackageConfigData data = create(item);
+        data.setDependencies(item.getDependencies());
         return data;
     }
 
     public static PackageConfigData createPackageConfigDataWithOutDependencies(PackageItem item) {
-        PackageConfigData data = create( item );
-        return data;
+        return create(item);
     }
 
     private static PackageConfigData create(PackageItem item) {
         PackageConfigData data = new PackageConfigData();
-        data.setUuid( item.getUUID() );
-        data.setHeader( DroolsHeader.getDroolsHeader( item ) );
-        data.setExternalURI( item.getExternalURI() );
-        data.setCatRules( item.getCategoryRules() );
-        data.setDescription( item.getDescription() );
-        data.setArchived( item.isArchived() );
-        data.setName( item.getName() );
-        data.setLastModified( item.getLastModified().getTime() );
-        data.setDateCreated( item.getCreatedDate().getTime() );
-        data.setCheckinComment( item.getCheckinComment() );
-        data.setLastContributor( item.getLastContributor() );
-        data.setState( item.getStateDescription() );
-        data.setSnapshot( item.isSnapshot() );
-        data.setVersionNumber( item.getVersionNumber() );
+        data.setUuid(item.getUUID());
+        data.setHeader(DroolsHeader.getDroolsHeader(item));
+        data.setExternalURI(item.getExternalURI());
+        data.setCatRules(item.getCategoryRules());
+        data.setDescription(item.getDescription());
+        data.setArchived(item.isArchived());
+        data.setName(item.getName());
+        data.setLastModified(item.getLastModified().getTime());
+        data.setDateCreated(item.getCreatedDate().getTime());
+        data.setCheckinComment(item.getCheckinComment());
+        data.setLastContributor(item.getLastContributor());
+        data.setState(item.getStateDescription());
+        data.setSnapshot(item.isSnapshot());
+        data.setVersionNumber(item.getVersionNumber());
         return data;
     }
 
-    
+
 }

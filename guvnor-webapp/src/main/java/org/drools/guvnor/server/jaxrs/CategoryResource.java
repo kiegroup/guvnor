@@ -16,25 +16,22 @@
 
 package org.drools.guvnor.server.jaxrs;
 
-import javax.ws.rs.core.UriBuilder;
-
-import javax.ws.rs.core.MediaType;
-
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.Feed;
 import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
-/*import org.jboss.resteasy.plugins.providers.atom.Entry;
-import org.jboss.resteasy.plugins.providers.atom.Feed;
-import org.jboss.resteasy.plugins.providers.atom.Link;*/
-
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.jboss.seam.annotations.Name;
 
-import javax.ws.rs.*;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -42,7 +39,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.drools.guvnor.server.jaxrs.Translator.*;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
+
+/*import org.jboss.resteasy.plugins.providers.atom.Entry;
+import org.jboss.resteasy.plugins.providers.atom.Feed;
+import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
 @Name("CategoryResource")
 @Path("/categories")
@@ -72,13 +74,13 @@ public class CategoryResource extends Resource {
             }
 
             if (result.hasNext) {
-            	Link l = factory.newLink();
+                Link l = factory.newLink();
                 l.setRel("next-page");
                 l.setHref(builder.path("/" + encoded + "/page/1").build().toString());
                 f.addLink(l);
             }
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException (e);
+            throw new RuntimeException(e);
         }
 
         return f;
@@ -101,7 +103,7 @@ public class CategoryResource extends Resource {
                 }
             }
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException (e);
+            throw new RuntimeException(e);
         }
 
         return ret;
@@ -142,15 +144,14 @@ public class CategoryResource extends Resource {
     @GET
     @Path("{categoryName}/page/{page}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Asset> getAssetsAsJAXBIndex(@PathParam("categoryName") String encoded, @PathParam("page") String page)
-    {
+    public Collection<Asset> getAssetsAsJAXBIndex(@PathParam("categoryName") String encoded, @PathParam("page") String page) {
         Collection<Asset> ret = Collections.EMPTY_LIST;
 
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
-            int p = new Integer(page).intValue();
+            int p = new Integer(page);
             AssetItemPageResult result = repository.findAssetsByCategory(
-                decoded, p, pageSize);
+                    decoded, p, pageSize);
             List<AssetItem> assets = result.assets;
             if (assets.size() > 0) {
                 ret = new ArrayList<Asset>();
@@ -159,7 +160,7 @@ public class CategoryResource extends Resource {
                 }
             }
         } catch (UnsupportedEncodingException e) {
-           throw new RuntimeException (e);
+            throw new RuntimeException(e);
         }
 
         return ret;

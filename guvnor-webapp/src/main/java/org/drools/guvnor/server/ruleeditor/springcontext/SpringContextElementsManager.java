@@ -17,56 +17,51 @@
 package org.drools.guvnor.server.ruleeditor.springcontext;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
 
 public class SpringContextElementsManager {
 
-    public static String SPRING_CONTEXT_ELEMENTS_PROPERTIES = "/springContextElements.properties";
+    public static final String SPRING_CONTEXT_ELEMENTS_PROPERTIES = "/springContextElements.properties";
     private static SpringContextElementsManager INSTANCE;
-    
-    private Map<String, String> properties = new LinkedHashMap<String, String>();
-    
+
+    private final Map<String, String> properties = new LinkedHashMap<String, String>();
+
     private SpringContextElementsManager() throws IOException {
         Properties props = new Properties();
         props.load(this.getClass().getResourceAsStream(SPRING_CONTEXT_ELEMENTS_PROPERTIES));
-        
+
         this.populateProperties(props.entrySet());
     }
 
-    public synchronized static SpringContextElementsManager getInstance() throws IOException{
-        if (INSTANCE == null){
+    public synchronized static SpringContextElementsManager getInstance() throws IOException {
+        if (INSTANCE == null) {
             INSTANCE = new SpringContextElementsManager();
         }
-        
+
         return INSTANCE;
     }
-    
+
     private void populateProperties(Set<Entry<Object, Object>> fileProps) {
         for (Entry<Object, Object> entry : fileProps) {
             //replace key's '_' to ' '
             String key = entry.getKey().toString().replaceAll("_", " ");
-            
+
             this.properties.put(key, entry.getValue().toString());
         }
     }
-    
-    public Set<String> getElementNames(){
+
+    public Set<String> getElementNames() {
         return Collections.unmodifiableSet(this.properties.keySet());
     }
-    
-    public String getElementValue(String elementName){
+
+    public String getElementValue(String elementName) {
         return this.properties.get(elementName);
     }
 
     public Map<String, String> getElements() {
         return properties;
     }
-    
-    
-    
+
+
 }

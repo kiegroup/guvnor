@@ -16,12 +16,6 @@
 
 package org.drools.guvnor.server.files;
 
-import java.text.Format;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
@@ -38,20 +32,26 @@ import org.drools.verifier.doc.DroolsDocsBuilder;
 import org.drools.verifier.misc.DrlPackageParser;
 import org.drools.verifier.misc.DrlRuleParser;
 
+import java.text.Format;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
-    private static List<String> formats = new ArrayList<String>();
+    private static final List<String> formats = new ArrayList<String>();
 
     static {
-        formats.add( AssetFormats.DRL );
-        formats.add( AssetFormats.BUSINESS_RULE );
-        formats.add( AssetFormats.DECISION_SPREADSHEET_XLS );
-        formats.add( AssetFormats.RULE_TEMPLATE );
-        formats.add( AssetFormats.DECISION_TABLE_GUIDED );
+        formats.add(AssetFormats.DRL);
+        formats.add(AssetFormats.BUSINESS_RULE);
+        formats.add(AssetFormats.DECISION_SPREADSHEET_XLS);
+        formats.add(AssetFormats.RULE_TEMPLATE);
+        formats.add(AssetFormats.DECISION_TABLE_GUIDED);
     }
 
     private GuvnorDroolsDocsBuilder(PackageItem packageItem) throws DroolsParserException {
-        super( createDrlPackageData( packageItem ) );
+        super(createDrlPackageData(packageItem));
     }
 
     protected static DrlPackageParser createDrlPackageData(PackageItem packageItem) {
@@ -60,44 +60,44 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
         // Get And Fill Rule Data
         Iterator<AssetItem> assets = packageItem.getAssets();
-        while ( assets.hasNext() ) {
+        while (assets.hasNext()) {
 
             AssetItem assetItem = assets.next();
 
-            if ( formats.contains( assetItem.getFormat() ) && !assetItem.getDisabled() && !assetItem.isArchived() ) {
+            if (formats.contains(assetItem.getFormat()) && !assetItem.getDisabled() && !assetItem.isArchived()) {
 
-                String drl = getDRL( assetItem );
+                String drl = getDRL(assetItem);
 
-                if ( drl != null ) {
+                if (drl != null) {
 
                     List<String> categories = new ArrayList<String>();
 
-                    for ( CategoryItem categoryItem : assetItem.getCategories() ) {
-                        categories.add( categoryItem.getName() );
+                    for (CategoryItem categoryItem : assetItem.getCategories()) {
+                        categories.add(categoryItem.getName());
                     }
 
-                    List<DrlRuleParser> ruleDataList = DrlRuleParser.findRulesDataFromDrl( drl );
+                    List<DrlRuleParser> ruleDataList = DrlRuleParser.findRulesDataFromDrl(drl);
 
-                    for ( DrlRuleParser ruleData : ruleDataList ) {
-                        ruleData.getOtherInformation().put( "Categories",
-                                                            categories );
-                        ruleData.getMetadata().addAll( createMetaData( assetItem ) );
-                        rules.add( ruleData );
+                    for (DrlRuleParser ruleData : ruleDataList) {
+                        ruleData.getOtherInformation().put("Categories",
+                                categories);
+                        ruleData.getMetadata().addAll(createMetaData(assetItem));
+                        rules.add(ruleData);
                     }
                 }
             }
         }
 
-        String header = DroolsHeader.getDroolsHeader( packageItem );
-        List<String> globals = DrlPackageParser.findGlobals( header );
+        String header = DroolsHeader.getDroolsHeader(packageItem);
+        List<String> globals = DrlPackageParser.findGlobals(header);
 
         // Get And Fill Package Data
-        return new DrlPackageParser( packageItem.getName(),
-                                     packageItem.getDescription(),
-                                     rules,
-                                     globals,
-                                     createMetaData( packageItem ),
-                                     new HashMap<String, List<String>>() );
+        return new DrlPackageParser(packageItem.getName(),
+                packageItem.getDescription(),
+                rules,
+                globals,
+                createMetaData(packageItem),
+                new HashMap<String, List<String>>());
 
     }
 
@@ -106,32 +106,32 @@ public class GuvnorDroolsDocsBuilder extends DroolsDocsBuilder {
 
         Format formatter = getFormatter();
 
-        list.add( "Creator :" + versionableItem.getCreator() );
-        list.add( "Created date :" + formatter.format( versionableItem.getCreatedDate().getTime() ) );
-        list.add( "Last contributor :" + versionableItem.getLastContributor() );
-        list.add( "Last modified :" + formatter.format( versionableItem.getLastModified().getTime() ) );
-        list.add( "Description :" + versionableItem.getDescription() );
+        list.add("Creator :" + versionableItem.getCreator());
+        list.add("Created date :" + formatter.format(versionableItem.getCreatedDate().getTime()));
+        list.add("Last contributor :" + versionableItem.getLastContributor());
+        list.add("Last modified :" + formatter.format(versionableItem.getLastModified().getTime()));
+        list.add("Description :" + versionableItem.getDescription());
 
         return list;
     }
 
     public static GuvnorDroolsDocsBuilder getInstance(PackageItem packageItem) throws DroolsParserException {
-        return new GuvnorDroolsDocsBuilder( packageItem );
+        return new GuvnorDroolsDocsBuilder(packageItem);
     }
 
     private static String getDRL(AssetItem item) {
-        ContentHandler handler = ContentManager.getHandler( item.getFormat() );
+        ContentHandler handler = ContentManager.getHandler(item.getFormat());
 
-        if ( !handler.isRuleAsset() ) {
+        if (!handler.isRuleAsset()) {
             return null;
         }
 
         StringBuilder stringBuilder = new StringBuilder();
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
-        builder.setDSLFiles( DSLLoader.loadDSLMappingFiles( item.getPackage() ) );
-        ((IRuleAsset) handler).assembleDRL( builder,
-                                            item,
-                                            stringBuilder );
+        builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(item.getPackage()));
+        ((IRuleAsset) handler).assembleDRL(builder,
+                item,
+                stringBuilder);
 
         return stringBuilder.toString();
     }

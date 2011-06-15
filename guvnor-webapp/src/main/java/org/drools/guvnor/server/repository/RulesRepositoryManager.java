@@ -18,13 +18,7 @@ package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Unwrap;
+import org.jboss.seam.annotations.*;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -36,23 +30,22 @@ import org.jboss.seam.security.Identity;
 @Name("repository")
 public class RulesRepositoryManager {
 
-    private static String    READ_ONLY_USER = "anonymous";
-
     @In
     RepositoryStartupService repositoryConfiguration;
 
-    private RulesRepository  repository;
+    private RulesRepository repository;
 
     @Create
     public void create() {
+        String READ_ONLY_USER = "anonymous";
         String userName = READ_ONLY_USER;
-        if ( Contexts.isApplicationContextActive() ) {
+        if (Contexts.isApplicationContextActive()) {
             userName = Identity.instance().getCredentials().getUsername();
         }
-        if ( userName == null ) {
+        if (userName == null) {
             userName = READ_ONLY_USER;
         }
-        repository = new RulesRepository( repositoryConfiguration.newSession( userName ) );
+        repository = new RulesRepository(repositoryConfiguration.newSession(userName));
     }
 
     @Unwrap

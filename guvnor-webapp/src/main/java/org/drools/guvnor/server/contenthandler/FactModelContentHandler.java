@@ -16,11 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.guvnor.client.factmodel.AnnotationMetaModel;
@@ -36,24 +32,26 @@ import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.repository.AssetItem;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class FactModelContentHandler extends ContentHandler {
-    private static final LoggingHelper log = LoggingHelper.getLogger( FactModelContentHandler.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger(FactModelContentHandler.class);
 
     @Override
     public void retrieveAssetContent(RuleAsset asset,
-            AssetItem item) throws SerializationException {
+                                     AssetItem item) throws SerializationException {
         try {
-            List<FactMetaModel> models = toModel( item.getContent() );
+            List<FactMetaModel> models = toModel(item.getContent());
             FactModels ms = new FactModels();
             ms.models = models;
-            asset.setContent( ms );
-        } catch ( DroolsParserException e ) {
-            log.error( "Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")" );
+            asset.setContent(ms);
+        } catch (DroolsParserException e) {
+            log.error("Unable to parse the DRL for the model - falling back to text (" + e.getMessage() + ")");
             RuleContentText text = new RuleContentText();
             text.content = item.getContent();
-            asset.setContent( text );
+            asset.setContent(text);
         }
 
     }
@@ -61,72 +59,70 @@ public class FactModelContentHandler extends ContentHandler {
     @Override
     public void storeAssetContent(RuleAsset asset,
                                   AssetItem repoAsset)
-                                                      throws SerializationException {
-        if ( asset.getContent() instanceof FactModels ) {
+            throws SerializationException {
+        if (asset.getContent() instanceof FactModels) {
             FactModels fm = (FactModels) asset.getContent();
-            repoAsset.updateContent( toDRL( fm.models ) );
+            repoAsset.updateContent(toDRL(fm.models));
         } else {
             RuleContentText text = (RuleContentText) asset.getContent();
-            repoAsset.updateContent( text.content );
+            repoAsset.updateContent(text.content);
         }
 
     }
 
     String toDRL(FactMetaModel mm) {
         StringBuilder sb = new StringBuilder();
-        sb.append( "declare " + mm.name );
-        for ( int i = 0; i < mm.annotations.size(); i++ ) {
-            AnnotationMetaModel a = (AnnotationMetaModel) mm.annotations.get( i );
-            sb.append( "\n\t" );
-            sb.append( buildAnnotationDRL( a ) );
+        sb.append("declare ").append(mm.name);
+        for (int i = 0; i < mm.annotations.size(); i++) {
+            AnnotationMetaModel a = (AnnotationMetaModel) mm.annotations.get(i);
+            sb.append("\n\t");
+            sb.append(buildAnnotationDRL(a));
         }
-        for ( int i = 0; i < mm.fields.size(); i++ ) {
-            FieldMetaModel f = (FieldMetaModel) mm.fields.get( i );
-            sb.append( "\n\t" );
-            sb.append( f.name + ": " + f.type );
+        for (int i = 0; i < mm.fields.size(); i++) {
+            FieldMetaModel f = (FieldMetaModel) mm.fields.get(i);
+            sb.append("\n\t");
+            sb.append(f.name).append(": ").append(f.type);
         }
-        sb.append( "\nend" );
+        sb.append("\nend");
         return sb.toString();
     }
 
     List<FactMetaModel> toModel(String drl) throws DroolsParserException {
-        if ( drl != null && drl.startsWith( "#advanced" ) ) {
-            throw new DroolsParserException( "Using advanced editor" );
+        if (drl != null && drl.startsWith("#advanced")) {
+            throw new DroolsParserException("Using advanced editor");
         }
         DrlParser parser = new DrlParser();
-        PackageDescr pkg = parser.parse( drl );
-        if ( parser.hasErrors() ) {
-            throw new DroolsParserException( "The model drl " + drl + " is not valid" );
+        PackageDescr pkg = parser.parse(drl);
+        if (parser.hasErrors()) {
+            throw new DroolsParserException("The model drl " + drl + " is not valid");
         }
 
-        if ( pkg == null ) return new ArrayList<FactMetaModel>();
+        if (pkg == null) return new ArrayList<FactMetaModel>();
         List<TypeDeclarationDescr> types = pkg.getTypeDeclarations();
-        List<FactMetaModel> list = new ArrayList<FactMetaModel>( types.size() );
-        for ( TypeDeclarationDescr td : types ) {
+        List<FactMetaModel> list = new ArrayList<FactMetaModel>(types.size());
+        for (TypeDeclarationDescr td : types) {
             FactMetaModel mm = new FactMetaModel();
             mm.name = td.getTypeName();
 
             Map<String, TypeFieldDescr> fields = td.getFields();
-            for ( Iterator<Map.Entry<String, TypeFieldDescr>> iterator = fields.entrySet().iterator(); iterator.hasNext(); ) {
-                Map.Entry<String, TypeFieldDescr> en = iterator.next();
+            for (Map.Entry<String, TypeFieldDescr> en : fields.entrySet()) {
                 String fieldName = en.getKey();
                 TypeFieldDescr descr = en.getValue();
-                FieldMetaModel fm = new FieldMetaModel( fieldName,
-                                                        descr.getPattern().getObjectType() );
+                FieldMetaModel fm = new FieldMetaModel(fieldName,
+                        descr.getPattern().getObjectType());
 
-                mm.fields.add( fm );
+                mm.fields.add(fm);
             }
 
             Map<String, AnnotationDescr> annotations = td.getAnnotations();
-            for ( Iterator<Map.Entry<String, AnnotationDescr>> iterator = annotations.entrySet().iterator(); iterator.hasNext(); ) {
-                Map.Entry<String, AnnotationDescr> en = iterator.next();
+            for (Map.Entry<String, AnnotationDescr> en : annotations.entrySet()) {
                 String annotationName = en.getKey();
                 AnnotationDescr descr = en.getValue();
                 Map<String, String> values = descr.getValues();
-                AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
-                                                                  values );
+                AnnotationMetaModel am = new AnnotationMetaModel(annotationName,
+                        values);
 
-                mm.annotations.add( am );
+                mm.annotations.add(am);
             }
 
             list.add(mm);
@@ -136,31 +132,31 @@ public class FactModelContentHandler extends ContentHandler {
 
     String toDRL(List<FactMetaModel> models) {
         StringBuilder sb = new StringBuilder();
-        for ( FactMetaModel factMetaModel : models ) {
-            String drl = toDRL( factMetaModel );
-            sb.append( drl + "\n\n" );
+        for (FactMetaModel factMetaModel : models) {
+            String drl = toDRL(factMetaModel);
+            sb.append(drl).append("\n\n");
         }
         return sb.toString().trim();
     }
 
     private StringBuilder buildAnnotationDRL(AnnotationMetaModel a) {
         StringBuilder sb = new StringBuilder();
-        sb.append( "@" );
-        sb.append( a.name );
-        sb.append( "(" );
-        for ( Map.Entry<String, String> e : a.getValues().entrySet() ) {
-            if ( e.getKey() != null && e.getKey().length() > 0 ) {
-                sb.append( e.getKey() );
-                sb.append( " = " );
+        sb.append("@");
+        sb.append(a.name);
+        sb.append("(");
+        for (Map.Entry<String, String> e : a.getValues().entrySet()) {
+            if (e.getKey() != null && e.getKey().length() > 0) {
+                sb.append(e.getKey());
+                sb.append(" = ");
             }
-            if ( e.getValue() != null && e.getValue().length() > 0 ) {
-                sb.append( e.getValue() );
+            if (e.getValue() != null && e.getValue().length() > 0) {
+                sb.append(e.getValue());
             }
-            sb.append( ", " );
+            sb.append(", ");
         }
-        sb.delete( sb.length() - 2,
-                   sb.length() );
-        sb.append( ")" );
+        sb.delete(sb.length() - 2,
+                sb.length());
+        sb.append(")");
         return sb;
     }
 

@@ -97,7 +97,7 @@ public class PackageAssembler extends PackageAssemblerBase {
 
     private void addAsset(StringBuilder includedAssets, AssetItem asset) {
         buildAsset(asset);
-        includedAssets.append(asset.getName() + ", ");
+        includedAssets.append(asset.getName()).append(", ");
     }
 
     private boolean assetCanBeAdded(AssetItem asset) {

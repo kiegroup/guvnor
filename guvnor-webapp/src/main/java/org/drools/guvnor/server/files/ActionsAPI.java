@@ -1,27 +1,20 @@
 /**
-* Copyright 2010 JBoss Inc
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2010 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package org.drools.guvnor.server.files;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.repository.PackageItem;
@@ -29,10 +22,16 @@ import org.drools.repository.PackageIterator;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 /**
  * Basic API for executing simple actions against Guvnor:
  * compilation and snapshot creation for packages.
- *
+ * <p/>
  * Fix for GUVNOR-1080
  */
 public class ActionsAPI {
@@ -49,59 +48,60 @@ public class ActionsAPI {
             public String toString() {
                 return "snapshot-name";
             }
-        };
+        }
 
     }
 
     /**
      * Post is for actions.
-     *
+     * <p/>
      * URL should be:  http://servername:port/action/compile
-     *                 http://servername:port/action/snapshot
-     *
+     * http://servername:port/action/snapshot
+     * <p/>
      * parameters:  package-name
-     *              snapshot-name
+     * snapshot-name
      *
      * @throws IOException
-     * @throws RulesRepositoryException */
+     * @throws RulesRepositoryException
+     */
     public void post(RepositoryPackageService service,
                      RulesRepository repository,
                      HttpServletRequest request,
                      HttpServletResponse response)
-                                                  throws IOException {
+            throws IOException {
         try {
-            String packageName = request.getParameter( Parameters.PackageName.toString() );
-            String[] pathstr = split( request.getPathTranslated() );
+            String packageName = request.getParameter(Parameters.PackageName.toString());
+            String[] pathstr = split(request.getPathTranslated());
 
-            if ( pathstr[0].equals( "compile" ) ) {
-                if ( repository.containsPackage( packageName ) ) {
+            if (pathstr[0].equals("compile")) {
+                if (repository.containsPackage(packageName)) {
                     PackageIterator iter = repository.listPackages();
-                    while ( iter.hasNext() ) {
+                    while (iter.hasNext()) {
                         PackageItem p = iter.next();
-                        if ( p.getName().equals( packageName ) ) {
+                        if (p.getName().equals(packageName)) {
                             String uuid = p.getUUID();
-                            service.buildPackage( uuid,
-                                                  true );
+                            service.buildPackage(uuid,
+                                    true);
                             break;
                         }
                     }
                 }
-            } else if ( pathstr[0].equals( "snapshot" ) ) if ( repository.containsPackage( packageName ) ) {
-                String snapshotName = request.getParameter( Parameters.SnapshotName.toString() );
-                repository.createPackageSnapshot( packageName,
-                                                  snapshotName );
+            } else if (pathstr[0].equals("snapshot")) if (repository.containsPackage(packageName)) {
+                String snapshotName = request.getParameter(Parameters.SnapshotName.toString());
+                repository.createPackageSnapshot(packageName,
+                        snapshotName);
             } else {
-                throw new RulesRepositoryException( "Unknown action request: "
-                                                    + request.getContextPath() );
+                throw new RulesRepositoryException("Unknown action request: "
+                        + request.getContextPath());
             }
 
-            response.setContentType( "text/html" );
-            response.setStatus( 200 );
-            response.getWriter().write( "OK" );
+            response.setContentType("text/html");
+            response.setStatus(200);
+            response.getWriter().write("OK");
 
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new IOException( e.getMessage() );
+            throw new IOException(e.getMessage());
         }
     }
 
@@ -109,14 +109,14 @@ public class ActionsAPI {
      * Split from RestAPI
      */
     String[] split(String path) throws UnsupportedEncodingException {
-        if ( path.indexOf( "action" ) > -1 ) {
-            path = path.split( "action" )[1];
+        if (path.indexOf("action") > -1) {
+            path = path.split("action")[1];
         }
-        if ( path.startsWith( "/" ) ) path = path.substring( 1 );
-        String[] bits = path.split( "/" );
-        for ( int i = 0; i < bits.length; i++ ) {
-            bits[i] = URLDecoder.decode( bits[i],
-                                         "UTF-8" );
+        if (path.startsWith("/")) path = path.substring(1);
+        String[] bits = path.split("/");
+        for (int i = 0; i < bits.length; i++) {
+            bits[i] = URLDecoder.decode(bits[i],
+                    "UTF-8");
         }
         return bits;
     }

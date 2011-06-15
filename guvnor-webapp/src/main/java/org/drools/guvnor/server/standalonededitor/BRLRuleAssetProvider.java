@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.server.standalonededitor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.MetaData;
@@ -28,17 +25,20 @@ import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * BRL -> RuleAsset converter used by standalone editor.
  * For each brl provided, a new RuleAsset is created. The name of the RuleAsset
  * will be the name present in the brl concatenated with a unique number.
  */
 public class BRLRuleAssetProvider
-    implements
-    RuleAssetProvider {
+        implements
+        RuleAssetProvider {
 
-    private String   packageName;
-    private String[] initialBRLs;
+    private final String packageName;
+    private final String[] initialBRLs;
 
     public BRLRuleAssetProvider(String packageName,
                                 String[] initialBRLs) {
@@ -48,45 +48,45 @@ public class BRLRuleAssetProvider
 
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
 
-        List<RuleModel> models = new ArrayList<RuleModel>( initialBRLs.length );
-        List<RuleAsset> assets = new ArrayList<RuleAsset>( initialBRLs.length );
+        List<RuleModel> models = new ArrayList<RuleModel>(initialBRLs.length);
+        List<RuleAsset> assets = new ArrayList<RuleAsset>(initialBRLs.length);
 
         //We wan't to avoid inconsistent states, that is why we first unmarshal
         //each brl and then (if nothing fails) create each rule
-        for ( String brl : initialBRLs ) {
+        for (String brl : initialBRLs) {
             //convert the BRL to RuleModel
-            models.add( BRXMLPersistence.getInstance().unmarshal( brl ) );
+            models.add(BRXMLPersistence.getInstance().unmarshal(brl));
         }
 
         //no unmarshal errors, it's time to create the rules
         try {
-            for ( RuleModel ruleModel : models ) {
-                assets.add( this.createAsset( ruleModel ) );
+            for (RuleModel ruleModel : models) {
+                assets.add(this.createAsset(ruleModel));
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             //if something failed, delete the generated assets
-            for ( RuleAsset ruleAsset : assets ) {
-                this.getAssetService().removeAsset( ruleAsset.getUuid() );
+            for (RuleAsset ruleAsset : assets) {
+                this.getAssetService().removeAsset(ruleAsset.getUuid());
             }
 
-            if ( e instanceof DetailedSerializationException ) {
+            if (e instanceof DetailedSerializationException) {
                 throw (DetailedSerializationException) e;
             }
 
-            throw new DetailedSerializationException( "Error creating assets",
-                                                      e.getMessage() );
+            throw new DetailedSerializationException("Error creating assets",
+                    e.getMessage());
         }
 
-        return assets.toArray( new RuleAsset[assets.size()] );
+        return assets.toArray(new RuleAsset[assets.size()]);
     }
 
     private RuleAsset createAsset(RuleModel ruleModel) {
         RuleAsset asset = new RuleAsset();
 
-        asset.setUuid( "mock" );
-        asset.setContent( ruleModel );
-        asset.setName( ruleModel.name );
-        asset.setMetaData( createMetaData( ruleModel ) );
+        asset.setUuid("mock");
+        asset.setContent(ruleModel);
+        asset.setName(ruleModel.name);
+        asset.setMetaData(createMetaData(ruleModel));
 
         return asset;
     }
@@ -94,10 +94,10 @@ public class BRLRuleAssetProvider
     private MetaData createMetaData(RuleModel ruleModel) {
         MetaData metaData = new MetaData();
 
-        metaData.setPackageName( packageName );
-        metaData.setFormat( AssetFormats.BUSINESS_RULE );
+        metaData.setPackageName(packageName);
+        metaData.setFormat(AssetFormats.BUSINESS_RULE);
 
-        metaData.setPackageUUID( "mock" );
+        metaData.setPackageUUID("mock");
 
         return metaData;
     }

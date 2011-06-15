@@ -78,10 +78,9 @@ public class DecisionTableXLSHandler extends ContentHandler
 
     private String getDRL(InputStream stream) {
         SpreadsheetCompiler comp = new SpreadsheetCompiler();
-        String drl = comp.compile(false,
+        return comp.compile(false,
                 stream,
                 InputType.XLS);
-        return drl;
     }
 
 }

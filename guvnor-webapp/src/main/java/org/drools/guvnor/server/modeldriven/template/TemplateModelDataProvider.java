@@ -21,8 +21,8 @@ import org.drools.template.DataProvider;
 
 public class TemplateModelDataProvider implements DataProvider {
 
-    private String[][] rows;
-    private int rowsCount;
+    private final String[][] rows;
+    private final int rowsCount;
     private int currRow = 0;
 
     public TemplateModelDataProvider(TemplateModel model) {

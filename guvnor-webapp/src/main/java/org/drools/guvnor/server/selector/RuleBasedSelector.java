@@ -16,61 +16,57 @@
 
 package org.drools.guvnor.server.selector;
 
+import org.drools.*;
+import org.drools.compiler.RuleBaseLoader;
+import org.drools.repository.AssetItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.drools.CheckedDroolsException;
-import org.drools.RuleBase;
-import org.drools.RuntimeDroolsException;
-import org.drools.StatelessSession;
-import org.drools.StatelessSessionResult;
-import org.drools.compiler.RuleBaseLoader;
-import org.drools.repository.AssetItem;
 
 /**
  * This uses rules to decide if an asset is to be included in a build.
  */
 public class RuleBasedSelector implements AssetSelector {
 
-    private static final Logger log = LoggerFactory.getLogger( RuleBasedSelector.class );
+    private static final Logger log = LoggerFactory.getLogger(RuleBasedSelector.class);
 
 
-    String ruleFile;
+    final String ruleFile;
     private RuleBase ruleBase;
 
     public RuleBasedSelector(String val) {
         this.ruleFile = val;
 
-        InputStream ins = this.getClass().getResourceAsStream( ruleFile );
+        InputStream ins = this.getClass().getResourceAsStream(ruleFile);
         InputStreamReader reader = new InputStreamReader(ins);
 
 
         try {
-            this.ruleBase = RuleBaseLoader.getInstance().loadFromReader( reader );
-        } catch ( CheckedDroolsException e ) {
-            log.error( "Unable to load rule base.", e );
+            this.ruleBase = RuleBaseLoader.getInstance().loadFromReader(reader);
+        } catch (CheckedDroolsException e) {
+            log.error("Unable to load rule base.", e);
             throw new RuntimeDroolsException(e);
-        } catch ( IOException e ) {
-            log.error( "Unable to load rule base.", e );
+        } catch (IOException e) {
+            log.error("Unable to load rule base.", e);
             throw new RuntimeDroolsException(e);
         }
 
     }
 
     public boolean isAssetAllowed(AssetItem asset) {
-        return evalRules( asset );
+        return evalRules(asset);
     }
 
     @SuppressWarnings("rawtypes")
     boolean evalRules(Object asset) {
         StatelessSession session = ruleBase.newStatelessSession();
-        StatelessSessionResult result = session.executeWithResults( asset );
+        StatelessSessionResult result = session.executeWithResults(asset);
 
         java.util.Iterator objects = result.iterateObjects();
-        while(objects.hasNext()) {
+        while (objects.hasNext()) {
             if (objects.next() instanceof Allow) {
                 return true;
             }

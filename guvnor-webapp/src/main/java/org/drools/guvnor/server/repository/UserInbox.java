@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.server.repository;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -28,6 +25,9 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
 import org.drools.repository.UserInfo.InboxEntry;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * This manages the users "inbox".
  */
@@ -36,8 +36,8 @@ public class UserInbox {
 
     private static final String INBOX = "inbox";
 
-    
-    private UserInfo userInfo;
+
+    private final UserInfo userInfo;
 
 
     /**
@@ -74,7 +74,7 @@ public class UserInbox {
 
     private void addToInbox(String boxName, String assetId, String note, String userFrom) {
         assert boxName.equals(ExplorerNodeConfig.RECENT_EDITED_ID) || boxName.equals(ExplorerNodeConfig.RECENT_VIEWED_ID) || boxName.equals(ExplorerNodeConfig.INCOMING_ID);
-        List<InboxEntry> entries =  removeAnyExisting(assetId, userInfo.readEntries(INBOX, boxName));
+        List<InboxEntry> entries = removeAnyExisting(assetId, userInfo.readEntries(INBOX, boxName));
 
         if (entries.size() >= MAX_RECENT_EDITED) {
             entries.remove(0);
@@ -97,11 +97,11 @@ public class UserInbox {
         return inboxEntries;
     }
 
-    public List<InboxEntry> loadEntries(final String inboxName){
+    public List<InboxEntry> loadEntries(final String inboxName) {
         List<InboxEntry> entries;
-        if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
+        if (inboxName.equals(ExplorerNodeConfig.RECENT_VIEWED_ID)) {
             entries = loadRecentOpened();
-        } else if ( inboxName.equals( ExplorerNodeConfig.RECENT_EDITED_ID ) ) {
+        } else if (inboxName.equals(ExplorerNodeConfig.RECENT_EDITED_ID)) {
             entries = loadRecentEdited();
         } else {
             entries = loadIncoming();
@@ -109,7 +109,7 @@ public class UserInbox {
         }
         return entries;
     }
-    
+
     public List<InboxEntry> loadRecentEdited() {
         return userInfo.readEntries(INBOX, ExplorerNodeConfig.RECENT_EDITED_ID);
     }
@@ -144,7 +144,7 @@ public class UserInbox {
         res.data = new TableDataRow[entries.size()];
         for (int i = 0; i < entries.size(); i++) {
             TableDataRow tdr = new TableDataRow();
-            InboxEntry e =entries.get(i);
+            InboxEntry e = entries.get(i);
             tdr.id = e.assetUUID;
             if (!showFrom) {
                 tdr.values = new String[2];
@@ -176,7 +176,9 @@ public class UserInbox {
         ib.save();
     }
 
-    /** Helper method to note the event */
+    /**
+     * Helper method to note the event
+     */
     public synchronized static void recordUserEditEvent(AssetItem item) {
         UserInbox ib = new UserInbox(item.getRulesRepository());
         ib.addToRecentEdited(item.getUUID(), item.getName());

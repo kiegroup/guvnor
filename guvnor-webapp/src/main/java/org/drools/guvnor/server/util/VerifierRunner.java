@@ -16,13 +16,7 @@
 
 package org.drools.guvnor.server.util;
 
-import java.io.StringReader;
-
-import org.drools.builder.DecisionTableConfiguration;
-import org.drools.builder.DecisionTableInputType;
-import org.drools.builder.KnowledgeBuilderFactory;
-import org.drools.builder.ResourceConfiguration;
-import org.drools.builder.ResourceType;
+import org.drools.builder.*;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
@@ -37,9 +31,11 @@ import org.drools.verifier.VerifierError;
 import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.data.VerifierReport;
 
+import java.io.StringReader;
+
 public class VerifierRunner {
 
-    private Verifier    verifier;
+    private final Verifier verifier;
     private PackageItem packageItem;
 
     public VerifierRunner(Verifier verifier) {
@@ -52,77 +48,77 @@ public class VerifierRunner {
 
         addHeaderToVerifier();
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DSL} ),
-                       ResourceType.DSL );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.DSL}),
+                ResourceType.DSL);
 
         // TODO: Model JARS
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DRL_MODEL} ),
-                       ResourceType.DRL );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL}),
+                ResourceType.DRL);
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.FUNCTION} ),
-                       ResourceType.DRL );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.FUNCTION}),
+                ResourceType.DRL);
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DSL_TEMPLATE_RULE} ),
-                       ResourceType.DSLR );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.DSL_TEMPLATE_RULE}),
+                ResourceType.DSLR);
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.DECISION_SPREADSHEET_XLS} ),
-                       ResourceType.DTABLE );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.DECISION_SPREADSHEET_XLS}),
+                ResourceType.DTABLE);
 
         addGuidedDecisionTablesToVerifier();
 
         addDRLRulesToVerifier();
 
-        addToVerifier( packageItem.listAssetsByFormat( new String[]{AssetFormats.BUSINESS_RULE} ),
-                       ResourceType.BRL );
+        addToVerifier(packageItem.listAssetsByFormat(new String[]{AssetFormats.BUSINESS_RULE}),
+                ResourceType.BRL);
 
-        fireAnalysis( scopesAgendaFilter );
+        fireAnalysis(scopesAgendaFilter);
 
         VerifierReport report = verifier.getResult();
 
-        return VerifierReportCreator.doReport( report );
+        return VerifierReportCreator.doReport(report);
     }
 
     private void fireAnalysis(ScopesAgendaFilter scopesAgendaFilter) throws RuntimeException {
 
-        verifier.fireAnalysis( scopesAgendaFilter );
+        verifier.fireAnalysis(scopesAgendaFilter);
 
-        if ( verifier.hasErrors() ) {
-            StringBuilder message = new StringBuilder( "Verifier Errors:\n" );
-            for ( VerifierError verifierError : verifier.getErrors() ) {
-                message.append( "\t" );
-                message.append( verifierError.getMessage() );
-                message.append( "\n" );
+        if (verifier.hasErrors()) {
+            StringBuilder message = new StringBuilder("Verifier Errors:\n");
+            for (VerifierError verifierError : verifier.getErrors()) {
+                message.append("\t");
+                message.append(verifierError.getMessage());
+                message.append("\n");
             }
-            throw new RuntimeException( message.toString() );
+            throw new RuntimeException(message.toString());
         }
     }
 
     private void addHeaderToVerifier() {
         StringBuilder header = new StringBuilder();
-        header.append( "package " + packageItem.getName() + "\n" );
-        header.append( DroolsHeader.getDroolsHeader( packageItem ) + "\n" );
+        header.append("package ").append(packageItem.getName()).append("\n");
+        header.append(DroolsHeader.getDroolsHeader(packageItem)).append("\n");
 
-        verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( header.toString() ) ),
-                                       ResourceType.DRL );
+        verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(header.toString())),
+                ResourceType.DRL);
 
     }
 
     private void addToVerifier(AssetItemIterator assets,
                                ResourceType resourceType) {
-        while ( assets.hasNext() ) {
+        while (assets.hasNext()) {
             AssetItem asset = assets.next();
-            if ( !asset.isArchived() && !asset.getDisabled() ) {
-                if ( resourceType == ResourceType.DTABLE ) {
+            if (!asset.isArchived() && !asset.getDisabled()) {
+                if (resourceType == ResourceType.DTABLE) {
                     DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-                    dtableconfiguration.setInputType( DecisionTableInputType.XLS );
+                    dtableconfiguration.setInputType(DecisionTableInputType.XLS);
 
-                    verifier.addResourcesToVerify( ResourceFactory.newByteArrayResource( asset.getBinaryContentAsBytes() ),
-                                                   resourceType,
-                                                   (ResourceConfiguration) dtableconfiguration );
+                    verifier.addResourcesToVerify(ResourceFactory.newByteArrayResource(asset.getBinaryContentAsBytes()),
+                            resourceType,
+                            (ResourceConfiguration) dtableconfiguration);
                 } else {
-                    verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( asset.getContent() ) ),
-                                                   resourceType );
+                    verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(asset.getContent())),
+                            resourceType);
                 }
             }
         }
@@ -130,17 +126,17 @@ public class VerifierRunner {
 
     private void addGuidedDecisionTablesToVerifier() {
 
-        AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.DECISION_TABLE_GUIDED );
+        AssetItemIterator rules = packageItem.listAssetsByFormat(AssetFormats.DECISION_TABLE_GUIDED);
 
-        while ( rules.hasNext() ) {
+        while (rules.hasNext()) {
             AssetItem rule = rules.next();
 
-            ContentHandler contentHandler = ContentManager.getHandler( rule.getFormat() );
-            if ( contentHandler.isRuleAsset() ) {
+            ContentHandler contentHandler = ContentManager.getHandler(rule.getFormat());
+            if (contentHandler.isRuleAsset()) {
                 IRuleAsset ruleAsset = (IRuleAsset) contentHandler;
-                String drl = ruleAsset.getRawDRL( rule );
-                verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                                               ResourceType.DRL );
+                String drl = ruleAsset.getRawDRL(rule);
+                verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(drl)),
+                        ResourceType.DRL);
 
             }
         }
@@ -148,17 +144,17 @@ public class VerifierRunner {
 
     private void addDRLRulesToVerifier() {
 
-        AssetItemIterator rules = packageItem.listAssetsByFormat( AssetFormats.DRL );
+        AssetItemIterator rules = packageItem.listAssetsByFormat(AssetFormats.DRL);
 
-        while ( rules.hasNext() ) {
+        while (rules.hasNext()) {
             AssetItem rule = rules.next();
 
-            ContentHandler contentHandler = ContentManager.getHandler( rule.getFormat() );
-            if ( contentHandler.isRuleAsset() ) {
+            ContentHandler contentHandler = ContentManager.getHandler(rule.getFormat());
+            if (contentHandler.isRuleAsset()) {
                 IRuleAsset ruleAsset = (IRuleAsset) contentHandler;
-                String drl = ruleAsset.getRawDRL( rule );
-                verifier.addResourcesToVerify( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                                               ResourceType.DRL );
+                String drl = ruleAsset.getRawDRL(rule);
+                verifier.addResourcesToVerify(ResourceFactory.newReaderResource(new StringReader(drl)),
+                        ResourceType.DRL);
 
             }
         }
