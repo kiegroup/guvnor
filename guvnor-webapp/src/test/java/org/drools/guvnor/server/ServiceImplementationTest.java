@@ -1250,7 +1250,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
            BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                           true );
-           assertTrue(results.getLines().isEmpty());
+           assertNull(results);
 
            pkg = repo.loadPackage( "testGuidedDTCompile" );
            byte[] binPackage = pkg.getCompiledPackageBytes();
