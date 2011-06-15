@@ -73,8 +73,8 @@ public class RoleBasedPermissionResolver
 
     private boolean                                        enableRoleBasedAuthorization   = false;
 
-    private Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
-    private Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();
+    private final Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
+    private final Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();
 
     public RoleBasedPermissionResolver() {
         permissionRules.put( CategoryPathType.class,

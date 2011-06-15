@@ -22,7 +22,7 @@ package org.drools.guvnor.server.security;
  */
 public class PackageNameType {
 
-    private String packageName;
+    private final String packageName;
 
     public PackageNameType(String packageName) {
         this.packageName = packageName;

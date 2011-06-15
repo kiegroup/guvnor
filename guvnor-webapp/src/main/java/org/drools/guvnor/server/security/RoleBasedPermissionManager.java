@@ -39,7 +39,7 @@ import org.jboss.seam.security.Identity;
 public class RoleBasedPermissionManager implements Serializable {
 
     //    @In
-    List<RoleBasedPermission> permissions;
+    private List<RoleBasedPermission> permissions;
 
     //    @Unwrap
     public List<RoleBasedPermission> getRoleBasedPermission() {

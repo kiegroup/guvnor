@@ -47,7 +47,7 @@ public class SecurityServiceImpl
     public static final String       GUEST_LOGIN             = "guest";
     private static final Logger      log                     = LoggerFactory.getLogger( SecurityServiceImpl.class );
     static final Map<String, String> PREFERENCES             = loadPrefs();
-    private static String[]          serializationProperties = new String[]{"drools.serialization.private.keyStoreURL", "drools.serialization.private.keyStorePwd", "drools.serialization.private.keyAlias", "drools.serialization.private.keyPwd",
+    private static final String[]          serializationProperties = new String[]{"drools.serialization.private.keyStoreURL", "drools.serialization.private.keyStorePwd", "drools.serialization.private.keyAlias", "drools.serialization.private.keyPwd",
             "drools.serialization.public.keyStoreURL", "drools.serialization.public.keyStorePwd"};
 
     public boolean login(String userName,
@@ -63,10 +63,9 @@ public class SecurityServiceImpl
             // Check for banned characters in user name
             // These will cause the session to jam if you let them go further
             char[] bannedChars = {'\'', '*', '[', ']'};
-            for ( int i = 0; i < bannedChars.length; i++ ) {
-                char c = bannedChars[i];
-                if ( userName.indexOf( c ) >= 0 ) {
-                    log.error( "Not a valid name character " + c );
+            for (char bannedChar : bannedChars) {
+                if (userName.indexOf(bannedChar) >= 0) {
+                    log.error("Not a valid name character " + bannedChar);
                     return false;
                 }
             }

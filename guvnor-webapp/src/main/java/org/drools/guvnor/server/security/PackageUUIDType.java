@@ -22,7 +22,7 @@ package org.drools.guvnor.server.security;
  */
 public class PackageUUIDType {
 
-    private String uuid;
+    private final String uuid;
 
     public PackageUUIDType(String uuid) {
         this.uuid = uuid;

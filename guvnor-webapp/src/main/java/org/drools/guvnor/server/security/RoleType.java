@@ -40,7 +40,7 @@ public enum RoleType {
      * Read only for package.
      */
     PACKAGE_READONLY("package.readonly");
-    private String name;
+    private final String name;
 
     RoleType(String name) {
         this.name = name;
