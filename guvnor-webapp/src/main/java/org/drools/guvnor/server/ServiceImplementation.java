@@ -117,9 +117,6 @@ public class ServiceImplementation
 
     private static final LoggingHelper        log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    /**
-     * This is used for pushing messages back to the client.
-     */
     private final ServiceSecurity             serviceSecurity             = new ServiceSecurity();
 
     private final RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
@@ -185,7 +182,8 @@ public class ServiceImplementation
      * initial state will be the draft state. Returns the UUID of the asset.
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    //@Restrict("#{identity.loggedIn}")
+    @Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
     public String createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
@@ -258,10 +256,7 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void deleteUncheckedRule(String uuid) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(),
-                                                 RoleType.PACKAGE_ADMIN.getName() );
-        }
+        serviceSecurity.checkSecurityIsPackageAdminWithAdminType();
 
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
 
@@ -276,7 +271,7 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
+     * @deprecated in favour of {@link #loadRuleListForState(StatePageRequest)}
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -307,7 +302,7 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
+     * @deprecated in favour of {@link #queryMetaData(QueryMetadataPageRequest)}
      */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
@@ -469,7 +464,7 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link showLog(PageRequest)}
+     * @deprecated in favour of {@link #showLog(PageRequest)}
      */
     @WebRemote
     public LogEntry[] showLog() {
@@ -553,7 +548,7 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link listUserPermissions(PageRequest)}
+     * @deprecated in favour of {@link #listUserPermissions(PageRequest)}
      */
     @Restrict("#{identity.loggedIn}")
     public Map<String, List<String>> listUserPermissions() {
@@ -650,7 +645,7 @@ public class ServiceImplementation
     }
 
     /**
-     * @deprecated in favour of {@link loadInbox(InboxPageRequest)}
+     * @deprecated in favour of {@link #loadInbox(InboxPageRequest)}
      */
     @Restrict("#{identity.loggedIn}")
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {

@@ -386,10 +386,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageUUIDType(packageUUID),
-                    RoleType.PACKAGE_READONLY.getName());
-        }
+        serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(packageUUID);
 
         PackageItem pkg = this.getRulesRepository().loadPackageByUUID(packageUUID);
         List<String> res = new ArrayList<String>();
@@ -476,7 +473,7 @@ public class RepositoryPackageService
     }
 
     /**
-     * @deprecated in favour of {@link compareSnapshots(SnapshotComparisonPageRequest)}
+     * @deprecated in favour of {@link #compareSnapshots(SnapshotComparisonPageRequest)}
      */
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,

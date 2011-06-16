@@ -15,18 +15,10 @@
  */
 package org.drools.guvnor.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.drools.guvnor.client.rpc.CategoryPageRequest;
-import org.drools.guvnor.client.rpc.CategoryPageRow;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.rpc.TableDataResult;
+import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.builder.pagerow.CategoryRuleListPageRowBuilder;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -36,18 +28,17 @@ import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Name("org.drools.guvnor.server.RepositoryCategoryOperations")
 @AutoCreate
 public class RepositoryCategoryOperations {
-    private RulesRepository            repository;
+    private RulesRepository repository;
 
-    private static final LoggingHelper log = LoggingHelper
-                                                                                 .getLogger( RepositoryCategoryOperations.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryCategoryOperations.class);
+    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
 
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
@@ -62,45 +53,46 @@ public class RepositoryCategoryOperations {
         List<String> resultList = new ArrayList<String>();
         CategoryFilter filter = new CategoryFilter();
 
-        CategoryItem item = getRulesRepository().loadCategory( categoryPath );
+        CategoryItem item = getRulesRepository().loadCategory(categoryPath);
         List children = item.getChildTags();
-        for ( Object aChildren : children ) {
+        for (Object aChildren : children) {
             String childCategoryName = ((CategoryItem) aChildren).getName();
-            if ( filter.acceptNavigate( categoryPath,
-                                        childCategoryName ) ) {
-                resultList.add( childCategoryName );
+            if (filter.acceptNavigate(categoryPath,
+                    childCategoryName)) {
+                resultList.add(childCategoryName);
             }
         }
 
-        return resultList.toArray( new String[resultList.size()] );
+        return resultList.toArray(new String[resultList.size()]);
     }
 
     protected Boolean createCategory(String path,
                                      String name,
                                      String description) {
 
-        log.info( "USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]" );
+        log.info("USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]");
 
-        if ( path == null || "".equals( path ) ) {
+        if (path == null || "".equals(path)) {
             path = "/";
         }
-        path = HtmlCleaner.cleanHTML( path );
+        path = HtmlCleaner.cleanHTML(path);
 
-        getRulesRepository().loadCategory( path ).addCategory( name,
-                                                               description );
+        getRulesRepository().loadCategory(path).addCategory(name,
+                description);
         getRulesRepository().save();
         return Boolean.TRUE;
     }
 
     protected void renameCategory(String fullPathAndName,
                                   String newName) {
-        getRulesRepository().renameCategory( fullPathAndName,
-                                             newName );
+        getRulesRepository().renameCategory(fullPathAndName,
+                newName);
     }
 
     /**
      * loadRuleListForCategories
-     * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
+     *
+     * @deprecated in favour of {@link #loadRuleListForCategories(CategoryPageRequest)}
      */
     protected TableDataResult loadRuleListForCategories(String categoryPath,
                                                         int skip,
@@ -108,21 +100,18 @@ public class RepositoryCategoryOperations {
                                                         String tableConfig) throws SerializationException {
 
         // First check the user has permission to access this categoryPath.
-        if ( Contexts.isSessionContextActive() ) {
-            if ( !Identity.instance().hasPermission( new CategoryPathType( categoryPath ),
-                                                     RoleType.ANALYST_READ.getName() ) ) {
+        if (!serviceSecurity.hasPermissionAnalystReadWithCategoryPathType(categoryPath)) {
+            TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
+            return handler.loadRuleListTable(new AssetItemPageResult());
 
-                TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-                return handler.loadRuleListTable( new AssetItemPageResult() );
-            }
         }
 
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( categoryPath,
-                                                                                false,
-                                                                                skip,
-                                                                                numRows );
-        TableDisplayHandler handler = new TableDisplayHandler( tableConfig );
-        return handler.loadRuleListTable( result );
+        AssetItemPageResult result = getRulesRepository().findAssetsByCategory(categoryPath,
+                false,
+                skip,
+                numRows);
+        TableDisplayHandler handler = new TableDisplayHandler(tableConfig);
+        return handler.loadRuleListTable(result);
 
     }
 
@@ -133,42 +122,42 @@ public class RepositoryCategoryOperations {
 
         // NOTE: Filtering is handled in repository.findAssetsByCategory()
         int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory( request.getCategoryPath(),
-                                                                                false,
-                                                                                request.getStartRowIndex(),
-                                                                                numRowsToReturn );
-        log.debug( "Search time: " + (System.currentTimeMillis() - start) );
+        AssetItemPageResult result = getRulesRepository().findAssetsByCategory(request.getCategoryPath(),
+                false,
+                request.getStartRowIndex(),
+                numRowsToReturn);
+        log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
         boolean hasMoreRows = result.hasNext;
 
         List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
-                                                .withPageRequest( request )
-                                                .withContent( result.assets.iterator() )
-                                                    .build();
+                .withPageRequest(request)
+                .withContent(result.assets.iterator())
+                .build();
 
         PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
-                                                            .withStartRowIndex( request.getStartRowIndex() )
-                                                            .withPageRowList( rowList )
-                                                            .withLastPage( !hasMoreRows )
-                                                                .buildWithTotalRowCount( -1 );
+                .withStartRowIndex(request.getStartRowIndex())
+                .withPageRowList(rowList)
+                .withLastPage(!hasMoreRows)
+                .buildWithTotalRowCount(-1);
 
         long methodDuration = System.currentTimeMillis() - start;
-        log.debug( "Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms." );
+        log.debug("Searched for Assest with Category (" + request.getCategoryPath() + ") in " + methodDuration + " ms.");
         return pageResponse;
     }
 
     protected void removeCategory(String categoryPath) throws SerializationException {
-        log.info( "USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]" );
+        log.info("USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]");
 
         try {
-            getRulesRepository().loadCategory( categoryPath ).remove();
+            getRulesRepository().loadCategory(categoryPath).remove();
             getRulesRepository().save();
-        } catch ( RulesRepositoryException e ) {
-            log.info( "Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage() );
+        } catch (RulesRepositoryException e) {
+            log.info("Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage());
 
-            throw new DetailedSerializationException( "Unable to remove category. It is probably still used.",
-                                                      e.getMessage() );
+            throw new DetailedSerializationException("Unable to remove category. It is probably still used.",
+                    e.getMessage());
         }
     }
 

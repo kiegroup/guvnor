@@ -219,21 +219,6 @@ public class RepositoryPackageOperations {
                     e);
             throw e;
         }
-
-        // If we allow package owner to copy package, we will have to update the
-        // permission store
-        // for the newly copied package.
-        // Update permission store
-        /*
-         * String copiedUuid = ""; try { PackageItem source =
-         * repository.loadPackage( destPackageName ); copiedUuid =
-         * source.getUUID(); } catch (RulesRepositoryException e) { log.error( e
-         * ); } PackageBasedPermissionStore pbps = new
-         * PackageBasedPermissionStore(); pbps.addPackageBasedPermission(new
-         * PackageBasedPermission(copiedUuid,
-         * Identity.instance().getPrincipal().getName(),
-         * RoleTypes.PACKAGE_ADMIN));
-         */
     }
 
     protected void removePackage(String uuid) {
