@@ -282,45 +282,49 @@ public class ConstraintValueEditor extends DirtyableComposite {
             FactPattern f = model.getBoundFact( var );
             String fv = model.getBindingType( var );
 
+            //Identical fact- or field-types can be compared
             if ( (f != null && f.getFactType().equals( this.fieldType ))
                     || (fv != null && fv.equals( this.fieldType )) ) {
-                //Identical fact- or field-types can be compared
                 addVariable = true;
 
-            } else if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                //'this' can be compared to bound facts and fields of the same type
+            }
+
+            //'this' can be compared to bound facts and fields of the same type
+            if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 if ( f != null && f.getFactType().equals( this.pattern.getFactType() ) ) {
                     addVariable = true;
                 }
                 if ( fv != null && fv.equals( this.pattern.getFactType() ) ) {
                     addVariable = true;
                 }
+            }
 
-            } else if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( fv ) ) {
-                //'this' can be compared to bound events if using a CEP operator
+            //'this' can be compared to bound events if using a CEP operator
+            if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( fv ) ) {
                 if ( this.constraint instanceof HasOperator ) {
                     HasOperator hop = (HasOperator) this.constraint;
                     if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
                         addVariable = true;
                     }
                 }
+            }
 
-            } else if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( fv )) ) {
-                //Dates can be compared to bound events if using a CEP operator
+            //Dates can be compared to bound events if using a CEP operator
+            if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( fv )) ) {
                 if ( this.constraint instanceof HasOperator ) {
                     HasOperator hop = (HasOperator) this.constraint;
                     if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
                         addVariable = true;
                     }
                 }
-            } else {
-                // for collection, present the list of possible bound variable
-                String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+            }
+
+            // for collection, present the list of possible bound variable
+            String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
                                                                         this.fieldName );
-                if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType ))
+            if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType ))
                         || (factCollectionType != null && factCollectionType.equals( fv )) ) {
-                    addVariable = true;
-                }
+                addVariable = true;
             }
 
             if ( addVariable ) {
