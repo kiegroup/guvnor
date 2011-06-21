@@ -57,18 +57,23 @@ public class DSLLoader {
         }
     }
 
-    private static void logErrors(BRMSPackageBuilder.DSLErrorEvent dslErrorEvent, AssetItem assetItem, DSLTokenizedMappingFile file) {
-        for (Object o : file.getErrors()) {
-        	
-        	if(o instanceof DSLMappingParseException){
-	            DSLMappingParseException dslMappingParseException = (DSLMappingParseException) o;
-	            dslErrorEvent.recordError(assetItem, "Line " + dslMappingParseException.getLine() + " : " + dslMappingParseException.getMessage());
-        	}else if(o instanceof Exception){
-        		Exception excp = (Exception)o;
-        		dslErrorEvent.recordError(assetItem, "Exception "+ excp.getClass()+" "+ excp.getMessage()+" "+excp.getCause());
-        	}else{
-        		dslErrorEvent.recordError(assetItem, "Uncategorized error "+o);
-        	}
+    private static void logErrors(BRMSPackageBuilder.DSLErrorEvent dslErrorEvent,
+                                  AssetItem assetItem,
+                                  DSLTokenizedMappingFile file) {
+        for ( Object o : file.getErrors() ) {
+
+            if ( o instanceof DSLMappingParseException ) {
+                DSLMappingParseException dslMappingParseException = (DSLMappingParseException) o;
+                dslErrorEvent.recordError( assetItem,
+                                           "Line " + dslMappingParseException.getLine() + " : " + dslMappingParseException.getMessage() );
+            } else if ( o instanceof Exception ) {
+                Exception excp = (Exception) o;
+                dslErrorEvent.recordError( assetItem,
+                                           "Exception " + excp.getClass() + " " + excp.getMessage() + " " + excp.getCause() );
+            } else {
+                dslErrorEvent.recordError( assetItem,
+                                           "Uncategorized error " + o );
+            }
         }
     }
 }
