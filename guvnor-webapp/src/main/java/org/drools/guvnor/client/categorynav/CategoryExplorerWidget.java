@@ -126,7 +126,7 @@ public class CategoryExplorerWidget extends Composite
                                                              navTreeWidget.removeItems();
 
                                                              TreeItem root = new TreeItem();
-                                                             root.setHTML( "<img src='" + new Image( images.desc() ).getUrl() + "'/>" );
+                                                             root.setHTML( "-" );
                                                              navTreeWidget.addItem( root );
 
                                                              if ( categories.length == 0 ) {
@@ -136,7 +136,7 @@ public class CategoryExplorerWidget extends Composite
                                                              }
                                                              for ( int i = 0; i < categories.length; i++ ) {
                                                                  TreeItem it = new TreeItem();
-                                                                 it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( categories[i] ) );
+                                                                 it.setHTML( h( categories[i] ) );
                                                                  it.setUserObject( categories[i] );
                                                                  it.addItem( new PendingItem() );
                                                                  root.addItem( it );
@@ -192,7 +192,7 @@ public class CategoryExplorerWidget extends Composite
                                                      }
                                                      for ( int i = 0; i < list.length; i++ ) {
                                                          TreeItem it = new TreeItem();
-                                                         it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( list[i] ) );
+                                                         it.setHTML( h( list[i] ) );
                                                          it.setUserObject( list[i] );
                                                          it.addItem( new PendingItem() );
 
