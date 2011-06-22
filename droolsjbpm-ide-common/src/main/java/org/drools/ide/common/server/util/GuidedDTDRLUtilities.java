@@ -16,9 +16,9 @@
 package org.drools.ide.common.server.util;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.drools.core.util.DateUtils;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 /**
@@ -38,9 +38,8 @@ public class GuidedDTDRLUtilities {
                 Boolean booleanValue = dcv.getBooleanValue();
                 return (booleanValue == null ? null : booleanValue.toString());
             case DATE :
-                SimpleDateFormat sdf = new SimpleDateFormat( System.getProperty( "drools.dateformat" ) );
                 Date dateValue = dcv.getDateValue();
-                return (dateValue == null ? null : sdf.format( dcv.getDateValue() ));
+                return (dateValue == null ? null : DateUtils.format( dcv.getDateValue() ));
             case NUMERIC :
                 BigDecimal bdValue = dcv.getNumericValue();
                 return (bdValue == null ? null : bdValue.toPlainString());
