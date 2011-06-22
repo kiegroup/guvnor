@@ -26,13 +26,13 @@ public class DefaultActionToolbarButtonsConfigurationProvider
         implements
         ActionToolbarButtonsConfigurationProvider {
 
-    public static String[] VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE, SPRING_CONTEXT};
-    private static String[] SOURCE_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DRL, DECISION_TABLE_GUIDED, RULE_TEMPLATE, BPMN2_PROCESS, BPMN_PROCESS};
+    public static String[]  VALIDATING_FORMATS = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DECISION_SPREADSHEET_XLS, DRL, ENUMERATION, DECISION_TABLE_GUIDED, DRL_MODEL, DSL, FUNCTION, RULE_TEMPLATE, SPRING_CONTEXT};
+    private static String[] SOURCE_FORMATS     = new String[]{BUSINESS_RULE, DSL_TEMPLATE_RULE, DRL, DECISION_SPREADSHEET_XLS, DECISION_TABLE_GUIDED, RULE_TEMPLATE, BPMN2_PROCESS, BPMN_PROCESS};
 
-    private static String[] VERIFY_FORMATS = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
+    private static String[] VERIFY_FORMATS     = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
-    private RuleAsset asset;
-    private EditorWidget editor;
+    private RuleAsset       asset;
+    private EditorWidget    editor;
 
     public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,
                                                             EditorWidget editor) {
@@ -51,11 +51,11 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     public boolean showCopyButton() {
         return true;
     }
-    
+
     public boolean showRenameButton() {
         return true;
     }
-    
+
     public boolean showPromoteToGlobalButton() {
         return true;
     }
@@ -85,7 +85,8 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showViewSourceButton() {
-        return isMemberOfFormats(asset.getMetaData().getFormat(), SOURCE_FORMATS);
+        return isMemberOfFormats( asset.metaData.format,
+                                  SOURCE_FORMATS );
     }
 
     public boolean showStateLabel() {
@@ -93,16 +94,19 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     private boolean isValidatorTypeAsset() {
-        return isMemberOfFormats(asset.getMetaData().getFormat(), VALIDATING_FORMATS);
+        return isMemberOfFormats( asset.metaData.format,
+                                  VALIDATING_FORMATS );
     }
 
     private boolean isVerificationTypeAsset() {
-        return isMemberOfFormats(asset.getMetaData().getFormat(), VERIFY_FORMATS);
+        return isMemberOfFormats( asset.metaData.format,
+                                  VERIFY_FORMATS );
     }
 
-    private boolean isMemberOfFormats(String format, String[] formats) {
-        for (String fmt : formats) {
-            if (fmt.equals(format)) {
+    private boolean isMemberOfFormats(String format,
+                                      String[] formats) {
+        for ( String fmt : formats ) {
+            if ( fmt.equals( format ) ) {
                 return true;
             }
         }
