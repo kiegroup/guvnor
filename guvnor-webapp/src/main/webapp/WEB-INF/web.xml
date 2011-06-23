@@ -5,6 +5,10 @@
 
   <display-name>JBoss Drools Guvnor</display-name>
 
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
   <filter>
     <filter-name>Seam Filter</filter-name>
     <filter-class>org.jboss.seam.web.ContextFilter</filter-class>
@@ -16,13 +20,13 @@
   <listener>
     <listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
   </listener>
-  
+
   <!-- servlets - mostly to do with file management -->
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
     <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
     <init-param>
-    <param-name>jaxrs.serviceClasses</param-name>
+      <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
         org.drools.guvnor.server.jaxrs.PackageResource
         org.drools.guvnor.server.jaxrs.CategoryResource		      
@@ -30,17 +34,17 @@
     </init-param>
     <init-param>
       <param-name>jaxrs.providers</param-name>
-        <param-value>
+      <param-value>
           org.apache.cxf.jaxrs.provider.AtomEntryProvider
           org.apache.cxf.jaxrs.provider.AtomFeedProvider	
           org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
         </param-value>
-    </init-param>  
-    <!-- Use per-request life-cycle-->
+    </init-param>
+    <!-- Use per-request life-cycle -->
     <init-param>
       <param-name>jaxrs.scope</param-name>
-        <param-value>prototype</param-value>
-    </init-param>  
+      <param-value>prototype</param-value>
+    </init-param>
   </servlet>
   <servlet>
     <servlet-name>guvnorService</servlet-name>
