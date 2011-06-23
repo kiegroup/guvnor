@@ -182,8 +182,8 @@ public class ServiceImplementation
      * initial state will be the draft state. Returns the UUID of the asset.
      */
     @WebRemote
-    //@Restrict("#{identity.loggedIn}")
-    @Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
+    @Restrict("#{identity.loggedIn}")
+    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
     public String createNewRule(String ruleName,
                                 String description,
                                 String initialCategory,
