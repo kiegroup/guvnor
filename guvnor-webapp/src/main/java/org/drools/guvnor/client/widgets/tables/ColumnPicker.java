@@ -66,6 +66,7 @@ public class ColumnPicker<T> {
     public ToggleButton createToggleButton() {
         final ToggleButton button = new ToggleButton( COLUMN_PICKER_IMAGE );
         final PopupPanel popup = new PopupPanel( true );
+        popup.addAutoHidePartner( button.getElement() );
         popup.addCloseHandler( new CloseHandler<PopupPanel>() {
             public void onClose(CloseEvent<PopupPanel> popupPanelCloseEvent) {
                 button.setDown( false );
@@ -107,9 +108,9 @@ public class ColumnPicker<T> {
                     popup.setPopupPosition( button.getAbsoluteLeft(),
                                             button.getAbsoluteTop() + button.getOffsetHeight() );
                     popup.show();
+                } else {
+                    popup.hide(false);
                 }
-                // Note: no need to hide the popup when clicked when down,
-                // because clicking anywhere outside the popup will hide the popup
             }
         } );
         return button;
