@@ -608,6 +608,8 @@ public interface Constants
 
     String DeleteConditionColumnWarning(String header);
 
+    String UnableToDeleteConditionColumn(String header);
+
     String Metadata();
 
     String Attributes();

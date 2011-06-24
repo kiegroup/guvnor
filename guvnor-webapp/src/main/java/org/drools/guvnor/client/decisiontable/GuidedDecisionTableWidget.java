@@ -401,6 +401,11 @@ public class GuidedDecisionTableWidget extends Composite
                                      constants.RemoveThisConditionColumn(),
                                      new ClickHandler() {
                                          public void onClick(ClickEvent w) {
+                                             if ( !canConditionBeDeleted( origCol ) ) {
+                                                 Window.alert( constants.UnableToDeleteConditionColumn( origCol.getHeader() ) );
+                                                 return;
+                                             }
+
                                              String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
 
@@ -676,6 +681,24 @@ public class GuidedDecisionTableWidget extends Composite
             dtable.setModel( guidedDecisionTable );
         }
         layout.add( dtable );
+    }
+
+    //A Condition column cannot be deleted if it is the only column for a bound pattern 
+    //used by an Action. i.e. the dependent Actions should be deleted first.
+    private boolean canConditionBeDeleted(ConditionCol52 col) {
+        Pattern52 pattern = guidedDecisionTable.getPattern( col );
+        if ( pattern.getConditions().size() > 1 ) {
+            return true;
+        }
+        for ( ActionCol52 ac : guidedDecisionTable.getActionCols() ) {
+            if ( ac instanceof ActionSetFieldCol52 ) {
+                ActionSetFieldCol52 asfc = (ActionSetFieldCol52) ac;
+                if ( asfc.getBoundName().equals( pattern.getBoundName() ) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
