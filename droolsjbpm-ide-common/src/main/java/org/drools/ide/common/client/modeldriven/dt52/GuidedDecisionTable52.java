@@ -300,9 +300,8 @@ public class GuidedDecisionTable52
 
         Pattern52 pattern = getPattern( col );
 
-        // If its a formula etc, just return String[0] otherwise check with the sce
-        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE
-                    || col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+        // If its a formula just return String[0] otherwise check with the sce
+        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
             return new String[0];
         } else {
             if ( col.getValueList() != null

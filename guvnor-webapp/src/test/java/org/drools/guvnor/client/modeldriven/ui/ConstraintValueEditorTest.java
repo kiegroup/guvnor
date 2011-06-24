@@ -32,4 +32,13 @@ public class ConstraintValueEditorTest {
                       res[1] );
     }
 
+    @Test
+    public void testSplitComplex() {
+        String[] res = ConstraintValueEditorHelper.splitValue( "a=5*2=expression" );
+        assertEquals( "a=5*2",
+                      res[0] );
+        assertEquals( "expression",
+                      res[1] );
+    }
+
 }
