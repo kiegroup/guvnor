@@ -639,18 +639,20 @@ public class BRDRLPersistence
                 buf.append( buildOperatorParameterDRL( parameters ) );
             }
 
-            buf.append( " " );
             switch ( type ) {
                 case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                    buf.append( " " );
                     buf.append( "( " );
                     buf.append( value );
                     buf.append( " )" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_LITERAL :
                     if ( operator.equals( "in" ) || operator.equals( "not in" ) ) {
+                        buf.append( " " );
                         buf.append( value );
                     } else {
                         if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
+                            buf.append( " " );
                             DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                           type,
                                                                           fieldType,
@@ -660,23 +662,29 @@ public class BRDRLPersistence
                     break;
                 case BaseSingleFieldConstraint.TYPE_EXPR_BUILDER_VALUE :
                     if ( expression != null ) {
+                        buf.append( " " );
                         buf.append( expression.getText() );
                     }
                     break;
                 case BaseSingleFieldConstraint.TYPE_TEMPLATE :
+                    buf.append( " " );
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                   type,
                                                                   fieldType,
                                                                   "@{" + value + "}" );
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
+                    buf.append( " " );
                     DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                   type,
                                                                   fieldType,
                                                                   value );
                     break;
                 default :
-                    buf.append( value );
+                    if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {
+                        buf.append( " " );
+                        buf.append( value );
+                    }
             }
             buf.append( " " );
         }

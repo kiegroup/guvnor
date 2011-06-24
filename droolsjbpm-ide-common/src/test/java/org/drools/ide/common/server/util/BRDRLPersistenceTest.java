@@ -311,6 +311,38 @@ public class BRDRLPersistenceTest {
         assertTrue( s.indexOf( "Person( f1 : age)" ) != -1 );
     }
 
+    @Test
+    public void textIsNullOperator() {
+        final RuleModel m = new RuleModel();
+        m.name = "IsNullOperator";
+        final FactPattern pat = new FactPattern( "Person" );
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "age" );
+        con.setOperator("== null");
+        pat.addConstraint( con );
+
+        m.addLhsItem( pat );
+
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue( s.indexOf( "Person( age == null )" ) != -1 );
+    }
+    
+    @Test
+    public void textIsNotNullOperator() {
+        final RuleModel m = new RuleModel();
+        m.name = "IsNotNullOperator";
+        final FactPattern pat = new FactPattern( "Person" );
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "age" );
+        con.setOperator("!= null");
+        pat.addConstraint( con );
+
+        m.addLhsItem( pat );
+
+        String s = BRDRLPersistence.getInstance().marshal( m );
+        assertTrue( s.indexOf( "Person( age != null )" ) != -1 );
+    }
+
     //
     // public void testRoundTrip() {
     // final RuleModel m = getComplexModel();
