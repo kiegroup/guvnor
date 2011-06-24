@@ -132,15 +132,16 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         String type = model.getType( col,
                                      sce );
 
-        //Null means the field is free-format
-        if ( type == null ) {
-            return cell;
-        }
-
-        // Columns with lists of values, enums etc are always Text (for now)
+        //Retrieve "Guvnor" enums
         String[] vals = model.getValueList( col,
                                             sce );
         if ( vals.length == 0 ) {
+            
+            //Null means the field is free-format
+            if ( type == null ) {
+                return cell;
+            }
+
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 cell = makeNumericCell();
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
@@ -149,6 +150,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeDateCell();
             }
         } else {
+            
+            // Columns with lists of values, enums etc are always Text (for now)
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
             cell = new DecoratedGridCellValueAdaptor<String>( pudd );

@@ -19,16 +19,19 @@ package org.drools.ide.common.client.modeldriven.ui;
 public class ConstraintValueEditorHelper {
 
     /**
-     * 'Person.age' : ['M=Male', 'F=Female']
-     *
-     * This will split the drop down item into a value and a key.
-     * eg key=value
+     * 'Person.age' : ['M=Male', 'F=Female'] 'Person.expression' :
+     * ['a=5=expression1', 'a=5*2=expression2']
+     * 
+     * This will split the drop down item into a value and a key, e.g.
+     * key=value. The split is at the last "=" symbol in the expression.
      */
     public static String[] splitValue(String v) {
         String[] s = new String[2];
-        int pos = v.indexOf( '=' );
-        s[0] = v.substring( 0, pos );
-        s[1] = v.substring( pos + 1, v.length() );
+        String lhs = v.substring( 0,
+                                  v.lastIndexOf( "=" ) );
+        String rhs = v.substring( v.lastIndexOf( "=" ) + 1 );
+        s[0] = lhs;
+        s[1] = rhs;
         return s;
     }
 
