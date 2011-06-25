@@ -60,6 +60,19 @@ public class AssetTemplateCreator {
                            ex );
                 throw new IllegalArgumentException( "Error reading spring-context-sample.xml" );
             }
+        } else if ( format.equals( AssetFormats.WORKITEM_DEFINITION ) ) {
+            try {
+                ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+                BufferedInputStream inContent = new BufferedInputStream( this.getClass().getClassLoader().getResourceAsStream( "workitem-definition-sample.xml" ) );
+                IOUtils.copy( inContent,
+                              outContent );
+
+                asset.updateContent( outContent.toString() );
+            } catch ( IOException ex ) {
+                log.error( "Error reading workitem-definition-sample.xml",
+                           ex );
+                throw new IllegalArgumentException( "Error reading workitem-definition-sample.xml" );
+            }
         }
     }
 }

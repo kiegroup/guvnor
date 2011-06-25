@@ -323,6 +323,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.lang.String[] listRulesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().listRulesInPackage( p0 );
     }
+    
+    public java.lang.String[] listImagesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getPackageService().listImagesInPackage( p0 );
+    }
 
     public org.drools.guvnor.client.rpc.SnapshotInfo[] listSnapshots(java.lang.String p0) {
         return getPackageService().listSnapshots( p0 );
@@ -755,6 +759,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.util.Map loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadSpringContextElementData();
+    }
+    
+    public java.util.Map loadWorkitemDefinitionElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+        return getService().loadWorkitemDefinitionElementData();
     }
 
 }

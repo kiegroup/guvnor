@@ -71,6 +71,7 @@ public interface RepositoryServiceAsync {
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
+    public void loadWorkitemDefinitionElementData(AsyncCallback cb);
     
 }
 

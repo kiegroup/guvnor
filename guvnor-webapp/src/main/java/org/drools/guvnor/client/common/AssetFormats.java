@@ -78,6 +78,11 @@ public class AssetFormats {
     public static final String RULE_FLOW_RF = "rf";
     public static final String BPMN_PROCESS = "bpmn";
     public static final String BPMN2_PROCESS = "bpmn2";
+    
+    /**
+     * For WorkItems
+     */
+    public static final String WORKITEM_DEFINITION = "wid";
 
     /**
      * Use a data enum.

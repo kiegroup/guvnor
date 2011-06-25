@@ -621,6 +621,20 @@ public class RepositoryPackageOperations {
             return new String[0];
         }
     }
+    
+    protected String[] listImagesInPackage(String packageName) throws SerializationException {
+        // load package
+        PackageItem item = getRulesRepository().loadPackage(packageName);
+        List<String> retList = new ArrayList<String>();
+        Iterator<AssetItem> iter = item.getAssets();
+        while(iter.hasNext()) {
+            AssetItem pitem = iter.next();
+            if(pitem.getFormat().equalsIgnoreCase("png") || pitem.getFormat().equalsIgnoreCase("gif") || pitem.getFormat().equalsIgnoreCase("jpg")) {
+                retList.add(pitem.getName());
+            }
+        }
+        return (String[]) retList.toArray(new String[] {});
+    }
 
     PackageDRLAssembler createPackageDRLAssembler(final PackageItem packageItem) {
         return new PackageDRLAssembler(packageItem);

@@ -2143,12 +2143,22 @@ public interface Constants
     String MoveDownListMove();
 
     String DescSpringContext();
+    
+    String DeskWorkItemDefinition();
+    
+    String ChooseImportClass();
+    
+    String ChooseIcon();
 
     String WorkingSets();
 
     String SpringContext();
 
     String NewSpringContext();
+    
+    String WorkItemDefinition();
+    
+    String NewWorkitemDefinition();
 
     String NewWorkingSet();
 

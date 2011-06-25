@@ -60,6 +60,7 @@ import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
+import org.drools.guvnor.server.ruleeditor.workitem.WorkitemDefinitionElementsManager;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
@@ -462,6 +463,13 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listImagesInGlobalArea() throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
+        return repositoryPackageOperations.listImagesInPackage( RulesRepository.RULE_GLOBAL_AREA );
+    }
 
     /**
      * @deprecated in favour of {@link #showLog(PageRequest)}
@@ -745,6 +753,22 @@ public class ServiceImplementation
             log.error( "Error loading Spring Context Elements",
                        ex );
             throw new DetailedSerializationException( "Error loading Spring Context Elements",
+                                                      "View server logs for more information" );
+        }
+    }
+    
+    /**
+     * Returns the Workitem Definition elements specified by WorkitemDefinitionElementsManager
+     * @return a Map containing the key,value pairs of data.
+     * @throws DetailedSerializationException 
+     */
+    public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException {
+        try {
+            return WorkitemDefinitionElementsManager.getInstance().getElements();
+        } catch ( IOException ex ) {
+            log.error( "Error loading Workitem Definition Elements",
+                       ex );
+            throw new DetailedSerializationException( "Error loading Workitem Definition Elements",
                                                       "View server logs for more information" );
         }
     }

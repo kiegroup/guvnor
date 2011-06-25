@@ -152,6 +152,8 @@ public class NewAssetWizard extends FormStylePopup {
                 description.setText( constants.NewEnumDoco() );
             } else if ( format == AssetFormats.SPRING_CONTEXT ) {
                 description.setText( constants.DescSpringContext());
+            } else if ( format == AssetFormats.WORKITEM_DEFINITION ) {
+                description.setText( constants.DeskWorkItemDefinition());
             }
             }
         }

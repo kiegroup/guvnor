@@ -341,6 +341,13 @@ public class RepositoryPackageService
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(packageName);
         return repositoryPackageOperations.listRulesInPackage(packageName);
     }
+    
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public String[] listImagesInPackage(String packageName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(packageName);
+        return repositoryPackageOperations.listImagesInPackage(packageName);
+    }
 
     @WebRemote
     public void rebuildSnapshots() throws SerializationException {

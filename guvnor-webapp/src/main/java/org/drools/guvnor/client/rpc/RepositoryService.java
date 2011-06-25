@@ -327,5 +327,14 @@ public interface RepositoryService
      * @throws DetailedSerializationException
      */
     public Map<String, String> loadSpringContextElementData() throws DetailedSerializationException;
+    
+    /**
+     * Returns the Workitem Definition elements specified by
+     * WorkitemDefinitionElementsManager
+     * 
+     * @return a Map containing the key,value pairs of data.
+     * @throws DetailedSerializationException
+     */
+    public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException;
 
 }

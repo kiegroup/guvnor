@@ -40,6 +40,7 @@ public interface PackageServiceAsync {
     public void rebuildSnapshots(AsyncCallback cb);
     public void rebuildPackages(AsyncCallback cb);
     public void listRulesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
+    public void listImagesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void listSnapshots(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.SnapshotInfo[]> cb);
     public void listTypesInPackage(java.lang.String p0, AsyncCallback<java.lang.String[]> cb);
     public void installSampleRepository(AsyncCallback cb);

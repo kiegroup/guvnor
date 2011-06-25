@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor;
+import org.drools.guvnor.client.ruleeditor.workitem.WorkitemDefinitionEditor;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -124,7 +126,9 @@ public class EditorLauncher {
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.RULE_TEMPLATE ) ) {
             return new RuleTemplateEditor( asset );
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.SPRING_CONTEXT ) ) {
-            return new SpringContextEditor( asset);
+            return new SpringContextEditor( asset );
+        } else if ( asset.getMetaData().getFormat().equals( AssetFormats.WORKITEM_DEFINITION ) ) {
+            return new WorkitemDefinitionEditor( asset );
         } else {
             return new DefaultContentUploadEditor( asset,
                                                    viewer );
@@ -177,6 +181,10 @@ public class EditorLauncher {
 
         result.put( AssetFormats.SPRING_CONTEXT,
                 new RuleFormatImageResource( AssetFormats.SPRING_CONTEXT,
+                                             images.newEnumeration() ) );
+        
+        result.put( AssetFormats.WORKITEM_DEFINITION,
+                new RuleFormatImageResource( AssetFormats.WORKITEM_DEFINITION,
                                              images.newEnumeration() ) );
 
         

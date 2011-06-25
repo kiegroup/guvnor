@@ -204,6 +204,13 @@ public interface PackageService
      * items !).
      */
     public String[] listRulesInPackage(String packageName) throws SerializationException;
+    
+    /**
+     * This will list the images available in a package. This has an upper limit
+     * of what it will return (it just doesn't make sense to show a list of 20K
+     * items !).
+     */
+    public String[] listImagesInPackage(String packageName) throws SerializationException;
 
     /**
      * This will load a list of snapshots for the given package. Snapshots are
