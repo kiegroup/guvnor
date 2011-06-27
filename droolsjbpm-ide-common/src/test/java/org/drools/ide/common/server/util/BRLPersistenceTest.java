@@ -303,7 +303,7 @@ public class BRLPersistenceTest {
         m.addRhsItem( ret );
 
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "Send an email to {administrator}";
+        sen.setDefinition( "Send an email to {administrator}" );
 
         m.addRhsItem( sen );
         return m;

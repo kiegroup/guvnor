@@ -276,8 +276,10 @@ public class TemplateModel extends RuleModel
             }
         }
 
+        //TODO Handle definition and value
         private void visitDSLSentence(final DSLSentence sentence) {
-            parseStringPattern( sentence.sentence );
+            String text = sentence.getDefinition();
+            parseStringPattern( text );
         }
 
         private void visitFactPattern(FactPattern pattern) {

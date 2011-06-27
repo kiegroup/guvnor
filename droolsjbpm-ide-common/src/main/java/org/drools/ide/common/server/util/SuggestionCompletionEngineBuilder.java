@@ -184,18 +184,18 @@ public class SuggestionCompletionEngineBuilder {
     /**
      * Add a DSL sentence for an action.
      */
-    public void addDSLActionSentence(final String sentence) {
+    public void addDSLActionSentence(final String definition) {
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = sentence;
+        sen.setDefinition( definition );
         this.actionDSLSentences.add( sen );
     }
 
     /**
      * Add a DSL sentence for a condition.
      */
-    public void addDSLConditionSentence(final String sentence) {
+    public void addDSLConditionSentence(final String definition) {
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = sentence;
+        sen.setDefinition( definition );
         this.conditionDSLSentences.add( sen );
     }
 
@@ -319,7 +319,7 @@ public class SuggestionCompletionEngineBuilder {
 
     public void addDSLMapping(DSLMappingEntry entry) {
         DSLSentence sen = new DSLSentence();
-        sen.sentence = entry.getMappingKey();
+        sen.setDefinition( entry.getMappingKey());
         if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
             this.conditionDSLSentences.add( sen );
         } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {

@@ -134,7 +134,7 @@ public class ChoiceList extends PopupPanel {
     private void populateList(List<DSLSentence> filtered) {
         list.clear();
         for ( int i = 0; i < filtered.size(); i++ ) {
-            list.addItem( ((DSLSentence) filtered.get( i )).sentence );
+            list.addItem( ((DSLSentence) filtered.get( i )).getDefinition() );
         }
     }
 

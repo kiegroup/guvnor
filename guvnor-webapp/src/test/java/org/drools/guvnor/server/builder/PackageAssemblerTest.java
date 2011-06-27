@@ -812,12 +812,12 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         model.addRhsItem(action);
 
         DSLSentence dslCondition = new DSLSentence();
-        dslCondition.sentence = "This is a sentence";
+        dslCondition.setDefinition( "This is a sentence" );
 
         model.addLhsItem(dslCondition);
 
         DSLSentence dslAction = new DSLSentence();
-        dslAction.sentence = "say {42}";
+        dslAction.setDefinition( "say {42}" );
 
         model.addRhsItem(dslAction);
 

@@ -29,39 +29,73 @@ public class DSLSentenceTest {
     public void testSentence() {
 
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "this is {something} here and {here}";
+        sen.setDefinition( "this is {something} here and {here}" );
         assertEquals( "this is something here and here",
                       sen.toString() );
 
-        sen.sentence = "foo bar";
+        sen.setDefinition( "foo bar" );
         assertEquals( "foo bar",
                       sen.toString() );
 
         final DSLSentence newOne = sen.copy();
         assertFalse( newOne == sen );
-        assertEquals( newOne.sentence,
-                      sen.sentence );
+        assertEquals( newOne.getDefinition(),
+                      sen.getDefinition() );
+        assertEquals( newOne.getValues(),
+                      sen.getValues() );
     }
 
     @Test
-    public void testEnumSentence(){
+    public void testEnumSentence() {
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "this is {variable:ENUM:Value.test} here and {here}";
-        assertEquals( "this is variable here and here",sen.toString() );
+        sen.setDefinition( "this is {variable:ENUM:Value.test} here and {here}" );
+        assertEquals( "this is variable here and here",
+                      sen.toString() );
     }
 
     @Test
-    public void testLogColonSentence(){
+    public void testLogColonSentence() {
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "Log : \"{message}\"";
-        assertEquals( "Log : \"message\"",sen.toString() );
+        sen.setDefinition( "Log : \"{message}\"" );
+        assertEquals( "Log : \"message\"",
+                      sen.toString() );
     }
 
     @Test
     public void testWithNewLines() {
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "this is {variable}\\n here and {here}";
-        assertEquals( "this is variable\n here and here",sen.toString() );
+        sen.setDefinition( "this is {variable}\\n here and {here}" );
+        assertEquals( "this is variable\n here and here",
+                      sen.toString() );
 
     }
+    
+    @Test
+    public void testInterpolate1() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "{something} here" );
+        sen.getValues().set( 0, "word" );
+        assertEquals( "word here",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testInterpolate2() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "a {here}" );
+        sen.getValues().set( 0, "word" );
+        assertEquals( "a word",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testInterpolate3() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "a {here} and {here}" );
+        sen.getValues().set( 0, "word" );
+        sen.getValues().set( 1, "word" );
+        assertEquals( "a word and word",
+                      sen.interpolate() );
+    }
+
 }

@@ -456,7 +456,7 @@ public class BRDRLPersistence
 
         public void visitDSLSentence(final DSLSentence sentence) {
             buf.append( indentation );
-            buf.append( sentence );
+            buf.append( sentence.interpolate() );
             buf.append( "\n" );
         }
 
