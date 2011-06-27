@@ -68,6 +68,8 @@ public class DRLConstraintValueBuilder {
             buf.append("\"");
             buf.append( fieldValue );
             buf.append("\"");
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            buf.append( fieldValue );
         } else {
             addQuote( constraintType,
                       buf );
@@ -120,6 +122,8 @@ public class DRLConstraintValueBuilder {
             buf.append( "\"" );
             buf.append( fieldValue );
             buf.append( "\"" );
+        } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            buf.append( fieldValue );
         } else {
             buf.append( fieldValue );
         }
