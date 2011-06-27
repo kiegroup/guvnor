@@ -237,9 +237,9 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
                       eng.conditionDSLSentences.length );
 
         assertEquals( "The agents rating is {rating}",
-                      eng.conditionDSLSentences[0].sentence );
+                      eng.conditionDSLSentences[0].getDefinition() );
         assertEquals( "Send a notification to manufacturing '{message}'",
-                      eng.actionDSLSentences[0].sentence );
+                      eng.actionDSLSentences[0].getDefinition() );
 
     }
 

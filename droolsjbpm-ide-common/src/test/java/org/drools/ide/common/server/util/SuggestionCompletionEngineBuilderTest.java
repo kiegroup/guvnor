@@ -83,7 +83,7 @@ public class SuggestionCompletionEngineBuilderTest {
         assertEquals( 1, engine.keywordDSLItems.length );
         assertEquals( 1, engine.anyScopeDSLItems.length );
 
-        assertEquals("cond", engine.conditionDSLSentences[0].sentence);
+        assertEquals("cond", engine.conditionDSLSentences[0].getDefinition() );
     }
 
 }

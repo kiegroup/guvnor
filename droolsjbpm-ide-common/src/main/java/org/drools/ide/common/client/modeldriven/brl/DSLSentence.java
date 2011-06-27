@@ -16,6 +16,8 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This represents a DSL sentence.
@@ -25,14 +27,17 @@ public class DSLSentence
     IPattern,
     IAction {
 
-    public String sentence;
+    private String       sentence;
 
+    private String       definition;
+
+    private List<String> values;
 
     /**
      * This will strip off any residual "{" stuff...
      */
     public String toString() {
-        final char[] chars = this.sentence.toCharArray();
+        final char[] chars = this.definition.toCharArray();
         boolean inBracket = false;
         boolean inBracketAfterColon = false;
 
@@ -57,12 +62,130 @@ public class DSLSentence
     }
 
     /**
+     * This will strip off any "{" stuff, substituting values accordingly
+     */
+    public String interpolate() {
+        getValues();
+        if ( definition == null ) {
+            return "";
+        }
+
+        int variableStart = definition.indexOf( "{" );
+        if ( variableStart < 0 ) {
+            return definition;
+        }
+
+        int index = 0;
+        int variableEnd = 0;
+        StringBuilder sb = new StringBuilder();
+        while ( variableStart >= 0 ) {
+            sb.append( definition.substring( variableEnd,
+                                             variableStart ) );
+            variableEnd = definition.indexOf( "}",
+                                                  variableStart ) + 1;
+            variableStart = definition.indexOf( "{",
+                                                variableEnd );
+            sb.append( values.get( index++ ) );
+        }
+        if ( variableEnd < definition.length() ) {
+            sb.append( definition.substring( variableEnd ) );
+        }
+        return sb.toString();
+    }
+
+    /**
      * This is used by the GUI when adding a sentence to LHS or RHS.
+     * 
      * @return
      */
     public DSLSentence copy() {
         final DSLSentence newOne = new DSLSentence();
-        newOne.sentence = this.sentence;
+        newOne.definition = getDefinition();
+        List<String> values = getValues();
+        if ( values != null ) {
+            for ( String value : getValues() ) {
+                newOne.getValues().add( value );
+            }
+        }
         return newOne;
     }
+
+    public String getDefinition() {
+        //Legacy DSLSentence did not separate DSL definition from values, which led to complications
+        //when a user wanted to set the value of a DSL parameter to text including the special escaping
+        //used to differentiate value, from data-type, from restriction
+        if ( definition == null ) {
+            parseSentence();
+        }
+        return definition;
+    }
+
+    public void setDefinition(String definition) {
+        this.definition = definition;
+    }
+
+    public List<String> getValues() {
+        //Legacy DSLSentence did not separate DSL definition from values, which led to complications
+        //when a user wanted to set the value of a DSL parameter to text including the special escaping
+        //used to differentiate value, from data-type, from restriction
+        if ( this.values == null ) {
+            parseDefinition();
+        }
+        return values;
+    }
+
+    public void setValues(List<String> values) {
+        this.values = values;
+    }
+
+    //Build the Definition and Values from a legacy Sentence
+    private void parseSentence() {
+        if ( sentence == null ) {
+            return;
+        }
+        definition = sentence;
+        values = new ArrayList<String>();
+        sentence = null;
+
+        int variableStart = definition.indexOf( "{" );
+        while ( variableStart >= 0 ) {
+            int variableEnd = definition.indexOf( "}",
+                                                  variableStart );
+            String variable = definition.substring( variableStart + 1,
+                                                    variableEnd );
+            values.add( parseValue( variable ) );
+            variableStart = definition.indexOf( "{",
+                                                variableEnd );
+        }
+    }
+
+    //Build the Values from the Definition
+    private void parseDefinition() {
+        values = new ArrayList<String>();
+        if ( getDefinition() == null ) {
+            return;
+        }
+
+        int variableStart = definition.indexOf( "{" );
+        while ( variableStart >= 0 ) {
+            int variableEnd = definition.indexOf( "}",
+                                                  variableStart );
+            String variable = definition.substring( variableStart + 1,
+                                                    variableEnd );
+            values.add( parseValue( variable ) );
+            variableStart = definition.indexOf( "{",
+                                                variableEnd );
+        }
+    }
+
+    private String parseValue(String variable) {
+        if ( !variable.contains( ":" ) ) {
+            return variable;
+        }
+
+        String value = variable.substring( 0,
+                                           variable.indexOf( ":" ) );
+        return value;
+    }
+
 }

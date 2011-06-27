@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,27 +48,32 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DSLSentenceWidget extends RuleModellerWidget {
 
-    private static final String        ENUM_TAG    = "ENUM";
-    private static final String        DATE_TAG    = "DATE";
-    private static final String        BOOLEAN_TAG = "BOOLEAN";
-    private final List<Widget>                 widgets;
-    private final DSLSentence          sentence;
-    private final VerticalPanel        layout;
-    private HorizontalPanel            currentRow;
-    private boolean readOnly;
+    private static final String ENUM_TAG    = "ENUM";
+    private static final String DATE_TAG    = "DATE";
+    private static final String BOOLEAN_TAG = "BOOLEAN";
+    private final List<Widget>  widgets;
+    private final DSLSentence   sentence;
+    private final VerticalPanel layout;
+    private HorizontalPanel     currentRow;
+    private boolean             readOnly;
 
-    public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence) {
-        this(modeller, sentence, null);
+    public DSLSentenceWidget(RuleModeller modeller,
+                             DSLSentence sentence) {
+        this( modeller,
+              sentence,
+              null );
     }
 
-    public DSLSentenceWidget(RuleModeller modeller, DSLSentence sentence, Boolean readOnly) {
-        super (modeller);
+    public DSLSentenceWidget(RuleModeller modeller,
+                             DSLSentence sentence,
+                             Boolean readOnly) {
+        super( modeller );
         widgets = new ArrayList<Widget>();
         this.sentence = sentence;
 
-        if (readOnly == null){
+        if ( readOnly == null ) {
             this.readOnly = false;
-        }else{
+        } else {
             this.readOnly = readOnly;
         }
 
@@ -80,15 +84,15 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                   "100%" );
         this.layout.setWidth( "100%" );
 
-        if (this.readOnly) {
-            this.layout.addStyleName("editor-disabled-widget");
+        if ( this.readOnly ) {
+            this.layout.addStyleName( "editor-disabled-widget" );
         }
 
         init();
     }
 
     private void init() {
-        makeWidgets( this.sentence.sentence );
+        makeWidgets( this.sentence );
         initWidget( this.layout );
     }
 
@@ -97,21 +101,24 @@ public class DSLSentenceWidget extends RuleModellerWidget {
      * displaying. One day, if this is too complex, this will have to be done on
      * the server side.
      */
-    public void makeWidgets(String dslLine) {
+    public void makeWidgets(DSLSentence sentence) {
 
-        int startVariable = dslLine.indexOf( "{" );
+        String dslDefinition = sentence.getDefinition();
+        List<String> dslValues = sentence.getValues();
+        int index = 0;
+
+        int startVariable = dslDefinition.indexOf( "{" );
         List<Widget> lineWidgets = new ArrayList<Widget>();
 
-        boolean firstOneIsBracket = (dslLine.indexOf( "{" ) == 0);
+        boolean firstOneIsBracket = (dslDefinition.indexOf( "{" ) == 0);
 
         String startLabel = "";
         if ( startVariable > 0 ) {
-            startLabel = dslLine.substring( 0,
-                                            startVariable );
+            startLabel = dslDefinition.substring( 0,
+                                                  startVariable );
         } else if ( !firstOneIsBracket ) {
-            // There are no curly brackets in the text.
-            // Just print it
-            startLabel = dslLine;
+            // There are no curly brackets in the text. Just print it
+            startLabel = dslDefinition;
         }
 
         Widget label = getLabel( startLabel );
@@ -120,24 +127,27 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         while ( startVariable > 0 || firstOneIsBracket ) {
             firstOneIsBracket = false;
 
-            int endVariable = dslLine.indexOf( "}",
-                                               startVariable );
-            String currVariable = dslLine.substring( startVariable + 1,
-                                                     endVariable );
+            int endVariable = dslDefinition.indexOf( "}",
+                                                     startVariable );
+            String currVariable = dslDefinition.substring( startVariable + 1,
+                                                           endVariable );
 
-            Widget varWidget = processVariable( currVariable );
+            String value = dslValues.get( index );
+            Widget varWidget = processVariable( currVariable,
+                                                value );
             lineWidgets.add( varWidget );
+            index++;
 
             // Parse out the next label between variables
-            startVariable = dslLine.indexOf( "{",
-                                             endVariable );
+            startVariable = dslDefinition.indexOf( "{",
+                                                   endVariable );
             String lbl;
             if ( startVariable > 0 ) {
-                lbl = dslLine.substring( endVariable + 1,
-                                         startVariable );
+                lbl = dslDefinition.substring( endVariable + 1,
+                                               startVariable );
             } else {
-                lbl = dslLine.substring( endVariable + 1,
-                                         dslLine.length() );
+                lbl = dslDefinition.substring( endVariable + 1,
+                                               dslDefinition.length() );
             }
 
             if ( lbl.indexOf( "\\n" ) > -1 ) {
@@ -162,48 +172,51 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     class NewLine extends Widget {
     }
 
-    public Widget processVariable(String currVariable) {
+    public Widget processVariable(String currVariable,
+                                  String value) {
 
         Widget result = null;
-        // Formats are: <varName>:ENUM:<Field.type>
+        // Formats are: 
+        // <varName>:ENUM:<Field.type>
         // <varName>:DATE:<dateFormat>
         // <varName>:BOOLEAN:[checked | unchecked] <-initial value
+        // Note: <varName> is no longer used; values are stored in DSLSentence.values()
 
         if ( currVariable.contains( ":" ) ) {
             if ( currVariable.contains( ":" + ENUM_TAG + ":" ) ) {
-                result = getEnumDropdown( currVariable );
+                result = getEnumDropdown( currVariable,
+                                          value );
             } else if ( currVariable.contains( ":" + DATE_TAG + ":" ) ) {
-                result = getDateSelector( currVariable );
+                result = getDateSelector( currVariable,
+                                          value );
             } else if ( currVariable.contains( ":" + BOOLEAN_TAG + ":" ) ) {
-                result = getCheckbox( currVariable );
+                result = getCheckbox( currVariable,
+                                      value );
             } else {
                 String regex = currVariable.substring( currVariable.indexOf( ":" ) + 1,
                                                        currVariable.length() );
-                result = getBox( currVariable,
+                result = getBox( value,
                                  regex );
             }
         } else {
-            result = getBox( currVariable,
+            result = getBox( value,
                              "" );
         }
 
         return result;
     }
 
-    public Widget getEnumDropdown(String variableDef) {
+    public Widget getEnumDropdown(String variableDef,
+                                  String value) {
 
-        Widget resultWidget = new DSLDropDown( variableDef );
+        Widget resultWidget = new DSLDropDown( variableDef,
+                                               value );
         return resultWidget;
     }
 
     public Widget getBox(String variableDef,
                          String regex) {
 
-        int colonIndex = variableDef.indexOf( ":" );
-        if ( colonIndex > 0 ) {
-            variableDef = variableDef.substring( 0,
-                                                 colonIndex );
-        }
         FieldEditor currentBox = new FieldEditor();
         currentBox.setVisibleLength( variableDef.length() + 1 );
         currentBox.setText( variableDef );
@@ -212,14 +225,16 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return currentBox;
     }
 
-    public Widget getCheckbox(String variableDef) {
-        return new DSLCheckBox( variableDef );
+    public Widget getCheckbox(String variableDef,
+                              String value) {
+        return new DSLCheckBox( variableDef,
+                                value );
     }
 
-    public Widget getDateSelector(String variableDef) {
+    public Widget getDateSelector(String variableDef,
+                                  String value) {
         String[] parts = variableDef.split( ":" + DATE_TAG + ":" );
-
-        return new DSLDateSelector( parts[0],
+        return new DSLDateSelector( value,
                                     parts[1] );
     }
 
@@ -243,50 +258,33 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     /**
-     * This will go through the widgets and build up a sentence.
+     * This will go through the widgets and extract the values
      */
     protected void updateSentence() {
-        String newSentence = "";
+        List<String> dslValues = new ArrayList<String>();
         for ( Iterator<Widget> iter = widgets.iterator(); iter.hasNext(); ) {
             Widget wid = iter.next();
-            if ( wid instanceof Label ) {
-                newSentence = newSentence + ((Label) wid).getText();
-            } else if ( wid instanceof FieldEditor ) {
+            if ( wid instanceof FieldEditor ) {
                 FieldEditor editor = (FieldEditor) wid;
-
-                String varString = editor.getText();
-                String restriction = editor.getRestriction();
-                if ( !restriction.equals( "" ) ) {
-                    varString = varString + ":" + restriction;
-                }
-
-                newSentence = newSentence + "{" + varString + "}";
+                dslValues.add( editor.getText().trim() );
             } else if ( wid instanceof DSLDropDown ) {
-
-                // Add the meta-data back to the field so that is shows up as a
-                // dropdown when refreshed from repo
                 DSLDropDown drop = (DSLDropDown) wid;
                 ListBox box = drop.getListBox();
-                String type = drop.getType();
-                String factAndField = drop.getFactAndField();
+                dslValues.add( box.getValue( box.getSelectedIndex() ) );
 
-                newSentence = newSentence + "{" + box.getValue( box.getSelectedIndex() ) + ":" + type + ":" + factAndField + "} ";
             } else if ( wid instanceof DSLCheckBox ) {
-
                 DSLCheckBox check = (DSLCheckBox) wid;
-                String checkValue = check.getCheckedValue();
-                newSentence = newSentence + "{" + checkValue + ":" + check.getType() + ":" + checkValue + "} ";
+                dslValues.add( check.getCheckedValue() );
+
             } else if ( wid instanceof DSLDateSelector ) {
                 DSLDateSelector dateSel = (DSLDateSelector) wid;
                 String dateString = dateSel.getDateString();
-                String format = dateSel.getVisualFormat();
-                newSentence = newSentence + "{" + dateString + ":" + dateSel.getType() + ":" + format + "} ";
-            } else if ( wid instanceof NewLine ) {
-                newSentence = newSentence + "\\n";
+                dslValues.add( dateString );
+
             }
         }
-        this.setModified(true);
-        this.sentence.sentence = newSentence.trim();
+        this.setModified( true );
+        this.sentence.setValues( dslValues );
     }
 
     class FieldEditor extends DirtyableComposite {
@@ -304,21 +302,21 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             panel.add( new HTML( "&nbsp;" ) );
             panel.add( box );
             panel.add( new HTML( "&nbsp;" ) );
-            box.addChangeHandler(new ChangeHandler() {
+            box.addChangeHandler( new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
                     TextBox otherBox = (TextBox) event.getSource();
 
-                    if (!regex.equals("") && !otherBox.getText().matches(regex)) {
-                        Window.alert(constants.TheValue0IsNotValidForThisField(otherBox.getText()));
-                        box.setText(oldValue);
+                    if ( !regex.equals( "" ) && !otherBox.getText().matches( regex ) ) {
+                        Window.alert( constants.TheValue0IsNotValidForThisField( otherBox.getText() ) );
+                        box.setText( oldValue );
                     } else {
                         oldValue = otherBox.getText();
                         updateSentence();
                         makeDirty();
                     }
                 }
-            });
+            } );
 
             initWidget( panel );
         }
@@ -346,24 +344,21 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         public boolean isValid() {
             boolean result = true;
             if ( !regex.equals( "" ) ) result = this.box.getText().matches( this.regex );
-
             return result;
         }
     }
 
     class DSLDropDown extends DirtyableComposite {
-        final SuggestionCompletionEngine completions = getModeller().getSuggestionCompletions();
-        ListBox        resultWidget = null;
+        final SuggestionCompletionEngine completions  = getModeller().getSuggestionCompletions();
+        ListBox                          resultWidget = null;
         // Format for the dropdown def is <varName>:<type>:<Fact.field>
-        private String varName      = "";
-        private String type         = "";
-        private String factAndField = "";
+        private String                   type         = "";
+        private String                   factAndField = "";
 
-        public DSLDropDown(String variableDef) {
+        public DSLDropDown(String variableDef,
+                           String value) {
             int firstIndex = variableDef.indexOf( ":" );
             int lastIndex = variableDef.lastIndexOf( ":" );
-            varName = variableDef.substring( 0,
-                                             firstIndex );
             type = variableDef.substring( firstIndex + 1,
                                           lastIndex );
             factAndField = variableDef.substring( lastIndex + 1,
@@ -389,7 +384,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                         realValue = vs[0];
                         display = vs[1];
                     }
-                    if ( varName.equals( realValue ) ) {
+                    if ( value.equals( realValue ) ) {
                         selected = i;
                     }
                     list.addItem( display,
@@ -397,14 +392,14 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 }
                 if ( selected >= 0 ) list.setSelectedIndex( selected );
             }
-            list.addChangeHandler(new ChangeHandler() {
+            list.addChangeHandler( new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
-                     updateSentence();
-                        makeDirty();
+                    updateSentence();
+                    makeDirty();
                 }
-            });
- 
+            } );
+
             initWidget( list );
             resultWidget = list;
         }
@@ -435,37 +430,28 @@ public class DSLSentenceWidget extends RuleModellerWidget {
     }
 
     class DSLCheckBox extends Composite {
-        ListBox        resultWidget = null;
-        // Format for the dropdown def is <varName>:<type>:<Fact.field>
-        private String varName      = "";
+        ListBox resultWidget = null;
 
-        public DSLCheckBox(String variableDef) {
-
-            int firstIndex = variableDef.indexOf( ":" );
-            int lastIndex = variableDef.lastIndexOf( ":" );
-            varName = variableDef.substring( 0,
-                                             firstIndex );
-            String checkedUnchecked = variableDef.substring( lastIndex + 1,
-                                                             variableDef.length() );
+        public DSLCheckBox(String variableDef,
+                           String value) {
 
             resultWidget = new ListBox();
             resultWidget.addItem( "true" );
             resultWidget.addItem( "false" );
 
-            if ( checkedUnchecked.equalsIgnoreCase( "true" ) ) {
+            if ( value.equalsIgnoreCase( "true" ) ) {
                 resultWidget.setSelectedIndex( 0 );
             } else {
                 resultWidget.setSelectedIndex( 1 );
             }
 
-            resultWidget.addClickHandler(new ClickHandler() {
+            resultWidget.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
                     updateSentence();
 
                 }
-            });
-
+            } );
 
             resultWidget.setVisible( true );
             initWidget( resultWidget );
@@ -481,14 +467,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
         public String getType() {
             return BOOLEAN_TAG;
-        }
-
-        public String getVarName() {
-            return varName;
-        }
-
-        public void setVarName(String varName) {
-            this.varName = varName;
         }
 
         public String getCheckedValue() {

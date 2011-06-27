@@ -431,7 +431,7 @@ public class BRDRLPersistenceTest {
         m.addRhsItem( ret );
 
         final DSLSentence sen = new DSLSentence();
-        sen.sentence = "Send an email to {administrator}";
+        sen.setDefinition( "Send an email to {administrator}" );
 
         m.addRhsItem( sen );
         return m;
@@ -1416,7 +1416,7 @@ public class BRDRLPersistenceTest {
     public void testAssertWithDSL() throws Exception {
         RuleModel m = new RuleModel();
         DSLSentence sen = new DSLSentence();
-        sen.sentence = "I CAN HAS DSL";
+        sen.setDefinition( "I CAN HAS DSL" );
         m.addRhsItem( sen );
         ActionInsertFact ins = new ActionInsertFact( "Shizzle" );
         ActionFieldValue val = new ActionFieldValue( "goo",
