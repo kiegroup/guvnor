@@ -34,6 +34,9 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionText;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
@@ -41,6 +44,7 @@ import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -318,7 +322,7 @@ public class BRDRLPersistenceTest {
         final FactPattern pat = new FactPattern( "Person" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "age" );
-        con.setOperator("== null");
+        con.setOperator( "== null" );
         pat.addConstraint( con );
 
         m.addLhsItem( pat );
@@ -326,7 +330,7 @@ public class BRDRLPersistenceTest {
         String s = BRDRLPersistence.getInstance().marshal( m );
         assertTrue( s.indexOf( "Person( age == null )" ) != -1 );
     }
-    
+
     @Test
     public void textIsNotNullOperator() {
         final RuleModel m = new RuleModel();
@@ -334,7 +338,7 @@ public class BRDRLPersistenceTest {
         final FactPattern pat = new FactPattern( "Person" );
         final SingleFieldConstraint con = new SingleFieldConstraint();
         con.setFieldName( "age" );
-        con.setOperator("!= null");
+        con.setOperator( "!= null" );
         pat.addConstraint( con );
 
         m.addLhsItem( pat );
@@ -481,8 +485,7 @@ public class BRDRLPersistenceTest {
     public void testSingleExists() throws Exception {
         RuleModel m = new RuleModel();
         m.name = "or";
-        CompositeFactPattern cp = new CompositeFactPattern(
-                                                            CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
+        CompositeFactPattern cp = new CompositeFactPattern( CompositeFactPattern.COMPOSITE_TYPE_EXISTS );
         FactPattern p1 = new FactPattern( "Person" );
         SingleFieldConstraint sf1 = new SingleFieldConstraint( "age" );
         sf1.setOperator( "==" );
@@ -682,6 +685,318 @@ public class BRDRLPersistenceTest {
                                               + " then " + "end",
                                       result );
 
+    }
+
+    @Test
+    public void testLHSExpressionString1() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsString1";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionText( "field1" ) );
+        con.setOperator( "==" );
+        con.setValue( "goo" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsString1\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == \"goo\" )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionString2() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsString2";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
+                                                                     "java.lang.String",
+                                                                     SuggestionCompletionEngine.TYPE_STRING ) );
+        con.setOperator( "==" );
+        con.setValue( "Cheddar" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsString2\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == \"Cheddar\" )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionJavaEnum() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsJavaEnum";
+
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
+                                                                     "CHEESE",
+                                                                     SuggestionCompletionEngine.TYPE_COMPARABLE ) );
+        con.setOperator( "==" );
+        con.setValue( "CHEESE.Cheddar" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsJavaEnum\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == CHEESE.Cheddar )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNumber() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNumber";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
+                                                                     "java.lang.Integer",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC ) );
+        con.setOperator( "==" );
+        con.setValue( "55" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNumber\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == 55 )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionDate() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsDate";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
+                                                                     "java.util.Date",
+                                                                     SuggestionCompletionEngine.TYPE_DATE ) );
+        con.setOperator( "==" );
+        con.setValue( "27-Jun-2011" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsDate\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == \"27-Jun-2011\" )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionBoolean() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsBoolean";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "field1",
+                                                                     "java.lang.Boolean",
+                                                                     SuggestionCompletionEngine.TYPE_BOOLEAN ) );
+        con.setOperator( "==" );
+        con.setValue( "true" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsBoolean\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( field1 == true )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNestedString() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNestedString";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
+                                                                     "Cheese",
+                                                                     SuggestionCompletionEngine.TYPE_OBJECT ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "name",
+                                                                     "java.lang.String",
+                                                                     SuggestionCompletionEngine.TYPE_STRING ) );
+        con.setOperator( "==" );
+        con.setValue( "Cheedar" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNestedString\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( favouriteCheese.name == \"Cheedar\" )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNestedNumber() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNestedNumber";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
+                                                                     "Cheese",
+                                                                     SuggestionCompletionEngine.TYPE_OBJECT ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "age",
+                                                                     "java.lang.Integer",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC ) );
+        con.setOperator( "==" );
+        con.setValue( "55" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNestedNumber\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( favouriteCheese.age == 55 )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNestedDate() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNestedDate";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
+                                                                     "Cheese",
+                                                                     SuggestionCompletionEngine.TYPE_OBJECT ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "dateBrought",
+                                                                     "java.util.Date",
+                                                                     SuggestionCompletionEngine.TYPE_DATE ) );
+        con.setOperator( "==" );
+        con.setValue( "27-Jun-2011" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNestedDate\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( favouriteCheese.dateBrought == \"27-Jun-2011\" )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNestedJavaEnum() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNestedJavaEnum";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
+                                                                     "Cheese",
+                                                                     SuggestionCompletionEngine.TYPE_OBJECT ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "genericName",
+                                                                     "CHEESE",
+                                                                     SuggestionCompletionEngine.TYPE_COMPARABLE ) );
+        con.setOperator( "==" );
+        con.setValue( "CHEESE.Cheddar" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNestedJavaEnum\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( favouriteCheese.genericName == CHEESE.Cheddar )"
+                                              + " then " + "end",
+                                      result );
+    }
+
+    @Test
+    public void testLHSExpressionNestedBoolean() {
+
+        RuleModel m = new RuleModel();
+        m.name = "test expressionsNestedBoolean";
+        FactPattern p = new FactPattern( "Person" );
+        SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+        con.getExpressionLeftSide().appendPart( new ExpressionUnboundFact( p ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "favouriteCheese",
+                                                                     "Cheese",
+                                                                     SuggestionCompletionEngine.TYPE_OBJECT ) );
+        con.getExpressionLeftSide().appendPart( new ExpressionField( "smelly",
+                                                                     "java.lang.Boolean",
+                                                                     SuggestionCompletionEngine.TYPE_BOOLEAN ) );
+        con.setOperator( "==" );
+        con.setValue( "true" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertEqualsIgnoreWhitespace( "rule \"test expressionsNestedBoolean\""
+                                              + "\tdialect \"mvel\"\n when "
+                                              + "     Person( favouriteCheese.smelly == true )"
+                                              + " then " + "end",
+                                      result );
     }
 
     @Test
