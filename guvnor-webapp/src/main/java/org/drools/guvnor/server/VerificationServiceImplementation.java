@@ -18,35 +18,27 @@ package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import org.drools.builder.ResourceType;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.security.RoleType;
+import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.VerifierRunner;
-import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
-import org.drools.ide.common.server.factconstraints.factory.ConstraintsFactory;
-import org.drools.io.ResourceFactory;
-import org.drools.repository.PackageItem;
-import org.drools.verifier.DefaultVerifierConfiguration;
+import org.drools.guvnor.server.verification.AssetVerifier;
+import org.drools.guvnor.server.verification.PackageVerifier;
+import org.drools.guvnor.server.verification.VerifierConfigurationFactory;
+import org.drools.repository.AssetItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
-import org.drools.verifier.VerifierConfigurationImpl;
-import org.drools.verifier.builder.ScopesAgendaFilter;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
@@ -55,24 +47,22 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
-    private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+    private Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
-    private RepositoryAssetService getAssetService() {
+    protected RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageUUIDType(packageUUID), RoleType.PACKAGE_DEVELOPER.getName());
-        }
+        hasPackageDeveloperPermission(packageUUID);
 
-        PackageItem packageItem = getAssetService().getRulesRepository().loadPackageByUUID(packageUUID);
 
-        VerifierRunner runner = new VerifierRunner(defaultVerifier);
-
-        AnalysisReport report = runner.verify(packageItem, new ScopesAgendaFilter(true, ScopesAgendaFilter.VERIFYING_SCOPE_KNOWLEDGE_PACKAGE));
+        AnalysisReport report = new PackageVerifier(
+                defaultVerifier,
+                getAssetService().getRulesRepository().loadPackageByUUID(packageUUID)
+        ).verify();
 
         defaultVerifier.flushKnowledgeSession();
 
@@ -81,94 +71,72 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAsset(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification(asset, true, activeWorkingSets);
+    public AnalysisReport verifyAsset(RuleAsset asset,
+                                      Set<String> activeWorkingSetIds) throws SerializationException {
+        hasPackageDeveloperPermission(asset);
+
+        return verify(
+                asset,
+                VerifierConfigurationFactory.getDefaultConfigurationWithWorkingSetConstraints(
+                        loadWorkingSets(activeWorkingSetIds)));
     }
 
     @WebRemote
     @Restrict("#{identity.loggedIn}")
-    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset, Set<String> activeWorkingSets) throws SerializationException {
-        return this.performAssetVerification(asset, false, activeWorkingSets);
+    public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
+                                                           Set<String> activeWorkingIds) throws SerializationException {
+        hasPackageDeveloperPermission(asset);
+
+        return verify(
+                asset,
+                VerifierConfigurationFactory.getPlainWorkingSetVerifierConfiguration(
+                        loadWorkingSets(activeWorkingIds)));
     }
 
-    private AnalysisReport performAssetVerification(RuleAsset asset, boolean useVerifierDefaultConfig, Set<String> activeWorkingSets) throws SerializationException {
+    private RuleAsset[] loadWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
+        if (activeWorkingSets == null) {
+            return new RuleAsset[0];
+        } else {
+            return getAssetService().loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
+        }
+    }
+
+    private AnalysisReport verify(RuleAsset asset, VerifierConfiguration verifierConfiguration) throws SerializationException {
         long startTime = System.currentTimeMillis();
 
+        AnalysisReport report = getAssetVerifier(
+                verifierConfiguration,
+                getAssetItem(asset)
+        ).verify();
+
+        log.debug("Asset verification took: " + (System.currentTimeMillis() - startTime));
+
+        return report;
+    }
+
+
+    private AssetItem getAssetItem(RuleAsset asset) throws SerializationException {
+        AssetItem assetItem = getAssetService().getRulesRepository().loadAssetByUUID(asset.uuid);
+        ContentHandler contentHandler = ContentManager.getHandler(asset.metaData.format);
+        contentHandler.storeAssetContent(asset, assetItem);
+        return assetItem;
+    }
+
+    private AssetVerifier getAssetVerifier(VerifierConfiguration verifierConfiguration, AssetItem assetItem) throws SerializationException {
+        return new AssetVerifier(
+                VerifierBuilderFactory.newVerifierBuilder().newVerifier(verifierConfiguration),
+                assetItem);
+    }
+
+    private void hasPackageDeveloperPermission(String packageUUID) {
         if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageNameType(asset.getMetaData().getPackageName()), RoleType.PACKAGE_DEVELOPER.getName());
-        }
-
-        PackageItem packageItem = getAssetService().getRulesRepository().loadPackage(asset.getMetaData().getPackageName());
-
-        List<String> constraintRules = applyWorkingSets(activeWorkingSets);
-
-        Verifier verifierToBeUsed = null;
-        if (useVerifierDefaultConfig) {
-            verifierToBeUsed = defaultVerifier;
-        } else {
-            verifierToBeUsed = getWorkingSetVerifier(constraintRules);
-        }
-
-
-        log.debug("constraints rules: " + constraintRules);
-
-        try {
-            VerifierRunner runner = new VerifierRunner(verifierToBeUsed);
-            AnalysisReport report = runner.verify(packageItem, chooseScopesAgendaFilterFor(asset));
-
-            verifierToBeUsed.flushKnowledgeSession();
-
-            log.debug("Asset verification took: " + (System.currentTimeMillis() - startTime));
-
-            return report;
-
-        } catch (Throwable t) {
-            throw new SerializationException(t.getMessage());
+            Identity.instance().checkPermission(new PackageUUIDType(packageUUID), RoleTypes.PACKAGE_DEVELOPER);
         }
     }
 
-    private ScopesAgendaFilter chooseScopesAgendaFilterFor(RuleAsset asset) {
-        if (isAssetDecisionTable(asset)) {
-            return new ScopesAgendaFilter(true, ScopesAgendaFilter.VERIFYING_SCOPE_DECISION_TABLE);
+    private void hasPackageDeveloperPermission(RuleAsset asset) {
+        if (Contexts.isSessionContextActive()) {
+            Identity.instance().checkPermission(new PackageNameType(asset.metaData.packageName), RoleTypes.PACKAGE_DEVELOPER);
         }
-        return new ScopesAgendaFilter(true, ScopesAgendaFilter.VERIFYING_SCOPE_SINGLE_RULE);
-
-    }
-
-    private boolean isAssetDecisionTable(RuleAsset asset) {
-        return AssetFormats.DECISION_TABLE_GUIDED.equals(asset.getMetaData().getFormat()) || AssetFormats.DECISION_SPREADSHEET_XLS.equals(asset.getMetaData().getFormat());
-    }
-
-    private List<String> applyWorkingSets(Set<String> activeWorkingSets) throws SerializationException {
-        if (activeWorkingSets == null) {
-            return new LinkedList<String>();
-        }
-
-        RuleAsset[] workingSets = getAssetService().loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
-        List<String> constraintRules = new LinkedList<String>();
-        if (workingSets != null) {
-            for (RuleAsset workingSet : workingSets) {
-                WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.getContent();
-                if (wsConfig.constraints != null) {
-                    for (ConstraintConfiguration config : wsConfig.constraints) {
-                        constraintRules.add(ConstraintsFactory.getInstance().getVerifierRule(config));
-                    }
-                }
-            }
-        }
-        return constraintRules;
-    }
-
-    private Verifier getWorkingSetVerifier(Collection<String> additionalVerifierRules) {
-        VerifierConfiguration configuration = new DefaultVerifierConfiguration();
-        configuration = new VerifierConfigurationImpl();
-
-        if (additionalVerifierRules != null) {
-            for (String rule : additionalVerifierRules) {
-                configuration.getVerifyingResources().put(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
-            }
-        }
-
-        return VerifierBuilderFactory.newVerifierBuilder().newVerifier(configuration);
     }
 }

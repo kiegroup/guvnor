@@ -18,18 +18,18 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.server.MockAssetItemIterator;
 import org.drools.guvnor.server.contenthandler.*;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.PackageItem;
 import org.drools.repository.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
-import javax.jcr.NodeIterator;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Iterator;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
@@ -238,29 +238,8 @@ public class AssetItemValidatorTest {
     }
 
     private MockAssetItemIterator createMockAssetItemIterator(AssetItem... assetItems) {
-        MockAssetItemIterator mockAssetItemIterator = new MockAssetItemIterator(mock(NodeIterator.class), mock(RulesRepository.class), new String[0]);
+        MockAssetItemIterator mockAssetItemIterator = new MockAssetItemIterator();
         mockAssetItemIterator.setAssets(assetItems);
         return mockAssetItemIterator;
-    }
-
-    class MockAssetItemIterator extends VersionedAssetItemIterator {
-
-        private Iterator<AssetItem> assetItems;
-
-        public MockAssetItemIterator(NodeIterator nodes, RulesRepository repo, String[] dependencies) {
-            super(nodes, repo, dependencies);
-        }
-
-        public boolean hasNext() {
-            return assetItems.hasNext();
-        }
-
-        public AssetItem next() {
-            return assetItems.next();
-        }
-
-        public void setAssets(AssetItem[] assetItems) {
-            this.assetItems = Arrays.asList(assetItems).iterator();
-        }
     }
 }

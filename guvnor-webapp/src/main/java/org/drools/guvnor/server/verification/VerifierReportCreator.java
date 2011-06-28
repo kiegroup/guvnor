@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.util;
+package org.drools.guvnor.server.verification;
 
 import java.util.ArrayList;
 import java.util.Collection;

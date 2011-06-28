@@ -63,34 +63,9 @@ public class AssetItemValidator {
         }
 
         protected Iterator<AssetItem> getAssetItemIterator(String... formats) {
-            return new AssetValidationIterator(super.getAssetItemIterator(formats));
-        }
-    }
-
-    private class AssetValidationIterator implements Iterator<AssetItem> {
-
-        private final Iterator<AssetItem> assetItemIterator;
-
-        public AssetValidationIterator(Iterator<AssetItem> assetItemIterator) {
-            this.assetItemIterator = assetItemIterator;
-        }
-
-        public boolean hasNext() {
-            return assetItemIterator.hasNext();
-        }
-
-        public AssetItem next() {
-            AssetItem assetItem = assetItemIterator.next();
-
-            if (assetItem.getUUID().equals(assetItemUnderValidation.getUUID())) {
-                return assetItemUnderValidation;
-            }
-
-            return assetItem;
-        }
-
-        public void remove() {
-            assetItemIterator.remove();
+            AssetValidationIterator assetValidationIterator = new AssetValidationIterator(super.getAssetItemIterator(formats));
+            assetValidationIterator.setAssetItemUnderValidation(assetItemUnderValidation);
+            return assetValidationIterator;
         }
     }
 }

@@ -16,92 +16,114 @@
 
 package org.drools.guvnor.server;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.VerificationService;
-import org.drools.guvnor.server.util.IO;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
-import org.junit.After;
+import org.drools.repository.RulesRepository;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
-public class VerificationServiceImplementationTest extends GuvnorTestBase {
+import java.util.HashSet;
 
-    private ServiceImplementation serviceImplementation;
-    private VerificationService   verificationService;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.*;
+
+public class VerificationServiceImplementationTest {
+
+    private VerificationService verificationService;
+    private PackageItem packageItem;
 
     @Before
     public void setUp() {
-        serviceImplementation = getServiceImplementation();
-        verificationService = new VerificationServiceImplementation();
+        final RepositoryAssetService repositoryAssetService = mock(RepositoryAssetService.class);
+        VerificationServiceImplementation verificationServiceImplementation = new VerificationServiceImplementation() {
+            public RepositoryAssetService getAssetService() {
+                return repositoryAssetService;
+            }
+        };
+
+        RulesRepository rulesRepository = mock(RulesRepository.class);
+        when(repositoryAssetService.getRulesRepository()).thenReturn(rulesRepository);
+        packageItem = createPackage();
+
+        AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);
+        when(assetItemIterator.hasNext()).thenReturn(false);
+        when(packageItem.listAssetsByFormat(Matchers.<String>anyVararg())).thenReturn(assetItemIterator);
+        when(rulesRepository.loadPackage("mockPackage")).thenReturn(packageItem);
+
+        verificationService = verificationServiceImplementation;
     }
 
     @Test
-    public void testVerifierCauseTrace() throws Exception {
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifierCauseTrace",
-                                                                          "" );
-        AssetItem asset = pkg.addAsset( "SomeDRL",
-                                        "" );
-        asset.updateFormat( AssetFormats.DRL );
+    public void testVerifyAsset() throws Exception {
 
-        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "/VerifierCauseTrace.drl" ) ) );
-        asset.checkin( "" );
 
-        AnalysisReport report = verificationService.analysePackage( pkg.getUUID() );
-        assertNotNull( report );
-        assertEquals( 0,
-                      report.warnings.length );
+        MockAssetItemIterator itemIterator = new MockAssetItemIterator();
+        AssetItem assetItem = getAssetItem("");
+        itemIterator.setAssets(assetItem);
+        when(packageItem.listAssetsByFormat(AssetFormats.DRL)).thenReturn(itemIterator);
 
-    }
+        String drl = "";
+        drl += "rule Test\n";
+        drl += "when\n";
+        drl += "P(a==true)\n";
+        drl += "then\n";
+        drl += "end\n";
 
-    @Test
-    public void testVerifier() throws Exception {
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifier",
-                                                                          "" );
-        AssetItem asset = pkg.addAsset( "SomeDRL",
-                                        "" );
-        asset.updateFormat( AssetFormats.DRL );
+        RuleAsset ruleAsset = getAsset(drl);
+        AnalysisReport report = verificationService.verifyAsset(
+                ruleAsset,
+                new HashSet<String>());
 
-        asset.updateContent( IO.read( this.getClass().getResourceAsStream( "/AnalysisSample.drl" ) ) );
-        asset.checkin( "" );
-
-        AnalysisReport report = verificationService.analysePackage( pkg.getUUID() );
-        assertNotNull( report );
-        assertEquals( 0,
-                      report.errors.length );
-        assertEquals( 7,
-                      report.warnings.length );
-        assertEquals( 1,
-                      report.notes.length );
-        assertEquals( 3,
-                      report.factUsages.length );
-
-        assertNotNull( report.notes[0].description );
-        assertNull( report.notes[0].reason );
-        assertEquals( 2,
-                      report.notes[0].causes.length );
-        assertNotNull( report.notes[0].causes[0] );
-        assertNotNull( report.notes[0].causes[1] );
-
-        assertEquals( "Message",
-                      report.factUsages[0].name );
-        assertEquals( "RedundancyPattern",
-                      report.factUsages[1].name );
-        assertEquals( "RedundancyPattern2",
-                      report.factUsages[2].name );
-
-        assertEquals( 0,
-                      report.factUsages[0].fields.length );
-        assertEquals( 0,
-                      report.factUsages[1].fields.length );
-        assertEquals( 0,
-                      report.factUsages[2].fields.length );
+        assertNotNull(report);
+        assertEquals(0,
+                report.errors.length);
+        assertEquals(0,
+                report.warnings.length);
+        assertEquals(0,
+                report.notes.length);
 
     }
 
+    // TODO: Check that working sets get loaded -Rikkola-
+
+    public RuleAsset getAsset(String content) {
+        RuleAsset ruleAsset = new RuleAsset();
+
+        ruleAsset.uuid = "mockUUID";
+        ruleAsset.metaData = getMetaData();
+        ruleAsset.content = getRuleContentText(content);
+        return ruleAsset;
+    }
+
+    private AssetItem getAssetItem(String content) {
+        AssetItem assetItem = mock(AssetItem.class);
+        when(assetItem.getUUID()).thenReturn("mockUUID");
+        when(assetItem.getFormat()).thenReturn(AssetFormats.DRL);
+        when(assetItem.getContent()).thenReturn(content);
+        return assetItem;
+    }
+
+    private RuleContentText getRuleContentText(String content) {
+        RuleContentText ruleContentText = new RuleContentText();
+        ruleContentText.content = content;
+        return ruleContentText;
+    }
+
+    public MetaData getMetaData() {
+        MetaData metaData = new MetaData();
+        metaData.packageName = "mockPackage";
+        metaData.format = AssetFormats.DRL;
+        return metaData;
+    }
+
+    public PackageItem createPackage() {
+        PackageItem packageItem = mock(PackageItem.class);
+        when(packageItem.getName()).thenReturn("mockPackage");
+        return packageItem;
+    }
 }
