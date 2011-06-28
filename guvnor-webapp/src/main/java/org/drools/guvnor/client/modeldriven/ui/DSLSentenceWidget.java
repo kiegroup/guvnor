@@ -180,7 +180,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         // <varName>:ENUM:<Field.type>
         // <varName>:DATE:<dateFormat>
         // <varName>:BOOLEAN:[checked | unchecked] <-initial value
-        // Note: <varName> is no longer used; values are stored in DSLSentence.values()
+        // Note: <varName> is no longer overwritten with the value; values are stored in DSLSentence.values()
 
         if ( currVariable.contains( ":" ) ) {
             if ( currVariable.contains( ":" + ENUM_TAG + ":" ) ) {
@@ -240,7 +240,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     public Widget getLabel(String labelDef) {
         Label label = new SmallLabel();
-        label.setText( labelDef );
+        label.setText( labelDef.trim() );
 
         return label;
     }
@@ -269,8 +269,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 dslValues.add( editor.getText().trim() );
             } else if ( wid instanceof DSLDropDown ) {
                 DSLDropDown drop = (DSLDropDown) wid;
-                ListBox box = drop.getListBox();
-                dslValues.add( box.getValue( box.getSelectedIndex() ) );
+                dslValues.add( drop.getSelectedValue() );
 
             } else if ( wid instanceof DSLCheckBox ) {
                 DSLCheckBox check = (DSLCheckBox) wid;
@@ -289,19 +288,13 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
     class FieldEditor extends DirtyableComposite {
 
-        private TextBox         box;
-        private HorizontalPanel panel     = new HorizontalPanel();
-        private String          oldValue  = "";
-        private String          regex     = "";
-        private Constants       constants = ((Constants) GWT.create( Constants.class ));
+        private TextBox   box;
+        private String    oldValue  = "";
+        private String    regex     = "";
+        private Constants constants = ((Constants) GWT.create( Constants.class ));
 
         public FieldEditor() {
             box = new TextBox();
-            // box.setStyleName( "dsl-field-TextBox" );
-
-            panel.add( new HTML( "&nbsp;" ) );
-            panel.add( box );
-            panel.add( new HTML( "&nbsp;" ) );
             box.addChangeHandler( new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
@@ -318,7 +311,17 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 }
             } );
 
-            initWidget( panel );
+            //Wrap widget within a HorizontalPanel to add a space before and after the Widget
+            HorizontalPanel hp = new HorizontalPanel();
+            hp.add( new HTML( "&nbsp;" ) );
+            hp.add( box );
+            hp.add( new HTML( "&nbsp;" ) );
+
+            initWidget( hp );
+        }
+
+        public void setRestriction(String regex) {
+            this.regex = regex;
         }
 
         public void setText(String t) {
@@ -333,37 +336,20 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             return box.getText();
         }
 
-        public void setRestriction(String regex) {
-            this.regex = regex;
-        }
-
-        public String getRestriction() {
-            return this.regex;
-        }
-
-        public boolean isValid() {
-            boolean result = true;
-            if ( !regex.equals( "" ) ) result = this.box.getText().matches( this.regex );
-            return result;
-        }
     }
 
     class DSLDropDown extends DirtyableComposite {
+
         final SuggestionCompletionEngine completions  = getModeller().getSuggestionCompletions();
         ListBox                          resultWidget = null;
-        // Format for the dropdown def is <varName>:<type>:<Fact.field>
-        private String                   type         = "";
-        private String                   factAndField = "";
 
         public DSLDropDown(String variableDef,
                            String value) {
-            int firstIndex = variableDef.indexOf( ":" );
-            int lastIndex = variableDef.lastIndexOf( ":" );
-            type = variableDef.substring( firstIndex + 1,
-                                          lastIndex );
-            factAndField = variableDef.substring( lastIndex + 1,
-                                                  variableDef.length() );
 
+            // Format for the dropdown def is <varName>:<type>:<Fact.field>
+            int lastIndex = variableDef.lastIndexOf( ":" );
+            String factAndField = variableDef.substring( lastIndex + 1,
+                                                         variableDef.length() );
             int dotIndex = factAndField.indexOf( "." );
             String type = factAndField.substring( 0,
                                                   dotIndex );
@@ -400,36 +386,25 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 }
             } );
 
-            initWidget( list );
             resultWidget = list;
+
+            //Wrap widget within a HorizontalPanel to add a space before and after the Widget
+            HorizontalPanel hp = new HorizontalPanel();
+            hp.add( new HTML( "&nbsp;" ) );
+            hp.add( list );
+            hp.add( new HTML( "&nbsp;" ) );
+
+            initWidget( hp );
         }
 
-        public ListBox getListBox() {
-            return resultWidget;
+        public String getSelectedValue() {
+            return resultWidget.getValue( resultWidget.getSelectedIndex() );
         }
 
-        public void setListBox(ListBox resultWidget) {
-            this.resultWidget = resultWidget;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getFactAndField() {
-            return factAndField;
-        }
-
-        public void setFactAndField(String factAndField) {
-            this.factAndField = factAndField;
-        }
     }
 
     class DSLCheckBox extends Composite {
+
         ListBox resultWidget = null;
 
         public DSLCheckBox(String variableDef,
@@ -449,24 +424,18 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
                 public void onClick(ClickEvent event) {
                     updateSentence();
-
+                    makeDirty();
                 }
             } );
 
             resultWidget.setVisible( true );
-            initWidget( resultWidget );
-        }
 
-        public ListBox getListBox() {
-            return resultWidget;
-        }
-
-        public void setListBox(ListBox resultWidget) {
-            this.resultWidget = resultWidget;
-        }
-
-        public String getType() {
-            return BOOLEAN_TAG;
+            //Wrap widget within a HorizontalPanel to add a space before and after the Widget
+            HorizontalPanel hp = new HorizontalPanel();
+            hp.add( new HTML( "&nbsp;" ) );
+            hp.add( resultWidget );
+            hp.add( new HTML( "&nbsp;" ) );
+            initWidget( hp );
         }
 
         public String getCheckedValue() {
@@ -475,22 +444,33 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
     }
 
-    class DSLDateSelector extends DatePickerLabel {
+    class DSLDateSelector extends Composite {
+
+        DatePickerLabel resultWidget = null;
 
         public DSLDateSelector(String selectedDate,
                                String dateFormat) {
-            super( selectedDate,
-                   dateFormat );
 
-            addValueChanged( new ValueChanged() {
+            resultWidget = new DatePickerLabel( selectedDate,
+                                                dateFormat );
+
+            resultWidget.addValueChanged( new ValueChanged() {
                 public void valueChanged(String newValue) {
                     updateSentence();
+                    makeDirty();
                 }
             } );
+
+            //Wrap widget within a HorizontalPanel to add a space before and after the Widget
+            HorizontalPanel hp = new HorizontalPanel();
+            hp.add( new HTML( "&nbsp;" ) );
+            hp.add( resultWidget );
+            hp.add( new HTML( "&nbsp;" ) );
+            initWidget( hp );
         }
 
-        public String getType() {
-            return DATE_TAG;
+        public String getDateString() {
+            return resultWidget.getDateString();
         }
     }
 
