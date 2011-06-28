@@ -65,6 +65,11 @@ public class SingleFieldConstraintEBLeftSide extends SingleFieldConstraint {
     public String getFieldType() {
         return getExpressionLeftSide().getClassType();
     }
+    
+    @Override
+    public String getFieldName() {
+        return getExpressionLeftSide().getFieldName();
+    }
 
     /**
      * This adds a new connective.
