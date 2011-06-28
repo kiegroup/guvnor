@@ -547,6 +547,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
                 try {
+                    //Change "operator" drop-down as the content depends on data-type
                     constraint.setFieldType( event.getNewType() );
                     inner.setWidget( row,
                                      1 + col,
@@ -554,6 +555,13 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                        inner,
                                                        row,
                                                        2 + col ) );
+                    //Change "value" editor to the pen icon as the applicable Widget depends on data-type
+                    constraint.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
+                    constraint.setValue( "" );
+                    inner.setWidget( row,
+                                     2 + col,
+                                     valueEditor( constraint,
+                                                  constraint.getFieldType() ) );
                 } catch ( Exception e ) {
                     e.printStackTrace();
                 }
@@ -673,6 +681,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                     final int row,
                                     final int col) {
         if ( !this.readOnly ) {
+
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
