@@ -37,6 +37,7 @@ public class DSLSentence
      * This will strip off any residual "{" stuff...
      */
     public String toString() {
+        getDefinition();
         final char[] chars = this.definition.toCharArray();
         boolean inBracket = false;
         boolean inBracketAfterColon = false;
