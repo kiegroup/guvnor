@@ -30,8 +30,10 @@ public class PackageHierarchy {
         String[] folders = config.getName().split( "\\." );
         for ( int i = 0; i < folders.length; i++ ) {
             String folderName = folders[i];
-            Folder existing = folder.contains( folderName );
-            if ( existing == null || existing.getChildren().size() == 0 ) {
+
+            // create a new package if not existing, or cannot be considered as a container (i.e. contains rules)
+            Folder existing = folder.getChildContainer( folderName );
+            if ( existing == null ) {
                 if ( i == folders.length - 1 ) {
                     //leaf
                     folder = folder.add( folderName,
@@ -104,6 +106,16 @@ public class PackageHierarchy {
 
         public List<Folder> getChildren() {
             return children;
+        }
+
+        // A "container" is a package that has no configuration, only children
+        public Folder getChildContainer(String name) {
+            for ( Folder fld : children ) {
+                if ( fld.name.equals( name ) && fld.config == null ) {
+                    return fld;
+                }
+            }
+            return null;
         }
     }
 
