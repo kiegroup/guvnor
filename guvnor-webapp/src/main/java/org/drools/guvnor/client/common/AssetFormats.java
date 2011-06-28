@@ -109,8 +109,12 @@ public class AssetFormats {
 
     public static final String RULE_TEMPLATE = "template";
 
-    public static final String DOCUMENTATION = "pdf";
+    // commenting so it shows up under other assets, documentation
+    // if added back, it needs it own asset configuration section
+    // public static final String DOCUMENTATION = "pdf";
 
+    // commenting so it shows up under other assets, documentation
+    // if added back, it needs it own asset configuration section
     public static final String ZIP = "zip";
 
     public static final String SPRING_CONTEXT = "springContext";
