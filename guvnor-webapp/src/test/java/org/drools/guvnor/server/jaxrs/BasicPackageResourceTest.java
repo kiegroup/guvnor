@@ -747,7 +747,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        connection.setRequestProperty("Slug", "Error-image");
+        connection.setRequestProperty("Slug", "Error-image.gif");
         connection.setDoOutput(true);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -775,6 +775,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         Document<Entry> doc = abdera.getParser().parse(in);
         Entry entry = doc.getRoot();
         assertEquals("Error-image", entry.getTitle());
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+        assertEquals("gif", formatExtension.getSimpleExtension(Translator.VALUE)); 
+
         assertTrue(entry.getPublished() != null);
         
         //Get the asset binary and verify

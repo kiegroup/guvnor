@@ -446,11 +446,12 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets/{assetName}/binary")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
-    public InputStream getAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
+    public Response getAssetBinary(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
-            return asset.getBinaryContentAttachment();
+            String fileName = asset.getName() + "." + asset.getFormat();
+            return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -503,9 +504,23 @@ public class PackageResource extends Resource {
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             }
-            AssetItem ai = repository.loadPackage(packageName).addAsset(assetName, "");
+            String fileName = null;
+            String extension = null;
+            if(assetName.lastIndexOf(".") != -1) {
+                fileName = assetName.substring(0, assetName.lastIndexOf("."));                
+                extension = assetName.substring(assetName.lastIndexOf(".")+1); 
+            } else {
+                fileName = assetName;                
+            }            
+            
+            AssetItem ai = repository.loadPackage(packageName).addAsset(fileName, "");
             ai.checkout();
+            ai.updateBinaryContentAttachmentFileName(fileName);
+            if(extension != null) {
+                ai.updateFormat(extension);
+            }
             ai.updateBinaryContentAttachment(is);
+            ai.getPackage().updateBinaryUpToDate(false);
             ai.checkin("update binary");
             repository.save();
             return ToAssetEntryAbdera(ai, uriInfo);
