@@ -36,6 +36,7 @@ public class VerificationServiceImplementationTest {
 
     private VerificationService verificationService;
     private PackageItem packageItem;
+    private RulesRepository rulesRepository;
 
     @Before
     public void setUp() {
@@ -46,7 +47,7 @@ public class VerificationServiceImplementationTest {
             }
         };
 
-        RulesRepository rulesRepository = mock(RulesRepository.class);
+        rulesRepository = mock(RulesRepository.class);
         when(repositoryAssetService.getRulesRepository()).thenReturn(rulesRepository);
         packageItem = createPackage();
 
@@ -64,6 +65,9 @@ public class VerificationServiceImplementationTest {
 
         MockAssetItemIterator itemIterator = new MockAssetItemIterator();
         AssetItem assetItem = getAssetItem("");
+
+        when(rulesRepository.loadAssetByUUID(Matchers.<String>any())).thenReturn(assetItem);
+
         itemIterator.setAssets(assetItem);
         when(packageItem.listAssetsByFormat(AssetFormats.DRL)).thenReturn(itemIterator);
 
@@ -89,8 +93,6 @@ public class VerificationServiceImplementationTest {
 
     }
 
-    // TODO: Check that working sets get loaded -Rikkola-
-
     public RuleAsset getAsset(String content) {
         RuleAsset ruleAsset = new RuleAsset();
 
@@ -105,6 +107,7 @@ public class VerificationServiceImplementationTest {
         when(assetItem.getUUID()).thenReturn("mockUUID");
         when(assetItem.getFormat()).thenReturn(AssetFormats.DRL);
         when(assetItem.getContent()).thenReturn(content);
+        when(assetItem.getPackage()).thenReturn(packageItem);
         return assetItem;
     }
 
