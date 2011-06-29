@@ -18,15 +18,18 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -34,65 +37,117 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FreeFormLineWidget extends RuleModellerWidget {
 
-    private FreeFormLine action;
-    private DirtyableFlexTable layout = new DirtyableFlexTable();
-    private Constants constants = ((Constants) GWT.create(Constants.class));
-    private boolean readOnly;
+    private static final Constants constants = ((Constants) GWT.create( Constants.class ));
 
-    public FreeFormLineWidget(RuleModeller mod, FreeFormLine p) {
-        this(mod, p, null);
+    private static Images          images    = GWT.create( Images.class );
+
+    private FreeFormLine           action;
+    private DirtyableFlexTable     layout    = new DirtyableFlexTable();
+    private DynamicTextArea        textArea  = new DynamicTextArea();
+    private boolean                readOnly;
+
+    public FreeFormLineWidget(RuleModeller mod,
+                              FreeFormLine p) {
+        this( mod,
+              p,
+              null );
     }
 
     /**
      * Creates a new FactPatternWidget
+     * 
      * @param mod
      * @param p
-     * @param readOnly if the widget should be in RO mode. If this parameter
-     * is null, the readOnly attribute is calculated.
+     * @param readOnly
+     *            if the widget should be in RO mode. If this parameter is null,
+     *            the readOnly attribute is calculated.
      */
-    public FreeFormLineWidget(RuleModeller mod, FreeFormLine p,
-            Boolean readOnly) {
-        super(mod);
+    public FreeFormLineWidget(RuleModeller mod,
+                              FreeFormLine p,
+                              Boolean readOnly) {
+        super( mod );
         this.action = p;
 
-        if (readOnly == null) {
+        if ( readOnly == null ) {
             this.readOnly = false;
         } else {
             this.readOnly = readOnly;
         }
 
-        layout.setWidget(0, 0, createTextBox());
-        FlexCellFormatter formatter = layout.getFlexCellFormatter();
-        formatter.setAlignment(0, 0, HasHorizontalAlignment.ALIGN_LEFT, HasVerticalAlignment.ALIGN_BOTTOM);
+        textArea.setMaxLines( 5 );
 
-        if (this.readOnly) {
-            this.layout.addStyleName("editor-disabled-widget");
+        layout.setWidget( 0,
+                          0,
+                          createTextBox() );
+        layout.setWidget( 0,
+                          1,
+                          createEditIcon() );
+        FlexCellFormatter formatter = layout.getFlexCellFormatter();
+        formatter.setAlignment( 0,
+                                0,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_BOTTOM );
+        //Let the TextArea expand the first cell to fit
+        formatter.setWidth( 0,
+                            0,
+                            "1px" );
+
+        formatter.setAlignment( 0,
+                                1,
+                                HasHorizontalAlignment.ALIGN_LEFT,
+                                HasVerticalAlignment.ALIGN_TOP );
+
+        if ( this.readOnly ) {
+            this.layout.addStyleName( "editor-disabled-widget" );
         }
 
-        initWidget(layout);
+        initWidget( layout );
 
     }
 
     private Widget createTextBox() {
-        final TextBox tb = new TextBox();
-        tb.setText(this.action.text);
-        tb.setTitle(constants.ThisIsADrlExpressionFreeForm());
+        textArea.setTitle( constants.ThisIsADrlExpressionFreeForm() );
+        textArea.setText( this.action.text );
+        textArea.addValueChangeHandler( new ValueChangeHandler<String>() {
 
-        if (!this.readOnly) {
-            tb.addChangeHandler(new ChangeHandler() {
+            public void onValueChange(ValueChangeEvent<String> event) {
+                action.text = textArea.getText();
+                setModified( true );
+            }
 
-                public void onChange(ChangeEvent event) {
-                      setModified(true);
-                        action.text = tb.getText();
+        } );
+        return textArea;
+    }
 
+    private Widget createEditIcon() {
+
+        Image btn;
+        if ( !this.readOnly ) {
+            btn = new Image(images.edit());
+            btn.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    final FreeFormLinePopup popup = new FreeFormLinePopup( constants.FreeFormDrl(),
+                                                                           action.text );
+                    popup.addOKClickHandler( new ClickHandler() {
+
+                        public void onClick(ClickEvent event) {
+                            action.text = popup.getText();
+                            textArea.setText( action.text );
+                            setModified( true );
+                            popup.hide();
+                        }
+
+                    } );
+                    popup.show();
                 }
-            });
 
-            
+            } );
         } else {
-            tb.setEnabled(false);
+            btn=new Image(images.editDisabled());
         }
-        return tb;
+
+        return btn;
     }
 
     @Override
