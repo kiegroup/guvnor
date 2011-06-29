@@ -56,6 +56,7 @@ public class CXFAuthenticationHandler implements RequestHandler {
                 ids.authenticate();
                 return null;
             } catch (LoginException e) {
+                e.printStackTrace();
                 throw new WebApplicationException(getErrorResponse());
             }
         } else {

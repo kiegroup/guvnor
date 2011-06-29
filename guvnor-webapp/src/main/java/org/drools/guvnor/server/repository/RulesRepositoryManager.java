@@ -37,13 +37,16 @@ public class RulesRepositoryManager {
 
     @Create
     public void create() {
-        String READ_ONLY_USER = "anonymous";
-        String userName = READ_ONLY_USER;
+        //Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
+        //with limited privileges. In Guvnor, access control is done in a higher level. 
+        String DEFAULT_USER = "guest";
+        //String READ_ONLY_USER = "anonymous";
+        String userName = DEFAULT_USER;
         if (Contexts.isApplicationContextActive()) {
             userName = Identity.instance().getCredentials().getUsername();
         }
         if (userName == null) {
-            userName = READ_ONLY_USER;
+            userName = DEFAULT_USER;
         }
         repository = new RulesRepository(repositoryConfiguration.newSession(userName));
     }

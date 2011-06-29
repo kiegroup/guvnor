@@ -502,17 +502,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals (500, conn2.getResponseCode());
     }
 
-    private Entry toPackageEntry (Package p) throws Exception {
-        Abdera a = new Abdera();
-        Entry e = a.newEntry();
-        e.setTitle(p.getTitle());
-        e.setUpdated(p.getMetadata().getLastModified());
-        e.setPublished(p.getMetadata().getCreated());
-        e.addLink("self", generateBaseUrl() + "/packages/" + p.getTitle());
-        e.setSummary(p.getDescription());
-        return e;
-    }
-
     @Ignore @Test
     public void testCreatePackageFromJson() {
         //TODO: implement test
@@ -737,6 +726,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        String userpassword = "test" + ":" + "password";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         //The asset should not exist
         assertEquals(500, connection.getResponseCode());
@@ -748,6 +741,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setRequestProperty("Slug", "Error-image.gif");
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.setDoOutput(true);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -766,6 +761,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         //System.out.println(GetContent(connection));
         assertEquals (200, connection.getResponseCode());
@@ -786,6 +783,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         //System.out.println(GetContent(connection));
         assertEquals(200, connection.getResponseCode());
@@ -799,7 +798,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
-        
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         ByteArrayOutputStream out2 = new ByteArrayOutputStream();
         byte[] data2 = new byte[1000];
         int count2 = 0;
@@ -815,6 +815,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("DELETE");
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         System.out.println(GetContent(connection));
         assertEquals(204, connection.getResponseCode());
@@ -824,6 +826,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
         connection.connect();
         assertEquals(500, connection.getResponseCode());
     }
