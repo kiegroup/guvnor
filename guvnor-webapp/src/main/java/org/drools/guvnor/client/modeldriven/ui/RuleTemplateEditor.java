@@ -21,6 +21,7 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
@@ -48,6 +49,11 @@ public class RuleTemplateEditor extends DirtyableComposite
 
     private TemplateDataTableWidget    table;
 
+    public RuleTemplateEditor(RuleAsset a,
+                     RuleViewer v) {
+        this( a );
+    }
+
     /**
      * Constructor for a specific asset
      * 
@@ -56,7 +62,8 @@ public class RuleTemplateEditor extends DirtyableComposite
     public RuleTemplateEditor(RuleAsset asset) {
 
         model = (TemplateModel) asset.getContent();
-        ruleModeller = new RuleModeller( asset,
+        ruleModeller = new RuleModeller( asset, 
+        		                         null,
                                          new TemplateModellerWidgetFactory() );
         
         this.packageName = asset.getMetaData().getPackageName();

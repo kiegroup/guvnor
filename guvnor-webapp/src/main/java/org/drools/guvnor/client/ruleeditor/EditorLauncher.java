@@ -76,7 +76,7 @@ public class EditorLauncher {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public static Widget getEditorViewer(RuleAsset asset,
+ /*   public static Widget getEditorViewer(RuleAsset asset,
                                          RuleViewer viewer) {
         RulePackageSelector.currentlySelectedPackage = asset.getMetaData().getPackageName();
         //depending on the format, load the appropriate editor
@@ -135,7 +135,7 @@ public class EditorLauncher {
         }
 
     }
-
+*/
     private static Map<String, RuleFormatImageResource> getTypeImages() {
         Map<String, RuleFormatImageResource> result = new HashMap<String, RuleFormatImageResource>();
 

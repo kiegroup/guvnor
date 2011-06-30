@@ -46,6 +46,10 @@
 
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 
+  <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
+    <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
+  </generate-with>  
+  
   <replace-with class="org.drools.guvnor.client.explorer.ClientFactoryImpl">
     <when-type-is class="org.drools.guvnor.client.explorer.ClientFactory" />
   </replace-with>

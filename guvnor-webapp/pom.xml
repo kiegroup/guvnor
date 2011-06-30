@@ -207,6 +207,12 @@
     </dependency>
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwt.version}</version>      
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
+    </dependency>    
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>

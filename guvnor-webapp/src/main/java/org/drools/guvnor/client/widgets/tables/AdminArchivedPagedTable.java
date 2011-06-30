@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
@@ -30,6 +31,7 @@ import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -107,7 +109,8 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
         Column<AdminArchivedPageRow, RuleFormatImageResource> formatColumn = new Column<AdminArchivedPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(AdminArchivedPageRow row) {
-                return EditorLauncher.getAssetFormatIcon( row.getFormat() );
+        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
+                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

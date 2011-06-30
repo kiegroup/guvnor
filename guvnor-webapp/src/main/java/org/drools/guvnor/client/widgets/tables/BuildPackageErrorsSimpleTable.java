@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
@@ -121,7 +122,8 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(BuilderResultLine row) {
-                return EditorLauncher.getAssetFormatIcon( row.getAssetFormat() );
+        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
+                return new RuleFormatImageResource(row.getAssetFormat(), assetEditorFactory.getAssetEditorIcon(row.getAssetFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

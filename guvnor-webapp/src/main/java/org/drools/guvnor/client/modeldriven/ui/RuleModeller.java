@@ -120,13 +120,14 @@ public class RuleModeller extends DirtyableComposite
                                                               };
 
     public RuleModeller(RuleAsset asset,
-                        RuleViewer viewer,
-                        ModellerWidgetFactory widgetFactory) {
+                        RuleViewer viewer) {
         this( asset,
-              widgetFactory );
+              null,
+              new RuleModellerWidgetFactory());
     }
 
     public RuleModeller(RuleAsset asset,
+    		            RuleViewer viewer,
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();

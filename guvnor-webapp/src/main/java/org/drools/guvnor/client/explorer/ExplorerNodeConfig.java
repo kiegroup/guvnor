@@ -16,8 +16,11 @@
 
 package org.drools.guvnor.client.explorer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.UserCapabilities;
@@ -67,10 +70,12 @@ public class ExplorerNodeConfig {
 
     // Package snapshot
     public static final String PACKAGE_SNAPSHOTS           = "packageSnapshots";
-
+	
     public static TreeItem getPackageItemStructure(String packageName, String uuid, final Map<TreeItem, String> itemWidgets) {
-        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(), packageName ) );
-        itemWidgets.put( pkg, uuid );
+        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
+                                                     packageName ) );
+        itemWidgets.put( pkg,
+                         uuid );
 
         TreeItem item = new TreeItem( Util.getHeader( images.ruleAsset(), constants.BusinessRuleAssets() ) );
         item.setUserObject( AssetFormats.BUSINESS_RULE_FORMATS );

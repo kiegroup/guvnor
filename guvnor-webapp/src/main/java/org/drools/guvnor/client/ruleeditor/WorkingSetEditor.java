@@ -54,7 +54,11 @@ public class WorkingSetEditor extends Composite
 
     private FactsConstraintsEditorPanel factsConstraintsgEditorPanel;
     private CustomFormsEditorPanel      customFormsEditorPanel;
-
+    
+	public WorkingSetEditor(RuleAsset asset, RuleViewer viewer) {
+		this(asset);
+	}
+	
     public WorkingSetEditor(RuleAsset asset) {
         if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().getFormat() ) ) {
             throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().getFormat() );

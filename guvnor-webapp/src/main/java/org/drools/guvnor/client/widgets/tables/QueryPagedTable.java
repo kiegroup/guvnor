@@ -19,6 +19,7 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.Date;
 import java.util.List;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -31,6 +32,7 @@ import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -162,7 +164,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
         Column<QueryPageRow, RuleFormatImageResource> formatColumn = new Column<QueryPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(QueryPageRow row) {
-                return EditorLauncher.getAssetFormatIcon( row.getFormat() );
+        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
+                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

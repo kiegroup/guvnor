@@ -18,6 +18,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.ErrorPopup;
@@ -160,8 +161,10 @@ public class RuleViewer extends GuvnorEditor {
 
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
-        editor = EditorLauncher.getEditorViewer( asset, this );
-
+        //editor = EditorLauncher.getEditorViewer( asset, this );
+		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
+		editor = assetEditorFactory.getAssetEditor(asset, this);
+		
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
             if(this.ruleViewerSettings.isStandalone()) {

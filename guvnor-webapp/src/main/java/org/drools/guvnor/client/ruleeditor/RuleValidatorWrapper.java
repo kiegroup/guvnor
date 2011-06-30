@@ -24,6 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -47,8 +48,8 @@ public class RuleValidatorWrapper extends DirtyableComposite
     private VerticalPanel    layout    = new VerticalPanel();
     private Widget           editor;
 
-    public RuleValidatorWrapper(Widget editor) {
-        this.editor = editor;
+    public RuleValidatorWrapper(RuleAsset asset, RuleViewer viewer) {
+        this.editor = new DSLRuleEditor( asset );
 
         layout.add( editor );
 
