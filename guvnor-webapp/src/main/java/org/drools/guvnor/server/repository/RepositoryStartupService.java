@@ -21,7 +21,11 @@ import org.drools.repository.*;
 import org.drools.repository.events.CheckinEvent;
 import org.drools.repository.events.StorageEventManager;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Startup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -90,7 +90,6 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
 import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 

@@ -39,7 +39,6 @@ import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jboss.seam.contexts.Contexts;

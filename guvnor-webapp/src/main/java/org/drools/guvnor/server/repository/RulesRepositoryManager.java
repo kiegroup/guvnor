@@ -18,7 +18,13 @@ package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.*;
+import org.jboss.seam.annotations.AutoCreate;
+import org.jboss.seam.annotations.Create;
+import org.jboss.seam.annotations.Destroy;
+import org.jboss.seam.annotations.In;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 

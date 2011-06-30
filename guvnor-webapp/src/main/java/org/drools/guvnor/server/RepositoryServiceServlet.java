@@ -68,13 +68,13 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         synchronized ( RepositoryServiceServlet.class ) {
             ServiceImplementation serviceImplementation = new ServiceImplementation();
             serviceImplementation.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-            handleTestListenetInit();
+            handleTestListenerInit();
             return serviceImplementation;
         }
 
     }
 
-    private static void handleTestListenetInit() {
+    private static void handleTestListenerInit() {
         if ( !testListenerInit ) {
             MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
             RepositoryStartupService.registerCheckinListener();
@@ -91,7 +91,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
             repositoryAssetService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
-            handleTestListenetInit();
+            handleTestListenerInit();
             return repositoryAssetService;
         }
 
@@ -106,7 +106,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
             repositoryPackageService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
-            handleTestListenetInit();
+            handleTestListenerInit();
             return repositoryPackageService;
         }
     }
@@ -120,7 +120,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             RepositoryCategoryService repositoryCategoryService = new RepositoryCategoryService();
             repositoryCategoryService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
-            handleTestListenetInit();
+            handleTestListenerInit();
             return repositoryCategoryService;
         }
     }
