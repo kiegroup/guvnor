@@ -16,11 +16,12 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.junit.Before;
-
-import static org.mockito.Mockito.mock;
-
 import org.drools.guvnor.client.explorer.NavigationPanelView.Presenter;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
 
 public class NavigationPanelTest {
 
@@ -34,10 +35,12 @@ public class NavigationPanelTest {
         presenter = new NavigationPanel(view);
     }
 
+    @Test
+    public void testMock() throws Exception {
+        assertTrue(true);
+    }
 
-
-
-    // Test list
+// Test list
 
     // Test if permissions ok and visible
 

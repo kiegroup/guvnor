@@ -71,7 +71,6 @@ public class CapabilityCalculatorTest {
         assertTrue(caps.contains(Capability.SHOW_CREATE_NEW_ASSET));
         assertFalse(caps.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
         assertTrue(caps.contains(Capability.SHOW_QA));
-        assertEquals(3, caps.size());
 
         perms = new ArrayList<RoleBasedPermission>();
         perms.add(new RoleBasedPermission("", RoleType.PACKAGE_READONLY.getName(), null, null));
