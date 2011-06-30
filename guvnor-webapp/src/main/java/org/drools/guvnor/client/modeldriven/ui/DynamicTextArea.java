@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
-import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.KeyPressEvent;
@@ -38,7 +37,8 @@ public class DynamicTextArea extends TextArea
 
     public DynamicTextArea() {
         super();
-        this.getElement().getStyle().setOverflow( Overflow.HIDDEN );
+        this.getElement().setAttribute( "wrap",
+                                        "off" );
     }
 
     //Defaults
@@ -81,33 +81,8 @@ public class DynamicTextArea extends TextArea
         String text = getText();
         int oldLines = getVisibleLines();
         int oldCharacters = getCharacterWidth();
-        boolean overflowLines = setNumberOfLines( text );
-        boolean overflowCharacters = setMaxLineWidth( text );
-        if ( overflowLines || overflowCharacters ) {
-            this.getElement().setAttribute( "wrap",
-                                            "off" );
-
-            //Work-around for http://gwt-code-reviews.appspot.com/1315801. Ideally we want to 
-            //use GWT's mechanisms, e.g. this.getElement().getStyle().setOverflowY( Overflow.AUTO );
-            //however this throws an assertion error due to the foregoing bug
-            if ( overflowLines ) {
-                this.getElement().getStyle().setProperty( "overflowY",
-                                                          Overflow.AUTO.toString() );
-            } else {
-                this.getElement().getStyle().setProperty( "overflowY",
-                                                          Overflow.HIDDEN.toString() );
-            }
-            if ( overflowCharacters ) {
-                this.getElement().getStyle().setProperty( "overflowX",
-                                                          Overflow.AUTO.toString() );
-            } else {
-                this.getElement().getStyle().setProperty( "overflowX",
-                                                          Overflow.HIDDEN.toString() );
-            }
-        } else {
-            this.getElement().removeAttribute( "wrap" );
-            this.getElement().getStyle().setOverflow( Overflow.HIDDEN );
-        }
+        setNumberOfLines( text );
+        setMaxLineWidth( text );
 
         //Fire a resize event, if applicable
         boolean resizeContainer = false;
