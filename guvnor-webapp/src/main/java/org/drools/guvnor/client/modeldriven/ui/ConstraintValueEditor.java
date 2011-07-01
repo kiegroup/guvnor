@@ -374,12 +374,11 @@ public class ConstraintValueEditor extends DirtyableComposite {
     }
 
     private Widget expressionEditor() {
-        if ( !(this.constraint instanceof SingleFieldConstraint) ) {
-            throw new IllegalArgumentException( "Expected SingleFieldConstraint, but " + constraint.getClass().getName() + " found." );
-        }
-        ExpressionBuilder builder = new ExpressionBuilder( this.modeller,
-                                                           ((SingleFieldConstraint) this.constraint).getExpressionValue(),
-                                                           this.readOnly );
+        ExpressionBuilder builder = null;
+        builder = new ExpressionBuilder( this.modeller,
+                                         this.constraint.getExpressionValue(),
+                                         this.readOnly );
+
         builder.addExpressionTypeChangeHandler( new ExpressionTypeChangeHandler() {
 
             public void onExpressionTypeChanged(ExpressionTypeChangeEvent event) {
