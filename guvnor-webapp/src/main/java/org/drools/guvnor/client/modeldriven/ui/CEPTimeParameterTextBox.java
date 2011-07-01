@@ -24,8 +24,8 @@ import com.google.gwt.regexp.shared.RegExp;
  */
 public class CEPTimeParameterTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid Operator parameter expression
-    private static final RegExp VALID_TIME = RegExp.compile( "(^\\+?\\*?$)|(^\\-?\\*?$)|(^\\d+(d|h|m?s?)?$)" );
+    // A valid Operator parameter expression (regex lifted from org.drools.time.TimeUtils.parseTimeString and improved)
+    private static final RegExp VALID_TIME = RegExp.compile( "(^\\+?\\*?$)|(^\\-?\\*?$)|(^((\\d+)[Dd]?)?\\s*((\\d+)[Hh]?)?\\s*((\\d+)[Mm]?)?\\s*((\\d+)[Ss]?)?\\s*((\\d+)([Mm]?[Ss]?)?)?$)" );
 
     public CEPTimeParameterTextBox(HasParameterizedOperator hop,
                                    int index) {
