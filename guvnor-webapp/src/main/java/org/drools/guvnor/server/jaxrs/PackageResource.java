@@ -424,7 +424,7 @@ public class PackageResource extends Resource {
     public Entry getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8")); 
             return ToAssetEntryAbdera(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -622,7 +622,7 @@ public class PackageResource extends Resource {
                             @PathParam("assetName") String assetName) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem ai = repository.loadPackage(packageName).loadAsset(assetName);
+            AssetItem ai = repository.loadPackage(packageName).loadAsset( URLDecoder.decode(assetName, "UTF-8") );
             // assetService.archiveAsset(ai.getUUID());
             assetService.removeAsset(ai.getUUID());
             repository.save();
