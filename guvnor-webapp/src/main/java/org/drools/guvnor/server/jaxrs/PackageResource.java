@@ -37,6 +37,7 @@ import org.jboss.seam.annotations.Name;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 import java.io.InputStream;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -500,7 +501,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createAssetFromBinary(@PathParam("packageName") String packageName, InputStream is) {
         try {
-            String assetName = getHttpHeader(headers, "slug");
+            String assetName = URLDecoder.decode( getHttpHeader(headers, "slug"), "UTF-8" );
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             }
