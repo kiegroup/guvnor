@@ -614,7 +614,7 @@ public class BRDRLPersistence
                                              conn.getOperator(),
                                              parameters,
                                              conn.getValue(),
-                                             null );
+                                             conn.getExpressionValue() );
                     }
                 }
 

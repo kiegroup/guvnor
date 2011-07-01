@@ -16,22 +16,15 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This is for a connective constraint that adds more options to a field
  * constraint.
  */
-public class ConnectiveConstraint extends BaseSingleFieldConstraint
-    implements
-    HasParameterizedOperator {
+public class ConnectiveConstraint extends BaseSingleFieldConstraint {
 
-    private String              operator;
-    private String              fieldName;
-    private String              fieldType;
-
-    private Map<String, String> parameters;
+    private String fieldName;
+    private String fieldType;
 
     public ConnectiveConstraint() {
     }
@@ -60,53 +53,6 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint
 
     public void setFieldType(String fieldType) {
         this.fieldType = fieldType;
-    }
-
-    public String getOperator() {
-        return operator;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public void clearParameters() {
-        this.parameters = null;
-    }
-
-    public String getParameter(String key) {
-        if ( parameters == null ) {
-            return null;
-        }
-        String parameter = parameters.get( key );
-        return parameter;
-    }
-
-    public void setParameter(String key,
-                             String parameter) {
-        if ( parameters == null ) {
-            parameters = new HashMap<String, String>();
-        }
-        parameters.put( key,
-                        parameter );
-    }
-
-    public void deleteParameter(String key) {
-        if ( this.parameters == null ) {
-            return;
-        }
-        parameters.remove( key );
-    }
-
-    public Map<String, String> getParameters() {
-        if ( this.parameters == null ) {
-            this.parameters = new HashMap<String, String>();
-        }
-        return this.parameters;
-    }
-
-    public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
     }
 
 }

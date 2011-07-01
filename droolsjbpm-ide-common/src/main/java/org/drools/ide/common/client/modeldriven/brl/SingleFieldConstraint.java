@@ -16,9 +16,6 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * This represents a constraint on a fact - involving a SINGLE FIELD.
  * 
@@ -27,21 +24,12 @@ import java.util.Map;
  */
 public class SingleFieldConstraint extends BaseSingleFieldConstraint
     implements
-    FieldConstraint,
-    HasParameterizedOperator {
+    FieldConstraint {
 
     private String                fieldBinding;
     private String                fieldName;
-    private String                operator;
     private String                fieldType;
     private FieldConstraint       parent;
-
-    private Map<String, String>   parameters;
-
-    /**
-     * Used instead of "value" when constraintValueType = TYPE_EXPR_BUILDER.
-     */
-    private ExpressionFormLine    expression = new ExpressionFormLine();
 
     /**
      * Used with "value" when using custom forms.
@@ -110,28 +98,12 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
         return this.getFieldBinding() != null && this.getFieldBinding().length() > 0;
     }
 
-    public ExpressionFormLine getExpressionValue() {
-        return expression;
-    }
-
-    public void setExpressionValue(ExpressionFormLine expression) {
-        this.expression = expression;
-    }
-
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
 
     public String getFieldName() {
         return fieldName;
-    }
-
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
-
-    public String getOperator() {
-        return operator;
     }
 
     public void setFieldType(String fieldType) {
@@ -156,45 +128,6 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public void clearParameters() {
-        this.parameters = null;
-    }
-
-    public String getParameter(String key) {
-        if ( parameters == null ) {
-            return null;
-        }
-        String parameter = parameters.get( key );
-        return parameter;
-    }
-
-    public void setParameter(String key,
-                             String parameter) {
-        if ( parameters == null ) {
-            parameters = new HashMap<String, String>();
-        }
-        parameters.put( key,
-                        parameter );
-    }
-
-    public void deleteParameter(String key) {
-        if ( this.parameters == null ) {
-            return;
-        }
-        parameters.remove( key );
-    }
-
-    public Map<String, String> getParameters() {
-        if ( this.parameters == null ) {
-            this.parameters = new HashMap<String, String>();
-        }
-        return this.parameters;
-    }
-
-    public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
     }
 
 }
