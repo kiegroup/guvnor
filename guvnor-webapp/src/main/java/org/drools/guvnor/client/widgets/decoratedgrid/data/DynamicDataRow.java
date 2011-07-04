@@ -28,9 +28,18 @@ public class DynamicDataRow
     implements
     Iterable<CellValue< ? extends Comparable< ? >>> {
 
+    //An incrementally unique number for each row, used to restore original ordering when user-applied sorting is removed
+    private static long _COUNTER = 0;
+
+    private static synchronized long getNextCreationIndex() {
+        return _COUNTER++;
+    }
+
+    private long                                        creationIndex;
     private List<CellValue< ? extends Comparable< ? >>> rowData;
 
     DynamicDataRow() {
+        creationIndex = getNextCreationIndex();
         rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
     }
 
@@ -44,15 +53,15 @@ public class DynamicDataRow
 
     public CellValue< ? extends Comparable< ? >> set(int index,
                                                      CellValue< ? extends Comparable< ? >> cell) {
-        
-        Coordinate c = get(index).getCoordinate();
-        Coordinate hc = get(index).getHtmlCoordinate();
-        Coordinate pc = get(index).getPhysicalCoordinate();
+
+        Coordinate c = get( index ).getCoordinate();
+        Coordinate hc = get( index ).getHtmlCoordinate();
+        Coordinate pc = get( index ).getPhysicalCoordinate();
         cell.setCoordinate( c );
         cell.setHtmlCoordinate( hc );
         cell.setPhysicalCoordinate( pc );
-        cell.setRowSpan( get(index).getRowSpan() );
-        
+        cell.setRowSpan( get( index ).getRowSpan() );
+
         return rowData.set( index,
                             cell );
     }
@@ -77,6 +86,10 @@ public class DynamicDataRow
 
     CellValue< ? extends Comparable< ? >> remove(int index) {
         return rowData.remove( index );
+    }
+
+    long getCreationIndex() {
+        return creationIndex;
     }
 
 }

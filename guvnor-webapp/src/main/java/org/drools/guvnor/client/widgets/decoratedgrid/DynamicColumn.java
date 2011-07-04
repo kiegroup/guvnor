@@ -125,7 +125,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     public SortConfiguration getSortConfiguration() {
         return this.sortConfig;
     }
-    
+
     public SortDirection getSortDirection() {
         return this.sortConfig.getSortDirection();
     }
@@ -190,7 +190,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
             throw new IllegalArgumentException( "columnIndex cannot be less than zero" );
         }
         this.columnIndex = columnIndex;
-        this.sortConfig.setColumnIndex(columnIndex);
+        this.sortConfig.setColumnIndex( columnIndex );
     }
 
     public void setSortable(boolean isSortable) {
@@ -213,6 +213,12 @@ public class DynamicColumn<T> extends DynamicBaseColumn
             throw new IllegalArgumentException( "sortIndex cannot be less than zero" );
         }
         this.sortConfig.setSortIndex( sortIndex );
+        ValueChangeEvent.fire( this,
+                               sortConfig );
+    }
+
+    public void clearSortIndex() {
+        this.sortConfig.setSortIndex( -1 );
         ValueChangeEvent.fire( this,
                                sortConfig );
     }

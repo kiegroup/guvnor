@@ -17,6 +17,7 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
@@ -495,24 +496,68 @@ public class VerticalDecisionTableHeaderWidget extends
         // Update sort order. The column clicked becomes the primary sort column
         // and the other, previously sorted, columns degrade in priority
         private void updateSortOrder(DynamicColumn<DTColumnConfig52> column) {
-            if ( column.getSortIndex() == 0 ) {
-                if ( column.getSortDirection() != SortDirection.ASCENDING ) {
+
+            int sortIndex;
+            TreeMap<Integer, DynamicColumn<DTColumnConfig52>> sortedColumns = new TreeMap<Integer, DynamicColumn<DTColumnConfig52>>();
+            switch ( column.getSortIndex() ) {
+                case -1 :
+
+                    //A new column is added to the sort group
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                        if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                            sortedColumns.put( sortedColumn.getSortIndex(),
+                                               sortedColumn );
+                        }
+                    }
+                    sortIndex = 1;
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortedColumns.values() ) {
+                        sortedColumn.setSortIndex( sortIndex );
+                        sortIndex++;
+                    }
+                    column.setSortIndex( 0 );
                     column.setSortDirection( SortDirection.ASCENDING );
-                } else {
-                    column.setSortDirection( SortDirection.DESCENDING );
-                }
-            } else {
-                column.setSortIndex( 0 );
-                column.setSortDirection( SortDirection.ASCENDING );
-                int sortIndex = 1;
-                for ( DynamicColumn<DTColumnConfig52> sortableColumn : grid.getGridWidget().getColumns() ) {
-                    if ( !sortableColumn.equals( column ) ) {
-                        if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {
-                            sortableColumn.setSortIndex( sortIndex );
+                    break;
+
+                case 0 :
+
+                    //The existing "lead" column's sort direction is changed
+                    if ( column.getSortDirection() == SortDirection.ASCENDING ) {
+                        column.setSortDirection( SortDirection.DESCENDING );
+                    } else if ( column.getSortDirection() == SortDirection.DESCENDING ) {
+                        column.setSortDirection( SortDirection.NONE );
+                        column.clearSortIndex();
+                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                            if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                                sortedColumns.put( sortedColumn.getSortIndex(),
+                                                   sortedColumn );
+                            }
+                        }
+                        sortIndex = 0;
+                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortedColumns.values() ) {
+                            sortedColumn.setSortIndex( sortIndex );
                             sortIndex++;
                         }
                     }
-                }
+                    break;
+
+                default :
+
+                    //An existing column is promoted to "lead"
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                        if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                            if ( !sortedColumn.equals( column ) ) {
+                                sortedColumns.put( sortedColumn.getSortIndex() + 1,
+                                                   sortedColumn );
+                            }
+                        }
+                    }
+                    column.setSortIndex( 0 );
+                    sortIndex = 1;
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortedColumns.values() ) {
+                        sortedColumn.setSortIndex( sortIndex );
+                        sortIndex++;
+                    }
+                    break;
             }
         }
 

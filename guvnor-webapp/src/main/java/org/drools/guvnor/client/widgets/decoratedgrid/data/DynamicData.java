@@ -368,56 +368,79 @@ public class DynamicData
 
     public void sort(final List<SortConfiguration> sortConfig) {
 
-        //Sort Configuration needs to be sorted itself by sortOrder first
-        Collections.sort( sortConfig,
-                          new Comparator<SortConfiguration>() {
+        if ( sortConfig.size() == 0 ) {
 
-                              public int compare(SortConfiguration o1,
-                                                 SortConfiguration o2) {
-                                  Integer si1 = o1.getSortIndex();
-                                  Integer si2 = o2.getSortIndex();
-                                  return si1.compareTo( si2 );
-                              }
+            //No sort configuration, restore original creation sequence
+            Collections.sort( data,
+                              new Comparator<DynamicDataRow>() {
 
-                          } );
+                                  public int compare(DynamicDataRow leftRow,
+                                                     DynamicDataRow rightRow) {
+                                      int comparison = 0;
+                                      long li = leftRow.getCreationIndex();
+                                      long ri = rightRow.getCreationIndex();
+                                      if ( li < ri ) {
+                                          comparison = -1;
+                                      } else if ( li > ri ) {
+                                          comparison = 1;
+                                      }
+                                      return comparison;
+                                  }
+                              } );
 
-        //Sort data
-        Collections.sort( data,
-                          new Comparator<DynamicDataRow>() {
+        } else {
 
-                              @SuppressWarnings({"rawtypes", "unchecked"})
-                              public int compare(DynamicDataRow leftRow,
-                                                 DynamicDataRow rightRow) {
-                                  int comparison = 0;
-                                  for ( int index = 0; index < sortConfig.size(); index++ ) {
-                                      SortConfiguration sc = sortConfig.get( index );
-                                      Comparable leftColumnValue = leftRow.get( sc.getColumnIndex() );
-                                      Comparable rightColumnValue = rightRow.get( sc.getColumnIndex() );
-                                      comparison =
-                                              (leftColumnValue == rightColumnValue) ? 0
-                                                  : (leftColumnValue == null) ? -1
-                                                      : (rightColumnValue == null) ? 1
-                                                          : leftColumnValue.compareTo( rightColumnValue );
-                                      if ( comparison != 0 ) {
-                                          switch ( sc.getSortDirection() ) {
-                                              case ASCENDING :
-                            break;
-                        case DESCENDING :
-                            comparison = -comparison;
-                            break;
-                        default :
-                            throw new IllegalStateException(
-                                                             "Sorting can only be enabled for ASCENDING or"
-                                                                     + " DESCENDING, not sortDirection ("
-                                                                     + sc.getSortDirection()
-                                                                     + ") ." );
-                    }
-                    return comparison;
-                }
-            }
-            return comparison;
+            //Sort Configuration needs to be sorted itself by sortOrder first
+            Collections.sort( sortConfig,
+                              new Comparator<SortConfiguration>() {
+
+                                  public int compare(SortConfiguration o1,
+                                                     SortConfiguration o2) {
+                                      Integer si1 = o1.getSortIndex();
+                                      Integer si2 = o2.getSortIndex();
+                                      return si1.compareTo( si2 );
+                                  }
+
+                              } );
+
+            //Sort data
+            Collections.sort( data,
+                              new Comparator<DynamicDataRow>() {
+
+                                  @SuppressWarnings({"rawtypes", "unchecked"})
+                                  public int compare(DynamicDataRow leftRow,
+                                                     DynamicDataRow rightRow) {
+                                      int comparison = 0;
+                                      for ( int index = 0; index < sortConfig.size(); index++ ) {
+                                          SortConfiguration sc = sortConfig.get( index );
+                                          Comparable leftColumnValue = leftRow.get( sc.getColumnIndex() );
+                                          Comparable rightColumnValue = rightRow.get( sc.getColumnIndex() );
+                                          comparison =
+                                                  (leftColumnValue == rightColumnValue) ? 0
+                                                      : (leftColumnValue == null) ? -1
+                                                          : (rightColumnValue == null) ? 1
+                                                              : leftColumnValue.compareTo( rightColumnValue );
+                                          if ( comparison != 0 ) {
+                                              switch ( sc.getSortDirection() ) {
+                                                  case ASCENDING :
+                              break;
+                          case DESCENDING :
+                              comparison = -comparison;
+                              break;
+                          default :
+                              throw new IllegalStateException(
+                                                               "Sorting can only be enabled for ASCENDING or"
+                                                                       + " DESCENDING, not sortDirection ("
+                                                                       + sc.getSortDirection()
+                                                                       + ") ." );
+                      }
+                      return comparison;
+                  }
+              }
+              return comparison;
+          }
+                              } );
         }
-                          } );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
