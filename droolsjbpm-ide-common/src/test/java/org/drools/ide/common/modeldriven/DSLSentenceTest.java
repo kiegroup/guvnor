@@ -69,12 +69,13 @@ public class DSLSentenceTest {
                       sen.toString() );
 
     }
-    
+
     @Test
     public void testInterpolate1() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "{something} here" );
-        sen.getValues().set( 0, "word" );
+        sen.getValues().set( 0,
+                             "word" );
         assertEquals( "word here",
                       sen.interpolate() );
     }
@@ -83,7 +84,8 @@ public class DSLSentenceTest {
     public void testInterpolate2() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "a {here}" );
-        sen.getValues().set( 0, "word" );
+        sen.getValues().set( 0,
+                             "word" );
         assertEquals( "a word",
                       sen.interpolate() );
     }
@@ -92,9 +94,21 @@ public class DSLSentenceTest {
     public void testInterpolate3() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "a {here} and {here}" );
-        sen.getValues().set( 0, "word" );
-        sen.getValues().set( 1, "word" );
+        sen.getValues().set( 0,
+                             "word" );
+        sen.getValues().set( 1,
+                             "word" );
         assertEquals( "a word and word",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testEnumSentenceContainingRegEx() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "When a person exists with social security number \"{chooseSSN:\\d{3}-\\d{2}-\\d{4}}\"" );
+        sen.getValues().set( 0,
+                             "333-22-4444" );
+        assertEquals( "When a person exists with social security number \"333-22-4444\"",
                       sen.interpolate() );
     }
 
