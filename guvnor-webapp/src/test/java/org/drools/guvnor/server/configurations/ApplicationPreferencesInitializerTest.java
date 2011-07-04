@@ -36,31 +36,32 @@ public class ApplicationPreferencesInitializerTest {
     public void setUp() throws Exception {
         oldValues = new HashMap<String, String>();
 
-        storeOldValue(ApplicationPreferences.DATE_FORMAT);
-        storeOldValue(ApplicationPreferences.DEFAULT_LANGUAGE);
-        storeOldValue(ApplicationPreferences.DEFAULT_COUNTRY);
+        storeOldValue( ApplicationPreferences.DATE_FORMAT );
+        storeOldValue( ApplicationPreferences.DEFAULT_LANGUAGE );
+        storeOldValue( ApplicationPreferences.DEFAULT_COUNTRY );
 
-        storeOldValue(KeyStoreHelper.PROP_SIGN);
-        storeOldValue(KeyStoreHelper.PROP_PVT_KS_URL);
-        storeOldValue(KeyStoreHelper.PROP_PVT_KS_PWD);
-        storeOldValue(KeyStoreHelper.PROP_PVT_ALIAS);
-        storeOldValue(KeyStoreHelper.PROP_PVT_PWD);
-        storeOldValue(KeyStoreHelper.PROP_PUB_KS_URL);
-        storeOldValue(KeyStoreHelper.PROP_PUB_KS_PWD);
+        storeOldValue( KeyStoreHelper.PROP_SIGN );
+        storeOldValue( KeyStoreHelper.PROP_PVT_KS_URL );
+        storeOldValue( KeyStoreHelper.PROP_PVT_KS_PWD );
+        storeOldValue( KeyStoreHelper.PROP_PVT_ALIAS );
+        storeOldValue( KeyStoreHelper.PROP_PVT_PWD );
+        storeOldValue( KeyStoreHelper.PROP_PUB_KS_URL );
+        storeOldValue( KeyStoreHelper.PROP_PUB_KS_PWD );
     }
 
-    private void storeOldValue(String propertyName) {
-        oldValues.put(propertyName, System.getProperty(propertyName));
+    private void storeOldValue( String propertyName ) {
+        oldValues.put( propertyName, System.getProperty( propertyName ) );
+        System.clearProperty( propertyName );
     }
 
     @After
     public void tearDown() throws Exception {
         for (String key : oldValues.keySet()) {
-            String value = oldValues.get(key);
-            if (value == null) {
-                System.clearProperty(key);
+            String value = oldValues.get( key );
+            if ( value == null ) {
+                System.clearProperty( key );
             } else {
-                System.setProperty(key, value);
+                System.setProperty( key, value );
             }
         }
     }
@@ -69,24 +70,24 @@ public class ApplicationPreferencesInitializerTest {
     public void testEmptySetOfProperties() throws Exception {
         HashMap<String, String> preferences = new HashMap<String, String>();
 
-        ApplicationPreferencesInitializer.setSystemProperties(preferences);
+        ApplicationPreferencesInitializer.setSystemProperties( preferences );
 
-        assertNull(System.getProperty(ApplicationPreferences.DATE_FORMAT));
-        assertNull(System.getProperty(ApplicationPreferences.DEFAULT_LANGUAGE));
-        assertNull(System.getProperty(ApplicationPreferences.DEFAULT_COUNTRY));
+        assertNull( System.getProperty( ApplicationPreferences.DATE_FORMAT ) );
+        assertNull( System.getProperty( ApplicationPreferences.DEFAULT_LANGUAGE ) );
+        assertNull( System.getProperty( ApplicationPreferences.DEFAULT_COUNTRY ) );
     }
 
     @Test
     public void testDroolsCoreProperties() throws Exception {
         HashMap<String, String> preferences = new HashMap<String, String>();
-        preferences.put(ApplicationPreferences.DATE_FORMAT, "date");
-        preferences.put(ApplicationPreferences.DEFAULT_LANGUAGE, "language");
-        preferences.put(ApplicationPreferences.DEFAULT_COUNTRY, "country");
+        preferences.put( ApplicationPreferences.DATE_FORMAT, "date" );
+        preferences.put( ApplicationPreferences.DEFAULT_LANGUAGE, "language" );
+        preferences.put( ApplicationPreferences.DEFAULT_COUNTRY, "country" );
 
-        ApplicationPreferencesInitializer.setSystemProperties(preferences);
+        ApplicationPreferencesInitializer.setSystemProperties( preferences );
 
-        assertEquals(System.getProperty(ApplicationPreferences.DATE_FORMAT), "date");
-        assertEquals(System.getProperty(ApplicationPreferences.DEFAULT_LANGUAGE), "language");
-        assertEquals(System.getProperty(ApplicationPreferences.DEFAULT_COUNTRY), "country");
+        assertEquals( System.getProperty( ApplicationPreferences.DATE_FORMAT ), "date" );
+        assertEquals( System.getProperty( ApplicationPreferences.DEFAULT_LANGUAGE ), "language" );
+        assertEquals( System.getProperty( ApplicationPreferences.DEFAULT_COUNTRY ), "country" );
     }
 }
