@@ -33,6 +33,7 @@ public class AssetPageRow extends AbstractAssetPageRow {
     private Date   lastModified;
     private String categorySummary;
     private String externalSource;
+    private boolean isDisabled;
 
     // ************************************************************************
     // Getters and setters
@@ -118,4 +119,12 @@ public class AssetPageRow extends AbstractAssetPageRow {
         this.stateName = stateName;
     }
 
+    public boolean isDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(boolean isDisabled) {
+        this.isDisabled = isDisabled;
+    }
+    
 }

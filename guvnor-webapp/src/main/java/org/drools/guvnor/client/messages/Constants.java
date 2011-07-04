@@ -870,6 +870,10 @@ public interface Constants
 
     String DisableTip();
 
+    String AssetTableIsDisabled();
+    
+    String AssetTableIsDisabledTip();
+
     String OtherMetaData();
 
     String SubjectMetaData();

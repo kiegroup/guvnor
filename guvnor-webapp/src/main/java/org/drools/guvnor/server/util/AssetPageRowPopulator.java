@@ -34,6 +34,7 @@ public class AssetPageRowPopulator {
         row.setLastModified( assetItem.getLastModified().getTime() );
         row.setCategorySummary( assetItem.getCategorySummary() );
         row.setExternalSource( assetItem.getExternalSource() );
+        row.setDisabled( assetItem.getDisabled() );
         return row;
     }
 }

@@ -25,7 +25,6 @@ import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
@@ -108,13 +107,13 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
         Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(AssetPageRow row) {
-        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
-                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
+                AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
+                return new RuleFormatImageResource( row.getFormat(),
+                                                    assetEditorFactory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                                new SortableHeader<AssetPageRow, RuleFormatImageResource>(
-                                                                                           sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, RuleFormatImageResource>( sortableHeaderGroup,
                                                                                            constants.Format(),
                                                                                            formatColumn ),
                                 true );
@@ -127,8 +126,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( titleColumn,
-                                new SortableHeader<AssetPageRow, TitledText>(
-                                                                              sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, TitledText>( sortableHeaderGroup,
                                                                               constants.Name(),
                                                                               titleColumn ),
                                 true );
@@ -139,8 +137,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( packageNameColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.PackageName(),
                                                                           packageNameColumn ),
                                 false );
@@ -151,8 +148,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( stateNameColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.Status(),
                                                                           stateNameColumn ),
                                 true );
@@ -163,23 +159,18 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( creatorColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.Creator(),
                                                                           creatorColumn ),
                                 false );
 
-        Column<AssetPageRow, Date> createdDateColumn = new Column<AssetPageRow, Date>( new
-                                                                                       DateCell(
-                                                                                                 DateTimeFormat.getFormat(
-                                                                                                         DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+        Column<AssetPageRow, Date> createdDateColumn = new Column<AssetPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             public Date getValue(AssetPageRow row) {
                 return row.getCreatedDate();
             }
         };
         columnPicker.addColumn( createdDateColumn,
-                                new SortableHeader<AssetPageRow, Date>(
-                                                                        sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
                                                                         constants.CreatedDate(),
                                                                         createdDateColumn ),
                                 false );
@@ -190,23 +181,18 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( lastContributorColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.LastContributor(),
                                                                           lastContributorColumn ),
                                 false );
 
-        Column<AssetPageRow, Date> lastModifiedColumn = new Column<AssetPageRow, Date>( new
-                                                                                        DateCell(
-                                                                                                  DateTimeFormat.getFormat(
-                                                                                                          DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
+        Column<AssetPageRow, Date> lastModifiedColumn = new Column<AssetPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
             public Date getValue(AssetPageRow row) {
                 return row.getLastModified();
             }
         };
         columnPicker.addColumn( lastModifiedColumn,
-                                new SortableHeader<AssetPageRow, Date>(
-                                                                        sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
                                                                         constants.LastModified(),
                                                                         lastModifiedColumn ),
                                 true );
@@ -217,8 +203,7 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( categorySummaryColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.Categories(),
                                                                           categorySummaryColumn ),
                                 false );
@@ -229,10 +214,20 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
             }
         };
         columnPicker.addColumn( externalSourceColumn,
-                                new SortableHeader<AssetPageRow, String>(
-                                                                          sortableHeaderGroup,
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
                                                                           constants.ExternalSource(),
                                                                           externalSourceColumn ),
+                                false );
+
+        Column<AssetPageRow, Boolean> isDisabledColumn = new Column<AssetPageRow, Boolean>( new RuleEnabledStateCell() ) {
+            public Boolean getValue(AssetPageRow row) {
+                return row.isDisabled();
+            }
+        };
+        columnPicker.addColumn( isDisabledColumn,
+                                new SortableHeader<AssetPageRow, Boolean>( sortableHeaderGroup,
+                                                                           constants.AssetTableIsDisabled(),
+                                                                           isDisabledColumn ),
                                 false );
 
     }
