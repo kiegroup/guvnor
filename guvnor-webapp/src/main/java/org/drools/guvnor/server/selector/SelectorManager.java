@@ -27,7 +27,7 @@ import java.util.*;
 public class SelectorManager {
 
     private static final Logger log = LoggerFactory.getLogger(SelectorManager.class);
-    public static final String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
+    private static final String SELECTOR_CONFIG_PROPERTIES = "/selectors.properties";
     private static final SelectorManager INSTANCE = new SelectorManager(SELECTOR_CONFIG_PROPERTIES);
 
     public static final String BUILT_IN_SELECTOR = "BuiltInSelector";
@@ -48,18 +48,22 @@ public class SelectorManager {
             for (Object o : props.keySet()) {
                 String selectorName = (String) o;
                 String val = props.getProperty(selectorName);
-                try {
-                    if (val.endsWith("drl")) {
-                        selectors.put(selectorName, loadRuleSelector(val));
-                    } else {
-                        selectors.put(selectorName, loadSelectorImplementation(val));
-                    }
-                } catch (Exception e) {
-                    log.error("Unable to load a selector [" + val + "]", e);
-                }
+                detemineSelector(selectorName, val);
             }
         } catch (IOException e) {
             log.error("Unable to load selectors.", e);
+        }
+    }
+
+    private void detemineSelector(String selectorName, String val) {
+        try {
+            if (val.endsWith("drl")) {
+                selectors.put(selectorName, loadRuleSelector(val));
+            } else {
+                selectors.put(selectorName, loadSelectorImplementation(val));
+            }
+        } catch (Exception e) {
+            log.error("Unable to load a selector [" + val + "]", e);
         }
     }
 

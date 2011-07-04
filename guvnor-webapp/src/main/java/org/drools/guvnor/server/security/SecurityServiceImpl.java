@@ -45,7 +45,7 @@ public class SecurityServiceImpl
 
     public static final String GUEST_LOGIN = "guest";
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
-    private static String[] serializationProperties = new String[]{
+    private static final String[] serializationProperties = new String[]{
             KeyStoreHelper.PROP_PVT_KS_URL,
             KeyStoreHelper.PROP_PVT_KS_PWD,
             KeyStoreHelper.PROP_PVT_ALIAS,

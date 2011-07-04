@@ -36,7 +36,7 @@ import org.drools.repository.UserInfo.InboxEntry;
 public class MailboxService {
 
     private static final LoggingHelper log  = LoggingHelper.getLogger( MailboxService.class );
-    public static final String MAILMAN      = "mailman";
+    private static final String MAILMAN      = "mailman";
     private static ExecutorService executor = null;
     private static MailboxService INSTANCE  = null;
     /**

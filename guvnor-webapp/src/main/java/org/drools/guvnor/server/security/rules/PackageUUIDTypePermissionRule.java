@@ -31,7 +31,7 @@ public class PackageUUIDTypePermissionRule
     public boolean hasPermission(Object requestedObject,
                                  String requestedPermission,
                                  List<RoleBasedPermission> permissions) {
-        String targetName = "";
+        String targetName;
         String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
         try {
             targetName = fetchRulesRepository().loadPackageByUUID( targetUUID ).getName();

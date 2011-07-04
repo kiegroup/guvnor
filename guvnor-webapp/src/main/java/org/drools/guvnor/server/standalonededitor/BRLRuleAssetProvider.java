@@ -86,12 +86,12 @@ public class BRLRuleAssetProvider
         asset.setUuid("mock");
         asset.setContent(ruleModel);
         asset.setName(ruleModel.name);
-        asset.setMetaData(createMetaData(ruleModel));
+        asset.setMetaData(createMetaData());
 
         return asset;
     }
 
-    private MetaData createMetaData(RuleModel ruleModel) {
+    private MetaData createMetaData() {
         MetaData metaData = new MetaData();
 
         metaData.setPackageName(packageName);

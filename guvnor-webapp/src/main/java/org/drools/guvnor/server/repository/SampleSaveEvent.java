@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class SampleSaveEvent
+class SampleSaveEvent
         implements
         SaveEvent {
     @SuppressWarnings({"unchecked", "rawtypes"})
