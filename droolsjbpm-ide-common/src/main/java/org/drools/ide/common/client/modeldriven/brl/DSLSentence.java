@@ -82,8 +82,8 @@ public class DSLSentence
         while ( variableStart >= 0 ) {
             sb.append( definition.substring( variableEnd,
                                              variableStart ) );
-            variableEnd = definition.indexOf( "}",
-                                                  variableStart ) + 1;
+            variableEnd = getIndexForEndOfVariable( definition,
+                                                    variableStart ) + 1;
             variableStart = definition.indexOf( "{",
                                                 variableEnd );
             sb.append( values.get( index++ ) );
@@ -150,8 +150,8 @@ public class DSLSentence
 
         int variableStart = definition.indexOf( "{" );
         while ( variableStart >= 0 ) {
-            int variableEnd = definition.indexOf( "}",
-                                                  variableStart );
+            int variableEnd = getIndexForEndOfVariable( definition,
+                                                        variableStart );
             String variable = definition.substring( variableStart + 1,
                                                     variableEnd );
             values.add( parseValue( variable ) );
@@ -169,14 +169,37 @@ public class DSLSentence
 
         int variableStart = definition.indexOf( "{" );
         while ( variableStart >= 0 ) {
-            int variableEnd = definition.indexOf( "}",
-                                                  variableStart );
+            int variableEnd = getIndexForEndOfVariable( definition,
+                                                        variableStart );
             String variable = definition.substring( variableStart + 1,
                                                     variableEnd );
             values.add( parseValue( variable ) );
             variableStart = definition.indexOf( "{",
                                                 variableEnd );
         }
+    }
+
+    private int getIndexForEndOfVariable(String dsl,
+                                         int start) {
+        int end = -1;
+        int bracketCount = 0;
+        if ( start > dsl.length() ) {
+            return end;
+        }
+        for ( int i = start; i < dsl.length(); i++ ) {
+            char c = dsl.charAt( i );
+            if ( c == '{' ) {
+                bracketCount++;
+            }
+            if ( c == '}' ) {
+                bracketCount--;
+                if ( bracketCount == 0 ) {
+                    end = i;
+                    return end;
+                }
+            }
+        }
+        return -1;
     }
 
     private String parseValue(String variable) {

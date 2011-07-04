@@ -126,9 +126,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
 
         while ( startVariable > 0 || firstOneIsBracket ) {
             firstOneIsBracket = false;
-
-            int endVariable = dslDefinition.indexOf( "}",
-                                                     startVariable );
+            int endVariable = getIndexForEndOfVariable( dslDefinition,
+                                                        startVariable );
             String currVariable = dslDefinition.substring( startVariable + 1,
                                                            endVariable );
 
@@ -167,6 +166,29 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             addWidget( widg );
         }
         updateSentence();
+    }
+
+    private int getIndexForEndOfVariable(String dsl,
+                                         int start) {
+        int end = -1;
+        int bracketCount = 0;
+        if ( start > dsl.length() ) {
+            return end;
+        }
+        for ( int i = start; i < dsl.length(); i++ ) {
+            char c = dsl.charAt( i );
+            if ( c == '{' ) {
+                bracketCount++;
+            }
+            if ( c == '}' ) {
+                bracketCount--;
+                if ( bracketCount == 0 ) {
+                    end = i;
+                    return end;
+                }
+            }
+        }
+        return -1;
     }
 
     class NewLine extends Widget {
