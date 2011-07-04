@@ -40,9 +40,12 @@ import org.mvel2.util.StringAppender;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
@@ -243,11 +246,8 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         //logger.log (LogLevel, GetContent(connection));
     }
 
-    /**
-     * Test of getPackagesAsFeed method, of class PackageService.
-     */
     @Test 
-    public void testGetPackageForXML() throws MalformedURLException, IOException {
+    public void testGetPackageForXML() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
@@ -255,7 +255,29 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //System.out.println(GetContent(connection));
+        Package p = unmarshalPackageXML(connection.getInputStream());
+        assertEquals("restPackage1", p.getTitle());
+        assertEquals("this is package restPackage1", p.getDescription());
+        assertEquals("version3", p.getCheckInComment());
+        assertEquals(3, p.getVersion());
+        assertEquals("http://localhost:9080/packages/restPackage1/source", p.getSourceLink().toString());
+        assertEquals("http://localhost:9080/packages/restPackage1/binary", p.getBinaryLink().toString());
+        PackageMetadata pm = p.getMetadata();
+        assertEquals("alan_parsons", pm.getLastContributor());
+        assertNotNull(pm.getCreated());
+        assertNotNull(pm.getUuid());
+        assertNotNull(pm.getLastModified());
+        Set<URI> assetsURI = p.getAssets();
+        
+        assertEquals(7, assetsURI.size());
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/drools")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/func")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/myDSL")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule1")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule2")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule4")));		
+    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/model1")));		
     }
 
     /**
@@ -296,6 +318,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("/packages/restPackage1/assets/myDSL", linksMap.get("myDSL").getHref().getPath());		
 		assertEquals("/packages/restPackage1/assets/rule1", linksMap.get("rule1").getHref().getPath());		
 		assertEquals("/packages/restPackage1/assets/rule2", linksMap.get("rule2").getHref().getPath());		
+		assertEquals("/packages/restPackage1/assets/rule4", linksMap.get("rule4").getHref().getPath());		
 		assertEquals("/packages/restPackage1/assets/model1", linksMap.get("model1").getHref().getPath());
 		
 		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
@@ -948,6 +971,12 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         p.setTitle(title);
         p.setDescription("A simple test package with 0 assets.");
         return p;
+    }
+        
+    private Package unmarshalPackageXML(InputStream is) throws Exception {
+        JAXBContext c = JAXBContext.newInstance(new Class[]{Package.class});
+        Unmarshaller u = c.createUnmarshaller();
+        return (Package)u.unmarshal(is);
     }
     
 }

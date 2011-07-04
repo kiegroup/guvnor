@@ -20,7 +20,6 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-//import org.drools.guvnor.client.common.AssetEditor;
 import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -39,6 +38,11 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
+/**
+ * This generates {@link AssetEditorFactory} class during GWT compile time as we can not use 
+ * Java reflection on GWT client side. 
+ * 
+ */
 public class AssetEditorFactoryGenerator extends Generator {    
     public String generate(TreeLogger logger, GeneratorContext context,
             String requestedClass) throws UnableToCompleteException {        
