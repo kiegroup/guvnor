@@ -92,6 +92,27 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     }
 
     /**
+     * This adds a new connective.
+     */
+    public void removeConnective(int index) {
+
+        if ( this.connectives == null ) {
+            return;
+        }
+        if ( index < 0 || index > connectives.length ) {
+            throw new IndexOutOfBoundsException();
+        }
+        int newIndex = 0;
+        final ConnectiveConstraint[] newList = new ConnectiveConstraint[this.connectives.length - 1];
+        for ( int i = 0; i < this.connectives.length; i++ ) {
+            if ( i != index ) {
+                newList[newIndex++] = this.connectives[i];
+            }
+        }
+        this.connectives = newList;
+    }
+
+    /**
      * Returns true of there is a field binding.
      */
     public boolean isBound() {

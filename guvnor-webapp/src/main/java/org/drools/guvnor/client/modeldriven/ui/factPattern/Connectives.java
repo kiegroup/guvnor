@@ -16,24 +16,49 @@
 
 package org.drools.guvnor.client.modeldriven.ui.factPattern;
 
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.ConstraintValueEditor;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
 public class Connectives {
-    private FactPattern  pattern;
-    private RuleModeller modeller;
+
+    private Constants     constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images    = GWT.create( Images.class );
+
+    private RuleModeller  modeller;
+    private FactPattern   pattern;
+    private Boolean       isReadOnly;
+
+    public Connectives(RuleModeller modeller,
+                       FactPattern pattern,
+                       Boolean isReadOnly) {
+        this.pattern = pattern;
+        this.modeller = modeller;
+        this.isReadOnly = isReadOnly;
+    }
 
     /**
      * Returns the pattern.
@@ -43,50 +68,39 @@ public class Connectives {
     }
 
     /**
-     * Sets the pattern.
-     */
-    public void setPattern(FactPattern pattern) {
-        this.pattern = pattern;
-    }
-
-    /**
      * Returns the completions.
      */
     public SuggestionCompletionEngine getCompletions() {
         return this.modeller.getSuggestionCompletions();
     }
 
-    /**
-     * Returns the modeller.
-     */
-    public RuleModeller getModeller() {
-        return modeller;
-    }
-
-    /**
-     * Sets the modeller.
-     */
-    public void setModeller(RuleModeller modeller) {
-        this.modeller = modeller;
-    }
-
     public Widget connectives(SingleFieldConstraint c,
                               String factClass) {
+        HorizontalPanel hp = new HorizontalPanel();
         if ( c.connectives != null && c.connectives.length > 0 ) {
-            DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
+            hp.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_CENTER );
             for ( int i = 0; i < c.connectives.length; i++ ) {
+
                 ConnectiveConstraint con = c.connectives[i];
-                horiz.add( connectiveOperatorDropDown( con,
-                                                       c.getFieldName() ) );
-                horiz.add( connectiveValueEditor( con,
-                                                  factClass,
-                                                  c.getFieldName() ) );
+
+                hp.add( connectiveOperatorDropDown( con,
+                                                    c.getFieldName() ) );
+                hp.add( connectiveValueEditor( con,
+                                               factClass,
+                                               c.getFieldName() ) );
+
+                if ( !isReadOnly ) {
+                    Image clear = new ImageButton( images.deleteItemSmall() );
+                    clear.setTitle( constants.RemoveThisRestriction() );
+                    clear.addClickHandler( createClickHandlerForClearImageButton( c,
+                                                                                  i ) );
+                    hp.add( clear );
+                }
+
             }
-            return horiz;
-        } else {
-            //nothing to do
-            return null;
         }
+        return hp;
 
     }
 
@@ -98,27 +112,47 @@ public class Connectives {
                                           fieldName,
                                           con,
                                           this.modeller,
-                                          false );
+                                          isReadOnly );
     }
 
     private Widget connectiveOperatorDropDown(final ConnectiveConstraint con,
                                               String fieldName) {
 
-        String factType = this.pattern.getFactType();
-        String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
-                                                                                     fieldName );
-        CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                           con );
+        if ( !isReadOnly ) {
+            String factType = this.pattern.getFactType();
+            String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
+                                                                                         fieldName );
+            CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
+                                                               con );
 
-        w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+            w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
-            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                OperatorSelection selection = event.getValue();
-                String selected = selection.getValue();
-                con.setOperator( selected );
+                public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                    OperatorSelection selection = event.getValue();
+                    String selected = selection.getValue();
+                    con.setOperator( selected );
+                }
+            } );
+
+            return w;
+
+        } else {
+            SmallLabel sl = new SmallLabel( "<b>" + (con.getOperator() == null ? constants.pleaseChoose() : HumanReadable.getOperatorDisplayName( con.getOperator() )) + "</b>" );
+            return sl;
+        }
+    }
+
+    private ClickHandler createClickHandlerForClearImageButton(final SingleFieldConstraint sfc,
+                                                               final int index) {
+        return new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                if ( Window.confirm( constants.RemoveThisItem() ) ) {
+                    sfc.removeConnective( index );
+                    modeller.makeDirty();
+                    modeller.refreshWidget();
+                }
             }
-        } );
-
-        return w;
+        };
     }
 }

@@ -123,10 +123,6 @@ public class FactPatternWidget extends RuleModellerWidget {
         this.pattern = (FactPattern) p;
         this.bindable = canBind;
 
-        this.connectives = new Connectives();
-        this.connectives.setModeller( mod );
-        this.connectives.setPattern( pattern );
-
         this.popupCreator = new PopupCreator();
         this.popupCreator.setBindable( bindable );
         this.popupCreator.setCompletions( mod.getSuggestionCompletions() );
@@ -137,10 +133,12 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         //if readOnly == null, the RO attribute is calculated.
         if ( readOnly == null ) {
-            this.readOnly = !connectives.getCompletions().containsFactType( this.pattern.getFactType() );
+            this.readOnly = !mod.getSuggestionCompletions().containsFactType( this.pattern.getFactType() );
         } else {
             this.readOnly = readOnly;
         }
+
+        this.connectives = new Connectives(mod, pattern, this.readOnly);
 
         layout.setWidget( 0,
                           0,

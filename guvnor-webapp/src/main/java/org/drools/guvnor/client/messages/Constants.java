@@ -550,6 +550,8 @@ public interface Constants
 
     String RemoveThisWholeRestriction();
 
+    String RemoveThisRestriction();
+
     String AddAFieldToThisNestedConstraint();
 
     String AllOf();
