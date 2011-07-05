@@ -426,6 +426,8 @@ public interface Constants
 
     String DecisionTableWidgetDescription();
 
+    String POJOModelWidgetDescription();
+    
     String UploadNewVersionDescription();
 
     String Deploy();

@@ -63,6 +63,13 @@
     </asseteditor>
     
     <asseteditor>
+        <class>org.drools.guvnor.client.common.POJOModelUploadWidget</class> 
+        <format>jar</format>
+        <icon>images.modelAsset()</icon>
+        <title>constants.Model()</title>    
+    </asseteditor>
+    
+    <asseteditor>
         <class>org.drools.guvnor.client.factmodel.FactModelsWidget</class> 
         <format>model.drl</format>
         <icon>images.modelAsset()</icon>
