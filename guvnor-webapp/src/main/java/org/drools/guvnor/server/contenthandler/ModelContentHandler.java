@@ -17,14 +17,19 @@
 package org.drools.guvnor.server.contenthandler;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
@@ -49,15 +54,16 @@ public class ModelContentHandler extends ContentHandler
     }
 
     /**
-     * This is called when a model jar is attached, it will peer into it, and then automatically add imports
-     * if there aren't any already in the package header configuration.
+     * This is called when a model jar is attached, it will peer into it, and
+     * then automatically add imports if there aren't any already in the package
+     * header configuration.
      */
     public void onAttachmentAdded(AssetItem asset) throws IOException {
 
         PackageItem pkg = asset.getPackage();
         StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
-        Set<String> imports = getImportsFromJar( asset.getBinaryContentAttachment() );
+        Set<String> imports = getImportsFromJar( asset );
 
         for ( String importLine : imports ) {
             Pattern pattern = Pattern.compile( "\\b" + importLine.replace( ".",
@@ -78,7 +84,7 @@ public class ModelContentHandler extends ContentHandler
         PackageItem pkg = item.getPackage();
         StringBuilder header = createNewHeader( DroolsHeader.getDroolsHeader( pkg ) );
 
-        Set<String> imports = getImportsFromJar( item.getBinaryContentAttachment() );
+        Set<String> imports = getImportsFromJar( item );
 
         for ( String importLine : imports ) {
             String importLineWithLineEnd = importLine + "\n";
@@ -115,22 +121,79 @@ public class ModelContentHandler extends ContentHandler
         return buf;
     }
 
-    private Set<String> getImportsFromJar(InputStream in) throws IOException {
-        Set<String> imports = new HashSet<String>();
+    private Set<String> getImportsFromJar(AssetItem assetItem) throws IOException {
 
-        JarInputStream jis = new JarInputStream( in );
+        Set<String> imports = new HashSet<String>();
+        Map<String, String> nonCollidingImports = new HashMap<String, String>();
+        String assetPackageName = assetItem.getPackageName();
+
+        //Setup class-loader to check for class visibility
+        JarInputStream cljis = new JarInputStream( assetItem.getBinaryContentAttachment() );
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( cljis );
+        ClassLoaderBuilder clb = new ClassLoaderBuilder( jarInputStreams );
+        ClassLoader cl = clb.buildClassLoader();
+
+        //Reset stream to read classes
+        JarInputStream jis = new JarInputStream( assetItem.getBinaryContentAttachment() );
         JarEntry entry = null;
+
+        //Get Class names from JAR, only the first occurrence of a given Class leaf name will be inserted. Thus 
+        //"org.apache.commons.lang.NumberUtils" will be imported but "org.apache.commons.lang.math.NumberUtils"
+        //will not, assuming it follows later in the JAR structure.
         while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
                 if ( entry.getName().endsWith( ".class" ) && entry.getName().indexOf( '$' ) == -1 && !entry.getName().endsWith( "package-info.class" ) ) {
-
-                    String line = "import " + convertPathToName( entry.getName() );
-                    imports.add( line );
+                    String fullyQualifiedName = convertPathToName( entry.getName() );
+                    if ( isClassVisible( cl,
+                                         fullyQualifiedName,
+                                         assetPackageName ) ) {
+                        String leafName = getLeafName( fullyQualifiedName );
+                        if(!nonCollidingImports.containsKey( leafName )) {
+                        nonCollidingImports.put( leafName,
+                                                 fullyQualifiedName );
+                        }
+                    }
                 }
             }
         }
 
+        //Build list of imports
+        for ( String value : nonCollidingImports.values() ) {
+            String line = "import " + value;
+            imports.add( line );
+        }
+
         return imports;
+    }
+
+    private String getLeafName(String fullyQualifiedName) {
+        int index = fullyQualifiedName.lastIndexOf( "." );
+        if ( index == -1 ) {
+            return fullyQualifiedName;
+        }
+        return fullyQualifiedName.substring( index + 1 );
+    }
+
+    //Only import public classes; or those in the same package as the Asset
+    private boolean isClassVisible(ClassLoader cl,
+                                   String className,
+                                   String assetPackageName) {
+        try {
+            Class< ? > cls = cl.loadClass( className );
+            int modifiers = cls.getModifiers();
+            if ( Modifier.isPublic( modifiers ) ) {
+                return true;
+            }
+            String packageName = className.substring( 0,
+                                                      className.lastIndexOf( "." ) );
+            if ( !packageName.equals( assetPackageName ) ) {
+                return false;
+            }
+        } catch ( Exception e ) {
+            return false;
+        }
+        return true;
     }
 
     public static String convertPathToName(String name) {

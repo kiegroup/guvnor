@@ -38,8 +38,7 @@ public class ClassLoaderBuilder {
         this.jarInputStreams = getJars(assetItemIterator);
     }
 
-    // TODO: Remove this, it is only here for testing -Rikkola-
-    ClassLoaderBuilder(List<JarInputStream> jarInputStreams) {
+    public ClassLoaderBuilder(List<JarInputStream> jarInputStreams) {
         this.jarInputStreams = jarInputStreams;
     }
 
