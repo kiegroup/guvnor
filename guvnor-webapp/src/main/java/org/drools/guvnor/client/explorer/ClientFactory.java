@@ -16,24 +16,38 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
 
 public interface ClientFactory {
 
-    AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory);
+    AuthorPerspectiveView getAuthorPerspectiveView( NavigationPanelFactory navigationPanelFactory );
 
-    RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory);
+    RuntimePerspectiveView getRuntimePerspectiveView( NavigationPanelFactory navigationPanelFactory );
 
     PlaceController getPlaceController();
 
     EventBus getEventBus();
 
-    PerspectivesPanelView getPerspectivesPanelView(boolean showTitle);
+    PerspectivesPanelView getPerspectivesPanelView();
 
     IFramePerspectiveView getIFramePerspectiveView();
 
     NavigationViewFactory getNavigationViewFactory();
+
+    ConfigurationServiceAsync getConfigurationService();
+
+    ActivityManager getActivityManager();
+
+    PlaceHistoryHandler getPlaceHistoryHandler();
+
+    ModuleEditorActivityView getModuleEditorActivityView();
+
+    PackageServiceAsync getPackageService();
 }

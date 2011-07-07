@@ -16,26 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.Date;
-
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.configurations.Capability;
-import org.drools.guvnor.client.configurations.UserCapabilities;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.rpc.MetaData;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -45,44 +25,49 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.configurations.Capability;
+import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
+
+import java.util.Date;
 
 /**
  * This displays the metadata for a versionable artifact. It also captures
  * edits, but it does not load or save anything itself.
  */
 public class MetaDataWidgetNew extends Composite {
-    private Constants       constants = GWT.create( Constants.class );
-    private static Images   images    = GWT.create( Images.class );
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private Artifact        artifact;
-    private boolean         readOnly;
-    private String          uuid;
-    private Command         refreshCommand;
-    private OpenItemCommand openItemCommand;
-    private Command         closeCommand;
-    private VerticalPanel   layout    = new VerticalPanel();
-    AssetCategoryEditor     ed;
+    private final Artifact artifact;
+    private final boolean readOnly;
+    private final String uuid;
+    private final Command refreshCommand;
+    private final OpenItemCommand openItemCommand;
+    private final Command closeCommand;
+    private VerticalPanel layout = new VerticalPanel();
+    AssetCategoryEditor ed;
     private FormStyleLayout currentSection;
-    private String          currentSectionName;
+    private String currentSectionName;
+    private final ClientFactory clientFactory;
 
-    public MetaDataWidgetNew(final Artifact artifact,
-                             boolean readOnly,
-                             final String uuid,
-                             final Command refreshCommand,
-                             final OpenItemCommand openItemCommand,
-                             final Command closeCommand) {
+    public MetaDataWidgetNew( ClientFactory clientFactory,
+                              final Artifact artifact,
+                              boolean readOnly,
+                              final String uuid,
+                              final Command refreshCommand,
+                              final OpenItemCommand openItemCommand,
+                              final Command closeCommand ) {
         super();
 
+        this.clientFactory = clientFactory;
         this.uuid = uuid;
         this.artifact = artifact;
         this.readOnly = readOnly;
@@ -101,66 +86,66 @@ public class MetaDataWidgetNew extends Composite {
         //layout.add( new SmallLabel( constants.Title() + ": [<b>" + data.name + "</b>]" ) );
         startSection( constants.Metadata() );
         addHeader( images.assetVersion(),
-                   artifact.getName(),
-                   null );
+                artifact.getName(),
+                null );
 
         loadData();
     }
 
-    private void addHeader(ImageResource img,
-                           String name,
-                           Image edit) {
+    private void addHeader( ImageResource img,
+                            String name,
+                            Image edit ) {
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
         if ( edit != null ) hp.add( edit );
         currentSection.addAttribute( constants.Title(),
-                                     hp );
+                hp );
     }
 
     private void loadData() {
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CategoriesMetaData(),
-                          categories() );
+                    categories() );
         }
 
         addAttribute( constants.LastModified(),
-                      readOnlyDate( artifact.getLastModified() ) );
+                readOnlyDate( artifact.getLastModified() ) );
         addAttribute( constants.ModifiedByMetaData(),
-                      readOnlyText( artifact.getLastContributor() ) );
+                readOnlyText( artifact.getLastContributor() ) );
         addAttribute( constants.NoteMetaData(),
-                      readOnlyText( artifact.getCheckinComment() ) );
+                readOnlyText( artifact.getCheckinComment() ) );
 
         if ( !readOnly ) {
             addAttribute( constants.CreatedOnMetaData(),
-                          readOnlyDate( artifact.getDateCreated() ) );
+                    readOnlyDate( artifact.getDateCreated() ) );
         }
 
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
-                          readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
+                    readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
             addAttribute( constants.FormatMetaData(),
-                          new SmallLabel( "<b>"
-                                          + ((RuleAsset) artifact).getMetaData().getFormat() + "</b>" ) );
+                    new SmallLabel( "<b>"
+                            + ((RuleAsset) artifact).getMetaData().getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
-                          packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
+                    packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
 
             addAttribute( constants.IsDisabledMetaData(),
-                          editableBoolean( new FieldBooleanBinding() {
-                                               public boolean getValue() {
-                                                   return ((RuleAsset) artifact).getMetaData().isDisabled();
-                                               }
+                    editableBoolean( new FieldBooleanBinding() {
+                                public boolean getValue() {
+                                    return ((RuleAsset) artifact).getMetaData().isDisabled();
+                                }
 
-                                               public void setValue(boolean val) {
-                                                   ((RuleAsset) artifact).getMetaData().setDisabled( val );
-                                               }
-                                           },
-                                           constants.DisableTip() ) );
+                                public void setValue( boolean val ) {
+                                    ((RuleAsset) artifact).getMetaData().setDisabled( val );
+                                }
+                            },
+                            constants.DisableTip() ) );
         }
 
         addAttribute( "UUID:",
-                      readOnlyText( uuid ) );
+                readOnlyText( uuid ) );
 
         endSection( false );
 
@@ -170,55 +155,55 @@ public class MetaDataWidgetNew extends Composite {
             startSection( constants.OtherMetaData() );
 
             addAttribute( constants.SubjectMetaData(),
-                              editableText( new FieldBinding() {
-                                                public String getValue() {
-                                                    return data.subject;
-                                                }
+                    editableText( new FieldBinding() {
+                                public String getValue() {
+                                    return data.subject;
+                                }
 
-                                                public void setValue(String val) {
-                                                    data.subject = val;
-                                                }
-                                            },
-                                            constants.AShortDescriptionOfTheSubjectMatter() ) );
+                                public void setValue( String val ) {
+                                    data.subject = val;
+                                }
+                            },
+                            constants.AShortDescriptionOfTheSubjectMatter() ) );
 
             addAttribute( constants.TypeMetaData(),
-                              editableText( new FieldBinding() {
-                                                public String getValue() {
-                                                    return data.type;
-                                                }
+                    editableText( new FieldBinding() {
+                                public String getValue() {
+                                    return data.type;
+                                }
 
-                                                public void setValue(String val) {
-                                                    data.type = val;
-                                                }
+                                public void setValue( String val ) {
+                                    data.type = val;
+                                }
 
-                                            },
-                                            constants.TypeTip() ) );
+                            },
+                            constants.TypeTip() ) );
 
             addAttribute( constants.ExternalLinkMetaData(),
-                              editableText( new FieldBinding() {
-                                                public String getValue() {
-                                                    return data.externalRelation;
-                                                }
+                    editableText( new FieldBinding() {
+                                public String getValue() {
+                                    return data.externalRelation;
+                                }
 
-                                                public void setValue(String val) {
-                                                    data.externalRelation = val;
-                                                }
+                                public void setValue( String val ) {
+                                    data.externalRelation = val;
+                                }
 
-                                            },
-                                            constants.ExternalLinkTip() ) );
+                            },
+                            constants.ExternalLinkTip() ) );
 
             addAttribute( constants.SourceMetaData(),
-                              editableText( new FieldBinding() {
-                                                public String getValue() {
-                                                    return data.externalSource;
-                                                }
+                    editableText( new FieldBinding() {
+                                public String getValue() {
+                                    return data.externalSource;
+                                }
 
-                                                public void setValue(String val) {
-                                                    data.externalSource = val;
-                                                }
+                                public void setValue( String val ) {
+                                    data.externalSource = val;
+                                }
 
-                                            },
-                                            constants.SourceMetaDataTip() ) );
+                            },
+                            constants.SourceMetaDataTip() ) );
 
             endSection( true );
         }
@@ -227,34 +212,35 @@ public class MetaDataWidgetNew extends Composite {
         //Do not show version feed for asset due to GUVNOR-1308
         if ( !(artifact instanceof RuleAsset) ) {
             addAttribute( constants.VersionFeed(),
-                          new HTML( "<a href='"
-                                    + getVersionFeed( artifact ) + "' target='_blank'><img src='"
-                                    + new Image( images.feed() ).getUrl() + "'/></a>" ) );
+                    new HTML( "<a href='"
+                            + getVersionFeed( artifact ) + "' target='_blank'><img src='"
+                            + new Image( images.feed() ).getUrl() + "'/></a>" ) );
         }
 
         addAttribute( constants.CurrentVersionNumber(),
-                      getVersionNumberLabel() );
+                getVersionNumberLabel() );
 
         if ( !readOnly ) {
-            addRow( new VersionBrowser( this.uuid,
-                                        !(artifact instanceof RuleAsset),
-                                        refreshCommand ) );
+            addRow( new VersionBrowser( clientFactory,
+                    this.uuid,
+                    !(artifact instanceof RuleAsset),
+                    refreshCommand ) );
         }
 
         endSection( true );
     }
 
-    private void addRow(Widget widget) {
+    private void addRow( Widget widget ) {
         this.currentSection.addRow( widget );
     }
 
-    private void addAttribute(String string,
-                              Widget widget) {
+    private void addAttribute( String string,
+                               Widget widget ) {
         this.currentSection.addAttribute( string,
-                                          widget );
+                widget );
     }
 
-    private void endSection(boolean collapsed) {
+    private void endSection( boolean collapsed ) {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
         advancedDisclosure.setWidth( "100%" );
         advancedDisclosure.setOpen( !collapsed );
@@ -262,12 +248,12 @@ public class MetaDataWidgetNew extends Composite {
         layout.add( advancedDisclosure );
     }
 
-    private void startSection(String name) {
+    private void startSection( String name ) {
         currentSection = new FormStyleLayout();
         currentSectionName = name;
     }
 
-    private Widget packageEditor(final String packageName) {
+    private Widget packageEditor( final String packageName ) {
         if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             return readOnlyText( packageName );
         } else {
@@ -276,9 +262,9 @@ public class MetaDataWidgetNew extends Composite {
             horiz.add( readOnlyText( packageName ) );
             Image editPackage = new ImageButton( images.edit() );
             editPackage.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent w) {
+                public void onClick( ClickEvent w ) {
                     showEditPackage( packageName,
-                                     w );
+                            w );
                 }
             } );
             horiz.add( editPackage );
@@ -286,38 +272,38 @@ public class MetaDataWidgetNew extends Composite {
         }
     }
 
-    private void showEditPackage(final String pkg,
-                                 ClickEvent source) {
+    private void showEditPackage( final String pkg,
+                                  ClickEvent source ) {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
-                                                       constants.MoveThisItemToAnotherPackage() );
+                constants.MoveThisItemToAnotherPackage() );
         pop.addAttribute( constants.CurrentPackage(),
-                          new Label( pkg ) );
+                new Label( pkg ) );
         final RulePackageSelector sel = new RulePackageSelector();
         pop.addAttribute( constants.NewPackage(),
-                          sel );
+                sel );
         Button ok = new Button( constants.ChangePackage() );
         pop.addAttribute( "",
-                          ok );
+                ok );
         ok.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent w) {
+            public void onClick( ClickEvent w ) {
                 if ( sel.getSelectedPackage().equals( pkg ) ) {
                     Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
                     return;
                 }
                 RepositoryServiceFactory.getAssetService().changeAssetPackage( uuid,
-                                                                               sel.getSelectedPackage(),
-                                                                               constants.MovedFromPackage( pkg ),
-                                                                               new GenericCallback<java.lang.Void>() {
-                                                                                   public void onSuccess(Void v) {
-                                                                                       //Refresh wont work here. We have to close and reopen
-                                                                                       //otherwise SuggestionEngine may not be initialized for
-                                                                                       //the target package. 
-                                                                                       closeAndReopen( uuid );
-                                                                                       pop.hide();
-                                                                                   }
+                        sel.getSelectedPackage(),
+                        constants.MovedFromPackage( pkg ),
+                        new GenericCallback<java.lang.Void>() {
+                            public void onSuccess( Void v ) {
+                                //Refresh wont work here. We have to close and reopen
+                                //otherwise SuggestionEngine may not be initialized for
+                                //the target package.
+                                closeAndReopen( uuid );
+                                pop.hide();
+                            }
 
-                                                                               } );
+                        } );
 
             }
 
@@ -326,7 +312,7 @@ public class MetaDataWidgetNew extends Composite {
         pop.show();
     }
 
-    private void closeAndReopen(String newAssetUUID) {
+    private void closeAndReopen( String newAssetUUID ) {
         if ( closeCommand != null ) {
             closeCommand.execute();
         }
@@ -343,7 +329,7 @@ public class MetaDataWidgetNew extends Composite {
         }
     }
 
-    private Widget readOnlyDate(Date lastModifiedDate) {
+    private Widget readOnlyDate( Date lastModifiedDate ) {
         if ( lastModifiedDate == null ) {
             return null;
         } else {
@@ -351,7 +337,7 @@ public class MetaDataWidgetNew extends Composite {
         }
     }
 
-    private Label readOnlyText(String text) {
+    private Label readOnlyText( String text ) {
         SmallLabel lbl = new SmallLabel( text );
         lbl.setWidth( "100%" );
         return lbl;
@@ -359,27 +345,25 @@ public class MetaDataWidgetNew extends Composite {
 
     private Widget categories() {
         ed = new AssetCategoryEditor( ((RuleAsset) this.artifact).getMetaData(),
-                                      this.readOnly );
+                this.readOnly );
         return ed;
     }
 
     /**
      * This binds a field, and returns a check box editor for it.
-     * 
-     * @param bind
-     *            Interface to bind to.
-     * @param toolTip
-     *            tool tip.
+     *
+     * @param bind    Interface to bind to.
+     * @param toolTip tool tip.
      * @return
      */
-    private Widget editableBoolean(final FieldBooleanBinding bind,
-                                   String toolTip) {
+    private Widget editableBoolean( final FieldBooleanBinding bind,
+                                    String toolTip ) {
         if ( !readOnly ) {
             final CheckBox box = new CheckBox();
             box.setTitle( toolTip );
             box.setValue( bind.getValue() );
             ClickHandler listener = new ClickHandler() {
-                public void onClick(ClickEvent w) {
+                public void onClick( ClickEvent w ) {
                     boolean b = box.getValue();
                     bind.setValue( b );
                 }
@@ -398,15 +382,13 @@ public class MetaDataWidgetNew extends Composite {
 
     /**
      * This binds a field, and returns a TextBox editor for it.
-     * 
-     * @param bind
-     *            Interface to bind to.
-     * @param toolTip
-     *            tool tip.
+     *
+     * @param bind    Interface to bind to.
+     * @param toolTip tool tip.
      * @return
      */
-    private Widget editableText(final FieldBinding bind,
-                                   String toolTip) {
+    private Widget editableText( final FieldBinding bind,
+                                 String toolTip ) {
         if ( !readOnly ) {
             final TextBox tbox = new TextBox();
             tbox.setTitle( toolTip );
@@ -414,7 +396,7 @@ public class MetaDataWidgetNew extends Composite {
             tbox.setVisibleLength( 10 );
             ChangeHandler listener = new ChangeHandler() {
 
-                public void onChange(ChangeEvent event) {
+                public void onChange( ChangeEvent event ) {
                     String txt = tbox.getText();
                     bind.setValue( txt );
                 }
@@ -427,16 +409,20 @@ public class MetaDataWidgetNew extends Composite {
         }
     }
 
-    /** used to bind fields in the meta data DTO to the form */
+    /**
+     * used to bind fields in the meta data DTO to the form
+     */
     static interface FieldBinding {
-        void setValue(String val);
+        void setValue( String val );
 
         String getValue();
     }
 
-    /** used to bind fields in the meta data DTO to the form */
+    /**
+     * used to bind fields in the meta data DTO to the form
+     */
     static interface FieldBooleanBinding {
-        void setValue(boolean val);
+        void setValue( boolean val );
 
         boolean getValue();
     }
@@ -452,13 +438,13 @@ public class MetaDataWidgetNew extends Composite {
         render();
     }
 
-    static String getVersionFeed(Artifact artifact) {
+    static String getVersionFeed( Artifact artifact ) {
         if ( artifact instanceof PackageConfigData ) {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;
         } else {
             String hurl = getRESTBaseURL() + "packages/" + ((RuleAsset) artifact).getMetaData().getPackageName()
-                          + "/assets/" + artifact.getName() + "/versions";
+                    + "/assets/" + artifact.getName() + "/versions";
             return hurl;
         }
     }
@@ -466,7 +452,7 @@ public class MetaDataWidgetNew extends Composite {
     static String getRESTBaseURL() {
         String url = GWT.getModuleBaseURL();
         return url.replaceFirst( "org.drools.guvnor.Guvnor",
-                                 "rest" );
+                "rest" );
     }
 
 }

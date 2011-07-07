@@ -33,16 +33,32 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
 
     private Map<String, Place> perspectives = new HashMap<String, Place>();
 
-    public PerspectivesPanel(PerspectivesPanelView view, PlaceController placeController) {
+    public PerspectivesPanel( PerspectivesPanelView view, PlaceController placeController ) {
         this.view = view;
-        this.view.setPresenter(this);
+        this.view.setPresenter( this );
         this.placeController = placeController;
-
     }
 
-    public void setWidget(IsWidget widget) {
-        if (widget != null) {
-            view.setWidget(widget);
+    public void setWidget( IsWidget widget ) {
+        if ( widget != null ) {
+            isTabContentWidget( widget );
+
+            setWidget( (TabContentWidget) widget );
+        }
+    }
+
+    public void setWidget( TabContentWidget tabContentWidget ) {
+        if ( tabContentWidget != null ) {
+            view.setWidget(
+                    tabContentWidget.getTabTitle(),
+                    tabContentWidget,
+                    tabContentWidget.getID() );
+        }
+    }
+
+    private void isTabContentWidget( IsWidget widget ) {
+        if ( !(widget instanceof TabContentWidget) ) {
+            throw new IllegalArgumentException( "Widget must be an instance of " + TabContentWidget.class + ", but it was " + widget.getClass() );
         }
     }
 
@@ -50,17 +66,17 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
         return view;
     }
 
-    public void setUserName(String userName) {
-        view.setUserName(userName);
+    public void setUserName( String userName ) {
+        view.setUserName( userName );
     }
 
-    public void addPerspective(Perspective perspective) {
+    public void addPerspective( Perspective perspective ) {
         String name = perspective.getName();
-        perspectives.put(name, perspective);
-        view.addPerspectiveToList(name, name);
+        perspectives.put( name, perspective );
+        view.addPerspectiveToList( name, name );
     }
 
-    public void onPerspectiveChange(String perspectiveId) throws UnknownPerspective {
-        placeController.goTo(perspectives.get(perspectiveId));
+    public void onPerspectiveChange( String perspectiveId ) throws UnknownPerspective {
+        placeController.goTo( perspectives.get( perspectiveId ) );
     }
-    }
+}

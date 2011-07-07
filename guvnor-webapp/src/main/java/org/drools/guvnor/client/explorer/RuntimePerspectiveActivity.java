@@ -24,14 +24,16 @@ import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 public class RuntimePerspectiveActivity extends AbstractActivity implements RuntimePerspectiveView.Presenter {
     private ClientFactory clientFactory;
 
-    public RuntimePerspectiveActivity(ClientFactory clientFactory) {
+    public RuntimePerspectiveActivity( ClientFactory clientFactory ) {
         this.clientFactory = clientFactory;
     }
 
-    public void start(AcceptsOneWidget panel, EventBus eventBus) {
-        NavigationPanelFactory navigationPanelFactory = new RuntimeNavigationPanelFactory(clientFactory.getNavigationViewFactory());
+    public void start( AcceptsOneWidget panel, EventBus eventBus ) {
+        NavigationPanelFactory navigationPanelFactory = new NavigationPanelFactory( clientFactory.getNavigationViewFactory() );
 
-        panel.setWidget(clientFactory.getRuntimePerspectiveView(navigationPanelFactory));
-        //TODO: Generated code -Rikkola-
+        RuntimePerspectiveView runtimePerspectiveView = clientFactory.getRuntimePerspectiveView( navigationPanelFactory );
+        runtimePerspectiveView.setPresenter( this );
+        panel.setWidget( runtimePerspectiveView );
+
     }
 }

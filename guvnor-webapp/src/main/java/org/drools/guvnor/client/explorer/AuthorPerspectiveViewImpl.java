@@ -24,29 +24,51 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.navigation.*;
 import org.drools.guvnor.client.messages.Constants;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspectiveView {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
+    private final ClientFactory clientFactory;
 
     interface AuthorPerspectiveViewImplBinder
             extends
             UiBinder<Widget, AuthorPerspectiveViewImpl> {
     }
 
-    private static AuthorPerspectiveViewImplBinder uiBinder = GWT.create(AuthorPerspectiveViewImplBinder.class);
+    private static AuthorPerspectiveViewImplBinder uiBinder = GWT.create( AuthorPerspectiveViewImplBinder.class );
 
     private Presenter presenter;
 
     @UiField(provided = true)
     Widget navigationPanel;
 
-    public AuthorPerspectiveViewImpl(NavigationPanelFactory navigationPanelFactory) {
-        NavigationPanelView view = navigationPanelFactory.createNavigationPanel().getView();
+    public AuthorPerspectiveViewImpl( ClientFactory clientFactory, NavigationPanelFactory navigationPanelFactory ) {
+        this.clientFactory = clientFactory;
+        NavigationPanelView view = navigationPanelFactory.createNavigationPanel( getBuilders() ).getView();
         navigationPanel = view.asWidget();
-        initWidget(uiBinder.createAndBindUi(this));
+        initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setPresenter(Presenter presenter) {
+    private Collection<NavigationItemBuilder> getBuilders() {
+
+        Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
+
+        navigationItemBuilders.add( new BrowseTreeBuilder() );
+
+        navigationItemBuilders.add( new KnowledgeModulesTreeBuilder( clientFactory ) );
+
+        navigationItemBuilders.add( new QATreeBuilder() );
+
+        navigationItemBuilders.add( new DeploymentTreeBuilder() );
+
+        navigationItemBuilders.add( new AdminTreeBuilder() );
+
+        return navigationItemBuilders;
+    }
+
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 

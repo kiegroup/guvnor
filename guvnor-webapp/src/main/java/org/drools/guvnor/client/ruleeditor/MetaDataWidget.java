@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.Artifact;
@@ -61,17 +62,19 @@ public class MetaDataWidget extends Composite {
     private Constants       constants = GWT.create( Constants.class );
     private static Images   images    = GWT.create( Images.class );
 
-    private Artifact        data;
-    private boolean         readOnly;
-    private String          uuid;
-    private Command         metaDataRefreshView;
-    private Command         fullRefreshView;
-    private VerticalPanel   layout    = new VerticalPanel();
-    AssetCategoryEditor     ed;
+    private Artifact data;
+    private final boolean readOnly;
+    private final String uuid;
+    private final Command metaDataRefreshView;
+    private final Command fullRefreshView;
+    private VerticalPanel layout = new VerticalPanel();
+    AssetCategoryEditor ed;
     private FormStyleLayout currentSection;
-    private String          currentSectionName;
+    private String currentSectionName;
+    private final ClientFactory clientFactory;
 
-    public MetaDataWidget(final Artifact d,
+    public MetaDataWidget(ClientFactory clientFactory,
+                          final Artifact d,
                           final boolean readOnly,
                           final String uuid,
                           final Command metaDataRefreshView,
@@ -79,6 +82,7 @@ public class MetaDataWidget extends Composite {
 
         super();
 
+        this.clientFactory = clientFactory;
         this.uuid = uuid;
         this.data = d;
         this.readOnly = readOnly;
@@ -230,9 +234,11 @@ public class MetaDataWidget extends Composite {
                       getVersionNumberLabel() );
 
         if ( !readOnly ) {
-            addRow( new VersionBrowser( this.uuid,
-                                        false,
-                                        fullRefreshView ) );
+            addRow( new VersionBrowser(
+                    clientFactory,
+                    this.uuid,
+                    false,
+                    fullRefreshView ) );
         }
 
         endSection( false );

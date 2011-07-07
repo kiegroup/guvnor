@@ -17,12 +17,9 @@
 package org.drools.guvnor.client.explorer;
 
 
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.widgets.tables.InboxPagedTable;
 
 import java.util.List;
 
@@ -30,33 +27,31 @@ public interface TabManager {
 
     void openFind();
 
-    void openAsset(String key);
+    void openAsset( String key );
 
-    void openAdministrationSelection(int id);
+    void openAdministrationSelection( int id );
 
-    void openPackageEditor(String uuid, Command command);
+    void openSnapshot( SnapshotInfo snap );
 
-    void openSnapshot(SnapshotInfo snap);
+    void openTestScenario( String uuid, String name );
 
-    void openTestScenario(String uuid, String name);
+    void openVerifierView( String uuid, String name );
 
-    void openVerifierView(String uuid, String name);
+    void openAssetsToMultiView( MultiViewRow[] rows );
 
-    void openAssetsToMultiView(MultiViewRow[] rows);
+    void openSnapshotAssetList( String name, String uuid, String[] assetTypes, String s );
 
-    void openSnapshotAssetList(String name, String uuid, String[] assetTypes, String s);
+    void openCategory( String categoryName, String categoryPath );
 
-    void openCategory(String categoryName, String categoryPath);
+    void openPackageViewAssets( String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text );
 
-    void openPackageViewAssets(String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text);
+    boolean showIfOpen( String id );
 
-    boolean showIfOpen(String id);
+    void addTab( String title, IsWidget widget, String id );
 
-    void addTab(String title, IsWidget widget, String id);
+    void openInboxIncomingPagedTable( String title );
 
-    void openInboxIncomingPagedTable(String title);
+    void openInboxPagedTable( String title );
 
-    void openInboxPagedTable(String title);
-
-    void openStatePagedTable(String stateName);
+    void openStatePagedTable( String stateName );
 }

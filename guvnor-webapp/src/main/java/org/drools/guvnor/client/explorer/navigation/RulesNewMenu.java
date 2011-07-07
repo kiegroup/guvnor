@@ -115,8 +115,7 @@ public class RulesNewMenu {
             }
         },
                 showCats,
-                format,
-                title);
+                format);
 
         pop.show();
     }

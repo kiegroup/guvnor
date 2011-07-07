@@ -17,7 +17,8 @@
       <gwt:Widget ui:field="navigationPanel"/>
     </gwt:west>
     <gwt:center>
-      <guvnor-explorer:ExplorerViewCenterPanel/>
+      <gwt:Label text="TODO"/>
+      <!--<guvnor-explorer:ExplorerViewCenterPanel/>-->
     </gwt:center>
   </gwt:SplitLayoutPanel>
 

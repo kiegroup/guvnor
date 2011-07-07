@@ -16,7 +16,13 @@
 
 package org.drools.guvnor.client.packages;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Artifact;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.ruleeditor.MessageWidget;
@@ -24,72 +30,72 @@ import org.drools.guvnor.client.ruleeditor.MetaDataWidgetNew;
 import org.drools.guvnor.client.ruleeditor.RuleDocumentWidget;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
- * The generic editor for all types of artifacts. 
+ * The generic editor for all types of artifacts.
  */
 public class ArtifactEditor extends GuvnorEditor {
-	interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
-	}
+    interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
+    }
 
-    private static ArtifactEditorBinder                   uiBinder  = GWT.create( ArtifactEditorBinder.class );
-
-    @UiField(provided = true)
-    final MetaDataWidgetNew                              metaWidget;
+    private static ArtifactEditorBinder uiBinder = GWT.create( ArtifactEditorBinder.class );
 
     @UiField(provided = true)
-    final RuleDocumentWidget                          ruleDocumentWidget;
+    final MetaDataWidgetNew metaWidget;
+
+    @UiField(provided = true)
+    final RuleDocumentWidget ruleDocumentWidget;
 
     @UiField
-    MessageWidget                                     messageWidget;
-    
-    protected Artifact                                artifact;
-    private boolean                                   readOnly;
+    MessageWidget messageWidget;
+
+    protected Artifact artifact;
+    private boolean readOnly;
     private long lastSaved = System.currentTimeMillis();
-    
+
     /**
-     * @param Artifact artifact 
+     * @param Artifact artifact
      */
-    public ArtifactEditor(Artifact artifact) {
-		this(artifact, false, null, null, null);
+    public ArtifactEditor( ClientFactory clientFactory, Artifact artifact ) {
+        this( clientFactory, artifact, false, null, null, null );
     }
 
     /**
-     * @param Artifact artifact 
+     * @param Artifact           artifact
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-	public ArtifactEditor(Artifact artifact, boolean historicalReadOnly) {
-		this(artifact, historicalReadOnly, null, null, null);
+    public ArtifactEditor( ClientFactory clientFactory, Artifact artifact, boolean historicalReadOnly ) {
+        this( clientFactory, artifact, historicalReadOnly, null, null, null );
     }
 
     /**
-     * @param Artifact artifact 
+     * @param Artifact           artifact
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      * @param actionToolbarButtonsConfigurationProvider
-     *            used to change the default button configuration provider.
+     *                           used to change the default button configuration provider.
      */
-    public ArtifactEditor(
-            Artifact artifact,
-            boolean historicalReadOnly,
-            Command refreshCommand,
-            final OpenItemCommand openItemCommand,
-            final Command closeCommand) {
+    public ArtifactEditor( ClientFactory clientFactory,
+                           Artifact artifact,
+                           boolean historicalReadOnly,
+                           Command refreshCommand,
+                           final OpenItemCommand openItemCommand,
+                           final Command closeCommand ) {
         this.artifact = artifact;
         this.readOnly = historicalReadOnly || artifact.isReadonly();
 
-        ruleDocumentWidget = new RuleDocumentWidget(this.artifact,
-                readOnly);
+        ruleDocumentWidget = new RuleDocumentWidget( this.artifact,
+                readOnly );
 
-        metaWidget = new MetaDataWidgetNew(this.artifact, readOnly,
-                this.artifact.getUuid(), refreshCommand, openItemCommand, closeCommand);
+        metaWidget = new MetaDataWidgetNew(
+                clientFactory,
+                this.artifact,
+                readOnly,
+                this.artifact.getUuid(),
+                refreshCommand,
+                openItemCommand,
+                closeCommand );
 
-        initWidget(uiBinder.createAndBindUi(this));
-        setWidth("100%");
+        initWidget( uiBinder.createAndBindUi( this ) );
+        setWidth( "100%" );
         LoadingPopup.close();
     }
 
@@ -103,7 +109,7 @@ public class ArtifactEditor extends GuvnorEditor {
         return false;
     }
 
-    public void showInfoMessage(String message) {
+    public void showInfoMessage( String message ) {
         messageWidget.showMessage( message );
     }
 }

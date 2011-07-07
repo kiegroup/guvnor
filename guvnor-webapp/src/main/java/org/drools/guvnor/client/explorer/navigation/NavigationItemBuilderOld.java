@@ -1,18 +1,16 @@
 package org.drools.guvnor.client.explorer.navigation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.*;
-
 import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.TabOpenerImpl;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class NavigationItemBuilderOld extends Composite
         implements
@@ -25,16 +23,16 @@ public abstract class NavigationItemBuilderOld extends Composite
     public NavigationItemBuilderOld() {
 
         mainTree = createTree();
-        mainTree.setStyleName("guvnor-Tree");
+        mainTree.setStyleName( "guvnor-Tree" );
 
-        DockLayoutPanel dockLayoutPanel = new DockLayoutPanel(Style.Unit.EM);
+        DockLayoutPanel dockLayoutPanel = new DockLayoutPanel( Style.Unit.EM );
 
         MenuBar menu = createMenu();
-        if (menu != null) {
-            dockLayoutPanel.addNorth(menu, 2);
+        if ( menu != null ) {
+            dockLayoutPanel.addNorth( menu, 2 );
         }
 
-        dockLayoutPanel.add(new ScrollPanel(mainTree));
+        dockLayoutPanel.add( new ScrollPanel( mainTree ) );
 
         /*
 
@@ -48,30 +46,28 @@ public abstract class NavigationItemBuilderOld extends Composite
          */
 
 
-        initWidget(dockLayoutPanel);
+        initWidget( dockLayoutPanel );
     }
 
     public abstract Tree createTree();
 
-    protected void launchWizard(String format,
-                                String title,
-                                boolean showCats) {
+    protected void launchWizard( String format,
+                                 boolean showCats ) {
         final TabManager tabManager = TabContainer.getInstance();
 
-        NewAssetWizard pop = new NewAssetWizard(new OpenItemCommand() {
-            public void open(String key) {
-                tabManager.openAsset(key);
+        NewAssetWizard pop = new NewAssetWizard( new OpenItemCommand() {
+            public void open( String key ) {
+                tabManager.openAsset( key );
             }
 
-            public void open(MultiViewRow[] rows) {
+            public void open( MultiViewRow[] rows ) {
                 for (MultiViewRow row : rows) {
-                    tabManager.openAsset(row.uuid);
+                    tabManager.openAsset( row.uuid );
                 }
             }
         },
                 showCats,
-                format,
-                title);
+                format );
 
         pop.show();
     }

@@ -15,15 +15,16 @@
  */
 package org.drools.guvnor.client.explorer.navigation;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
-import org.drools.guvnor.client.configurations.Capability;
-
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.StackLayoutPanel;
+import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.util.Util;
 
 /**
@@ -31,10 +32,12 @@ import org.drools.guvnor.client.util.Util;
  */
 public class NavigationPanelOld extends Composite {
 
-    private StackLayoutPanel layout = new StackLayoutPanel(Unit.EM);
+    private StackLayoutPanel layout = new StackLayoutPanel( Unit.EM );
+    private final ClientFactory clientFactory;
 
-    public NavigationPanelOld() {
-        initWidget(layout);
+    public NavigationPanelOld( ClientFactory clientFactory ) {
+        this.clientFactory = clientFactory;
+        initWidget( layout );
 
         addCategoriesPanel();
 
@@ -48,53 +51,53 @@ public class NavigationPanelOld extends Composite {
     }
 
     private void addAdminPanel() {
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN)) {
-            addItem(new AdministrationTree());
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
+            addItem( new AdministrationTree() );
         }
     }
 
     private void addDeploymentPanel() {
-        if (UserCapabilities.INSTANCE.hasCapability(
+        if ( UserCapabilities.INSTANCE.hasCapability(
                 Capability.SHOW_DEPLOYMENT,
-                Capability.SHOW_DEPLOYMENT_NEW)) {
+                Capability.SHOW_DEPLOYMENT_NEW ) ) {
 
-            addItem(new DeploymentTree());
+            addItem( new DeploymentTree() );
         }
     }
 
     private void addQAPanel() {
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_QA)) {
-            addItem(new QATree());
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_QA ) ) {
+            addItem( new QATree() );
         }
     }
 
     private void addKnowledgeBasesPanel() {
-        if (UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW)) {
-            final KnowledgeBasesTree knowledgeBasesTreeItem = new KnowledgeBasesTree();
-
-            addItem(knowledgeBasesTreeItem);
-
-            //lazy loaded to easy startup wait time.
-            DeferredCommand.addCommand(new Command() {
-                public void execute() {
-                    knowledgeBasesTreeItem.loadPackageList();
-                }
-            });
-        }
+//        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
+//            final KnowledgeModulesTreeViewImpl knowledgeModulesTreeItem = new KnowledgeModulesTreeViewImpl( clientFactory );
+//
+//            addItem( knowledgeModulesTreeItem );
+//
+//            //lazy loaded to easy startup wait time.
+//            DeferredCommand.addCommand( new Command() {
+//                public void execute() {
+//                    knowledgeModulesTreeItem.loadPackageList();
+//                }
+//            } );
+//        }
     }
 
     private void addCategoriesPanel() {
-//        addItem(new BrowseTreeOld());
+//        addItem(new BrowseTree());
     }
 
-    private void addItem(NavigationItem tree) {
-        layout.add(tree.createContent().asWidget(),
-                getHeaderHTML(tree.getImage(), tree.getName()),
-                2);
+    private void addItem( NavigationItem tree ) {
+        layout.add( tree.createContent().asWidget(),
+                getHeaderHTML( tree.getImage(), tree.getName() ),
+                2 );
     }
 
-    public StackItemHeaderViewImpl getHeaderHTML(ImageResource imageResource, String name) {
-        return Util.getHeaderHTML(imageResource,
-                name);
+    public StackItemHeaderViewImpl getHeaderHTML( ImageResource imageResource, String name ) {
+        return Util.getHeaderHTML( imageResource,
+                name );
     }
 }

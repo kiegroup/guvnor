@@ -8,15 +8,17 @@
 	the specific language governing permissions and limitations under the License. -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
+             xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+             xmlns:guvnor-explorer='urn:import:org.drools.guvnor.client.explorer'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants"/>
   <ui:with field='guvnorResources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
-  <ui:with field='titlePanelHeight' type='org.drools.guvnor.client.explorer.PerspectivesPanelViewImpl.TitlePanelHeight'/>
+  <ui:with field='titlePanelHeight'
+           type='org.drools.guvnor.client.explorer.PerspectivesPanelViewImpl.TitlePanelHeight'/>
 
   <gwt:DockLayoutPanel unit='EM'>
-    <gwt:north size='{titlePanelHeight.getHeight}' >
+    <gwt:north size='{titlePanelHeight.getHeight}'>
       <gwt:VerticalPanel width="100%">
         <gwt:HTMLPanel ui:field="titlePanel" styleName='{guvnorResources.headerCss.mainClass}'>
           <div class='{guvnorResources.headerCss.logoClass}'>
@@ -40,7 +42,14 @@
       </gwt:VerticalPanel>
     </gwt:north>
     <gwt:center>
-      <gwt:FlowPanel ui:field="perspective"></gwt:FlowPanel>
+      <gwt:SplitLayoutPanel>
+        <gwt:west size="250">
+          <gwt:Widget ui:field="navigationPanel"/>
+        </gwt:west>
+        <gwt:center>
+          <guvnor-explorer:ExplorerViewCenterPanel ui:field="explorerCenterPanel"/>
+        </gwt:center>
+      </gwt:SplitLayoutPanel>
     </gwt:center>
   </gwt:DockLayoutPanel>
 

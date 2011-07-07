@@ -16,17 +16,25 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.activity.shared.ActivityManager;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Window;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
+import org.drools.guvnor.client.rpc.ConfigurationService;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 public class ClientFactoryImpl implements ClientFactory {
 
     private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController(eventBus);
+    private final PlaceController placeController = new PlaceController( eventBus );
     private PerspectivesPanelView perspectivesPanelView;
     private NavigationViewFactoryImpl authorNavigationViewFactory;
 
@@ -34,11 +42,11 @@ public class ClientFactoryImpl implements ClientFactory {
         return placeController;
     }
 
-    public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
-        return new AuthorPerspectiveViewImpl(navigationPanelFactory);
+    public AuthorPerspectiveView getAuthorPerspectiveView( NavigationPanelFactory navigationPanelFactory ) {
+        return new AuthorPerspectiveViewImpl( this, navigationPanelFactory );
     }
 
-    public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
+    public RuntimePerspectiveView getRuntimePerspectiveView( NavigationPanelFactory navigationPanelFactory ) {
         return null;  //TODO: Generated code -Rikkola-
     }
 
@@ -46,9 +54,12 @@ public class ClientFactoryImpl implements ClientFactory {
         return eventBus;
     }
 
-    public PerspectivesPanelView getPerspectivesPanelView(boolean showTitle) {
-        if (perspectivesPanelView == null) {
-            perspectivesPanelView = new PerspectivesPanelViewImpl(showTitle);
+    public PerspectivesPanelView getPerspectivesPanelView() {
+        if ( perspectivesPanelView == null ) {
+            perspectivesPanelView = new PerspectivesPanelViewImpl(
+                    getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
+                    new ExplorerViewCenterPanel( this ),
+                    hideTitle() );
         }
         return perspectivesPanelView;
     }
@@ -58,9 +69,42 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     public NavigationViewFactory getNavigationViewFactory() {
-        if (authorNavigationViewFactory == null) {
+        if ( authorNavigationViewFactory == null ) {
             authorNavigationViewFactory = new NavigationViewFactoryImpl();
         }
         return authorNavigationViewFactory;
+    }
+
+    public ConfigurationServiceAsync getConfigurationService() {
+        return GWT.create( ConfigurationService.class );
+    }
+
+    public ActivityManager getActivityManager() {
+        return new ActivityManager(
+                new GuvnorActivityMapper( this ),
+                getEventBus() );
+    }
+
+    public PlaceHistoryHandler getPlaceHistoryHandler() {
+        GuvnorPlaceHistoryMapper historyMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
+        return new PlaceHistoryHandler( historyMapper );
+    }
+
+    public ModuleEditorActivityView getModuleEditorActivityView() {
+        return new ModuleEditorActivityViewImpl();
+    }
+
+    public PackageServiceAsync getPackageService() {
+        return RepositoryServiceFactory.getPackageService();
+    }
+
+    private boolean hideTitle() {
+        String parameter = Window.Location.getParameter( "nochrome" );
+
+        if ( parameter == null ) {
+            return true;
+        } else {
+            return parameter.equals( "true" );
+        }
     }
 }

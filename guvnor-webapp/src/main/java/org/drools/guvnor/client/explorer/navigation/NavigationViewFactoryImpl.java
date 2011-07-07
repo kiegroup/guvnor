@@ -16,16 +16,30 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.common.StackItemHeader;
+import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
-    NavigationPanelView navigationPanelView;
+
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
+
+    private NavigationPanelView navigationPanelView;
+    private KnowledgeModulesTreeViewImpl knowledgeModulesTreeView;
+    private BrowseTreeViewImpl browseTreeView;
+    private KnowledgeModulesTreeItemViewImpl knowledgeModulesTreeItemView;
+    private ModulesNewAssetMenuViewImpl modulesNewAssetMenuView;
 
     public NavigationPanelView getNavigationPanelView() {
-        if (navigationPanelView == null) {
+        if ( navigationPanelView == null ) {
             navigationPanelView = new NavigationPanelViewImpl();
         }
         return navigationPanelView;
@@ -36,7 +50,10 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     }
 
     public BrowseTreeView getBrowseTreeView() {
-        return new BrowseTreeViewImpl();
+        if ( browseTreeView == null ) {
+            browseTreeView = new BrowseTreeViewImpl();
+        }
+        return browseTreeView;
     }
 
     public AdminTreeView getAdminTreeView() {
@@ -51,8 +68,11 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
         return null;  //TODO: Generated code -Rikkola-
     }
 
-    public KnowledgeBasesTreeView getKnowledgeBasesTreeView() {
-        return null;  //TODO: Generated code -Rikkola-
+    public KnowledgeModulesTreeView getKnowledgeModulesTreeView() {
+        if ( knowledgeModulesTreeView == null ) {
+            knowledgeModulesTreeView = new KnowledgeModulesTreeViewImpl();
+        }
+        return knowledgeModulesTreeView;
     }
 
     public RepositoryServiceAsync getRepositoryService() {
@@ -61,5 +81,31 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public CategoryServiceAsync getCategoryService() {
         return RepositoryServiceFactory.getCategoryService();
+    }
+
+    public IsWidget getKnowledgeModulesHeaderView() {
+        StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
+        StackItemHeader header = new StackItemHeader( view );
+        header.setName( constants.KnowledgeBases() );
+        header.setImageResource( images.packages() );
+        return view;
+    }
+
+    public KnowledgeModulesTreeItemView getKnowledgeModulesTreeItemView() {
+        if ( knowledgeModulesTreeItemView == null ) {
+            knowledgeModulesTreeItemView = new KnowledgeModulesTreeItemViewImpl();
+        }
+        return knowledgeModulesTreeItemView;
+    }
+
+    public ModulesNewAssetMenuView getModulesNewAssetMenuView() {
+        if ( modulesNewAssetMenuView == null ) {
+            modulesNewAssetMenuView = new ModulesNewAssetMenuViewImpl();
+        }
+        return modulesNewAssetMenuView;
+    }
+
+    public GlobalAreaTreeItemView getGlobalAreaTreeItem() {
+        return new GlobalAreaTreeItemViewImpl( ) ;
     }
 }

@@ -16,24 +16,17 @@
 
 package org.drools.guvnor.client.packages;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.common.StatusChangePopup;
-import org.drools.guvnor.client.common.ValidationMessageWidget;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -44,58 +37,41 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * This is the package editor and viewer for package configuration.
  */
 public class PackageEditor extends PrettyFormLayout {
-    private Constants          constants                            = GWT.create( Constants.class );
-    private static Images      images                               = GWT.create( Images.class );
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private PackageConfigData  conf;
-    private ActionToolbar      actionToolBar;
-    private boolean            isHistoricalReadOnly                 = false;
-    private Command            closeCommand;
-    private Command            refreshPackageListCommand;
-    private Command            refreshCommand;
+    private final PackageConfigData packageConfigData;
+    private ActionToolbar actionToolBar;
+    private boolean isHistoricalReadOnly = false;
+    private Command refreshCommand;
 
-    private HorizontalPanel    packageConfigurationValidationResult = new HorizontalPanel();         ;
+    private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();
+    private final ClientFactory clientFactory;
 
-    public PackageEditor(PackageConfigData data,
-                         Command closeCommand,
-                         Command refreshPackageList,
-                         Command refreshCommand) {
+    public PackageEditor( PackageConfigData data,
+                          ClientFactory clientFactory,
+                          Command refreshCommand ) {
         this( data,
-              false,
-              closeCommand,
-              refreshPackageList,
-              refreshCommand );
+                clientFactory,
+                false,
+                refreshCommand );
     }
 
-    public PackageEditor(PackageConfigData data,
-                         boolean historicalReadOnly,
-                         Command closeCommand,
-                         Command refreshPackageList,
-                         Command refreshCommand) {
-        this.conf = data;
+    public PackageEditor( PackageConfigData data,
+                          ClientFactory clientFactory,
+                          boolean historicalReadOnly,
+                          Command refreshCommand ) {
+        this.packageConfigData = data;
+        this.clientFactory = clientFactory;
         this.isHistoricalReadOnly = historicalReadOnly;
-        this.closeCommand = closeCommand;
-        this.refreshPackageListCommand = refreshPackageList;
         this.refreshCommand = refreshCommand;
 
         setWidth( "100%" );
@@ -106,7 +82,7 @@ public class PackageEditor extends PrettyFormLayout {
         clear();
 
         actionToolBar = new ActionToolbar( getConfiguration(),
-                                           conf.getState() );
+                packageConfigData.getState() );
         if ( isHistoricalReadOnly ) {
             actionToolBar.setVisible( false );
         } else {
@@ -137,8 +113,8 @@ public class PackageEditor extends PrettyFormLayout {
             } );
             actionToolBar.setViewSourceCommand( new Command() {
                 public void execute() {
-                    PackageBuilderWidget.doBuildSource( conf.getUuid(),
-                                                        conf.getName() );
+                    PackageBuilderWidget.doBuildSource( packageConfigData.getUuid(),
+                            packageConfigData.getName() );
                 }
             } );
         }
@@ -149,39 +125,41 @@ public class PackageEditor extends PrettyFormLayout {
         addRow( packageConfigurationValidationResult );
 
         addAttribute( constants.Configuration(),
-                      header() );
+                header() );
 
         if ( !isHistoricalReadOnly ) {
             addAttribute( constants.CategoryRules(),
-                          getAddCatRules() );
+                    getAddCatRules() );
         }
         addAttribute( "",
-                      getShowCatRules() );
+                getShowCatRules() );
 
-        if ( !conf.isSnapshot() && !isHistoricalReadOnly ) {
+        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
             Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     doValidatePackageConfiguration( null );
                 }
             } );
             addAttribute( "",
-                          save );
+                    save );
         }
 
         endSection();
 
         if ( isHistoricalReadOnly ) {
             startSection( constants.Dependencies() );
-            addRow( new DependencyWidget( this.conf,
-                                          isHistoricalReadOnly ) );
+            addRow( new DependencyWidget(
+                    clientFactory,
+                    this.packageConfigData,
+                    isHistoricalReadOnly ) );
             endSection();
         }
 
-        if ( !conf.isSnapshot() && !isHistoricalReadOnly ) {
+        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
             startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget( this.conf ) );
+            addRow( new PackageBuilderWidget( this.packageConfigData ) );
             endSection();
         }
 
@@ -190,43 +168,43 @@ public class PackageEditor extends PrettyFormLayout {
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
-                PackageBuilderWidget.doBuildSource( conf.getUuid(),
-                                                    conf.getName() );
+            public void onClick( ClickEvent event ) {
+                PackageBuilderWidget.doBuildSource( packageConfigData.getUuid(),
+                        packageConfigData.getName() );
             }
         } );
 
-        HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.conf ) + "' target='_blank'>" + getDocumentationDownload( this.conf ) + "</a>" );
+        HTML html0 = new HTML( "<a href='" + getDocumentationDownload( this.packageConfigData ) + "' target='_blank'>" + getDocumentationDownload( this.packageConfigData ) + "</a>" );
         addAttribute( constants.URLForDocumention(),
-                      createHPanel( html0,
-                                    constants.URLDocumentionDescription() ) );
+                createHPanel( html0,
+                        constants.URLDocumentionDescription() ) );
 
-        HTML html = new HTML( "<a href='" + getPackageSourceURL( this.conf ) + "' target='_blank'>" + getPackageSourceURL( this.conf ) + "</a>" );
+        HTML html = new HTML( "<a href='" + getPackageSourceURL( this.packageConfigData ) + "' target='_blank'>" + getPackageSourceURL( this.packageConfigData ) + "</a>" );
         addAttribute( constants.URLForPackageSource(),
-                      createHPanel( html,
-                                    constants.URLSourceDescription() ) );
+                createHPanel( html,
+                        constants.URLSourceDescription() ) );
 
-        HTML html2 = new HTML( "<a href='" + getPackageBinaryURL( this.conf ) + "' target='_blank'>" + getPackageBinaryURL( this.conf ) + "</a>" );
+        HTML html2 = new HTML( "<a href='" + getPackageBinaryURL( this.packageConfigData ) + "' target='_blank'>" + getPackageBinaryURL( this.packageConfigData ) + "</a>" );
         addAttribute( constants.URLForPackageBinary(),
-                      createHPanel( html2,
-                                    constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
+                createHPanel( html2,
+                        constants.UseThisUrlInTheRuntimeAgentToFetchAPreCompiledBinary() ) );
 
-        HTML html3 = new HTML( "<a href='" + getScenarios( this.conf ) + "' target='_blank'>" + getScenarios( this.conf ) + "</a>" );
+        HTML html3 = new HTML( "<a href='" + getScenarios( this.packageConfigData ) + "' target='_blank'>" + getScenarios( this.packageConfigData ) + "</a>" );
         addAttribute( constants.URLForRunningTests(),
-                      createHPanel( html3,
-                                    constants.URLRunTestsRemote() ) );
+                createHPanel( html3,
+                        constants.URLRunTestsRemote() ) );
 
-        HTML html4 = new HTML( "<a href='" + getChangeset( this.conf ) + "' target='_blank'>" + getChangeset( this.conf ) + "</a>" );
+        HTML html4 = new HTML( "<a href='" + getChangeset( this.packageConfigData ) + "' target='_blank'>" + getChangeset( this.packageConfigData ) + "</a>" );
 
         addAttribute( constants.ChangeSet(),
-                      createHPanel( html4,
-                                    constants.URLToChangeSetForDeploymentAgents() ) );
+                createHPanel( html4,
+                        constants.URLToChangeSetForDeploymentAgents() ) );
 
-        HTML html5 = new HTML( "<a href='" + getModelDownload( this.conf ) + "' target='_blank'>" + getModelDownload( this.conf ) + "</a>" );
+        HTML html5 = new HTML( "<a href='" + getModelDownload( this.packageConfigData ) + "' target='_blank'>" + getModelDownload( this.packageConfigData ) + "</a>" );
 
         addAttribute( constants.ModelSet(),
-                      createHPanel( html5,
-                                    constants.URLToDownloadModelSet() ) );
+                createHPanel( html5,
+                        constants.URLToDownloadModelSet() ) );
 
         final Tree springContextTree = new Tree();
         final TreeItem rootItem = new TreeItem( "" );
@@ -234,42 +212,42 @@ public class PackageEditor extends PrettyFormLayout {
         springContextTree.addItem( rootItem );
 
         final int rowNumber = addAttribute( constants.SpringContext() + ":",
-                                            springContextTree );
+                springContextTree );
 
         GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
 
-            public void onSuccess(TableDataResult resultTable) {
+            public void onSuccess( TableDataResult resultTable ) {
 
                 if ( resultTable.data.length == 0 ) {
                     removeRow( rowNumber );
                 }
 
-                for ( int i = 0; i < resultTable.data.length; i++ ) {
+                for (int i = 0; i < resultTable.data.length; i++) {
 
-                    String url = getSpringContextDownload( conf,
-                                                           resultTable.data[i].getDisplayName() );
+                    String url = getSpringContextDownload( packageConfigData,
+                            resultTable.data[i].getDisplayName() );
                     HTML html = new HTML( "<a href='" + url + "' target='_blank'>" + url + "</a>" );
                     rootItem.addItem( html );
                 }
             }
         };
 
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.conf.getName(),
-                                                                              new String[]{AssetFormats.SPRING_CONTEXT},
-                                                                              0,
-                                                                              -1,
-                                                                              ExplorerNodeConfig.RULE_LIST_TABLE_ID,
-                                                                              callBack );
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( this.packageConfigData.getName(),
+                new String[]{AssetFormats.SPRING_CONTEXT},
+                0,
+                -1,
+                ExplorerNodeConfig.RULE_LIST_TABLE_ID,
+                callBack );
 
         endSection();
     }
 
-    private Widget createHPanel(Widget widget,
-                                String popUpText) {
+    private Widget createHPanel( Widget widget,
+                                 String popUpText ) {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( widget );
         hPanel.add( new InfoPopup( constants.Tip(),
-                                   popUpText ) );
+                popUpText ) );
         return hPanel;
     }
 
@@ -278,15 +256,15 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private Widget getShowCatRules() {
-        if ( conf.getCatRules() != null && conf.getCatRules().size() > 0 ) {
+        if ( packageConfigData.getCatRules() != null && packageConfigData.getCatRules().size() > 0 ) {
             VerticalPanel vp = new VerticalPanel();
 
-            for ( Iterator<Entry<String, String>> iterator = conf.getCatRules().entrySet().iterator(); iterator.hasNext(); ) {
+            for (Iterator<Entry<String, String>> iterator = packageConfigData.getCatRules().entrySet().iterator(); iterator.hasNext(); ) {
                 Entry<String, String> entry = iterator.next();
                 HorizontalPanel hp = new HorizontalPanel();
                 String m = constants.AllRulesForCategory0WillNowExtendTheRule1(
-                                                                                (String) entry.getValue(),
-                                                                                (String) entry.getKey() );
+                        (String) entry.getValue(),
+                        (String) entry.getKey() );
                 hp.add( new SmallLabel( m ) );
                 hp.add( getRemoveCatRulesIcon( (String) entry.getKey() ) );
                 vp.add( hp );
@@ -296,13 +274,13 @@ public class PackageEditor extends PrettyFormLayout {
         return new HTML( "&nbsp;&nbsp;" );
     }
 
-    private Image getRemoveCatRulesIcon(final String rule) {
+    private Image getRemoveCatRulesIcon( final String rule ) {
         Image remove = new Image( images.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 if ( Window.confirm( constants.RemoveThisCategoryRule() ) ) {
-                    conf.getCatRules().remove( rule );
+                    packageConfigData.getCatRules().remove( rule );
                     refreshWidgets();
                 }
             }
@@ -316,7 +294,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         add.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 showCatRuleSelector( (Widget) event.getSource() );
             }
         } );
@@ -324,29 +302,29 @@ public class PackageEditor extends PrettyFormLayout {
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( add );
         hp.add( new InfoPopup( constants.CategoryParentRules(),
-                               constants.CatRulesInfo() ) );
+                constants.CatRulesInfo() ) );
         return hp;
     }
 
-    private void addToCatRules(String category,
-                               String rule) {
+    private void addToCatRules( String category,
+                                String rule ) {
         if ( null != category && null != rule ) {
-            if ( conf.getCatRules() == null ) {
-                conf.setCatRules( new HashMap<String, String>() );
+            if ( packageConfigData.getCatRules() == null ) {
+                packageConfigData.setCatRules( new HashMap<String, String>() );
             }
-            conf.getCatRules().put( rule,
-                               category );
+            packageConfigData.getCatRules().put( rule,
+                    category );
         }
     }
 
-    protected void showCatRuleSelector(Widget w) {
+    protected void showCatRuleSelector( Widget w ) {
         final FormStylePopup pop = new FormStylePopup( images.config(),
-                                                       constants.AddACategoryRuleToThePackage() );
+                constants.AddACategoryRuleToThePackage() );
         final Button addbutton = new Button( constants.OK() );
         final TextBox ruleName = new TextBox();
 
         final CategoryExplorerWidget exw = new CategoryExplorerWidget( new CategorySelectHandler() {
-            public void selected(String selectedPath) { //not needed
+            public void selected( String selectedPath ) { //not needed
             }
         } );
 
@@ -356,10 +334,10 @@ public class PackageEditor extends PrettyFormLayout {
 
         addbutton.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
                     addToCatRules( exw.getSelectedPath(),
-                                   ruleName.getText() );
+                            ruleName.getText() );
                 }
                 refreshWidgets();
                 pop.hide();
@@ -367,16 +345,16 @@ public class PackageEditor extends PrettyFormLayout {
         } );
 
         pop.addAttribute( constants.AllTheRulesInFollowingCategory(),
-                          exw );
+                exw );
         pop.addAttribute( constants.WillExtendTheFollowingRuleCalled(),
-                          ruleName );
+                ruleName );
         pop.addAttribute( "",
-                          addbutton );
+                addbutton );
 
         pop.show();
     }
 
-    private void showValidatePackageConfigurationResult(final ValidatedResponse validatedResponse) {
+    private void showValidatePackageConfigurationResult( final ValidatedResponse validatedResponse ) {
         packageConfigurationValidationResult.clear();
 
         if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith( "Class" ) ) {
@@ -386,9 +364,9 @@ public class PackageEditor extends PrettyFormLayout {
             packageConfigurationValidationResult.add( msg );
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
-                public void onClick(ClickEvent event) {
+                public void onClick( ClickEvent event ) {
                     ValidationMessageWidget wid = new ValidationMessageWidget( validatedResponse.errorHeader,
-                                                                               validatedResponse.errorMessage );
+                            validatedResponse.errorMessage );
                     wid.show();
                 }
             } );
@@ -401,56 +379,56 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    static String getDocumentationDownload(PackageConfigData conf) {
+    static String getDocumentationDownload( PackageConfigData conf ) {
         return makeLink( conf ) + "/documentation.pdf"; //NON-NLS
     }
 
-    static String getSourceDownload(PackageConfigData conf) {
+    static String getSourceDownload( PackageConfigData conf ) {
         return makeLink( conf ) + ".drl"; //NON-NLS
     }
 
-    static String getBinaryDownload(PackageConfigData conf) {
+    static String getBinaryDownload( PackageConfigData conf ) {
         return makeLink( conf );
     }
 
-    static String getScenarios(PackageConfigData conf) {
+    static String getScenarios( PackageConfigData conf ) {
         return makeLink( conf ) + "/SCENARIOS"; //NON-NLS
     }
 
-    static String getChangeset(PackageConfigData conf) {
+    static String getChangeset( PackageConfigData conf ) {
         return makeLink( conf ) + "/ChangeSet.xml"; //NON-NLS
     }
 
-    public static String getModelDownload(PackageConfigData conf) {
+    public static String getModelDownload( PackageConfigData conf ) {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
     }
 
-    static String getSpringContextDownload(PackageConfigData conf,
-                                           String name) {
+    static String getSpringContextDownload( PackageConfigData conf,
+                                            String name ) {
         return makeLink( conf ) + "/SpringContext/" + name;
     }
 
-    static String getVersionFeed(PackageConfigData conf) {
+    static String getVersionFeed( PackageConfigData conf ) {
         String hurl = getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
-    String getPackageSourceURL(PackageConfigData conf) {
+    String getPackageSourceURL( PackageConfigData conf ) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = getRESTBaseURL() + "packages/" + conf.getName() +
-                  "/versions/" + conf.getVersionNumber() + "/source";
+                    "/versions/" + conf.getVersionNumber() + "/source";
         } else {
             url = getRESTBaseURL() + "packages/" + conf.getName() + "/source";
         }
         return url;
     }
 
-    String getPackageBinaryURL(PackageConfigData conf) {
+    String getPackageBinaryURL( PackageConfigData conf ) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = getRESTBaseURL() + "packages/" + conf.getName() +
-                  "/versions/" + conf.getVersionNumber() + "/binary";
+                    "/versions/" + conf.getVersionNumber() + "/binary";
         } else {
             url = getRESTBaseURL() + "packages/" + conf.getName() + "/binary";
         }
@@ -460,13 +438,13 @@ public class PackageEditor extends PrettyFormLayout {
     static String getRESTBaseURL() {
         String url = GWT.getModuleBaseURL();
         return url.replaceFirst( "org.drools.guvnor.Guvnor",
-                                 "rest" );
+                "rest" );
     }
 
     /**
      * Get a download link for the binary package.
      */
-    public static String makeLink(PackageConfigData conf) {
+    public static String makeLink( PackageConfigData conf ) {
         String hurl = GWT.getModuleBaseURL() + "package/" + conf.getName();
         if ( !conf.isSnapshot() ) {
             hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
@@ -478,8 +456,8 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     protected void showStatusChanger() {
-        final StatusChangePopup pop = new StatusChangePopup( conf.getUuid(),
-                                                             true );
+        final StatusChangePopup pop = new StatusChangePopup( packageConfigData.getUuid(),
+                true );
         pop.setChangeStatusEvent( new Command() {
             public void execute() {
                 actionToolBar.setState( pop.getState() );
@@ -497,39 +475,40 @@ public class PackageEditor extends PrettyFormLayout {
 
     private void doRename() {
         final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                                                       constants.RenameThePackage() );
+                constants.RenameThePackage() );
         pop.addRow( new HTML( constants.RenamePackageTip() ) );
         final TextBox name = new TextBox();
         pop.addAttribute( constants.NewPackageNameIs(),
-                          name );
+                name );
         Button ok = new Button( constants.OK() );
         pop.addAttribute( "",
-                          ok );
+                ok );
 
         ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getPackageService().renamePackage( conf.getUuid(),
-                                                                            name.getText(),
-                                                                            new GenericCallback<String>() {
-                                                                                public void onSuccess(String data) {
-                                                                                    completedRenaming( data );
-                                                                                    pop.hide();
-                                                                                }
-                                                                            } );
+            public void onClick( ClickEvent event ) {
+                RepositoryServiceFactory.getPackageService().renamePackage( packageConfigData.getUuid(),
+                        name.getText(),
+                        new GenericCallback<String>() {
+                            public void onSuccess( String data ) {
+                                completedRenaming( data );
+                                pop.hide();
+                            }
+                        } );
             }
         } );
 
         pop.show();
     }
 
-    private void completedRenaming(String newAssetUUID) {
+    private void completedRenaming( String newAssetUUID ) {
         Window.alert( constants.PackageRenamedSuccessfully() );
-        refreshPackageListCommand.execute();
-        if ( closeCommand != null ) {
-            closeCommand.execute();
-        }
-        TabContainer.getInstance().openPackageEditor(newAssetUUID,
-                refreshPackageListCommand);
+        refreshPackageList();
+        // TODO: Handle Close and reopen -Rikkola-
+//        if ( closeCommand != null ) {
+//            closeCommand.execute();
+//        }
+//        TabContainer.getInstance().openPackageEditor( newAssetUUID,
+//                new Co);
     }
 
     /**
@@ -537,84 +516,85 @@ public class PackageEditor extends PrettyFormLayout {
      */
     private void doCopy() {
         final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                                                       constants.CopyThePackage() );
+                constants.CopyThePackage() );
         pop.addRow( new HTML( constants.CopyThePackageTip() ) );
         final TextBox name = new TextBox();
         pop.addAttribute( constants.NewPackageNameIs(),
-                          name );
+                name );
         Button ok = new Button( constants.OK() );
         pop.addAttribute( "",
-                          ok );
+                ok );
 
         ok.addClickHandler( new ClickHandler() {
 
-            public void onClick(ClickEvent event) {
+            public void onClick( ClickEvent event ) {
                 if ( !PackageNameValidator.validatePackageName( name.getText() ) ) {
                     Window.alert( constants.NotAValidPackageName() );
                     return;
                 }
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().copyPackage( conf.getName(),
-                                                                          name.getText(),
-                                                                          new GenericCallback<String>() {
-                                                                              public void onSuccess(String uuid) {
-                                                                                  completedCopying( uuid );
-                                                                                  pop.hide();
-                                                                              }
-                                                                          } );
+                RepositoryServiceFactory.getPackageService().copyPackage( packageConfigData.getName(),
+                        name.getText(),
+                        new GenericCallback<String>() {
+                            public void onSuccess( String uuid ) {
+                                completedCopying( uuid );
+                                pop.hide();
+                            }
+                        } );
             }
         } );
 
         pop.show();
     }
 
-    private void completedCopying(String newAssetUUID) {
+    private void completedCopying( String newAssetUUID ) {
         Window.alert( constants.PackageCopiedSuccessfully() );
-        refreshPackageListCommand.execute();
-        TabContainer.getInstance().openPackageEditor(newAssetUUID,
-                refreshPackageListCommand);
+        refreshPackageList();
+        // TODO: handle, open new package -Rikkola-
+//        TabContainer.getInstance().openPackageEditor( newAssetUUID,
+//                refreshPackageListCommand );
     }
 
-    private void doSave(final Command refresh) {
+    private void doSave( final Command refresh ) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
-        RepositoryServiceFactory.getPackageService().savePackage( this.conf,
-                                                                  new GenericCallback<Void>() {
-                                                                      public void onSuccess(Void data) {
-                                                                          refreshCommand.execute();
-                                                                          LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
+        RepositoryServiceFactory.getPackageService().savePackage( this.packageConfigData,
+                new GenericCallback<Void>() {
+                    public void onSuccess( Void data ) {
+                        refreshCommand.execute();
+                        LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
-                                                                          SuggestionCompletionCache.getInstance().refreshPackage( conf.getName(),
-                                                                                                                                  new Command() {
-                                                                                                                                      public void execute() {
-                                                                                                                                          if ( refresh != null ) {
-                                                                                                                                              refresh.execute();
-                                                                                                                                          }
-                                                                                                                                          LoadingPopup.close();
-                                                                                                                                      }
-                                                                                                                                  } );
-                                                                      }
-                                                                  } );
+                        SuggestionCompletionCache.getInstance().refreshPackage( packageConfigData.getName(),
+                                new Command() {
+                                    public void execute() {
+                                        if ( refresh != null ) {
+                                            refresh.execute();
+                                        }
+                                        LoadingPopup.close();
+                                    }
+                                } );
+                    }
+                } );
     }
 
-    private void doValidatePackageConfiguration(final Command refresh) {
+    private void doValidatePackageConfiguration( final Command refresh ) {
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
         busy.add( new Image( images.redAnime() ) );
 
         packageConfigurationValidationResult.add( busy );
 
-        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.conf,
-                                                                                   new GenericCallback<ValidatedResponse>() {
-                                                                                       public void onSuccess(ValidatedResponse data) {
-                                                                                           showValidatePackageConfigurationResult( data );
-                                                                                       }
-                                                                                   } );
+        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.packageConfigData,
+                new GenericCallback<ValidatedResponse>() {
+                    public void onSuccess( ValidatedResponse data ) {
+                        showValidatePackageConfigurationResult( data );
+                    }
+                } );
     }
 
     private Widget header() {
-        return new PackageHeaderWidget( this.conf,
-                                        isHistoricalReadOnly );
+        return new PackageHeaderWidget( this.packageConfigData,
+                isHistoricalReadOnly );
     }
 
     private ActionToolbarButtonsConfigurationProvider getConfiguration() {
@@ -622,13 +602,17 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private void doArchive() {
-        conf.setArchived( true );
+        packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                closeCommand.execute();
-                refreshPackageListCommand.execute();
+                clientFactory.getEventBus().fireEvent( new CloseTabContentWidgetEvent( packageConfigData.uuid ) );
+                refreshPackageList();
             }
         };
         doSave( ref );
+    }
+
+    private void refreshPackageList() {
+        clientFactory.getEventBus().fireEvent( new RefreshPackageListEvent( packageConfigData.uuid ) );
     }
 }

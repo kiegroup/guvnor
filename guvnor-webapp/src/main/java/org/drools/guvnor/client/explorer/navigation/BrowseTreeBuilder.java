@@ -46,9 +46,8 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
     }
 
     public void createNewBrowseTree() {
-        BrowseTreeView view = navigationViewFactory.getBrowseTreeView();
         browseTree = new BrowseTree(
-                view,
+                navigationViewFactory.getBrowseTreeView(),
                 navigationViewFactory.getRepositoryService(),
                 navigationViewFactory.getCategoryService()
         );

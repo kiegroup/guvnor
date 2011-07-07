@@ -15,19 +15,20 @@
  */
 package org.drools.guvnor.client.util;
 
-import java.util.Arrays;
-import java.util.List;
-
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.History;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.admin.*;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.*;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
+import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -42,15 +43,13 @@ import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.rulelist.QueryWidget;
 import org.drools.guvnor.client.widgets.tables.*;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.History;
-import com.google.gwt.user.client.Timer;
+import java.util.Arrays;
+import java.util.List;
 
 public class TabOpenerImpl implements TabManager {
 
-    private Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
     private static final String REPOCONFIG = "repoconfig";
     private static final String RULE_VERIFIER_MANAGER = "ruleVerifierManager";
@@ -64,85 +63,88 @@ public class TabOpenerImpl implements TabManager {
     private static final String PERSPECTIVES_MANAGER = "perspectivesManager";
 
     private final ExplorerViewCenterPanel explorerViewCenterPanel;
+    private final ClientFactory clientFactory;
 
-    protected TabOpenerImpl(ExplorerViewCenterPanel explorerViewCenterPanel) {
+    protected TabOpenerImpl( ClientFactory clientFactory,
+                             ExplorerViewCenterPanel explorerViewCenterPanel ) {
+        this.clientFactory = clientFactory;
         this.explorerViewCenterPanel = explorerViewCenterPanel;
     }
 
     /**
      * Open an asset if it is not already open.
      */
-    public void openAsset(final String uuid) {
-        if (uuid.contains("<")) {
+    public void openAsset( final String uuid ) {
+        if ( uuid.contains( "<" ) ) {
             return;
         }
-        History.newItem("asset="
-                + uuid); // NON-NLS
+        History.newItem( "asset="
+                + uuid ); // NON-NLS
 
-        if (!explorerViewCenterPanel.showIfOpen(uuid)) {
+        if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
 
             final boolean[] loading = {true};
 
             Timer t = new Timer() {
                 public void run() {
-                    if (loading[0]) {
-                        LoadingPopup.showMessage(constants.LoadingAsset());
+                    if ( loading[0] ) {
+                        LoadingPopup.showMessage( constants.LoadingAsset() );
                     }
                 }
             };
-            t.schedule(200);
+            t.schedule( 200 );
 
-            loadRuleAsset(uuid,
-                    loading);
+            loadRuleAsset( uuid,
+                    loading );
         }
     }
 
-    private void loadRuleAsset(final String uuid,
-                               final boolean[] loading) {
-        RepositoryServiceFactory.getAssetService().loadRuleAsset(uuid,
-                createGenericCallback(uuid,
-                        loading));
+    private void loadRuleAsset( final String uuid,
+                                final boolean[] loading ) {
+        RepositoryServiceFactory.getAssetService().loadRuleAsset( uuid,
+                createGenericCallback( uuid,
+                        loading ) );
     }
 
-    private GenericCallback<RuleAsset> createGenericCallback(final String uuid,
-                                                             final boolean[] loading) {
+    private GenericCallback<RuleAsset> createGenericCallback( final String uuid,
+                                                              final boolean[] loading ) {
         return new GenericCallback<RuleAsset>() {
-            public void onSuccess(final RuleAsset ruleAsset) {
-                SuggestionCompletionCache.getInstance().doAction(ruleAsset.metaData.packageName,
-                        createCommandForSuggestCompletionCache(uuid,
+            public void onSuccess( final RuleAsset ruleAsset ) {
+                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+                        createCommandForSuggestCompletionCache( uuid,
                                 loading,
-                                ruleAsset));
+                                ruleAsset ) );
             }
 
-            private Command createCommandForSuggestCompletionCache(final String uuid,
-                                                                   final boolean[] loading,
-                                                                   final RuleAsset ruleAsset) {
+            private Command createCommandForSuggestCompletionCache( final String uuid,
+                                                                    final boolean[] loading,
+                                                                    final RuleAsset ruleAsset ) {
                 return new Command() {
                     public void execute() {
                         loading[0] = false;
-                        RuleViewer ruleViewer = new RuleViewer(ruleAsset,
-                                createEditEvent());
-                        explorerViewCenterPanel.addTab(ruleAsset.getName(),
+                        RuleViewer ruleViewer = new RuleViewer( ruleAsset,
+                                createEditEvent() );
+                        explorerViewCenterPanel.addTab( ruleAsset.getName(),
                                 ruleViewer,
-                                uuid);
-                        ruleViewer.setCloseCommand(createCloseCommandForRuleViewer(uuid));
+                                uuid );
+                        ruleViewer.setCloseCommand( createCloseCommandForRuleViewer( uuid ) );
 
                         // When model is saved update the package view if it is
                         // opened.
-                        if (ruleAsset.metaData.format.equals(AssetFormats.MODEL)) {
-                            Command command = createCheckInAndArchiveCommandForRuleViewer(ruleAsset);
-                            ruleViewer.setCheckedInCommand(command);
-                            ruleViewer.setArchiveCommand(command);
+                        if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
+                            Command command = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
+                            ruleViewer.setCheckedInCommand( command );
+                            ruleViewer.setArchiveCommand( command );
                         }
 
                         LoadingPopup.close();
                     }
 
-                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
+                    private Command createCheckInAndArchiveCommandForRuleViewer( final RuleAsset ruleAsset ) {
                         Command command = new Command() {
                             public void execute() {
-                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get(ruleAsset.metaData.packageName);
-                                if (packageEditor != null) {
+                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
+                                if ( packageEditor != null ) {
                                     packageEditor.refresh();
                                 }
                             }
@@ -150,10 +152,10 @@ public class TabOpenerImpl implements TabManager {
                         return command;
                     }
 
-                    private Command createCloseCommandForRuleViewer(final String uuid) {
+                    private Command createCloseCommandForRuleViewer( final String uuid ) {
                         return new Command() {
                             public void execute() {
-                                explorerViewCenterPanel.close(uuid);
+                                explorerViewCenterPanel.close( uuid );
                             }
                         };
                     }
@@ -163,7 +165,7 @@ public class TabOpenerImpl implements TabManager {
         };
     }
 
-    public void openAssetsToMultiView(MultiViewRow[] rows) {
+    public void openAssetsToMultiView( MultiViewRow[] rows ) {
 
         String blockingAssetName = null;
         final String[] uuids = new String[rows.length];
@@ -171,7 +173,7 @@ public class TabOpenerImpl implements TabManager {
 
         for (int i = 0; i < rows.length; i++) {
             // Check if any of these assets are already opened.
-            if (explorerViewCenterPanel.showIfOpen(rows[i].uuid)) {
+            if ( explorerViewCenterPanel.showIfOpen( rows[i].uuid ) ) {
                 blockingAssetName = rows[i].name;
                 break;
             }
@@ -179,177 +181,152 @@ public class TabOpenerImpl implements TabManager {
             names[i] = rows[i].name;
         }
 
-        if (blockingAssetName != null) {
-            FormStylePopup popup = new FormStylePopup(images.information(),
-                    constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview(blockingAssetName));
+        if ( blockingAssetName != null ) {
+            FormStylePopup popup = new FormStylePopup( images.information(),
+                    constants.Asset0IsAlreadyOpenPleaseCloseItBeforeOpeningMultiview( blockingAssetName ) );
             popup.show();
             return;
         }
 
-        MultiViewEditor multiview = new MultiViewEditor(rows,
-                createEditEvent());
+        MultiViewEditor multiview = new MultiViewEditor( rows,
+                createEditEvent() );
 
-        multiview.setCloseCommand(new Command() {
+        multiview.setCloseCommand( new Command() {
             public void execute() {
-                explorerViewCenterPanel.close(Arrays.toString(uuids));
+                explorerViewCenterPanel.close( Arrays.toString( uuids ) );
             }
-        });
+        } );
 
-        explorerViewCenterPanel.addTab(Arrays.toString(names),
+        explorerViewCenterPanel.addTab( Arrays.toString( names ),
                 multiview,
-                uuids);
+                uuids );
 
-    }
-
-    /**
-     * Open a package editor if it is not already open.
-     */
-    public void openPackageEditor(final String uuid,
-                                  final Command refPackageList) {
-
-        if (!explorerViewCenterPanel.showIfOpen(uuid)) {
-            LoadingPopup.showMessage(constants.LoadingPackageInformation());
-            RepositoryServiceFactory.getPackageService().loadPackageConfig(uuid,
-                    new GenericCallback<PackageConfigData>() {
-                        public void onSuccess(PackageConfigData conf) {
-                            PackageEditorWrapper ed = new PackageEditorWrapper(conf,
-                                    new Command() {
-                                        public void execute() {
-                                            explorerViewCenterPanel.close(uuid);
-                                        }
-                                    },
-                                    refPackageList);
-                            explorerViewCenterPanel.addTab(conf.name,
-                                    ed,
-                                    conf.uuid);
-                            LoadingPopup.close();
-                        }
-                    });
-        }
     }
 
     public void openFind() {
-        if (!explorerViewCenterPanel.showIfOpen("FIND")) { // NON-NLS
-            explorerViewCenterPanel.addTab(constants.Find(),
+        if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { // NON-NLS
+            explorerViewCenterPanel.addTab( constants.Find(),
                     new QueryWidget(),
-                    "FIND"); // NON-NLS
+                    "FIND" ); // NON-NLS
 
         }
     }
 
-    public void openSnapshot(final SnapshotInfo snap) {
-        if (!explorerViewCenterPanel.showIfOpen(snap.name
-                + snap.uuid)) {
-            LoadingPopup.showMessage(constants.LoadingSnapshot());
-            RepositoryServiceFactory.getPackageService().loadPackageConfig(snap.uuid,
+    public void openSnapshot( final SnapshotInfo snap ) {
+        if ( !explorerViewCenterPanel.showIfOpen( snap.name
+                + snap.uuid ) ) {
+            LoadingPopup.showMessage( constants.LoadingSnapshot() );
+            RepositoryServiceFactory.getPackageService().loadPackageConfig( snap.uuid,
                     new GenericCallback<PackageConfigData>() {
-                        public void onSuccess(PackageConfigData conf) {
-                            explorerViewCenterPanel.addTab(constants.SnapshotLabel(snap.name),
-                                    new SnapshotView(snap,
+                        public void onSuccess( PackageConfigData conf ) {
+                            explorerViewCenterPanel.addTab( constants.SnapshotLabel( snap.name ),
+                                    new SnapshotView(
+                                            clientFactory,
+                                            snap,
                                             conf,
                                             new Command() {
                                                 public void execute() {
-                                                    explorerViewCenterPanel.close(snap.name
-                                                            + snap.uuid);
+                                                    explorerViewCenterPanel.close( snap.name
+                                                            + snap.uuid );
                                                 }
-                                            }),
+                                            } ),
                                     snap.name
-                                            + snap.uuid);
+                                            + snap.uuid );
                             LoadingPopup.close();
                         }
-                    });
+                    } );
 
         }
     }
 
-    public void openAdministrationSelection(int id) {
+    public void openAdministrationSelection( int id ) {
 
         switch (id) {
             case 0:
-                if (!explorerViewCenterPanel.showIfOpen(CATMAN)) {
-                    explorerViewCenterPanel.addTab(constants.CategoryManager(),
+                if ( !explorerViewCenterPanel.showIfOpen( CATMAN ) ) {
+                    explorerViewCenterPanel.addTab( constants.CategoryManager(),
                             new CategoryManager(),
-                            CATMAN);
+                            CATMAN );
                 }
                 break;
             case 1:
-                if (!explorerViewCenterPanel.showIfOpen(ARCHMAN)) {
-                    explorerViewCenterPanel.addTab(constants.ArchivedManager(),
+                if ( !explorerViewCenterPanel.showIfOpen( ARCHMAN ) ) {
+                    explorerViewCenterPanel.addTab( constants.ArchivedManager(),
                             new ArchivedAssetManager(),
-                            ARCHMAN);
+                            ARCHMAN );
                 }
                 break;
 
             case 2:
-                if (!explorerViewCenterPanel.showIfOpen(STATEMAN)) {
-                    explorerViewCenterPanel.addTab(constants.StateManager(),
+                if ( !explorerViewCenterPanel.showIfOpen( STATEMAN ) ) {
+                    explorerViewCenterPanel.addTab( constants.StateManager(),
                             new StateManager(),
-                            STATEMAN);
+                            STATEMAN );
                 }
                 break;
             case 3:
-                if (!explorerViewCenterPanel.showIfOpen(BAKMAN)) {
-                    explorerViewCenterPanel.addTab(constants.ImportExport(),
+                if ( !explorerViewCenterPanel.showIfOpen( BAKMAN ) ) {
+                    explorerViewCenterPanel.addTab( constants.ImportExport(),
                             new BackupManager(),
-                            BAKMAN);
+                            BAKMAN );
                 }
                 break;
 
             case 4:
-                if (!explorerViewCenterPanel.showIfOpen(ERROR_LOG)) {
+                if ( !explorerViewCenterPanel.showIfOpen( ERROR_LOG ) ) {
                     EventLogPresenter.EventLogView eventLogView = new EventLogViewImpl();
                     RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
                     new EventLogPresenter( repositoryService,
-                                           eventLogView );
+                            eventLogView );
                     explorerViewCenterPanel.addTab( constants.EventLog(),
-                                                    eventLogView,
-                                                    ERROR_LOG );
+                            eventLogView,
+                            ERROR_LOG );
                 }
                 break;
             case 5:
-                if (!explorerViewCenterPanel.showIfOpen(SECURITY_PERMISSIONS)) {
-                    explorerViewCenterPanel.addTab(constants.UserPermissionMappings(),
+                if ( !explorerViewCenterPanel.showIfOpen( SECURITY_PERMISSIONS ) ) {
+                    explorerViewCenterPanel.addTab( constants.UserPermissionMappings(),
                             new PermissionViewer(),
-                            SECURITY_PERMISSIONS);
+                            SECURITY_PERMISSIONS );
                 }
                 break;
             case 6:
-                Frame aboutInfoFrame = new Frame("../AboutInfo.html"); // NON-NLS
+                Frame aboutInfoFrame = new Frame( "../AboutInfo.html" ); // NON-NLS
 
                 FormStylePopup aboutPop = new FormStylePopup();
-                aboutPop.setWidth(600 + "px");
-                aboutPop.setTitle(constants.About());
+                aboutPop.setWidth( 600 + "px" );
+                aboutPop.setTitle( constants.About() );
                 String hhurl = GWT.getModuleBaseURL()
                         + "webdav";
-                aboutPop.addAttribute(constants.WebDAVURL()
+                aboutPop.addAttribute( constants.WebDAVURL()
                         + ":",
-                        new SmallLabel("<b>"
+                        new SmallLabel( "<b>"
                                 + hhurl
-                                + "</b>"));
-                aboutPop.addAttribute(constants.Version()
+                                + "</b>" ) );
+                aboutPop.addAttribute( constants.Version()
                         + ":",
-                        aboutInfoFrame);
+                        aboutInfoFrame );
                 aboutPop.show();
                 break;
 
             case 7:
-                if (!explorerViewCenterPanel.showIfOpen(RULE_VERIFIER_MANAGER)) {
-                    explorerViewCenterPanel.addTab(constants.RulesVerificationManager(),
+                if ( !explorerViewCenterPanel.showIfOpen( RULE_VERIFIER_MANAGER ) ) {
+                    explorerViewCenterPanel.addTab( constants.RulesVerificationManager(),
                             new RuleVerifierManager(),
-                            RULE_VERIFIER_MANAGER);
+                            RULE_VERIFIER_MANAGER );
                 }
                 break;
             case 8:
-                if (!explorerViewCenterPanel.showIfOpen(REPOCONFIG))
-                    explorerViewCenterPanel.addTab(constants.RepositoryConfig(),
+                if ( !explorerViewCenterPanel.showIfOpen( REPOCONFIG ) )
+                    explorerViewCenterPanel.addTab( constants.RepositoryConfig(),
                             new RepoConfigManager(),
-                            REPOCONFIG);
+                            REPOCONFIG );
                 break;
             case 9:
-                if (!explorerViewCenterPanel.showIfOpen(WORKSPACES))
-                    explorerViewCenterPanel.addTab(constants.Workspaces(),
+                if ( !explorerViewCenterPanel.showIfOpen( WORKSPACES ) )
+                    explorerViewCenterPanel.addTab( constants.Workspaces(),
                             new WorkspaceManager(),
-                            WORKSPACES);
+                            WORKSPACES );
                 break;
             case 10:
                 openPerspectivesManager();
@@ -359,66 +336,66 @@ public class TabOpenerImpl implements TabManager {
     }
 
     private void openPerspectivesManager() {
-        if (!explorerViewCenterPanel.showIfOpen(PERSPECTIVES_MANAGER)) {
+        if ( !explorerViewCenterPanel.showIfOpen( PERSPECTIVES_MANAGER ) ) {
             PerspectivesManagerView perspectivesManagerView = new PerspectivesManagerViewImpl();
-            new PerspectivesManager(GWT.<ConfigurationServiceAsync>create(ConfigurationService.class),
-                    perspectivesManagerView);
-            explorerViewCenterPanel.addTab(constants.PerspectivesConfiguration(),
+            new PerspectivesManager( GWT.<ConfigurationServiceAsync>create( ConfigurationService.class ),
+                    perspectivesManagerView );
+            explorerViewCenterPanel.addTab( constants.PerspectivesConfiguration(),
                     perspectivesManagerView,
-                    PERSPECTIVES_MANAGER);
+                    PERSPECTIVES_MANAGER );
         }
     }
 
     /**
      * open a category
      */
-    public void openCategory(String categoryName, final String categoryPath) {
-        final CategoryPagedTable table = new CategoryPagedTable(categoryPath,
+    public void openCategory( String categoryName, final String categoryPath ) {
+        final CategoryPagedTable table = new CategoryPagedTable( categoryPath,
                 GWT.getModuleBaseURL()
                         + "feed/category?name="
                         + categoryPath
                         + "&viewUrl="
-                        + Util.getSelfURL());
+                        + Util.getSelfURL() );
         final ServerPushNotification push = new ServerPushNotification() {
-            public void messageReceived(PushResponse response) {
-                if (response.messageType.equals("categoryChange")
-                        && response.message.equals(categoryPath)) {
+            public void messageReceived( PushResponse response ) {
+                if ( response.messageType.equals( "categoryChange" )
+                        && response.message.equals( categoryPath ) ) {
                     table.refresh();
                 }
             }
         };
-        PushClient.instance().subscribe(push);
-        table.addUnloadListener(new Command() {
+        PushClient.instance().subscribe( push );
+        table.addUnloadListener( new Command() {
             public void execute() {
-                PushClient.instance().unsubscribe(push);
+                PushClient.instance().unsubscribe( push );
             }
-        });
+        } );
 
-        explorerViewCenterPanel.addTab((constants.CategoryColon())
+        explorerViewCenterPanel.addTab( (constants.CategoryColon())
                 + categoryName,
                 table,
-                categoryPath);
+                categoryPath );
     }
 
     private OpenItemCommand createEditEvent() {
         return new OpenItemCommand() {
-            public void open(String uuid) {
-                openAsset(uuid);
+            public void open( String uuid ) {
+                openAsset( uuid );
             }
 
-            public void open(MultiViewRow[] rows) {
-                openAssetsToMultiView(rows);
+            public void open( MultiViewRow[] rows ) {
+                openAssetsToMultiView( rows );
             }
         };
     }
 
-    public void openPackageViewAssets(final String packageUuid,
-                                      final String packageName,
-                                      String key,
-                                      final List<String> formatInList,
-                                      Boolean formatIsRegistered,
-                                      final String itemName) {
-        if (!explorerViewCenterPanel.showIfOpen(key)) {
+    public void openPackageViewAssets( final String packageUuid,
+                                       final String packageName,
+                                       String key,
+                                       final List<String> formatInList,
+                                       Boolean formatIsRegistered,
+                                       final String itemName ) {
+        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL()
                     + "feed/package?name="
@@ -426,129 +403,129 @@ public class TabOpenerImpl implements TabManager {
                     + "&viewUrl="
                     + Util.getSelfURL()
                     + "&status=*";
-            final AssetPagedTable table = new AssetPagedTable(packageUuid,
+            final AssetPagedTable table = new AssetPagedTable( packageUuid,
                     formatInList,
                     formatIsRegistered,
-                    feedUrl);
-            explorerViewCenterPanel.addTab(itemName
+                    feedUrl );
+            explorerViewCenterPanel.addTab( itemName
                     + " ["
                     + packageName
                     + "]",
                     table,
-                    key);
+                    key );
 
             final ServerPushNotification sub = new ServerPushNotification() {
-                public void messageReceived(PushResponse response) {
-                    if (response.messageType.equals("packageChange")
-                            && response.message.equals(packageName)) {
+                public void messageReceived( PushResponse response ) {
+                    if ( response.messageType.equals( "packageChange" )
+                            && response.message.equals( packageName ) ) {
                         table.refresh();
                     }
                 }
             };
-            PushClient.instance().subscribe(sub);
-            table.addUnloadListener(new Command() {
+            PushClient.instance().subscribe( sub );
+            table.addUnloadListener( new Command() {
                 public void execute() {
-                    PushClient.instance().unsubscribe(sub);
+                    PushClient.instance().unsubscribe( sub );
                 }
-            });
+            } );
         }
     }
 
-    public void openTestScenario(String packageUuid,
-                                 String packageName) {
+    public void openTestScenario( String packageUuid,
+                                  String packageName ) {
 
-        if (!explorerViewCenterPanel.showIfOpen("scenarios"
-                + packageUuid)) {
-            String m = constants.ScenariosForPackage(packageName);
-            explorerViewCenterPanel.addTab(m,
-                    new ScenarioPackageView(packageUuid,
+        if ( !explorerViewCenterPanel.showIfOpen( "scenarios"
+                + packageUuid ) ) {
+            String m = constants.ScenariosForPackage( packageName );
+            explorerViewCenterPanel.addTab( m,
+                    new ScenarioPackageView( packageUuid,
                             packageName,
-                            explorerViewCenterPanel),
+                            explorerViewCenterPanel ),
                     "scenarios"
-                            + packageUuid);
+                            + packageUuid );
         }
     }
 
-    public void openVerifierView(String packageUuid,
-                                 String packageName) {
-        if (!explorerViewCenterPanel.showIfOpen("analysis"
-                + packageUuid)) { // NON-NLS
-            String m = constants.AnalysisForPackage(packageName);
-            explorerViewCenterPanel.addTab(m,
-                    new AnalysisView(packageUuid,
+    public void openVerifierView( String packageUuid,
+                                  String packageName ) {
+        if ( !explorerViewCenterPanel.showIfOpen( "analysis"
+                + packageUuid ) ) { // NON-NLS
+            String m = constants.AnalysisForPackage( packageName );
+            explorerViewCenterPanel.addTab( m,
+                    new AnalysisView( packageUuid,
                             packageName,
-                            createEditEvent()),
+                            createEditEvent() ),
                     "analysis"
-                            + packageUuid);
+                            + packageUuid );
         }
     }
 
-    public void openSnapshotAssetList(final String name,
-                                      final String uuid,
-                                      final String[] assetTypes,
-                                      String key) {
-        if (!explorerViewCenterPanel.showIfOpen(key)) {
-            AssetPagedTable table = new AssetPagedTable(uuid,
-                    Arrays.asList(assetTypes),
-                    null);
+    public void openSnapshotAssetList( final String name,
+                                       final String uuid,
+                                       final String[] assetTypes,
+                                       String key ) {
+        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
+            AssetPagedTable table = new AssetPagedTable( uuid,
+                    Arrays.asList( assetTypes ),
+                    null );
 
             VerticalPanel vp = new VerticalPanel();
-            vp.add(new HTML("<i><small>"
+            vp.add( new HTML( "<i><small>"
                     + constants.SnapshotListingFor()
                     + name
-                    + "</small></i>"));
-            vp.add(table);
-            explorerViewCenterPanel.addTab(constants.SnapshotItems(),
+                    + "</small></i>" ) );
+            vp.add( table );
+            explorerViewCenterPanel.addTab( constants.SnapshotItems(),
                     vp,
-                    key);
+                    key );
         }
     }
 
-    public boolean showIfOpen(String id) {
-        return explorerViewCenterPanel.showIfOpen(id);
+    public boolean showIfOpen( String id ) {
+        return explorerViewCenterPanel.showIfOpen( id );
     }
 
-    public void addTab(String title, IsWidget widget, String id) {
-        explorerViewCenterPanel.addTab(title, widget, id);
+    public void addTab( String title, IsWidget widget, String id ) {
+        explorerViewCenterPanel.addTab( title, widget, id );
     }
 
-    public void openInboxIncomingPagedTable(String title) {
-        if (!showIfOpen(title)) {
-            addTab(title,
-                    new InboxIncomingPagedTable(title),
-                    title);
+    public void openInboxIncomingPagedTable( String title ) {
+        if ( !showIfOpen( title ) ) {
+            addTab( title,
+                    new InboxIncomingPagedTable( title ),
+                    title );
         }
     }
 
-    public void openInboxPagedTable(String title) {
-        if (!showIfOpen(title)) {
-            addTab(title,
-                    new InboxPagedTable(title),
-                    title);
+    public void openInboxPagedTable( String title ) {
+        if ( !showIfOpen( title ) ) {
+            addTab( title,
+                    new InboxPagedTable( title ),
+                    title );
         }
     }
 
-    public void openStatePagedTable(final String stateName) {
-        final StatePagedTable table = new StatePagedTable(stateName);
+    public void openStatePagedTable( final String stateName ) {
+        final StatePagedTable table = new StatePagedTable( stateName );
 
         final ServerPushNotification push = new ServerPushNotification() {
-            public void messageReceived(PushResponse response) {
-                if (response.messageType.equals("statusChange")
-                        && (response.message).equals(stateName)) {
+            public void messageReceived( PushResponse response ) {
+                if ( response.messageType.equals( "statusChange" )
+                        && (response.message).equals( stateName ) ) {
                     table.refresh();
                 }
             }
         };
-        PushClient.instance().subscribe(push);
-        table.addUnloadListener(new Command() {
+        PushClient.instance().subscribe( push );
+        table.addUnloadListener( new Command() {
             public void execute() {
-                PushClient.instance().unsubscribe(push);
+                PushClient.instance().unsubscribe( push );
             }
-        });
+        } );
 
-        addTab(constants.Status()
+        addTab( constants.Status()
                 + stateName,
                 table,
-                stateName);
+                stateName );
     }
 }

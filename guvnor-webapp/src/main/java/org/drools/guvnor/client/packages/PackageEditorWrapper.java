@@ -17,105 +17,109 @@
 package org.drools.guvnor.client.packages;
 
 
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.TabContentWidget;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 
 /**
  * This is the package editor and viewer for package configuration.
  */
-public class PackageEditorWrapper extends Composite {
-    private Constants constants = GWT.create(Constants.class);
+public class PackageEditorWrapper extends Composite implements TabContentWidget {
+    private Constants constants = GWT.create( Constants.class );
 
     private ArtifactEditor artifactEditor;
-	private PackageEditor packageEditor;
-	private ActionToolbar actionToolBar;
-    private PackageConfigData conf;
+    private PackageEditor packageEditor;
+    private ActionToolbar actionToolBar;
+    private PackageConfigData packageConfigData;
     private boolean isHistoricalReadOnly = false;
-    private Command closeCommand;
-    private Command refreshPackageListCommand;
 
     VerticalPanel layout = new VerticalPanel();
+    private final ClientFactory clientFactory;
 
-    public PackageEditorWrapper(PackageConfigData data,
-                            Command closeCommand,
-                            Command refreshPackageListCommand) {
-        this(data, false, closeCommand, refreshPackageListCommand);
+    public PackageEditorWrapper( PackageConfigData data,
+                                 ClientFactory clientFactory ) {
+        this( data, clientFactory, false );
     }
-    
-	public PackageEditorWrapper(PackageConfigData data, 
-			boolean isHistoricalReadOnly, 
-			Command closeCommand,
-			Command refreshPackageListCommand) {
-		this.conf = data;
-		this.isHistoricalReadOnly = isHistoricalReadOnly;
-		this.closeCommand = closeCommand;
-		this.refreshPackageListCommand = refreshPackageListCommand;
 
-	    initWidget(layout);
-	    render();
-        setWidth("100%");        
-	}
-    
-    private void render() {  
-    	this.artifactEditor = new ArtifactEditor(conf, this.isHistoricalReadOnly);
-        this.packageEditor = new PackageEditor(conf, 
+    public PackageEditorWrapper( PackageConfigData data,
+                                 ClientFactory clientFactory,
+                                 boolean isHistoricalReadOnly ) {
+        this.packageConfigData = data;
+        this.clientFactory = clientFactory;
+        this.isHistoricalReadOnly = isHistoricalReadOnly;
+
+        initWidget( layout );
+        render();
+        setWidth( "100%" );
+    }
+
+    private void render() {
+        this.artifactEditor = new ArtifactEditor( clientFactory, packageConfigData, this.isHistoricalReadOnly );
+        this.packageEditor = new PackageEditor(
+                packageConfigData,
+                clientFactory,
                 this.isHistoricalReadOnly,
-                this.closeCommand, 
-                this.refreshPackageListCommand,
                 new Command() {
                     public void execute() {
                         refresh();
                     }
-                });
-    	this.actionToolBar = this.packageEditor.getActionToolbar();
-    	
+                } );
+        this.actionToolBar = this.packageEditor.getActionToolbar();
+
         layout.clear();
-    	layout.add(this.actionToolBar);
-    	
+        layout.add( this.actionToolBar );
+
         TabPanel tPanel = new TabPanel();
-        tPanel.setWidth("100%");
-        
+        tPanel.setWidth( "100%" );
+
         ScrollPanel pnl = new ScrollPanel();
-        pnl.setWidth("100%");
-        pnl.add(this.artifactEditor);
-        tPanel.add(pnl, "Attributes");        
-        tPanel.selectTab(0);                
-        
+        pnl.setWidth( "100%" );
+        pnl.add( this.artifactEditor );
+        tPanel.add( pnl, "Attributes" );
+        tPanel.selectTab( 0 );
+
         pnl = new ScrollPanel();
-        pnl.setWidth("100%");
-        pnl.add(this.packageEditor);
-        tPanel.add( pnl, "Edit" );        
-        tPanel.selectTab(0);        
-        
-        tPanel.setHeight("100%");
-        layout.add(tPanel);
-        layout.setHeight("100%");
+        pnl.setWidth( "100%" );
+        pnl.add( this.packageEditor );
+        tPanel.add( pnl, "Edit" );
+        tPanel.selectTab( 0 );
+
+        tPanel.setHeight( "100%" );
+        layout.add( tPanel );
+        layout.setHeight( "100%" );
     }
-    
+
     /**
      * Will refresh all the data.
      */
     public void refresh() {
         LoadingPopup.showMessage( constants.RefreshingPackageData() );
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.conf.getUuid(),
-                                                                 new GenericCallback<PackageConfigData>() {
-                                                                     public void onSuccess(PackageConfigData data) {
-                                                                         LoadingPopup.close();
-                                                                         conf = data;
-                                                                         render();
-                                                                     }
-                                                                 } );
+        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.packageConfigData.getUuid(),
+                new GenericCallback<PackageConfigData>() {
+                    public void onSuccess( PackageConfigData data ) {
+                        LoadingPopup.close();
+                        packageConfigData = data;
+                        render();
+                    }
+                } );
     }
 
+    public String getTabTitle() {
+        return packageConfigData.name;
+    }
+
+    public String getID() {
+        return packageConfigData.uuid;
+    }
 }

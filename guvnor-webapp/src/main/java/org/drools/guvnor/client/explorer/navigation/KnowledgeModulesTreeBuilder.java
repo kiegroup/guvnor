@@ -17,36 +17,44 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.common.StackItemHeader;
-import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 
-public class KnowledgeBasesTreeBuilder extends NavigationItemBuilder {
+public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
 
-    private KnowledgeBasesTree knowledgeBasesTree = new KnowledgeBasesTree();
+    private final ClientFactory clientFactory;
+    private NavigationViewFactory navigationViewFactory;
+    private KnowledgesModuleTree knowledgesModuleTree;
+
+    public KnowledgeModulesTreeBuilder( ClientFactory clientFactory ) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_KNOWLEDGE_BASES_VIEW);
+        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
     }
 
     @Override
     public IsWidget getHeader() {
-        StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader(view);
-        header.setName(knowledgeBasesTree.getName());
-        header.setImageResource(knowledgeBasesTree.getImage());
-        return view;
+        return clientFactory.getNavigationViewFactory().getKnowledgeModulesHeaderView();
     }
 
     @Override
     public IsWidget getContent() {
-        return knowledgeBasesTree.createContent();
+        if ( knowledgesModuleTree == null ) {
+            createKnowledgeModuleTree();
+        }
+        return navigationViewFactory.getKnowledgeModulesTreeView();
     }
 
     @Override
-    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
-        //TODO: Generated code -Rikkola-
+    public void setViewFactory( NavigationViewFactory navigationViewFactory ) {
+        this.navigationViewFactory = navigationViewFactory;
+    }
+
+    private void createKnowledgeModuleTree() {
+        knowledgesModuleTree = new KnowledgesModuleTree( clientFactory );
     }
 }

@@ -16,53 +16,49 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
-
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.util.TabOpenerImpl;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This is the tab panel manager.
  */
 public class ExplorerViewCenterPanel extends Composite {
 
-    private final ScrollTabLayoutPanel        tabLayoutPanel;
+    private final ScrollTabLayoutPanel tabLayoutPanel;
 
-    private MultiKeyMap<Panel>                openedTabs           = new MultiKeyMap<Panel>();
-    private static int                        id                   = 0;
+    private MultiKeyMap<Panel> openedTabs = new MultiKeyMap<Panel>();
+    private static int id = 0;
 
     /**
      * to keep track of what is dirty, filthy
      */
-    private Map<String, GuvnorEditor>         openedAssetEditors   = new HashMap<String, GuvnorEditor>();
+    private Map<String, GuvnorEditor> openedAssetEditors = new HashMap<String, GuvnorEditor>();
     private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
-    private Map<Panel, String[]>              itemWidgets          = new HashMap<Panel, String[]>();
+    private Map<Panel, String[]> itemWidgets = new HashMap<Panel, String[]>();
 
-    public ExplorerViewCenterPanel() {
+    public ExplorerViewCenterPanel( ClientFactory clientFactory ) {
         tabLayoutPanel = new ScrollTabLayoutPanel( 2,
-                                                   Unit.EM );
+                Unit.EM );
         initWidget( tabLayoutPanel );
 
 
-        TabContainer.init(new TabOpenerImpl(this) {
-        });
+        TabContainer.init( new TabOpenerImpl( clientFactory, this ) {
+        } );
 
-        TabContainer.getInstance().openFind();
+
+//        TabContainer.getInstance().openFind();
     }
 
     /**
@@ -72,9 +68,9 @@ public class ExplorerViewCenterPanel extends Composite {
      * @param widget  The contents.
      * @param key     A key which is unique.
      */
-    public void addTab(final String tabname,
-                       IsWidget widget,
-                       final String key) {
+    public void addTab( final String tabname,
+                        IsWidget widget,
+                        final String key ) {
         addTab( tabname,
                 widget,
                 new String[]{key} );
@@ -87,16 +83,16 @@ public class ExplorerViewCenterPanel extends Composite {
      * @param widget  The contents.
      * @param keys    An array of keys which are unique.
      */
-    public void addTab(final String tabname,
-                       IsWidget widget,
-                       final String[] keys) {
+    public void addTab( final String tabname,
+                        IsWidget widget,
+                        final String[] keys ) {
         final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString( keys ) + id++);
 
         ScrollPanel localTP = new ScrollPanel();
         localTP.add( widget );
         tabLayoutPanel.add( localTP,
-                            newClosableLabel( localTP,
-                                              tabname ) );
+                newClosableLabel( localTP,
+                        tabname ) );
         tabLayoutPanel.selectTab( localTP );
 
         //TODO: Dirtyable
@@ -113,24 +109,24 @@ public class ExplorerViewCenterPanel extends Composite {
         */
         if ( widget instanceof GuvnorEditor ) {
             this.openedAssetEditors.put( panelId,
-                                         (GuvnorEditor) widget );
+                    (GuvnorEditor) widget );
         } else if ( widget instanceof PackageEditorWrapper ) {
             this.getOpenedPackageEditors().put( tabname,
-                                                (PackageEditorWrapper) widget );
+                    (PackageEditorWrapper) widget );
         }
 
         openedTabs.put( keys,
-                        localTP );
+                localTP );
         itemWidgets.put( localTP,
-                         keys );
+                keys );
     }
 
-    private Widget newClosableLabel(final Panel panel,
-                                    final String title) {
+    private Widget newClosableLabel( final Panel panel,
+                                     final String title ) {
         ClosableLabel closableLabel = new ClosableLabel( title );
 
         closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
-            public void onClose(CloseEvent<ClosableLabel> event) {
+            public void onClose( CloseEvent<ClosableLabel> event ) {
                 int widgetIndex = tabLayoutPanel.getWidgetIndex( panel );
                 if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
                     if ( isOnlyOneTabLeft() ) {
@@ -155,7 +151,7 @@ public class ExplorerViewCenterPanel extends Composite {
     /**
      * Will open if existing. If not it will return false;
      */
-    public boolean showIfOpen(String key) {
+    public boolean showIfOpen( String key ) {
         if ( openedTabs.containsKey( key ) ) {
             LoadingPopup.close();
             Panel tpi = (Panel) openedTabs.get( key );
@@ -165,12 +161,12 @@ public class ExplorerViewCenterPanel extends Composite {
         return false;
     }
 
-    public void close(String key) {
+    public void close( String key ) {
         Panel tpi = openedTabs.remove( key );
 
         int widgetIndex = tabLayoutPanel.getWidgetIndex( tpi );
         if ( widgetIndex == tabLayoutPanel.getSelectedIndex() ) {
-            if(widgetIndex>0) {
+            if ( widgetIndex > 0 ) {
                 tabLayoutPanel.selectTab( widgetIndex - 1 );
             }
         }

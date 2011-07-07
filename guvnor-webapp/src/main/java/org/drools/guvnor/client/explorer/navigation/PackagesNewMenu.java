@@ -33,6 +33,7 @@ import org.drools.guvnor.client.util.Util;
 
 
 public class PackagesNewMenu {
+
     private static Constants constants = ((Constants) GWT.create(Constants.class));
     private static Images images = (Images) GWT.create(Images.class);
 
@@ -57,7 +58,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.SPRING_CONTEXT, constants.NewSpringContext(), false);
+//                        manager.launchWizard(AssetFormats.SPRING_CONTEXT, constants.NewSpringContext(), false);
                     }
                 });
 
@@ -65,7 +66,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.WORKING_SET, constants.NewWorkingSet(), false);
+//                        manager.launchWizard(AssetFormats.WORKING_SET, constants.NewWorkingSet(), false);
                     }
                 });
 
@@ -73,7 +74,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(null, constants.NewRule(), true);
+//                        manager.launchWizard(null, constants.NewRule(), true);
                     }
                 });
 
@@ -81,7 +82,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
+//                        manager.launchWizard(AssetFormats.RULE_TEMPLATE, constants.NewRuleTemplate(), true);
                     }
                 });
 
@@ -89,7 +90,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
+//                        manager.launchWizard(AssetFormats.MODEL, constants.NewModelArchiveJar(), false);
                     }
                 });
 
@@ -97,7 +98,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false);
+//                        manager.launchWizard(AssetFormats.DRL_MODEL, constants.NewDeclarativeModelUsingGuidedEditor(), false);
                     }
                 });
 
@@ -106,8 +107,8 @@ public class PackagesNewMenu {
                     true,
                     new Command() {
                         public void execute() {
-                            manager.launchWizard(AssetFormats.BPEL_PACKAGE, constants
-                                    .CreateANewBPELPackage(), false);
+//                            manager.launchWizard(AssetFormats.BPEL_PACKAGE, constants
+//                                    .CreateANewBPELPackage(), false);
                         }
                     });
         }
@@ -116,7 +117,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
+//                        manager.launchWizard(AssetFormats.FUNCTION, constants.CreateANewFunction(), false);
                     }
                 });
 
@@ -124,7 +125,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false);
+//                        manager.launchWizard(AssetFormats.DSL, constants.CreateANewDSLConfiguration(), false);
                     }
                 });
 
@@ -132,7 +133,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
+//                        manager.launchWizard(AssetFormats.RULE_FLOW_RF, constants.CreateANewRuleFlow(), false);
                     }
                 });
 
@@ -140,7 +141,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.BPMN2_PROCESS, constants.CreateANewBPMN2Process(), false);
+//                        manager.launchWizard(AssetFormats.BPMN2_PROCESS, constants.CreateANewBPMN2Process(), false);
                     }
                 });
 
@@ -148,7 +149,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.WORKITEM_DEFINITION, constants.NewWorkitemDefinition(), false);
+//                        manager.launchWizard(AssetFormats.WORKITEM_DEFINITION, constants.NewWorkitemDefinition(), false);
                     }
                 });
 
@@ -156,7 +157,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);
+//                        manager.launchWizard(AssetFormats.ENUMERATION, constants.CreateANewEnumerationDropDownMapping(), false);
                     }
                 });
 
@@ -164,7 +165,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false);
+//                        manager.launchWizard(AssetFormats.TEST_SCENARIO, constants.CreateATestScenario(), false);
                     }
                 });
 
@@ -172,7 +173,7 @@ public class PackagesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        manager.launchWizard("*", constants.CreateAFile(), false);
+//                        manager.launchWizard("*", constants.CreateAFile(), false);
                     }
                 });
 

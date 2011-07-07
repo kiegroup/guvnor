@@ -33,9 +33,9 @@ public class PerspectivesPanelTest {
 
     @Before
     public void setUp() throws Exception {
-        view = mock(PerspectivesPanelView.class);
-        placeController = mock(PlaceController.class);
-        perspectivesPanel = new PerspectivesPanel(view, placeController);
+        view = mock( PerspectivesPanelView.class );
+        placeController = mock( PlaceController.class );
+        perspectivesPanel = new PerspectivesPanel( view, placeController );
         presenter = getPresenter();
     }
 
@@ -45,15 +45,19 @@ public class PerspectivesPanelTest {
 
     @Test
     public void testPresenter() throws Exception {
-        verify(view).setPresenter(presenter);
+        verify( view ).setPresenter( presenter );
     }
 
     @Test
     public void testSetWidget() throws Exception {
-        IsWidget widget = mock(IsWidget.class);
-        perspectivesPanel.setWidget(widget);
+        TabContentWidget tabContentWidget = mock( TabContentWidget.class );
 
-        verify(view).setWidget(widget);
+        when( tabContentWidget.getTabTitle() ).thenReturn( "Mock title" );
+        when( tabContentWidget.getID() ).thenReturn( "MOCK_ID" );
+
+        perspectivesPanel.setWidget( tabContentWidget );
+
+        verify( view ).setWidget( "Mock title", tabContentWidget, "MOCK_ID" );
     }
 
     @Test
@@ -64,9 +68,16 @@ public class PerspectivesPanelTest {
           This is why we need to catch null sets for setWidget() before they make it to the view.
         */
 
-        perspectivesPanel.setWidget(null);
+        IsWidget isWidget = null;
 
-        verify(view, never()).setWidget(Matchers.<IsWidget>any());
+        perspectivesPanel.setWidget( isWidget );
+        verify( view, never() ).setWidget( Matchers.<String>any(), Matchers.<IsWidget>any(), Matchers.<String>any() );
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testWidgetMustBeTabContentWidget() throws Exception {
+        IsWidget isWidget = mock( IsWidget.class );
+        perspectivesPanel.setWidget( isWidget );
     }
 
     @Test
@@ -74,17 +85,17 @@ public class PerspectivesPanelTest {
         AuthorPerspectivePlace authorPerspectivePlace = new AuthorPerspectivePlace();
         IFramePerspectivePlace runtimePerspectivePlace = new IFramePerspectivePlace();
 
-        perspectivesPanel.addPerspective(authorPerspectivePlace);
-        perspectivesPanel.addPerspective(runtimePerspectivePlace);
+        perspectivesPanel.addPerspective( authorPerspectivePlace );
+        perspectivesPanel.addPerspective( runtimePerspectivePlace );
 
-        goToAndVerify(authorPerspectivePlace);
+        goToAndVerify( authorPerspectivePlace );
 
-        goToAndVerify(runtimePerspectivePlace);
+        goToAndVerify( runtimePerspectivePlace );
     }
 
-    private void goToAndVerify(Perspective perspective) throws UnknownPerspective {
-        presenter.onPerspectiveChange(perspective.getName());
+    private void goToAndVerify( Perspective perspective ) throws UnknownPerspective {
+        presenter.onPerspectiveChange( perspective.getName() );
 
-        verify(placeController).goTo(perspective);
+        verify( placeController ).goTo( perspective );
     }
 }

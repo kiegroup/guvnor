@@ -24,6 +24,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -55,12 +56,15 @@ public class VersionChooser extends Composite {
     private ListBox versionChooser;
     private List<TableDataRow> versionInfo = new ArrayList<TableDataRow>();
     private String currentVersion;
+    private final ClientFactory clientFactory;
 
-   
-    public VersionChooser(String currentVersion,
-    		String pacakgeUUID, 
-    		String assetName,
-            Command ref) {
+
+    public VersionChooser( ClientFactory clientFactory,
+                           String currentVersion,
+                           String pacakgeUUID,
+                           String assetName,
+                           Command ref ) {
+        this.clientFactory = clientFactory;
         this.packageUUID = pacakgeUUID;
         this.assetName = assetName;
         this.currentVersion = currentVersion;
@@ -171,14 +175,16 @@ public class VersionChooser extends Composite {
                                                                                                                                    asset.getName() ),
                                                                                                                     new Integer( 800 ) );
 
-                                                                     RuleViewerWrapper viewer = new RuleViewerWrapper( asset,
-                                                                                                         null,
-                                                                                                         null,
-                                                                                                         null,
-                                                                                                         null,
-                                                                                                         true,
-                                                                                                         null,
-                                                                                                         null);
+                                                                     RuleViewerWrapper viewer = new RuleViewerWrapper(
+                                                                             clientFactory,
+                                                                             asset,
+                                                                             null,
+                                                                             null,
+                                                                             null,
+                                                                             null,
+                                                                             true,
+                                                                             null,
+                                                                             null );
                                                                      viewer.setWidth( "100%" );
                                                                      viewer.setHeight( "100%" );
 

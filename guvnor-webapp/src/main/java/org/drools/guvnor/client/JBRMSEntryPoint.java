@@ -16,42 +16,25 @@
 
 package org.drools.guvnor.client;
 
-import java.util.Collection;
-
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.explorer.AuthorPerspectivePlace;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
-import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
-import org.drools.guvnor.client.explorer.LoadPerspectives;
-import org.drools.guvnor.client.explorer.Perspective;
-import org.drools.guvnor.client.explorer.PerspectiveLoader;
-import org.drools.guvnor.client.explorer.PerspectivesPanel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.OperatorsResource;
-import org.drools.guvnor.client.resources.RoundedCornersResource;
-import org.drools.guvnor.client.rpc.ConfigurationService;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
-
-import com.google.gwt.activity.shared.ActivityManager;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Visibility;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.ConfigurationsLoader;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.OperatorsResource;
+import org.drools.guvnor.client.resources.RoundedCornersResource;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
 
 /**
  * This is the main launching/entry point for the JBRMS web console. It
@@ -64,8 +47,8 @@ public class JBRMSEntryPoint
         implements
         EntryPoint {
 
-    private Constants         constants = GWT.create( Constants.class );
-    private PerspectivesPanel perspectivesPanel;
+    private Constants constants = GWT.create( Constants.class );
+    private AppController appController;
 
     public void onModuleLoad() {
         loadStyles();
@@ -85,16 +68,16 @@ public class JBRMSEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
-            public void onSuccess(UserSecurityContext userSecurityContext) {
+        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
+            public void onSuccess( UserSecurityContext userSecurityContext ) {
                 String userName = userSecurityContext.getUserName();
-                if (userName != null) {
-                    showMain(userName);
+                if ( userName != null ) {
+                    showMain( userName );
                 } else {
                     logIn();
                 }
             }
-        });
+        } );
     }
 
     private void logIn() {
@@ -107,35 +90,36 @@ public class JBRMSEntryPoint
         loginWidget.show();
     }
 
-    private void showMain(final String userName) {
+    private void showMain( final String userName ) {
 
         Window.setStatus( constants.LoadingUserPermissions() );
 
-        loadConfigurations(userName);
+        loadConfigurations( userName );
     }
 
-    private void loadConfigurations(final String userName) {
-        ConfigurationsLoader.loadPreferences(new Command() {
+    private void loadConfigurations( final String userName ) {
+        ConfigurationsLoader.loadPreferences( new Command() {
             public void execute() {
-                loadUserCapabilities(userName);
+                loadUserCapabilities( userName );
             }
-        });
+        } );
     }
 
-    private void loadUserCapabilities(final String userName) {
-        ConfigurationsLoader.loadUserCapabilities(new Command() {
+    private void loadUserCapabilities( final String userName ) {
+        ConfigurationsLoader.loadUserCapabilities( new Command() {
             public void execute() {
-                setUpMain(userName);
+                setUpMain( userName );
             }
-        });
+        } );
     }
 
-    private void setUpMain(String userName) {
-        Window.setStatus(" ");
+    private void setUpMain( String userName ) {
+        Window.setStatus( " " );
 
-                createMain();
+        createMain();
 
-        perspectivesPanel.setUserName(userName);
+
+        appController.setUserName( userName );
     }
 
     /**
@@ -150,58 +134,13 @@ public class JBRMSEntryPoint
         } else {
 
             ClientFactory clientFactory = GWT.create( ClientFactory.class );
-            EventBus eventBus = clientFactory.getEventBus();
-            PlaceController placeController = clientFactory.getPlaceController();
-            Perspective defaultPlace = new AuthorPerspectivePlace();
+            appController = new AppController( clientFactory );
 
-            perspectivesPanel = new PerspectivesPanel( clientFactory.getPerspectivesPanelView( hideTitle() ),
-                                                       placeController );
-
-            loadPerspectives();
-
-            // TODo: Hide the dropdown if the default one is the only one -Rikkola-
-
-            ActivityMapper activityMapper = new GuvnorActivityMapper( clientFactory );
-            ActivityManager activityManager = new ActivityManager( activityMapper,
-                                                                   eventBus );
-            activityManager.setDisplay( perspectivesPanel );
-
-            GuvnorPlaceHistoryMapper historyMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
-            PlaceHistoryHandler historyHandler = new PlaceHistoryHandler( historyMapper );
-            historyHandler.register( placeController,
-                                     eventBus,
-                                     defaultPlace );
-
-            historyHandler.handleCurrentHistory();
-
-            RootLayoutPanel.get().add( perspectivesPanel.getView() );
+            RootLayoutPanel.get().add( appController.getMainPanel() );
         }
 
     }
 
-    private void loadPerspectives() {
-        ConfigurationServiceAsync configurationServiceAsync = GWT.create( ConfigurationService.class );
-
-        PerspectiveLoader perspectiveLoader = new PerspectiveLoader( configurationServiceAsync );
-        perspectiveLoader.loadPerspectives( new LoadPerspectives() {
-            public void loadPerspectives(Collection<Perspective> perspectives) {
-                for ( Perspective perspective : perspectives ) {
-                    perspectivesPanel.addPerspective( perspective );
-                }
-            }
-        } );
-    }
-
-    private boolean hideTitle() {
-        String parameter = Window.Location.getParameter( "nochrome" );
-
-        if ( parameter == null ) {
-            return true;
-        } else {
-            return parameter.equals( "true" );
-        }
-    }
-    
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
         final Element e = RootPanel.get( "loading" ).getElement();
@@ -209,7 +148,7 @@ public class JBRMSEntryPoint
         Animation r = new Animation() {
 
             @Override
-            protected void onUpdate(double progress) {
+            protected void onUpdate( double progress ) {
                 e.getStyle().setOpacity( 1.0 - progress );
             }
 
@@ -223,5 +162,5 @@ public class JBRMSEntryPoint
         r.run( 500 );
 
     }
-    
+
 }

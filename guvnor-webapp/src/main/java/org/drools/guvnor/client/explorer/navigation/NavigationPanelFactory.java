@@ -16,7 +16,32 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
-public abstract class NavigationPanelFactory {
+import java.util.Collection;
 
-    public abstract NavigationPanel createNavigationPanel();
+public class NavigationPanelFactory {
+
+    private final NavigationViewFactory navigationViewFactory;
+    private NavigationPanel navigationPanel;
+
+    public NavigationPanelFactory( NavigationViewFactory navigationViewFactory ) {
+        this.navigationViewFactory = navigationViewFactory;
+    }
+
+    public NavigationPanel createNavigationPanel( Collection<NavigationItemBuilder> navigationItemBuilders ) {
+        navigationPanel = new NavigationPanel( navigationViewFactory.getNavigationPanelView() );
+
+        for (NavigationItemBuilder navigationItemBuilder : navigationItemBuilders) {
+            add( navigationItemBuilder );
+        }
+
+        return navigationPanel;
+    }
+
+
+    private void add( NavigationItemBuilder navigationItemBuilder ) {
+        if ( navigationItemBuilder.hasPermissionToBuild() ) {
+            navigationItemBuilder.setViewFactory( navigationViewFactory );
+            navigationPanel.add( navigationItemBuilder.getHeader(), navigationItemBuilder.getContent() );
+        }
+    }
 }

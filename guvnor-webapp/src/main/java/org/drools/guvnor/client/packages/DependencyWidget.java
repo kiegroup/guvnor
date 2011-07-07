@@ -20,6 +20,7 @@ import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -56,9 +57,12 @@ public class DependencyWidget extends Composite {
 
     private PackageConfigData      conf;
     private boolean                isHistoricalReadOnly = false;
+    private final ClientFactory clientFactory;
 
-    public DependencyWidget(final PackageConfigData conf,
+    public DependencyWidget(ClientFactory clientFactory,
+                            final PackageConfigData conf,
                             boolean isHistoricalReadOnly) {
+        this.clientFactory = clientFactory;
         this.conf = conf;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new FormStyleLayout();
@@ -130,7 +134,7 @@ public class DependencyWidget extends Composite {
         */
         editor.addAttribute( "Dependency Path: ",
                              new Label( decodeDependencyPath( dependencyPath )[0] ) );
-        final VersionChooser versionChoose = new VersionChooser(
+        final VersionChooser versionChoose = new VersionChooser( clientFactory,
                                                                  decodeDependencyPath( dependencyPath )[1],
                                                                  conf.getUuid(),
                                                                  decodeDependencyPath( dependencyPath )[0],

@@ -16,50 +16,52 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.messages.Constants;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.messages.Constants;
 
 public class PerspectivesPanelViewImpl extends Composite
-    implements
-    PerspectivesPanelView {
+        implements
+        PerspectivesPanelView {
 
     interface PerspectivesPanelViewImplBinder
             extends
             UiBinder<Widget, PerspectivesPanelViewImpl> {
     }
 
-    private static PerspectivesPanelViewImplBinder uiBinder  = GWT.create( PerspectivesPanelViewImplBinder.class );
+    private static PerspectivesPanelViewImplBinder uiBinder = GWT.create( PerspectivesPanelViewImplBinder.class );
 
-    private static Constants                       constants = GWT.create( Constants.class );
+    private static Constants constants = GWT.create( Constants.class );
 
-    private Presenter                              presenter;
-
-    @UiField()
-    FlowPanel                                      perspective;
+    private Presenter presenter;
 
     @UiField
-    ListBox                                        perspectives;
+    ListBox perspectives;
 
     @UiField
-    SpanElement                                    userName;
+    SpanElement userName;
 
     @UiField
-    HTMLPanel                                      titlePanel;
+    HTMLPanel titlePanel;
 
-    public PerspectivesPanelViewImpl(boolean showTitle) {
+    @UiField(provided = true)
+    Widget navigationPanel;
+
+    @UiField(provided = true)
+    ExplorerViewCenterPanel explorerCenterPanel;
+
+    public PerspectivesPanelViewImpl( IsWidget navigationPanel,
+                                      ExplorerViewCenterPanel explorerCenterPanel,
+                                      boolean showTitle ) {
+        this.navigationPanel = navigationPanel.asWidget();
+        this.explorerCenterPanel = explorerCenterPanel;
+
         showTitle( showTitle );
 
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -67,7 +69,7 @@ public class PerspectivesPanelViewImpl extends Composite
         titlePanel.setVisible( showTitle );
     }
 
-    private void showTitle(boolean showTitle) {
+    private void showTitle( boolean showTitle ) {
         if ( showTitle ) {
             TitlePanelHeight.show();
         } else {
@@ -75,34 +77,35 @@ public class PerspectivesPanelViewImpl extends Composite
         }
     }
 
-    public void setUserName(String userName) {
+    public void setUserName( String userName ) {
         this.userName.setInnerText( userName );
     }
 
-    public void setWidget(IsWidget widget) {
-        perspective.clear();
-        Widget w = widget.asWidget();
-        w.setHeight( "100%" );
-        w.setWidth( "100%" );
-        perspective.add( w );
+    public void setWidget( String title, IsWidget widget, String id ) {
+        explorerCenterPanel.addTab( title, widget, id );
+//        perspective.clear();
+//        Widget w = widget.asWidget();
+//        w.setHeight( "100%" );
+//        w.setWidth( "100%" );
+//        perspective.add( w );
     }
 
-    public void addPerspectiveToList(String perspectiveId,
-                                     String perspectiveName) {
+    public void addPerspectiveToList( String perspectiveId,
+                                      String perspectiveName ) {
         perspectives.addItem( perspectiveName,
-                              perspectiveId );
+                perspectiveId );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
     @UiHandler("perspectives")
-    public void handleChange(ChangeEvent event) {
+    public void handleChange( ChangeEvent event ) {
         String perspectiveId = perspectives.getValue( perspectives.getSelectedIndex() );
         try {
             presenter.onPerspectiveChange( perspectiveId );
-        } catch ( UnknownPerspective unknownPerspective ) {
+        } catch (UnknownPerspective unknownPerspective) {
             ErrorPopup.showMessage( constants.FailedToLoadPerspectiveUnknownId0( perspectiveId ) );
         }
     }
@@ -110,7 +113,7 @@ public class PerspectivesPanelViewImpl extends Composite
     public static class TitlePanelHeight {
 
         private static final int DEFAULT_HEIGHT = 4;
-        private static int       height         = DEFAULT_HEIGHT;
+        private static int height = DEFAULT_HEIGHT;
 
         public int getHeight() {
             return height;
