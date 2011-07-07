@@ -18,10 +18,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.ClickableLabel;
@@ -30,14 +27,12 @@ import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.DirtyableVerticalPane;
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
 import org.drools.guvnor.client.resources.Images;
@@ -47,23 +42,7 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
-import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
-import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
-import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
-import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
-import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
-import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
-import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
-import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromEntryPointFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
@@ -72,20 +51,14 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -95,8 +68,8 @@ public class RuleModeller extends DirtyableComposite
     implements
     RuleModelEditor {
 
-    private Constants                 constants               = GWT.create( Constants.class );
-    private static Images             images                  = GWT.create( Images.class );
+    private static final Constants    constants               = GWT.create( Constants.class );
+    private static final Images       images                  = GWT.create( Images.class );
 
     private DirtyableFlexTable        layout;
     private RuleModel                 model;
@@ -123,11 +96,11 @@ public class RuleModeller extends DirtyableComposite
                         RuleViewer viewer) {
         this( asset,
               null,
-              new RuleModellerWidgetFactory());
+              new RuleModellerWidgetFactory() );
     }
 
     public RuleModeller(RuleAsset asset,
-    		            RuleViewer viewer,
+                        RuleViewer viewer,
                         ModellerWidgetFactory widgetFactory) {
         this.asset = asset;
         this.model = (RuleModel) asset.getContent();
@@ -157,8 +130,7 @@ public class RuleModeller extends DirtyableComposite
         addPattern.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                showConditionSelector( (Widget) event.getSource(),
-                                       null );
+                showConditionSelector( null );
             }
         } );
 
@@ -299,7 +271,7 @@ public class RuleModeller extends DirtyableComposite
     }
 
     private boolean showAttributes() {
-        if ( !UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
+        if ( !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_PACKAGE_VIEW ) ) {
             return false;
         }
 
@@ -447,575 +419,18 @@ public class RuleModeller extends DirtyableComposite
     /**
      * Pops up the fact selector.
      */
-    protected void showConditionSelector(final Widget w,
-                                         Integer position) {
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.AddAConditionToTheRule() );
-
-        final Map<String, Command> cmds = new HashMap<String, Command>();
-
-        final ListBox positionCbo = new ListBox();
-
-        if ( position == null ) {
-            positionCbo.addItem( constants.Bottom(),
-                                 String.valueOf( this.model.lhs.length ) );
-            positionCbo.addItem( constants.Top(),
-                                 "0" );
-            for ( int i = 1; i < model.lhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0( i ),
-                                     String.valueOf( i ) );
-            }
-        } else {
-            //if position is fixed, we just add one element to the drop down.
-            positionCbo.addItem( String.valueOf( position ) );
-            positionCbo.setSelectedIndex( 0 );
-        }
-
-        final ListBox choices = new ListBox( true );
-
-        //
-        // The list of DSL sentences
-        //
-        SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
-        if ( completions.getDSLConditions().length > 0 ) {
-            for ( int i = 0; i < completions.getDSLConditions().length; i++ ) {
-                final DSLSentence sen = completions.getDSLConditions()[i];
-                String key = "DSL" + i;
-                choices.addItem( sen.toString(),
-                                 key );
-                cmds.put( key,
-                          new Command() {
-
-                              public void execute() {
-                                  addNewDSLLhs( sen,
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  popup.hide();
-                              }
-                          } );
-            }
-        }
-
-        //
-        // The list of facts
-        //
-        final String[] facts = completions.getFactTypes();
-        if ( facts.length > 0 ) {
-            choices.addItem( ".................." );
-
-            for ( int i = 0; i < facts.length; i++ ) {
-                final String f = facts[i];
-                String key = "NF" + f;
-
-                choices.addItem( f + " ...",
-                                 key );
-                cmds.put( key,
-                          new Command() {
-
-                              public void execute() {
-                                  addNewFact( f,
-                                              Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  popup.hide();
-                              }
-                          } );
-            }
-        }
-
-        //
-        // The list of top level CEs
-        //
-        String ces[] = HumanReadable.CONDITIONAL_ELEMENTS;
-
-        choices.addItem( ".................." );
-        for ( int i = 0; i < ces.length; i++ ) {
-            final String ce = ces[i];
-            String key = "CE" + ce;
-            choices.addItem( HumanReadable.getCEDisplayName( ce ) + " ...",
-                             key );
-            cmds.put( key,
-                      new Command() {
-
-                          public void execute() {
-                              addNewCE( ce,
-                                        Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        String fces[] = HumanReadable.FROM_CONDITIONAL_ELEMENTS;
-
-        choices.addItem( ".................." );
-        for ( int i = 0; i < fces.length; i++ ) {
-            final String ce = fces[i];
-            String key = "FCE" + ce;
-            choices.addItem( HumanReadable.getCEDisplayName( ce ) + " ...",
-                             key );
-            cmds.put( key,
-                      new Command() {
-
-                          public void execute() {
-                              addNewFCE( ce,
-                                         Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        if ( UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
-            choices.addItem( ".................." );
-            choices.addItem( constants.FreeFormDrl(),
-                             "FF" );
-            cmds.put( "FF",
-                      new Command() {
-
-                          public void execute() {
-                              model.addLhsItem( new FreeFormLine(),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              refreshWidget();
-                              popup.hide();
-                          }
-                      } );
-
-        }
-
-        if ( completions.getDSLConditions().length == 0 && facts.length == 0 ) {
-            popup.addRow( new HTML( "<div class='highlight'>" + constants.NoModelTip() + "</div>" ) ); //NON-NLS
-        }
-
-        choices.addKeyUpHandler( new KeyUpHandler() {
-            public void onKeyUp(com.google.gwt.event.dom.client.KeyUpEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-                    selectSomething( choices,
-                                     cmds );
-                }
-            }
-        } );
-
-        //only show the drop down if we are not using fixed position.
-        if ( position == null ) {
-            HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( constants.PositionColon() ) );
-            hp0.add( positionCbo );
-            hp0.add( new InfoPopup( constants.PositionColon(),
-                                    constants.ConditionPositionExplanation() ) );
-            popup.addRow( hp0 );
-        }
-
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.add( choices );
-        Button ok = new Button( constants.OK() );
-        hp.add( ok );
-        ok.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                selectSomething( choices,
-                                 cmds );
-            }
-        } );
-
-        Button cancel = new Button( constants.Cancel() );
-        hp.add( cancel );
-        cancel.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                popup.hide();
-            }
-        } );
-        popup.addRow( hp );
-
+    protected void showConditionSelector(Integer position) {
+        RuleModellerConditionSelectorPopup popup = new RuleModellerConditionSelectorPopup( model,
+                                                                                           this,
+                                                                                           packageName,
+                                                                                           position );
         popup.show();
-        choices.setFocus( true );
-
-        popup.setAfterShow( new Command() {
-
-            public void execute() {
-                choices.setFocus( true );
-            }
-        } );
-    }
-
-    private void selectSomething(ListBox choices,
-                                 Map<String, Command> cmds) {
-        int sel = choices.getSelectedIndex();
-        if ( sel != -1 ) {
-            Command cmd = cmds.get( choices.getValue( choices.getSelectedIndex() ) );
-            if ( cmd != null ) {
-                cmd.execute();
-            }
-            verifyRule( null );
-        }
-
-    }
-
-    protected void addNewDSLLhs(DSLSentence sentence,
-                                int position) {
-        model.addLhsItem( sentence.copy(),
-                          position );
-        refreshWidget();
     }
 
     protected void showActionSelector(Widget w,
                                       Integer position) {
-        final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.AddANewAction() );
-
-        final ListBox positionCbo = new ListBox();
-        if ( position == null ) {
-            positionCbo.addItem( constants.Bottom(),
-                                 String.valueOf( this.model.rhs.length ) );
-            positionCbo.addItem( constants.Top(),
-                                 "0" );
-            for ( int i = 1; i < model.rhs.length; i++ ) {
-                positionCbo.addItem( constants.Line0( i ),
-                                     String.valueOf( i ) );
-            }
-        } else {
-            //if position is fixed, we just add one element to the drop down.
-            positionCbo.addItem( String.valueOf( position ) );
-            positionCbo.setSelectedIndex( 0 );
-        }
-
-        final ListBox choices = new ListBox( true );
-        final Map<String, Command> cmds = new HashMap<String, Command>();
-
-        //
-        // First load up the stuff to do with bound variables or globals
-        //
-        SuggestionCompletionEngine completions = SuggestionCompletionCache.getInstance().getEngineFromCache( packageName );
-        List<String> vars = model.getBoundFacts();
-        List<String> vars2 = model.getRhsBoundFacts();
-        String[] globals = completions.getGlobalVariables();
-
-        //
-        // The list of DSL sentences
-        //
-        if ( completions.getDSLActions().length > 0 ) {
-
-            for ( int i = 0; i < completions.getDSLActions().length; i++ ) {
-                final DSLSentence sen = completions.getDSLActions()[i];
-                if ( sen != null ) {
-                    String sentence = sen.toString();
-                    choices.addItem( sentence,
-                                     "DSL" + sentence ); //NON-NLS
-                    cmds.put( "DSL" + sentence,
-                              new Command() { //NON-NLS
-
-                                  public void execute() {
-                                      addNewDSLRhs( sen,
-                                                    Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                      popup.hide();
-                                  }
-                              } );
-                }
-            }
-
-            choices.addItem( "................" );
-
-        }
-
-        //Do Set field (NOT modify)
-        for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
-
-            choices.addItem( constants.ChangeFieldValuesOf0( v ),
-                             "VAR" + v ); //NON-NLS
-            cmds.put( "VAR" + v,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              addActionSetField( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-
-        }
-
-        for ( int i = 0; i < globals.length; i++ ) { //we also do globals here...
-            final String v = globals[i];
-            choices.addItem( constants.ChangeFieldValuesOf0( v ),
-                             "GLOBVAR" + v ); //NON-NLS
-            cmds.put( "GLOBVAR" + v,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              addActionSetField( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        //RETRACT
-        for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
-            choices.addItem( constants.Retract0( v ),
-                             "RET" + v ); //NON-NLS
-            cmds.put( "RET" + v,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              addRetract( v,
-                                          Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        //MODIFY
-        for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-            final String v = iter.next();
-
-            choices.addItem( constants.Modify0( v ),
-                             "MOD" + v ); //NON-NLS
-            cmds.put( "MOD" + v,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              addModify( v,
-                                         Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        choices.addItem( "................" );
-
-        //Now inserts:
-        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            final String item = completions.getFactTypes()[i];
-            choices.addItem( constants.InsertFact0( item ),
-                             "INS" + item ); //NON-NLS
-            cmds.put( "INS" + item,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              model.addRhsItem( new ActionInsertFact( item ),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              refreshWidget();
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        for ( int i = 0; i < completions.getFactTypes().length; i++ ) {
-            final String item = completions.getFactTypes()[i];
-            choices.addItem( constants.LogicallyInsertFact0( item ),
-                             "LINS" + item ); //NON-NLS
-            cmds.put( "LINS" + item,
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              model.addRhsItem( new ActionInsertLogicalFact( item ),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              refreshWidget();
-                              popup.hide();
-                          }
-                      } );
-        }
-
-        choices.addItem( "................" );
-        //now global collections
-        if ( completions.getGlobalCollections().length > 0 && vars.size() > 0 ) {
-            for ( String bf : vars ) {
-                for ( int i = 0; i < completions.getGlobalCollections().length; i++ ) {
-                    final String glob = completions.getGlobalCollections()[i];
-                    final String var = bf;
-                    choices.addItem( constants.Append0ToList1( var,
-                                                               glob ),
-                                     "GLOBCOL" + glob + var ); //NON-NLS
-                    cmds.put( "GLOBCOL" + glob + var,
-                              new Command() { //NON-NLS
-
-                                  public void execute() {
-                                      ActionGlobalCollectionAdd gca = new ActionGlobalCollectionAdd();
-                                      gca.globalName = glob;
-                                      gca.factName = var;
-                                      model.addRhsItem( gca,
-                                                        Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                      refreshWidget();
-                                      popup.hide();
-                                  }
-                              } );
-                }
-            }
-        }
-
-        if ( UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_PACKAGE_VIEW) ) {
-            choices.addItem( constants.AddFreeFormDrl(),
-                             "FF" ); //NON-NLS
-            cmds.put( "FF",
-                      new Command() { //NON-NLS
-
-                          public void execute() {
-                              model.addRhsItem( new FreeFormLine(),
-                                                Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                              refreshWidget();
-                              popup.hide();
-                          }
-                      } );
-            for ( int i = 0; i < globals.length; i++ ) { //we also do globals here...
-                final String v = globals[i];
-                choices.addItem( constants.CallMethodOn0( v ),
-                                 "GLOBCALL" + v ); //NON-NLS
-                cmds.put( "GLOBCALL" + v,
-                          new Command() { //NON-NLS
-
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  popup.hide();
-                              }
-                          } );
-
-            }
-
-            //CALL methods
-            for ( Iterator<String> iter = vars.iterator(); iter.hasNext(); ) {
-                final String v = iter.next();
-
-                choices.addItem( constants.CallMethodOn0( v ),
-                                 "CALL" + v ); //NON-NLS
-                cmds.put( "CALL" + v,
-                          new Command() { //NON-NLS
-
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  popup.hide();
-                              }
-                          } );
-            }
-            //Do Set field (NOT modify)
-            for ( Iterator<String> iter = vars2.iterator(); iter.hasNext(); ) {
-                final String v = iter.next();
-
-                choices.addItem( constants.CallMethodOn0( v ),
-                                 "CALL" + v ); //NON-NLS
-                cmds.put( "CALL" + v,
-                          new Command() { //NON-NLS
-
-                              public void execute() {
-                                  addCallMethod( v,
-                                                 Integer.parseInt( positionCbo.getValue( positionCbo.getSelectedIndex() ) ) );
-                                  popup.hide();
-                              }
-                          } );
-            }
-        }
-
-        //only show the drop down if we are not using fixed position.
-        if ( position == null ) {
-            HorizontalPanel hp0 = new HorizontalPanel();
-            hp0.add( new HTML( constants.PositionColon() ) );
-            hp0.add( positionCbo );
-            hp0.add( new InfoPopup( constants.PositionColon(),
-                                    constants.ActionPositionExplanation() ) );
-            popup.addRow( hp0 );
-        }
-
-        HorizontalPanel hp = new HorizontalPanel();
-
-        choices.addKeyUpHandler( new KeyUpHandler() {
-
-            public void onKeyUp(KeyUpEvent event) {
-                selectSomethingElse( choices,
-                                     cmds );
-            }
-        } );
-
-        Button ok = new Button( constants.OK() );
-        ok.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                selectSomethingElse( choices,
-                                     cmds );
-            }
-        } );
-        hp.add( choices );
-        hp.add( ok );
-        popup.addRow( hp );
-
+        RuleModellerActionSelectorPopup popup = new RuleModellerActionSelectorPopup( model, this, packageName, position );
         popup.show();
-        choices.setFocus( true );
-    }
-
-    private void selectSomethingElse(final ListBox choices,
-                                     final Map<String, Command> cmds) {
-        int sel = choices.getSelectedIndex();
-        if ( sel != -1 ) {
-            cmds.get( choices.getValue( sel ) ).execute();
-        }
-    }
-
-    protected void addModify(String itemText,
-                             int position) {
-        this.model.addRhsItem( new ActionUpdateField( itemText ),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addNewDSLRhs(DSLSentence sentence,
-                                int position) {
-        this.model.addRhsItem( sentence.copy(),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addRetract(String var,
-                              int position) {
-        this.model.addRhsItem( new ActionRetractFact( var ),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addActionSetField(String itemText,
-                                     int position) {
-        this.model.addRhsItem( new ActionSetField( itemText ),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addCallMethod(String itemText,
-                                 int position) {
-        this.model.addRhsItem( new ActionCallMethod( itemText ),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addNewCE(String s,
-                            int position) {
-        this.model.addLhsItem( new CompositeFactPattern( s ),
-                               position );
-        refreshWidget();
-    }
-
-    protected void addNewFCE(String type,
-                             int position) {
-        FromCompositeFactPattern p = null;
-        if ( type.equals( "from" ) ) {
-            p = new FromCompositeFactPattern();
-        } else if ( type.equals( "from accumulate" ) ) {
-            p = new FromAccumulateCompositeFactPattern();
-        } else if ( type.equals( "from collect" ) ) {
-            p = new FromCollectCompositeFactPattern();
-        } else if ( type.equals( "from entry-point" ) ) {
-            p = new FromEntryPointFactPattern();
-        }
-
-        this.model.addLhsItem( p,
-                               position );
-        refreshWidget();
-    }
-
-    /**
-     * Adds a fact to the model, and then refreshes the display.
-     */
-    protected void addNewFact(String itemText,
-                              int position) {
-        this.model.addLhsItem( new FactPattern( itemText ),
-                               position );
-        refreshWidget();
     }
 
     /**
@@ -1072,8 +487,7 @@ public class RuleModeller extends DirtyableComposite
                                                 new ClickHandler() {
 
                                                     public void onClick(ClickEvent event) {
-                                                        showConditionSelector( (Widget) event.getSource(),
-                                                                               index + 1 );
+                                                        showConditionSelector( index + 1 );
                                                     }
                                                 },
                                                 new ClickHandler() {

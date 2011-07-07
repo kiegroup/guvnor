@@ -26,7 +26,6 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 
 /**
  * A Factory to provide the Cells.

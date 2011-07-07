@@ -66,4 +66,5 @@ public class ApplicationPreferences {
     public static boolean showVisualRuleFlow() {
         return getBooleanPref("visual-ruleflow");
     }
+    
 }
