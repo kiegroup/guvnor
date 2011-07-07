@@ -91,7 +91,7 @@ public abstract class AbstractRuleModellerSelectorPopup extends FormStylePopup {
     }
 
     /**
-     * Width of pop-up, 1/4th of the client width or MIN_WIDTH
+     * Width of pop-up, 1/4 of the client width or MIN_WIDTH
      * 
      * @return
      */
@@ -104,12 +104,12 @@ public abstract class AbstractRuleModellerSelectorPopup extends FormStylePopup {
     }
 
     /**
-     * Height of pop-up, 1/4th of the client height or MIN_HEIGHT
+     * Height of pop-up, 1/2 of the client height or MIN_HEIGHT
      * 
      * @return
      */
     protected int getChoicesHeight() {
-        int h = Window.getClientHeight() / 4;
+        int h = Window.getClientHeight() / 2;
         if ( h < MIN_HEIGHT ) {
             h = MIN_HEIGHT;
         }
