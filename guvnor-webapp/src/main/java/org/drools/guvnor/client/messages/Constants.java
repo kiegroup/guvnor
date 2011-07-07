@@ -2346,4 +2346,8 @@ public interface Constants
     
     String DTLabelFromEntryPoint();
     
+    String OnlyDisplayDSLConditions();
+    
+    String OnlyDisplayDSLActions();
+    
 }
