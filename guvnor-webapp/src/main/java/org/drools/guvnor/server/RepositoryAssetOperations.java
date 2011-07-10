@@ -51,6 +51,8 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.FactModelContentHandler;
+import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleType;
@@ -462,13 +464,10 @@ public class RepositoryAssetOperations {
                                                     stringBuilder );
             }
         } else {
-            if ( handler
-                    .getClass()
-                    .getName()
-                    .equals( "org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler" ) ) {
-                BPMN2ProcessHandler bpmn2handler = ((BPMN2ProcessHandler) handler);
-                bpmn2handler.assembleProcessSource( asset.getContent(),
-                                                    stringBuilder );
+            if ( handler instanceof ICanRenderSource ) {
+                ICanRenderSource crs = (ICanRenderSource) handler;
+                crs.assembleSource( asset.getContent(),
+                                    stringBuilder );
             }
         }
         return stringBuilder.toString();

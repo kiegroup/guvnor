@@ -43,7 +43,8 @@ import java.net.URLEncoder;
 
 public class BPMN2ProcessHandler extends ContentHandler
     implements
-    ICompilable {
+    ICompilable,
+    ICanRenderSource {
 
     private static final LoggingHelper log = LoggingHelper.getLogger( BPMN2ProcessHandler.class );
 
@@ -118,7 +119,9 @@ public class BPMN2ProcessHandler extends ContentHandler
             if ( content.getJson() != null ) {
                 try {
                     String xml = serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
-                            URLEncoder.encode( content.getPreprocessingdata(), "UTF-8" ), content.getJson() );
+                                                    URLEncoder.encode( content.getPreprocessingdata(),
+                                                                       "UTF-8" ),
+                                            content.getJson() );
                     content.setXml( xml );
                     repoAsset.updateContent( content.getXml() );
                 } catch ( Exception e ) {
@@ -205,14 +208,15 @@ public class BPMN2ProcessHandler extends ContentHandler
     public void compile(BRMSPackageBuilder builder,
                         AssetItem asset,
                         AssemblyErrorLogger logger) throws DroolsParserException,
-                                           IOException {
+                                                   IOException {
         InputStream ins = asset.getBinaryContentAttachment();
         if ( ins != null ) {
             builder.addProcessFromXml( new InputStreamReader( asset.getBinaryContentAttachment() ) );
         }
     }
 
-    public void assembleProcessSource(PortableObject assetContent, StringBuilder stringBuilder) {
+    public void assembleSource(PortableObject assetContent,
+                               StringBuilder stringBuilder) {
         RuleFlowContentModel content = (RuleFlowContentModel) assetContent;
         if ( content.getXml() != null && content.getXml().length() > 0 ) {
             stringBuilder.append( content.getXml() );
@@ -220,7 +224,9 @@ public class BPMN2ProcessHandler extends ContentHandler
             // convert the json to xml
             try {
                 String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
-                        URLEncoder.encode( content.getPreprocessingdata(), "UTF-8" ), content.getJson() );
+                                                                    URLEncoder.encode( content.getPreprocessingdata(),
+                                                                                       "UTF-8" ),
+                                                            content.getJson() );
                 stringBuilder.append( StringEscapeUtils.escapeXml( xml ) );
             } catch ( IOException e ) {
                 log.error( "Exception converting to xml: " + e.getMessage() );
