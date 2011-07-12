@@ -33,12 +33,39 @@ public class ConstraintValueEditorTest {
     }
 
     @Test
-    public void testSplitComplex() {
-        String[] res = ConstraintValueEditorHelper.splitValue( "a=5*2=expression" );
+    public void testSplitComplex1() {
+        String[] res = ConstraintValueEditorHelper.splitValue( "a\\=5*2=expression" );
         assertEquals( "a=5*2",
                       res[0] );
         assertEquals( "expression",
                       res[1] );
     }
 
+    @Test
+    public void testSplitComplex2() {
+        String[] res = ConstraintValueEditorHelper.splitValue( "\\=\\==equals" );
+        assertEquals( "==",
+                      res[0] );
+        assertEquals( "equals",
+                      res[1] );
+    }
+
+    @Test
+    public void testSplitComplex3() {
+        String[] res = ConstraintValueEditorHelper.splitValue( "\\=\\=" );
+        assertEquals( "==",
+                      res[0] );
+        assertEquals( "==",
+                      res[1] );
+    }
+
+    @Test
+    public void testSplitComplex4() {
+        String[] res = ConstraintValueEditorHelper.splitValue( "!\\=" );
+        assertEquals( "!=",
+                      res[0] );
+        assertEquals( "!=",
+                      res[1] );
+    }
+    
 }
