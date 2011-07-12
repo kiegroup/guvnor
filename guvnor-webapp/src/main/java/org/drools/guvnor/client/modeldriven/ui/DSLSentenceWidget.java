@@ -385,13 +385,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             if ( data != null ) {
                 int selected = -1;
                 for ( int i = 0; i < data.length; i++ ) {
-                    String realValue = data[i];
-                    String display = data[i];
-                    if ( data[i].indexOf( '=' ) > -1 ) {
-                        String[] vs = ConstraintValueEditorHelper.splitValue( data[i] );
-                        realValue = vs[0];
-                        display = vs[1];
-                    }
+                    String[] vs = ConstraintValueEditorHelper.splitValue( data[i] );
+                    String realValue = vs[0];
+                    String display = vs[1];
                     if ( value.equals( realValue ) ) {
                         selected = i;
                     }
