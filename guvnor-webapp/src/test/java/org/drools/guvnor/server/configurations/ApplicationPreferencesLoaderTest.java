@@ -28,15 +28,18 @@ public class ApplicationPreferencesLoaderTest {
     public void testLoad() throws Exception {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
 
-        assertNotNull(preferences);
-        assertEquals(7,
-                preferences.size());
-        assertTrue(preferences.containsKey("visual-ruleflow"));
-        assertTrue(preferences.containsKey("verifier"));
-        assertTrue(preferences.containsKey("flex-bpel-editor"));
-        assertEquals("true",
-                preferences.get("verifier"));
-        assertEquals("true", preferences.get("oryx-bpmn-editor"));
+        assertNotNull( preferences );
+        assertEquals( 8,
+                      preferences.size() );
+        assertTrue( preferences.containsKey( "visual-ruleflow" ) );
+        assertTrue( preferences.containsKey( "verifier" ) );
+        assertTrue( preferences.containsKey( "flex-bpel-editor" ) );
+        assertEquals( "true",
+                      preferences.get( "verifier" ) );
+        assertEquals( "true",
+                      preferences.get( "oryx-bpmn-editor" ) );
+        assertEquals( "false",
+                      preferences.get( "rule-modeller-onlyShowDSLStatements" ) );
     }
 
 }
