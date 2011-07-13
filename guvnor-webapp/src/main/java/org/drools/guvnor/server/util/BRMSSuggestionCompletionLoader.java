@@ -58,6 +58,8 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
 
         ClassLoaderBuilder classLoaderBuilder = new ClassLoaderBuilder(packageItem.listAssetsWithVersionsSpecifiedByDependenciesByFormat(AssetFormats.MODEL));
 
+//        String packageName = packageItem.getName();
+//        return super.getSuggestionEngine("package " + packageName + "\n\n" + droolsHeader + "\n" + buf.toString(),
         return super.getSuggestionEngine(droolsHeader + "\n" + buf.toString(),
                 classLoaderBuilder.getJarInputStreams(),
                 getDSLMappingFiles(packageItem),

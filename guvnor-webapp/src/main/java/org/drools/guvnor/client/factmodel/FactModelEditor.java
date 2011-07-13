@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.List;
+
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
@@ -68,6 +70,7 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
                                                             };
 
     private final FactMetaModel          factMetaModel;
+    private final List<FactMetaModel>    factModels;
     private Command                      deleteEvent;
 
     private Command                      moveUpCommand;
@@ -80,13 +83,15 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
         this.deleteEvent = deleteEvent;
     }
 
-    public FactModelEditor(FactMetaModel factMetaModel) {
+    public FactModelEditor(FactMetaModel factMetaModel,
+                           List<FactMetaModel> factModels) {
 
+        this.factModels = factModels;
         this.factMetaModel = factMetaModel;
 
         add( uiBinder.createAndBindUi( this ) );
 
-        titleLabel.setText( factMetaModel.name );
+        titleLabel.setText( getTitleText() );
 
         icon.addClickHandler( expandClickHandler );
         titleLabel.addClickHandler( expandClickHandler );
@@ -112,14 +117,25 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
         } );
     }
 
+    private String getTitleText() {
+        StringBuilder sb = new StringBuilder();
+        sb.append( factMetaModel.getName() );
+        if ( factMetaModel.hasSuperType() ) {
+            sb.append( " extends " );
+            sb.append( factMetaModel.getSuperType() );
+        }
+        return sb.toString();
+    }
+
     @UiHandler("editIcon")
     void editIconClick(ClickEvent event) {
         final FactEditorPopup popup = new FactEditorPopup( factMetaModel,
+                                                           factModels,
                                                            modelNameHelper );
 
         popup.setOkCommand( new Command() {
             public void execute() {
-                titleLabel.setText( factMetaModel.name );
+                titleLabel.setText( getTitleText() );
             }
         } );
 
@@ -199,8 +215,8 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     public Widget getContent() {
-        return new FactFieldsEditor( factMetaModel.fields,
-                                     factMetaModel.annotations,
+        return new FactFieldsEditor( factMetaModel.getFields(),
+                                     factMetaModel.getAnnotations(),
                                      modelNameHelper );
     }
 }

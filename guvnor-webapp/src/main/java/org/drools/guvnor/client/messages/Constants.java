@@ -534,6 +534,12 @@ public interface Constants
 
     String Type();
 
+    String TypeExtends();
+    
+    String DoesNotExtend();
+    
+    String CreatesCircularDependency(String name);
+
     String ChangeName();
 
     String NameTakenForModel(String name);

@@ -15,35 +15,48 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 public class FactEditorPopup {
 
-    private static Constants      constants = ((Constants) GWT.create( Constants.class ));
+    private static Constants          constants  = ((Constants) GWT.create( Constants.class ));
 
-    private final FactMetaModel   factModel;
-    private final ModelNameHelper modelNameHelper;
+    private final FactMetaModel       factModel;
+    private final List<FactMetaModel> factModels;
+    private final ModelNameHelper     modelNameHelper;
+    private final ListBox             lstSuperTypes = new ListBox();
 
-    private Command               okCommand;
+    private Command                   okCommand;
 
-    public FactEditorPopup(ModelNameHelper modelNameHelper) {
+    public FactEditorPopup(ModelNameHelper modelNameHelper,
+                           List<FactMetaModel> factModels) {
         this( new FactMetaModel(),
+              factModels,
               modelNameHelper );
     }
 
     public FactEditorPopup(FactMetaModel factModel,
+                           List<FactMetaModel> factModels,
                            ModelNameHelper modelNameHelper) {
         this.factModel = factModel;
+        this.factModels = factModels;
         this.modelNameHelper = modelNameHelper;
     }
 
@@ -61,8 +74,47 @@ public class FactEditorPopup {
         pop.setTitle( constants.Name() );
         HorizontalPanel changeName = new HorizontalPanel();
         final TextBox name = new TextBox();
-        name.setText( factModel.name );
+        name.setText( factModel.getName() );
         changeName.add( name );
+
+        int selectedIndex = 0;
+        lstSuperTypes.addItem( constants.DoesNotExtend() );
+        for ( FactMetaModel fmm : factModels ) {
+            if ( !fmm.getName().equals( factModel.getName() ) ) {
+                lstSuperTypes.addItem( fmm.getName() );
+                if ( factModel.getSuperType() != null && factModel.getSuperType().equals( fmm.getName() ) ) {
+                    selectedIndex = lstSuperTypes.getItemCount() - 1;
+                }
+            }
+        }
+        lstSuperTypes.setSelectedIndex( selectedIndex );
+        if ( lstSuperTypes.getItemCount() == 1 ) {
+            lstSuperTypes.setEnabled( false );
+        }
+
+        lstSuperTypes.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                if ( lstSuperTypes.getSelectedIndex() <= 0 ) {
+                    factModel.setSuperType( null );
+                } else {
+                    String oldSuperType = factModel.getSuperType();
+                    String newSuperType = lstSuperTypes.getItemText( lstSuperTypes.getSelectedIndex() );
+                    factModel.setSuperType( newSuperType );
+                    if ( createsCircularDependency( newSuperType ) ) {
+                        Window.alert( constants.CreatesCircularDependency( name.getText() ) );
+                        factModel.setSuperType( oldSuperType );
+                        lstSuperTypes.setSelectedIndex( getSelectedIndex( oldSuperType ) );
+                        return;
+                    } else {
+                        factModel.setSuperType( newSuperType );
+                    }
+                }
+
+            }
+
+        } );
+
         Button nameButton = new Button( constants.OK() );
 
         nameButton.addKeyPressHandler( new NoSpaceKeyPressHandler() );
@@ -75,7 +127,7 @@ public class FactEditorPopup {
                     return;
                 }
 
-                if ( factModelAlreadyHasAName() ) {
+                if ( factModelAlreadyHasAName( name.getText() ) ) {
                     if ( isTheUserSureHeWantsToChangeTheName() ) {
                         setNameAndClose();
                     }
@@ -84,17 +136,17 @@ public class FactEditorPopup {
                 }
             }
 
-            private boolean factModelAlreadyHasAName() {
-                return factModel.name != null;
+            private boolean factModelAlreadyHasAName(String name) {
+                return factModel.getName() != null && !factModel.getName().equals( name );
             }
 
             private void setNameAndClose() {
-                String oldName = factModel.name;
+                String oldName = factModel.getName();
                 String newName = name.getText();
 
                 modelNameHelper.changeNameInModelNameHelper( oldName,
                                                              newName );
-                factModel.name = newName;
+                factModel.setName( newName );
 
                 okCommand.execute();
 
@@ -106,13 +158,66 @@ public class FactEditorPopup {
             }
 
             private boolean doesTheNameExist() {
+                if ( factModel.getName() == null ) {
+                    return false;
+                }
+                //The name may not have changed
+                if ( factModel.getName().equals( name.getText() ) ) {
+                    return false;
+                }
                 return !modelNameHelper.isUniqueName( name.getText() );
             }
         } );
-        changeName.add( nameButton );
+
         pop.addAttribute( constants.Name(),
                           changeName );
+        pop.addAttribute( constants.TypeExtends(),
+                          lstSuperTypes );
+        pop.addRow( nameButton );
 
         pop.show();
+    }
+
+    private int getSelectedIndex(String superType) {
+        if ( superType == null ) {
+            return 0;
+        }
+        for ( int i = 1; i < lstSuperTypes.getItemCount(); i++ ) {
+            if ( superType.equals( lstSuperTypes.getItemText( i ) ) ) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private boolean createsCircularDependency(String type) {
+        Set<String> circulars = new HashSet<String>();
+        FactMetaModel fmm = getFactMetaModel( type );
+        return addCircular( fmm,
+                            circulars );
+    }
+
+    private boolean addCircular(FactMetaModel fmm,
+                                Set<String> circulars) {
+        if ( !fmm.hasSuperType() ) {
+            return false;
+        }
+        String type = fmm.getName();
+        if ( circulars.contains( type ) ) {
+            return true;
+        }
+        circulars.add( type );
+        FactMetaModel efmm = getFactMetaModel( fmm.getSuperType() );
+        return addCircular( efmm,
+                            circulars );
+    }
+
+    private FactMetaModel getFactMetaModel(String type) {
+        for ( FactMetaModel fmm : this.factModels ) {
+            if ( fmm.getName().equals( type ) ) {
+                return fmm;
+            }
+        }
+        return null;
     }
 }

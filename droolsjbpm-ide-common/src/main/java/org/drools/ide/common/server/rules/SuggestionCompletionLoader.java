@@ -47,15 +47,18 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.server.util.ClassMethodInspector;
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.drools.ide.common.server.util.SuggestionCompletionEngineBuilder;
+import org.drools.lang.api.impl.FieldDescrBuilderImpl;
 import org.drools.lang.descr.AnnotationDescr;
 import org.drools.lang.descr.GlobalDescr;
 import org.drools.lang.descr.ImportDescr;
 import org.drools.lang.descr.PackageDescr;
+import org.drools.lang.descr.PatternDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
 import org.drools.lang.descr.TypeFieldDescr;
 import org.drools.lang.dsl.DSLMappingEntry;
 import org.drools.lang.dsl.DSLMappingFile;
 import org.drools.lang.dsl.DSLTokenizedMappingFile;
+import org.drools.rule.ImportDeclaration;
 import org.drools.rule.MapBackedClassLoader;
 
 /**
@@ -75,24 +78,25 @@ public class SuggestionCompletionLoader
         implements
         ClassToGenericClassConverter {
 
-    private final SuggestionCompletionEngineBuilder builder = new SuggestionCompletionEngineBuilder();
+    private final SuggestionCompletionEngineBuilder builder                      = new SuggestionCompletionEngineBuilder();
 
-    private final MapBackedClassLoader loader;
+    private final MapBackedClassLoader              loader;
 
-    private final List<String> errors = new ArrayList<String>();
+    private final List<String>                      errors                       = new ArrayList<String>();
 
     // iterating over the import list
-    private final ClassTypeResolver resolver;
-    private PackageDescr pkgDescr;
+    private final ClassTypeResolver                 resolver;
+    private PackageDescr                            pkgDescr;
 
     /**
      * List of external ImportDescr providers.
      */
-    private List<ExternalImportDescrProvider> externalImportDescrProviders = new ArrayList<ExternalImportDescrProvider>();
+    private List<ExternalImportDescrProvider>       externalImportDescrProviders = new ArrayList<ExternalImportDescrProvider>();
 
     /**
-     * Interface used for add external ImportDescr added to SuggestionCompletionEngine
-     * Use this to add Fact Types that are not imported by the package.
+     * Interface used for add external ImportDescr added to
+     * SuggestionCompletionEngine Use this to add Fact Types that are not
+     * imported by the package.
      */
     public static interface ExternalImportDescrProvider {
         public Set<ImportDescr> getImportDescrs();
@@ -103,7 +107,7 @@ public class SuggestionCompletionLoader
      * added.
      */
     public SuggestionCompletionLoader() {
-        this(null);
+        this( null );
     }
 
     /**
@@ -111,20 +115,21 @@ public class SuggestionCompletionLoader
      * resolving types.
      */
     public SuggestionCompletionLoader(ClassLoader classLoader) {
-        loader = getMapBackedClassLoader(classLoader);
-        resolver = new ClassTypeResolver(new HashSet<String>(), loader);
+        loader = getMapBackedClassLoader( classLoader );
+        resolver = new ClassTypeResolver( new HashSet<String>(),
+                                          loader );
     }
 
     private MapBackedClassLoader getMapBackedClassLoader(ClassLoader classLoader) {
-        MapBackedClassLoader mapBackedClassLoader = new MapBackedClassLoader(createClassLoader(classLoader));
+        MapBackedClassLoader mapBackedClassLoader = new MapBackedClassLoader( createClassLoader( classLoader ) );
 
         return mapBackedClassLoader;
     }
 
     private ClassLoader createClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
+        if ( classLoader == null ) {
             classLoader = Thread.currentThread().getContextClassLoader();
-            if (classLoader == null) {
+            if ( classLoader == null ) {
                 classLoader = this.getClass().getClassLoader();
             }
         }
@@ -134,32 +139,40 @@ public class SuggestionCompletionLoader
     /**
      * This will validate, and generate a new engine, ready to go. If there are
      * errors, you can get them by doing getMissingClasses();
-     *
-     * @param header The package configuration file content.
-     * @param jars   a list of jars to look inside (pass in empty array if not
-     *               needed) this is a list of {@link JarInputStream}
-     * @param dsls   any dsl files. This is a list of {@link DSLMappingFile}.
+     * 
+     * @param header
+     *            The package configuration file content.
+     * @param jars
+     *            a list of jars to look inside (pass in empty array if not
+     *            needed) this is a list of {@link JarInputStream}
+     * @param dsls
+     *            any dsl files. This is a list of {@link DSLMappingFile}.
      * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
                                                           final List<JarInputStream> jars,
                                                           final List<DSLTokenizedMappingFile> dsls) {
-        return this.getSuggestionEngine(header,
-                jars,
-                dsls,
-                Collections.<String>emptyList());
+        return this.getSuggestionEngine( header,
+                                         jars,
+                                         dsls,
+                                         Collections.<String> emptyList() );
     }
 
     /**
      * This will validate, and generate a new engine, ready to go. If there are
      * errors, you can get them by doing getMissingClasses();
-     *
-     * @param header    The package configuration file content.
-     * @param jars      a list of jars to look inside (pass in empty array if not
-     *                  needed) this is a list of {@link JarInputStream}
-     * @param dsls      any dsl files. This is a list of {@link DSLMappingFile}.
-     * @param dataEnums this is a list of String's which hold data enum definitions.
-     *                  (normally will be just one, but for completeness can load multiple).
+     * 
+     * @param header
+     *            The package configuration file content.
+     * @param jars
+     *            a list of jars to look inside (pass in empty array if not
+     *            needed) this is a list of {@link JarInputStream}
+     * @param dsls
+     *            any dsl files. This is a list of {@link DSLMappingFile}.
+     * @param dataEnums
+     *            this is a list of String's which hold data enum definitions.
+     *            (normally will be just one, but for completeness can load
+     *            multiple).
      * @return A SuggestionCompletionEngine ready to be used in anger.
      */
     public SuggestionCompletionEngine getSuggestionEngine(final String header,
@@ -168,58 +181,58 @@ public class SuggestionCompletionLoader
                                                           final List<String> dataEnums) {
         builder.newCompletionEngine();
 
-        if (headerNotEmpty(header)) {
-            processPackageHeader(header,
-                    jars);
+        if ( headerNotEmpty( header ) ) {
+            processPackageHeader( header,
+                                  jars );
         }
 
-        populateDSLSentences(dsls);
+        populateDSLSentences( dsls );
 
-        populateDateEnums(dataEnums);
+        populateDateEnums( dataEnums );
 
         return builder.getInstance();
     }
 
     private void populateDateEnums(List<String> dataEnums) {
-        for (String enumFile : dataEnums) {
-            DataEnumLoader enumLoader = new DataEnumLoader(enumFile);
-            if (enumLoader.hasErrors()) {
-                errors.addAll(enumLoader.getErrors());
+        for ( String enumFile : dataEnums ) {
+            DataEnumLoader enumLoader = new DataEnumLoader( enumFile );
+            if ( enumLoader.hasErrors() ) {
+                errors.addAll( enumLoader.getErrors() );
             } else {
-                builder.addAllDataEnumsList(enumLoader.getData());
+                builder.addAllDataEnumsList( enumLoader.getData() );
             }
         }
     }
 
     private boolean headerNotEmpty(String header) {
-        return !header.trim().equals("");
+        return !header.trim().equals( "" );
     }
 
     private void processPackageHeader(final String header,
                                       final List jars) {
-        DrlParser parser = getParser(header);
+        DrlParser parser = getParser( header );
 
-        logErrors(parser);
+        logErrors( parser );
 
-        populateEngineBuilder(jars);
+        populateEngineBuilder( jars );
     }
 
     private void populateEngineBuilder(List jars) {
-        if (thereWasNoErrorsAndPackageDescrWasCreated()) {
+        if ( thereWasNoErrorsAndPackageDescrWasCreated() ) {
 
-            populateModelInfo(jars);
+            populateModelInfo( jars );
 
-            populateDeclaredFactTypes();
+            populateDeclaredFactTypes( jars );
 
-            populateGlobalInfo(jars);
+            populateGlobalInfo( jars );
 
         }
     }
 
     private void logErrors(DrlParser parser) {
-        if (parser.hasErrors()) {
-            for (DroolsError droolsError : parser.getErrors()) {
-                this.errors.add(droolsError.getMessage());
+        if ( parser.hasErrors() ) {
+            for ( DroolsError droolsError : parser.getErrors() ) {
+                this.errors.add( droolsError.getMessage() );
             }
         }
     }
@@ -227,9 +240,9 @@ public class SuggestionCompletionLoader
     private DrlParser getParser(String header) {
         DrlParser parser = new DrlParser();
         try {
-            pkgDescr = parser.parse(header);
-        } catch (final DroolsParserException e1) {
-            throw new IllegalStateException("Serious error, unable to validate package.");
+            pkgDescr = parser.parse( header );
+        } catch ( final DroolsParserException e1 ) {
+            throw new IllegalStateException( "Serious error, unable to validate package." );
         }
         return parser;
     }
@@ -240,142 +253,270 @@ public class SuggestionCompletionLoader
 
     private void populateDSLSentences(final List<DSLTokenizedMappingFile> dsls) {
 
-        for (DSLTokenizedMappingFile file : dsls) {
-            for (DSLMappingEntry entry : file.getMapping().getEntries()) {
-                if (entry.getSection() == DSLMappingEntry.CONDITION) {
-                    builder.addDSLConditionSentence(entry.getMappingKey());
-                } else if (entry.getSection() == DSLMappingEntry.CONSEQUENCE) {
-                    builder.addDSLActionSentence(entry.getMappingKey());
-                } else if (entry.getSection() == DSLMappingEntry.KEYWORD) {
-                    builder.addDSLMapping(entry);
-                } else if (entry.getSection() == DSLMappingEntry.ANY) {
-                    builder.addDSLConditionSentence(entry.getMappingKey());
-                    builder.addDSLActionSentence(entry.getMappingKey());
+        for ( DSLTokenizedMappingFile file : dsls ) {
+            for ( DSLMappingEntry entry : file.getMapping().getEntries() ) {
+                if ( entry.getSection() == DSLMappingEntry.CONDITION ) {
+                    builder.addDSLConditionSentence( entry.getMappingKey() );
+                } else if ( entry.getSection() == DSLMappingEntry.CONSEQUENCE ) {
+                    builder.addDSLActionSentence( entry.getMappingKey() );
+                } else if ( entry.getSection() == DSLMappingEntry.KEYWORD ) {
+                    builder.addDSLMapping( entry );
+                } else if ( entry.getSection() == DSLMappingEntry.ANY ) {
+                    builder.addDSLConditionSentence( entry.getMappingKey() );
+                    builder.addDSLActionSentence( entry.getMappingKey() );
                 }
             }
         }
 
     }
 
-    private void populateGlobalInfo(
-            final List jars) {
+    private void populateGlobalInfo(final List jars) {
 
         // populating information for the globals
-        for (final Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext();) {
+        for ( final Iterator it = pkgDescr.getGlobals().iterator(); it.hasNext(); ) {
             final GlobalDescr global = (GlobalDescr) it.next();
             try {
-                final String shortTypeName = getShortNameOfClass(global.getType());
-                final Class<?> clazz = loadClass(global.getType(), jars);
-                if (!this.builder.hasFieldsForType(shortTypeName)) {
+                final String shortTypeName = getShortNameOfClass( global.getType() );
+                final Class< ? > clazz = loadClass( global.getType(),
+                                                    jars );
+                if ( !this.builder.hasFieldsForType( shortTypeName ) ) {
 
-                    loadClassFields(clazz,
-                            shortTypeName);
+                    loadClassFields( clazz,
+                                     shortTypeName );
 
-                    this.builder.addGlobalType(global.getIdentifier(),
-                            shortTypeName);
+                    this.builder.addGlobalType( global.getIdentifier(),
+                                                shortTypeName );
 
                 }
-                if (implementsCollection(clazz)) {
-                    this.builder.addGlobalCollection(global.getIdentifier());
+                if ( implementsCollection( clazz ) ) {
+                    this.builder.addGlobalCollection( global.getIdentifier() );
                 }
-                this.builder.addGlobalType(global.getIdentifier(),
-                        shortTypeName);
-            } catch (final IOException e) {
-                this.errors.add("Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage());
+                this.builder.addGlobalType( global.getIdentifier(),
+                                            shortTypeName );
+            } catch ( final IOException e ) {
+                this.errors.add( "Error while inspecting class for global: " + global.getType() + " error message: " + e.getMessage() );
             }
 
         }
     }
 
-    private boolean implementsCollection(Class<?> clazz) {
-        return clazz != null && Collection.class.isAssignableFrom(clazz);
+    private boolean implementsCollection(Class< ? > clazz) {
+        return clazz != null && Collection.class.isAssignableFrom( clazz );
     }
 
     /**
      * Populate the fact type data.
      */
-    private void populateModelInfo(
-            final List jars) {
-        List<ImportDescr> imports = new ArrayList<ImportDescr>(pkgDescr.getImports());
+    private void populateModelInfo(final List< ? > jars) {
+        List<ImportDescr> imports = new ArrayList<ImportDescr>( pkgDescr.getImports() );
 
-        addAnyExternalImports(imports);
+        addAnyExternalImports( imports );
 
-        for (ImportDescr importDescr : imports) {
+        for ( ImportDescr importDescr : imports ) {
             String className = importDescr.getTarget();
             try {
-                addImport(className);
-                addFactType(jars, className);
-            } catch (WildCardException e) {
-                this.errors.add(String.format("Unable to introspect model for wild card imports (%s). Please explicitly import each fact type you require.", className));
+                addImport( className );
+                addFactType( jars,
+                             className );
+            } catch ( WildCardException e ) {
+                this.errors.add( String.format( "Unable to introspect model for wild card imports (%s). Please explicitly import each fact type you require.",
+                                                className ) );
             }
         }
     }
 
-    private void populateDeclaredFactTypes() {
-        
-        Set<String> declaredTypes = getDeclaredTypes(pkgDescr);
-        Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
-        
-        for (TypeDeclarationDescr typeDeclarationDescr : pkgDescr.getTypeDeclarations()) {
+    private void populateDeclaredFactTypes(List< ? > jars) {
+        for ( TypeDeclarationDescr baseType : pkgDescr.getTypeDeclarations() ) {
+            List<TypeDeclarationDescr> th = getDeclaredTypeHierachy( baseType,
+                                                                     jars );
+            populateDeclaredFactType( th );
+        }
+    }
 
-            String declaredType = typeDeclarationDescr.getTypeName();
-            
-            //Configure annotations
-            Map<String, Map<String, String>> annotations = new HashMap<String, Map<String, String>>();
-            for (String annotationName : typeDeclarationDescr.getAnnotationNames()) {
-                AnnotationDescr annotation = typeDeclarationDescr.getAnnotation( annotationName );
-                annotations.put( annotationName, annotation.getValues() );
+    private List<TypeDeclarationDescr> getDeclaredTypeHierachy(TypeDeclarationDescr td,
+                                                               List< ? > jars) {
+        List<TypeDeclarationDescr> th = new ArrayList<TypeDeclarationDescr>();
+        th.add( td );
+        TypeDeclarationDescr std;
+        while ( (std = getDeclaredSuperType( td )) != null ) {
+            th.add( std );
+            td = std;
+        }
+
+        //If the super-most class has been imported attempt to make a pseudo TypeDeclaration for the imported class
+        if ( this.pkgDescr.getImports().size() > 0 ) {
+            for ( ImportDescr imp : this.pkgDescr.getImports() ) {
+                if ( imp.getTarget().endsWith( "." + td.getTypeName() ) ) {
+                    TypeDeclarationDescr pseudoTypeDeclr = makePseudoTypeDeclarationDescrFromSuperClassType( imp.getTarget(),
+                                                                                                             jars );
+                    if ( pseudoTypeDeclr != null ) {
+                        th.add( pseudoTypeDeclr );
+                    }
+                }
             }
 
-            this.builder.addAnnotationsForType(declaredType, annotations);
-            
-            //Configure fields
-            if (typeDeclarationDescrHasFields(typeDeclarationDescr)) {
+        }
+        return th;
+    }
 
-                List<String> fieldNames = new ArrayList<String>();
+    private TypeDeclarationDescr getDeclaredSuperType(TypeDeclarationDescr td) {
+        String declaredSuperTypeName = td.getSuperTypeName();
+        if ( declaredSuperTypeName == null ) {
+            return null;
+        } else {
+            for ( TypeDeclarationDescr std : pkgDescr.getTypeDeclarations() ) {
+                if ( declaredSuperTypeName.equals( std.getTypeName() ) ) {
+                    return std;
+                }
+            }
+        }
+        return null;
+    }
 
-                this.builder.addFactType(declaredType,
-                                         FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS);
+    private TypeDeclarationDescr makePseudoTypeDeclarationDescrFromSuperClassType(String className,
+                                                                                  List< ? > jars) {
 
-                //'this' is a special case
-                fieldNames.add("this");
-                this.builder.addFieldType(declaredType + ".this",
-                                          SuggestionCompletionEngine.TYPE_THIS,
-                                          null);
-                accessorsAndMutators.put( declaredType + ".this",
-                                          FieldAccessorsAndMutators.ACCESSOR );
-                
-                //Other fields
-                for (Map.Entry<String, TypeFieldDescr> f : typeDeclarationDescr.getFields().entrySet()) {
-                    String fieldName = f.getKey();
-                    fieldNames.add(fieldName);
+        Class< ? > clazz = loadClass( className,
+                                      jars );
 
-                    String factField = declaredType + "." + fieldName;
-                    accessorsAndMutators.put( factField, FieldAccessorsAndMutators.BOTH );
-                    String fieldClass = f.getValue().getPattern().getObjectType();
-                    
-                    if (declaredTypes.contains(fieldClass)) {
-                        this.builder.addFieldType(declaredType + "." + fieldName,
-                                fieldClass,
-                                null);//SuggestionCompletionEngine.TYPE_OBJECT );
-                    } else {
-                        try {
-                            Class clz = resolver.resolveType(fieldClass);
-                            this.builder.addFieldType(declaredType + "." + fieldName,
-                                    translateClassToGenericType(clz),
-                                    clz);
-                        } catch (ClassNotFoundException e) {
-                            this.errors.add("Class of field not found: " + fieldClass);
+        if ( clazz != null ) {
+
+            Method[] methods = clazz.getMethods();
+            Map<String, Class< ? >> methodReturnTypes = new HashMap<String, Class< ? >>();
+            Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+
+            //Determine accessors for methods
+            for ( Method method : methods ) {
+                boolean addMethod = false;
+                String name = method.getName();
+                if ( method.getParameterTypes().length > 0 ) {
+
+                    //Strip bare mutator name
+                    if ( name.startsWith( "set" ) ) {
+                        addMethod = true;
+                        name = Introspector.decapitalize( name.substring( 3 ) );
+                    }
+
+                    if ( addMethod ) {
+                        String factField = className + "." + name;
+                        if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.ACCESSOR ) {
+                            accessorsAndMutators.put( factField,
+                                                      FieldAccessorsAndMutators.BOTH );
+                        } else {
+                            accessorsAndMutators.put( factField,
+                                                      FieldAccessorsAndMutators.MUTATOR );
+                        }
+                    }
+
+                } else if ( !method.getReturnType().equals( "void" ) ) {
+
+                    //Strip bare accessor name
+                    if ( name.startsWith( "get" ) ) {
+                        addMethod = true;
+                        name = Introspector.decapitalize( name.substring( 3 ) );
+                    } else if ( name.startsWith( "is" ) ) {
+                        addMethod = true;
+                        name = Introspector.decapitalize( name.substring( 2 ) );
+                    }
+
+                    if ( addMethod ) {
+                        String factField = className + "." + name;
+                        methodReturnTypes.put( factField,
+                                               method.getReturnType() );
+                        if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.MUTATOR ) {
+                            accessorsAndMutators.put( factField,
+                                                      FieldAccessorsAndMutators.BOTH );
+                        } else {
+                            accessorsAndMutators.put( factField,
+                                                      FieldAccessorsAndMutators.ACCESSOR );
                         }
                     }
                 }
+            }
 
-                this.builder.addFieldsForType(declaredType,
-                                              fieldNames.toArray(new String[fieldNames.size()]));
+            TypeDeclarationDescr td = new TypeDeclarationDescr();
+            td.setTypeName( className );
 
+            for ( Map.Entry<String, FieldAccessorsAndMutators> e : accessorsAndMutators.entrySet() ) {
+                if ( e.getValue() == FieldAccessorsAndMutators.BOTH ) {
+                    String fieldShortName = getShortNameOfClass( e.getKey() );
+                    TypeFieldDescr fieldDescr = new TypeFieldDescr( fieldShortName );
+                    PatternDescr patternDescr = new PatternDescr( methodReturnTypes.get( e.getKey() ).getName() );
+                    fieldDescr.setPattern( patternDescr );
+                    td.addField( fieldDescr );
+                }
+            }
+            return td;
+
+        }
+
+        return null;
+    }
+
+    private void populateDeclaredFactType(List<TypeDeclarationDescr> th) {
+
+        String declaredType = th.get( 0 ).getTypeName();
+        Set<String> declaredTypes = getDeclaredTypes( pkgDescr );
+        Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+        Map<String, Map<String, String>> annotations = new HashMap<String, Map<String, String>>();
+        List<String> fieldNames = new ArrayList<String>();
+
+        //'this' is a special case
+        fieldNames.add( "this" );
+        this.builder.addFieldType( declaredType + ".this",
+                                   SuggestionCompletionEngine.TYPE_THIS,
+                                   null );
+        accessorsAndMutators.put( declaredType + ".this",
+                                  FieldAccessorsAndMutators.ACCESSOR );
+
+        //Other facts and fields in the type hierarchy
+        for ( TypeDeclarationDescr typeDeclarationDescr : th ) {
+
+            //Configure annotations
+            for ( String annotationName : typeDeclarationDescr.getAnnotationNames() ) {
+                AnnotationDescr annotation = typeDeclarationDescr.getAnnotation( annotationName );
+                annotations.put( annotationName,
+                                 annotation.getValues() );
+            }
+
+            //Configure fields
+            if ( typeDeclarationDescrHasFields( typeDeclarationDescr ) ) {
+
+                this.builder.addFactType( declaredType,
+                                          FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS );
+
+                //Other fields
+                for ( Map.Entry<String, TypeFieldDescr> f : typeDeclarationDescr.getFields().entrySet() ) {
+                    String fieldName = f.getKey();
+                    fieldNames.add( fieldName );
+
+                    String factField = declaredType + "." + fieldName;
+                    accessorsAndMutators.put( factField,
+                                              FieldAccessorsAndMutators.BOTH );
+                    String fieldClass = f.getValue().getPattern().getObjectType();
+
+                    if ( declaredTypes.contains( fieldClass ) ) {
+                        this.builder.addFieldType( declaredType + "." + fieldName,
+                                                   fieldClass,
+                                                   null );//SuggestionCompletionEngine.TYPE_OBJECT );
+                    } else {
+                        try {
+                            Class< ? > clz = resolver.resolveType( fieldClass );
+                            this.builder.addFieldType( declaredType + "." + fieldName,
+                                                       translateClassToGenericType( clz ),
+                                                       clz );
+                        } catch ( ClassNotFoundException e ) {
+                            this.errors.add( "Class of field not found: " + fieldClass );
+                        }
+                    }
+                }
             }
         }
-        
+
+        this.builder.addAnnotationsForType( declaredType,
+                                            annotations );
+        this.builder.addFieldsForType( declaredType,
+                                       fieldNames.toArray( new String[fieldNames.size()] ) );
         this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
 
     }
@@ -387,47 +528,55 @@ public class SuggestionCompletionLoader
     private Set<String> getDeclaredTypes(PackageDescr pkgDescr) {
         Set<String> declaredTypes = new HashSet<String>();
 
-        for (TypeDeclarationDescr typeDeclarationDescr : pkgDescr.getTypeDeclarations()) {
-            declaredTypes.add(typeDeclarationDescr.getTypeName());
+        for ( TypeDeclarationDescr typeDeclarationDescr : pkgDescr.getTypeDeclarations() ) {
+            declaredTypes.add( typeDeclarationDescr.getTypeName() );
         }
         return declaredTypes;
     }
 
     private void addImport(String className) throws WildCardException {
-        if (isWildCardImport(className)) {
+        if ( isWildCardImport( className ) ) {
             throw new WildCardException();
         } else {
-            resolver.addImport(className);
+            resolver.addImport( className );
         }
     }
 
-    private void addFactType(List jars, String className) {
-        final Class clazz = loadClass(className,
-                jars);
-        if (clazz != null) {
+    private void addFactType(List jars,
+                             String className) {
+        final Class clazz = loadClass( className,
+                                       jars );
+        if ( clazz != null ) {
             try {
 
-                final String shortTypeName = getShortNameOfClass(clazz.getName());
-                this.builder.addFactType(shortTypeName, FIELD_CLASS_TYPE.REGULAR_CLASS);
-                loadClassFields(clazz, shortTypeName);
+                final String shortTypeName = getShortNameOfClass( clazz.getName() );
+                this.builder.addFactType( shortTypeName,
+                                          FIELD_CLASS_TYPE.REGULAR_CLASS );
+                loadClassFields( clazz,
+                                 shortTypeName );
 
-            } catch (final IOException e) {
-                this.errors.add(String.format("Error while inspecting the class: %s. The error was: %s", className, e.getMessage()));
-            } catch (NoClassDefFoundError e) {
-                this.errors.add(String.format("Unable to find the class: %s which is required by: %s. You may need to add more classes to the model.", e.getMessage().replace('/', '.'), className));
+            } catch ( final IOException e ) {
+                this.errors.add( String.format( "Error while inspecting the class: %s. The error was: %s",
+                                                className,
+                                                e.getMessage() ) );
+            } catch ( NoClassDefFoundError e ) {
+                this.errors.add( String.format( "Unable to find the class: %s which is required by: %s. You may need to add more classes to the model.",
+                                                e.getMessage().replace( '/',
+                                                                        '.' ),
+                                                className ) );
             }
 
         }
     }
 
     private boolean isWildCardImport(String className) {
-        return className.endsWith("*");
+        return className.endsWith( "*" );
     }
 
     private void addAnyExternalImports(List<ImportDescr> imports) {
-        if (this.externalImportDescrProviders != null) {
-            for (ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders) {
-                imports.addAll(externalImportDescrProvider.getImportDescrs());
+        if ( this.externalImportDescrProviders != null ) {
+            for ( ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders ) {
+                imports.addAll( externalImportDescrProvider.getImportDescrs() );
             }
         }
     }
@@ -436,15 +585,15 @@ public class SuggestionCompletionLoader
                             List jars) {
         Class clazz = null;
         try {
-            clazz = resolver.resolveType(className);
-        } catch (ClassFormatError e1) {
-            clazz = loadClass(className,
-                    jars,
-                    clazz);
-        } catch (ClassNotFoundException e1) {
-            clazz = loadClass(className,
-                    jars,
-                    clazz);
+            clazz = resolver.resolveType( className );
+        } catch ( ClassFormatError e1 ) {
+            clazz = loadClass( className,
+                               jars,
+                               clazz );
+        } catch ( ClassNotFoundException e1 ) {
+            clazz = loadClass( className,
+                               jars,
+                               clazz );
         }
         return clazz;
     }
@@ -453,10 +602,10 @@ public class SuggestionCompletionLoader
                             List jars,
                             Class clazz) {
         try {
-            addJars(jars);
-            clazz = resolver.resolveType(className);
-        } catch (Exception e) {
-            this.errors.add("Class not found: " + className);
+            addJars( jars );
+            clazz = resolver.resolveType( className );
+        } catch ( Exception e ) {
+            this.errors.add( "Class not found: " + className );
         }
         return clazz;
     }
@@ -485,7 +634,7 @@ public class SuggestionCompletionLoader
                                    SuggestionCompletionEngine.TYPE_THIS,
                                    clazz );
         this.builder.addFieldsForType( shortTypeName,
-                                       fields.toArray(new String[fields.size()]));
+                                       fields.toArray( new String[fields.size()] ) );
 
         //Determine accessors for methods
         for ( Method method : methods ) {
@@ -562,7 +711,7 @@ public class SuggestionCompletionLoader
     }
 
     public String getShortNameOfClass(final String clazz) {
-        return clazz.substring(clazz.lastIndexOf('.') + 1);
+        return clazz.substring( clazz.lastIndexOf( '.' ) + 1 );
     }
 
     /**
@@ -571,9 +720,9 @@ public class SuggestionCompletionLoader
      */
     public List<String> removeIrrelevantFields(Collection<String> fields) {
         final List<String> result = new ArrayList<String>();
-        for (String field : fields) {
-            if (!(field.equals("class") || field.equals("hashCode") || field.equals("toString"))) {
-                result.add(field);
+        for ( String field : fields ) {
+            if ( !(field.equals( "class" ) || field.equals( "hashCode" ) || field.equals( "toString" )) ) {
+                result.add( field );
             }
         }
         return result;
@@ -583,21 +732,21 @@ public class SuggestionCompletionLoader
      * This will add the given jars to the classloader.
      */
     private void addJars(final List<JarInputStream> jars) throws IOException {
-        for (final Iterator<JarInputStream> it = jars.iterator(); it.hasNext();) {
+        for ( final Iterator<JarInputStream> it = jars.iterator(); it.hasNext(); ) {
             final JarInputStream jis = it.next();
             JarEntry entry;
             final byte[] buf = new byte[1024];
             int len;
-            while ((entry = jis.getNextJarEntry()) != null) {
-                if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
+            while ( (entry = jis.getNextJarEntry()) != null ) {
+                if ( !entry.isDirectory() && entry.getName().endsWith( ".class" ) ) {
                     final ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    while ((len = jis.read(buf)) >= 0) {
-                        out.write(buf,
-                                0,
-                                len);
+                    while ( (len = jis.read( buf )) >= 0 ) {
+                        out.write( buf,
+                                   0,
+                                   len );
                     }
-                    this.loader.addResource(entry.getName(),
-                            out.toByteArray());
+                    this.loader.addResource( entry.getName(),
+                                             out.toByteArray() );
                 }
             }
 
@@ -608,28 +757,28 @@ public class SuggestionCompletionLoader
      * @see org.drools.ide.common.server.rules.ClassToGenericClassConverter#translateClassToGenericType(java.lang.Class)
      */
     //XXX {bauna} field type
-    public String translateClassToGenericType(final Class<?> type) {
+    public String translateClassToGenericType(final Class< ? > type) {
         String fieldType = null; // if null, will use standard operators
-        if (type != null) {
-            if (type.isPrimitive() && (type != boolean.class)) {
+        if ( type != null ) {
+            if ( type.isPrimitive() && (type != boolean.class) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
-            } else if (Number.class.isAssignableFrom(type)) {
+            } else if ( Number.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_NUMERIC;
-            } else if (String.class.isAssignableFrom(type)) {
+            } else if ( String.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_STRING;
-            } else if (Collection.class.isAssignableFrom(type)) {
+            } else if ( Collection.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COLLECTION;
-            } else if (Boolean.class.isAssignableFrom(type) || boolean.class.isAssignableFrom(type)) {
+            } else if ( Boolean.class.isAssignableFrom( type ) || boolean.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_BOOLEAN;
-            } else if (Date.class.isAssignableFrom(type)) {
+            } else if ( Date.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_DATE; // MN: wait until we support it.
-            } else if (Comparable.class.isAssignableFrom(type)) {
+            } else if ( Comparable.class.isAssignableFrom( type ) ) {
                 fieldType = SuggestionCompletionEngine.TYPE_COMPARABLE;
             } else {
                 try {
-                    Class clazz = resolver.resolveType(type.getName());
+                    Class clazz = resolver.resolveType( type.getName() );
                     fieldType = clazz.getSimpleName();
-                } catch (ClassNotFoundException e) {
+                } catch ( ClassNotFoundException e ) {
                     fieldType = SuggestionCompletionEngine.TYPE_OBJECT;
                 }
             }
@@ -638,13 +787,13 @@ public class SuggestionCompletionLoader
     }
 
     public void addExternalImportDescrProvider(ExternalImportDescrProvider provider) {
-        this.externalImportDescrProviders.add(provider);
+        this.externalImportDescrProviders.add( provider );
     }
 
     public Set<ImportDescr> getExternalImportDescrs() {
         Set<ImportDescr> result = new HashSet<ImportDescr>();
-        for (ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders) {
-            result.addAll(externalImportDescrProvider.getImportDescrs());
+        for ( ExternalImportDescrProvider externalImportDescrProvider : this.externalImportDescrProviders ) {
+            result.addAll( externalImportDescrProvider.getImportDescrs() );
         }
 
         return result;
