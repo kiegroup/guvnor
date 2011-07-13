@@ -16,106 +16,87 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.explorer.TabContainer;
-import org.drools.guvnor.client.explorer.TabManager;
-import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.Util;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
+import org.drools.guvnor.client.util.Util;
 
 public class RulesNewMenu {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
     public static MenuBar getMenu() {
-        MenuBar createNewMenu = new MenuBar(true);
+        MenuBar createNewMenu = new MenuBar( true );
 
-        createNewMenu.addItem(Util.getHeader(images.businessRule(), constants.BusinessRuleGuidedEditor()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.businessRule(), constants.BusinessRuleGuidedEditor() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.BUSINESS_RULE, constants.NewBusinessRuleGuidedEditor(), true);
+                        launchWizard( AssetFormats.BUSINESS_RULE, true );
                     }
-                });
+                } );
 
-        createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.DSLBusinessRuleTextEditor()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.ruleAsset(), constants.DSLBusinessRuleTextEditor() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.DSL_TEMPLATE_RULE, constants.NewRuleUsingDSL(), true);
+                        launchWizard( AssetFormats.DSL_TEMPLATE_RULE, true );
                     }
-                });
+                } );
 
-        createNewMenu.addItem(Util.getHeader(images.ruleAsset(), constants.DRLRuleTechnicalRuleTextEditor()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.ruleAsset(), constants.DRLRuleTechnicalRuleTextEditor() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.DRL, constants.NewDRL(), true);
+                        launchWizard( AssetFormats.DRL, true );
                     }
-                });
+                } );
 
-        createNewMenu.addItem(Util.getHeader(images.spreadsheetSmall(), constants.DecisionTableSpreadsheet()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.spreadsheetSmall(), constants.DecisionTableSpreadsheet() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.DECISION_SPREADSHEET_XLS, constants.NewDecisionTableSpreadsheet(), true);
+                        launchWizard( AssetFormats.DECISION_SPREADSHEET_XLS, true );
                     }
-                });
+                } );
 
-        createNewMenu.addItem(Util.getHeader(images.gdst(), constants.DecisionTableWebGuidedEditor()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.gdst(), constants.DecisionTableWebGuidedEditor() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.DECISION_TABLE_GUIDED, constants.NewDecisionTableGuidedEditor(), true);
+                        launchWizard( AssetFormats.DECISION_TABLE_GUIDED, true );
                     }
-                });
+                } );
 
-        createNewMenu.addItem(Util.getHeader(images.testManager(), constants.TestScenario()).asString(),
+        createNewMenu.addItem( Util.getHeader( images.testManager(), constants.TestScenario() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard(AssetFormats.TEST_SCENARIO,
-                                constants.CreateATestScenario(), false);
+                        launchWizard( AssetFormats.TEST_SCENARIO, false );
                     }
-                });
+                } );
 
-        MenuBar rootMenuBar = new MenuBar(true);
-        rootMenuBar.setAutoOpen(true);
-        rootMenuBar.setAnimationEnabled(true);
+        MenuBar rootMenuBar = new MenuBar( true );
+        rootMenuBar.setAutoOpen( true );
+        rootMenuBar.setAnimationEnabled( true );
 
-        rootMenuBar.addItem(new MenuItem(constants.CreateNew(), createNewMenu));
+        rootMenuBar.addItem( new MenuItem( constants.CreateNew(), createNewMenu ) );
 
         return rootMenuBar;
     }
 
-    protected static void launchWizard(String format,
-                                       String title,
-                                       boolean showCats) {
-        final TabManager tabManager = TabContainer.getInstance();
+    protected static void launchWizard( String format,
+                                        boolean showCats ) {
 
-        NewAssetWizard pop = new NewAssetWizard(new OpenItemCommand() {
-            public void open(String key) {
-                tabManager.openAsset(key);
-            }
-
-            public void open(MultiViewRow[] rows) {
-                for (MultiViewRow row : rows) {
-                    tabManager.openAsset(row.uuid);
-                }
-            }
-        },
+        NewAssetWizard pop = new NewAssetWizard(
                 showCats,
-                format);
+                format );
 
         pop.show();
     }

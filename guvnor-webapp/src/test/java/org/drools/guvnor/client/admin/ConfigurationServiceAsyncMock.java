@@ -36,37 +36,36 @@ public class ConfigurationServiceAsyncMock implements ConfigurationServiceAsync 
         return result;
     }
 
-    public void save(IFramePerspectiveConfiguration newConfiguration, AsyncCallback<String> async) {
+    public void save( IFramePerspectiveConfiguration newConfiguration, AsyncCallback<String> async ) {
         this.newConfiguration = newConfiguration;
-        if (newConfiguration.getUuid() == null) {
-            async.onSuccess("mock-uuid");
+        if ( newConfiguration.getUuid() == null ) {
+            async.onSuccess( "mock-uuid" );
         } else {
-            async.onSuccess(newConfiguration.getUuid());
+            async.onSuccess( newConfiguration.getUuid() );
         }
     }
 
-    public void load(String uuid, AsyncCallback<IFramePerspectiveConfiguration> async) throws SerializationException {
-        async.onSuccess(loadedConfiguration);
+    public void load( String uuid, AsyncCallback<IFramePerspectiveConfiguration> async ) throws SerializationException {
+        async.onSuccess( loadedConfiguration );
     }
 
-    public void loadPerspectiveConfigurations(AsyncCallback<Collection<IFramePerspectiveConfiguration>> async) {
-        async.onSuccess(result);
+    public void loadPerspectiveConfigurations( AsyncCallback<Collection<IFramePerspectiveConfiguration>> async ) {
+        async.onSuccess( result );
     }
 
-    public void loadPreferences(AsyncCallback<Map<String, String>> preferences) {
-        //TODO: Generated code -Rikkola-
+    public void loadPreferences( AsyncCallback<Map<String, String>> preferences ) {
     }
 
-    public void remove(String uuid, AsyncCallback<Void> async) {
+    public void remove( String uuid, AsyncCallback<Void> async ) {
         removedUuid = uuid;
-        async.onSuccess(null);
+        async.onSuccess( null );
     }
 
     public IFramePerspectiveConfiguration getSaved() {
         return newConfiguration;
     }
 
-    public void setUpLoad(IFramePerspectiveConfiguration loadedConfiguration) {
+    public void setUpLoad( IFramePerspectiveConfiguration loadedConfiguration ) {
         this.loadedConfiguration = loadedConfiguration;
     }
 

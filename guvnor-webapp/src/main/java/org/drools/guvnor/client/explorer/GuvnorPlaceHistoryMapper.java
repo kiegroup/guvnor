@@ -5,8 +5,6 @@ import com.google.gwt.place.shared.WithTokenizers;
 
 @WithTokenizers(
         {
-                AuthorPerspectivePlace.Tokenizer.class,
-                IFramePerspectivePlace.Tokenizer.class,
                 FindPlace.Tokenizer.class,
                 AssetEditorPlace.Tokenizer.class,
                 ModuleEditorPlace.Tokenizer.class

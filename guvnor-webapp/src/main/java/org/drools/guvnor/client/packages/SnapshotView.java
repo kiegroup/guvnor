@@ -383,9 +383,8 @@ public class SnapshotView extends Composite {
         Tree root = new Tree();
         root.setAnimationEnabled( true );
 
-        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.getName(),
-                snapInfo.uuid,
-                itemWidgets );
+        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure( parentConf.getName() );
+        itemWidgets.put( pkg, snapInfo.uuid );
         pkg.setUserObject( snapInfo );
         root.addItem( pkg );
 

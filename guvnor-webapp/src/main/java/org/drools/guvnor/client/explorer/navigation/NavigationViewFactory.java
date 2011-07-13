@@ -17,6 +17,12 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
+import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
+import org.drools.guvnor.client.explorer.navigation.modules.*;
+import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
@@ -46,5 +52,7 @@ public interface NavigationViewFactory {
 
     ModulesNewAssetMenuView getModulesNewAssetMenuView();
 
-    GlobalAreaTreeItemView getGlobalAreaTreeItem();
+    GlobalAreaTreeItemView getGlobalAreaTreeItemView();
+
+    ModuleTreeItemView getModuleTreeItemView();
 }

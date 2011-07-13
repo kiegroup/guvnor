@@ -51,15 +51,15 @@ public class PerspectiveLoader {
         loadPerspectives.loadPerspectives(perspectives);
     }
 
-    private IFramePerspectivePlace createIFramePerspective(IFramePerspectiveConfiguration perspectivesConfiguration) {
-        IFramePerspectivePlace iFramePerspectivePlace = new IFramePerspectivePlace();
-        iFramePerspectivePlace.setName(perspectivesConfiguration.getName());
-        iFramePerspectivePlace.setUrl(perspectivesConfiguration.getUrl());
-        return iFramePerspectivePlace;
+    private IFramePerspective createIFramePerspective(IFramePerspectiveConfiguration perspectivesConfiguration) {
+        IFramePerspective iFramePerspective = new IFramePerspective();
+        iFramePerspective.setName(perspectivesConfiguration.getName());
+        iFramePerspective.setUrl(perspectivesConfiguration.getUrl());
+        return iFramePerspective;
     }
 
-    private AuthorPerspectivePlace getDefault() {
-        return new AuthorPerspectivePlace();
+    private AuthorPerspective getDefault() {
+        return new AuthorPerspective();
     }
 
 }

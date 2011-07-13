@@ -20,6 +20,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
+import org.drools.guvnor.client.explorer.navigation.modules.*;
+import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
@@ -105,7 +113,11 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
         return modulesNewAssetMenuView;
     }
 
-    public GlobalAreaTreeItemView getGlobalAreaTreeItem() {
-        return new GlobalAreaTreeItemViewImpl( ) ;
+    public GlobalAreaTreeItemView getGlobalAreaTreeItemView() {
+        return new GlobalAreaTreeItemViewImpl();
+    }
+
+    public ModuleTreeItemView getModuleTreeItemView() {
+        return new ModuleTreeItemViewImpl();
     }
 }

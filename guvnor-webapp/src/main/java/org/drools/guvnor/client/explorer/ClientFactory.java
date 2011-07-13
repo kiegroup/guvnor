@@ -20,6 +20,7 @@ import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
@@ -50,4 +51,6 @@ public interface ClientFactory {
     ModuleEditorActivityView getModuleEditorActivityView();
 
     PackageServiceAsync getPackageService();
+
+    AssetEditorFactory getAssetEditorFactory();
 }

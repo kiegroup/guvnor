@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -31,7 +30,7 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
     private final PerspectivesPanelView view;
     private final PlaceController placeController;
 
-    private Map<String, Place> perspectives = new HashMap<String, Place>();
+    private Map<String, Perspective> perspectives = new HashMap<String, Perspective>();
 
     public PerspectivesPanel( PerspectivesPanelView view, PlaceController placeController ) {
         this.view = view;
@@ -77,6 +76,7 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
     }
 
     public void onPerspectiveChange( String perspectiveId ) throws UnknownPerspective {
-        placeController.goTo( perspectives.get( perspectiveId ) );
+        // TODO: Change perspective, probably with an event -Rikkola-
+//        placeController.goTo( perspectives.get( perspectiveId ) );
     }
 }

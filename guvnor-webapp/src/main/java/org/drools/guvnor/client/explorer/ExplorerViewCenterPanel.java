@@ -21,6 +21,8 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.packages.CloseTabContentWidgetEvent;
+import org.drools.guvnor.client.packages.CloseTabContentWidgetEventHandler;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
@@ -53,12 +55,18 @@ public class ExplorerViewCenterPanel extends Composite {
                 Unit.EM );
         initWidget( tabLayoutPanel );
 
+        setUpCloseTabEventHandler( clientFactory );
 
         TabContainer.init( new TabOpenerImpl( clientFactory, this ) {
         } );
+    }
 
-
-//        TabContainer.getInstance().openFind();
+    private void setUpCloseTabEventHandler( ClientFactory clientFactory ) {
+        clientFactory.getEventBus().addHandler( CloseTabContentWidgetEvent.TYPE, new CloseTabContentWidgetEventHandler() {
+            public void onCloseTabContentWidget( CloseTabContentWidgetEvent closeTabContentWidgetEvent ) {
+                close( closeTabContentWidgetEvent.getKey() );
+            }
+        } );
     }
 
     /**
@@ -154,7 +162,7 @@ public class ExplorerViewCenterPanel extends Composite {
     public boolean showIfOpen( String key ) {
         if ( openedTabs.containsKey( key ) ) {
             LoadingPopup.close();
-            Panel tpi = (Panel) openedTabs.get( key );
+            Panel tpi = openedTabs.get( key );
             tabLayoutPanel.selectTab( tpi );
             return true;
         }

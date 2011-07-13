@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.*;
 
 public class PerspectivesPanelTest {
@@ -82,20 +83,23 @@ public class PerspectivesPanelTest {
 
     @Test
     public void testChangePerspective() throws Exception {
-        AuthorPerspectivePlace authorPerspectivePlace = new AuthorPerspectivePlace();
-        IFramePerspectivePlace runtimePerspectivePlace = new IFramePerspectivePlace();
+        AuthorPerspective authorPerspective = new AuthorPerspective();
+        IFramePerspective runtimePerspective = new IFramePerspective();
 
-        perspectivesPanel.addPerspective( authorPerspectivePlace );
-        perspectivesPanel.addPerspective( runtimePerspectivePlace );
+        perspectivesPanel.addPerspective( authorPerspective );
+        perspectivesPanel.addPerspective( runtimePerspective );
 
-        goToAndVerify( authorPerspectivePlace );
+        goToAndVerify( authorPerspective );
 
-        goToAndVerify( runtimePerspectivePlace );
+        goToAndVerify( runtimePerspective );
     }
 
     private void goToAndVerify( Perspective perspective ) throws UnknownPerspective {
         presenter.onPerspectiveChange( perspective.getName() );
 
-        verify( placeController ).goTo( perspective );
+        fail();
+//        verify( placeController ).goTo( perspective );
     }
+
+
 }

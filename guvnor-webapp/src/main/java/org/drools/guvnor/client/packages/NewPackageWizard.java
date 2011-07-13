@@ -16,73 +16,60 @@
 
 package org.drools.guvnor.client.packages;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.HTMLFileManagerFields;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FileUpload;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteHandler;
 import com.google.gwt.user.client.ui.FormPanel.SubmitEvent;
 import com.google.gwt.user.client.ui.FormPanel.SubmitHandler;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
  * This is the wizard used when creating new packages or importing them.
  */
 public class NewPackageWizard extends FormStylePopup {
 
-    private static Constants      constants        = GWT.create( Constants.class );
-    private static Images         images           = GWT.create( Images.class );
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private TextBox               nameBox;
-    private TextBox               descBox;
-    private final FormStyleLayout importLayout     = new FormStyleLayout();
+    private TextBox nameBox;
+    private TextBox descBox;
+    private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
+    private ClientFactory clientFactory;
 
-    public NewPackageWizard(final Command afterCreatedEvent) {
+    public NewPackageWizard( ClientFactory clientFactory ) {
         super( images.newexWiz(),
-               constants.CreateANewPackage() );
+                constants.CreateANewPackage() );
+        this.clientFactory = clientFactory;
         nameBox = new TextBox();
         descBox = new TextBox();
 
         newPackageLayout.addAttribute( constants.NameColon(),
-                                       nameBox );
+                nameBox );
         newPackageLayout.addAttribute( constants.DescriptionColon(),
-                                       descBox );
+                descBox );
 
         nameBox.setTitle( constants.PackageNameTip() );
 
         RadioButton newPackage = new RadioButton( "action",
-                                                  constants.CreateNewPackageRadio() );
+                constants.CreateNewPackageRadio() );
         RadioButton importPackage = new RadioButton( "action",
-                                                     constants.ImportFromDrlRadio() );
+                constants.ImportFromDrlRadio() );
 
         newPackage.setValue( true );
         newPackageLayout.setVisible( true );
 
         newPackage.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 newPackageLayout.setVisible( true );
                 importLayout.setVisible( false );
             }
@@ -96,7 +83,7 @@ public class NewPackageWizard extends FormStylePopup {
 
         importLayout.setVisible( false );
         importPackage.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 newPackageLayout.setVisible( false );
                 importLayout.setVisible( true );
             }
@@ -106,14 +93,13 @@ public class NewPackageWizard extends FormStylePopup {
         ab.add( newPackage );
         ab.add( importPackage );
         addAttribute( "",
-                      ab );
+                ab );
 
         addRow( newPackageLayout );
         addRow( importLayout );
 
         importLayout.addAttribute( constants.DRLFileToImport(),
-                                   newImportWidget( afterCreatedEvent,
-                                                    this ) );
+                newImportWidget( this ) );
 
         importLayout.addRow( new HTML( "<br/><b>" + constants.NoteNewPackageDrlImportWarning() + "</b>" ) );
         importLayout.addRow( new HTML( constants.ImportDRLDesc1() ) );
@@ -123,11 +109,10 @@ public class NewPackageWizard extends FormStylePopup {
         HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( constants.CreatePackage() );
         create.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 if ( PackageNameValidator.validatePackageName( nameBox.getText() ) ) {
                     createPackageAction( nameBox.getText(),
-                                         descBox.getText(),
-                                         afterCreatedEvent );
+                            descBox.getText() );
                     hide();
                 } else {
                     nameBox.setText( "" );
@@ -135,38 +120,36 @@ public class NewPackageWizard extends FormStylePopup {
                 }
             }
         } );
-        hp.add(create);
+        hp.add( create );
 
         Button cancel = new Button( constants.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 hide();
             }
         } );
-        hp.add(cancel);
-        
+        hp.add( cancel );
+
         newPackageLayout.addAttribute( "",
                 hp );
 
     }
 
-    private void createPackageAction(final String name,
-                                     final String descr,
-                                     final Command refresh) {
+    private void createPackageAction( final String name,
+                                      final String descr ) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
         RepositoryServiceFactory.getPackageService().createPackage( name,
-                                                             descr,
-                                                             new GenericCallback<java.lang.String>() {
-                                                                 public void onSuccess(String uuid) {
-                                                                     RulePackageSelector.currentlySelectedPackage = name;
-                                                                     LoadingPopup.close();
-                                                                     refresh.execute();
-                                                                 }
-                                                             } );
+                descr,
+                new GenericCallback<java.lang.String>() {
+                    public void onSuccess( String uuid ) {
+                        RulePackageSelector.currentlySelectedPackage = name;
+                        LoadingPopup.close();
+                        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
+                    }
+                } );
     }
 
-    public static Widget newImportWidget(final Command afterCreatedEvent,
-                                         final FormStylePopup parent) {
+    private Widget newImportWidget( final FormStylePopup parent ) {
 
         final FormPanel uploadFormPanel = new FormPanel();
         uploadFormPanel.setAction( GWT.getModuleBaseURL() + "package" );
@@ -184,27 +167,27 @@ public class NewPackageWizard extends FormStylePopup {
         HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( constants.Import() );
         ClickHandler okClickHandler = new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 if ( Window.confirm( constants.ImportMergeWarning() ) ) {
                     uploadFormPanel.submit();
                 }
             }
         };
-        create.addClickHandler(okClickHandler);
-        hp.add(create);
+        create.addClickHandler( okClickHandler );
+        hp.add( create );
 
         Button cancel = new Button( constants.Cancel() );
         cancel.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 parent.hide();
             }
         } );
-        hp.add(cancel);
+        hp.add( cancel );
         panel.add( hp );
 
 
         final FormStylePopup packageNamePopup = new FormStylePopup( images.packageLarge(),
-                                                                    constants.PackageName() );
+                constants.PackageName() );
         HorizontalPanel packageNamePanel = new HorizontalPanel();
         packageNamePopup.addRow( new Label( constants.ImportedDRLContainsNoNameForThePackage() ) );
 
@@ -217,11 +200,12 @@ public class NewPackageWizard extends FormStylePopup {
         packageNamePanel.add( uploadWithNameButton );
         packageNamePopup.addRow( packageNamePanel );
         uploadFormPanel.addSubmitCompleteHandler( new SubmitCompleteHandler() {
-            public void onSubmitComplete(SubmitCompleteEvent event) {
+            public void onSubmitComplete( SubmitCompleteEvent event ) {
                 if ( event.getResults().indexOf( "OK" ) > -1 ) { //NON-NLS
                     LoadingPopup.close();
                     Window.alert( constants.PackageWasImportedSuccessfully() );
-                    afterCreatedEvent.execute();
+
+                    clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
                     parent.hide();
                     if ( packageNamePopup != null ) {
                         packageNamePopup.hide();
@@ -237,7 +221,7 @@ public class NewPackageWizard extends FormStylePopup {
         } );
 
         uploadFormPanel.addSubmitHandler( new SubmitHandler() {
-            public void onSubmit(SubmitEvent event) {
+            public void onSubmit( SubmitEvent event ) {
                 if ( upload.getFilename().length() == 0 ) {
                     LoadingPopup.close();
                     Window.alert( constants.YouDidNotChooseADrlFileToImport() );

@@ -23,6 +23,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Window;
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
@@ -37,6 +38,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private final PlaceController placeController = new PlaceController( eventBus );
     private PerspectivesPanelView perspectivesPanelView;
     private NavigationViewFactoryImpl authorNavigationViewFactory;
+    private AssetEditorFactory assetEditorFactory;
 
     public PlaceController getPlaceController() {
         return placeController;
@@ -96,6 +98,13 @@ public class ClientFactoryImpl implements ClientFactory {
 
     public PackageServiceAsync getPackageService() {
         return RepositoryServiceFactory.getPackageService();
+    }
+
+    public AssetEditorFactory getAssetEditorFactory() {
+        if ( assetEditorFactory == null ) {
+            assetEditorFactory = GWT.create( AssetEditorFactory.class );
+        }
+        return assetEditorFactory;
     }
 
     private boolean hideTitle() {

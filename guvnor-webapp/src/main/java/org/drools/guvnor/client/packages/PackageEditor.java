@@ -27,6 +27,7 @@ import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -503,12 +504,14 @@ public class PackageEditor extends PrettyFormLayout {
     private void completedRenaming( String newAssetUUID ) {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
-        // TODO: Handle Close and reopen -Rikkola-
-//        if ( closeCommand != null ) {
-//            closeCommand.execute();
-//        }
-//        TabContainer.getInstance().openPackageEditor( newAssetUUID,
-//                new Co);
+
+        clientFactory.getEventBus().fireEvent( new CloseTabContentWidgetEvent( newAssetUUID ) );
+
+        openModule( newAssetUUID );
+    }
+
+    private void openModule( String newAssetUUID ) {
+        clientFactory.getPlaceController().goTo( new ModuleEditorPlace( newAssetUUID ) );
     }
 
     /**
@@ -550,9 +553,8 @@ public class PackageEditor extends PrettyFormLayout {
     private void completedCopying( String newAssetUUID ) {
         Window.alert( constants.PackageCopiedSuccessfully() );
         refreshPackageList();
-        // TODO: handle, open new package -Rikkola-
-//        TabContainer.getInstance().openPackageEditor( newAssetUUID,
-//                refreshPackageListCommand );
+
+        openModule( newAssetUUID );
     }
 
     private void doSave( final Command refresh ) {
@@ -613,6 +615,6 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private void refreshPackageList() {
-        clientFactory.getEventBus().fireEvent( new RefreshPackageListEvent( packageConfigData.uuid ) );
+        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
     }
 }

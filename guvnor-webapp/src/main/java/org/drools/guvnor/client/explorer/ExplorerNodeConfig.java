@@ -16,117 +16,117 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.util.Util;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /*
  * This class contains static node config for BRMS' explorer widgets
  */
 public class ExplorerNodeConfig {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
     // Browse
-    public static final String FIND_ID                     = "find";
-    public static final String CATEGORY_ROOT_ID            = "rootcategory";                             // NON-NLS
-    public static final String CATEGORY_ID                 = "category";                                 // NON-NLS
-    public static final String STATES_ID                   = "states";                                   // NON-NLS
-    public static final String STATES_ROOT_ID              = "rootstates";                               // NON-NLS
-    public static final String RECENT_EDITED_ID            = "recentEdited";
-    public static final String RECENT_VIEWED_ID            = "recentViewed";
-    public static final String INCOMING_ID                 = "incoming";
+    public static final String FIND_ID = "find";
+    public static final String CATEGORY_ROOT_ID = "rootcategory";                             // NON-NLS
+    public static final String CATEGORY_ID = "category";                                 // NON-NLS
+    public static final String STATES_ID = "states";                                   // NON-NLS
+    public static final String STATES_ROOT_ID = "rootstates";                               // NON-NLS
+    public static final String RECENT_EDITED_ID = "recentEdited";
+    public static final String RECENT_VIEWED_ID = "recentViewed";
+    public static final String INCOMING_ID = "incoming";
 
     // QA
-    public static final String TEST_SCENARIOS_ID           = "testScenarios";
-    public static final String TEST_SCENARIOS_ROOT_ID      = "roottestScenarios";
-    public static final String ANALYSIS_ID                 = "analysis";
-    public static final String ANALYSIS_ROOT_ID            = "rootanalysis";
+    public static final String TEST_SCENARIOS_ID = "testScenarios";
+    public static final String TEST_SCENARIOS_ROOT_ID = "roottestScenarios";
+    public static final String ANALYSIS_ID = "analysis";
+    public static final String ANALYSIS_ROOT_ID = "rootanalysis";
 
     // Table configurations
-    public static final String RULE_LIST_TABLE_ID          = "rulelist";
-    public static final String PACKAGEVIEW_LIST_TABLE_ID   = "packageviewlist";
+    public static final String RULE_LIST_TABLE_ID = "rulelist";
+    public static final String PACKAGEVIEW_LIST_TABLE_ID = "packageviewlist";
     public static final String ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
 
     // Package snapshot
-    public static final String PACKAGE_SNAPSHOTS           = "packageSnapshots";
-	
-	public static TreeItem getPackageItemStructure(String packageName, String uuid, final Map<TreeItem, String> itemWidgets) {
-		TreeItem pkg = new TreeItem(Util.getHeader(images.packages(),
-				packageName));
-		itemWidgets.put(pkg, uuid);
+    public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
 
-		//If two or more asset editors (that are associated with different formats) have same titles,
-		//we group them together and display them as one node on the package tree. 
-		AssetEditorFactory factory = GWT.create(AssetEditorFactory.class);
-		String[] registeredFormats = factory.getRegisteredAssetEditorFormats();
-		
-		//Use list to preserve the order of asset editors defined in configuration.
-		List<List<String>> formatListGroupedByTitles = new ArrayList<List<String>>();
-		for (String format : registeredFormats) {
-			boolean found = false;
-			for(List<String> formatListWithSameTile : formatListGroupedByTitles) {
-				for(String addedFormat : formatListWithSameTile) {
-					//If two formats has same tile, group them together
-					if(factory.getAssetEditorTitle(addedFormat).equals(factory.getAssetEditorTitle(format))) {
-						found = true;
-						break;
-					}
-				}
-				if(found) {
-				    formatListWithSameTile.add(format);	
-				    break;
-				}				
-			}
-			if(!found) {
-				List<String> formatListWithSameTile = new ArrayList<String>();
-				formatListWithSameTile.add(format);
-				formatListGroupedByTitles.add(formatListWithSameTile);
-			}
-		}
-		
-		for(List<String> formatList : formatListGroupedByTitles) {
-			TreeItem item = new TreeItem(Util.getHeader(
-					factory.getAssetEditorIcon(formatList.get(0)),
-					factory.getAssetEditorTitle(formatList.get(0))));
-			if(formatList.size() == 1 && "".equals(formatList.get(0))) {
-				item.setUserObject(new String[0]);
-			} else {
-				String[] formats = new String[formatList.size()];
-				formats = formatList.toArray(formats);
-				item.setUserObject(formats);
-			}
-			pkg.addItem(item);			
-		}
+    public static TreeItem getPackageItemStructure( String moduleName ) {
+        TreeItem moduleTreeItem = new TreeItem( Util.getHeader( images.packages(),
+                moduleName ) );
+        fillModuleItemStructure( moduleTreeItem );
 
-		return pkg;
-	}	
+        return moduleTreeItem;
+    }
 
-    public static TreeItem getPackageItemStructureOld(String packageName, String uuid, final Map<TreeItem, String> itemWidgets) {
+    public static void fillModuleItemStructure( TreeItem moduleTreeItem ) {
+        //If two or more asset editors (that are associated with different formats) have same titles,
+        //we group them together and display them as one node on the package tree.
+        AssetEditorFactory factory = GWT.create( AssetEditorFactory.class );
+        String[] registeredFormats = factory.getRegisteredAssetEditorFormats();
+
+        //Use list to preserve the order of asset editors defined in configuration.
+        List<List<String>> formatListGroupedByTitles = new ArrayList<List<String>>();
+        for (String format : registeredFormats) {
+            boolean found = false;
+            for (List<String> formatListWithSameTile : formatListGroupedByTitles) {
+                for (String addedFormat : formatListWithSameTile) {
+                    //If two formats has same tile, group them together
+                    if ( factory.getAssetEditorTitle( addedFormat ).equals( factory.getAssetEditorTitle( format ) ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( found ) {
+                    formatListWithSameTile.add( format );
+                    break;
+                }
+            }
+            if ( !found ) {
+                List<String> formatListWithSameTile = new ArrayList<String>();
+                formatListWithSameTile.add( format );
+                formatListGroupedByTitles.add( formatListWithSameTile );
+            }
+        }
+
+        for (List<String> formatList : formatListGroupedByTitles) {
+            TreeItem item = new TreeItem( Util.getHeader(
+                    factory.getAssetEditorIcon( formatList.get( 0 ) ),
+                    factory.getAssetEditorTitle( formatList.get( 0 ) ) ) );
+            if ( formatList.size() == 1 && "".equals( formatList.get( 0 ) ) ) {
+                item.setUserObject( new String[0] );
+            } else {
+                String[] formats = new String[formatList.size()];
+                formats = formatList.toArray( formats );
+                item.setUserObject( formats );
+            }
+            moduleTreeItem.addItem( item );
+        }
+    }
+
+    public static TreeItem getPackageItemStructureOld( String packageName, String uuid, final Map<TreeItem, String> itemWidgets ) {
         TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
-                                                     packageName ) );
+                packageName ) );
         itemWidgets.put( pkg,
-                         uuid );
+                uuid );
 
         TreeItem item = new TreeItem( Util.getHeader( images.ruleAsset(), constants.BusinessRuleAssets() ) );
         item.setUserObject( AssetFormats.BUSINESS_RULE_FORMATS );
@@ -154,15 +154,15 @@ public class ExplorerNodeConfig {
 
         if ( ApplicationPreferences.showFlewBPELEditor() ) {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(),
-                                                 constants.RuleFlows() ) );
+                    constants.RuleFlows() ) );
             itemWidgets.put( item,
-                             AssetFormats.RULE_FLOW_RF );
+                    AssetFormats.RULE_FLOW_RF );
             item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
             pkg.addItem( item );
         } else {
             item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
             itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF,  AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
+            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
             pkg.addItem( item );
         }
 
@@ -194,43 +194,43 @@ public class ExplorerNodeConfig {
         item = new TreeItem( Util.getHeader( images.enumeration(),
                 constants.SpringContext() ) );
         itemWidgets.put( item,
-                         AssetFormats.SPRING_CONTEXT );
+                AssetFormats.SPRING_CONTEXT );
         item.setUserObject( new String[]{AssetFormats.SPRING_CONTEXT} );
         pkg.addItem( item );
-        
+
         item = new TreeItem( Util.getHeader( images.enumeration(),
                 constants.WorkItemDefinition() ) );
         itemWidgets.put( item,
-                            AssetFormats.WORKITEM_DEFINITION );
+                AssetFormats.WORKITEM_DEFINITION );
         item.setUserObject( new String[]{AssetFormats.WORKITEM_DEFINITION} );
         pkg.addItem( item );
 
         return pkg;
     }
 
-    public static void setupDeploymentTree(Tree tree, Map<TreeItem, String> itemWidgets) {
+    public static void setupDeploymentTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
         TreeItem root = tree.addItem( Util.getHeader( images.chartOrganisation(), constants.PackageSnapshots() ) );
         root.setState( true );
         itemWidgets.put( root, PACKAGE_SNAPSHOTS );
         deploymentListPackages( root );
     }
 
-    private static void deploymentListPackages(final TreeItem root) {
+    private static void deploymentListPackages( final TreeItem root ) {
         RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess(PackageConfigData[] values) {
+            public void onSuccess( PackageConfigData[] values ) {
                 PackageHierarchy ph = new PackageHierarchy();
 
-                for ( PackageConfigData val : values ) {
+                for (PackageConfigData val : values) {
                     ph.addPackage( val );
                 }
-                for ( PackageHierarchy.Folder hf : ph.getRoot().getChildren() ) {
+                for (PackageHierarchy.Folder hf : ph.getRoot().getChildren()) {
                     buildDeploymentTree( root, hf );
                 }
             }
         } );
     }
 
-    private static void buildDeploymentTree(TreeItem root, PackageHierarchy.Folder fldr) {
+    private static void buildDeploymentTree( TreeItem root, PackageHierarchy.Folder fldr ) {
         if ( fldr.getConfig() != null ) {
             TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getConfig().name ) );
             pkg.setUserObject( fldr.getConfig() );
@@ -239,13 +239,13 @@ public class ExplorerNodeConfig {
         } else {
             TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(), fldr.getName() ) );
             root.addItem( tn );
-            for ( PackageHierarchy.Folder c : fldr.getChildren() ) {
+            for (PackageHierarchy.Folder c : fldr.getChildren()) {
                 buildDeploymentTree( tn, c );
             }
         }
     }
 
-    public static void setupBrowseTree(Tree tree, Map<TreeItem, String> itemWidgets) {
+    public static void setupBrowseTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
 
         TreeItem root = tree.addItem( Util.getHeader( images.ruleAsset(), constants.AssetsTreeView() ) );
 
@@ -256,7 +256,7 @@ public class ExplorerNodeConfig {
         inbox.setState( true );
         root.addItem( inbox );
 
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW) ) {
+        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             final TreeItem byStatus = new TreeItem( Util.getHeader( images.statusSmall(), constants.ByStatus() ) );
             itemWidgets.put( byStatus, STATES_ROOT_ID );
             setupStatesStructure( byStatus, itemWidgets );
@@ -270,7 +270,7 @@ public class ExplorerNodeConfig {
         root.addItem( byCategory );
     }
 
-    private static TreeItem getInboxStructure(Map<TreeItem, String> itemWidgets) {
+    private static TreeItem getInboxStructure( Map<TreeItem, String> itemWidgets ) {
         TreeItem inbox = new TreeItem( Util.getHeader( images.inbox(), constants.Inbox() ) );
 
         TreeItem incomingChanges = new TreeItem( Util.getHeader( images.categorySmall(), constants.IncomingChanges() ) );
@@ -288,18 +288,18 @@ public class ExplorerNodeConfig {
         return inbox;
     }
 
-    public static void setupCategoriesStructure(TreeItem byCategory, final Map<TreeItem, String> itemWidgets) {
+    public static void setupCategoriesStructure( TreeItem byCategory, final Map<TreeItem, String> itemWidgets ) {
         doCategoryNode( byCategory, "/", itemWidgets );
     }
 
-    private static void doCategoryNode(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets) {
+    private static void doCategoryNode( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets ) {
         infanticide( treeItem );
         RepositoryServiceFactory.getCategoryService().loadChildCategories( path, createGenericCallbackForLoadChildCategories( treeItem, path, itemWidgets ) );
     }
 
-    private static GenericCallback<String[]> createGenericCallbackForLoadChildCategories(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets) {
+    private static GenericCallback<String[]> createGenericCallbackForLoadChildCategories( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets ) {
         return new GenericCallback<String[]>() {
-            public void onSuccess(String[] value) {
+            public void onSuccess( String[] value ) {
                 if ( value.length == 0 ) {
                     newRepoDialogIfShowAdminAndPathMatches( path );
                     infanticide( treeItem );
@@ -308,8 +308,8 @@ public class ExplorerNodeConfig {
                 }
             }
 
-            private void createChildNodes(final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets, String[] value) {
-                for ( int i = 0; i < value.length; i++ ) {
+            private void createChildNodes( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets, String[] value ) {
+                for (int i = 0; i < value.length; i++) {
 
                     final String current = value[i];
                     final TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), current ) );
@@ -324,15 +324,15 @@ public class ExplorerNodeConfig {
                 }
             }
 
-            private void newRepoDialogIfShowAdminAndPathMatches(final String path) {
-                if ( path.equals( "/" ) && UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN) ) {
+            private void newRepoDialogIfShowAdminAndPathMatches( final String path ) {
+                if ( path.equals( "/" ) && UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN ) ) {
                     RepositoryServiceFactory.getPackageService().listPackages( createGenericCallbackForListPackages() );
                 }
             }
 
             private GenericCallback<PackageConfigData[]> createGenericCallbackForListPackages() {
                 return new GenericCallback<PackageConfigData[]>() {
-                    public void onSuccess(PackageConfigData[] result) {
+                    public void onSuccess( PackageConfigData[] result ) {
                         if ( result.length == 1 ) {
                             doNewRepoDialog();
                         }
@@ -340,11 +340,11 @@ public class ExplorerNodeConfig {
                 };
             }
 
-            private OpenHandler<TreeItem> createOpenHandlerForTree(final Map<TreeItem, String> itemWidgets, final TreeItem childNode) {
+            private OpenHandler<TreeItem> createOpenHandlerForTree( final Map<TreeItem, String> itemWidgets, final TreeItem childNode ) {
                 return new OpenHandler<TreeItem>() {
                     boolean expanding = false;
 
-                    public void onOpen(OpenEvent<TreeItem> event) {
+                    public void onOpen( OpenEvent<TreeItem> event ) {
                         if ( !expanding && event.getTarget() == childNode ) {
                             expanding = true;
                             String widgetID = itemWidgets.get( event.getTarget() );
@@ -365,14 +365,14 @@ public class ExplorerNodeConfig {
         };
     }
 
-    private static void infanticide(final TreeItem treeNode) {
+    private static void infanticide( final TreeItem treeNode ) {
         treeNode.removeItems();
     }
 
-    public static void setupStatesStructure(final TreeItem byStatus, final Map<TreeItem, String> itemWidgets) {
+    public static void setupStatesStructure( final TreeItem byStatus, final Map<TreeItem, String> itemWidgets ) {
         RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
-            public void onSuccess(String[] value) {
-                for ( int i = 0; i < value.length; i++ ) {
+            public void onSuccess( String[] value ) {
+                for (int i = 0; i < value.length; i++) {
                     TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), value[i] ) );
 
                     //ID for state tabs. 
@@ -384,7 +384,7 @@ public class ExplorerNodeConfig {
         } );
     }
 
-    public static Tree getQAStructure(final Map<TreeItem, String> itemWidgets) {
+    public static Tree getQAStructure( final Map<TreeItem, String> itemWidgets ) {
         Tree tree = new Tree();
         tree.setAnimationEnabled( true );
 

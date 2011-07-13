@@ -22,6 +22,11 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.navigation.*;
+import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.modules.KnowledgeModulesTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 import org.drools.guvnor.client.messages.Constants;
 
 import java.util.ArrayList;

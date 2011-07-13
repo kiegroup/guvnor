@@ -6,14 +6,14 @@ public class CloseTabContentWidgetEvent extends GwtEvent<CloseTabContentWidgetEv
 
     public static Type<CloseTabContentWidgetEventHandler> TYPE = new Type<CloseTabContentWidgetEventHandler>();
 
-    private final String id;
+    private final String key;
 
-    public CloseTabContentWidgetEvent( String id ) {
-        this.id = id;
+    public CloseTabContentWidgetEvent( String key ) {
+        this.key = key;
     }
 
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
     @Override

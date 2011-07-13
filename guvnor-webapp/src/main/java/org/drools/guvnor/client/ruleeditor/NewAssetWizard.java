@@ -27,10 +27,10 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 /**
  * This provides a popup for creating a new rule/asset from scratch. reuses a
@@ -54,8 +54,6 @@ public class NewAssetWizard extends FormStylePopup {
     private RulePackageSelector packageSelector = new RulePackageSelector();
     private RulePackageSelector importedPackageSelector = new RulePackageSelector();
     private GlobalAreaAssetSelector globalAreaAssetSelector;
-    private OpenItemCommand afterCreate;
-    private boolean showCategories;
     private String format;
 
     private final NewAssetFormStyleLayout newAssetLayout = new NewAssetFormStyleLayout();
@@ -86,15 +84,11 @@ public class NewAssetWizard extends FormStylePopup {
     /**
      * This is used when creating a new rule.
      */
-    public NewAssetWizard( OpenItemCommand afterCreate,
-                           boolean showCategories,
-                           String format) {
+    public NewAssetWizard( boolean showCategories,
+                           String format ) {
         super( images.newWiz(),
                 getTitle( format ) );
-        this.showCategories = showCategories;
         this.format = format;
-
-        this.afterCreate = afterCreate;
 
         RadioButton newPackage = new RadioButton( "layoutgroup",
                 constants.CreateNewAsset() ); // NON-NLS
@@ -355,7 +349,7 @@ public class NewAssetWizard extends FormStylePopup {
      * @param uuid
      */
     protected void openEditor( String uuid ) {
-        afterCreate.open( uuid );
+        TabContainer.getInstance().openAsset( uuid );
     }
 
     /**

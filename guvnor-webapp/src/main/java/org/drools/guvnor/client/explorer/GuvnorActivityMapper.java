@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
+import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
 
 public class GuvnorActivityMapper implements ActivityMapper {
     private ClientFactory clientFactory;
@@ -29,21 +30,17 @@ public class GuvnorActivityMapper implements ActivityMapper {
     }
 
     public Activity getActivity( Place place ) {
-        Activity activity = null;
-
-        if ( place instanceof AuthorPerspectivePlace ) {
-            activity = new AuthorPerspectiveActivity( clientFactory );
-        } else if ( place instanceof FindPlace ) {
-            activity = new FindActivity();
+        if ( place instanceof FindPlace ) {
+            return new FindActivity();
         } else if ( place instanceof AssetEditorPlace ) {
-            activity = new AssetEditorActivity();
+            return new AssetEditorActivity();
         } else if ( place instanceof ModuleEditorPlace ) {
-            activity = new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid() ,clientFactory);
-        } else if ( place instanceof IFramePerspectivePlace ) {
-            return new IFramePerspectiveActivity( clientFactory, (IFramePerspectivePlace) place );
+            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(), clientFactory );
+        } else if ( place instanceof ModuleFormatsGrid ) {
+            return new ModuleFormatsGridPlace( (ModuleFormatsGrid) place );
+        } else {
+            return null;
         }
-
-        return activity;
     }
 
 }

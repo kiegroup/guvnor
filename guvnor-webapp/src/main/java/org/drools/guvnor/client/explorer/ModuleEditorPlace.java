@@ -5,7 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class ModuleEditorPlace extends Place {
 
-    private String uuid;
+    private final String uuid;
 
     public ModuleEditorPlace( String uuid ) {
         this.uuid = uuid;

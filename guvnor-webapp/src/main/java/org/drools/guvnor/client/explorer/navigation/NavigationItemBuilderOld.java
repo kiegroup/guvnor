@@ -51,25 +51,4 @@ public abstract class NavigationItemBuilderOld extends Composite
 
     public abstract Tree createTree();
 
-    protected void launchWizard( String format,
-                                 boolean showCats ) {
-        final TabManager tabManager = TabContainer.getInstance();
-
-        NewAssetWizard pop = new NewAssetWizard( new OpenItemCommand() {
-            public void open( String key ) {
-                tabManager.openAsset( key );
-            }
-
-            public void open( MultiViewRow[] rows ) {
-                for (MultiViewRow row : rows) {
-                    tabManager.openAsset( row.uuid );
-                }
-            }
-        },
-                showCats,
-                format );
-
-        pop.show();
-    }
-
 }
