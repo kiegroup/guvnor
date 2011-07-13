@@ -75,14 +75,18 @@ public class FactModelContentHandler extends ContentHandler {
 
     String toDRL(FactMetaModel mm) {
         StringBuilder sb = new StringBuilder();
-        sb.append( "declare " + mm.name );
-        for ( int i = 0; i < mm.annotations.size(); i++ ) {
-            AnnotationMetaModel a = (AnnotationMetaModel) mm.annotations.get( i );
+        sb.append( "declare " + mm.getName() );
+        if ( mm.hasSuperType() ) {
+            sb.append( " extends " );
+            sb.append( mm.getSuperType() );
+        }
+        for ( int i = 0; i < mm.getAnnotations().size(); i++ ) {
+            AnnotationMetaModel a = (AnnotationMetaModel) mm.getAnnotations().get( i );
             sb.append( "\n\t" );
             sb.append( buildAnnotationDRL( a ) );
         }
-        for ( int i = 0; i < mm.fields.size(); i++ ) {
-            FieldMetaModel f = (FieldMetaModel) mm.fields.get( i );
+        for ( int i = 0; i < mm.getFields().size(); i++ ) {
+            FieldMetaModel f = (FieldMetaModel) mm.getFields().get( i );
             sb.append( "\n\t" );
             sb.append( f.name + ": " + f.type );
         }
@@ -105,7 +109,8 @@ public class FactModelContentHandler extends ContentHandler {
         List<FactMetaModel> list = new ArrayList<FactMetaModel>( types.size() );
         for ( TypeDeclarationDescr td : types ) {
             FactMetaModel mm = new FactMetaModel();
-            mm.name = td.getTypeName();
+            mm.setName( td.getTypeName() );
+            mm.setSuperType( td.getSuperTypeName() );
 
             Map<String, TypeFieldDescr> fields = td.getFields();
             for ( Iterator<Map.Entry<String, TypeFieldDescr>> iterator = fields.entrySet().iterator(); iterator.hasNext(); ) {
@@ -115,7 +120,7 @@ public class FactModelContentHandler extends ContentHandler {
                 FieldMetaModel fm = new FieldMetaModel( fieldName,
                                                         descr.getPattern().getObjectType() );
 
-                mm.fields.add( fm );
+                mm.getFields().add( fm );
             }
 
             Map<String, AnnotationDescr> annotations = td.getAnnotations();
@@ -127,7 +132,7 @@ public class FactModelContentHandler extends ContentHandler {
                 AnnotationMetaModel am = new AnnotationMetaModel( annotationName,
                                                                   values );
 
-                mm.annotations.add( am );
+                mm.getAnnotations().add( am );
             }
 
             list.add(mm);

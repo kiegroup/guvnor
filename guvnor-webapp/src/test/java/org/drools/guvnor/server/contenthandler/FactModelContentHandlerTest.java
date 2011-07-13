@@ -81,9 +81,9 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
                       list.size() );
         FactMetaModel mm = list.get( 0 );
         assertEquals( "FooBar",
-                      mm.name );
+                      mm.getName() );
         assertEquals( 0,
-                      mm.fields.size() );
+                      mm.getFields().size() );
     }
 
     @Test
@@ -96,11 +96,11 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
                       list.size() );
         FactMetaModel mm = list.get( 0 );
         assertEquals( "FooBar",
-                      mm.name );
+                      mm.getName() );
         assertEquals( 2,
-                      mm.fields.size() );
-        for ( int i = 0; i < mm.fields.size(); i++ ) {
-            FieldMetaModel fm = (FieldMetaModel) mm.fields.get( 1 );
+                      mm.getFields().size() );
+        for ( int i = 0; i < mm.getFields().size(); i++ ) {
+            FieldMetaModel fm = (FieldMetaModel) mm.getFields().get( 1 );
             if ( fm.name.equals( "f1" ) ) {
                 assertEquals( "f1",
                               fm.name );
@@ -126,13 +126,13 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
                       list.size() );
         FactMetaModel mm = list.get( 0 );
         assertEquals( "FooBar",
-                      mm.name );
+                      mm.getName() );
         assertEquals( 0,
-                      mm.fields.size() );
+                      mm.getFields().size() );
         assertEquals( 1,
-                      mm.annotations.size() );
+                      mm.getAnnotations().size() );
         assertEquals( "event",
-                      mm.annotations.get( 0 ).values.get( "value" ) );
+                      mm.getAnnotations().get( 0 ).values.get( "value" ) );
     }
 
     @Test
@@ -182,16 +182,16 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
                       fm.models.size() );
         FactMetaModel mm = (FactMetaModel) fm.models.get( 0 );
         assertEquals( 1,
-                      mm.fields.size() );
+                      mm.getFields().size() );
         assertEquals( "Foo",
-                      mm.name );
+                      mm.getName() );
 
-        FieldMetaModel fmm = (FieldMetaModel) mm.fields.get( 0 );
+        FieldMetaModel fmm = (FieldMetaModel) mm.getFields().get( 0 );
         assertEquals( "name",
                       fmm.name );
 
-        mm.fields.add( new FieldMetaModel( "age",
-                                           "int" ) );
+        mm.getFields().add( new FieldMetaModel( "age",
+                                                "int" ) );
 
         ch.storeAssetContent( ass,
                               asset );

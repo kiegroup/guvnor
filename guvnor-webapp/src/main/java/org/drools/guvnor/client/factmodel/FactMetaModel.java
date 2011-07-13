@@ -28,12 +28,12 @@ public class FactMetaModel
     implements
     PortableObject {
 
-    private static final long   serialVersionUID = 510L;
+    private static final long         serialVersionUID = 510L;
 
-    public String               name;
-
-    public List<FieldMetaModel> fields           = new ArrayList<FieldMetaModel>();
-    public List<AnnotationMetaModel> annotations = new ArrayList<AnnotationMetaModel>();
+    private String                    name;
+    private String                    superType;
+    private List<FieldMetaModel>      fields           = new ArrayList<FieldMetaModel>();
+    private List<AnnotationMetaModel> annotations      = new ArrayList<AnnotationMetaModel>();
 
     public FactMetaModel() {
     }
@@ -46,6 +46,42 @@ public class FactMetaModel
                          List<FieldMetaModel> fields) {
         this.name = name;
         this.fields = fields;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<FieldMetaModel> getFields() {
+        return fields;
+    }
+
+    public void setFields(List<FieldMetaModel> fields) {
+        this.fields = fields;
+    }
+
+    public List<AnnotationMetaModel> getAnnotations() {
+        return annotations;
+    }
+
+    public void setAnnotations(List<AnnotationMetaModel> annotations) {
+        this.annotations = annotations;
+    }
+
+    public void setSuperType(String superType) {
+        this.superType = superType;
+    }
+
+    public String getSuperType() {
+        return this.superType;
+    }
+
+    public boolean hasSuperType() {
+        return this.superType != null;
     }
 
 }

@@ -67,10 +67,11 @@ public class FactModelsEditor extends Composite {
     }
 
     public void addFactModelToStackPanel(final FactMetaModel factMetaModel) {
-        final FactModelEditor editor = new FactModelEditor( factMetaModel );
+        final FactModelEditor editor = new FactModelEditor( factMetaModel,
+                                                            factModels );
 
-        modelNameHelper.getTypeDescriptions().put( factMetaModel.name,
-                                                   factMetaModel.name );
+        modelNameHelper.getTypeDescriptions().put( factMetaModel.getName(),
+                                                   factMetaModel.getName() );
 
         editor.setModelNameHelper( modelNameHelper );
 
@@ -95,7 +96,7 @@ public class FactModelsEditor extends Composite {
             public void execute() {
                 int index = factModels.indexOf( factMetaModel );
 
-                modelNameHelper.getTypeDescriptions().remove( factMetaModel.name );
+                modelNameHelper.getTypeDescriptions().remove( factMetaModel.getName() );
                 factModels.remove( factMetaModel );
                 factModelsPanel.remove( index );
             }
@@ -167,7 +168,8 @@ public class FactModelsEditor extends Composite {
 
     @UiHandler("addFactIcon")
     void addFactClick(ClickEvent event) {
-        final FactEditorPopup popup = new FactEditorPopup( modelNameHelper );
+        final FactEditorPopup popup = new FactEditorPopup( modelNameHelper,
+                                                           factModels );
 
         popup.setOkCommand( new Command() {
             public void execute() {

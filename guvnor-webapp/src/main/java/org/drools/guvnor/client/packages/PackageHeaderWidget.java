@@ -117,9 +117,11 @@ public class PackageHeaderWidget extends Composite {
                         public void onClick(ClickEvent event) {
                             if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFactType() ) ) {
                                 int i = importList.getSelectedIndex();
-                                importList.removeItem( i );
-                                t.imports.remove( i );
-                                updateHeader( t );
+                                if ( i >= 0 ) {
+                                    importList.removeItem( i );
+                                    t.imports.remove( i );
+                                    updateHeader( t );
+                                }
                             }
                         }
                     } );

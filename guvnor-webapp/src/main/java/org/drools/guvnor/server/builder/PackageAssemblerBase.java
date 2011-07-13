@@ -84,8 +84,9 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         // firstly we loadup the classpath
         builder.addPackage(new PackageDescr(packageItem.getName()));
 
-        loadDeclaredTypes();
+        //Add package header first as declared types may depend on an import (see https://issues.jboss.org/browse/JBRULES-3133)
         loadPackageHeader();
+        loadDeclaredTypes();
 
         if (doesPackageBuilderHaveAnyErrors()) {
             return false;
@@ -212,8 +213,8 @@ abstract class PackageAssemblerBase extends AssemblerBase {
         if (isEmpty(drl)) {
             return;
         }
-
-        builder.addPackageFromDrl(new StringReader(drl));
+       
+        builder.addPackageFromDrl( new StringReader( drl ) );
     }
 
     private void recordBuilderErrors(String format,
