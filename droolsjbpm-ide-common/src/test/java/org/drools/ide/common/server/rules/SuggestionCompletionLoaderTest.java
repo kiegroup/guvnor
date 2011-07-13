@@ -257,6 +257,149 @@ public class SuggestionCompletionLoaderTest {
     }
 
     @Test
+    public void testGeneratedBeansExtendsSimple() throws Exception {
+        String packageDrl = "package foo \n"
+                            + "declare Bean1 \n"
+                            + "age: int \n"
+                            + "name : String \n"
+                            + "end \n"
+                            + "declare Bean2 extends Bean1\n"
+                            + "cheese : String \n"
+                            + "end";
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( packageDrl,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertFalse( loader.hasErrors() );
+        assertNotNull( eng );
+
+        assertEquals( 2,
+                      eng.getFactTypes().length );
+        assertEquals( "Bean1",
+                      eng.getFactTypes()[0] );
+        assertEquals( "Bean2",
+                      eng.getFactTypes()[1] );
+
+        assertEquals( 3,
+                      eng.getFieldCompletions( "Bean1" ).length );
+        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+                      eng.getFieldType( "Bean1",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      eng.getFieldType( "Bean1",
+                                        "age" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Bean1",
+                                        "name" ) );
+
+        assertEquals( 4,
+                      eng.getFieldCompletions( "Bean2" ).length );
+        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+                      eng.getFieldType( "Bean2",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      eng.getFieldType( "Bean2",
+                                        "age" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Bean2",
+                                        "name" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Bean2",
+                                        "cheese" ) );
+    }
+
+    @Test
+    public void testGeneratedBeansExtendsPOJOSimple() throws Exception {
+        String packageDrl = "package foo \n"
+                            + "import org.drools.Address\n"
+                            + "declare Address \n"
+                            + "end";
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( packageDrl,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertFalse( loader.hasErrors() );
+        assertNotNull( eng );
+
+        assertEquals( 1,
+                      eng.getFactTypes().length );
+        assertEquals( "Address",
+                      eng.getFactTypes()[0] );
+
+        assertEquals( 4,
+                      eng.getFieldCompletions( "Address" ).length );
+        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+                      eng.getFieldType( "Address",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "street" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "suburb" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "zipCode" ) );
+    }
+    
+    @Test
+    public void testGeneratedBeansExtendsPOJOComplex() throws Exception {
+        String packageDrl = "package foo \n"
+                            + "import org.drools.Address\n"
+                            + "declare Address \n"
+                            + "end\n"
+                            + "declare Address2 extends Address\n"
+                            + "isNicePlace : Boolean \n"
+                            + "end";
+        SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
+        SuggestionCompletionEngine eng = loader.getSuggestionEngine( packageDrl,
+                                                                     new ArrayList(),
+                                                                     new ArrayList() );
+        assertFalse( loader.hasErrors() );
+        assertNotNull( eng );
+
+        assertEquals( 2,
+                      eng.getFactTypes().length );
+        assertEquals( "Address",
+                      eng.getFactTypes()[0] );
+        assertEquals( "Address2",
+                      eng.getFactTypes()[1] );
+
+        assertEquals( 4,
+                      eng.getFieldCompletions( "Address" ).length );
+        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+                      eng.getFieldType( "Address",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "street" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "suburb" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address",
+                                        "zipCode" ) );
+
+        assertEquals( 5,
+                      eng.getFieldCompletions( "Address2" ).length );
+        assertEquals( SuggestionCompletionEngine.TYPE_THIS,
+                      eng.getFieldType( "Address2",
+                                        "this" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address2",
+                                        "street" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address2",
+                                        "suburb" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      eng.getFieldType( "Address2",
+                                        "zipCode" ) );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      eng.getFieldType( "Address2",
+                                        "isNicePlace" ) );
+    }
+
+    @Test
     public void testGlobal() throws Exception {
         SuggestionCompletionLoader loader = new SuggestionCompletionLoader();
         SuggestionCompletionEngine eng = loader.getSuggestionEngine( "package foo \n global org.drools.Person p",
