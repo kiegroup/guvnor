@@ -142,6 +142,175 @@ public class BRMSPackageBuilderTest {
     }
 
     @Test
+    public void testGeneratedBeansExtendsSimple() throws Exception {
+
+        BRMSPackageBuilder builder = new BRMSPackageBuilder();
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "declare Bean1 \n"
+                        + "name: String\n"
+                        + "end\n"
+                        + "declare Bean2 extends Bean1 \n"
+                        + "age: int\n" +
+                        "end";
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String rule1 = "rule foo1 \n"
+                          + "when \n"
+                          + "Bean1(name=='mike') \n"
+                          + "then \n"
+                          + "System.out.println(42);\n"
+                          + "end";
+        builder.addPackageFromDrl( new StringReader( rule1 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        String rule2 = "rule foo2 \n"
+                       + "when \n"
+                       + "Bean2(age==27, name=='mike') \n"
+                       + "then \n"
+                       + "System.out.println(42);\n"
+                       + "end";
+
+        builder.addPackageFromDrl( new StringReader( rule2 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        assertEquals( "foo.bar",
+                      builder.getPackage().getName() );
+    }
+
+    @Test
+    public void testGeneratedBeansExtendsPOJOSimple() throws Exception {
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( jis );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder( new Properties(),
+                                                             new ClassLoaderBuilder( jarInputStreams ).buildClassLoader() );
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "import com.billasurf.Person\n"
+                        + "declare Person \n"
+                        + "end\n";
+
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String rule1 = "rule foo \n"
+            + "when \n"
+            + "Person(age==27, name=='mike') \n"
+            + "then \n"
+            + "System.out.println(42);\n"
+            + "end";
+        builder.addPackageFromDrl( new StringReader( rule1 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        assertEquals( "foo.bar",
+                      builder.getPackage().getName() );
+    }
+    
+    @Test
+    public void testGeneratedBeansExtendsPOJOComplex1() throws Exception {
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( jis );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder( new Properties(),
+                                                             new ClassLoaderBuilder( jarInputStreams ).buildClassLoader() );
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "import com.billasurf.Person\n"
+                        + "declare Person \n"
+                        + "end\n"
+                        + "declare Person2 \n"
+                        + "board : String\n"
+                        + "end\n";
+
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String rule1 = "rule foo1 \n"
+                       + "when \n"
+                       + "Person2(age==27, name=='mike', board=='regular') \n"
+                       + "then \n"
+                       + "System.out.println(42);\n"
+                       + "end";
+        builder.addPackageFromDrl( new StringReader( rule1 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        assertEquals( "foo.bar",
+                      builder.getPackage().getName() );
+    }
+
+    @Test
+    public void testGeneratedBeansExtendsPOJOComplex2() throws Exception {
+
+        JarInputStream jis = new JarInputStream( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
+        List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
+        jarInputStreams.add( jis );
+        BRMSPackageBuilder builder = new BRMSPackageBuilder( new Properties(),
+                                                             new ClassLoaderBuilder( jarInputStreams ).buildClassLoader() );
+
+        PackageDescr pc = new PackageDescr( "foo.bar" );
+        builder.addPackage( pc );
+
+        String header = "import com.billasurf.Person\n"
+                        + "declare Person \n"
+                        + "end\n"
+                        + "declare Person2 \n"
+                        + "board : String\n"
+                        + "end\n";
+
+        builder.addPackageFromDrl( new StringReader( header ) );
+        assertFalse( builder.hasErrors() );
+
+        String rule1 = "rule foo1 \n"
+                       + "when \n"
+                       + "Person(age==27, name=='mike') \n"
+                       + "then \n"
+                       + "System.out.println(42);\n"
+                       + "end";
+        builder.addPackageFromDrl( new StringReader( rule1 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        String rule2 = "rule foo2 \n"
+                       + "when \n"
+                       + "Person2(age==27, name=='mike', board=='regular') \n"
+                       + "then \n"
+                       + "System.out.println(42);\n"
+                       + "end";
+        builder.addPackageFromDrl( new StringReader( rule2 ) );
+        if ( builder.hasErrors() ) {
+            System.err.println( builder.getErrors().getErrors()[0].getMessage() );
+        }
+        assertFalse( builder.hasErrors() );
+
+        assertEquals( "foo.bar",
+                      builder.getPackage().getName() );
+    }
+
+    @Test
     public void testHasDSL() {
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
         assertFalse(builder.hasDSL());
