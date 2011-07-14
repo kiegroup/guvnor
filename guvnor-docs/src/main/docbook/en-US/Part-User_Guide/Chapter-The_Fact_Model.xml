@@ -270,6 +270,97 @@
       </section>
 
       <section>
+        <title>Extending the model</title>
+
+        <para>Declarative types can extend existing:- </para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Java classes uploaded as part of a JAR (POJO) model</para>
+          </listitem>
+
+          <listitem>
+            <para>Other declared types in the same package.</para>
+          </listitem>
+        </itemizedlist>
+
+        <figure>
+          <title>Extending an existing type</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/ModelDeclarative8.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <figure>
+          <title>Declarative summary showing types that extend other
+          types</title>
+
+          <mediaobject>
+            <imageobject>
+              <imagedata align="center"
+                         fileref="images/Chapter-Guvnor/ModelDeclarative9.png"
+                         format="PNG" scalefit="1"></imagedata>
+            </imageobject>
+          </mediaobject>
+        </figure>
+
+        <section>
+          <title>Extending a Java class</title>
+
+          <para>To extend a Java class the following steps need to be
+          completed:-</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Import the applicable Java JAR into Guvnor</para>
+            </listitem>
+
+            <listitem>
+              <para>If the Java package name in which the class belongs is
+              different to the Guvnor package name in to which the JAR has
+              been imported ensure the Guvnor package imports the class from
+              which you want to extend. This is normally completed for you
+              automatically when you upload a JAR model however if you have
+              multiple classes with the same name in the JAR you should check
+              the appropriate one has been imported.</para>
+            </listitem>
+
+            <listitem>
+              <para>Within the Declarative Modelling screen define an empty
+              type (i.e. with no fields) of the same name as that you want to
+              extend.</para>
+            </listitem>
+
+            <listitem>
+              <para>Create a new declarative type as appropriate, extending
+              the empty declaration created in the preceeding step.</para>
+            </listitem>
+          </itemizedlist>
+
+          <note>
+            <para>Only properties on Java classes that have both a "getter"
+            and "setter" following standard Java Bean conventions are
+            available on the declared sub-type. This is because the
+            declarative symantics imply all properties on declared types have
+            both accessors and mutators.</para>
+          </note>
+        </section>
+
+        <section>
+          <title>Extending existing declared types</title>
+
+          <para>To extend an existing declared type simply select the
+          appropriate type from the "Type extends" dropdown when defining the
+          sub-type.</para>
+        </section>
+      </section>
+
+      <section>
         <title>Consuming a declarative model from Java</title>
 
         <para>Declared types are generated at knowledge base compilation time,
