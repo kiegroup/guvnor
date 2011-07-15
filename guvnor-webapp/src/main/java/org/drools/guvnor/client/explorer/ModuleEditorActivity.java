@@ -9,7 +9,6 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 public class ModuleEditorActivity extends AbstractActivity {
 
@@ -29,15 +28,13 @@ public class ModuleEditorActivity extends AbstractActivity {
 
         view.showLoadingPackageInformationMessage();
 
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( uuid,
+        clientFactory.getPackageService().loadPackageConfig( uuid,
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess( PackageConfigData packageConfigData ) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
                         panel.setWidget( new PackageEditorWrapper( packageConfigData, clientFactory ) );
 
                         LoadingPopup.close();
-
-                        panel.setWidget( new Label( "MODULE" ) );
                     }
                 } );
     }

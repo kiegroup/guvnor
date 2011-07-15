@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -87,6 +88,18 @@ public class KnowledgeModulesTreeTest {
                 modulesNewAssetMenuView
         );
 
+        GlobalAreaTreeItemView globalAreaTreeItemView = mock( GlobalAreaTreeItemView.class );
+        when(
+                navigationViewFactory.getGlobalAreaTreeItemView()
+        ).thenReturn(
+                globalAreaTreeItemView
+        );
+        EventBus eventBus = mock( EventBus.class );
+        when(
+                clientFactory.getEventBus()
+        ).thenReturn(
+                eventBus
+        );
 
         presenter = new KnowledgeModulesTree( clientFactory );
     }
