@@ -272,7 +272,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         final ListBox box = new ListBox();
 
-        if ( this.constraint.getValue() == null ) {
+        if ( this.constraint.getValue() == null || this.constraint.getValue().equals( "" ) ) {
             box.addItem( constants.Choose() );
         }
 
