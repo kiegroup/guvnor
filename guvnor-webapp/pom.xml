@@ -85,6 +85,24 @@
         </executions>
       </plugin>
       <plugin>
+              <artifactId>maven-antrun-plugin</artifactId>
+              <inherited>false</inherited>
+              <executions>
+                <execution>
+                  <id>clean gwtutil classes</id>
+                  <phase>prepare-package</phase>
+                  <configuration>
+                    <tasks>
+                      <delete dir="${project.build.directory}/classes/org/drools/guvnor/gwtutil"/>
+                    </tasks>
+                  </configuration>
+                  <goals>
+                    <goal>run</goal>
+                  </goals>
+                </execution>
+              </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
