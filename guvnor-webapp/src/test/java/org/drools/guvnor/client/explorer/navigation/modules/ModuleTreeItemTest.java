@@ -71,7 +71,7 @@ public class ModuleTreeItemTest {
         ).thenReturn(
                 "mockUuid"
         );
-        new ModuleTreeItem( clientFactory, treeItem, packageConfigData );
+        new ModuleTreeSelectableItem( clientFactory, treeItem, packageConfigData );
 
         verify( view ).setRootItem( treeItem );
 

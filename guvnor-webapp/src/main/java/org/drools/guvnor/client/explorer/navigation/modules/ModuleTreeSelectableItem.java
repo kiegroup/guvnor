@@ -16,25 +16,20 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+
 import com.google.gwt.user.client.ui.IsTreeItem;
-import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ModulesTreeItemBaseView
-    extends
-    IsWidget {
+public class ModuleTreeSelectableItem extends ModuleTreeItem {
 
-    interface Presenter {
-        void onModuleSelected(Object userObject);
+    public ModuleTreeSelectableItem(ClientFactory clientFactory,
+                                    IsTreeItem treeItem,
+                                    PackageConfigData packageConfigData) {
+        super( clientFactory,
+               treeItem );
+        this.view.setRootUserObject( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
-
-    void setPresenter(Presenter presenter);
-
-    IsTreeItem addModulesTreeItem();
-
-    IsTreeItem addModuleTreeItem(IsTreeItem parentTreeItem,
-                                 String moduleName);
-
-    IsTreeItem addModuleTreeSelectableItem(IsTreeItem parentTreeItem,
-                                           String moduleName);
 
 }

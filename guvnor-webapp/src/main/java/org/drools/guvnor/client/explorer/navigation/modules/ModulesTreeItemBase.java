@@ -24,12 +24,17 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
-public abstract class ModulesTreeItemBase implements IsWidget, Presenter {
+public abstract class ModulesTreeItemBase
+    implements
+    IsWidget,
+    Presenter {
 
+    protected PackageHierarchy        packageHierarchy = new PackageHierarchyNested();
+    protected ClientFactory           clientFactory;
     protected ModulesTreeItemBaseView view;
-    protected ClientFactory clientFactory;
 
-    public ModulesTreeItemBase( ClientFactory clientFactory, ModulesTreeItemBaseView view ) {
+    public ModulesTreeItemBase(ClientFactory clientFactory,
+                               ModulesTreeItemBaseView view) {
         this.view = view;
         view.setPresenter( this );
         this.clientFactory = clientFactory;
@@ -40,36 +45,48 @@ public abstract class ModulesTreeItemBase implements IsWidget, Presenter {
         fillModulesTree( view.addModulesTreeItem() );
     }
 
-    protected abstract void fillModulesTree( final IsTreeItem treeItem );
+    protected abstract void fillModulesTree(final IsTreeItem treeItem);
 
-    public void onModuleSelected( Object userObject ) {
+    public void onModuleSelected(Object userObject) {
         if ( userObject instanceof Place ) {
             clientFactory.getPlaceController().goTo( (Place) userObject );
         }
     }
 
-    protected void addModules( PackageConfigData[] packageConfigDatas, IsTreeItem treeItem ) {
-        for (PackageConfigData packageConfigData : packageConfigDatas) {
-            addSubPackages(
-                    createModuleTreeItem( treeItem, packageConfigData ),
-                    packageConfigData.getSubPackages() );
+    protected void addModules(PackageConfigData[] packageConfigDatas,
+                              IsTreeItem treeItem) {
+        
+        for ( PackageConfigData packageConfigData : packageConfigDatas ) {
+            packageHierarchy.addPackage( packageConfigData );
+        }
+
+        Folder rootFolder = packageHierarchy.getRootFolder();
+        for ( Folder childFolder : rootFolder.getChildren() ) {
+            createModuleTreeItem( treeItem,
+                                  childFolder );
         }
     }
 
-    protected void addSubPackages( ModuleTreeItem moduleTreeItem, PackageConfigData[] subPackages ) {
-        if ( subPackages != null ) {
-            addModules(
-                    subPackages,
-                    moduleTreeItem.getRootItem() );
+    protected ModuleTreeItem createModuleTreeItem(IsTreeItem treeItem,
+                                                  Folder folder) {
+        ModuleTreeItem mti = null;
+        String folderName = folder.getFolderName();
+        PackageConfigData conf = folder.getPackageConfigData();
+        if ( conf != null ) {
+            mti = new ModuleTreeSelectableItem( clientFactory,
+                                                view.addModuleTreeSelectableItem( treeItem,
+                                                                                  folderName ),
+                                                conf );
+        } else {
+            mti = new ModuleTreeItem( clientFactory,
+                                      view.addModuleTreeItem( treeItem,
+                                                              folderName ) );
         }
-    }
-
-    protected ModuleTreeItem createModuleTreeItem( IsTreeItem treeItem, PackageConfigData packageConfigData ) {
-        return new ModuleTreeItem(
-                clientFactory,
-                view.addModuleTreeItem( treeItem, packageConfigData.getName() ),
-                packageConfigData
-        );
+        for ( Folder childFolder : folder.getChildren() ) {
+            createModuleTreeItem( mti.getRootItem(),
+                                  childFolder ).getRootItem();
+        }
+        return mti;
     }
 
     public Widget asWidget() {

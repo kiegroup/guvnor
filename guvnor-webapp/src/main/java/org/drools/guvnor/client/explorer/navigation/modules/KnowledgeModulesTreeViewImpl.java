@@ -17,43 +17,63 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KnowledgeModulesTreeViewImpl extends Composite implements KnowledgeModulesTreeView {
+public class KnowledgeModulesTreeViewImpl extends Composite
+    implements
+    KnowledgeModulesTreeView {
 
     interface KnowledgeModulesTreeViewImplBinder
             extends
             UiBinder<Widget, KnowledgeModulesTreeViewImpl> {
     }
 
+    private Presenter                                 presenter;
+
     private static KnowledgeModulesTreeViewImplBinder uiBinder = GWT.create( KnowledgeModulesTreeViewImplBinder.class );
 
     @UiField
-    SimplePanel menuContainer;
+    SimplePanel                                       menuContainer;
 
     @UiField
-    SimplePanel modulesTreeContainer;
+    CheckBox                                          chkIsFlatTreeHierarchy;
 
     @UiField
-    SimplePanel globalModulesTreeContainer;
+    SimplePanel                                       modulesTreeContainer;
+
+    @UiField
+    SimplePanel                                       globalModulesTreeContainer;
 
     public KnowledgeModulesTreeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    public void setNewAssetMenu( ModulesNewAssetMenu modulesNewAssetMenu ) {
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void setNewAssetMenu(ModulesNewAssetMenu modulesNewAssetMenu) {
         menuContainer.setWidget( modulesNewAssetMenu );
     }
 
-    public void setGlobalAreaTreeItem( GlobalAreaTreeItem globalAreaTreeItem ) {
+    public void setGlobalAreaTreeItem(GlobalAreaTreeItem globalAreaTreeItem) {
         globalModulesTreeContainer.setWidget( globalAreaTreeItem.asWidget() );
     }
 
-    public void setKnowledgeModulesTreeItem( KnowledgeModulesTreeItem knowledgeModulesTreeItem ) {
+    public void setKnowledgeModulesTreeItem(KnowledgeModulesTreeItem knowledgeModulesTreeItem) {
         modulesTreeContainer.setWidget( knowledgeModulesTreeItem );
     }
+
+    @UiHandler("chkIsFlatTreeHierarchy")
+    public void doValueChange(ValueChangeEvent<Boolean> event) {
+        presenter.setPackageHierarchy( event.getValue() );
+    }
+
 }

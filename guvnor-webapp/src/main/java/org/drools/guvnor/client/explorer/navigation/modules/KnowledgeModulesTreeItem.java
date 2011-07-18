@@ -16,41 +16,53 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.packages.ChangeModulePackageHierarchyEvent;
+import org.drools.guvnor.client.packages.ChangeModulePackageHierarchyEventHandler;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
+import com.google.gwt.user.client.ui.IsTreeItem;
 
 public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
 
-    public KnowledgeModulesTreeItem( ClientFactory clientFactory ) {
-        super(
-                clientFactory,
-                clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeItemView()
-        );
+    public KnowledgeModulesTreeItem(ClientFactory clientFactory) {
+        super( clientFactory,
+               clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeItemView() );
 
         setRefreshHandler( clientFactory );
+        setPackageHierarchyChangeHandler( clientFactory );
     }
 
-    private void setRefreshHandler( ClientFactory clientFactory ) {
-        clientFactory.getEventBus().addHandler(
-                RefreshModuleListEvent.TYPE,
-                new RefreshModuleListEventHandler() {
-                    public void onRefreshList( RefreshModuleListEvent refreshModuleListEvent ) {
-                        getView().clearModulesTreeItem();
-                        setUpRootItem();
-                    }
-                } );
+    private void setRefreshHandler(ClientFactory clientFactory) {
+        clientFactory.getEventBus().addHandler( RefreshModuleListEvent.TYPE,
+                                                new RefreshModuleListEventHandler() {
+                                                    public void onRefreshList(RefreshModuleListEvent refreshModuleListEvent) {
+                                                        getView().clearModulesTreeItem();
+                                                        setUpRootItem();
+                                                    }
+                                                } );
+    }
+
+    private void setPackageHierarchyChangeHandler(ClientFactory clientFactory) {
+        clientFactory.getEventBus().addHandler( ChangeModulePackageHierarchyEvent.TYPE,
+                                                new ChangeModulePackageHierarchyEventHandler() {
+                                                    public void onChangeModulePackageHierarchy(ChangeModulePackageHierarchyEvent event) {
+                                                        getView().clearModulesTreeItem();
+                                                        packageHierarchy = event.getPackageHierarchy();
+                                                        setUpRootItem();
+                                                    }
+                                                } );
     }
 
     @Override
-    protected void fillModulesTree( final IsTreeItem treeItem ) {
+    protected void fillModulesTree(final IsTreeItem treeItem) {
         clientFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
-            public void onSuccess( PackageConfigData[] packageConfigDatas ) {
-                addModules( packageConfigDatas, treeItem );
+            public void onSuccess(PackageConfigData[] packageConfigDatas) {
+                addModules( packageConfigDatas,
+                            treeItem );
             }
         } );
     }

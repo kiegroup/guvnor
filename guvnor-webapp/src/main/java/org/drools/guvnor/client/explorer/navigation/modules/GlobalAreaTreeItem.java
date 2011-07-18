@@ -33,7 +33,7 @@ public class GlobalAreaTreeItem extends ModulesTreeItemBase {
     protected void fillModulesTree( final IsTreeItem treeItem ) {
         clientFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
             public void onSuccess( PackageConfigData packageConfigData ) {
-                new ModuleTreeItem(
+                new ModuleTreeSelectableItem(
                         clientFactory,
                         treeItem,
                         packageConfigData

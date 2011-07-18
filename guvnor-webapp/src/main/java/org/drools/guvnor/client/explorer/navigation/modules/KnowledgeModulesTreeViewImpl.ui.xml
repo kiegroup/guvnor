@@ -18,6 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+
   <gwt:DockLayoutPanel>
     <gwt:north size="25">
       <gwt:SimplePanel ui:field="menuContainer"/>
@@ -30,7 +32,12 @@
         </gwt:VerticalPanel>
       </gwt:ScrollPanel>
     </gwt:center>
+    <gwt:south size="25">
+      <gwt:HorizontalPanel>
+        <gwt:CheckBox ui:field="chkIsFlatTreeHierarchy"/>
+        <gwt:Label text="{i18n.ShowFlatPackageHierarchy}"/>
+        </gwt:HorizontalPanel>
+    </gwt:south>    
   </gwt:DockLayoutPanel>
-
 
 </ui:UiBinder>

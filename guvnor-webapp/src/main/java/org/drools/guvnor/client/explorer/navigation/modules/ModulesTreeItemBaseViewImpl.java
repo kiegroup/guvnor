@@ -12,13 +12,15 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
 
-public abstract class ModulesTreeItemBaseViewImpl implements ModulesTreeItemBaseView {
+public abstract class ModulesTreeItemBaseViewImpl
+    implements
+    ModulesTreeItemBaseView {
 
     protected static Constants constants = GWT.create( Constants.class );
-    protected static Images images = GWT.create( Images.class );
+    protected static Images    images    = GWT.create( Images.class );
 
-    protected final Tree tree = new Tree();
-    private Presenter presenter;
+    protected final Tree       tree      = new Tree();
+    private Presenter          presenter;
 
     public ModulesTreeItemBaseViewImpl() {
         tree.setStyleName( "guvnor-Tree" );
@@ -29,14 +31,14 @@ public abstract class ModulesTreeItemBaseViewImpl implements ModulesTreeItemBase
 
     private void addSelectionHandler() {
         tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
-            public void onSelection( SelectionEvent<TreeItem> treeItemSelectionEvent ) {
+            public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
                 presenter.onModuleSelected(
                         treeItemSelectionEvent.getSelectedItem().getUserObject() );
             }
         } );
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -47,11 +49,16 @@ public abstract class ModulesTreeItemBaseViewImpl implements ModulesTreeItemBase
 
     protected abstract SafeHtml getTreeHeader();
 
-    public IsTreeItem addModuleTreeItem( IsTreeItem parentTreeItem, String moduleName ) {
-        return parentTreeItem.asTreeItem().addItem(
-                Util.getHeader(
-                        images.packages(),
-                        moduleName ) );
+    public IsTreeItem addModuleTreeItem(IsTreeItem parentTreeItem,
+                                        String moduleName) {
+        return parentTreeItem.asTreeItem().addItem( Util.getHeader( images.emptyPackage(),
+                                                                    moduleName ) );
+    }
+
+    public IsTreeItem addModuleTreeSelectableItem(IsTreeItem parentTreeItem,
+                                                  String moduleName) {
+        return parentTreeItem.asTreeItem().addItem( Util.getHeader( images.packages(),
+                                                                    moduleName ) );
     }
 
     public Widget asWidget() {

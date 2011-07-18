@@ -16,19 +16,22 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.packages.ChangeModulePackageHierarchyEvent;
 
-public class KnowledgeModulesTree {
+public class KnowledgeModulesTree
+    implements
+    KnowledgeModulesTreeView.Presenter {
 
     private KnowledgeModulesTreeView view;
-    private ClientFactory clientFactory;
+    private ClientFactory            clientFactory;
 
-    public KnowledgeModulesTree( ClientFactory clientFactory ) {
+    public KnowledgeModulesTree(ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
         this.view = clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeView();
+        this.view.setPresenter( this );
         addRootPanels();
     }
 
@@ -42,4 +45,13 @@ public class KnowledgeModulesTree {
                     new ModulesNewAssetMenu( clientFactory ) );
         }
     }
+
+    public void setPackageHierarchy(boolean isFlat) {
+        ChangeModulePackageHierarchyEvent event = new ChangeModulePackageHierarchyEvent( new PackageHierarchyFlat() );
+        if ( !isFlat ) {
+            event = new ChangeModulePackageHierarchyEvent( new PackageHierarchyNested() );
+        }
+        clientFactory.getEventBus().fireEvent( event );
+    }
+
 }
