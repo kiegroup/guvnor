@@ -15,6 +15,15 @@
  */
 package org.drools.guvnor.client.explorer;
 
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
+
 public class MultiActivityManagerTest {
+    @Test
+    public void testMock() throws Exception {
+        assertTrue( true );
+    }
+
     // TODO : test no tabbed panel set -Rikkola-
 }
