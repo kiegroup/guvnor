@@ -21,12 +21,10 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
 
     private final ClientFactory clientFactory;
-    private NavigationViewFactory navigationViewFactory;
     private KnowledgeModulesTree knowledgeModulesTree;
 
     public KnowledgeModulesTreeBuilder( ClientFactory clientFactory ) {
@@ -48,12 +46,7 @@ public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
         if ( knowledgeModulesTree == null ) {
             createKnowledgeModuleTree();
         }
-        return navigationViewFactory.getKnowledgeModulesTreeView();
-    }
-
-    @Override
-    public void setViewFactory( NavigationViewFactory navigationViewFactory ) {
-        this.navigationViewFactory = navigationViewFactory;
+        return clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeView();
     }
 
     private void createKnowledgeModuleTree() {

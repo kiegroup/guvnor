@@ -22,7 +22,6 @@ import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class QATreeBuilder extends NavigationItemBuilder {
 
@@ -30,25 +29,20 @@ public class QATreeBuilder extends NavigationItemBuilder {
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_QA);
+        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_QA );
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader(view);
-        header.setName(qaTree.getName());
-        header.setImageResource(qaTree.getImage());
+        StackItemHeader header = new StackItemHeader( view );
+        header.setName( qaTree.getName() );
+        header.setImageResource( qaTree.getImage() );
         return view;
     }
 
     @Override
     public IsWidget getContent() {
         return qaTree.createContent();
-    }
-
-    @Override
-    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
-        //TODO: Generated code -Rikkola-
     }
 }

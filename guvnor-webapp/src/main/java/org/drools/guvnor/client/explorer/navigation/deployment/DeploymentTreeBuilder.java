@@ -48,9 +48,4 @@ public class DeploymentTreeBuilder extends NavigationItemBuilder {
     public IsWidget getContent() {
         return deploymentTree.createContent();
     }
-
-    @Override
-    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
-        //TODO: Generated code -Rikkola-
-    }
 }

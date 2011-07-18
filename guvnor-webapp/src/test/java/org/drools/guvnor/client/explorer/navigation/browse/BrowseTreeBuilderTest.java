@@ -16,29 +16,40 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class BrowseTreeBuilderTest {
 
     private BrowseTreeBuilder builder;
     private BrowseHeaderView stackItemHeaderView;
     private BrowseTreeView browseTreeView;
+    private ClientFactory clientFactory;
 
     @Before
     public void setUp() throws Exception {
-        builder = new BrowseTreeBuilder();
+        clientFactory = mock( ClientFactory.class );
+        builder = new BrowseTreeBuilder( clientFactory );
         NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
         stackItemHeaderView = setUpHeaderView( navigationViewFactory );
         browseTreeView = setUpContentView( navigationViewFactory );
+    }
+
+    private NavigationViewFactory setUpNavigationFactory() {
+        NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
+        when(
+                clientFactory.getNavigationViewFactory()
+        ).thenReturn(
+                navigationViewFactory
+        );
+        return navigationViewFactory;
     }
 
     @Test
@@ -95,12 +106,6 @@ public class BrowseTreeBuilderTest {
 //        verify(browseTreeView, never()).addRootStateTreeItem();
 //        verify(browseTreeView).addRootCategoryTreeItem();
 //    }
-
-    private NavigationViewFactory setUpNavigationFactory() {
-        NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
-        builder.setViewFactory( navigationViewFactory );
-        return navigationViewFactory;
-    }
 
     private BrowseTreeView setUpContentView( NavigationViewFactory navigationViewFactory ) {
         BrowseTreeView browseTreeView = mock( BrowseTreeView.class );

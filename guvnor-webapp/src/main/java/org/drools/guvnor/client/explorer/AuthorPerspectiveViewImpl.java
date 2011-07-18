@@ -21,7 +21,9 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.explorer.navigation.*;
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBuilder;
@@ -60,7 +62,7 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
-        navigationItemBuilders.add( new BrowseTreeBuilder() );
+        navigationItemBuilders.add( new BrowseTreeBuilder( clientFactory ) );
 
         navigationItemBuilders.add( new KnowledgeModulesTreeBuilder( clientFactory ) );
 

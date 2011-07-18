@@ -40,7 +40,6 @@ import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.rulelist.QueryWidget;
 import org.drools.guvnor.client.widgets.tables.*;
 
 import java.util.Arrays;
@@ -203,16 +202,8 @@ public class TabOpenerImpl implements TabManager {
 
     }
 
-    public void openFind() {
-        if ( !explorerViewCenterPanel.showIfOpen( "FIND" ) ) { // NON-NLS
-            explorerViewCenterPanel.addTab( constants.Find(),
-                    new QueryWidget(),
-                    "FIND" ); // NON-NLS
-
-        }
-    }
-
-    public void openSnapshot( final SnapshotInfo snap ) {
+    public void openSnapshot(
+            final SnapshotInfo snap ) {
         if ( !explorerViewCenterPanel.showIfOpen( snap.name
                 + snap.uuid ) ) {
             LoadingPopup.showMessage( constants.LoadingSnapshot() );

@@ -26,10 +26,7 @@ import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.rpc.ConfigurationService;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.*;
 
 public class ClientFactoryImpl implements ClientFactory {
 
@@ -116,6 +113,14 @@ public class ClientFactoryImpl implements ClientFactory {
             assetEditorFactory = GWT.create( AssetEditorFactory.class );
         }
         return assetEditorFactory;
+    }
+
+    public RepositoryServiceAsync getRepositoryService() {
+        return RepositoryServiceFactory.getService();
+    }
+
+    public CategoryServiceAsync getCategoryService() {
+        return RepositoryServiceFactory.getCategoryService();
     }
 
     private boolean hideTitle() {

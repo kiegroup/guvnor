@@ -26,5 +26,4 @@ public abstract class NavigationItemBuilder {
 
     public abstract IsWidget getContent();
 
-    public abstract void setViewFactory(NavigationViewFactory navigationViewFactory);
 }

@@ -47,8 +47,4 @@ public class AdminTreeBuilder extends NavigationItemBuilder {
         return administrationTree.createContent();
     }
 
-    @Override
-    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
-        //TODO: Generated code -Rikkola-
-    }
 }

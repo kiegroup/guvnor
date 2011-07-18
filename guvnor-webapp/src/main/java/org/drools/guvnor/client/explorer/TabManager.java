@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface TabManager {
 
-    void openFind();
-
     void openAsset( String key );
 
     void openAdministrationSelection( int id );

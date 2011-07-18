@@ -17,13 +17,18 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class BrowseTreeBuilder extends NavigationItemBuilder {
 
-    private NavigationViewFactory navigationViewFactory;
     private BrowseTree browseTree;
+    private final ClientFactory clientFactory;
+
+    public BrowseTreeBuilder( ClientFactory clientFactory ) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public boolean hasPermissionToBuild() {
@@ -32,7 +37,7 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
 
     @Override
     public IsWidget getHeader() {
-        return navigationViewFactory.getBrowseHeaderView();
+        return clientFactory.getNavigationViewFactory().getBrowseHeaderView();
     }
 
     @Override
@@ -41,7 +46,7 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
     }
 
     private BrowseTree getBrowseTree() {
-        if (browseTree == null) {
+        if ( browseTree == null ) {
             createNewBrowseTree();
         }
         return browseTree;
@@ -49,14 +54,7 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
 
     public void createNewBrowseTree() {
         browseTree = new BrowseTree(
-                navigationViewFactory.getBrowseTreeView(),
-                navigationViewFactory.getRepositoryService(),
-                navigationViewFactory.getCategoryService()
+                clientFactory
         );
-    }
-
-    @Override
-    public void setViewFactory(NavigationViewFactory navigationViewFactory) {
-        this.navigationViewFactory = navigationViewFactory;
     }
 }

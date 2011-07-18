@@ -40,7 +40,6 @@ public class NavigationPanelFactory {
 
     private void add( NavigationItemBuilder navigationItemBuilder ) {
         if ( navigationItemBuilder.hasPermissionToBuild() ) {
-            navigationItemBuilder.setViewFactory( navigationViewFactory );
             navigationPanel.add( navigationItemBuilder.getHeader(), navigationItemBuilder.getContent() );
         }
     }
