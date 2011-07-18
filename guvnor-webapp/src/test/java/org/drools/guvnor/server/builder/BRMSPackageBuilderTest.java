@@ -113,6 +113,7 @@ public class BRMSPackageBuilderTest {
         List<JarInputStream> jarInputStreams = new ArrayList<JarInputStream>();
         jarInputStreams.add(jis);
         BRMSPackageBuilder builder = new BRMSPackageBuilder(new Properties(), new ClassLoaderBuilder(jarInputStreams).buildClassLoader());
+        builder.getPackageBuilderConfiguration().setDefaultPackageName( "foo.bar" );
 
         PackageDescr pc = new PackageDescr("foo.bar");
         builder.addPackage(pc);
@@ -145,6 +146,7 @@ public class BRMSPackageBuilderTest {
     public void testGeneratedBeansExtendsSimple() throws Exception {
 
         BRMSPackageBuilder builder = new BRMSPackageBuilder();
+        builder.getPackageBuilderConfiguration().setDefaultPackageName( "foo.bar" );
 
         PackageDescr pc = new PackageDescr( "foo.bar" );
         builder.addPackage( pc );
