@@ -16,15 +16,15 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
-import org.drools.guvnor.client.explorer.PerspectivesPanel;
+import org.drools.guvnor.client.explorer.MultiActivityManager;
 import org.drools.guvnor.client.explorer.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.util.TabbedPanel;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class AppControllerTest {
     private PlaceHistoryHandler placeHistoryHandler;
     private PlaceController placeController;
     private EventBus eventBus;
-    private ActivityManager activityManager;
+    private MultiActivityManager activityManager;
 
     @Before
     public void setUp() throws Exception {
@@ -62,7 +62,7 @@ public class AppControllerTest {
                 configurationService
         );
 
-        activityManager = mock( ActivityManager.class );
+        activityManager = mock( MultiActivityManager.class );
         when(
                 clientFactory.getActivityManager()
         ).thenReturn(
@@ -99,7 +99,7 @@ public class AppControllerTest {
 
     @Test
     public void testActivityManagerIsSetUp() throws Exception {
-        verify( activityManager ).setDisplay( any( PerspectivesPanel.class ) );
+        verify( activityManager ).setTabbedPanel( any( TabbedPanel.class ) );
     }
 
 }

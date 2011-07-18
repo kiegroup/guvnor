@@ -505,7 +505,7 @@ public class PackageEditor extends PrettyFormLayout {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getEventBus().fireEvent( new CloseTabContentWidgetEvent( newAssetUUID ) );
+        clientFactory.getEventBus().fireEvent( new CloseTabEvent( newAssetUUID ) );
 
         openModule( newAssetUUID );
     }
@@ -607,7 +607,7 @@ public class PackageEditor extends PrettyFormLayout {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                clientFactory.getEventBus().fireEvent( new CloseTabContentWidgetEvent( packageConfigData.uuid ) );
+                clientFactory.getEventBus().fireEvent( new CloseTabEvent( packageConfigData.uuid ) );
                 refreshPackageList();
             }
         };

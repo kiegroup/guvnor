@@ -25,6 +25,7 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanelViewImpl extends Composite
         implements
@@ -81,13 +82,8 @@ public class PerspectivesPanelViewImpl extends Composite
         this.userName.setInnerText( userName );
     }
 
-    public void setWidget( String title, IsWidget widget, String id ) {
-        explorerCenterPanel.addTab( title, widget, id );
-//        perspective.clear();
-//        Widget w = widget.asWidget();
-//        w.setHeight( "100%" );
-//        w.setWidth( "100%" );
-//        perspective.add( w );
+    public TabbedPanel getTabbedPanel(){
+        return explorerCenterPanel;
     }
 
     public void addPerspectiveToList( String perspectiveId,

@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.*;
@@ -56,8 +55,8 @@ public class AppController {
     }
 
     private void setUpActivityMapper() {
-        ActivityManager activityManager = clientFactory.getActivityManager();
-        activityManager.setDisplay( perspectivesPanel );
+        MultiActivityManager activityManager = clientFactory.getActivityManager();
+        activityManager.setTabbedPanel( perspectivesPanel.getTabbedPanel() );
     }
 
     public IsWidget getMainPanel() {

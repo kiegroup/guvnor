@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.util.TabbedPanel;
 
 public interface PerspectivesPanelView extends IsWidget {
 
@@ -28,7 +29,7 @@ public interface PerspectivesPanelView extends IsWidget {
 
     void setUserName(String userName);
 
-    void setWidget(String title, IsWidget widget, String id);
-
     void addPerspectiveToList(String perspectiveId, String perspectiveName);
+
+    TabbedPanel getTabbedPanel();
 }

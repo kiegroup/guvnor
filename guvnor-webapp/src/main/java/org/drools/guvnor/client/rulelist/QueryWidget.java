@@ -24,7 +24,6 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.explorer.TabContentWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -33,7 +32,7 @@ import org.drools.guvnor.client.widgets.tables.QueryPagedTable;
 
 import java.util.*;
 
-public class QueryWidget extends Composite implements TabContentWidget {
+public class QueryWidget extends Composite {
 
     private Constants constants = ((Constants) GWT.create( Constants.class ));
 
@@ -231,13 +230,5 @@ public class QueryWidget extends Composite implements TabContentWidget {
         advancedDisclosure.setContent( container );
 
         layout.add( advancedDisclosure );
-    }
-
-    public String getTabTitle() {
-        return constants.Find();
-    }
-
-    public String getID() {
-        return "FIND";
     }
 }

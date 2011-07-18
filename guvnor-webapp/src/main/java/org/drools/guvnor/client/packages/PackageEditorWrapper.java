@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContentWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -35,7 +34,7 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 /**
  * This is the package editor and viewer for package configuration.
  */
-public class PackageEditorWrapper extends Composite implements TabContentWidget {
+public class PackageEditorWrapper extends Composite {
     private Constants constants = GWT.create( Constants.class );
 
     private ArtifactEditor artifactEditor;
@@ -113,13 +112,5 @@ public class PackageEditorWrapper extends Composite implements TabContentWidget 
                         render();
                     }
                 } );
-    }
-
-    public String getTabTitle() {
-        return packageConfigData.name;
-    }
-
-    public String getID() {
-        return packageConfigData.uuid;
     }
 }

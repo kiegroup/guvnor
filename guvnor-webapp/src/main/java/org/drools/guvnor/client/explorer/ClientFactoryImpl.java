@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -39,6 +38,8 @@ public class ClientFactoryImpl implements ClientFactory {
     private PerspectivesPanelView perspectivesPanelView;
     private NavigationViewFactoryImpl authorNavigationViewFactory;
     private AssetEditorFactory assetEditorFactory;
+    private PlaceHistoryHandler placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
 
     public PlaceController getPlaceController() {
         return placeController;
@@ -81,15 +82,25 @@ public class ClientFactoryImpl implements ClientFactory {
         return GWT.create( ConfigurationService.class );
     }
 
-    public ActivityManager getActivityManager() {
-        return new ActivityManager(
+    public MultiActivityManager getActivityManager() {
+        return new MultiActivityManager(
                 new GuvnorActivityMapper( this ),
+                getPlaceHistoryMapper(),
                 getEventBus() );
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
-        GuvnorPlaceHistoryMapper historyMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
-        return new PlaceHistoryHandler( historyMapper );
+        if ( placeHistoryHandler == null ) {
+            placeHistoryHandler = new PlaceHistoryHandler( getPlaceHistoryMapper() );
+        }
+        return placeHistoryHandler;
+    }
+
+    public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
+        if ( guvnorPlaceHistoryMapper == null ) {
+            guvnorPlaceHistoryMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
+        }
+        return guvnorPlaceHistoryMapper;
     }
 
     public ModuleEditorActivityView getModuleEditorActivityView() {

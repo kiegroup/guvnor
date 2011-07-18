@@ -17,13 +17,11 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class PerspectivesPanelTest {
 
@@ -48,57 +46,5 @@ public class PerspectivesPanelTest {
     public void testPresenter() throws Exception {
         verify( view ).setPresenter( presenter );
     }
-
-    @Test
-    public void testSetWidget() throws Exception {
-        TabContentWidget tabContentWidget = mock( TabContentWidget.class );
-
-        when( tabContentWidget.getTabTitle() ).thenReturn( "Mock title" );
-        when( tabContentWidget.getID() ).thenReturn( "MOCK_ID" );
-
-        perspectivesPanel.setWidget( tabContentWidget );
-
-        verify( view ).setWidget( "Mock title", tabContentWidget, "MOCK_ID" );
-    }
-
-    @Test
-    public void testCanHandleNullWidgets() throws Exception {
-        /*
-          GWT ActivityManager sets the widget to null before updating it.
-          Guvnor perspectives view does not support this.
-          This is why we need to catch null sets for setWidget() before they make it to the view.
-        */
-
-        IsWidget isWidget = null;
-
-        perspectivesPanel.setWidget( isWidget );
-        verify( view, never() ).setWidget( Matchers.<String>any(), Matchers.<IsWidget>any(), Matchers.<String>any() );
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testWidgetMustBeTabContentWidget() throws Exception {
-        IsWidget isWidget = mock( IsWidget.class );
-        perspectivesPanel.setWidget( isWidget );
-    }
-
-//    @Test
-//    public void testChangePerspective() throws Exception {
-//        AuthorPerspective authorPerspective = new AuthorPerspective();
-//        IFramePerspective runtimePerspective = new IFramePerspective();
-//
-//        perspectivesPanel.addPerspective( authorPerspective );
-//        perspectivesPanel.addPerspective( runtimePerspective );
-//
-//        goToAndVerify( authorPerspective );
-//
-//        goToAndVerify( runtimePerspective );
-//    }
-
-//    private void goToAndVerify( Perspective perspective ) throws UnknownPerspective {
-//        presenter.onPerspectiveChange( perspective.getName() );
-//
-////        verify( placeController ).goTo( perspective );
-//    }
-
 
 }

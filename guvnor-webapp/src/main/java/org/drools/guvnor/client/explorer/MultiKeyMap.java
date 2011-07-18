@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.user.client.ui.Widget;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,14 +27,14 @@ import java.util.Set;
  * Map that uses a collection of Strings as a key.
  */
 public class MultiKeyMap<T> {
-    private static final long       serialVersionUID = 510l;
+    private static final long serialVersionUID = 510l;
 
-    private HashMap<Set<String>, T> map              = new HashMap<Set<String>, T>();
+    private HashMap<Set<String>, T> map = new HashMap<Set<String>, T>();
 
-    public boolean containsKey(String key) {
+    public boolean containsKey( String key ) {
 
-        for ( Set<String> keys : map.keySet() ) {
-            for ( String string : keys ) {
+        for (Set<String> keys : map.keySet()) {
+            for (String string : keys) {
 
                 if ( string.equals( key ) ) {
                     continue;
@@ -47,8 +49,8 @@ public class MultiKeyMap<T> {
         return false;
     }
 
-    public T get(String key) {
-        for ( Set<String> keys : map.keySet() ) {
+    public T get( String key ) {
+        for (Set<String> keys : map.keySet()) {
             if ( keys.contains( key ) ) {
                 return map.get( keys );
             }
@@ -57,25 +59,26 @@ public class MultiKeyMap<T> {
         return null;
     }
 
-    public T put(final String key,
-                 T value) {
+    public T put( final String key,
+                  T value ) {
         return map.put( new HashSet<String>() {
-                            private static final long serialVersionUID = 510l;
-                            {
-                                add( key );
-                            }
-                        },
-                        value );
+            private static final long serialVersionUID = 510l;
+
+            {
+                add( key );
+            }
+        },
+                value );
     }
 
-    public T put(String[] key,
-                 T value) {
+    public T put( String[] key,
+                  T value ) {
         return map.put( new HashSet<String>( Arrays.asList( key ) ),
-                        value );
+                value );
     }
 
-    public T remove(String[] keys) {
-        for ( String key : keys ) {
+    public T remove( String[] keys ) {
+        for (String key : keys) {
             T result = remove( key );
             if ( result != null ) {
                 return result;
@@ -85,9 +88,9 @@ public class MultiKeyMap<T> {
         return null;
     }
 
-    public T remove(String key) {
+    public T remove( String key ) {
 
-        for ( Set<String> existingKeys : map.keySet() ) {
+        for (Set<String> existingKeys : map.keySet()) {
             if ( existingKeys.contains( key ) ) {
                 return map.remove( existingKeys );
             }
@@ -100,4 +103,14 @@ public class MultiKeyMap<T> {
         map.clear();
     }
 
+    public String getKey( Widget tabWidget ) {
+        for (Set<String> existingKeys : map.keySet()) {
+            for (String key : existingKeys) {
+                if ( map.get( key ).equals( tabWidget ) ) {
+                    return key;
+                }
+            }
+        }
+        return null;
+    }
 }

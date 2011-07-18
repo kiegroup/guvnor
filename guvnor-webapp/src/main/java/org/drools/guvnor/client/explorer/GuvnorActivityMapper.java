@@ -16,10 +16,10 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.activity.shared.Activity;
-import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
+import org.drools.guvnor.client.util.Activity;
+import org.drools.guvnor.client.util.ActivityMapper;
 
 public class GuvnorActivityMapper implements ActivityMapper {
     private ClientFactory clientFactory;
@@ -35,12 +35,13 @@ public class GuvnorActivityMapper implements ActivityMapper {
         } else if ( place instanceof AssetEditorPlace ) {
             return new AssetEditorActivity();
         } else if ( place instanceof ModuleEditorPlace ) {
-            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(), clientFactory );
+            return new ModuleEditorActivity(
+                    ((ModuleEditorPlace) place).getUuid(),
+                    clientFactory );
         } else if ( place instanceof ModuleFormatsGrid ) {
             return new ModuleFormatsGridPlace( (ModuleFormatsGrid) place );
         } else {
             return null;
         }
     }
-
 }

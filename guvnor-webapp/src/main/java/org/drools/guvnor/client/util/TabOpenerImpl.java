@@ -199,7 +199,7 @@ public class TabOpenerImpl implements TabManager {
 
         explorerViewCenterPanel.addTab( Arrays.toString( names ),
                 multiview,
-                uuids );
+                uuids.toString() );
 
     }
 

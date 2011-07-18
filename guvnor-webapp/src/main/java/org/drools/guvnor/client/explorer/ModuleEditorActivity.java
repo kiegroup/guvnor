@@ -16,17 +16,15 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.Label;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.util.Activity;
 
-public class ModuleEditorActivity extends AbstractActivity {
+public class ModuleEditorActivity extends Activity {
 
     private final ClientFactory clientFactory;
     private ModuleEditorActivityView view;
@@ -40,7 +38,8 @@ public class ModuleEditorActivity extends AbstractActivity {
         this.clientFactory = clientFactory;
     }
 
-    public void start( final AcceptsOneWidget panel, final EventBus eventBus ) {
+    @Override
+    public void start( final AcceptTabItem acceptTabItem, EventBus eventBus ) {
 
         view.showLoadingPackageInformationMessage();
 
@@ -48,7 +47,9 @@ public class ModuleEditorActivity extends AbstractActivity {
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess( PackageConfigData packageConfigData ) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
-                        panel.setWidget( new PackageEditorWrapper( packageConfigData, clientFactory ) );
+                        acceptTabItem.addTab(
+                                packageConfigData.name,
+                                new PackageEditorWrapper( packageConfigData, clientFactory ) );
 
                         LoadingPopup.close();
                     }

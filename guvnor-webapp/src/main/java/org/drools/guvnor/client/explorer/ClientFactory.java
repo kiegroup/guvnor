@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
@@ -44,9 +43,11 @@ public interface ClientFactory {
 
     ConfigurationServiceAsync getConfigurationService();
 
-    ActivityManager getActivityManager();
+    MultiActivityManager getActivityManager();
 
     PlaceHistoryHandler getPlaceHistoryHandler();
+
+    GuvnorPlaceHistoryMapper getPlaceHistoryMapper();
 
     ModuleEditorActivityView getModuleEditorActivityView();
 

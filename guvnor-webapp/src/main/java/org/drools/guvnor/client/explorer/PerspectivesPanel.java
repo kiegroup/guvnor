@@ -17,15 +17,14 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.ui.AcceptsOneWidget;
-import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.util.TabbedPanel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 
-public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
+public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
     private final PlaceController placeController;
@@ -36,29 +35,6 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
         this.view = view;
         this.view.setPresenter( this );
         this.placeController = placeController;
-    }
-
-    public void setWidget( IsWidget widget ) {
-        if ( widget != null ) {
-            isTabContentWidget( widget );
-
-            setWidget( (TabContentWidget) widget );
-        }
-    }
-
-    public void setWidget( TabContentWidget tabContentWidget ) {
-        if ( tabContentWidget != null ) {
-            view.setWidget(
-                    tabContentWidget.getTabTitle(),
-                    tabContentWidget,
-                    tabContentWidget.getID() );
-        }
-    }
-
-    private void isTabContentWidget( IsWidget widget ) {
-        if ( !(widget instanceof TabContentWidget) ) {
-            throw new IllegalArgumentException( "Widget must be an instance of " + TabContentWidget.class + ", but it was " + widget.getClass() );
-        }
     }
 
     public PerspectivesPanelView getView() {
@@ -79,4 +55,9 @@ public class PerspectivesPanel implements Presenter, AcceptsOneWidget {
         // TODO: Change perspective, probably with an event -Rikkola-
 //        placeController.goTo( perspectives.get( perspectiveId ) );
     }
+
+    public TabbedPanel getTabbedPanel() {
+        return view.getTabbedPanel();
+    }
+
 }
