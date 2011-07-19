@@ -20,24 +20,30 @@ import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 
-public class GuvnorActivityMapper implements ActivityMapper {
+public class GuvnorActivityMapper
+    implements
+    ActivityMapper {
     private ClientFactory clientFactory;
 
-    public GuvnorActivityMapper( ClientFactory clientFactory ) {
+    public GuvnorActivityMapper(ClientFactory clientFactory) {
         super();
         this.clientFactory = clientFactory;
     }
 
-    public Activity getActivity( Place place ) {
+    public Activity getActivity(Place place) {
         if ( place instanceof FindPlace ) {
             return new FindActivity();
         } else if ( place instanceof AssetEditorPlace ) {
             return new AssetEditorActivity();
         } else if ( place instanceof ModuleEditorPlace ) {
-            return new ModuleEditorActivity(
-                    ((ModuleEditorPlace) place).getUuid(),
-                    clientFactory );
+            return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
+                                             clientFactory );
+        } else if ( place instanceof AssetViewerPlace ) {
+            return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
+                                            clientFactory );
         } else if ( place instanceof ModuleFormatsGrid ) {
             return new ModuleFormatsGridPlace( (ModuleFormatsGrid) place );
         } else {

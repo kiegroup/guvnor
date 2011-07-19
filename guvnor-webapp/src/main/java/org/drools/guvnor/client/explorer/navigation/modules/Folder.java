@@ -47,15 +47,15 @@ public class Folder {
         return null;
     }
 
-    List<Folder> getChildren() {
+    public List<Folder> getChildren() {
         return this.children;
     }
     
-    PackageConfigData getPackageConfigData() {
+    public PackageConfigData getPackageConfigData() {
         return this.conf;
     }
     
-    String getFolderName() {
+    public String getFolderName() {
         return this.name;
     }
 

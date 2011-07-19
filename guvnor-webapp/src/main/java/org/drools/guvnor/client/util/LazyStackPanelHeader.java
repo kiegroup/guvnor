@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,13 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
@@ -45,6 +48,15 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
     Image                                     icon;
 
     @UiField
+    Image                                     titleIcon;
+
+    @UiField
+    SimplePanel                               titleIconContainer;
+
+    @UiField
+    HorizontalPanel                           container;
+
+    @UiField
     Label                                     titleLabel;
 
     private ClickHandler                      expandClickHandler = new ClickHandler() {
@@ -53,6 +65,13 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
                                                                          onTitleClicked();
                                                                      }
                                                                  };
+
+    public LazyStackPanelHeader(String headerText,
+                                ImageResource headerIcon) {
+        this( headerText );
+        titleIcon.setResource( headerIcon );
+        titleIconContainer.setVisible( true );
+    }
 
     public LazyStackPanelHeader(String headerText) {
 

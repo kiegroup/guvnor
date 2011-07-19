@@ -16,17 +16,20 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import com.google.gwt.user.client.ui.IsTreeItem;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import com.google.gwt.user.client.ui.IsTreeItem;
 
 public class ModuleTreeItemTest {
 
@@ -75,11 +78,11 @@ public class ModuleTreeItemTest {
 
         verify( view ).setRootItem( treeItem );
 
-        ArgumentCaptor<ModuleEditorPlace> moduleEditorPlaceArgumentCaptor = ArgumentCaptor.forClass( ModuleEditorPlace.class );
-        verify( view ).setRootUserObject( moduleEditorPlaceArgumentCaptor.capture() );
-        ModuleEditorPlace moduleEditorPlace = moduleEditorPlaceArgumentCaptor.getValue();
+        ArgumentCaptor<AssetViewerPlace> assetViewerPlaceArgumentCaptor = ArgumentCaptor.forClass( AssetViewerPlace.class );
+        verify( view ).setRootUserObject( assetViewerPlaceArgumentCaptor.capture() );
+        AssetViewerPlace assetViewerPlace = assetViewerPlaceArgumentCaptor.getValue();
 
-        assertEquals( "mockUuid", moduleEditorPlace.getUuid() );
+        assertEquals( "mockUuid", assetViewerPlace.getUuid() );
     }
 
 

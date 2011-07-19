@@ -16,26 +16,30 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.navigation.modules.Folder;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchy;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchyNested;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.user.client.ui.Tree;
+import com.google.gwt.user.client.ui.TreeItem;
 
 /*
  * This class contains static node config for BRMS' explorer widgets
@@ -218,28 +222,28 @@ public class ExplorerNodeConfig {
     private static void deploymentListPackages( final TreeItem root ) {
         RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess( PackageConfigData[] values ) {
-                PackageHierarchy ph = new PackageHierarchy();
+                PackageHierarchy ph = new PackageHierarchyNested();
 
                 for (PackageConfigData val : values) {
                     ph.addPackage( val );
                 }
-                for (PackageHierarchy.Folder hf : ph.getRoot().getChildren()) {
+                for (Folder hf : ph.getRootFolder().getChildren()) {
                     buildDeploymentTree( root, hf );
                 }
             }
         } );
     }
 
-    private static void buildDeploymentTree( TreeItem root, PackageHierarchy.Folder fldr ) {
-        if ( fldr.getConfig() != null ) {
-            TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getConfig().name ) );
-            pkg.setUserObject( fldr.getConfig() );
+    private static void buildDeploymentTree( TreeItem root, Folder fldr ) {
+        if ( fldr.getPackageConfigData() != null ) {
+            TreeItem pkg = new TreeItem( Util.getHeader( images.snapshotSmall(), fldr.getPackageConfigData().name ) );
+            pkg.setUserObject( fldr.getPackageConfigData() );
             pkg.addItem( new TreeItem( constants.PleaseWaitDotDotDot() ) );
             root.addItem( pkg );
         } else {
-            TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(), fldr.getName() ) );
+            TreeItem tn = new TreeItem( Util.getHeader( images.emptyPackage(), fldr.getFolderName() ) );
             root.addItem( tn );
-            for (PackageHierarchy.Folder c : fldr.getChildren()) {
+            for (Folder c : fldr.getChildren()) {
                 buildDeploymentTree( tn, c );
             }
         }

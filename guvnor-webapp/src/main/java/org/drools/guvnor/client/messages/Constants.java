@@ -2371,4 +2371,8 @@ public interface Constants
     String OnlyDisplayDSLActions();
     
     String ShowFlatPackageHierarchy();
+    
+    String PackageAssets(String packageName);
+    
+    String ViewPackageConfiguration();
 }

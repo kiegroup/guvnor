@@ -27,17 +27,17 @@ public abstract class PackageHierarchy {
     abstract void doAddPackage(String packageName,
                                PackageConfigData conf);
 
-    Folder getRootFolder() {
+    public Folder getRootFolder() {
         return this.root;
     }
 
-    void addPackage(PackageConfigData conf) {
+    public void addPackage(PackageConfigData conf) {
         String name = conf.getName();
         doAddPackage( name,
                       conf );
     }
 
-    void addSubPackages(String baseName,
+    public void addSubPackages(String baseName,
                         PackageConfigData[] subPackages) {
         if ( subPackages != null ) {
             for ( PackageConfigData conf : subPackages ) {

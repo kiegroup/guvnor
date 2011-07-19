@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.widgets.assetviewer;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
-public class ModuleEditorPlace extends Place {
+/**
+ * A request for to see a Package's Assets
+ */
+public class AssetViewerPlace extends Place {
 
     private final String uuid;
 
-    public ModuleEditorPlace( String uuid ) {
+    public AssetViewerPlace( String uuid ) {
         this.uuid = uuid;
     }
 
@@ -30,16 +33,16 @@ public class ModuleEditorPlace extends Place {
         return uuid;
     }
 
-    public static class Tokenizer implements PlaceTokenizer<ModuleEditorPlace> {
+    public static class Tokenizer implements PlaceTokenizer<AssetViewerPlace> {
 
-        private final String PLACE_ID = "MODULE=";
+        private final String PLACE_ID = "MODULE_ASSETS_VIEWER=";
 
-        public String getToken( ModuleEditorPlace place ) {
+        public String getToken( AssetViewerPlace place ) {
             return PLACE_ID + place.getUuid();
         }
 
-        public ModuleEditorPlace getPlace( String token ) {
-            return new ModuleEditorPlace( token.substring( PLACE_ID.length() ) );
+        public AssetViewerPlace getPlace( String token ) {
+            return new AssetViewerPlace( token.substring( PLACE_ID.length() ) );
         }
     }
 }

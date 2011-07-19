@@ -14,19 +14,35 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation.modules;
+package org.drools.guvnor.client.widgets.assetviewer;
 
 import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.IsTreeItem;
+import com.google.gwt.user.client.ui.IsWidget;
 
-public interface ModuleTreeItemView {
+/**
+ * What the Asset Viewer is capable of doing
+ */
+public interface AssetViewerActivityView
+    extends
+    IsWidget {
 
-    void setRootItem( IsTreeItem treeItem );
+    interface Presenter {
 
-    void add( ImageResource formatIcon, String formatText, ModuleFormatsGrid formats );
+        void viewPackageDetail(PackageConfigData packageConfigData);
+        
+    }
 
-    void setRootUserObject( AssetViewerPlace place );
+    void addAssetFormat(ImageResource icon, String title, ModuleFormatsGrid place);
+    
+    void showLoadingPackageInformationMessage();
+
+    void closeLoadingPackageInformationMessage();
+    
+    void setPresenter(Presenter presenter);
+    
+    void setPackageConfigData(PackageConfigData packageConfigData);
+
 }

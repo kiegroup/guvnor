@@ -27,27 +27,32 @@ import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityViewImpl;
 
-public class ClientFactoryImpl implements ClientFactory {
+public class ClientFactoryImpl
+    implements
+    ClientFactory {
 
-    private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController( eventBus );
-    private PerspectivesPanelView perspectivesPanelView;
+    private final EventBus            eventBus        = new SimpleEventBus();
+    private final PlaceController     placeController = new PlaceController( eventBus );
+    private PerspectivesPanelView     perspectivesPanelView;
     private NavigationViewFactoryImpl authorNavigationViewFactory;
-    private AssetEditorFactory assetEditorFactory;
-    private PlaceHistoryHandler placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
+    private AssetEditorFactory        assetEditorFactory;
+    private PlaceHistoryHandler       placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
 
     public PlaceController getPlaceController() {
         return placeController;
     }
 
-    public AuthorPerspectiveView getAuthorPerspectiveView( NavigationPanelFactory navigationPanelFactory ) {
-        return new AuthorPerspectiveViewImpl( this, navigationPanelFactory );
+    public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
+        return new AuthorPerspectiveViewImpl( this,
+                                              navigationPanelFactory );
     }
 
-    public RuntimePerspectiveView getRuntimePerspectiveView( NavigationPanelFactory navigationPanelFactory ) {
-        return null;  //TODO: Generated code -Rikkola-
+    public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
+        return null; //TODO: Generated code -Rikkola-
     }
 
     public EventBus getEventBus() {
@@ -57,9 +62,9 @@ public class ClientFactoryImpl implements ClientFactory {
     public PerspectivesPanelView getPerspectivesPanelView() {
         if ( perspectivesPanelView == null ) {
             perspectivesPanelView = new PerspectivesPanelViewImpl(
-                    getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
-                    new ExplorerViewCenterPanel( this ),
-                    hideTitle() );
+                                                                   getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
+                                                                   new ExplorerViewCenterPanel( this ),
+                                                                   hideTitle() );
         }
         return perspectivesPanelView;
     }
@@ -81,9 +86,9 @@ public class ClientFactoryImpl implements ClientFactory {
 
     public MultiActivityManager getActivityManager() {
         return new MultiActivityManager(
-                new GuvnorActivityMapper( this ),
-                getPlaceHistoryMapper(),
-                getEventBus() );
+                                         new GuvnorActivityMapper( this ),
+                                         getPlaceHistoryMapper(),
+                                         getEventBus() );
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
@@ -102,6 +107,10 @@ public class ClientFactoryImpl implements ClientFactory {
 
     public ModuleEditorActivityView getModuleEditorActivityView() {
         return new ModuleEditorActivityViewImpl();
+    }
+
+    public AssetViewerActivityView getAssetViewerActivityView() {
+        return new AssetViewerActivityViewImpl();
     }
 
     public PackageServiceAsync getPackageService() {

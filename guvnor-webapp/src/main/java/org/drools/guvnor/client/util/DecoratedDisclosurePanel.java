@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.HasOpenHandlers;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -42,17 +43,33 @@ public class DecoratedDisclosurePanel extends Composite
 
     private final DisclosurePanel widget = new DisclosurePanel();
 
+    private LazyStackPanelHeader header;
+    
+    public DecoratedDisclosurePanel(String headerText, ImageResource headerIcon) {
+        widget.setAnimationEnabled( true );
+        widget.setHeader( createHeader( headerText, headerIcon ) );
+        initWidget( widget );
+    }
+    
     public DecoratedDisclosurePanel(String headerText) {
-
         widget.setAnimationEnabled( true );
         widget.setHeader( createHeader( headerText ) );
-
         initWidget( widget );
     }
 
     private LazyStackPanelHeader createHeader(String headerText) {
-        final LazyStackPanelHeader header = new LazyStackPanelHeader( headerText );
+        header = new LazyStackPanelHeader( headerText );
+        setupEventHandlers();
+        return header;
+    }
 
+    private LazyStackPanelHeader createHeader(String headerText, ImageResource headerIcon) {
+        header = new LazyStackPanelHeader( headerText, headerIcon );
+        setupEventHandlers();
+        return header;
+    }
+    
+    private void setupEventHandlers() {
         widget.addOpenHandler( new OpenHandler<DisclosurePanel>() {
             public void onOpen(OpenEvent<DisclosurePanel> event) {
                 header.expand();
@@ -64,7 +81,6 @@ public class DecoratedDisclosurePanel extends Composite
             }
         } );
 
-        return header;
     }
 
     public void add(Widget w) {

@@ -23,6 +23,7 @@ import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -53,6 +54,8 @@ public interface ClientFactory {
     GuvnorPlaceHistoryMapper getPlaceHistoryMapper();
 
     ModuleEditorActivityView getModuleEditorActivityView();
+
+    AssetViewerActivityView getAssetViewerActivityView();
     
     PackageServiceAsync getPackageService();
 
