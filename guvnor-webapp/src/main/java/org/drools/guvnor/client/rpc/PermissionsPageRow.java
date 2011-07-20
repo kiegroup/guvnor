@@ -77,7 +77,7 @@ public class PermissionsPageRow extends AbstractPageRow {
     }
 
     private boolean isAdministrator(List<String> permTypes) {
-        if ( permTypes.contains( "logInAdmin" ) ) {
+        if ( permTypes.contains( "admin" ) ) {
             return true;
         } else {
             return false;

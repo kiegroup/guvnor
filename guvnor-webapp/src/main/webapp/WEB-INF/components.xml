@@ -24,13 +24,13 @@
         </property>
 
         <!-- ModeShape 
-            passwords for the background users (logInAdmin and mailman), these need to match the setting
+            passwords for the background users (admin and mailman), these need to match the setting
             you provided for JAAS (used by ModeShape only). 
             <property name="properties">
                 <key>org.drools.repository.configurator</key>    <value>org.drools.repository.modeshape.ModeShapeRepositoryConfigurator</value>
                 <key>org.modeshape.jcr.URL</key>                 <value>jndi:jcr/local?repositoryName=brms</value>
                 <key>org.drools.repository.secure.passwords</key><value>false</value>
-                <key>org.drools.repository.logInAdmin.password</key>  <value>logInAdmin</value>
+                <key>org.drools.repository.admin.password</key>  <value>admin</value>
                 <key>org.drools.repository.mailman.password</key><value>mailman</value>   
             </property> 
             -->
