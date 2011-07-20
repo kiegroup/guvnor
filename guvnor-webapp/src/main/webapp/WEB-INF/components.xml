@@ -42,25 +42,24 @@
     <!--
         default (will take any username, useful if you want to keep track of
         users but not authenticate
-    
+
     <security:identity authenticate-method="#{defaultAuthenticator.authenticate}" />
     -->
 
     <!--
         NO authentication. This will bypass the login screen when you hit the
         app. Everyone is "guest"
+
+    <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/>
     -->
-        <security:identity
-        authenticate-method="#{nilAuthenticator.authenticate}"/>
 
     <!--
         FOR EXAMPLE: the following one will use the jaas configuration called
         "other" - which in jboss AS means you can use properties files for
         users:
-    
-        <security:identity authenticate-method="#{authenticator.authenticate}"
-        jaas-config-name="other"/>
     -->
+    
+    <security:identity authenticate-method="#{authenticator.authenticate}" jaas-config-name="other"/>
     <!--
         as JAAS is used you can use container specific ones to link up to your
         login services, eg LDAP/AD etc
