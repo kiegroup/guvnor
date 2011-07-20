@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.jcr.PathNotFoundException;
@@ -28,6 +29,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.drools.RuntimeDroolsException;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.LoggingHelper;
 
@@ -65,18 +67,25 @@ public class RepositoryBackupServlet extends RepositoryServlet {
 
                                         String packageImport = request.getParameter( "packageImport" );
 
-                                        if ( "true".equals( packageImport ) ) {
-                                            boolean importAsNew = "true".equals( request
-                                                    .getParameter( "importAsNew" ) );
-
-                                            response.getWriter().write(
-                                                                        processImportPackage( uploadItem.getFile().getInputStream(),
-                                                                                              importAsNew ) );
+                                        InputStream inputFileStream = null;
+                                        if(uploadItem.getFile()!= null && uploadItem.getFile().getContentType().indexOf("zip")>=0) {
+                                            ZipInputStream zipInputStream = new ZipInputStream(uploadItem.getFile().getInputStream());
+                                            ZipEntry zipEntry = zipInputStream.getNextEntry();
+                                            if(zipEntry != null){
+                                                inputFileStream = zipInputStream;
+                                            } else {
+                                                new RuntimeDroolsException("Invalid compressed reporitory");
+                                            }
                                         } else {
-                                            response.getWriter().write(
-                                                                        processImportRepository( uploadItem.getFile()
-                                                                                .getInputStream() ) );
+                                            inputFileStream = uploadItem.getFile().getInputStream();
                                         }
+                                        if ( "true".equals( packageImport ) ) {
+                                            boolean importAsNew = "true".equals( request.getParameter( "importAsNew" ) );
+                                            response.getWriter().write( processImportPackage( inputFileStream, importAsNew ) );
+                                        } else {
+                                            response.getWriter().write( processImportRepository( inputFileStream ) );
+                                        }
+                                        inputFileStream.close();
                                     }
                                 }
                             } );
