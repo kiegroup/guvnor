@@ -142,7 +142,15 @@ public class AssetViewerActivityViewImpl extends Composite
     private Widget makeTable(ModuleFormatsGrid place) {
         final String packageUuid = place.getPackageConfigData().getUuid();
         final String packageName = place.getPackageConfigData().getName();
-        final List<String> formatsInList = Arrays.asList( place.getFormats() );
+
+        List<String> formatsInList = null;
+        Boolean formatIsRegistered = null;
+        if ( place.getFormats() != null && place.getFormats().length > 0 ) {
+            formatsInList = Arrays.asList( place.getFormats() );
+        } else {
+            formatIsRegistered = false;
+        }
+
         String feedUrl = GWT.getModuleBaseURL()
                          + "feed/package?name="
                          + packageName
@@ -151,7 +159,7 @@ public class AssetViewerActivityViewImpl extends Composite
                          + "&status=*";
         final AssetPagedTable table = new AssetPagedTable( packageUuid,
                                                            formatsInList,
-                                                           null,
+                                                           formatIsRegistered,
                                                            feedUrl );
 
         final ServerPushNotification sub = new ServerPushNotification() {

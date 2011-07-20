@@ -168,7 +168,7 @@ public class AssetEditorFactoryGenerator extends Generator {
     }     
     public static List<AssetEditorConfiguration> loadAssetEditorMetaData() {
     	AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
-    	List<AssetEditorConfiguration> assetEditors = parser.readConfig();
+    	List<AssetEditorConfiguration> assetEditors = parser.getAssetEditors();
     	return assetEditors;
     }
 }

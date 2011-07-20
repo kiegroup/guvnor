@@ -26,6 +26,7 @@ import java.util.List;
 /**
  * Needed to list what registered format types there are.
  */
+@Deprecated
 public class AssetFormatHelper {
 
     public static String[] listRegisteredTypes() {

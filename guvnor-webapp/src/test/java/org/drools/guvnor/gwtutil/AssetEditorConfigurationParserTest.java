@@ -28,7 +28,7 @@ public class AssetEditorConfigurationParserTest {
     @Test
     public void testReadConfig() throws Exception {
 		AssetEditorConfigurationParser a = new AssetEditorConfigurationParser();
-		List<AssetEditorConfiguration> configList = a.readConfig();
+		List<AssetEditorConfiguration> configList = a.getAssetEditors();
 
         assertEquals(23, configList.size());
         boolean foundPropertiesWidgetForXML = false;

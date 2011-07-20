@@ -29,6 +29,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * An Activity to view a Package's assets
@@ -77,12 +78,11 @@ public class AssetViewerActivity extends Activity
     }
 
     private void fillModuleItemStructure() {
-        //If two or more asset editors (that are associated with different formats) have same titles,
-        //we group them together and display them as one node on the package tree.
-
         //TODO We need to get a list of all asset format types in the repository for this package
         //TODO Any not in one of the known categories need to be added to a default
 
+        //If two or more asset editors (that are associated with different formats) have same titles,
+        //we group them together and display them as one node on the package tree.
         String[] registeredFormats = clientFactory.getAssetEditorFactory().getRegisteredAssetEditorFormats();
 
         //Use list to preserve the order of asset editors defined in configuration.

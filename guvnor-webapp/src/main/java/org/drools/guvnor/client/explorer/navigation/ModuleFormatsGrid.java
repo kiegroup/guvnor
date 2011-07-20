@@ -33,6 +33,12 @@ public class ModuleFormatsGrid extends Place {
         this.formats = formats;
     }
 
+    public ModuleFormatsGrid( PackageConfigData packageConfig,
+                              String title ) {
+        this.packageConfig = packageConfig;
+        this.title = title;
+    }
+    
     public String[] getFormats() {
         return formats;
     }

@@ -40,6 +40,8 @@ import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.gwtutil.AssetEditorConfiguration;
+import org.drools.guvnor.gwtutil.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.builder.AssetItemValidator;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.DSLLoader;
@@ -48,10 +50,8 @@ import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QuickFindPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.FactModelContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
@@ -85,9 +85,21 @@ public class RepositoryAssetOperations {
 
     private RulesRepository            repository;
 
-    private static final LoggingHelper log = LoggingHelper
-                                                   .getLogger( RepositoryAssetOperations.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
 
+    private String[]                   registeredFormats;
+
+    public RepositoryAssetOperations() {
+        //Load recognised formats from configuration file
+        AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
+        List<AssetEditorConfiguration> rfs = parser.getAssetEditors();
+        this.registeredFormats = new String[rfs.size()];
+        for ( int i = 0; i < rfs.size(); i++ ) {
+            AssetEditorConfiguration config = rfs.get( i );
+            registeredFormats[i] = config.getFormat();
+        }
+    }
+    
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
     }
@@ -488,8 +500,8 @@ public class RepositoryAssetOperations {
             iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
 
         } else {
-            if ( request.getFormatIsRegistered() != null ) {
-                iterator = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+            if ( request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals( Boolean.FALSE ) ) {
+                iterator = packageItem.listAssetsNotOfFormat( registeredFormats );
             } else {
                 iterator = packageItem.queryAssets( "" );
             }
