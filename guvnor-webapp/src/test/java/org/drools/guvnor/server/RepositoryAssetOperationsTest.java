@@ -17,7 +17,6 @@ package org.drools.guvnor.server;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,12 +24,15 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
+import org.drools.guvnor.gwtutil.AssetEditorConfiguration;
+import org.drools.guvnor.gwtutil.AssetEditorConfigurationParser;
 import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -70,7 +72,8 @@ public class RepositoryAssetOperationsTest {
 
         TableDataResult result = repositoryAssetOperations.loadItemHistory( assetItem );
         assertNotNull( result );
-        assertEquals( 0, result.data.length );
+        assertEquals( 0,
+                      result.data.length );
     }
 
     @Test
@@ -216,19 +219,106 @@ public class RepositoryAssetOperationsTest {
                                                                   1,
                                                                   2 );
         PackageItem packageItem = mock( PackageItem.class );
-        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
-                .thenReturn( packageItem );
-        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
 
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
         when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) )
                 .thenReturn( assetItemIterator );
-        PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations
-                .findAssetPage( assetPageRequest );
+
+        PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations.findAssetPage( assetPageRequest );
+
         assertNotNull( pageResponse );
         assertEquals( pageResponse.getStartRowIndex(),
                       1 );
         verify( packageItem ).listAssetsByFormat(
                                                   assetPageRequest.getFormatInList() );
+    }
+
+    @Test
+    public void testFindAssetPageFormatInList2() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  null,
+                                                                  1,
+                                                                  10 );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
+                .thenReturn( packageItem );
+
+        AssetItem a1 = mock( AssetItem.class );
+        when( a1.getFormat() ).thenReturn( "formatInList" );
+        when( a1.getCreatedDate() ).thenReturn( Calendar.getInstance() );
+        when( a1.getLastModified() ).thenReturn( Calendar.getInstance() );
+
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( assetItemIterator.hasNext() ).thenReturn( true,
+                                                        false );
+        when( assetItemIterator.next() ).thenReturn( a1 );
+
+        when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) ).thenReturn( assetItemIterator );
+
+        PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations.findAssetPage( assetPageRequest );
+
+        assertNotNull( pageResponse );
+        assertEquals( pageResponse.getStartRowIndex(),
+                      1 );
+        assertEquals( 1,
+                      pageResponse.getPageRowList().size() );
+
+        verify( packageItem ).listAssetsByFormat( assetPageRequest.getFormatInList() );
+    }
+
+    @Test
+    public void testFindAssetPageFormatInList3() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  null,
+                                                                  false,
+                                                                  1,
+                                                                  10 );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) )
+                .thenReturn( packageItem );
+
+        AssetItem a1 = mock( AssetItem.class );
+        when( a1.getFormat() ).thenReturn( "formatNotInList" );
+        when( a1.getCreatedDate() ).thenReturn( Calendar.getInstance() );
+        when( a1.getLastModified() ).thenReturn( Calendar.getInstance() );
+
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( assetItemIterator.hasNext() ).thenReturn( true,
+                                                        false );
+        when( assetItemIterator.next() ).thenReturn( a1 );
+
+        String[] registeredFormats = registeredFormats();
+
+        when( packageItem.listAssetsNotOfFormat( registeredFormats ) )
+                .thenReturn( assetItemIterator );
+
+        PageResponse<AssetPageRow> pageResponse = repositoryAssetOperations.findAssetPage( assetPageRequest );
+
+        assertNotNull( pageResponse );
+        assertEquals( pageResponse.getStartRowIndex(),
+                      1 );
+        assertEquals( 1,
+                      pageResponse.getPageRowList().size() );
+
+        verify( packageItem ).listAssetsNotOfFormat( registeredFormats );
+    }
+
+    private String[] registeredFormats() {
+        AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
+        List<AssetEditorConfiguration> rfs = parser.getAssetEditors();
+        String[] registeredFormats = new String[rfs.size()];
+        for ( int i = 0; i < rfs.size(); i++ ) {
+            registeredFormats[i] = rfs.get( i ).getFormat();
+        }
+        return registeredFormats;
     }
 
 }
