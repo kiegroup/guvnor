@@ -39,7 +39,7 @@ public class AssetEditorConfigurationParserTest {
                 assertEquals("images.newFile()", config.getIcon());       		
                 assertEquals("constants.XMLProperties()", config.getTitle());  
                 foundPropertiesWidgetForXML = true;
-            } else if (config.getFormat().equalsIgnoreCase("txt")) {
+            } else if (config.getFormat().equalsIgnoreCase("")) {
                 assertEquals("org.drools.guvnor.client.ruleeditor.PropertiesWidget", config.getEditorClass());       		
                 assertEquals("images.newFile()", config.getIcon());       		
                 assertEquals("constants.OtherAssetsDocumentation()", config.getTitle());  
