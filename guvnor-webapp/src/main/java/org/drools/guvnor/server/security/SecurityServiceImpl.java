@@ -58,7 +58,7 @@ public class SecurityServiceImpl
                          String password) {
 
         if ( userName == null || userName.trim().equals( "" ) ) {
-            userName = "logInAdmin";
+            userName = "admin";
         }
 
         log.info( "Logging in user [" + userName + "]" );

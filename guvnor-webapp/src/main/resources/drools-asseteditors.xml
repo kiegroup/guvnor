@@ -146,8 +146,8 @@
         <format>txt</format>
         <icon>images.newFile()</icon>
         <title>constants.OtherAssetsDocumentation()</title>    
-    </asseteditor>       
-    
+    </asseteditor>
+
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.WorkingSetEditor</class> 
         <format>workingset</format>

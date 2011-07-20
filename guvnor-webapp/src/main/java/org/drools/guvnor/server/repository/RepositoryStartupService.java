@@ -50,9 +50,9 @@ import java.util.Properties;
 public class RepositoryStartupService {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
-    private static final String ADMIN = "logInAdmin";
-    private static final String ADMIN_USER_PROPERTY = "org.drools.repository.logInAdmin.username";
-    private static final String ADMIN_PASSWORD_PROPERTY = "org.drools.repository.logInAdmin.password";
+    private static final String ADMIN = "admin";
+    private static final String ADMIN_USER_PROPERTY = "org.drools.repository.admin.username";
+    private static final String ADMIN_PASSWORD_PROPERTY = "org.drools.repository.admin.password";
     private static final String MAILMAN = "mailman";
     private static final String MAILMAN_USER_PROPERTY = "org.drools.repository.mailman.username";
     private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";

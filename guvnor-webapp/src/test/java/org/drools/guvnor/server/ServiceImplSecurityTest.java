@@ -246,7 +246,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     }
 
     //Access an asset that belongs to no category.
-    //The user role is logInAdmin
+    //The user role is admin
 
     @Test
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
@@ -520,9 +520,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         }
     }
 
-    //Access an asset that belongs to no category. The user role is analyst and package.logInAdmin.
+    //Access an asset that belongs to no category. The user role is analyst and package.admin.
     //Because the analyst role the user has has no category access to the asset,
-    //the permission can not be granted even though the package.logInAdmin role has package access.
+    //the permission can not be granted even though the package.admin role has package access.
 
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {

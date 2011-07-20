@@ -17,7 +17,7 @@ package org.drools.guvnor.server.security;
 
 public enum RoleType {
     /** Admin can do everything */
-    ADMIN("logInAdmin"),
+    ADMIN("admin"),
     /**
      * Analyst only see the "rules" view, and we specify what category paths they
      * can see. They can't create anything, only edit rules, and run tests etc,
@@ -28,8 +28,8 @@ public enum RoleType {
      * Read only for categories (analyst view)
      */
     ANALYST_READ("analyst.readonly"),
-    /** package.logInAdmin can do everything within this package */
-    PACKAGE_ADMIN("package.logInAdmin"),
+    /** package.admin can do everything within this package */
+    PACKAGE_ADMIN("package.admin"),
     /**
      * package.developer can do anything in that package but not snapshots. This
      * includes creating a new package (in which case they inherit permissions

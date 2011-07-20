@@ -35,12 +35,12 @@ import javax.jcr.RepositoryException;
  * <p/>
  * If a ruleflow is migrated, it is checked in as new version so that
  * the previous version is preserved. The current code checks-in
- * the new version as the logInAdmin user with an appropriate comment indicating
+ * the new version as the admin user with an appropriate comment indicating
  * that the flow has been migrated. Hover, the code could also be changed
  * to check-in each migrated ruleflow using the credentials of the last
  * person to check-in the ruleflow, however, in future there may be a
  * danger that the person who last checked in the file may have lost
- * privileges to check-in the file, so we use the logInAdmin user
+ * privileges to check-in the file, so we use the admin user
  * for now.
  */
 public class MigrateRepository {

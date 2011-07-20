@@ -19,10 +19,10 @@ package org.drools.guvnor.client.configurations;
 public enum Capability {
     SHOW_KNOWLEDGE_BASES_VIEW,  //(show status list view as well) if they have any package perms
     SHOW_CREATE_NEW_ASSET,//if they have any package perms not read only
-    SHOW_CREATE_NEW_PACKAGE, //if they are package logInAdmin
-    SHOW_ADMIN, //if they are logInAdmin, package logInAdmin??
+    SHOW_CREATE_NEW_PACKAGE, //if they are package admin
+    SHOW_ADMIN, //if they are admin, package admin??
     SHOW_QA, //if they have any package perms
-    SHOW_DEPLOYMENT,  //if they are package logInAdmin??
+    SHOW_DEPLOYMENT,  //if they are package admin??
     SHOW_DEPLOYMENT_NEW //can create a new depl, rename etc...
     ;
 
