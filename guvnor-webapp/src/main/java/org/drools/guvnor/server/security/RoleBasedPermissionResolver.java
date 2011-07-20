@@ -41,15 +41,15 @@ import org.jboss.seam.security.permission.PermissionResolver;
  * This PermissionResolver resolves category-based permissions and package-based permissions.
  *
  * If the input is category-based request, the resolver returns true under following situations:
- * 1. The user is logInAdmin
+ * 1. The user is admin
  * Or
  * 2. The user has at least one analyst role that has access to the requested category path.
  *
  * If the input is package-based request, the resolver returns true under following situations:
- * 1. The user is logInAdmin
+ * 1. The user is admin
  * Or
- * 2. The user has one of the following roles package.logInAdmin|package.developer|package.readonly on the requested
- * package, and requested role requires lower privilege than assigned role(I.e., package.logInAdmin>package.developer>package.readonly)
+ * 2. The user has one of the following roles package.admin|package.developer|package.readonly on the requested
+ * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly)
  *
  *
 
@@ -77,7 +77,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
      *            Otherwise return false;
      * @param requestedPermission
      *            the requestedRole must be an instance of String, its value has to be one of the
-     *            followings: logInAdmin|analyst|package.logInAdmin|package.developer|package.readonly,
+     *            followings: admin|analyst|package.admin|package.developer|package.readonly,
      *            otherwise return false;
      * @return true if the permission can be granted on the requested object with the
      * requested role; return false otherwise.
@@ -184,7 +184,7 @@ public class RoleBasedPermissionResolver implements PermissionResolver, Serializ
                 return true;
             }
         }
-        log.debug( "Requested permission: logInAdmin, Permission granted: No" );
+        log.debug( "Requested permission: admin, Permission granted: No" );
         return false;
     }
 

@@ -246,7 +246,7 @@ public class PermissionViewer extends Composite {
         vp.clear();
 
         for ( Map.Entry<String, List<String>> perm : perms.entrySet() ) {
-            if ( perm.getKey().equals( "logInAdmin" ) ) { // NON-NLS
+            if ( perm.getKey().equals( "admin" ) ) { // NON-NLS
                 HorizontalPanel h = new HorizontalPanel();
                 h.add( new HTML( "<b>"
                                  + constants.ThisUserIsAnAdministrator()
@@ -256,7 +256,7 @@ public class PermissionViewer extends Composite {
                 del.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
                         if ( Window.confirm( constants.AreYouSureYouWantToRemoveAdministratorPermissions() ) ) {
-                            perms.remove( "logInAdmin" ); // NON-NLS
+                            perms.remove( "admin" ); // NON-NLS
                             doPermsPanel( perms,
                                           vp );
                         }
@@ -356,7 +356,7 @@ public class PermissionViewer extends Composite {
                     public void onChange(ChangeEvent event) {
                         pop.clear();
                         final String sel = permTypeBox.getItemText( permTypeBox.getSelectedIndex() );
-                        if ( sel.equals( "logInAdmin" ) ) { // NON-NLS
+                        if ( sel.equals( "admin" ) ) { // NON-NLS
                             createButtonsAndHandlersForAdmin( perms,
                                                               vp,
                                                               pop );
@@ -442,7 +442,7 @@ public class PermissionViewer extends Composite {
                                           ok );
                         ok.addClickHandler( new ClickHandler() {
                             public void onClick(ClickEvent w) {
-                                perms.put( "logInAdmin",
+                                perms.put( "admin",
                                            new ArrayList<String>() ); // NON-NLS
 
                                 doPermsPanel( perms,

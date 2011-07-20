@@ -51,7 +51,7 @@ public class SecurityServiceImpl implements SecurityService {
     public boolean login(String userName, String password) {
 
         if ( userName == null || userName.trim().equals( "" ) ) {
-            userName = "logInAdmin";
+            userName = "admin";
         }
 
         log.info( "Logging in user [" + userName + "]" );

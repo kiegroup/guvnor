@@ -26,7 +26,7 @@ public class RoleTypesTest {
     public void testListAllTypes() {
         String[] t = RoleTypes.listAvailableTypes();
         assertEquals(6, t.length);
-        assertEquals("logInAdmin", t[0]);
+        assertEquals("admin", t[0]);
     }
 
 }

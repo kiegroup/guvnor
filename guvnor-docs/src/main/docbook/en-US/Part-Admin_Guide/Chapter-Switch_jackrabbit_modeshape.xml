@@ -52,8 +52,8 @@
       <key>org.drools.repository.secure.passwords</key>
       <value>false</value>
       
-      <key>org.drools.repository.logInAdmin.password</key>  
-      <value>logInAdmin</value>
+      <key>org.drools.repository.admin.password</key>
+      <value>admin</value>
       
       <key>org.drools.repository.mailman.password</key>
       <value>mailman</value>
@@ -98,22 +98,22 @@
 -->]]></programlisting>
 
   	<para>
-  	You may have noticed the settings of two passwords in the modeshape property settings for the 'logInAdmin' and
+  	You may have noticed the settings of two passwords in the modeshape property settings for the 'admin' and
    'mailman' users. These users are used by guvnor to perform background tasks. Now that we are no longer
    allowing for anyone to run as 'guest', we need to ass these two users to the modeshape users and roles
    files. Open the <filename>conf/props/modeshape-users.properties</filename> file and add the mailman and 
-   logInAdmin users,
+   admin users,
   	</para>
-  	<programlisting>logInAdmin=logInAdmin
+  	<programlisting>admin=admin
 mailman=mailman</programlisting>
 
   	<para>
-  	Finally open the <filename>conf/props/modeshape-roles.properties</filename> file and add the logInAdmin 
+  	Finally open the <filename>conf/props/modeshape-roles.properties</filename> file and add the admin
   	and mailman roles,
   	</para>
   	
   	<programlisting>
-logInAdmin=connect,admin
+admin=connect,admin
 mailman=connect,readonly,readwrite</programlisting>
 
  	<para>

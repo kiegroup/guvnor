@@ -22,7 +22,7 @@ public class RoleTypes {
 
 
     /** Admin can do everything */
-    public final static String ADMIN = "logInAdmin";
+    public final static String ADMIN = "admin";
 
     /**
      * Analyst only see the "rules" view, and we specify what category paths they
@@ -37,8 +37,8 @@ public class RoleTypes {
     public final static String ANALYST_READ = "analyst.readonly";
 
 
-    /** package.logInAdmin can do everything within this package */
-    public final static String PACKAGE_ADMIN = "package.logInAdmin";
+    /** package.admin can do everything within this package */
+    public final static String PACKAGE_ADMIN = "package.admin";
 
     /**
      * package.developer can do anything in that package but not snapshots. This

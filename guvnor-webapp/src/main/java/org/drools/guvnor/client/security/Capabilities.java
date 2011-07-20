@@ -35,10 +35,10 @@ public class Capabilities implements IsSerializable {
 
     public static final Integer SHOW_PACKAGE_VIEW = 1;  //(show status list view as well) if they have any package perms
     public static final Integer SHOW_CREATE_NEW_ASSET = 2; //if they have any package perms not read only
-    public static final Integer SHOW_CREATE_NEW_PACKAGE = 3; //if they are package logInAdmin
-    public static final Integer    SHOW_ADMIN = 4; //if they are logInAdmin, package logInAdmin??
+    public static final Integer SHOW_CREATE_NEW_PACKAGE = 3; //if they are package admin
+    public static final Integer    SHOW_ADMIN = 4; //if they are admin, package admin??
     public static final Integer    SHOW_QA = 5; //if they have any package perms
-    public static final Integer    SHOW_DEPLOYMENT = 6; //if they are package logInAdmin??
+    public static final Integer    SHOW_DEPLOYMENT = 6; //if they are package admin??
     public static final Integer SHOW_DEPLOYMENT_NEW = 7; //can create a new depl, rename etc...
 
     public List<Integer> list = new ArrayList<Integer>();
