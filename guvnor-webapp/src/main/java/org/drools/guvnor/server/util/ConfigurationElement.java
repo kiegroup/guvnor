@@ -15,7 +15,7 @@
  */
 
 
-package org.drools.guvnor.gwtutil;
+package org.drools.guvnor.server.util;
 
 import java.util.HashMap;
 import java.util.Map;

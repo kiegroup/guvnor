@@ -33,6 +33,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.server.util.AssetEditorConfiguration;
+import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 
 import java.io.PrintWriter;
 import java.util.List;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.gwtutil;
+package org.drools.guvnor.server.util;
 
 public class AssetEditorConfiguration {
     public String format;    

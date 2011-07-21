@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.gwtutil;
+package org.drools.guvnor.server.util;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -29,8 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AssetEditorConfigurationParser {
-    private static final Logger            log                       = LoggerFactory
-                                                                             .getLogger( AssetEditorConfigurationParser.class );
+    private static final Logger            log                       = LoggerFactory.getLogger( AssetEditorConfigurationParser.class );
     public static final String             DROOLS_ASSETEDITOR_CONFIG = "/drools-asseteditors.xml";
     static final String                    ASSET_EDITOR              = "asseteditor";
     static final String                    TITLE                     = "title";
@@ -51,8 +50,7 @@ public class AssetEditorConfigurationParser {
         List<AssetEditorConfiguration> assetEditors = new ArrayList<AssetEditorConfiguration>();
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = getClass().getResourceAsStream(
-                                                             DROOLS_ASSETEDITOR_CONFIG );
+            InputStream in = getClass().getResourceAsStream( DROOLS_ASSETEDITOR_CONFIG );
             XMLEventReader eventReader = inputFactory.createXMLEventReader( in );
             AssetEditorConfiguration configuration = null;
 
