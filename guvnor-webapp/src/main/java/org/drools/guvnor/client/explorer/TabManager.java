@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface TabManager {
 
-    void openAsset( String key );
-
     void openAdministrationSelection( int id );
 
     void openSnapshot( SnapshotInfo snap );
@@ -44,8 +42,6 @@ public interface TabManager {
     void openPackageViewAssets( String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text );
 
     boolean showIfOpen( String id );
-
-    void addTab( String title, IsWidget widget, String id );
 
     void openInboxIncomingPagedTable( String title );
 

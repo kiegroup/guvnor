@@ -21,10 +21,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderViewImpl;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
-import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.browse.*;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.*;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
@@ -119,5 +116,9 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public ModuleTreeItemView getModuleTreeItemView() {
         return new ModuleTreeItemViewImpl();
+    }
+
+    public RulesNewMenuView getRulesNewMenuView() {
+        return new RulesNewMenuViewImpl();
     }
 }

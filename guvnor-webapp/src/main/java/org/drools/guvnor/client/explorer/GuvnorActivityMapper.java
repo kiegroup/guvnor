@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.place.shared.Place;
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
@@ -35,17 +34,17 @@ public class GuvnorActivityMapper
 
     public Activity getActivity(Place place) {
         if ( place instanceof FindPlace ) {
-            return new FindActivity();
+            return new FindActivity(clientFactory);
         } else if ( place instanceof AssetEditorPlace ) {
-            return new AssetEditorActivity();
+            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
         } else if ( place instanceof ModuleEditorPlace ) {
             return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
                                              clientFactory );
         } else if ( place instanceof AssetViewerPlace ) {
             return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
                                             clientFactory );
-        } else if ( place instanceof ModuleFormatsGrid ) {
-            return new ModuleFormatsGridPlace( (ModuleFormatsGrid) place );
+        } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
+            return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace( (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place );
         } else {
             return null;
         }

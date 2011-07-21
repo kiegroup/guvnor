@@ -132,6 +132,10 @@ public class ClientFactoryImpl
         return RepositoryServiceFactory.getCategoryService();
     }
 
+    public AssetServiceAsync getAssetService() {
+        return RepositoryServiceFactory.getAssetService();
+    }
+
     private boolean hideTitle() {
         String parameter = Window.Location.getParameter( "nochrome" );
 

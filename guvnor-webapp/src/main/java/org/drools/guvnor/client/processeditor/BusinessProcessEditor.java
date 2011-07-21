@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.processeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
@@ -41,7 +42,9 @@ public class BusinessProcessEditor extends DirtyableComposite
     private RuleAsset asset;
     private Frame     frame;
 
-    public BusinessProcessEditor(RuleAsset asset, RuleViewer viewer) {
+    public BusinessProcessEditor(RuleAsset asset,
+                                 RuleViewer viewer,
+                                 ClientFactory clientFactory) {
         this.asset = asset;
         modelUUID = asset.getUuid();
         initWidgets();

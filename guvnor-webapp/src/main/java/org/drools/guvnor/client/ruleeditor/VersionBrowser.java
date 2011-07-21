@@ -44,17 +44,14 @@ public class VersionBrowser extends Composite {
     private Image refresh;
     private FlexTable layout;
     private final String uuid;
-    private final Command refreshCommand;
     private final boolean isPackage;
     private final ClientFactory clientFactory;
 
     public VersionBrowser( ClientFactory clientFactory,
                            String uuid,
-                           boolean isPackage,
-                           Command ref ) {
+                           boolean isPackage ) {
         this.clientFactory = clientFactory;
         this.uuid = uuid;
-        this.refreshCommand = ref;
         this.isPackage = isPackage;
 
         HorizontalPanel wrapper = new HorizontalPanel();
@@ -242,7 +239,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    refreshCommand.execute();
+                                                    clientFactory.getEventBus().fireEvent( new RefreshAssetEditorEvent(uuid) );
                                                     pop.hide();
                                                 }
                                             } );
@@ -252,10 +249,6 @@ public class VersionBrowser extends Composite {
                             RuleViewerWrapper viewer = new RuleViewerWrapper(
                                     clientFactory,
                                     asset,
-                                    null,
-                                    null,
-                                    null,
-                                    null,
                                     true,
                                     null,
                                     null );

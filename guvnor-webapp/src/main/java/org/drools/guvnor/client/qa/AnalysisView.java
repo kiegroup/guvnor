@@ -86,8 +86,7 @@ public class AnalysisView extends Composite {
                                             new GenericCallback<AnalysisReport>() {
                                                 public void onSuccess(AnalysisReport rep) {
                                                     VerifierResultWidget w = new VerifierResultWidget( rep,
-                                                                                                       true,
-                                                                                                       edit );
+                                                                                                       true );
                                                     w.setWidth( "100%" );
                                                     layout.remove( 1 );
                                                     layout.add( w );

@@ -178,10 +178,6 @@ public class VersionChooser extends Composite {
                                                                      RuleViewerWrapper viewer = new RuleViewerWrapper(
                                                                              clientFactory,
                                                                              asset,
-                                                                             null,
-                                                                             null,
-                                                                             null,
-                                                                             null,
                                                                              true,
                                                                              null,
                                                                              null );

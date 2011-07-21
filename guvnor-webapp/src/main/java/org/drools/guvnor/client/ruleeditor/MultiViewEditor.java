@@ -15,103 +15,95 @@
  */
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-import org.drools.guvnor.client.util.LazyStackPanel;
-import org.drools.guvnor.client.util.LoadContentCommand;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.util.LazyStackPanel;
+import org.drools.guvnor.client.util.LoadContentCommand;
+
+import java.util.*;
 
 public class MultiViewEditor extends GuvnorEditor {
 
-    private Constants                                 constants  = GWT.create( Constants.class );
+    private Constants constants = GWT.create( Constants.class );
 
-    private VerticalPanel                             viewsPanel = new VerticalPanel();
-    private Command                                   closeCommand;
-    private final Set<MultiViewRow>                   rows       = new HashSet<MultiViewRow>();
-    private Map<String, RuleViewer>                   ruleViews  = new HashMap<String, RuleViewer>();
-    private final OpenItemCommand                     editItemEvent;
+    private final ClientFactory clientFactory;
+    private VerticalPanel viewsPanel = new VerticalPanel();
+    private Command closeCommand;
+    private final Set<MultiViewRow> rows = new HashSet<MultiViewRow>();
+    private Map<String, RuleViewer> ruleViews = new HashMap<String, RuleViewer>();
     private ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider;
 
-    private Map<String, RuleAsset>                    assets     = new HashMap<String, RuleAsset>();
+    private Map<String, RuleAsset> assets = new HashMap<String, RuleAsset>();
 
-    private MultiViewEditorMenuBarCreator             menuBarCreator;
+    private MultiViewEditorMenuBarCreator menuBarCreator;
 
-    public MultiViewEditor(MultiViewRow[] rows,
-                           OpenItemCommand editItemEvent) {
+    public MultiViewEditor( MultiViewRow[] rows, ClientFactory clientFactory ) {
         this( rows,
-              editItemEvent,
-              null );
+                clientFactory,
+                null );
     }
 
-    public MultiViewEditor(MultiViewRow[] rows,
-                           OpenItemCommand editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
+    public MultiViewEditor( MultiViewRow[] rows,
+                            ClientFactory clientFactory,
+                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
         this( Arrays.asList( rows ),
-              editItemEvent,
-              individualActionToolbarButtonsConfigurationProvider );
+                clientFactory,
+                individualActionToolbarButtonsConfigurationProvider );
     }
 
-    public MultiViewEditor(List<MultiViewRow> rows,
-                           OpenItemCommand editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
+    public MultiViewEditor( List<MultiViewRow> rows,
+                            ClientFactory clientFactory,
+                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
         this.rows.addAll( rows );
-        this.editItemEvent = editItemEvent;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
+        this.clientFactory = clientFactory;
 
         init();
     }
 
-    public MultiViewEditor(RuleAsset[] assets,
-                           OpenItemCommand editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
+    public MultiViewEditor( RuleAsset[] assets,
+                            ClientFactory clientFactory,
+                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
         this( assets,
-              editItemEvent,
-              individualActionToolbarButtonsConfigurationProvider,
-              null );
+                clientFactory,
+                individualActionToolbarButtonsConfigurationProvider,
+                null );
     }
 
-    public MultiViewEditor(RuleAsset[] assets,
-                           OpenItemCommand editItemEvent,
-                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
-                           MultiViewEditorMenuBarCreator menuBarCreator) {
+    public MultiViewEditor( RuleAsset[] assets,
+                            ClientFactory clientFactory,
+                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
+                            MultiViewEditorMenuBarCreator menuBarCreator ) {
         this.rows.addAll( createRows( assets ) );
-        this.editItemEvent = editItemEvent;
+        this.clientFactory = clientFactory;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.menuBarCreator = menuBarCreator;
         addAssets( assets );
         init();
     }
 
-    private void addAssets(RuleAsset[] assets) {
-        for ( RuleAsset ruleAsset : assets ) {
+    private void addAssets( RuleAsset[] assets ) {
+        for (RuleAsset ruleAsset : assets) {
             this.assets.put( ruleAsset.getUuid(),
-                             ruleAsset );
+                    ruleAsset );
         }
     }
 
-    private static List<MultiViewRow> createRows(RuleAsset[] assets) {
+    private static List<MultiViewRow> createRows( RuleAsset[] assets ) {
         List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
-        for ( RuleAsset ruleAsset : assets ) {
+        for (RuleAsset ruleAsset : assets) {
             MultiViewRow row = new MultiViewRow();
             row.uuid = ruleAsset.getUuid();
             row.name = ruleAsset.getName();
@@ -136,22 +128,6 @@ public class MultiViewEditor extends GuvnorEditor {
         initWidget( rootPanel );
     }
 
-    //    MenuBar layoutMenu = new MenuBar( true );
-    //    layoutMenu.addItem( new MenuItem( showMetadataText(),
-    //                                      new Command() {
-    //                                          public void execute() {
-    //                                              doViews();
-    //                                          }
-    //                                      } ) );
-    //    layoutMenu.addItem( new MenuItem( showDescriptionAndDiscussionText(),
-    //                                      new Command() {
-    //                                          public void execute() {
-    //                                              doViews();
-    //                                          }
-    //                                      } ) );
-    //
-    //    toolbar.addItem( constants.Show(),
-    //                     layoutMenu );
     private MenuBar createToolbar() {
 
         //if no MultiViewEditorMenuBarCreator is set, then use the Default
@@ -171,59 +147,39 @@ public class MultiViewEditor extends GuvnorEditor {
 
         //the first row will be expanded
         int rowNumber = 1;
-        for ( final MultiViewRow row : rows ) {
-            //            panel.add( row.name );
-            //            panel.setIconCls( EditorLauncher.getAssetFormatBGStyle( row.format ) ); //NON-NLS
-            //            panel.setCollapsible( true );
-            //            panel.setTitleCollapse( true );
-            //            panel.setCollapsed( true );
-            //            panel.setWidth( "100%" );
-
-            //            panel.addListener( new PanelListenerAdapter() {
-            //                public void onExpand(final Panel panel) {
+        for (final MultiViewRow row : rows) {
 
             panel.add( row.name,
-                       new LoadContentCommand() {
+                    new LoadContentCommand() {
 
-                           public Widget load() {
-                               final SimplePanel content = new SimplePanel();
+                        public Widget load() {
+                            final SimplePanel content = new SimplePanel();
 
-                               if ( assets.containsKey( row.uuid ) ) {
-                                   addRuleViewInToSimplePanel( row,
-                                                               content,
-                                                               assets.get( row.uuid ) );
-                               } else {
-                                   RepositoryServiceFactory.getAssetService().loadRuleAsset( row.uuid,
-                                                                                             new GenericCallback<RuleAsset>() {
+                            if ( assets.containsKey( row.uuid ) ) {
+                                addRuleViewInToSimplePanel( row,
+                                        content,
+                                        assets.get( row.uuid ) );
+                            } else {
+                                RepositoryServiceFactory.getAssetService().loadRuleAsset( row.uuid,
+                                        new GenericCallback<RuleAsset>() {
 
-                                                                                                 public void onSuccess(final RuleAsset asset) {
-                                                                                                     assets.put( asset.getUuid(),
-                                                                                                                 asset );
+                                            public void onSuccess( final RuleAsset asset ) {
+                                                assets.put( asset.getUuid(),
+                                                        asset );
 
-                                                                                                     addRuleViewInToSimplePanel( row,
-                                                                                                                                 content,
-                                                                                                                                 asset );
-                                                                                                 }
+                                                addRuleViewInToSimplePanel( row,
+                                                        content,
+                                                        asset );
+                                            }
 
-                                                                                             } );
+                                        } );
 
-                               }
-                               return content;
-                           }
-                       },
-                       rowNumber == 1 );
+                            }
+                            return content;
+                        }
+                    },
+                    rowNumber == 1 );
 
-            // Only load if it doesn't exist yet.
-            //            if ( ruleViews.get( row.uuid ) == null ) {
-            //
-            //            } else {
-            //                panel.add( ruleViews.get( row.uuid ) );
-            //                //                        panel.doLayout();
-            //            }
-            //            //                }
-            //
-            //            //            } );
-            //
             rowNumber++;
         }
 
@@ -231,55 +187,52 @@ public class MultiViewEditor extends GuvnorEditor {
 
     }
 
-    private void addRuleViewInToSimplePanel(final MultiViewRow row,
-                                            final SimplePanel content,
-                                            final RuleAsset asset) {
+    private void addRuleViewInToSimplePanel( final MultiViewRow row,
+                                             final SimplePanel content,
+                                             final RuleAsset asset ) {
         SuggestionCompletionCache.getInstance().doAction( asset.getMetaData().getPackageName(),
-                                                          new Command() {
+                new Command() {
 
-                                                              public void execute() {
+                    public void execute() {
 
-                                                                  RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
-                                                                  ruleViewerSettings.setDocoVisible( false );
-                                                                  ruleViewerSettings.setMetaVisible( false );
-                                                                  ruleViewerSettings.setStandalone( true );
-                                                                  Command closeCommand = new Command() {
-                                                                      public void execute() {
-                                                                          ruleViews.remove( row.uuid );
-                                                                          rows.remove( row );
-                                                                          doViews();
-                                                                      }
-                                                                  };
-                                                                  final RuleViewer ruleViewer = new RuleViewer( asset,
-                                                                                                                editItemEvent,
-                                                                                                                closeCommand,
-                                                                                                                null,
-                                                                                                                null,
-                                                                                                                null,
-                                                                                                                false,
-                                                                                                                individualActionToolbarButtonsConfigurationProvider,
-                                                                                                                ruleViewerSettings );
-                                                                  //ruleViewer.setDocoVisible( showDescription );
-                                                                  //ruleViewer.setMetaVisible( showMetadata );
+                        RuleViewerSettings ruleViewerSettings = new RuleViewerSettings();
+                        ruleViewerSettings.setDocoVisible( false );
+                        ruleViewerSettings.setMetaVisible( false );
+                        ruleViewerSettings.setStandalone( true );
+                        Command closeCommand = new Command() {
+                            public void execute() {
+                                // TODO: No handle for this -Rikkola-
+                                ruleViews.remove( row.uuid );
+                                rows.remove( row );
+                                doViews();
+                            }
+                        };
+                        final RuleViewer ruleViewer = new RuleViewer( asset,
+                                clientFactory,
+                                false,
+                                individualActionToolbarButtonsConfigurationProvider,
+                                ruleViewerSettings );
+                        //ruleViewer.setDocoVisible( showDescription );
+                        //ruleViewer.setMetaVisible( showMetadata );
 
-                                                                  content.add( ruleViewer );
-                                                                  ruleViewer.setWidth( "100%" );
-                                                                  ruleViewer.setHeight( "100%" );
-                                                                  ruleViews.put( row.uuid,
-                                                                                 ruleViewer );
+                        content.add( ruleViewer );
+                        ruleViewer.setWidth( "100%" );
+                        ruleViewer.setHeight( "100%" );
+                        ruleViews.put( row.uuid,
+                                ruleViewer );
 
-                                                              }
-                                                          } );
+                    }
+                } );
     }
 
-    public void checkin(final boolean closeAfter) {
+    public void checkin( final boolean closeAfter ) {
         final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
 
             public void execute() {
                 String comment = pop.getCheckinComment();
-                for ( RuleViewer ruleViewer : ruleViews.values() ) {
-                    ruleViewer.doCheckin( comment, false);
+                for (RuleViewer ruleViewer : ruleViews.values()) {
+                    ruleViewer.doCheckin( comment, false );
                 }
                 if ( closeAfter ) {
                     close();
@@ -310,7 +263,7 @@ public class MultiViewEditor extends GuvnorEditor {
         // TODO Auto-generated method stub
     }
 
-    public void setCloseCommand(Command command) {
+    public void setCloseCommand( Command command ) {
         closeCommand = command;
     }
 }

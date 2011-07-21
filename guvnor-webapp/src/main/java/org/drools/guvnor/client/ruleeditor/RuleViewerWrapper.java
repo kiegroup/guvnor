@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -30,7 +29,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -38,71 +36,44 @@ import org.drools.guvnor.client.rulelist.OpenItemCommand;
 public class RuleViewerWrapper extends GuvnorEditor {
     private Constants                         constants            = GWT.create( Constants.class );
 
-    private ArtifactEditor                    artifactEditor;
-    private RuleViewer                        ruleViewer;
-    private ActionToolbar                     actionToolBar;
-    private RuleAsset                         asset;
-    private boolean                           isHistoricalReadOnly = false;
-    private final RuleViewerSettings          ruleViewerSettings;
-    private final OpenItemCommand             openItemCommand;
-    private Command                           closeCommand;
-    private Command                           archiveCommand;
-    private Command                           checkedInCommand;
+    private ArtifactEditor artifactEditor;
+    private RuleViewer ruleViewer;
+    private ActionToolbar actionToolBar;
+    private RuleAsset asset;
+    private boolean isHistoricalReadOnly = false;
+    private final RuleViewerSettings ruleViewerSettings;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     VerticalPanel                             layout               = new VerticalPanel();
     private final ClientFactory               clientFactory;
 
-    public RuleViewerWrapper(ClientFactory clientFactory,
-                              RuleAsset asset,
-                              final OpenItemCommand openItemCommand,
-                              final Command closeCommand,
-                              final Command checkedInCommand,
-                              final Command archiveCommand) {
+    public RuleViewerWrapper( ClientFactory clientFactory,
+                              RuleAsset asset ) {
         this( clientFactory,
-              asset,
-              openItemCommand,
-              closeCommand,
-              checkedInCommand,
-              archiveCommand,
-              false,
-              null,
-              null );
+                asset,
+                false,
+                null,
+                null );
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
                               RuleAsset asset,
-                              final OpenItemCommand openItemCommand,
-                              final Command closeCommand) {
-        this( clientFactory,
-              asset,
-              openItemCommand,
-              closeCommand,
-              null,
-              null,
-              false,
-              null,
-              null );
-    }
-
-    public RuleViewerWrapper(ClientFactory clientFactory,
-                              RuleAsset asset,
-                              final OpenItemCommand event,
-                              final Command closeCommand,
-                              final Command checkedInCommand,
-                              final Command archiveCommand,
                               boolean isHistoricalReadOnly,
                               ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                               RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
-        this.openItemCommand = event;
         this.ruleViewerSettings = ruleViewerSettings;
-        this.closeCommand = closeCommand;
-        this.checkedInCommand = checkedInCommand;
-        this.archiveCommand = archiveCommand;
+
+        clientFactory.getEventBus().addHandler(
+                RefreshAssetEditorEvent.TYPE,
+                new RefreshAssetEditorEvent.Handler() {
+                    public void onRefreshAsset( RefreshAssetEditorEvent refreshAssetEditorEvent ) {
+                        refresh();
+                    }
+                } );
 
         initWidget( layout );
         render();
@@ -111,31 +82,16 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     private void render() {
         this.artifactEditor = new ArtifactEditor(
-                                                  clientFactory,
-                                                  asset,
-                                                  this.isHistoricalReadOnly,
-                                                  new Command() {
-                                                      public void execute() {
-                                                          refresh();
-                                                      }
-                                                  },
-                                                  this.openItemCommand,
-                                                  this.closeCommand );
+                clientFactory,
+                asset,
+                this.isHistoricalReadOnly );
 
         this.ruleViewer = new RuleViewer(
-                                          asset,
-                                          this.openItemCommand,
-                                          this.closeCommand,
-                                          this.checkedInCommand,
-                                          this.archiveCommand,
-                                          new Command() {
-                                              public void execute() {
-                                                  refresh();
-                                              }
-                                          },
-                                          this.isHistoricalReadOnly,
-                                          actionToolbarButtonsConfigurationProvider,
-                                          ruleViewerSettings );
+                asset,
+                clientFactory,
+                this.isHistoricalReadOnly,
+                actionToolbarButtonsConfigurationProvider,
+                ruleViewerSettings );
         this.actionToolBar = this.ruleViewer.getActionToolbar();
 
         layout.clear();

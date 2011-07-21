@@ -24,6 +24,7 @@ import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -37,8 +38,10 @@ public class QueryWidget extends Composite {
     private Constants constants = ((Constants) GWT.create( Constants.class ));
 
     private VerticalPanel layout;
+    private final ClientFactory clientFactory;
 
-    public QueryWidget() {
+    public QueryWidget(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
         layout = new VerticalPanel();
         doQuickFind();
         doTextSearch();
@@ -52,7 +55,7 @@ public class QueryWidget extends Composite {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( constants.NameSearch() );
         advancedDisclosure.ensureDebugId( "cwDisclosurePanel" );
         advancedDisclosure.setWidth( "100%" );
-        advancedDisclosure.setContent( new QuickFindWidget() );
+        advancedDisclosure.setContent( new QuickFindWidget(clientFactory) );
         advancedDisclosure.setOpen( true );
 
         layout.add( advancedDisclosure );
@@ -91,8 +94,10 @@ public class QueryWidget extends Composite {
                     return;
                 }
                 resultsP.clear();
-                QueryPagedTable table = new QueryPagedTable( tx.getText(),
-                        false );
+                QueryPagedTable table = new QueryPagedTable(
+                        tx.getText(),
+                        false,
+                        clientFactory);
                 resultsP.add( table );
             }
 
@@ -206,7 +211,8 @@ public class QueryWidget extends Composite {
                             getDate( createdBefore ),
                             getDate( lastModAfter ),
                             getDate( lastModBefore ),
-                            false );
+                            false,
+                            clientFactory );
                     resultsP.add( table );
                 } catch (IllegalArgumentException e) {
                     ErrorPopup.showMessage( constants.BadDateFormatPleaseTryAgainTryTheFormatOf0(

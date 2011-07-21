@@ -102,112 +102,7 @@ public class TabOpenerImpl
         this.explorerViewCenterPanel = explorerViewCenterPanel;
     }
 
-    /**
-     * Open an asset if it is not already open.
-     */
-    public void openAsset(final String uuid) {
-        if ( uuid.contains( "<" ) ) {
-            return;
-        }
-        History.newItem( "asset="
-                         + uuid ); // NON-NLS
-
-        if ( !explorerViewCenterPanel.showIfOpen( uuid ) ) {
-
-            final boolean[] loading = {true};
-
-            Timer t = new Timer() {
-                public void run() {
-                    if ( loading[0] ) {
-                        LoadingPopup.showMessage( constants.LoadingAsset() );
-                    }
-                }
-            };
-            t.schedule( 200 );
-
-            loadRuleAsset( uuid,
-                           loading );
-        }
-    }
-
-    private void loadRuleAsset(final String uuid,
-                                final boolean[] loading) {
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( uuid,
-                                                                  createGenericCallback( uuid,
-                                                                                         loading ) );
-    }
-
-    private GenericCallback<RuleAsset> createGenericCallback(final String uuid,
-                                                              final boolean[] loading) {
-        return new GenericCallback<RuleAsset>() {
-            public void onSuccess(final RuleAsset ruleAsset) {
-                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
-                                                                  createCommandForSuggestCompletionCache( uuid,
-                                                                                                          loading,
-                                                                                                          ruleAsset ) );
-            }
-
-            private Command createCommandForSuggestCompletionCache(final String uuid,
-                                                                    final boolean[] loading,
-                                                                    final RuleAsset ruleAsset) {
-                return new Command() {
-                    public void execute() {
-                        loading[0] = false;
-                        OpenItemCommand openCommand = createEditEvent();
-                        Command closeCommand = createCloseCommandForRuleViewer( uuid );
-
-                        // When model is saved update the package view if it is opened.
-                        if ( ruleAsset.metaData.format.equals( AssetFormats.MODEL ) ) {
-                            Command archiveCommand = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
-                            Command checkedInCommand = createCheckInAndArchiveCommandForRuleViewer( ruleAsset );
-                            RuleViewerWrapper ruleViewer = new RuleViewerWrapper( clientFactory,
-                                                                                  ruleAsset,
-                                                                                  openCommand,
-                                                                                  closeCommand,
-                                                                                  checkedInCommand,
-                                                                                  archiveCommand );
-                            explorerViewCenterPanel.addTab( ruleAsset.getName(),
-                                                            ruleViewer,
-                                                            uuid );
-                        } else {
-                            RuleViewerWrapper ruleViewer = new RuleViewerWrapper( clientFactory,
-                                                                                  ruleAsset,
-                                                                                  openCommand,
-                                                                                  closeCommand );
-                            explorerViewCenterPanel.addTab( ruleAsset.getName(),
-                                                            ruleViewer,
-                                                            uuid );
-                        }
-
-                        LoadingPopup.close();
-                    }
-
-                    private Command createCheckInAndArchiveCommandForRuleViewer(final RuleAsset ruleAsset) {
-                        Command command = new Command() {
-                            public void execute() {
-                                PackageEditorWrapper packageEditor = explorerViewCenterPanel.getOpenedPackageEditors().get( ruleAsset.metaData.packageName );
-                                if ( packageEditor != null ) {
-                                    packageEditor.refresh();
-                                }
-                            }
-                        };
-                        return command;
-                    }
-
-                    private Command createCloseCommandForRuleViewer(final String uuid) {
-                        return new Command() {
-                            public void execute() {
-                                explorerViewCenterPanel.close( uuid );
-                            }
-                        };
-                    }
-
-                };
-            }
-        };
-    }
-
-    public void openAssetsToMultiView(MultiViewRow[] rows) {
+    public void openAssetsToMultiView( MultiViewRow[] rows ) {
 
         String blockingAssetName = null;
         final String[] uuids = new String[rows.length];
@@ -231,7 +126,7 @@ public class TabOpenerImpl
         }
 
         MultiViewEditor multiview = new MultiViewEditor( rows,
-                                                         createEditEvent() );
+                clientFactory);
 
         multiview.setCloseCommand( new Command() {
             public void execute() {
@@ -286,8 +181,8 @@ public class TabOpenerImpl
             case 1 :
                 if ( !explorerViewCenterPanel.showIfOpen( ARCHMAN ) ) {
                     explorerViewCenterPanel.addTab( constants.ArchivedManager(),
-                                                    new ArchivedAssetManager(),
-                                                    ARCHMAN );
+                            new ArchivedAssetManager(clientFactory),
+                            ARCHMAN );
                 }
                 break;
 
@@ -384,11 +279,12 @@ public class TabOpenerImpl
     public void openCategory(String categoryName,
                              final String categoryPath) {
         final CategoryPagedTable table = new CategoryPagedTable( categoryPath,
-                                                                 GWT.getModuleBaseURL()
-                                                                         + "feed/category?name="
-                                                                         + categoryPath
-                                                                         + "&viewUrl="
-                                                                         + Util.getSelfURL() );
+                GWT.getModuleBaseURL()
+                        + "feed/category?name="
+                        + categoryPath
+                        + "&viewUrl="
+                        + Util.getSelfURL(),
+                clientFactory );
         final ServerPushNotification push = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {
                 if ( response.messageType.equals( "categoryChange" )
@@ -412,8 +308,8 @@ public class TabOpenerImpl
 
     private OpenItemCommand createEditEvent() {
         return new OpenItemCommand() {
-            public void open(String uuid) {
-                openAsset( uuid );
+            public void open( String uuid ) {
+//                openAsset( uuid );
             }
 
             public void open(MultiViewRow[] rows) {
@@ -431,15 +327,17 @@ public class TabOpenerImpl
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
 
             String feedUrl = GWT.getModuleBaseURL()
-                             + "feed/package?name="
-                             + packageName
-                             + "&viewUrl="
-                             + Util.getSelfURL()
-                             + "&status=*";
-            final AssetPagedTable table = new AssetPagedTable( packageUuid,
-                                                               formatInList,
-                                                               formatIsRegistered,
-                                                               feedUrl );
+                    + "feed/package?name="
+                    + packageName
+                    + "&viewUrl="
+                    + Util.getSelfURL()
+                    + "&status=*";
+            final AssetPagedTable table = new AssetPagedTable(
+                    packageUuid,
+                    formatInList,
+                    formatIsRegistered,
+                    feedUrl,
+                    clientFactory);
             explorerViewCenterPanel.addTab( itemName
                                                     + " ["
                                                     + packageName
@@ -471,11 +369,12 @@ public class TabOpenerImpl
                                                   + packageUuid ) ) {
             String m = constants.ScenariosForPackage( packageName );
             explorerViewCenterPanel.addTab( m,
-                                            new ScenarioPackageView( packageUuid,
-                                                                     packageName,
-                                                                     explorerViewCenterPanel ),
-                                            "scenarios"
-                                                    + packageUuid );
+                    new ScenarioPackageView(
+                            packageUuid,
+                            packageName,
+                            clientFactory),
+                    "scenarios"
+                            + packageUuid );
         }
     }
 
@@ -498,9 +397,11 @@ public class TabOpenerImpl
                                        final String[] assetTypes,
                                        String key) {
         if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-            AssetPagedTable table = new AssetPagedTable( uuid,
-                                                         Arrays.asList( assetTypes ),
-                                                         null );
+            AssetPagedTable table = new AssetPagedTable(
+                    uuid,
+                    Arrays.asList( assetTypes ),
+                    null,
+                    clientFactory);
 
             VerticalPanel vp = new VerticalPanel();
             vp.add( new HTML( "<i><small>"
@@ -518,18 +419,16 @@ public class TabOpenerImpl
         return explorerViewCenterPanel.showIfOpen( id );
     }
 
-    public void addTab(String title,
-                       IsWidget widget,
-                       String id) {
-        explorerViewCenterPanel.addTab( title,
-                                        widget,
-                                        id );
+    private void addTab( String title, IsWidget widget, String id ) {
+        explorerViewCenterPanel.addTab( title, widget, id );
     }
 
     public void openInboxIncomingPagedTable(String title) {
         if ( !showIfOpen( title ) ) {
             addTab( title,
-                    new InboxIncomingPagedTable( title ),
+                    new InboxIncomingPagedTable(
+                            title,
+                            clientFactory),
                     title );
         }
     }
@@ -537,13 +436,17 @@ public class TabOpenerImpl
     public void openInboxPagedTable(String title) {
         if ( !showIfOpen( title ) ) {
             addTab( title,
-                    new InboxPagedTable( title ),
+                    new InboxPagedTable(
+                            title,
+                            clientFactory ),
                     title );
         }
     }
 
-    public void openStatePagedTable(final String stateName) {
-        final StatePagedTable table = new StatePagedTable( stateName );
+    public void openStatePagedTable( final String stateName ) {
+        final StatePagedTable table = new StatePagedTable(
+                stateName,
+                clientFactory);
 
         final ServerPushNotification push = new ServerPushNotification() {
             public void messageReceived(PushResponse response) {

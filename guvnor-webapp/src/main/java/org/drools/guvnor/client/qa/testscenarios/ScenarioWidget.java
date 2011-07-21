@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
@@ -72,7 +73,8 @@ public class ScenarioWidget extends Composite
     private ScenarioWidgetComponentCreator     scenarioWidgetComponentCreator;
 
     public ScenarioWidget(RuleAsset asset,
-                          RuleViewer viewer) {
+                          RuleViewer viewer,
+                        ClientFactory clientFactory) {
         this( asset );
     }
 

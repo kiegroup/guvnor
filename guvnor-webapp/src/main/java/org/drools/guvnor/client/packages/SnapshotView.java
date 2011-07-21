@@ -61,18 +61,6 @@ public class SnapshotView extends Composite {
 
     private VerticalPanel vert;
     private SnapshotComparisonPagedTable table;
-    private final OpenItemCommand openCommand = new OpenItemCommand() {
-
-        public void open( String uuid ) {
-            TabManager tabManager = TabContainer.getInstance();
-            tabManager.openAsset( uuid );
-        }
-
-        public void open( MultiViewRow[] rows ) {
-            // Do nothing,
-            // unsupported
-        }
-    };
 
     private final ClientFactory clientFactory;
 
@@ -209,7 +197,7 @@ public class SnapshotView extends Composite {
                 table = new SnapshotComparisonPagedTable( packageName,
                         snapshotName,
                         box.getItemText( box.getSelectedIndex() ),
-                        openCommand );
+                        clientFactory);
                 vert.add( table );
             }
         } );

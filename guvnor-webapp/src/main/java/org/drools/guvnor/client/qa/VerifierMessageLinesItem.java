@@ -34,13 +34,9 @@ class VerifierMessageLinesItem extends TreeItem {
     private static Constants constants = GWT.create( Constants.class );
     private static Images    images    = GWT.create( Images.class );
 
-    private OpenItemCommand  edit;
 
     public VerifierMessageLinesItem(String topicHtml,
-                                    AnalysisReportLine[] lines,
-                                    OpenItemCommand edit) {
-
-        this.edit = edit;
+                                    AnalysisReportLine[] lines) {
 
         setStyleName( "analysis-Report" );
         setHTML( topicHtml );

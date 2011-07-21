@@ -51,7 +51,7 @@ public interface BrowseTreeView extends IsWidget {
 
     IsTreeItem addTreeItem(IsTreeItem rootTreeItem, String one);
 
-    void showMenu();
+    void showMenu(RulesNewMenu rulesNewMenu);
 
     void setPresenter(Presenter presenter);
 

@@ -45,7 +45,7 @@ public class BrowseTree implements Presenter {
         this.view.setPresenter( this );
 
         if ( canShowMenu() ) {
-            this.view.showMenu();
+            this.view.showMenu( new RulesNewMenu( clientFactory ) );
         }
         root = this.view.addRootTreeItem();
         addInbox();

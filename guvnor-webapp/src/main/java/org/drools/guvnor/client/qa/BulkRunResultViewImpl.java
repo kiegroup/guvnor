@@ -16,15 +16,6 @@
 
 package org.drools.guvnor.client.qa;
 
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.PackageBuilderWidget;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
-import org.drools.guvnor.client.util.PercentageBar;
-import org.drools.guvnor.client.util.ToggleLabel;
-import org.drools.guvnor.client.util.ValueList;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -34,72 +25,88 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.PackageBuilderWidget;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.util.PercentageBar;
+import org.drools.guvnor.client.util.ToggleLabel;
+import org.drools.guvnor.client.util.ValueList;
 
 /**
  * This presents the results of a bulk run.
  */
 public class BulkRunResultViewImpl extends Composite
-    implements
-    BulkRunResultView {
+        implements
+        BulkRunResultView {
+
+    private final ClientFactory clientFactory;
 
     interface BulkRunResultViewImplBinder
-        extends
-        UiBinder<Widget, BulkRunResultViewImpl> {
+            extends
+            UiBinder<Widget, BulkRunResultViewImpl> {
     }
 
-    private static BulkRunResultViewImplBinder uiBinder  = GWT.create( BulkRunResultViewImplBinder.class );
+    private static BulkRunResultViewImplBinder uiBinder = GWT.create( BulkRunResultViewImplBinder.class );
 
-    private Constants                          constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create( Constants.class );
 
-    private Presenter                          presenter;
-
-    @UiField
-    ToggleLabel                                overAll;
+    private Presenter presenter;
 
     @UiField
-    PercentageBar                              resultsBar;
+    ToggleLabel overAll;
 
     @UiField
-    SmallLabel                                 failuresOutOfExpectations;
+    PercentageBar resultsBar;
 
     @UiField
-    PercentageBar                              coveredPercentBar;
+    SmallLabel failuresOutOfExpectations;
 
     @UiField
-    SmallLabel                                 ruleCoveragePercent;
+    PercentageBar coveredPercentBar;
 
     @UiField
-    ValueList                                  uncoveredRules;
+    SmallLabel ruleCoveragePercent;
+
+    @UiField
+    ValueList uncoveredRules;
 
     @UiField(provided = true)
-    SummaryTableView                           summaryTableView;
+    SummaryTableView summaryTableView;
 
-    private SummaryTable                       summaryTable;
+    private SummaryTable summaryTable;
 
-    public BulkRunResultViewImpl() {
+    public BulkRunResultViewImpl( ClientFactory clientFactory ) {
         summaryTableView = new SummaryTableViewImpl();
-        summaryTable = new SummaryTable( summaryTableView );
+        this.clientFactory = clientFactory;
+        summaryTable = new SummaryTable(
+                summaryTableView,
+                clientFactory );
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
     @UiHandler("closeButton")
-    void close(ClickEvent clickEvent) {
+    void close( ClickEvent clickEvent ) {
         presenter.onClose();
     }
 
-    public void addSummary(ScenarioResultSummary summary) {
+    public void addSummary( ScenarioResultSummary summary ) {
         summaryTable.addRow( summary );
     }
 
-    public void showErrors(BuilderResult errors) {
+    public void showErrors( BuilderResult errors ) {
 
         Panel err = new SimplePanel();
 
-        PackageBuilderWidget.showBuilderErrors( errors,
-                                                err );
+        PackageBuilderWidget.showBuilderErrors(
+                errors,
+                err,
+                clientFactory );
     }
 
-    public void setPresenter(Presenter presenter) {
+    public void setPresenter( Presenter presenter ) {
         this.presenter = presenter;
     }
 
@@ -111,21 +118,21 @@ public class BulkRunResultViewImpl extends Composite
         overAll.setValue( true );
     }
 
-    public void setFailuresOutOfExpectation(int totalFailures,
-                                            int grandTotal) {
-        failuresOutOfExpectations.setText( constants.failuresOutOFExpectations(totalFailures, grandTotal) );
+    public void setFailuresOutOfExpectation( int totalFailures,
+                                             int grandTotal ) {
+        failuresOutOfExpectations.setText( constants.failuresOutOFExpectations( totalFailures, grandTotal ) );
     }
 
-    public void setResultsPercent(int i) {
+    public void setResultsPercent( int i ) {
         resultsBar.setValue( i );
     }
 
-    public void setRulesCoveredPercent(int percentCovered) {
+    public void setRulesCoveredPercent( int percentCovered ) {
         coveredPercentBar.setValue( percentCovered );
-        ruleCoveragePercent.setText( constants.RuleCoveragePercent(percentCovered) );
+        ruleCoveragePercent.setText( constants.RuleCoveragePercent( percentCovered ) );
     }
 
-    public void addUncoveredRules(String uncoveredRule) {
+    public void addUncoveredRules( String uncoveredRule ) {
         uncoveredRules.addItem( uncoveredRule );
     }
 }

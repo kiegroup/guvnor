@@ -1,66 +1,71 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.rpc.RuleAsset;
-
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
 import org.drools.guvnor.client.ruleeditor.standalone.RealAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.ruleeditor.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class used to manage the stand-alone version of Guvnor's Editors
  */
 public class StandaloneEditorManager {
 
+    private final ClientFactory clientFactory;
     private DockLayoutPanel mainLayout;
-    private Constants constants = GWT.create(Constants.class);
+    private Constants constants = GWT.create( Constants.class );
     private MultiViewEditor editor;
-    private StandaloneEditorServiceAsync standaloneEditorService = GWT.create(StandaloneEditorService.class);
+    private StandaloneEditorServiceAsync standaloneEditorService = GWT.create( StandaloneEditorService.class );
     private RuleAsset[] assets;
+
+    public StandaloneEditorManager( ClientFactory clientFactory ) {
+        this.clientFactory = clientFactory;
+    }
 
     public Panel getBaseLayout() {
 
-        String parametersUUID = Window.Location.getParameter("pUUID");
-        if (parametersUUID == null || parametersUUID.trim().equals("")) {
+        String parametersUUID = Window.Location.getParameter( "pUUID" );
+        if ( parametersUUID == null || parametersUUID.trim().equals( "" ) ) {
             return null;
         }
 
         //init JS hooks
-        this.setHooks(this);
+        this.setHooks( this );
 
-        mainLayout = new DockLayoutPanel(Unit.EM);
+        mainLayout = new DockLayoutPanel( Unit.EM );
 
         final ScrollPanel mainPanel = new ScrollPanel();
 
-        mainLayout.add(mainPanel);
+        mainLayout.add( mainPanel );
 
         //The package must exist (because we need at least a model to work with)
         //To make things easier (to me), the category must exist too.
-        standaloneEditorService.getInvocationParameters(parametersUUID, new GenericCallback<StandaloneEditorInvocationParameters>() {
+        standaloneEditorService.getInvocationParameters( parametersUUID, new GenericCallback<StandaloneEditorInvocationParameters>() {
 
-            public void onSuccess(final StandaloneEditorInvocationParameters parameters) {
+            public void onSuccess( final StandaloneEditorInvocationParameters parameters ) {
 
                 //no assets? This is an error!
-                if (parameters.getAssetsToBeEdited().length == 0) {
-                    Window.alert(constants.NoRulesFound());
+                if ( parameters.getAssetsToBeEdited().length == 0 ) {
+                    Window.alert( constants.NoRulesFound() );
                     return;
                 }
 
@@ -73,26 +78,26 @@ public class StandaloneEditorManager {
 
 
                 Set<String> validFacts = null;
-                if (parameters.getValidFactTypes() != null){
+                if ( parameters.getValidFactTypes() != null ) {
                     validFacts = new HashSet<String>();
-                    validFacts.addAll(Arrays.asList(parameters.getValidFactTypes()));
+                    validFacts.addAll( Arrays.asList( parameters.getValidFactTypes() ) );
                 }
-                
-                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().getPackageName(), validFacts, new Command() {
+
+                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes( assets[0].getMetaData().getPackageName(), validFacts, new Command() {
 
                     public void execute() {
                         LoadingPopup.close();
 
                         //Configure RuleModeller
                         RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
-                        ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
-                        ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
-                        ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
+                        ruleModellerConfiguration.setHideLHS( parameters.isHideLHS() );
+                        ruleModellerConfiguration.setHideRHS( parameters.isHideRHS() );
+                        ruleModellerConfiguration.setHideAttributes( parameters.isHideAttributes() );
 
                         //Create the editor
                         MultiViewEditorMenuBarCreator editorMenuBarCreator;
-                        if (parameters.isTemporalAssets()) {
-                            editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
+                        if ( parameters.isTemporalAssets() ) {
+                            editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator( new Command() {
                                 //"Done" buton command
 
                                 public void execute() {
@@ -104,49 +109,44 @@ public class StandaloneEditorManager {
                                 public void execute() {
                                     afterCancelButtonCallbackFunction();
                                 }
-                            });
-                        } else if(parameters.getClientName().equalsIgnoreCase("oryx")){
-                            editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
+                            }
+                            );
+                        } else if ( parameters.getClientName().equalsIgnoreCase( "oryx" ) ) {
+                            editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator( new Command() {
                                 // "Close" button command
                                 public void execute() {
                                     afterCloseButtonCallbackFunction();
                                 }
-                            });
+                            } );
                         } else {
-                            editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
+                            editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator( new Command() {
                                 //"Cancel" button command
 
                                 public void execute() {
                                     afterCancelButtonCallbackFunction();
                                 }
-                            });
+                            } );
                         }
 
-                        editor = new MultiViewEditor(parameters.getAssetsToBeEdited(), new OpenItemCommand() {
+                        editor = new MultiViewEditor(
+                                parameters.getAssetsToBeEdited(),
+                                clientFactory,
+                                new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
+                                editorMenuBarCreator );
 
-                            public void open(MultiViewRow[] rows) {
-                                // TODO Auto-generated method stub
-                            }
-
-                            public void open(String key) {
-                                // TODO Auto-generated method stub
-                            }
-                        }, new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
-                                editorMenuBarCreator);
-
-                        editor.setCloseCommand(new Command() {
+                        editor.setCloseCommand( new Command() {
 
                             public void execute() {
                                 afterSaveAndClose();
                             }
-                        });
+                        } );
 
                         //Add the editor to main panel
-                        mainPanel.add(editor);
+                        mainPanel.add( editor );
                     }
-                });
+                } );
             }
-        });
+        } );
 
 
         return mainLayout;
@@ -154,74 +154,75 @@ public class StandaloneEditorManager {
 
     /**
      * This method should be invoked from JS using window.getEditorDRL().
-     * Returns the DRL of the assets we are editing. Because this method is 
+     * Returns the DRL of the assets we are editing. Because this method is
      * asynchronous, the DRL code is passed to a callback function specified
      * in the JS invocation.
      */
     public void getDRLs() {
-        if (assets == null || assets.length == 0) {
-            returnDRL("");
+        if ( assets == null || assets.length == 0 ) {
+            returnDRL( "" );
         }
 
-        standaloneEditorService.getAsstesDRL(assets, new GenericCallback<String[]>() {
+        standaloneEditorService.getAsstesDRL( assets, new GenericCallback<String[]>() {
 
-            public void onSuccess(String[] drls) {
+            public void onSuccess( String[] drls ) {
                 String result = "";
-                if (drls != null) {
+                if ( drls != null ) {
                     for (String drl : drls) {
                         result += drl + "\n\n";
                     }
                 }
 
-                returnDRL(result);
+                returnDRL( result );
             }
-        });
+        } );
     }
 
     /**
      * This method should be invoked from JS using window.getEditorBRL().
-     * Returns the BRL of the assets we are editing. Because this method is 
+     * Returns the BRL of the assets we are editing. Because this method is
      * asynchronous, the BRL code is passed to a callback function specified
      * in the JS invocation.
      */
     public void getBRLs() {
-        if (assets == null || assets.length == 0) {
-            returnDRL("");
+        if ( assets == null || assets.length == 0 ) {
+            returnDRL( "" );
         }
 
-        standaloneEditorService.getAsstesBRL(assets, new GenericCallback<String[]>() {
+        standaloneEditorService.getAsstesBRL( assets, new GenericCallback<String[]>() {
 
-            public void onSuccess(String[] drls) {
+            public void onSuccess( String[] drls ) {
                 String result = "";
-                if (drls != null) {
+                if ( drls != null ) {
                     for (String drl : drls) {
                         result += drl + "\n\n";
                     }
                 }
 
-                returnBRL(result);
+                returnBRL( result );
             }
-        });
+        } );
     }
-    
+
     /**
      * Returns the uuids of the assets that are being edited in JSON format.
-     * @return 
+     *
+     * @return
      */
-    public String getAssetsUUIDs(){
-        StringBuilder uuids = new StringBuilder("[");
+    public String getAssetsUUIDs() {
+        StringBuilder uuids = new StringBuilder( "[" );
         String separator = "";
         for (int i = 0; i < this.assets.length; i++) {
-            uuids.append(separator);
-            uuids.append("'");
-            uuids.append(this.assets[i].getUuid());
-            uuids.append("'");
-            if (separator.equals("")){
+            uuids.append( separator );
+            uuids.append( "'" );
+            uuids.append( this.assets[i].getUuid() );
+            uuids.append( "'" );
+            if ( separator.equals( "" ) ) {
                 separator = ",";
             }
         }
-        uuids.append("]");
-        
+        uuids.append( "]" );
+
         return uuids.toString();
     }
 
@@ -229,85 +230,88 @@ public class StandaloneEditorManager {
      * Creates 2 JS functions in window object: getDRLs() and getBRLs(). These
      * functions are used to retrieve the source code of the assets this component
      * is handling.
+     *
      * @param app
      */
-    public native void setHooks(StandaloneEditorManager app)/*-{
-    
-    var guvnorEditorObject = {
-    drlCallbackFunction: null,
-    brlCallbackFunction: null,
-    
-    //close function listener. The function you register here will be called
-    //after the "Save and Close" button is pressed                                                                                                                 
-    afterSaveAndCloseButtonCallbackFunction: null,
-    
-    afterCancelButtonCallbackFunction: null,
-    
-    getDRL: function (callbackFunction){
-    this.drlCallbackFunction = callbackFunction;
-    app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getDRLs()();
-    },
-    
-    getBRL: function (callbackFunction){
-    this.brlCallbackFunction = callbackFunction;
-    app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getBRLs()();
-    },
-    
-    registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction){
-    this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
-    },
-    
-    registerAfterCancelButtonCallbackFunction: function (callbackFunction){
-    this.afterCancelButtonCallbackFunction = callbackFunction;
-    },
-    
-    getAssetsUUIDs: function(){
-    return app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getAssetsUUIDs()();
-    }
-    }
-    $wnd.guvnorEditorObject = guvnorEditorObject;
-    
+    public native void setHooks( StandaloneEditorManager app )/*-{
+
+        var guvnorEditorObject = {
+            drlCallbackFunction: null,
+            brlCallbackFunction: null,
+
+            //close function listener. The function you register here will be called
+            //after the "Save and Close" button is pressed
+            afterSaveAndCloseButtonCallbackFunction: null,
+
+            afterCancelButtonCallbackFunction: null,
+
+            getDRL: function ( callbackFunction ) {
+                this.drlCallbackFunction = callbackFunction;
+                app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getDRLs()();
+            },
+
+            getBRL: function ( callbackFunction ) {
+                this.brlCallbackFunction = callbackFunction;
+                app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getBRLs()();
+            },
+
+            registerAfterSaveAndCloseButtonCallbackFunction: function ( callbackFunction ) {
+                this.afterSaveAndCloseButtonCallbackFunction = callbackFunction;
+            },
+
+            registerAfterCancelButtonCallbackFunction: function ( callbackFunction ) {
+                this.afterCancelButtonCallbackFunction = callbackFunction;
+            },
+
+            getAssetsUUIDs: function() {
+                return app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getAssetsUUIDs()();
+            }
+        }
+        $wnd.guvnorEditorObject = guvnorEditorObject;
+
     }-*/;
 
     /**
      * Callback method invoked from getDRLs().
+     *
      * @param drl
      */
-    public native void returnDRL(String drl)/*-{
-    if ($wnd.guvnorEditorObject.drlCallbackFunction){
-    $wnd.guvnorEditorObject.drlCallbackFunction(drl);
-    }
+    public native void returnDRL( String drl )/*-{
+        if ( $wnd.guvnorEditorObject.drlCallbackFunction ) {
+            $wnd.guvnorEditorObject.drlCallbackFunction( drl );
+        }
     }-*/;
 
     /**
      * Callback method invoked from getDRLs().
+     *
      * @param drl
      */
-    public native void returnBRL(String brl)/*-{
-    if ($wnd.guvnorEditorObject.brlCallbackFunction){
-    $wnd.guvnorEditorObject.brlCallbackFunction(brl);
-    }
+    public native void returnBRL( String brl )/*-{
+        if ( $wnd.guvnorEditorObject.brlCallbackFunction ) {
+            $wnd.guvnorEditorObject.brlCallbackFunction( brl );
+        }
     }-*/;
 
     /**
-     * Method invoked after the "Save an Close" button is pressed. 
+     * Method invoked after the "Save an Close" button is pressed.
      */
     public native void afterSaveAndClose()/*-{
-    if ($wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction){
-    $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction();
-    }
+        if ( $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction ) {
+            $wnd.guvnorEditorObject.afterSaveAndCloseButtonCallbackFunction();
+        }
     }-*/;
 
     public native void afterCancelButtonCallbackFunction()/*-{
-    if ($wnd.guvnorEditorObject.afterCancelButtonCallbackFunction){
-    $wnd.guvnorEditorObject.afterCancelButtonCallbackFunction();
-    }
+        if ( $wnd.guvnorEditorObject.afterCancelButtonCallbackFunction ) {
+            $wnd.guvnorEditorObject.afterCancelButtonCallbackFunction();
+        }
     }-*/;
-    
+
     public native void afterCloseButtonCallbackFunction()/*-{
         $wnd.opener.location.reload();
-        if (confirm("Are you sure you want to close this window?")) {
-              $wnd.close();
+        if ( confirm( "Are you sure you want to close this window?" ) ) {
+            $wnd.close();
         }
     }-*/;
 }

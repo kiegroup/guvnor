@@ -27,7 +27,9 @@ import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabOpenerImpl;
 import org.drools.guvnor.client.util.TabbedPanel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,7 +39,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private final ScrollTabLayoutPanel tabLayoutPanel;
 
-    private BiDirectionalMap openedTabs = new BiDirectionalMap();
+    private PanelMap openedTabs = new PanelMap();
 
     private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
@@ -60,8 +62,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     public void show( String key ) {
         if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
-            Panel tpi = openedTabs.get( key );
-            tabLayoutPanel.selectTab( tpi );
+            tabLayoutPanel.selectTab( openedTabs.get( key ) );
         }
     }
 
@@ -114,8 +115,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     public boolean showIfOpen( String key ) {
         if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
-            Panel tpi = openedTabs.get( key );
-            tabLayoutPanel.selectTab( tpi );
+            tabLayoutPanel.selectTab( openedTabs.get( key ) );
             return true;
         }
         return false;
@@ -123,25 +123,37 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     public void close( String key ) {
 
-        int widgetIndex = tabLayoutPanel.getWidgetIndex(
-                openedTabs.remove( key ) );
+        int widgetIndex = openedTabs.getIndex( key );
 
-        if ( isOnlyOneTabLeft() ) {
-            clientFactory.getPlaceController().goTo( Place.NOWHERE );
-        } else if ( isSelectedTabIndex( widgetIndex ) ) {
-            selectOtherTab( widgetIndex );
+        Place nextPlace = getPlace( widgetIndex );
+
+        tabLayoutPanel.remove( openedTabs.get( key ) );
+        openedTabs.remove( key );
+
+        if ( nextPlace != null ) {
+            goTo( nextPlace );
         }
-
-        tabLayoutPanel.remove( widgetIndex );
     }
 
-    private void selectOtherTab( int widgetIndex ) {
-        if ( isLeftMost( widgetIndex ) ) {
-            clientFactory.getPlaceController().goTo(
-                    getNextPlace() );
+    private Place getPlace( int widgetIndex ) {
+        if ( isOnlyOneTabLeft() ) {
+            return Place.NOWHERE;
+        } else if ( isSelectedTabIndex( widgetIndex ) ) {
+            return getNeighbour( widgetIndex );
         } else {
-            clientFactory.getPlaceController().goTo(
-                    getPreviousPlace() );
+            return null;
+        }
+    }
+
+    private void goTo( Place place ) {
+        clientFactory.getPlaceController().goTo( place );
+    }
+
+    private Place getNeighbour( int widgetIndex ) {
+        if ( isLeftMost( widgetIndex ) ) {
+            return getNextPlace();
+        } else {
+            return getPreviousPlace();
         }
     }
 
@@ -155,18 +167,12 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private Place getPreviousPlace() {
         return clientFactory.getPlaceHistoryMapper().getPlace(
-                getTabKey( tabLayoutPanel.getSelectedIndex() - 1 ) );
+                openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 ) );
     }
 
     private Place getNextPlace() {
         return clientFactory.getPlaceHistoryMapper().getPlace(
-                getTabKey( tabLayoutPanel.getSelectedIndex() + 1 ) );
-    }
-
-    private String getTabKey( int index ) {
-        return openedTabs.get( (Panel)
-                tabLayoutPanel.getWidget(
-                        index ) );
+                openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 ) );
     }
 
     private boolean isOnlyOneTabLeft() {
@@ -177,22 +183,21 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return openedPackageEditors;
     }
 
-    private class BiDirectionalMap {
-        private Map<String, Panel> keysToPanel = new HashMap<String, Panel>();
-        private Map<Panel, String> panelsToKeys = new HashMap<Panel, String>();
+    private class PanelMap {
+        private final Map<String, Panel> keysToPanel = new HashMap<String, Panel>();
+        private final List<String> keys = new ArrayList<String>();
 
         Panel get( String key ) {
             return keysToPanel.get( key );
         }
 
-        String get( Panel panel ) {
-            return panelsToKeys.get( panel );
+        String getKey( int index ) {
+            return keys.get( index );
         }
 
-        Panel remove( String key ) {
-            Panel panel = keysToPanel.remove( key );
-            panelsToKeys.remove( panel );
-            return panel;
+        void remove( String key ) {
+            keys.remove( key );
+            keysToPanel.remove( key );
         }
 
         public boolean contains( String key ) {
@@ -200,8 +205,12 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         }
 
         public void put( String key, Panel panel ) {
+            keys.add( key );
             keysToPanel.put( key, panel );
-            panelsToKeys.put( panel, key );
+        }
+
+        public int getIndex( String key ) {
+            return keys.indexOf( key );
         }
     }
 }

@@ -16,26 +16,28 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleContentText;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 
 public class XmlFileWidget extends AssetAttachmentFileWidget
-    implements
-    SaveEventListener {
+        implements
+        SaveEventListener {
 
-    private TextArea              text;
+    private TextArea text;
     final private RuleContentText data;
 
-    public XmlFileWidget(final RuleAsset asset,
-                         final RuleViewer viewer) {
+    public XmlFileWidget( final RuleAsset asset,
+                          final RuleViewer viewer,
+                          ClientFactory clientFactory ) {
         super( asset,
-               viewer );
+                viewer,
+                clientFactory );
         data = (RuleContentText) asset.getContent();
 
         if ( data.content == null ) {
@@ -50,7 +52,7 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
         text.setStyleName( "default-text-Area" );
 
         text.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
+            public void onChange( ChangeEvent event ) {
                 data.content = text.getText();
             }
         } );

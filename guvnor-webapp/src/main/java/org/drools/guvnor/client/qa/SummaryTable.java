@@ -15,31 +15,35 @@
  */
 package org.drools.guvnor.client.qa;
 
-import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 
 public class SummaryTable
-    implements
-    Presenter {
+        implements
+        Presenter {
 
     private SummaryTableView summaryTableView;
+    private final ClientFactory clientFactory;
 
-    public SummaryTable(SummaryTableView summaryTableView) {
+    public SummaryTable( SummaryTableView summaryTableView,
+                         ClientFactory clientFactory ) {
         this.summaryTableView = summaryTableView;
+        this.clientFactory = clientFactory;
 
         summaryTableView.setPresenter( this );
     }
 
-    public void addRow(ScenarioResultSummary scenarioResultSummary) {
+    public void addRow( ScenarioResultSummary scenarioResultSummary ) {
         summaryTableView.addRow( scenarioResultSummary.getFailures(),
-                                 scenarioResultSummary.getTotal(),
-                                 scenarioResultSummary.getScenarioName(),
-                                 scenarioResultSummary.getUuid() );
+                scenarioResultSummary.getTotal(),
+                scenarioResultSummary.getScenarioName(),
+                scenarioResultSummary.getUuid() );
     }
 
-    public void openTestScenario(String uuid) {
-        TabContainer.getInstance().openAsset( uuid );
+    public void openTestScenario( String uuid ) {
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ) );
     }
 
 }

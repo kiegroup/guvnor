@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
@@ -40,7 +41,8 @@ public class DefaultRuleContentWidget extends DirtyableComposite
     final private RuleAsset       asset;
 
     public DefaultRuleContentWidget(RuleAsset a,
-                                    RuleViewer v) {
+                                    RuleViewer v,
+                        ClientFactory clientFactory) {
         this( a );
     }
 

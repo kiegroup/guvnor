@@ -36,7 +36,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Abst
     protected RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
     protected AssetServiceAsync      assetService      = RepositoryServiceFactory.getAssetService();
     protected PackageServiceAsync    packageService    = RepositoryServiceFactory.getPackageService();
-    protected CategoryServiceAsync   CategoryService   = RepositoryServiceFactory.getCategoryService();
+    protected CategoryServiceAsync   categoryService = RepositoryServiceFactory.getCategoryService();
 
     protected int                    pageSize;
     protected AsyncDataProvider<T>   dataProvider;

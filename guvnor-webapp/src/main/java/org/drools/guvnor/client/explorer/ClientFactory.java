@@ -16,18 +16,14 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
-
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 
 public interface ClientFactory {
 
@@ -56,7 +52,7 @@ public interface ClientFactory {
     ModuleEditorActivityView getModuleEditorActivityView();
 
     AssetViewerActivityView getAssetViewerActivityView();
-    
+
     PackageServiceAsync getPackageService();
 
     AssetEditorFactory getAssetEditorFactory();
@@ -64,4 +60,6 @@ public interface ClientFactory {
     RepositoryServiceAsync getRepositoryService();
 
     CategoryServiceAsync getCategoryService();
+
+    AssetServiceAsync getAssetService();
 }

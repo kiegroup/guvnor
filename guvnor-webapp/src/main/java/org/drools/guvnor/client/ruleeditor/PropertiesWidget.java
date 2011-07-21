@@ -16,31 +16,33 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
 /**
  * Properties (key/value pairs) editor with a file attachment.
  */
 public class PropertiesWidget extends AssetAttachmentFileWidget
-    implements
-    SaveEventListener {
+        implements
+        SaveEventListener {
 
-    private PropertiesHolder            properties;
+    private PropertiesHolder properties;
     private PropertiesEditorSimpleTable propertiesEditor;
 
-    private static Images               images = (Images) GWT.create( Images.class );
+    private static Images images = GWT.create( Images.class );
 
-    public PropertiesWidget(final RuleAsset asset,
-                            final RuleViewer viewer) {
+    public PropertiesWidget( final RuleAsset asset,
+                             final RuleViewer viewer,
+                             ClientFactory clientFactory ) {
         super( asset,
-               viewer );
+                viewer,
+                clientFactory );
 
         if ( asset.getContent() == null ) {
             properties = new PropertiesHolder();

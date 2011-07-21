@@ -42,13 +42,9 @@ public class VerifierResultWidget extends Composite {
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
 
-    private OpenItemCommand edit      = null;
-
     public VerifierResultWidget(AnalysisReport report,
-                                boolean showFactUsage,
-                                OpenItemCommand edit) {
+                                boolean showFactUsage) {
         
-        this.edit = edit;
         FormStyleLayout layout = new FormStyleLayout();
 
         Tree tree = new Tree();
@@ -98,8 +94,7 @@ public class VerifierResultWidget extends Composite {
         String topicHtml = "<img src='" + icon.getURL() + "' /> &nbsp; " + summary;
 
         linesItem = new VerifierMessageLinesItem( topicHtml,
-                                                  lines,
-                                                  edit );
+                                                  lines );
 
         return linesItem;
     }

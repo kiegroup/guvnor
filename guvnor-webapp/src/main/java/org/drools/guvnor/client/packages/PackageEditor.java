@@ -160,7 +160,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
             startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget( this.packageConfigData ) );
+            addRow( new PackageBuilderWidget(
+                    this.packageConfigData,
+                    clientFactory ) );
             endSection();
         }
 

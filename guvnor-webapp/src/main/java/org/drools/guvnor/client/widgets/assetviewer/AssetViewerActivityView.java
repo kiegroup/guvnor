@@ -16,33 +16,34 @@
 
 package org.drools.guvnor.client.widgets.assetviewer;
 
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 /**
  * What the Asset Viewer is capable of doing
  */
 public interface AssetViewerActivityView
-    extends
-    IsWidget {
+        extends
+        IsWidget {
 
     interface Presenter {
 
-        void viewPackageDetail(PackageConfigData packageConfigData);
-        
+        void viewPackageDetail( PackageConfigData packageConfigData );
+
     }
 
-    void addAssetFormat(ImageResource icon, String title, ModuleFormatsGrid place);
-    
+    void addAssetFormat( ImageResource icon, String title, String packageName, AssetPagedTable table );
+
     void showLoadingPackageInformationMessage();
 
     void closeLoadingPackageInformationMessage();
-    
-    void setPresenter(Presenter presenter);
-    
-    void setPackageConfigData(PackageConfigData packageConfigData);
+
+    void setPresenter( Presenter presenter );
+
+    void setPackageConfigData( PackageConfigData packageConfigData );
+
+    String getFeedUrl( String packageName );
 
 }

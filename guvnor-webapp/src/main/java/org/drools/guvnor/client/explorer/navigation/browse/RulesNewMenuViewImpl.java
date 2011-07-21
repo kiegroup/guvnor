@@ -14,31 +14,37 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;
 
-public class RulesNewMenu {
+public class RulesNewMenuViewImpl extends MenuBar implements RulesNewMenuView {
 
     private static Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
+    private Presenter presenter;
 
-    public static MenuBar getMenu() {
+    public RulesNewMenuViewImpl() {
+        super( true );
+        setAutoOpen( true );
+        setAnimationEnabled( true );
+
         MenuBar createNewMenu = new MenuBar( true );
 
         createNewMenu.addItem( Util.getHeader( images.businessRule(), constants.BusinessRuleGuidedEditor() ).asString(),
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.BUSINESS_RULE, true );
+                        presenter.onOpenWizard( AssetFormats.BUSINESS_RULE, true );
                     }
                 } );
 
@@ -46,7 +52,7 @@ public class RulesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.DSL_TEMPLATE_RULE, true );
+                        presenter.onOpenWizard( AssetFormats.DSL_TEMPLATE_RULE, true );
                     }
                 } );
 
@@ -54,7 +60,7 @@ public class RulesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.DRL, true );
+                        presenter.onOpenWizard( AssetFormats.DRL, true );
                     }
                 } );
 
@@ -62,7 +68,7 @@ public class RulesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.DECISION_SPREADSHEET_XLS, true );
+                        presenter.onOpenWizard( AssetFormats.DECISION_SPREADSHEET_XLS, true );
                     }
                 } );
 
@@ -70,7 +76,7 @@ public class RulesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.DECISION_TABLE_GUIDED, true );
+                        presenter.onOpenWizard( AssetFormats.DECISION_TABLE_GUIDED, true );
                     }
                 } );
 
@@ -78,26 +84,22 @@ public class RulesNewMenu {
                 true,
                 new Command() {
                     public void execute() {
-                        launchWizard( AssetFormats.TEST_SCENARIO, false );
+                        presenter.onOpenWizard( AssetFormats.TEST_SCENARIO, false );
                     }
                 } );
 
-        MenuBar rootMenuBar = new MenuBar( true );
-        rootMenuBar.setAutoOpen( true );
-        rootMenuBar.setAnimationEnabled( true );
 
-        rootMenuBar.addItem( new MenuItem( constants.CreateNew(), createNewMenu ) );
-
-        return rootMenuBar;
+        addItem( new MenuItem( constants.CreateNew(), createNewMenu ) );
     }
 
-    protected static void launchWizard( String format,
-                                        boolean showCats ) {
+    public void launchWizard( String format, boolean showCategories, ClientFactory clientFactory ) {
+        new NewAssetWizard(
+                showCategories,
+                format,
+                clientFactory ).show();
+    }
 
-        NewAssetWizard pop = new NewAssetWizard(
-                showCats,
-                format );
-
-        pop.show();
+    public void setPresenter( Presenter presenter ) {
+        this.presenter = presenter;
     }
 }

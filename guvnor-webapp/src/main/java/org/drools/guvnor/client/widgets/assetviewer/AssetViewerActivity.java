@@ -16,35 +16,34 @@
 
 package org.drools.guvnor.client.widgets.assetviewer;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An Activity to view a Package's assets
  */
 public class AssetViewerActivity extends Activity
-    implements
-    AssetViewerActivityView.Presenter {
+        implements
+        AssetViewerActivityView.Presenter {
 
-    private final ClientFactory     clientFactory;
-    private PackageConfigData       packageConfigData;
+    private final ClientFactory clientFactory;
+    private PackageConfigData packageConfigData;
     private AssetViewerActivityView view;
-    private String                  uuid;
+    private String uuid;
 
-    public AssetViewerActivity(String uuid,
-                               ClientFactory clientFactory) {
+    public AssetViewerActivity( String uuid,
+                                ClientFactory clientFactory ) {
         this.uuid = uuid;
         this.clientFactory = clientFactory;
         this.view = clientFactory.getAssetViewerActivityView();
@@ -52,28 +51,28 @@ public class AssetViewerActivity extends Activity
     }
 
     @Override
-    public void start(final AcceptTabItem acceptTabItem,
-                      EventBus eventBus) {
+    public void start( final AcceptTabItem acceptTabItem,
+                       EventBus eventBus ) {
 
         view.showLoadingPackageInformationMessage();
 
         clientFactory.getPackageService().loadPackageConfig( uuid,
-                                                             new GenericCallback<PackageConfigData>() {
-                                                                 public void onSuccess(PackageConfigData conf) {
-                                                                     packageConfigData = conf;
-                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
-                                                                     acceptTabItem.addTab( conf.getName(),
-                                                                                           view );
+                new GenericCallback<PackageConfigData>() {
+                    public void onSuccess( PackageConfigData conf ) {
+                        packageConfigData = conf;
+                        RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
+                        acceptTabItem.addTab( conf.getName(),
+                                view );
 
-                                                                     fillModuleItemStructure();
+                        fillModuleItemStructure();
 
-                                                                     view.setPackageConfigData( packageConfigData );
-                                                                     view.closeLoadingPackageInformationMessage();
-                                                                 }
-                                                             } );
+                        view.setPackageConfigData( packageConfigData );
+                        view.closeLoadingPackageInformationMessage();
+                    }
+                } );
     }
 
-    public void viewPackageDetail(PackageConfigData packageConfigData) {
+    public void viewPackageDetail( PackageConfigData packageConfigData ) {
         clientFactory.getPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
 
@@ -87,9 +86,9 @@ public class AssetViewerActivity extends Activity
 
         //Use list to preserve the order of asset editors defined in configuration.
         List<FormatList> formatListGroupedByTitles = new ArrayList<FormatList>();
-        for ( String format : registeredFormats ) {
+        for (String format : registeredFormats) {
             boolean found = false;
-            for ( FormatList formatListWithSameTitle : formatListGroupedByTitles ) {
+            for (FormatList formatListWithSameTitle : formatListGroupedByTitles) {
                 found = formatListWithSameTitle.titleAlreadyExists( format );
                 if ( found ) {
                     formatListWithSameTitle.add( format );
@@ -106,41 +105,57 @@ public class AssetViewerActivity extends Activity
         addTitleItems( formatListGroupedByTitles );
     }
 
-    private String getTitle(String format) {
+    private String getTitle( String format ) {
         return clientFactory.getAssetEditorFactory().getAssetEditorTitle( format );
     }
 
-    private void addTitleItems(List<FormatList> formatListGroupedByTitles) {
-        for ( FormatList formatList : formatListGroupedByTitles ) {
+    private void addTitleItems( List<FormatList> formatListGroupedByTitles ) {
+        for (FormatList formatList : formatListGroupedByTitles) {
 
             //Don't add a section for anything we don't have assets for
             if ( formatList.size() > 0 ) {
                 view.addAssetFormat( clientFactory.getAssetEditorFactory().getAssetEditorIcon( formatList.getFirst() ),
-                                     getTitle( formatList.getFirst() ),
-                                     new ModuleFormatsGrid( packageConfigData,
-                                                            getTitle( formatList.getFirst() ),
-                                                            formatList.getFormats() ) );
+                        getTitle( formatList.getFirst() ),
+                        packageConfigData.getName(),
+                        makeTable( formatList ) );
             }
         }
+    }
+
+    private AssetPagedTable makeTable( FormatList formatList ) {
+
+        List<String> formatsInList = null;
+        Boolean formatIsRegistered = null;
+        if ( formatList.getFormats() != null && formatList.getFormats().length > 0 ) {
+            formatsInList = Arrays.asList( formatList.getFormats() );
+        } else {
+            formatIsRegistered = false;
+        }
+        return new AssetPagedTable(
+                packageConfigData.getUuid(),
+                formatsInList,
+                formatIsRegistered,
+                view.getFeedUrl( packageConfigData.getName() ),
+                clientFactory );
     }
 
     class FormatList {
 
         private List<String> formatList = new ArrayList<String>();
 
-        private boolean titleAlreadyExists(String format) {
-            for ( String addedFormat : formatList ) {
+        private boolean titleAlreadyExists( String format ) {
+            for (String addedFormat : formatList) {
                 //If two formats has same tile, group them together
                 if ( hasSameTitle( format,
-                                   addedFormat ) ) {
+                        addedFormat ) ) {
                     return true;
                 }
             }
             return false;
         }
 
-        private boolean hasSameTitle(String format,
-                                     String addedFormat) {
+        private boolean hasSameTitle( String format,
+                                      String addedFormat ) {
             return getTitle( addedFormat ).equals( getTitle( format ) );
         }
 
@@ -152,7 +167,7 @@ public class AssetViewerActivity extends Activity
             }
         }
 
-        public void add(String format) {
+        public void add( String format ) {
             formatList.add( format );
         }
 
@@ -160,7 +175,7 @@ public class AssetViewerActivity extends Activity
             return formatList.size();
         }
 
-        public String[] toArray(String[] strings) {
+        public String[] toArray( String[] strings ) {
             return formatList.toArray( strings );
         }
 

@@ -129,12 +129,14 @@ public class JBRMSEntryPoint
      * render the view. If not, the default view is shown.
      */
     private void createMain() {
+
+        ClientFactory clientFactory = GWT.create( ClientFactory.class );
+        appController = new AppController( clientFactory );
+
         if ( Window.Location.getPath().contains( "StandaloneEditor.html" ) ) {
-            RootLayoutPanel.get().add( new StandaloneEditorManager().getBaseLayout() );
+            RootLayoutPanel.get().add( new StandaloneEditorManager( clientFactory ).getBaseLayout() );
         } else {
 
-            ClientFactory clientFactory = GWT.create( ClientFactory.class );
-            appController = new AppController( clientFactory );
 
             RootLayoutPanel.get().add( appController.getMainPanel() );
         }

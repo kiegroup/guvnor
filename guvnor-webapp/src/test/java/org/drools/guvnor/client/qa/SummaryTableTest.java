@@ -15,83 +15,85 @@
  */
 package org.drools.guvnor.client.qa;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.qa.SummaryTableView.Presenter;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+
 public class SummaryTableTest {
 
-    private SummaryTable     summaryTable;
+    private SummaryTable summaryTable;
     private SummaryTableView summaryTableView;
 
     @Before
     public void setUp() {
         summaryTableView = mock( SummaryTableView.class );
-        summaryTable = new SummaryTable( summaryTableView );
+        ClientFactory clientFactory = mock( ClientFactory.class );
+        summaryTable = new SummaryTable(
+                summaryTableView,
+                clientFactory );
     }
 
     @Test
     public void emptyTable() throws Exception {
         verify( summaryTableView,
                 never() ).addRow( anyInt(),
-                                  anyInt(),
-                                  anyString(),
-                                  anyString() );
+                anyInt(),
+                anyString(),
+                anyString() );
     }
 
     @Test
     public void singleRow() throws Exception {
 
         addTableRow( 0,
-                     1,
-                     "Test",
-                     "No Description",
-                     "uuid" );
+                1,
+                "Test",
+                "No Description",
+                "uuid" );
 
         verifyRowWasAdded( 0,
-                           1,
-                           "Test",
-                           "uuid" );
+                1,
+                "Test",
+                "uuid" );
     }
 
     @Test
     public void severalRows() throws Exception {
 
         addTableRow( 0,
-                     1,
-                     "Test1",
-                     "No Description",
-                     "uuid1" );
+                1,
+                "Test1",
+                "No Description",
+                "uuid1" );
         addTableRow( 2,
-                     5,
-                     "Test2",
-                     "No Description",
-                     "uuid2" );
+                5,
+                "Test2",
+                "No Description",
+                "uuid2" );
         addTableRow( 6,
-                     10,
-                     "Test3",
-                     "No Description",
-                     "uuid3" );
+                10,
+                "Test3",
+                "No Description",
+                "uuid3" );
 
         verifyRowWasAdded( 0,
-                           1,
-                           "Test1",
-                           "uuid1" );
+                1,
+                "Test1",
+                "uuid1" );
         verifyRowWasAdded( 2,
-                           5,
-                           "Test2",
-                           "uuid2" );
+                5,
+                "Test2",
+                "uuid2" );
         verifyRowWasAdded( 6,
-                           10,
-                           "Test3",
-                           "uuid3" );
+                10,
+                "Test3",
+                "uuid3" );
     }
 
     @Test
@@ -103,26 +105,26 @@ public class SummaryTableTest {
         return summaryTable;
     }
 
-    private void addTableRow(int failures,
-                             int total,
-                             String scenarioName,
-                             String description,
-                             String uuid) {
+    private void addTableRow( int failures,
+                              int total,
+                              String scenarioName,
+                              String description,
+                              String uuid ) {
         summaryTable.addRow( new ScenarioResultSummary( failures,
-                                                        total,
-                                                        scenarioName,
-                                                        description,
-                                                        uuid ) );
+                total,
+                scenarioName,
+                description,
+                uuid ) );
     }
 
-    private void verifyRowWasAdded(int failures,
-                                   int total,
-                                   String scenarioName,
-                                   String uuid) {
+    private void verifyRowWasAdded( int failures,
+                                    int total,
+                                    String scenarioName,
+                                    String uuid ) {
         verify( summaryTableView ).addRow( failures,
-                                           total,
-                                           scenarioName,
-                                           uuid );
+                total,
+                scenarioName,
+                uuid );
     }
 
 }

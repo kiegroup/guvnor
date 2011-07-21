@@ -22,6 +22,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -50,14 +51,16 @@ public class ScenarioPackageView extends Composite {
     private VerticalPanel layout;
 
     private AssetPagedTable table;
+    private final ClientFactory clientFactory;
 
     public ScenarioPackageView(final String packageUUID,
                                String packageName,
-                               ExplorerViewCenterPanel centerPanel) {
-
+                               ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
         this.table = new AssetPagedTable(packageUUID,
                 Arrays.asList(new String[]{AssetFormats.TEST_SCENARIO}),
-                null);
+                null,
+                clientFactory );
 
         layout = new VerticalPanel();
         layout.setWidth("100%");
@@ -97,7 +100,7 @@ public class ScenarioPackageView extends Composite {
         RepositoryServiceFactory.getPackageService().runScenariosInPackage(uuid,
                 new GenericCallback<BulkTestRunResult>() {
                     public void onSuccess(BulkTestRunResult d) {
-                        BulkRunResultViewImpl view = new BulkRunResultViewImpl();
+                        BulkRunResultViewImpl view = new BulkRunResultViewImpl(clientFactory);
                         BulkRunResult w = new BulkRunResult(view);
 
                         w.setBulkTestRunResult(d);

@@ -19,26 +19,24 @@ package org.drools.guvnor.client.explorer.navigation;
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
-public class ModuleFormatsGrid extends Place {
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class ModuleFormatsGridPlace extends Place {
 
     private String[] formats;
     private PackageConfigData packageConfig;
     private String title;
 
-    public ModuleFormatsGrid( PackageConfigData packageConfig,
-                              String title,
-                              String[] formats ) {
+    public ModuleFormatsGridPlace( PackageConfigData packageConfig,
+                                   String title,
+                                   String[] formats ) {
         this.packageConfig = packageConfig;
         this.title = title;
         this.formats = formats;
     }
 
-    public ModuleFormatsGrid( PackageConfigData packageConfig,
-                              String title ) {
-        this.packageConfig = packageConfig;
-        this.title = title;
-    }
-    
     public String[] getFormats() {
         return formats;
     }
@@ -49,5 +47,21 @@ public class ModuleFormatsGrid extends Place {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean hasFormats() {
+        return getFormats() != null && getFormats().length > 0;
+    }
+
+    public List<String> getFormatsAsList() {
+        if ( hasFormats() ) {
+            return Arrays.asList( getFormats() );
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public Boolean getFormatIsRegistered() {
+        return hasFormats();
     }
 }

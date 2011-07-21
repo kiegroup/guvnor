@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
+import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuView;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.*;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
@@ -55,4 +56,6 @@ public interface NavigationViewFactory {
     GlobalAreaTreeItemView getGlobalAreaTreeItemView();
 
     ModuleTreeItemView getModuleTreeItemView();
+
+    RulesNewMenuView getRulesNewMenuView();
 }

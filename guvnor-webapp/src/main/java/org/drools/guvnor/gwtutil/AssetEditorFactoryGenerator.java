@@ -16,16 +16,6 @@
 
 package org.drools.guvnor.gwtutil;
 
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-
-import org.drools.guvnor.client.common.DefaultContentUploadEditor;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -37,135 +27,150 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
+import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
+
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
 
 /**
- * This generates {@link AssetEditorFactory} class during GWT compile time as we can not use 
- * Java reflection on GWT client side. 
- * 
+ * This generates {@link AssetEditorFactory} class during GWT compile time as we can not use
+ * Java reflection on GWT client side.
  */
-public class AssetEditorFactoryGenerator extends Generator {    
-    public String generate(TreeLogger logger, GeneratorContext context,
-            String requestedClass) throws UnableToCompleteException {        
+public class AssetEditorFactoryGenerator extends Generator {
+    public String generate( TreeLogger logger, GeneratorContext context,
+                            String requestedClass ) throws UnableToCompleteException {
         TypeOracle typeOracle = context.getTypeOracle();
- 
-        JClassType objectType = typeOracle.findType(requestedClass);
-        if (objectType == null) {
-            logger.log(TreeLogger.ERROR, "Could not find type: "
-                    + requestedClass);
+
+        JClassType objectType = typeOracle.findType( requestedClass );
+        if ( objectType == null ) {
+            logger.log( TreeLogger.ERROR, "Could not find type: "
+                    + requestedClass );
             throw new UnableToCompleteException();
         }
- 
-        String implTypeName = objectType.getSimpleSourceName() + "Impl"; 
-        String implPackageName = objectType.getPackage().getName();   
- 
+
+        String implTypeName = objectType.getSimpleSourceName() + "Impl";
+        String implPackageName = objectType.getPackage().getName();
+
         ClassSourceFileComposerFactory composerFactory = new ClassSourceFileComposerFactory(
-                implPackageName, implTypeName);
- 
-        composerFactory.addImport(Map.class.getCanonicalName());
-        composerFactory.addImport(List.class.getCanonicalName());
-        composerFactory.addImport(Constants.class.getCanonicalName());
-        composerFactory.addImport(Images.class.getCanonicalName());
-        composerFactory.addImport(ImageResource.class.getCanonicalName());       
-        composerFactory.addImport(RuleAsset.class.getCanonicalName());
-        composerFactory.addImport(RuleViewer.class.getCanonicalName());
-        composerFactory.addImport(DefaultContentUploadEditor.class.getCanonicalName());
-        composerFactory.addImport(Widget.class.getCanonicalName());
-       composerFactory.addImport(GWT.class.getCanonicalName());
-        composerFactory.addImplementedInterface(objectType
-                .getQualifiedSourceName());
- 
-        PrintWriter printWriter = context.tryCreate(logger, implPackageName,
-                implTypeName);
-        if (printWriter != null) { 
+                implPackageName, implTypeName );
+
+        composerFactory.addImport( Map.class.getCanonicalName() );
+        composerFactory.addImport( List.class.getCanonicalName() );
+        composerFactory.addImport( Constants.class.getCanonicalName() );
+        composerFactory.addImport( Images.class.getCanonicalName() );
+        composerFactory.addImport( ImageResource.class.getCanonicalName() );
+        composerFactory.addImport( RuleAsset.class.getCanonicalName() );
+        composerFactory.addImport( RuleViewer.class.getCanonicalName() );
+        composerFactory.addImport( DefaultContentUploadEditor.class.getCanonicalName() );
+        composerFactory.addImport( Widget.class.getCanonicalName() );
+        composerFactory.addImport( GWT.class.getCanonicalName() );
+        composerFactory.addImport( ClientFactory.class.getCanonicalName() );
+        composerFactory.addImplementedInterface( objectType
+                .getQualifiedSourceName() );
+
+        PrintWriter printWriter = context.tryCreate( logger, implPackageName,
+                implTypeName );
+        if ( printWriter != null ) {
             SourceWriter sourceWriter = composerFactory.createSourceWriter(
-                    context, printWriter);
-            
+                    context, printWriter );
+
             List<AssetEditorConfiguration> registeredEditors = loadAssetEditorMetaData();
-            generateAttributes(sourceWriter);
-            generateGetRegisteredAssetEditorFormatsMethod(sourceWriter, registeredEditors);
-            generateGetAssetEditorMethod(sourceWriter, registeredEditors);
-            generateGetAssetEditorIcon(sourceWriter, registeredEditors);
-            generateGetAssetEditorTitle(sourceWriter, registeredEditors);
-            sourceWriter.commit(logger); 
+            generateAttributes( sourceWriter );
+            generateGetRegisteredAssetEditorFormatsMethod( sourceWriter, registeredEditors );
+            generateGetAssetEditorMethod( sourceWriter, registeredEditors );
+            generateGetAssetEditorIcon( sourceWriter, registeredEditors );
+            generateGetAssetEditorTitle( sourceWriter, registeredEditors );
+            sourceWriter.commit( logger );
         }
         return implPackageName + "." + implTypeName;
     }
-    
-    private void generateAttributes(SourceWriter sourceWriter) {
+
+    private void generateAttributes( SourceWriter sourceWriter ) {
         sourceWriter.indent();
-        sourceWriter.println("private static Images images = GWT.create(Images.class);");
-        sourceWriter.println("private static Constants constants = GWT.create(Constants.class);");
-    } 
-    private void generateGetRegisteredAssetEditorFormatsMethod(SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors) {
-        sourceWriter.println("public String[] getRegisteredAssetEditorFormats() {");
+        sourceWriter.println( "private static Images images = GWT.create(Images.class);" );
+        sourceWriter.println( "private static Constants constants = GWT.create(Constants.class);" );
+    }
+
+    private void generateGetRegisteredAssetEditorFormatsMethod( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
+        sourceWriter.println( "public String[] getRegisteredAssetEditorFormats() {" );
         sourceWriter.indent();
-        sourceWriter.println("String[] formats = new String[] {");
-        int i=0;       
-        for(AssetEditorConfiguration a: registeredEditors) {
+        sourceWriter.println( "String[] formats = new String[] {" );
+        int i = 0;
+        for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
-            sourceWriter.print("\""+format+"\"");     
-            if (i < registeredEditors.size() - 1) {
-                sourceWriter.print(", ");
+            sourceWriter.print( "\"" + format + "\"" );
+            if ( i < registeredEditors.size() - 1 ) {
+                sourceWriter.print( ", " );
             }
-            i++;        
+            i++;
         }
 
-        sourceWriter.println("};");
-        sourceWriter.println("return formats;");
+        sourceWriter.println( "};" );
+        sourceWriter.println( "return formats;" );
         sourceWriter.outdent();
-        sourceWriter.println("}");      
-    }     
-    private void generateGetAssetEditorMethod(SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors) {
-        sourceWriter.println("public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer) {");
+        sourceWriter.println( "}" );
+    }
+
+    private void generateGetAssetEditorMethod( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
+        sourceWriter.println( "public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {" );
         sourceWriter.indent();
 
-        for(AssetEditorConfiguration a: registeredEditors) {
+        for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
             String assetEditorClassName = a.getEditorClass();
-            sourceWriter.println("if(asset.getMetaData().getFormat().equals(\"" + format + "\")) {");
+            sourceWriter.println( "if(asset.getMetaData().getFormat().equals(\"" + format + "\")) {" );
             sourceWriter.indent();
-            sourceWriter.println("return new " + assetEditorClassName + "(asset, viewer);");
+            sourceWriter.println( "return new " + assetEditorClassName + "(asset, viewer, clientFactory);" );
             sourceWriter.outdent();
-            sourceWriter.println("}");           
+            sourceWriter.println( "}" );
         }
-        sourceWriter.println("return new DefaultContentUploadEditor(asset, viewer);");
+        sourceWriter.println( "return new DefaultContentUploadEditor(asset, viewer, clientFactory);" );
         sourceWriter.outdent();
-        sourceWriter.println("}");      
-    }    
-    private void generateGetAssetEditorIcon(SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors) {
-        sourceWriter.println("public ImageResource getAssetEditorIcon(String format) {");
+        sourceWriter.println( "}" );
+    }
+
+    private void generateGetAssetEditorIcon( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
+        sourceWriter.println( "public ImageResource getAssetEditorIcon(String format) {" );
         sourceWriter.indent();
 
-        for(AssetEditorConfiguration a: registeredEditors) {
+        for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
             String iconName = a.getIcon();
-            sourceWriter.println("if(format.equals(\"" + format + "\")) {");
+            sourceWriter.println( "if(format.equals(\"" + format + "\")) {" );
             sourceWriter.indent();
-            sourceWriter.println("return " + iconName + ";");
+            sourceWriter.println( "return " + iconName + ";" );
             sourceWriter.outdent();
-            sourceWriter.println("}");           
+            sourceWriter.println( "}" );
         }
-        sourceWriter.println("return images.ruleAsset();");
+        sourceWriter.println( "return images.ruleAsset();" );
         sourceWriter.outdent();
-        sourceWriter.println("}");      
-    } 
-    private void generateGetAssetEditorTitle(SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors) {
-        sourceWriter.println("public String getAssetEditorTitle(String format) {");
+        sourceWriter.println( "}" );
+    }
+
+    private void generateGetAssetEditorTitle( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
+        sourceWriter.println( "public String getAssetEditorTitle(String format) {" );
         sourceWriter.indent();
 
-        for(AssetEditorConfiguration a: registeredEditors) {
+        for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
             String title = a.getTitle();
-            sourceWriter.println("if(format.equals(\"" + format + "\")) {");
+            sourceWriter.println( "if(format.equals(\"" + format + "\")) {" );
             sourceWriter.indent();
-            sourceWriter.println("return " + title + ";");
+            sourceWriter.println( "return " + title + ";" );
             sourceWriter.outdent();
-            sourceWriter.println("}");           
+            sourceWriter.println( "}" );
         }
-        sourceWriter.println("return \"\";");
+        sourceWriter.println( "return \"\";" );
         sourceWriter.outdent();
-        sourceWriter.println("}");      
-    }     
+        sourceWriter.println( "}" );
+    }
+
     public static List<AssetEditorConfiguration> loadAssetEditorMetaData() {
     	AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
     	List<AssetEditorConfiguration> assetEditors = parser.getAssetEditors();

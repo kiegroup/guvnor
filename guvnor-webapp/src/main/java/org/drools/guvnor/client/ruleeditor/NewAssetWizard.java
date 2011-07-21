@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -58,6 +60,7 @@ public class NewAssetWizard extends FormStylePopup {
 
     private final NewAssetFormStyleLayout newAssetLayout = new NewAssetFormStyleLayout();
     private final ImportAssetFormStyleLayout importAssetLayout = new ImportAssetFormStyleLayout();
+    private final ClientFactory clientFactory;
 
 
     private static String getTitle( String format ) {
@@ -85,10 +88,12 @@ public class NewAssetWizard extends FormStylePopup {
      * This is used when creating a new rule.
      */
     public NewAssetWizard( boolean showCategories,
-                           String format ) {
+                           String format,
+                           ClientFactory clientFactory) {
         super( images.newWiz(),
                 getTitle( format ) );
         this.format = format;
+        this.clientFactory = clientFactory;
 
         RadioButton newPackage = new RadioButton( "layoutgroup",
                 constants.CreateNewAsset() ); // NON-NLS
@@ -349,7 +354,7 @@ public class NewAssetWizard extends FormStylePopup {
      * @param uuid
      */
     protected void openEditor( String uuid ) {
-        TabContainer.getInstance().openAsset( uuid );
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ));
     }
 
     /**

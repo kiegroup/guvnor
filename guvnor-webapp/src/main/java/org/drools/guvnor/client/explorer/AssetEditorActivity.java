@@ -17,16 +17,84 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Timer;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.RuleViewerWrapper;
 import org.drools.guvnor.client.util.Activity;
 
 public class AssetEditorActivity extends Activity {
 
-    @Override
-    public void start( AcceptTabItem tabbedPanel, EventBus eventBus ) {
-        tabbedPanel.addTab( "Asset", new Label( "Asset" ) );
-        //TODO: Generated code -Rikkola-
+    private Constants constants = GWT.create( Constants.class );
+
+    private final AssetEditorPlace place;
+    private final ClientFactory clientFactory;
+
+    public AssetEditorActivity(AssetEditorPlace place,
+                               ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+        this.place = place;
     }
 
+    @Override
+    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+        final boolean[] loading = {true};
+
+        Timer t = new Timer() {
+            public void run() {
+                if ( loading[0] ) {
+                    LoadingPopup.showMessage( constants.LoadingAsset() );
+                }
+            }
+        };
+        t.schedule( 200 );
+
+        loadRuleAsset(
+                tabbedPanel,
+                place.getUuid(),
+                loading );
+    }
+
+    private void loadRuleAsset(final AcceptTabItem tabbedPanel,
+                               final String uuid,
+                               final boolean[] loading) {
+        clientFactory.getAssetService().loadRuleAsset( uuid,
+                createGenericCallback(
+                        tabbedPanel,
+                        loading ) );
+    }
+
+    private GenericCallback<RuleAsset> createGenericCallback(final AcceptTabItem tabbedPanel,
+                                                             final boolean[] loading) {
+        return new GenericCallback<RuleAsset>() {
+            public void onSuccess(final RuleAsset ruleAsset) {
+                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+                        createCommandForSuggestCompletionCache( loading,
+                                ruleAsset ) );
+            }
+
+            private Command createCommandForSuggestCompletionCache(final boolean[] loading,
+                                                                   final RuleAsset ruleAsset) {
+                return new Command() {
+                    public void execute() {
+                        loading[0] = false;
+
+                        tabbedPanel.addTab(
+                                ruleAsset.getName(),
+                                new RuleViewerWrapper(
+                                        clientFactory,
+                                        ruleAsset ) );
+
+                        LoadingPopup.close();
+                    }
+                };
+            }
+        };
+    }
 }

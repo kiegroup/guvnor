@@ -25,12 +25,17 @@ import org.drools.guvnor.client.util.Activity;
 public class FindActivity extends Activity {
 
     private Constants constants = GWT.create( Constants.class );
+    private final ClientFactory clientFactory;
+
+    public FindActivity( ClientFactory clientFactory ) {
+        this.clientFactory = clientFactory;
+    }
 
     @Override
     public void start( AcceptTabItem tabbedPanel, EventBus eventBus ) {
         tabbedPanel.addTab(
                 constants.Find(),
-                new QueryWidget()
+                new QueryWidget( clientFactory )
         );
     }
 }
