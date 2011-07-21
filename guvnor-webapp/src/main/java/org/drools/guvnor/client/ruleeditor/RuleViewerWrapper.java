@@ -36,35 +36,57 @@ import org.drools.guvnor.client.rulelist.OpenItemCommand;
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewerWrapper extends GuvnorEditor {
-    private Constants constants = GWT.create( Constants.class );
+    private Constants                         constants            = GWT.create( Constants.class );
 
-    private ArtifactEditor artifactEditor;
-    private RuleViewer ruleViewer;
-    private ActionToolbar actionToolBar;
-    private RuleAsset asset;
-    private boolean isHistoricalReadOnly = false;
-    private final RuleViewerSettings ruleViewerSettings;
-    private final OpenItemCommand openItemCommand;
-    private Command closeCommand;
-    private Command archiveCommand;
-    private Command checkedInCommand;
+    private ArtifactEditor                    artifactEditor;
+    private RuleViewer                        ruleViewer;
+    private ActionToolbar                     actionToolBar;
+    private RuleAsset                         asset;
+    private boolean                           isHistoricalReadOnly = false;
+    private final RuleViewerSettings          ruleViewerSettings;
+    private final OpenItemCommand             openItemCommand;
+    private Command                           closeCommand;
+    private Command                           archiveCommand;
+    private Command                           checkedInCommand;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    VerticalPanel layout = new VerticalPanel();
-    private final ClientFactory clientFactory;
+    VerticalPanel                             layout               = new VerticalPanel();
+    private final ClientFactory               clientFactory;
 
-    public RuleViewerWrapper( ClientFactory clientFactory,
+    public RuleViewerWrapper(ClientFactory clientFactory,
                               RuleAsset asset,
                               final OpenItemCommand openItemCommand,
                               final Command closeCommand,
                               final Command checkedInCommand,
-                              final Command archiveCommand ) {
-        this( clientFactory, asset, openItemCommand, closeCommand, checkedInCommand,
-                archiveCommand, false, null, null );
+                              final Command archiveCommand) {
+        this( clientFactory,
+              asset,
+              openItemCommand,
+              closeCommand,
+              checkedInCommand,
+              archiveCommand,
+              false,
+              null,
+              null );
     }
 
-    public RuleViewerWrapper( ClientFactory clientFactory,
+    public RuleViewerWrapper(ClientFactory clientFactory,
+                              RuleAsset asset,
+                              final OpenItemCommand openItemCommand,
+                              final Command closeCommand) {
+        this( clientFactory,
+              asset,
+              openItemCommand,
+              closeCommand,
+              null,
+              null,
+              false,
+              null,
+              null );
+    }
+
+    public RuleViewerWrapper(ClientFactory clientFactory,
                               RuleAsset asset,
                               final OpenItemCommand event,
                               final Command closeCommand,
@@ -72,7 +94,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
                               final Command archiveCommand,
                               boolean isHistoricalReadOnly,
                               ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                              RuleViewerSettings ruleViewerSettings ) {
+                              RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
@@ -89,31 +111,31 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     private void render() {
         this.artifactEditor = new ArtifactEditor(
-                clientFactory,
-                asset,
-                this.isHistoricalReadOnly,
-                new Command() {
-                    public void execute() {
-                        refresh();
-                    }
-                },
-                this.openItemCommand,
-                this.closeCommand );
+                                                  clientFactory,
+                                                  asset,
+                                                  this.isHistoricalReadOnly,
+                                                  new Command() {
+                                                      public void execute() {
+                                                          refresh();
+                                                      }
+                                                  },
+                                                  this.openItemCommand,
+                                                  this.closeCommand );
 
         this.ruleViewer = new RuleViewer(
-                asset,
-                this.openItemCommand,
-                this.closeCommand,
-                this.checkedInCommand,
-                this.archiveCommand,
-                new Command() {
-                    public void execute() {
-                        refresh();
-                    }
-                },
-                this.isHistoricalReadOnly,
-                actionToolbarButtonsConfigurationProvider,
-                ruleViewerSettings );
+                                          asset,
+                                          this.openItemCommand,
+                                          this.closeCommand,
+                                          this.checkedInCommand,
+                                          this.archiveCommand,
+                                          new Command() {
+                                              public void execute() {
+                                                  refresh();
+                                              }
+                                          },
+                                          this.isHistoricalReadOnly,
+                                          actionToolbarButtonsConfigurationProvider,
+                                          ruleViewerSettings );
         this.actionToolBar = this.ruleViewer.getActionToolbar();
 
         layout.clear();
@@ -124,13 +146,15 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
         ScrollPanel pnl = new ScrollPanel();
         pnl.add( this.artifactEditor );
-        tPanel.add( pnl, "Attributes" );
+        tPanel.add( pnl,
+                    "Attributes" );
         // tPanel.selectTab(0);
 
         pnl = new ScrollPanel();
         // pnl1.setWidth("100%");
         pnl.add( this.ruleViewer );
-        tPanel.add( pnl, "Edit" );
+        tPanel.add( pnl,
+                    "Edit" );
         tPanel.selectTab( 1 );
 
         layout.add( tPanel );
@@ -139,12 +163,12 @@ public class RuleViewerWrapper extends GuvnorEditor {
     public void refresh() {
         LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
-                new GenericCallback<RuleAsset>() {
-                    public void onSuccess( RuleAsset a ) {
-                        asset = a;
-                        render();
-                        LoadingPopup.close();
-                    }
-                } );
+                                                                  new GenericCallback<RuleAsset>() {
+                                                                      public void onSuccess(RuleAsset a) {
+                                                                          asset = a;
+                                                                          render();
+                                                                          LoadingPopup.close();
+                                                                      }
+                                                                  } );
     }
 }
