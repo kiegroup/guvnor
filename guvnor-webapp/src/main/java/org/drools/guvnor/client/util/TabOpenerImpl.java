@@ -21,18 +21,16 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.SnapshotView;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.*;
 
 import java.util.Arrays;
@@ -92,35 +90,6 @@ public class TabOpenerImpl
 
     }
 
-    public void openSnapshot(
-            final SnapshotInfo snap) {
-        if ( !explorerViewCenterPanel.showIfOpen( snap.name
-                + snap.uuid ) ) {
-            LoadingPopup.showMessage( constants.LoadingSnapshot() );
-            RepositoryServiceFactory.getPackageService().loadPackageConfig( snap.uuid,
-                    new GenericCallback<PackageConfigData>() {
-                        public void onSuccess(PackageConfigData conf) {
-                            explorerViewCenterPanel.addTab( constants.SnapshotLabel( snap.name ),
-                                    new SnapshotView(
-                                            clientFactory,
-                                            snap,
-                                            conf,
-                                            new Command() {
-                                                public void execute() {
-                                                    explorerViewCenterPanel.close( snap.name
-                                                            + snap.uuid );
-                                                }
-                                            } ),
-                                    snap.name
-                                            + snap.uuid );
-                            LoadingPopup.close();
-                        }
-                    } );
-
-        }
-    }
-
-
     /**
      * open a category
      */
@@ -152,18 +121,6 @@ public class TabOpenerImpl
                 + categoryName,
                 table,
                 categoryPath );
-    }
-
-    private OpenItemCommand createEditEvent() {
-        return new OpenItemCommand() {
-            public void open(String uuid) {
-//                openAsset( uuid );
-            }
-
-            public void open(MultiViewRow[] rows) {
-                openAssetsToMultiView( rows );
-            }
-        };
     }
 
     public void openPackageViewAssets(final String packageUuid,

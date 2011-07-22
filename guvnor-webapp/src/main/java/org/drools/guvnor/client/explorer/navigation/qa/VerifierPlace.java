@@ -17,7 +17,7 @@ public class VerifierPlace extends Place {
 
     public static class Tokenizer implements PlaceTokenizer<VerifierPlace> {
 
-        private final String PLACE_ID = "TEST_SCENARIO=";
+        private final String PLACE_ID = "VERIFIER=";
 
         public String getToken(VerifierPlace place) {
             return PLACE_ID + place.getModuleUuid();

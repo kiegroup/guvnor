@@ -32,6 +32,7 @@ import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -311,5 +312,6 @@ public class KnowledgeModulesTreeItemTest {
         public void listPackages(AsyncCallback<PackageConfigData[]> cb) {
             cb.onSuccess( packageConfigDatas );
         }
+
     }
 }

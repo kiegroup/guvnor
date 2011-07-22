@@ -25,8 +25,32 @@ public class SnapshotInfo
     implements
     IsSerializable {
 
-    public String name;
-    public String comment;
-    public String uuid;
-    
+    private String name;
+    private String comment;
+    private String uuid;
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

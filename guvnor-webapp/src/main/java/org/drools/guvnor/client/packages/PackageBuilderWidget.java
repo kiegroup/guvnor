@@ -27,15 +27,12 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
 import com.google.gwt.core.client.GWT;
@@ -543,7 +540,7 @@ public class PackageBuilderWidget extends Composite {
                                                                  public void onSuccess(SnapshotInfo[] result) {
                                                                      for ( int i = 0; i < result.length; i++ ) {
                                                                          RadioButton existing = new RadioButton( "snapshotNameGroup",
-                                                                                                                 result[i].name ); // NON-NLS
+                                                                                 result[i].getName() ); // NON-NLS
                                                                          radioList.add( existing );
                                                                          vert.add( existing );
                                                                      }

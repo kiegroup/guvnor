@@ -17,29 +17,25 @@
 package org.drools.guvnor.client.explorer;
 
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 import java.util.List;
 
 public interface TabManager {
 
-    void openSnapshot( SnapshotInfo snap );
+    void openAssetsToMultiView(MultiViewRow[] rows);
 
-    void openAssetsToMultiView( MultiViewRow[] rows );
+    void openSnapshotAssetList(String name, String uuid, String[] assetTypes, String s);
 
-    void openSnapshotAssetList( String name, String uuid, String[] assetTypes, String s );
+    void openCategory(String categoryName, String categoryPath);
 
-    void openCategory( String categoryName, String categoryPath );
+    void openPackageViewAssets(String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text);
 
-    void openPackageViewAssets( String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text );
+    boolean showIfOpen(String id);
 
-    boolean showIfOpen( String id );
+    void openInboxIncomingPagedTable(String title);
 
-    void openInboxIncomingPagedTable( String title );
+    void openInboxPagedTable(String title);
 
-    void openInboxPagedTable( String title );
-
-    void openStatePagedTable( String stateName );
+    void openStatePagedTable(String stateName);
 }

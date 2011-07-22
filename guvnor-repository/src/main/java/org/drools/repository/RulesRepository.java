@@ -383,7 +383,7 @@ public class RulesRepository {
 
     /**
      * This will copy an assets content to the new location.
-     * 
+     *
      * @return the UUID of the new asset.
      */
     public String copyAsset(String uuidSource,
@@ -418,7 +418,7 @@ public class RulesRepository {
     /**
      * Loads a RulePackage for the specified package name. Will throw an
      * exception if the specified rule package does not exist.
-     * 
+     *
      * @param name
      *            the name of the package to load
      * @return a RulePackageItem object
@@ -451,7 +451,7 @@ public class RulesRepository {
     /**
      * Loads a RulePackage for the specified package name and version. Will
      * throw an exception if the specified rule package does not exist.
-     * 
+     *
      * @param name
      *            the name of the package to load
      * @param versionNumber
@@ -631,7 +631,7 @@ public class RulesRepository {
     /**
      * Copies a snapshot to the new location/label. If one exists at that
      * location, it will be replaced.
-     * 
+     *
      * @param packageName
      *            The name of the package.
      * @param snapshotName
@@ -693,7 +693,7 @@ public class RulesRepository {
 
     /**
      * Similar to above. Loads a RulePackage for the specified uuid.
-     * 
+     *
      * @param uuid
      *            the uuid of the package to load
      * @return a RulePackageItem object
@@ -719,7 +719,7 @@ public class RulesRepository {
     /**
      * Similar to above. Loads a RulePackage or an AssetItem for the specified
      * uuid.
-     * 
+     *
      * @param uuid
      *            the uuid of the package or asset to load
      * @return a VersionableItem object
@@ -756,7 +756,7 @@ public class RulesRepository {
     /**
      * This will restore the historical version, save, and check it in as a new
      * version with the given comment.
-     * 
+     *
      * @param versionToRestore
      * @param headVersion
      * @param comment
@@ -798,7 +798,7 @@ public class RulesRepository {
 
     /**
      * Adds a package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -815,7 +815,7 @@ public class RulesRepository {
 
     /**
      * Adds a package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -874,7 +874,7 @@ public class RulesRepository {
 
     /**
      * Adds a Sub package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -928,7 +928,7 @@ public class RulesRepository {
     /**
      * Gets a StateItem for the specified state name. If a node for the
      * specified state does not yet exist, one is first created.
-     * 
+     *
      * @param name
      *            the name of the state to get
      * @return a StateItem object encapsulating the retrieved node
@@ -1049,7 +1049,7 @@ public class RulesRepository {
 
     /**
      * This will return a category for the given category path.
-     * 
+     *
      * @param tagName
      *            the name of the tag to get. If the tag to get is within a
      *            hierarchy of tag nodes, specify the full path to the tag node
@@ -1114,7 +1114,7 @@ public class RulesRepository {
      * <p/>
      * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1
      * should you want it all.
-     * 
+     *
      * @param filter
      *            an AssetItem filter
      */
@@ -1154,7 +1154,7 @@ public class RulesRepository {
     /**
      * Finds the AssetItem's linked to the requested state. Similar to finding
      * by category.
-     * 
+     *
      * @param filter
      *            an AssetItem filter
      */
@@ -1200,9 +1200,9 @@ public class RulesRepository {
                     if ( filter == null || filter.accept( ai,
                                                           "package.readonly" ) ) {
 
-                        //If the current row returned by the iterator is greater than the number of rows 
-                        //being skipped add it to the results collection (but only if we have not already 
-                        //constructed a full "page" of data - we look ahead one additional row to check 
+                        //If the current row returned by the iterator is greater than the number of rows
+                        //being skipped add it to the results collection (but only if we have not already
+                        //constructed a full "page" of data - we look ahead one additional row to check
                         //whether there is are additional pages of data)
                         rows++;
                         int numRowsInPage = rows - skip;
@@ -1416,7 +1416,7 @@ public class RulesRepository {
     /**
      * This moves a rule asset from one package to another, preserving history
      * etc etc.
-     * 
+     *
      * @param newPackage
      *            The destination package.
      * @param uuid
@@ -1453,7 +1453,7 @@ public class RulesRepository {
 
     /**
      * This will rename an asset and apply the change immediately.
-     * 
+     *
      * @return the UUID of the new asset
      */
     public String renameAsset(String uuid,
@@ -1480,7 +1480,7 @@ public class RulesRepository {
 
     /**
      * Rename a category.
-     * 
+     *
      * @param originalPath
      *            The full path to the category.
      * @param newName
@@ -1522,7 +1522,7 @@ public class RulesRepository {
 
     /**
      * This will rename a package and apply the change immediately.
-     * 
+     *
      * @return the UUID of the package
      */
     public String renamePackage(String uuid,
@@ -1613,7 +1613,7 @@ public class RulesRepository {
 
     /**
      * This will search assets, looking for matches against the name.
-     * 
+     *
      * @param name
      *            The search text
      * @param seekArchived
@@ -1701,7 +1701,7 @@ public class RulesRepository {
 
     /**
      * This will do a general predicate search.
-     * 
+     *
      * @param params
      *            - a map of field to a list of possible values (which are or-ed
      *            together if there is more then one).
@@ -1851,9 +1851,6 @@ public class RulesRepository {
         return perspectiveConfigurationItems;
     }
 
-    /**
-     * Used for querying based on date.
-     */
     public static class DateQuery {
         private String after;
         private String before;
