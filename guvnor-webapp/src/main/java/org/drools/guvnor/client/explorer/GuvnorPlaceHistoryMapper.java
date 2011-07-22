@@ -4,6 +4,7 @@ import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 
 @WithTokenizers(
@@ -13,7 +14,8 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
                 ModuleEditorPlace.Tokenizer.class,
                 AssetViewerPlace.Tokenizer.class,
                 ManagerPlace.Tokenizer.class,
-                TestScenarioListPlace.Tokenizer.class
+                TestScenarioListPlace.Tokenizer.class,
+                VerifierPlace.Tokenizer.class
         }
 )
 public interface GuvnorPlaceHistoryMapper extends PlaceHistoryMapper {

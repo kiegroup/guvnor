@@ -87,15 +87,13 @@ public class QATree extends NavigationItemBuilderOld
             PackageConfigData pc = (PackageConfigData) item.getUserObject();
             String id = itemWidgets.get( item );
 
-            TabManager tabManager = TabContainer.getInstance();
 
             if ( ExplorerNodeConfig.TEST_SCENARIOS_ID.equals( id ) ) {
 
                 clientFactory.getPlaceController().goTo( new TestScenarioListPlace( pc.uuid ) );
 
             } else if ( ExplorerNodeConfig.ANALYSIS_ID.equals( id ) ) {
-                tabManager.openVerifierView( pc.uuid,
-                        pc.name );
+                clientFactory.getPlaceController().goTo( new VerifierPlace( pc.uuid ) );
             }
         }
     }

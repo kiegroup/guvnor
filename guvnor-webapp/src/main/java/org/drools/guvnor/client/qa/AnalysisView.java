@@ -16,6 +16,10 @@
 
 package org.drools.guvnor.client.qa;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
@@ -24,40 +28,26 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReport;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * Viewer for, well, analysis !
  */
 public class AnalysisView extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private VerticalPanel layout;
-    private String        packageUUID;
-    private OpenItemCommand edit;
+    private final VerticalPanel layout = new VerticalPanel();
+    private final String packageUUID;
 
     public AnalysisView(String packageUUID,
-                        String packageName,
-                        OpenItemCommand edit) {
-        this.layout = new VerticalPanel();
+                        String packageName) {
         this.packageUUID = packageUUID;
-        this.edit = edit;
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        String m = constants.AnalysingPackage(packageName);
+        String m = constants.AnalysingPackage( packageName );
         vert.add( new HTML( m ) );
         Button run = new Button( constants.RunAnalysis() );
         run.addClickHandler( new ClickHandler() {
@@ -68,7 +58,7 @@ public class AnalysisView extends Composite {
         vert.add( run );
 
         pf.addHeader( images.analyzeLarge(),
-                      vert );
+                vert );
         layout.add( pf );
 
         layout.add( new Label() );
@@ -83,16 +73,16 @@ public class AnalysisView extends Composite {
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
         verificationService.analysePackage( packageUUID,
-                                            new GenericCallback<AnalysisReport>() {
-                                                public void onSuccess(AnalysisReport rep) {
-                                                    VerifierResultWidget w = new VerifierResultWidget( rep,
-                                                                                                       true );
-                                                    w.setWidth( "100%" );
-                                                    layout.remove( 1 );
-                                                    layout.add( w );
-                                                    LoadingPopup.close();
-                                                }
-                                            } );
+                new GenericCallback<AnalysisReport>() {
+                    public void onSuccess(AnalysisReport rep) {
+                        VerifierResultWidget w = new VerifierResultWidget( rep,
+                                true );
+                        w.setWidth( "100%" );
+                        layout.remove( 1 );
+                        layout.add( w );
+                        LoadingPopup.close();
+                    }
+                } );
 
     }
 

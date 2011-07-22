@@ -211,19 +211,6 @@ public class TabOpenerImpl
         }
     }
 
-    public void openVerifierView(String packageUuid,
-                                 String packageName) {
-        if ( !explorerViewCenterPanel.showIfOpen( "analysis"
-                + packageUuid ) ) { // NON-NLS
-            String m = constants.AnalysisForPackage( packageName );
-            explorerViewCenterPanel.addTab( m,
-                    new AnalysisView( packageUuid,
-                            packageName,
-                            createEditEvent() ),
-                    "analysis"
-                            + packageUuid );
-        }
-    }
 
     public void openSnapshotAssetList(final String name,
                                       final String uuid,
