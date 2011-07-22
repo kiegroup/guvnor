@@ -51,7 +51,7 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
     @UiField(provided = true)
     Widget navigationPanel;
 
-    public AuthorPerspectiveViewImpl( ClientFactory clientFactory, NavigationPanelFactory navigationPanelFactory ) {
+    public AuthorPerspectiveViewImpl(ClientFactory clientFactory, NavigationPanelFactory navigationPanelFactory) {
         this.clientFactory = clientFactory;
         NavigationPanelView view = navigationPanelFactory.createNavigationPanel( getBuilders() ).getView();
         navigationPanel = view.asWidget();
@@ -70,12 +70,12 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
 
         navigationItemBuilders.add( new DeploymentTreeBuilder() );
 
-        navigationItemBuilders.add( new AdminTreeBuilder() );
+        navigationItemBuilders.add( new AdminTreeBuilder( clientFactory ) );
 
         return navigationItemBuilders;
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 

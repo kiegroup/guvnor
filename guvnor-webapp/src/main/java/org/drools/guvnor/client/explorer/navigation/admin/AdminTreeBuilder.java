@@ -21,24 +21,28 @@ import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class AdminTreeBuilder extends NavigationItemBuilder {
 
-    private AdministrationTree administrationTree = new AdministrationTree();
+    private final AdministrationTree administrationTree;
+
+    public AdminTreeBuilder(ClientFactory clientFactory) {
+        administrationTree = new AdministrationTree( clientFactory );
+    }
 
     @Override
     public boolean hasPermissionToBuild() {
-        return UserCapabilities.INSTANCE.hasCapability(Capability.SHOW_ADMIN);
+        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_ADMIN );
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader(view);
-        header.setName(administrationTree.getName());
-        header.setImageResource(administrationTree.getImage());
+        StackItemHeader header = new StackItemHeader( view );
+        header.setName( administrationTree.getName() );
+        header.setImageResource( administrationTree.getImage() );
         return view;
     }
 

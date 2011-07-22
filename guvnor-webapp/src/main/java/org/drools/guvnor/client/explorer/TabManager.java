@@ -25,8 +25,6 @@ import java.util.List;
 
 public interface TabManager {
 
-    void openAdministrationSelection( int id );
-
     void openSnapshot( SnapshotInfo snap );
 
     void openTestScenario( String uuid, String name );
