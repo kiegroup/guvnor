@@ -27,8 +27,6 @@ public interface TabManager {
 
     void openSnapshot( SnapshotInfo snap );
 
-    void openTestScenario( String uuid, String name );
-
     void openVerifierView( String uuid, String name );
 
     void openAssetsToMultiView( MultiViewRow[] rows );

@@ -23,7 +23,7 @@ public class AssetEditorPlace extends Place {
 
     private final String uuid;
 
-    public AssetEditorPlace( String uuid ) {
+    public AssetEditorPlace(String uuid) {
         this.uuid = uuid;
     }
 
@@ -35,11 +35,11 @@ public class AssetEditorPlace extends Place {
 
         private final String PLACE_ID = "ASSET=";
 
-        public String getToken( AssetEditorPlace place ) {
+        public String getToken(AssetEditorPlace place) {
             return PLACE_ID + place.getUuid();
         }
 
-        public AssetEditorPlace getPlace( String token ) {
+        public AssetEditorPlace getPlace(String token) {
             return new AssetEditorPlace( token.substring( PLACE_ID.length() ) );
         }
     }

@@ -21,11 +21,16 @@ import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
 public class QATreeBuilder extends NavigationItemBuilder {
 
-    private QATree qaTree = new QATree();
+    private final QATree qaTree;
+
+    public QATreeBuilder(ClientFactory clientFactory) {
+        qaTree = new QATree( clientFactory );
+    }
 
     @Override
     public boolean hasPermissionToBuild() {

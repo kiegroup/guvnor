@@ -66,7 +66,7 @@ public class AuthorPerspectiveViewImpl extends Composite implements AuthorPerspe
 
         navigationItemBuilders.add( new KnowledgeModulesTreeBuilder( clientFactory ) );
 
-        navigationItemBuilders.add( new QATreeBuilder() );
+        navigationItemBuilders.add( new QATreeBuilder( clientFactory ) );
 
         navigationItemBuilders.add( new DeploymentTreeBuilder() );
 
