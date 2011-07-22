@@ -6,7 +6,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
 
@@ -36,7 +35,7 @@ public class VerifierActivity extends Activity {
                     public void onSuccess(PackageConfigData packageConfigData) {
                         tabbedPanel.addTab(
                                 constants.AnalysisForPackage( packageConfigData.getName() ),
-                                new AnalysisView(
+                                new VerifierScreen(
                                         packageConfigData.getUuid(),
                                         packageConfigData.getName() ) );
                     }

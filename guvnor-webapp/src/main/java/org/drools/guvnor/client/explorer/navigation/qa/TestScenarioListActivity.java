@@ -6,7 +6,6 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.qa.ScenarioPackageView;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
 
@@ -37,7 +36,7 @@ public class TestScenarioListActivity extends Activity {
 
                         tabbedPanel.addTab(
                                 constants.ScenariosForPackage( packageConfigData.getName() ),
-                                new ScenarioPackageView(
+                                new ScenarioPackageScreen(
                                         packageConfigData.getUuid(),
                                         packageConfigData.getName(),
                                         clientFactory ) );

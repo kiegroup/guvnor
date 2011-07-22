@@ -121,7 +121,7 @@
     </asseteditor>       
     
     <asseteditor>
-        <class>org.drools.guvnor.client.qa.testscenarios.ScenarioWidget</class> 
+        <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
         <format>scenario</format>
         <icon>images.testManager()</icon>
         <title>constants.TestScenarios()</title>    

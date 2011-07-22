@@ -28,7 +28,6 @@ import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SnapshotView;
-import org.drools.guvnor.client.qa.AnalysisView;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;

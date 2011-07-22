@@ -35,7 +35,7 @@ import org.drools.guvnor.client.packages.CloseTabEvent;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.qa.VerifierResultWidget;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;

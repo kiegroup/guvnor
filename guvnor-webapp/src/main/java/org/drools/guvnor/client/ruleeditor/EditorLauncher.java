@@ -16,34 +16,17 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor;
-import org.drools.guvnor.client.ruleeditor.workitem.WorkitemDefinitionEditor;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.decisiontable.DecisionTableXLSWidget;
-import org.drools.guvnor.client.decisiontable.GuidedDecisionTableWidget;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.factmodel.FactModelsWidget;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.modeldriven.ui.RuleModellerWidgetFactory;
-import org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor;
-import org.drools.guvnor.client.packages.ModelAttachmentFileWidget;
-import org.drools.guvnor.client.processeditor.BusinessProcessEditor;
-import org.drools.guvnor.client.qa.testscenarios.ScenarioWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This launches the appropriate editor for the asset type.
