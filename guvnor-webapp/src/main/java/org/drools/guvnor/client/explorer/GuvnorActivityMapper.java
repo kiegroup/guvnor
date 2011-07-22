@@ -19,6 +19,9 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListActivity;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
@@ -69,6 +72,10 @@ public class GuvnorActivityMapper
                     ((SnapshotPlace) place).getModuleName(),
                     ((SnapshotPlace) place).getSnapshotName(),
                     clientFactory );
+        } else if ( place instanceof SnapshotAssetListPlace ) {
+            return new SnapshotAssetListActivity(
+                    (SnapshotAssetListPlace)place,
+                    clientFactory);
         } else {
             return null;
         }

@@ -5,7 +5,6 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class SnapshotPlace extends Place {
 
-
     private final String moduleName;
     private final String snapshotName;
 
@@ -25,18 +24,17 @@ public class SnapshotPlace extends Place {
 
     public static class Tokenizer implements PlaceTokenizer<SnapshotPlace> {
 
-        private final String PLACE_ID = "TEST_SCENARIO=";
+        private final String PLACE_ID = "SNAPSHOT=";
         private final String MODULE_PARAMETER = "?MODULE_NAME=";
-
-        public String getToken(SnapshotPlace place) {
-            return PLACE_ID + place.getSnapshotName() + MODULE_PARAMETER + place.getModuleName();
-        }
 
         public SnapshotPlace getPlace(String token) {
             return new SnapshotPlace(
                     subStringModuleName( token ),
-                    subStringSnapshotName( token )
-            );
+                    subStringSnapshotName( token ) );
+        }
+
+        public String getToken(SnapshotPlace place) {
+            return PLACE_ID + place.getSnapshotName() + MODULE_PARAMETER + place.getModuleName();
         }
 
         private String subStringSnapshotName(String token) {

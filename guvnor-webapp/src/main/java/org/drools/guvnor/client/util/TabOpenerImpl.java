@@ -168,28 +168,6 @@ public class TabOpenerImpl
     }
 
 
-    public void openSnapshotAssetList(final String name,
-                                      final String uuid,
-                                      final String[] assetTypes,
-                                      String key) {
-        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-            AssetPagedTable table = new AssetPagedTable(
-                    uuid,
-                    Arrays.asList( assetTypes ),
-                    null,
-                    clientFactory );
-
-            VerticalPanel vp = new VerticalPanel();
-            vp.add( new HTML( "<i><small>"
-                    + constants.SnapshotListingFor()
-                    + name
-                    + "</small></i>" ) );
-            vp.add( table );
-            explorerViewCenterPanel.addTab( constants.SnapshotItems(),
-                    vp,
-                    key );
-        }
-    }
 
     public boolean showIfOpen(String id) {
         return explorerViewCenterPanel.showIfOpen( id );

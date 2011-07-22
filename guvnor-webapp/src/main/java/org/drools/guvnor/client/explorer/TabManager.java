@@ -25,8 +25,6 @@ public interface TabManager {
 
     void openAssetsToMultiView(MultiViewRow[] rows);
 
-    void openSnapshotAssetList(String name, String uuid, String[] assetTypes, String s);
-
     void openCategory(String categoryName, String categoryPath);
 
     void openPackageViewAssets(String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text);

@@ -26,7 +26,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -393,17 +396,12 @@ public class SnapshotView extends Composite {
     }
 
     protected void showAssetList(final String[] assetTypes) {
+        clientFactory.getPlaceController().goTo(
+                new SnapshotAssetListPlace(
+                        snapInfo.getName(),
+                        snapInfo.getUuid(),
+                        assetTypes ) );
 
-        StringBuilder keyBuilder = new StringBuilder( this.snapInfo.getUuid() );
-        for (String assetType : assetTypes) {
-            keyBuilder.append( assetType );
-        }
-
-        TabManager tabManager = TabContainer.getInstance();
-        tabManager.openSnapshotAssetList( snapInfo.getName(),
-                snapInfo.getUuid(),
-                assetTypes,
-                keyBuilder.toString() );
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {

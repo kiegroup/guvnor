@@ -33,7 +33,7 @@ public class AssetEditorPlace extends Place {
 
     public static class Tokenizer implements PlaceTokenizer<AssetEditorPlace> {
 
-        private final String PLACE_ID = "ASSET=";
+        private final String PLACE_ID = "SNAPSHOT_ASSET_LIST=";
 
         public String getToken(AssetEditorPlace place) {
             return PLACE_ID + place.getUuid();
