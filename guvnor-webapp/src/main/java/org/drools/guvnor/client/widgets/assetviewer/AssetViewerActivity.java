@@ -60,7 +60,7 @@ public class AssetViewerActivity extends Activity
                                                              new GenericCallback<PackageConfigData>() {
                                                                  public void onSuccess(PackageConfigData conf) {
                                                                      packageConfigData = conf;
-                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
+                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
                                                                      acceptTabItem.addTab( conf.getName(),
                                                                                            view );
 
