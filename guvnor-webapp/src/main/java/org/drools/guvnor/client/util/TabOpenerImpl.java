@@ -90,38 +90,6 @@ public class TabOpenerImpl
 
     }
 
-    /**
-     * open a category
-     */
-    public void openCategory(String categoryName,
-                             final String categoryPath) {
-        final CategoryPagedTable table = new CategoryPagedTable( categoryPath,
-                GWT.getModuleBaseURL()
-                        + "feed/category?name="
-                        + categoryPath
-                        + "&viewUrl="
-                        + Util.getSelfURL(),
-                clientFactory );
-        final ServerPushNotification push = new ServerPushNotification() {
-            public void messageReceived(PushResponse response) {
-                if ( response.messageType.equals( "categoryChange" )
-                        && response.message.equals( categoryPath ) ) {
-                    table.refresh();
-                }
-            }
-        };
-        PushClient.instance().subscribe( push );
-        table.addUnloadListener( new Command() {
-            public void execute() {
-                PushClient.instance().unsubscribe( push );
-            }
-        } );
-
-        explorerViewCenterPanel.addTab( (constants.CategoryColon())
-                + categoryName,
-                table,
-                categoryPath );
-    }
 
     public void openPackageViewAssets(final String packageUuid,
                                       final String packageName,
@@ -197,29 +165,4 @@ public class TabOpenerImpl
         }
     }
 
-    public void openStatePagedTable(final String stateName) {
-        final StatePagedTable table = new StatePagedTable(
-                stateName,
-                clientFactory );
-
-        final ServerPushNotification push = new ServerPushNotification() {
-            public void messageReceived(PushResponse response) {
-                if ( response.messageType.equals( "statusChange" )
-                        && (response.message).equals( stateName ) ) {
-                    table.refresh();
-                }
-            }
-        };
-        PushClient.instance().subscribe( push );
-        table.addUnloadListener( new Command() {
-            public void execute() {
-                PushClient.instance().unsubscribe( push );
-            }
-        } );
-
-        addTab( constants.Status()
-                + stateName,
-                table,
-                stateName );
-    }
 }

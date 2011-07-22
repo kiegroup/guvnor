@@ -25,8 +25,6 @@ public interface TabManager {
 
     void openAssetsToMultiView(MultiViewRow[] rows);
 
-    void openCategory(String categoryName, String categoryPath);
-
     void openPackageViewAssets(String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text);
 
     boolean showIfOpen(String id);
@@ -34,6 +32,4 @@ public interface TabManager {
     void openInboxIncomingPagedTable(String title);
 
     void openInboxPagedTable(String title);
-
-    void openStatePagedTable(String stateName);
 }
