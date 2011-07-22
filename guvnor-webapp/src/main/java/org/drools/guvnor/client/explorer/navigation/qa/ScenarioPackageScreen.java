@@ -16,8 +16,14 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import java.util.Arrays;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -29,14 +35,7 @@ import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.Arrays;
 
 /**
  * This shows a list of scenarios in a package.
@@ -44,10 +43,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class ScenarioPackageScreen extends Composite {
 
-    private Constants constants = ((Constants) GWT.create(Constants.class));
-    private static Images images = GWT.create(Images.class);
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private VerticalPanel layout;
+    private final VerticalPanel layout = new VerticalPanel();
 
     private AssetPagedTable table;
     private final ClientFactory clientFactory;
@@ -56,64 +55,63 @@ public class ScenarioPackageScreen extends Composite {
                                  String packageName,
                                  ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
-        this.table = new AssetPagedTable(packageUUID,
-                Arrays.asList(new String[]{AssetFormats.TEST_SCENARIO}),
+        this.table = new AssetPagedTable( packageUUID,
+                Arrays.asList( new String[]{AssetFormats.TEST_SCENARIO} ),
                 null,
                 clientFactory );
 
-        layout = new VerticalPanel();
-        layout.setWidth("100%");
+        layout.setWidth( "100%" );
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel vert = new VerticalPanel();
-        vert.add(new HTML("<b>" + constants.ScenariosForPackage1() + "</b>" + packageName));
-        Button run = new Button(constants.RunAllScenarios());
-        run.addClickHandler(new ClickHandler() {
+        vert.add( new HTML( "<b>" + constants.ScenariosForPackage1() + "</b>" + packageName ) );
+        Button run = new Button( constants.RunAllScenarios() );
+        run.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                runAllScenarios(packageUUID);
+                runAllScenarios( packageUUID );
             }
-        });
+        } );
 
-        vert.add(run);
+        vert.add( run );
 
-        pf.addHeader(images.scenarioLarge(),
-                vert);
+        pf.addHeader( images.scenarioLarge(),
+                vert );
 
-        layout.add(pf);
-        layout.add(this.table);
+        layout.add( pf );
+        layout.add( this.table );
 
-        initWidget(layout);
+        initWidget( layout );
 
     }
 
     private void refreshShowGrid() {
-        layout.remove(1);
-        layout.add(this.table);
+        layout.remove( 1 );
+        layout.add( this.table );
     }
 
     /**
      * Run all the scenarios, obviously !
      */
     private void runAllScenarios(String uuid) {
-        LoadingPopup.showMessage(constants.BuildingAndRunningScenarios());
-        RepositoryServiceFactory.getPackageService().runScenariosInPackage(uuid,
+        LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
+        RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
                 new GenericCallback<BulkTestRunResult>() {
                     public void onSuccess(BulkTestRunResult d) {
-                        BulkRunResultViewImpl view = new BulkRunResultViewImpl(clientFactory);
-                        BulkRunResult w = new BulkRunResult(view);
+                        BulkRunResultViewImpl view = new BulkRunResultViewImpl( clientFactory );
+                        BulkRunResult w = new BulkRunResult( view );
 
-                        w.setBulkTestRunResult(d);
-                        w.setCloseCommand(new Command() {
+                        w.setBulkTestRunResult( d );
+                        w.setCloseCommand( new Command() {
                             public void execute() {
                                 refreshShowGrid();
                             }
 
-                        });
-                        layout.remove(1);
-                        layout.add(view);
+                        } );
+                        layout.remove( 1 );
+                        layout.add( view );
                         LoadingPopup.close();
                     }
-                });
+                } );
     }
 
 }
