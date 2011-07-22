@@ -31,12 +31,10 @@
       <tr>
         <td class='{roundCornersResource.roundCornersCss.greySideLeftClass}'></td>
         <td class='{roundCornersResource.roundCornersCss.greyCenterClass}'>
-          <gwt:HorizontalPanel ui:field="container" >
-              <gwt:SimplePanel styleName="guvnor-LazyStackPanel-row-header-icon"><gwt:Image ui:field="icon" /></gwt:SimplePanel>
-              <gwt:SimplePanel styleName="guvnor-LazyStackPanel-row-header-title-icon" ui:field="titleIconContainer" visible="false">
-                <gwt:Image ui:field="titleIcon" />
-              </gwt:SimplePanel>
-              <gwt:Label ui:field="titleLabel" styleName="guvnor-cursor"></gwt:Label>
+          <gwt:HorizontalPanel ui:field="container">
+            <gwt:SimplePanel styleName="guvnor-LazyStackPanel-row-header-icon">
+              <gwt:Image ui:field="icon" />
+            </gwt:SimplePanel>
           </gwt:HorizontalPanel>
         </td>
         <td class='{roundCornersResource.roundCornersCss.greySideRightClass}'></td>

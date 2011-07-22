@@ -37,13 +37,13 @@ public class AssetViewerActivity extends Activity
         implements
         AssetViewerActivityView.Presenter {
 
-    private final ClientFactory clientFactory;
-    private PackageConfigData packageConfigData;
+    private final ClientFactory     clientFactory;
+    private PackageConfigData       packageConfigData;
     private AssetViewerActivityView view;
-    private String uuid;
+    private String                  uuid;
 
-    public AssetViewerActivity( String uuid,
-                                ClientFactory clientFactory ) {
+    public AssetViewerActivity(String uuid,
+                                ClientFactory clientFactory) {
         this.uuid = uuid;
         this.clientFactory = clientFactory;
         this.view = clientFactory.getAssetViewerActivityView();
@@ -51,44 +51,41 @@ public class AssetViewerActivity extends Activity
     }
 
     @Override
-    public void start( final AcceptTabItem acceptTabItem,
-                       EventBus eventBus ) {
+    public void start(final AcceptTabItem acceptTabItem,
+                       EventBus eventBus) {
 
         view.showLoadingPackageInformationMessage();
 
         clientFactory.getPackageService().loadPackageConfig( uuid,
-                new GenericCallback<PackageConfigData>() {
-                    public void onSuccess( PackageConfigData conf ) {
-                        packageConfigData = conf;
-                        RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
-                        acceptTabItem.addTab( conf.getName(),
-                                view );
+                                                             new GenericCallback<PackageConfigData>() {
+                                                                 public void onSuccess(PackageConfigData conf) {
+                                                                     packageConfigData = conf;
+                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
+                                                                     acceptTabItem.addTab( conf.getName(),
+                                                                                           view );
 
-                        fillModuleItemStructure();
+                                                                     fillModuleItemStructure();
 
-                        view.setPackageConfigData( packageConfigData );
-                        view.closeLoadingPackageInformationMessage();
-                    }
-                } );
+                                                                     view.setPackageConfigData( packageConfigData );
+                                                                     view.closeLoadingPackageInformationMessage();
+                                                                 }
+                                                             } );
     }
 
-    public void viewPackageDetail( PackageConfigData packageConfigData ) {
+    public void viewPackageDetail(PackageConfigData packageConfigData) {
         clientFactory.getPlaceController().goTo( new ModuleEditorPlace( packageConfigData.getUuid() ) );
     }
 
     private void fillModuleItemStructure() {
-        //TODO We need to get a list of all asset format types in the repository for this package
-        //TODO Any not in one of the known categories need to be added to a default
-
         //If two or more asset editors (that are associated with different formats) have same titles,
         //we group them together and display them as one node on the package tree.
         String[] registeredFormats = clientFactory.getAssetEditorFactory().getRegisteredAssetEditorFormats();
 
         //Use list to preserve the order of asset editors defined in configuration.
         List<FormatList> formatListGroupedByTitles = new ArrayList<FormatList>();
-        for (String format : registeredFormats) {
+        for ( String format : registeredFormats ) {
             boolean found = false;
-            for (FormatList formatListWithSameTitle : formatListGroupedByTitles) {
+            for ( FormatList formatListWithSameTitle : formatListGroupedByTitles ) {
                 found = formatListWithSameTitle.titleAlreadyExists( format );
                 if ( found ) {
                     formatListWithSameTitle.add( format );
@@ -105,24 +102,24 @@ public class AssetViewerActivity extends Activity
         addTitleItems( formatListGroupedByTitles );
     }
 
-    private String getTitle( String format ) {
+    private String getTitle(String format) {
         return clientFactory.getAssetEditorFactory().getAssetEditorTitle( format );
     }
 
-    private void addTitleItems( List<FormatList> formatListGroupedByTitles ) {
-        for (FormatList formatList : formatListGroupedByTitles) {
+    private void addTitleItems(List<FormatList> formatListGroupedByTitles) {
+        for ( FormatList formatList : formatListGroupedByTitles ) {
 
             //Don't add a section for anything we don't have assets for
             if ( formatList.size() > 0 ) {
                 view.addAssetFormat( clientFactory.getAssetEditorFactory().getAssetEditorIcon( formatList.getFirst() ),
-                        getTitle( formatList.getFirst() ),
-                        packageConfigData.getName(),
-                        makeTable( formatList ) );
+                                     getTitle( formatList.getFirst() ),
+                                     packageConfigData.getName(),
+                                     makeTable( formatList ) );
             }
         }
     }
 
-    private AssetPagedTable makeTable( FormatList formatList ) {
+    private AssetPagedTable makeTable(FormatList formatList) {
 
         List<String> formatsInList = null;
         Boolean formatIsRegistered = null;
@@ -132,30 +129,30 @@ public class AssetViewerActivity extends Activity
             formatIsRegistered = false;
         }
         return new AssetPagedTable(
-                packageConfigData.getUuid(),
-                formatsInList,
-                formatIsRegistered,
-                view.getFeedUrl( packageConfigData.getName() ),
-                clientFactory );
+                                    packageConfigData.getUuid(),
+                                    formatsInList,
+                                    formatIsRegistered,
+                                    view.getFeedUrl( packageConfigData.getName() ),
+                                    clientFactory );
     }
 
     class FormatList {
 
         private List<String> formatList = new ArrayList<String>();
 
-        private boolean titleAlreadyExists( String format ) {
-            for (String addedFormat : formatList) {
+        private boolean titleAlreadyExists(String format) {
+            for ( String addedFormat : formatList ) {
                 //If two formats has same tile, group them together
                 if ( hasSameTitle( format,
-                        addedFormat ) ) {
+                                   addedFormat ) ) {
                     return true;
                 }
             }
             return false;
         }
 
-        private boolean hasSameTitle( String format,
-                                      String addedFormat ) {
+        private boolean hasSameTitle(String format,
+                                      String addedFormat) {
             return getTitle( addedFormat ).equals( getTitle( format ) );
         }
 
@@ -167,7 +164,7 @@ public class AssetViewerActivity extends Activity
             }
         }
 
-        public void add( String format ) {
+        public void add(String format) {
             formatList.add( format );
         }
 
@@ -175,7 +172,7 @@ public class AssetViewerActivity extends Activity
             return formatList.size();
         }
 
-        public String[] toArray( String[] strings ) {
+        public String[] toArray(String[] strings) {
             return formatList.toArray( strings );
         }
 

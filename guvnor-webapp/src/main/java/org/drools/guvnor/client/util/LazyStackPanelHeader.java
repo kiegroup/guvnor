@@ -30,7 +30,6 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
@@ -48,16 +47,7 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
     Image                                     icon;
 
     @UiField
-    Image                                     titleIcon;
-
-    @UiField
-    SimplePanel                               titleIconContainer;
-
-    @UiField
     HorizontalPanel                           container;
-
-    @UiField
-    Label                                     titleLabel;
 
     private ClickHandler                      expandClickHandler = new ClickHandler() {
 
@@ -68,19 +58,28 @@ public class LazyStackPanelHeader extends AbstractLazyStackPanelHeader {
 
     public LazyStackPanelHeader(String headerText,
                                 ImageResource headerIcon) {
-        this( headerText );
-        titleIcon.setResource( headerIcon );
-        titleIconContainer.setVisible( true );
+        this();
+        Image titleIcon = new Image( headerIcon );
+        container.add( titleIcon );
+        Label titleLabel = new Label( headerText );
+        titleLabel.setStyleName( "guvnor-cursor" );
+        titleLabel.addClickHandler( expandClickHandler );
+        container.add( titleLabel );
     }
 
     public LazyStackPanelHeader(String headerText) {
+        this();
+        Label titleLabel = new Label( headerText );
+        titleLabel.setStyleName( "guvnor-cursor" );
+        titleLabel.addClickHandler( expandClickHandler );
+        container.add( titleLabel );
+    }
+
+    public LazyStackPanelHeader() {
 
         add( uiBinder.createAndBindUi( this ) );
 
-        titleLabel.setText( headerText );
-
         icon.addClickHandler( expandClickHandler );
-        titleLabel.addClickHandler( expandClickHandler );
 
         setIconImage();
 
