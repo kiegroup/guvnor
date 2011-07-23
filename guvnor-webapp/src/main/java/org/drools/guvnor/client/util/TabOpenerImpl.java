@@ -88,50 +88,6 @@ public class TabOpenerImpl
     }
 
 
-    public void openPackageViewAssets(final String packageUuid,
-                                      final String packageName,
-                                      String key,
-                                      final List<String> formatInList,
-                                      Boolean formatIsRegistered,
-                                      final String itemName) {
-        if ( !explorerViewCenterPanel.showIfOpen( key ) ) {
-
-            String feedUrl = GWT.getModuleBaseURL()
-                    + "feed/package?name="
-                    + packageName
-                    + "&viewUrl="
-                    + Util.getSelfURL()
-                    + "&status=*";
-            final AssetPagedTable table = new AssetPagedTable(
-                    packageUuid,
-                    formatInList,
-                    formatIsRegistered,
-                    feedUrl,
-                    clientFactory );
-            explorerViewCenterPanel.addTab( itemName
-                    + " ["
-                    + packageName
-                    + "]",
-                    table,
-                    key );
-
-            final ServerPushNotification sub = new ServerPushNotification() {
-                public void messageReceived(PushResponse response) {
-                    if ( response.messageType.equals( "packageChange" )
-                            && response.message.equals( packageName ) ) {
-                        table.refresh();
-                    }
-                }
-            };
-            PushClient.instance().subscribe( sub );
-            table.addUnloadListener( new Command() {
-                public void execute() {
-                    PushClient.instance().unsubscribe( sub );
-                }
-            } );
-        }
-    }
-
     public boolean showIfOpen(String id) {
         return explorerViewCenterPanel.showIfOpen( id );
     }

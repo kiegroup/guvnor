@@ -21,7 +21,9 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
-import org.drools.guvnor.client.explorer.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
 
 import java.util.*;
@@ -113,21 +115,18 @@ public class BrowseTree implements Presenter {
     }
 
     public void onTreeItemSelection(IsTreeItem selectedItem, String title) {
-        TabManager tabManager = TabContainer.getInstance();
-        if ( !tabManager.showIfOpen( title ) ) {
-            if ( states.contains( selectedItem ) ) {
-                goTo( new StatePlace( title ) );
-            } else if ( categories.containsKey( selectedItem ) ) {
-                goTo( new CategoryPlace( categories.get( selectedItem ) ) );
-            } else if ( selectedItem.equals( incomingInboxTreeItem ) ) {
-                goTo( new InboxPlace( ExplorerNodeConfig.INCOMING_ID ) );
-            } else if ( selectedItem.equals( inboxRecentlyEditedTreeItem ) ) {
-                goTo( new InboxPlace( ExplorerNodeConfig.RECENT_EDITED_ID ) );
-            } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
-                goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
-            } else if ( selectedItem.equals( findRootTreeItem ) ) {
-                clientFactory.getPlaceController().goTo( new FindPlace() );
-            }
+        if ( states.contains( selectedItem ) ) {
+            goTo( new StatePlace( title ) );
+        } else if ( categories.containsKey( selectedItem ) ) {
+            goTo( new CategoryPlace( categories.get( selectedItem ) ) );
+        } else if ( selectedItem.equals( incomingInboxTreeItem ) ) {
+            goTo( new InboxPlace( ExplorerNodeConfig.INCOMING_ID ) );
+        } else if ( selectedItem.equals( inboxRecentlyEditedTreeItem ) ) {
+            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_EDITED_ID ) );
+        } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
+            goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
+        } else if ( selectedItem.equals( findRootTreeItem ) ) {
+            clientFactory.getPlaceController().goTo( new FindPlace() );
         }
     }
 

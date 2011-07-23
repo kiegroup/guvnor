@@ -55,7 +55,9 @@ public class GuvnorActivityMapper
             return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
                     clientFactory );
         } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
-            return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace( (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place );
+            return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace(
+                    (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
+                    clientFactory );
         } else if ( place instanceof ManagerPlace ) {
             return new ManagerActivity(
                     ((ManagerPlace) place).getId(),

@@ -1,17 +1,28 @@
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.rpc.PushClient;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.util.Activity;
+import org.drools.guvnor.client.util.Util;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ModuleFormatsGridPlace extends Activity {
 
     private org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace moduleFormatsGridPlace;
+    private final ClientFactory clientFactory;
 
-    public ModuleFormatsGridPlace( org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace moduleFormatsGridPlace ) {
+    public ModuleFormatsGridPlace(org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace moduleFormatsGridPlace,
+                                  ClientFactory clientFactory) {
         this.moduleFormatsGridPlace = moduleFormatsGridPlace;
+        this.clientFactory = clientFactory;
     }
 
 
@@ -28,15 +39,59 @@ public class ModuleFormatsGridPlace extends Activity {
     }
 
     @Override
-    public void start( AcceptTabItem tabbedPanel, EventBus eventBus ) {
-        TabManager tabManager = TabContainer.getInstance();
+    public void start(AcceptTabItem tabbedPanel,
+                      EventBus eventBus) {
         RulePackageSelector.currentlySelectedPackage = moduleFormatsGridPlace.getPackageConfigData().getName();
 
-        tabManager.openPackageViewAssets( moduleFormatsGridPlace.getPackageConfigData().getUuid(),
+        openPackageViewAssets(
+                tabbedPanel,
+                moduleFormatsGridPlace.getPackageConfigData().getUuid(),
                 moduleFormatsGridPlace.getPackageConfigData().getName(),
                 key(),
                 moduleFormatsGridPlace.getFormats().length == 0 ? null : Arrays.asList( moduleFormatsGridPlace.getFormats() ),
                 moduleFormatsGridPlace.getFormats().length == 0 ? Boolean.TRUE : null,
                 moduleFormatsGridPlace.getTitle() );
     }
+
+    private void openPackageViewAssets(AcceptTabItem tabbedPanel,
+                                       final String packageUuid,
+                                       final String packageName,
+                                       String key,
+                                       final List<String> formatInList,
+                                       Boolean formatIsRegistered,
+                                       final String itemName) {
+        String feedUrl = GWT.getModuleBaseURL()
+                + "feed/package?name="
+                + packageName
+                + "&viewUrl="
+                + Util.getSelfURL()
+                + "&status=*";
+        final AssetPagedTable table = new AssetPagedTable(
+                packageUuid,
+                formatInList,
+                formatIsRegistered,
+                feedUrl,
+                clientFactory );
+        tabbedPanel.addTab( itemName
+                + " ["
+                + packageName
+                + "]",
+                table );
+
+        final ServerPushNotification sub = new ServerPushNotification() {
+            public void messageReceived(PushResponse response) {
+                if ( response.messageType.equals( "packageChange" )
+                        && response.message.equals( packageName ) ) {
+                    table.refresh();
+                }
+            }
+        };
+        PushClient.instance().subscribe( sub );
+        table.addUnloadListener( new Command() {
+            public void execute() {
+                PushClient.instance().unsubscribe( sub );
+            }
+        } );
+    }
+
 }

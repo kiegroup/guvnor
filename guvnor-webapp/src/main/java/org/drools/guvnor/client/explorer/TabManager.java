@@ -25,8 +25,6 @@ public interface TabManager {
 
     void openAssetsToMultiView(MultiViewRow[] rows);
 
-    void openPackageViewAssets(String uuid, String name, String key, List<String> strings, Boolean aBoolean, String text);
-
     boolean showIfOpen(String id);
 
 }
