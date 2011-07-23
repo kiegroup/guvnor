@@ -19,10 +19,7 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
-import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
+import org.drools.guvnor.client.explorer.navigation.browse.*;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
@@ -87,6 +84,10 @@ public class GuvnorActivityMapper
         } else if ( place instanceof StatePlace ) {
             return new StateActivity(
                     ((StatePlace) place).getStateName(),
+                    clientFactory );
+        } else if ( place instanceof InboxPlace ) {
+            return new InboxActivity(
+                    (InboxPlace) place,
                     clientFactory );
         } else {
             return null;

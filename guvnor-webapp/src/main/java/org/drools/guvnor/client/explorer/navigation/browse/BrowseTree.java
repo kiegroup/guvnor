@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.Capability;
@@ -115,20 +116,23 @@ public class BrowseTree implements Presenter {
         TabManager tabManager = TabContainer.getInstance();
         if ( !tabManager.showIfOpen( title ) ) {
             if ( states.contains( selectedItem ) ) {
-                clientFactory.getPlaceController().goTo( new StatePlace( title ) );
+                goTo( new StatePlace( title ) );
             } else if ( categories.containsKey( selectedItem ) ) {
-                String categoryPath = categories.get( selectedItem );
-                clientFactory.getPlaceController().goTo( new CategoryPlace( categoryPath ) );
+                goTo( new CategoryPlace( categories.get( selectedItem ) ) );
             } else if ( selectedItem.equals( incomingInboxTreeItem ) ) {
-                tabManager.openInboxIncomingPagedTable( ExplorerNodeConfig.INCOMING_ID );
+                goTo( new InboxPlace( ExplorerNodeConfig.INCOMING_ID ) );
             } else if ( selectedItem.equals( inboxRecentlyEditedTreeItem ) ) {
-                tabManager.openInboxPagedTable( ExplorerNodeConfig.RECENT_EDITED_ID );
+                goTo( new InboxPlace( ExplorerNodeConfig.RECENT_EDITED_ID ) );
             } else if ( selectedItem.equals( inboxRecentlyViewedTreeItem ) ) {
-                tabManager.openInboxPagedTable( ExplorerNodeConfig.RECENT_VIEWED_ID );
+                goTo( new InboxPlace( ExplorerNodeConfig.RECENT_VIEWED_ID ) );
             } else if ( selectedItem.equals( findRootTreeItem ) ) {
                 clientFactory.getPlaceController().goTo( new FindPlace() );
             }
         }
+    }
+
+    private void goTo(Place newPlace) {
+        clientFactory.getPlaceController().goTo( newPlace );
     }
 
     public void onTreeItemOpen(IsTreeItem openedItem) {

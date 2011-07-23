@@ -17,15 +17,12 @@ public class CategoryPlace extends Place {
 
     public static class Tokenizer implements PlaceTokenizer<CategoryPlace> {
 
-        private final String PLACE_ID = "CATEGORY=";
-
-
         public CategoryPlace getPlace(String token) {
-            return new CategoryPlace( token.substring( PLACE_ID.length() ) );
+            return new CategoryPlace( token );
         }
 
         public String getToken(CategoryPlace place) {
-            return PLACE_ID + place.getCategoryPath();
+            return place.getCategoryPath();
         }
     }
 }

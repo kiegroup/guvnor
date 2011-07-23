@@ -29,7 +29,4 @@ public interface TabManager {
 
     boolean showIfOpen(String id);
 
-    void openInboxIncomingPagedTable(String title);
-
-    void openInboxPagedTable(String title);
 }

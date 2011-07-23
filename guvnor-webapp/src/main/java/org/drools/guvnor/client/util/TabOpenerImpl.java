@@ -17,9 +17,6 @@ package org.drools.guvnor.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
@@ -31,7 +28,7 @@ import org.drools.guvnor.client.rpc.PushResponse;
 import org.drools.guvnor.client.rpc.ServerPushNotification;
 import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.widgets.tables.*;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -135,34 +132,7 @@ public class TabOpenerImpl
         }
     }
 
-
-
     public boolean showIfOpen(String id) {
         return explorerViewCenterPanel.showIfOpen( id );
     }
-
-    private void addTab(String title, IsWidget widget, String id) {
-        explorerViewCenterPanel.addTab( title, widget, id );
-    }
-
-    public void openInboxIncomingPagedTable(String title) {
-        if ( !showIfOpen( title ) ) {
-            addTab( title,
-                    new InboxIncomingPagedTable(
-                            title,
-                            clientFactory ),
-                    title );
-        }
-    }
-
-    public void openInboxPagedTable(String title) {
-        if ( !showIfOpen( title ) ) {
-            addTab( title,
-                    new InboxPagedTable(
-                            title,
-                            clientFactory ),
-                    title );
-        }
-    }
-
 }
