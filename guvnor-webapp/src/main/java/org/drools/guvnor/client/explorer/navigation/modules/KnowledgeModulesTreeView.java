@@ -8,7 +8,13 @@ public interface KnowledgeModulesTreeView
 
     interface Presenter {
 
-        void setPackageHierarchy(boolean isFlat);
+        void setFlatView();
+        
+        void setHierarchyView();
+        
+        void collapseAll();
+        
+        void expandAll();
 
     }
 
@@ -19,4 +25,5 @@ public interface KnowledgeModulesTreeView
     void setKnowledgeModulesTreeItem(KnowledgeModulesTreeItem knowledgeModulesTreeItem);
 
     void setPresenter(Presenter presenter);
+    
 }

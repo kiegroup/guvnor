@@ -16,12 +16,8 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-public interface KnowledgeModulesTreeItemView extends ModulesTreeItemBaseView {
+import com.google.gwt.event.shared.EventHandler;
 
-    void clearModulesTreeItem();
-    
-    void collapseAll();
-    
-    void expandAll();
-
+public interface ChangeModulePackageHierarchyEventHandler extends EventHandler {
+    public void onChangeModulePackageHierarchy( ChangeModulePackageHierarchyEvent changeModulePackageHierarchyEvent );
 }

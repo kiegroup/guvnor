@@ -20,7 +20,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 /**
  * A class able to organise PackageConfigData into folders
  */
-public abstract class PackageHierarchy {
+public abstract class PackageView {
 
     protected Folder root = new Folder();
 

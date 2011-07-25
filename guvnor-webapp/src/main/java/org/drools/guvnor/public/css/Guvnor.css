@@ -616,3 +616,7 @@ input,.constraint-value-Editor {
 .paddedLabel {
     padding-right: 2px;
 }
+
+.icon-bar {
+    padding: 5px;
+}

@@ -20,7 +20,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 /**
  * A flat representation of PackageConfigData, i.e. not child folders
  */
-public class PackageHierarchyFlat extends PackageHierarchy {
+public class PackageFlatView extends PackageView {
 
     protected void doAddPackage(String name,
                                 PackageConfigData conf) {

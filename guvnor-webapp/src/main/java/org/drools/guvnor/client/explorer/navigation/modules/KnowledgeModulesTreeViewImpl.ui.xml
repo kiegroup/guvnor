@@ -19,6 +19,7 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field='images' type='org.drools.guvnor.client.resources.Images' />
 
   <gwt:DockLayoutPanel>
     <gwt:north size="25">
@@ -34,8 +35,10 @@
     </gwt:center>
     <gwt:south size="25">
       <gwt:HorizontalPanel>
-        <gwt:CheckBox ui:field="chkIsFlatTreeHierarchy"/>
-        <gwt:Label text="{i18n.ShowFlatPackageHierarchy}"/>
+        <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" styleName="icon-bar"/>
+        <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" styleName="icon-bar"/>
+        <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" styleName="icon-bar"/>
+        <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" styleName="icon-bar"/>
         </gwt:HorizontalPanel>
     </gwt:south>    
   </gwt:DockLayoutPanel>
