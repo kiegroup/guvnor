@@ -79,6 +79,13 @@ public class MultiActivityManagerTest {
                 multiActivityManager );
     }
 
+    @Test
+    public void testCloseTabEventHandlerIsSet() throws Exception {
+        verify( eventBus ).addHandler(
+                CloseTabEvent.TYPE,
+                multiActivityManager );
+    }
+
     @Test(expected = IllegalStateException.class)
     public void testTabbedPanelCanOnlyBeSetOnce() throws Exception {
         multiActivityManager.setTabbedPanel( tabbedPanel );

@@ -28,6 +28,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
@@ -35,7 +36,6 @@ import org.drools.guvnor.client.packages.CloseTabEvent;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -81,8 +81,8 @@ public class RuleViewer extends GuvnorEditor {
     private long lastSaved = System.currentTimeMillis();
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    public RuleViewer( RuleAsset asset,
-                       ClientFactory clientFactory ) {
+    public RuleViewer(RuleAsset asset,
+                      ClientFactory clientFactory) {
         this( asset,
                 clientFactory,
                 false,
@@ -93,9 +93,9 @@ public class RuleViewer extends GuvnorEditor {
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-    public RuleViewer( RuleAsset asset,
-                       ClientFactory clientFactory,
-                       boolean historicalReadOnly ) {
+    public RuleViewer(RuleAsset asset,
+                      ClientFactory clientFactory,
+                      boolean historicalReadOnly) {
         this( asset,
                 clientFactory,
                 historicalReadOnly,
@@ -108,11 +108,11 @@ public class RuleViewer extends GuvnorEditor {
      * @param actionToolbarButtonsConfigurationProvider
      *                           used to change the default button configuration provider.
      */
-    public RuleViewer( RuleAsset asset,
-                       ClientFactory clientFactory,
-                       boolean historicalReadOnly,
-                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                       RuleViewerSettings ruleViewerSettings ) {
+    public RuleViewer(RuleAsset asset,
+                      ClientFactory clientFactory,
+                      boolean historicalReadOnly,
+                      ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
+                      RuleViewerSettings ruleViewerSettings) {
         this.asset = asset;
         this.readOnly = historicalReadOnly || asset.isReadonly();
 
@@ -130,7 +130,7 @@ public class RuleViewer extends GuvnorEditor {
         AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
         editor = assetEditorFactory.getAssetEditor( asset,
                 this,
-                clientFactory);
+                clientFactory );
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
@@ -229,7 +229,7 @@ public class RuleViewer extends GuvnorEditor {
                     RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
                             new GenericCallback<String>() {
 
-                                public void onSuccess( String src ) {
+                                public void onSuccess(String src) {
                                     showSource( src );
                                 }
                             } );
@@ -250,7 +250,7 @@ public class RuleViewer extends GuvnorEditor {
                     RepositoryServiceFactory.getAssetService().validateAsset( asset,
                             new GenericCallback<BuilderResult>() {
 
-                                public void onSuccess( BuilderResult results ) {
+                                public void onSuccess(BuilderResult results) {
                                     RuleValidatorWrapper.showBuilderErrors( results );
                                 }
                             } );
@@ -294,7 +294,7 @@ public class RuleViewer extends GuvnorEditor {
         pop.show();
     }
 
-    protected void verifyAndDoCheckinConfirm( final boolean closeAfter ) {
+    protected void verifyAndDoCheckinConfirm(final boolean closeAfter) {
         if ( editor instanceof RuleModeller ) {
             ((RuleModeller) editor).verifyRule( new Command() {
 
@@ -317,7 +317,7 @@ public class RuleViewer extends GuvnorEditor {
      * Called when user wants to checkin. set closeAfter to true if it should
      * close this whole thing after saving it.
      */
-    protected void doCheckinConfirm( final boolean closeAfter ) {
+    protected void doCheckinConfirm(final boolean closeAfter) {
         final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
 
@@ -335,8 +335,8 @@ public class RuleViewer extends GuvnorEditor {
         pop.show();
     }
 
-    public void doCheckin( String comment,
-                           boolean closeAfter ) {
+    public void doCheckin(String comment,
+                          boolean closeAfter) {
         if ( editor instanceof SaveEventListener ) {
             ((SaveEventListener) editor).onSave();
         }
@@ -363,7 +363,7 @@ public class RuleViewer extends GuvnorEditor {
                 activeWorkingSets,
                 new GenericCallback<AnalysisReport>() {
 
-                    public void onSuccess( AnalysisReport report ) {
+                    public void onSuccess(AnalysisReport report) {
                         LoadingPopup.close();
                         final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
                                 constants.VerificationReport() );
@@ -380,7 +380,7 @@ public class RuleViewer extends GuvnorEditor {
 
     }
 
-    private void showSource( String src ) {
+    private void showSource(String src) {
         PackageBuilderWidget.showSource( src,
                 this.asset.getName() );
         LoadingPopup.close();
@@ -395,7 +395,7 @@ public class RuleViewer extends GuvnorEditor {
         }
     }
 
-    protected void showWorkingSetsSelection( RuleModeller modeller ) {
+    protected void showWorkingSetsSelection(RuleModeller modeller) {
         new WorkingSetSelectorPopup( modeller,
                 asset ).show();
     }
@@ -409,14 +409,18 @@ public class RuleViewer extends GuvnorEditor {
      * closes itself
      */
     private void close() {
-        clientFactory.getEventBus().fireEvent( new CloseTabEvent( asset.uuid ) );
+        clientFactory.getEventBus().fireEvent( new CloseTabEvent( getKey() ) );
+    }
+
+    private String getKey() {
+        return clientFactory.getPlaceHistoryMapper().getToken( new AssetEditorPlace( asset.uuid ) );
     }
 
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
                 new GenericCallback<Void>() {
-                    public void onSuccess( Void o ) {
+                    public void onSuccess(Void o) {
                         close();
                     }
                 } );
@@ -425,15 +429,15 @@ public class RuleViewer extends GuvnorEditor {
     private void doArchive() {
         RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
-                    public void onSuccess( Void o ) {
+                    public void onSuccess(Void o) {
                         clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                         close();
                     }
                 } );
     }
 
-    private void performCheckIn( String comment,
-                                 final boolean closeAfter ) {
+    private void performCheckIn(String comment,
+                                final boolean closeAfter) {
         this.asset.setCheckinComment( comment );
         final boolean[] saved = {false};
 
@@ -441,7 +445,7 @@ public class RuleViewer extends GuvnorEditor {
         RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
                 new GenericCallback<String>() {
 
-                    public void onSuccess( String uuid ) {
+                    public void onSuccess(String uuid) {
                         if ( uuid == null ) {
                             ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
                             return;
@@ -469,7 +473,7 @@ public class RuleViewer extends GuvnorEditor {
                 } );
     }
 
-    public void showInfoMessage( String message ) {
+    public void showInfoMessage(String message) {
         messageWidget.showMessage( message );
     }
 
@@ -507,14 +511,14 @@ public class RuleViewer extends GuvnorEditor {
         pop.addRow( hor );
 
         dis.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick(ClickEvent arg0) {
                 close();
                 pop.hide();
             }
         } );
 
         can.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick(ClickEvent arg0) {
                 pop.hide();
             }
         } );
@@ -535,7 +539,7 @@ public class RuleViewer extends GuvnorEditor {
         Button ok = new Button( constants.CreateCopy() );
 
         ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
+            public void onClick(ClickEvent arg0) {
                 if ( newName.getText() == null
                         || newName.getText().equals( "" ) ) {
                     Window.alert( constants.AssetNameMustNotBeEmpty() );
@@ -546,7 +550,7 @@ public class RuleViewer extends GuvnorEditor {
                         sel.getSelectedPackage(),
                         name,
                         new GenericCallback<String>() {
-                            public void onSuccess( String data ) {
+                            public void onSuccess(String data) {
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
                                         data );
@@ -554,7 +558,7 @@ public class RuleViewer extends GuvnorEditor {
                             }
 
                             @Override
-                            public void onFailure( Throwable t ) {
+                            public void onFailure(Throwable t) {
                                 if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
                                     Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
                                 } else {
@@ -583,18 +587,18 @@ public class RuleViewer extends GuvnorEditor {
         pop.addAttribute( "",
                 ok );
         ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+            public void onClick(ClickEvent w) {
                 RepositoryServiceFactory.getAssetService().renameAsset( asset.getUuid(),
                         box.getText(),
                         new GenericCallback<java.lang.String>() {
-                            public void onSuccess( String data ) {
+                            public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 closeAndReopen( data );
                                 pop.hide();
                             }
 
                             @Override
-                            public void onFailure( Throwable t ) {
+                            public void onFailure(Throwable t) {
                                 if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
                                     Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
                                 } else {
@@ -616,28 +620,28 @@ public class RuleViewer extends GuvnorEditor {
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
             RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
                     new GenericCallback<Void>() {
-                        public void onSuccess( Void data ) {
+                        public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );
                             closeAndReopen( asset.getUuid() );
                         }
 
                         @Override
-                        public void onFailure( Throwable t ) {
+                        public void onFailure(Throwable t) {
                             super.onFailure( t );
                         }
                     } );
         }
     }
 
-    private void closeAndReopen( String newAssetUUID ) {
-        clientFactory.getEventBus().fireEvent( new CloseAssetEditorEvent( asset.uuid ) );
+    private void closeAndReopen(String newAssetUUID) {
+        close();
 
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 
-    private void completedCopying( String name,
-                                   String pkg,
-                                   String newAssetUUID ) {
+    private void completedCopying(String name,
+                                  String pkg,
+                                  String newAssetUUID) {
         Window.alert( constants.CreatedANewItemSuccess( name,
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );

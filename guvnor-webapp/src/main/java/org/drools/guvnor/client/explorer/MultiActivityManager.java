@@ -49,6 +49,9 @@ public class MultiActivityManager implements
         eventBus.addHandler(
                 PlaceChangeEvent.TYPE,
                 this );
+        eventBus.addHandler(
+                CloseTabEvent.TYPE,
+                this );
     }
 
     public void setTabbedPanel(TabbedPanel tabbedPanel) {

@@ -105,18 +105,6 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return closableLabel;
     }
 
-    /**
-     * Will open if existing. If not it will return false;
-     */
-    public boolean showIfOpen(String key) {
-        if ( openedTabs.contains( key ) ) {
-            LoadingPopup.close();
-            tabLayoutPanel.selectTab( openedTabs.get( key ) );
-            return true;
-        }
-        return false;
-    }
-
     public void close(String key) {
 
         int widgetIndex = openedTabs.getIndex( key );

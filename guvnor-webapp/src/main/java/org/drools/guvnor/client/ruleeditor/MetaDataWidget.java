@@ -23,7 +23,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.*;
@@ -32,6 +31,7 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.CloseTabEvent;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -55,10 +55,10 @@ public class MetaDataWidget extends Composite {
     private String currentSectionName;
     private final ClientFactory clientFactory;
 
-    public MetaDataWidget( ClientFactory clientFactory,
-                           final Artifact artifact,
-                           boolean readOnly,
-                           final String uuid ) {
+    public MetaDataWidget(ClientFactory clientFactory,
+                          final Artifact artifact,
+                          boolean readOnly,
+                          final String uuid) {
         super();
 
         this.clientFactory = clientFactory;
@@ -82,9 +82,9 @@ public class MetaDataWidget extends Composite {
         loadData();
     }
 
-    private void addHeader( ImageResource img,
-                            String name,
-                            Image edit ) {
+    private void addHeader(ImageResource img,
+                           String name,
+                           Image edit) {
 
         HorizontalPanel hp = new HorizontalPanel();
         hp.add( new SmallLabel( "<b>" + name + "</b>" ) );
@@ -127,7 +127,7 @@ public class MetaDataWidget extends Composite {
                             return ((RuleAsset) artifact).getMetaData().isDisabled();
                         }
 
-                        public void setValue( boolean val ) {
+                        public void setValue(boolean val) {
                             ((RuleAsset) artifact).getMetaData().setDisabled( val );
                         }
                     },
@@ -150,7 +150,7 @@ public class MetaDataWidget extends Composite {
                             return data.subject;
                         }
 
-                        public void setValue( String val ) {
+                        public void setValue(String val) {
                             data.subject = val;
                         }
                     },
@@ -162,7 +162,7 @@ public class MetaDataWidget extends Composite {
                             return data.type;
                         }
 
-                        public void setValue( String val ) {
+                        public void setValue(String val) {
                             data.type = val;
                         }
 
@@ -175,7 +175,7 @@ public class MetaDataWidget extends Composite {
                             return data.externalRelation;
                         }
 
-                        public void setValue( String val ) {
+                        public void setValue(String val) {
                             data.externalRelation = val;
                         }
 
@@ -188,7 +188,7 @@ public class MetaDataWidget extends Composite {
                             return data.externalSource;
                         }
 
-                        public void setValue( String val ) {
+                        public void setValue(String val) {
                             data.externalSource = val;
                         }
 
@@ -219,17 +219,17 @@ public class MetaDataWidget extends Composite {
         endSection( true );
     }
 
-    private void addRow( Widget widget ) {
+    private void addRow(Widget widget) {
         this.currentSection.addRow( widget );
     }
 
-    private void addAttribute( String string,
-                               Widget widget ) {
+    private void addAttribute(String string,
+                              Widget widget) {
         this.currentSection.addAttribute( string,
                 widget );
     }
 
-    private void endSection( boolean collapsed ) {
+    private void endSection(boolean collapsed) {
         DecoratedDisclosurePanel advancedDisclosure = new DecoratedDisclosurePanel( currentSectionName );
         advancedDisclosure.setWidth( "100%" );
         advancedDisclosure.setOpen( !collapsed );
@@ -237,12 +237,12 @@ public class MetaDataWidget extends Composite {
         layout.add( advancedDisclosure );
     }
 
-    private void startSection( String name ) {
+    private void startSection(String name) {
         currentSection = new FormStyleLayout();
         currentSectionName = name;
     }
 
-    private Widget packageEditor( final String packageName ) {
+    private Widget packageEditor(final String packageName) {
         if ( this.readOnly || !UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
             return readOnlyText( packageName );
         } else {
@@ -251,7 +251,7 @@ public class MetaDataWidget extends Composite {
             horiz.add( readOnlyText( packageName ) );
             Image editPackage = new ImageButton( images.edit() );
             editPackage.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent w ) {
+                public void onClick(ClickEvent w) {
                     showEditPackage( packageName,
                             w );
                 }
@@ -261,8 +261,8 @@ public class MetaDataWidget extends Composite {
         }
     }
 
-    private void showEditPackage( final String pkg,
-                                  ClickEvent source ) {
+    private void showEditPackage(final String pkg,
+                                 ClickEvent source) {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
                 constants.MoveThisItemToAnotherPackage() );
         pop.addAttribute( constants.CurrentPackage(),
@@ -275,7 +275,7 @@ public class MetaDataWidget extends Composite {
                 ok );
         ok.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent w ) {
+            public void onClick(ClickEvent w) {
                 if ( sel.getSelectedPackage().equals( pkg ) ) {
                     Window.alert( constants.YouNeedToPickADifferentPackageToMoveThisTo() );
                     return;
@@ -284,7 +284,7 @@ public class MetaDataWidget extends Composite {
                         sel.getSelectedPackage(),
                         constants.MovedFromPackage( pkg ),
                         new GenericCallback<java.lang.Void>() {
-                            public void onSuccess( Void v ) {
+                            public void onSuccess(Void v) {
                                 //Refresh wont work here. We have to close and reopen
                                 //otherwise SuggestionEngine may not be initialized for
                                 //the target package.
@@ -301,9 +301,13 @@ public class MetaDataWidget extends Composite {
         pop.show();
     }
 
-    private void closeAndReopen( String newAssetUUID ) {
-        clientFactory.getEventBus().fireEvent( new CloseAssetEditorEvent( uuid ) );
+    private void closeAndReopen(String newAssetUUID) {
+        clientFactory.getEventBus().fireEvent( new CloseTabEvent( getKey() ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
+    }
+
+    private String getKey() {
+        return clientFactory.getPlaceHistoryMapper().getToken( new AssetEditorPlace( uuid ) );
     }
 
     private Widget getVersionNumberLabel() {
@@ -314,7 +318,7 @@ public class MetaDataWidget extends Composite {
         }
     }
 
-    private Widget readOnlyDate( Date lastModifiedDate ) {
+    private Widget readOnlyDate(Date lastModifiedDate) {
         if ( lastModifiedDate == null ) {
             return null;
         } else {
@@ -322,7 +326,7 @@ public class MetaDataWidget extends Composite {
         }
     }
 
-    private Label readOnlyText( String text ) {
+    private Label readOnlyText(String text) {
         SmallLabel lbl = new SmallLabel( text );
         lbl.setWidth( "100%" );
         return lbl;
@@ -341,14 +345,14 @@ public class MetaDataWidget extends Composite {
      * @param toolTip tool tip.
      * @return
      */
-    private Widget editableBoolean( final FieldBooleanBinding bind,
-                                    String toolTip ) {
+    private Widget editableBoolean(final FieldBooleanBinding bind,
+                                   String toolTip) {
         if ( !readOnly ) {
             final CheckBox box = new CheckBox();
             box.setTitle( toolTip );
             box.setValue( bind.getValue() );
             ClickHandler listener = new ClickHandler() {
-                public void onClick( ClickEvent w ) {
+                public void onClick(ClickEvent w) {
                     boolean b = box.getValue();
                     bind.setValue( b );
                 }
@@ -372,8 +376,8 @@ public class MetaDataWidget extends Composite {
      * @param toolTip tool tip.
      * @return
      */
-    private Widget editableText( final FieldBinding bind,
-                                 String toolTip ) {
+    private Widget editableText(final FieldBinding bind,
+                                String toolTip) {
         if ( !readOnly ) {
             final TextBox tbox = new TextBox();
             tbox.setTitle( toolTip );
@@ -381,7 +385,7 @@ public class MetaDataWidget extends Composite {
             tbox.setVisibleLength( 10 );
             ChangeHandler listener = new ChangeHandler() {
 
-                public void onChange( ChangeEvent event ) {
+                public void onChange(ChangeEvent event) {
                     String txt = tbox.getText();
                     bind.setValue( txt );
                 }
@@ -398,7 +402,7 @@ public class MetaDataWidget extends Composite {
      * used to bind fields in the meta data DTO to the form
      */
     static interface FieldBinding {
-        void setValue( String val );
+        void setValue(String val);
 
         String getValue();
     }
@@ -407,7 +411,7 @@ public class MetaDataWidget extends Composite {
      * used to bind fields in the meta data DTO to the form
      */
     static interface FieldBooleanBinding {
-        void setValue( boolean val );
+        void setValue(boolean val);
 
         boolean getValue();
     }
@@ -423,7 +427,7 @@ public class MetaDataWidget extends Composite {
         render();
     }
 
-    static String getVersionFeed( Artifact artifact ) {
+    static String getVersionFeed(Artifact artifact) {
         if ( artifact instanceof PackageConfigData ) {
             String hurl = getRESTBaseURL() + "packages/" + artifact.getName() + "/versions";
             return hurl;

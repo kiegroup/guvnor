@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.CloseTabEvent;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -246,7 +247,10 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public void close() {
-        closeCommand.execute();
+        clientFactory.getEventBus().fireEvent( new CloseTabEvent( getKey() ) );
+        if ( closeCommand != null ) {
+            closeCommand.execute();
+        }
     }
 
     @Override
@@ -267,5 +271,9 @@ public class MultiViewEditor extends GuvnorEditor {
 
     public void setCloseCommand(Command command) {
         closeCommand = command;
+    }
+
+    public String getKey() {
+        return clientFactory.getPlaceHistoryMapper().getToken( new MultiAssetPlace( rows ) );
     }
 }

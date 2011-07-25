@@ -5,17 +5,18 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class MultiAssetPlace extends Place {
 
-    private final List<MultiViewRow> multiViewRows;
+    private final Collection<MultiViewRow> multiViewRows;
 
-    public MultiAssetPlace(List<MultiViewRow> multiViewRows) {
+    public MultiAssetPlace(Collection<MultiViewRow> multiViewRows) {
         this.multiViewRows = multiViewRows;
     }
 
-    public List<MultiViewRow> getMultiViewRows() {
+    public Collection<MultiViewRow> getMultiViewRows() {
         return multiViewRows;
     }
 
