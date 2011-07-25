@@ -130,9 +130,6 @@ public class StateManager extends Composite {
         String oldName = currentStatuses.getItemText( currentStatuses.getSelectedIndex() );
 
         if ( newName != null ) {
-            if ( !NewAssetWizard.validatePathPerJSR170( newName ) ) {
-                return;
-            }
             RepositoryServiceFactory.getService().renameState( oldName,
                                                                newName,
                                                                new GenericCallback<Void>() {
