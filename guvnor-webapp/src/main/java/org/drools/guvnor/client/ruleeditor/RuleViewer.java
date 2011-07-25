@@ -32,7 +32,7 @@ import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.packages.CloseTabEvent;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
@@ -409,11 +409,7 @@ public class RuleViewer extends GuvnorEditor {
      * closes itself
      */
     private void close() {
-        clientFactory.getEventBus().fireEvent( new CloseTabEvent( getKey() ) );
-    }
-
-    private String getKey() {
-        return clientFactory.getPlaceHistoryMapper().getToken( new AssetEditorPlace( asset.uuid ) );
+        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
     }
 
     void doDelete() {

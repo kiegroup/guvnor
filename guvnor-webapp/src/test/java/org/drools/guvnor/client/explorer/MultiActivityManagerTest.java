@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.packages.CloseTabEvent;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.util.TabbedPanel;
@@ -82,7 +82,7 @@ public class MultiActivityManagerTest {
     @Test
     public void testCloseTabEventHandlerIsSet() throws Exception {
         verify( eventBus ).addHandler(
-                CloseTabEvent.TYPE,
+                ClosePlaceEvent.TYPE,
                 multiActivityManager );
     }
 
@@ -100,7 +100,7 @@ public class MultiActivityManagerTest {
 
     @Test
     public void testItIsSafeToCloseATabThatDoesNotExist() throws Exception {
-        multiActivityManager.onCloseTab( new CloseTabEvent( "I-do-Not-Exist" ) );
+        multiActivityManager.onCloseTab( new ClosePlaceEvent( new AssetEditorPlace( "I-do-Not-Exist" ) ) );
         // Does nothing
     }
 
@@ -111,8 +111,8 @@ public class MultiActivityManagerTest {
 
         multiActivityManager.setTabbedPanel( tabbedPanel );
 
-        verifyGoToNewPlace( oldPlace, "oldMockTabTitle", "oldMockToken" );
-        verifyGoToNewPlace( newPlace, "newMockTabTitle", "newMockToken" );
+        verifyGoToNewPlace( oldPlace, "oldMockTabTitle" );
+        verifyGoToNewPlace( newPlace, "newMockTabTitle" );
     }
 
     @Test
@@ -122,8 +122,8 @@ public class MultiActivityManagerTest {
 
         multiActivityManager.setTabbedPanel( tabbedPanel );
 
-        verifyGoToNewPlace( oldPlace, "oldMockTabTitle", "oldMockTabToken" );
-        verifyGoToExistingPlace( newPlace, "newMockTabToken" );
+        verifyGoToNewPlace( oldPlace, "oldMockTabTitle" );
+        verifyGoToExistingPlace( newPlace );
     }
 
     @Test
@@ -131,8 +131,8 @@ public class MultiActivityManagerTest {
         multiActivityManager.setTabbedPanel( tabbedPanel );
         PlaceChangeEvent placeChangeEvent = setUpPlaceChangeEvent( Place.NOWHERE );
         multiActivityManager.onPlaceChange( placeChangeEvent );
-        verify( tabbedPanel, never() ).show( anyString() );
-        verify( tabbedPanel, never() ).addTab( anyString(), Matchers.<IsWidget>any(), anyString() );
+        verify( tabbedPanel, never() ).show( any( Place.class ) );
+        verify( tabbedPanel, never() ).addTab( anyString(), Matchers.<IsWidget>any(), any( Place.class ) );
     }
 
     @Test
@@ -142,17 +142,17 @@ public class MultiActivityManagerTest {
         ArgumentCaptor<ResettableEventBus> resettableEventBusArgumentCaptor = ArgumentCaptor.forClass( ResettableEventBus.class );
 
         HandlerRegistration handlerRegistration = mock( HandlerRegistration.class );
-        CloseTabEvent.Handler handler = mock( CloseTabEvent.Handler.class );
-        when( eventBus.addHandler( CloseTabEvent.TYPE, handler ) ).thenReturn( handlerRegistration );
+        ClosePlaceEvent.Handler handler = mock( ClosePlaceEvent.Handler.class );
+        when( eventBus.addHandler( ClosePlaceEvent.TYPE, handler ) ).thenReturn( handlerRegistration );
 
-        Activity activity = goTo( place, "mockTabToken" );
+        Activity activity = goTo( place );
 
         when( activity.mayStop() ).thenReturn( true );
 
         verify( activity ).start( any( AcceptTabItem.class ), resettableEventBusArgumentCaptor.capture() );
-        resettableEventBusArgumentCaptor.getValue().addHandler( CloseTabEvent.TYPE, handler );
+        resettableEventBusArgumentCaptor.getValue().addHandler( ClosePlaceEvent.TYPE, handler );
 
-        multiActivityManager.onCloseTab( new CloseTabEvent( "mockTabToken" ) );
+        multiActivityManager.onCloseTab( new ClosePlaceEvent( place ) );
         verify( activity ).onStop();
         verify( handlerRegistration ).removeHandler();
     }
@@ -162,47 +162,38 @@ public class MultiActivityManagerTest {
         Place place = mock( Place.class );
         multiActivityManager.setTabbedPanel( tabbedPanel );
 
-        Activity activity = goTo( place, "mockTabToken" );
+        Activity activity = goTo( place );
         when( activity.mayStop() ).thenReturn( false );
 
-        multiActivityManager.onCloseTab( new CloseTabEvent( "mockTabToken" ) );
+        multiActivityManager.onCloseTab( new ClosePlaceEvent( place ) );
         verify( activity, never() ).onStop();
     }
 
-    private void verifyGoToExistingPlace(Place newPlace, String tabToken) {
-        goTo( newPlace, tabToken );
-        tabbedPanel.show( tabToken );
-        verify( tabbedPanel, never() ).addTab( anyString(), Matchers.<IsWidget>any(), eq( tabToken ) );
+    private void verifyGoToExistingPlace(Place newPlace) {
+        goTo( newPlace );
+        tabbedPanel.show( newPlace );
+        verify( tabbedPanel, never() ).addTab( anyString(), Matchers.<IsWidget>any(), eq( newPlace ) );
     }
 
-    private void verifyGoToNewPlace(Place place, String tabTitle, String tabToken) {
+    private void verifyGoToNewPlace(Place place, String tabTitle) {
         ArgumentCaptor<AcceptTabItem> acceptTabItemArgumentCaptor = ArgumentCaptor.forClass( AcceptTabItem.class );
         IsWidget tabContentWidget = mock( IsWidget.class );
 
-        Activity activity = goTo( place, tabToken );
+        Activity activity = goTo( place );
 
         verify( activity ).start( acceptTabItemArgumentCaptor.capture(), any( ResettableEventBus.class ) );
 
         acceptTabItemArgumentCaptor.getValue().addTab( tabTitle, tabContentWidget );
-        verify( tabbedPanel ).addTab( tabTitle, tabContentWidget, tabToken );
+        verify( tabbedPanel ).addTab( tabTitle, tabContentWidget, place );
     }
 
-    private Activity goTo(Place place, String tabToken) {
+    private Activity goTo(Place place) {
         Activity activity = setUpActivityForAPlace( place );
-        setUpTokenForAPlace( place, tabToken );
         PlaceChangeEvent placeChangeEvent = setUpPlaceChangeEvent( place );
 
         multiActivityManager.onPlaceChange( placeChangeEvent );
 
         return activity;
-    }
-
-    private void setUpTokenForAPlace(Place newPlace, String token) {
-        when(
-                placeHistoryMapper.getToken( newPlace )
-        ).thenReturn(
-                token
-        );
     }
 
     private Activity setUpActivityForAPlace(Place newPlace) {

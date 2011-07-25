@@ -5,6 +5,7 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,43 @@ public class MultiAssetPlace extends Place {
 
     public Collection<MultiViewRow> getMultiViewRows() {
         return multiViewRows;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        MultiAssetPlace that = (MultiAssetPlace) o;
+
+
+        if ( multiViewRows != null ) {
+            Object[] thisObjects = multiViewRows.toArray();
+            Object[] thatObjects = that.getMultiViewRows().toArray();
+
+            Arrays.sort( thisObjects );
+            Arrays.sort( thatObjects );
+
+            if ( !Arrays.equals( thisObjects, thatObjects ) )
+                return false;
+        } else {
+            if ( that.multiViewRows != null )
+                return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        if ( multiViewRows != null ) {
+            Object[] thisObjects = multiViewRows.toArray();
+            Arrays.sort( thisObjects );
+
+            return Arrays.hashCode( thisObjects );
+        } else {
+            return 0;
+        }
     }
 
     public static class Tokenizer implements PlaceTokenizer<MultiAssetPlace> {

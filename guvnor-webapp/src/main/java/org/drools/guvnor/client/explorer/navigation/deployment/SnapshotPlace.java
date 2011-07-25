@@ -22,6 +22,27 @@ public class SnapshotPlace extends Place {
         return snapshotName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        SnapshotPlace that = (SnapshotPlace) o;
+
+        if ( moduleName != null ? !moduleName.equals( that.moduleName ) : that.moduleName != null ) return false;
+        if ( snapshotName != null ? !snapshotName.equals( that.snapshotName ) : that.snapshotName != null )
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = moduleName != null ? moduleName.hashCode() : 0;
+        result = 31 * result + (snapshotName != null ? snapshotName.hashCode() : 0);
+        return result;
+    }
+
     public static class Tokenizer implements PlaceTokenizer<SnapshotPlace> {
 
         private final String PLACE_ID = "SNAPSHOT=";

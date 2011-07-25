@@ -31,7 +31,7 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.CloseTabEvent;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -302,12 +302,8 @@ public class MetaDataWidget extends Composite {
     }
 
     private void closeAndReopen(String newAssetUUID) {
-        clientFactory.getEventBus().fireEvent( new CloseTabEvent( getKey() ) );
+        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new AssetEditorPlace( uuid ) ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
-    }
-
-    private String getKey() {
-        return clientFactory.getPlaceHistoryMapper().getToken( new AssetEditorPlace( uuid ) );
     }
 
     private Widget getVersionNumberLabel() {

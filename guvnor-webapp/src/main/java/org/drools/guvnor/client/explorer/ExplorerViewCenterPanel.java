@@ -22,6 +22,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabbedPanel;
@@ -51,11 +52,11 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         initWidget( tabLayoutPanel );
     }
 
-    public boolean contains(String key) {
+    public boolean contains(Place key) {
         return openedTabs.contains( key );
     }
 
-    public void show(String key) {
+    public void show(Place key) {
         if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
             tabLayoutPanel.selectTab( openedTabs.get( key ) );
@@ -67,18 +68,18 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
      *
      * @param tabname The displayed tab name.
      * @param widget  The contents.
-     * @param key     A key which is unique.
+     * @param place   A place which is unique.
      */
     public void addTab(final String tabname,
                        IsWidget widget,
-                       final String key) {
+                       final Place place) {
 
         ScrollPanel localTP = new ScrollPanel();
         localTP.add( widget );
         tabLayoutPanel.add( localTP,
                 newClosableLabel(
                         tabname,
-                        key
+                        place
                 ) );
         tabLayoutPanel.selectTab( localTP );
 
@@ -87,17 +88,17 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
                     (PackageEditorWrapper) widget );
         }
 
-        openedTabs.put( key,
+        openedTabs.put( place,
                 localTP );
     }
 
     private Widget newClosableLabel(final String title,
-                                    final String panelId) {
+                                    final Place place) {
         ClosableLabel closableLabel = new ClosableLabel( title );
 
         closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> event) {
-                close( panelId );
+                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( place ) );
             }
 
         } );
@@ -105,7 +106,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return closableLabel;
     }
 
-    public void close(String key) {
+    public void close(Place key) {
 
         int widgetIndex = openedTabs.getIndex( key );
 
@@ -150,13 +151,11 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     }
 
     private Place getPreviousPlace() {
-        return clientFactory.getPlaceHistoryMapper().getPlace(
-                openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 ) );
+        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 );
     }
 
     private Place getNextPlace() {
-        return clientFactory.getPlaceHistoryMapper().getPlace(
-                openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 ) );
+        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 );
     }
 
     private boolean isOnlyOneTabLeft() {
@@ -168,32 +167,32 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     }
 
     private class PanelMap {
-        private final Map<String, Panel> keysToPanel = new HashMap<String, Panel>();
-        private final List<String> keys = new ArrayList<String>();
+        private final Map<Place, Panel> keysToPanel = new HashMap<Place, Panel>();
+        private final List<Place> keys = new ArrayList<Place>();
 
-        Panel get(String key) {
+        Panel get(Place key) {
             return keysToPanel.get( key );
         }
 
-        String getKey(int index) {
+        Place getKey(int index) {
             return keys.get( index );
         }
 
-        void remove(String key) {
+        void remove(Place key) {
             keys.remove( key );
             keysToPanel.remove( key );
         }
 
-        public boolean contains(String key) {
+        public boolean contains(Place key) {
             return keysToPanel.containsKey( key );
         }
 
-        public void put(String key, Panel panel) {
+        public void put(Place key, Panel panel) {
             keys.add( key );
             keysToPanel.put( key, panel );
         }
 
-        public int getIndex(String key) {
+        public int getIndex(Place key) {
             return keys.indexOf( key );
         }
     }

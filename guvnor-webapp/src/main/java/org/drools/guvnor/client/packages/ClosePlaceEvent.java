@@ -18,32 +18,33 @@ package org.drools.guvnor.client.packages;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.place.shared.Place;
 
-public class CloseTabEvent extends GwtEvent<CloseTabEvent.Handler> {
+public class ClosePlaceEvent extends GwtEvent<ClosePlaceEvent.Handler> {
 
     public interface Handler extends EventHandler {
-        public void onCloseTab( CloseTabEvent closeTabEvent );
+        public void onCloseTab(ClosePlaceEvent closePlaceEvent);
     }
 
-    public static Type<CloseTabEvent.Handler> TYPE = new Type<CloseTabEvent.Handler>();
+    public static Type<ClosePlaceEvent.Handler> TYPE = new Type<ClosePlaceEvent.Handler>();
 
-    private final String key;
+    private final Place place;
 
-    public CloseTabEvent( String key ) {
-        this.key = key;
+    public ClosePlaceEvent(Place place) {
+        this.place = place;
     }
 
-    public String getKey() {
-        return key;
+    public Place getPlace() {
+        return place;
     }
 
     @Override
-    public Type<CloseTabEvent.Handler> getAssociatedType() {
+    public Type<ClosePlaceEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch( CloseTabEvent.Handler eventHandler ) {
+    protected void dispatch(ClosePlaceEvent.Handler eventHandler) {
         eventHandler.onCloseTab( this );
     }
 }

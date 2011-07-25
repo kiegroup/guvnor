@@ -21,7 +21,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.packages.CloseTabEvent;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.util.TabbedPanel;
@@ -31,13 +31,13 @@ import java.util.Map;
 
 public class MultiActivityManager implements
         PlaceChangeEvent.Handler,
-        CloseTabEvent.Handler {
+        ClosePlaceEvent.Handler {
 
     private final ActivityMapper activityMapper;
     private TabbedPanel tabbedPanel;
     private final EventBus eventBus;
     private PlaceHistoryMapper placeHistoryMapper;
-    private final Map<String, Pair> activeActivities = new HashMap<String, Pair>();
+    private final Map<Place, Pair> activeActivities = new HashMap<Place, Pair>();
     private final ClientFactory clientFactory;
 
     public MultiActivityManager(ClientFactory clientFactory) {
@@ -50,7 +50,7 @@ public class MultiActivityManager implements
                 PlaceChangeEvent.TYPE,
                 this );
         eventBus.addHandler(
-                CloseTabEvent.TYPE,
+                ClosePlaceEvent.TYPE,
                 this );
     }
 
@@ -67,31 +67,28 @@ public class MultiActivityManager implements
         if ( tabbedPanel == null ) {
             throw new IllegalStateException( TabbedPanel.class.getName() + " is not set for " + MultiActivityManager.class.getName() );
         } else {
-
-            final String token = placeHistoryMapper.getToken( event.getNewPlace() );
-
-            if ( isActivityAlreadyActive( token ) ) {
-                showExistingActivity( token );
+            if ( isActivityAlreadyActive( event.getNewPlace() ) ) {
+                showExistingActivity( event.getNewPlace() );
             } else if ( ifPlaceExists( event ) ) {
-                startNewActivity( token, event.getNewPlace() );
+                startNewActivity( event.getNewPlace() );
             }
         }
     }
 
-    private void showExistingActivity(String token) {
+    private void showExistingActivity(Place token) {
         tabbedPanel.show( token );
     }
 
-    private boolean isActivityAlreadyActive(String token) {
+    private boolean isActivityAlreadyActive(Place token) {
         return activeActivities.keySet().contains( token );
     }
 
-    private void startNewActivity(final String token, Place newPlace) {
+    private void startNewActivity(final Place newPlace) {
         Activity activity = activityMapper.getActivity( newPlace );
 
         final ResettableEventBus resettableEventBus = new ResettableEventBus( eventBus );
 
-        activeActivities.put( token, new Pair( activity, resettableEventBus ) );
+        activeActivities.put( newPlace, new Pair( activity, resettableEventBus ) );
 
         activity.start(
                 new AcceptTabItem() {
@@ -99,7 +96,7 @@ public class MultiActivityManager implements
                         tabbedPanel.addTab(
                                 tabTitle,
                                 widget,
-                                token );
+                                newPlace );
                     }
                 },
                 resettableEventBus );
@@ -109,13 +106,13 @@ public class MultiActivityManager implements
         return !event.getNewPlace().equals( Place.NOWHERE );
     }
 
-    public void onCloseTab(CloseTabEvent closeTabEvent) {
-        Pair pair = activeActivities.get( closeTabEvent.getKey() );
+    public void onCloseTab(ClosePlaceEvent closePlaceEvent) {
+        Pair pair = activeActivities.get( closePlaceEvent.getPlace() );
         if ( pair != null && pair.getActivity().mayStop() ) {
             pair.getActivity().onStop();
             pair.getResettableEventBus().removeHandlers();
-            activeActivities.remove( closeTabEvent.getKey() );
-            tabbedPanel.close( closeTabEvent.getKey() );
+            activeActivities.remove( closePlaceEvent.getPlace() );
+            tabbedPanel.close( closePlaceEvent.getPlace() );
         }
     }
 

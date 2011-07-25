@@ -15,6 +15,23 @@ public class ManagerPlace extends Place {
         return id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        ManagerPlace that = (ManagerPlace) o;
+
+        if ( id != that.id ) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
     public static class Tokenizer implements PlaceTokenizer<ManagerPlace> {
 
         private final String PLACE_ID = "MANAGER=";

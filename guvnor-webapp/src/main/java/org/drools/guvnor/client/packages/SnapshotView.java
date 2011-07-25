@@ -229,8 +229,8 @@ public class SnapshotView extends Composite {
         return btn;
     }
 
-    private CloseTabEvent getCloseEvent(String moduleName) {
-        return new CloseTabEvent( clientFactory.getPlaceHistoryMapper().getToken( new SnapshotPlace( moduleName, snapInfo.getName() ) ) );
+    private ClosePlaceEvent getCloseEvent(String moduleName) {
+        return new ClosePlaceEvent( new SnapshotPlace( moduleName, snapInfo.getName() ) );
     }
 
     private Button getCopyButton(final String snapshotName,

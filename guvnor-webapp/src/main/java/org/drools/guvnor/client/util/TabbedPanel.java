@@ -15,15 +15,16 @@
  */
 package org.drools.guvnor.client.util;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface TabbedPanel {
 
-    public void addTab( final String tabTitle,
-                        IsWidget widget,
-                        final String token );
+    public void addTab(final String tabTitle,
+                       IsWidget widget,
+                       final Place token);
 
-    void show( String key );
+    void show(Place key);
 
-    void close( String key );
+    void close(Place key);
 }
