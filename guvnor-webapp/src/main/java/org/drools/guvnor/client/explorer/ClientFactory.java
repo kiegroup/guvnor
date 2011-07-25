@@ -19,17 +19,19 @@ package org.drools.guvnor.client.explorer;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 
 public interface ClientFactory {
 
-    AuthorPerspectiveView getAuthorPerspectiveView( NavigationPanelFactory navigationPanelFactory );
+    AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory);
 
-    RuntimePerspectiveView getRuntimePerspectiveView( NavigationPanelFactory navigationPanelFactory );
+    RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory);
 
     PlaceController getPlaceController();
 
@@ -47,7 +49,7 @@ public interface ClientFactory {
 
     PlaceHistoryHandler getPlaceHistoryHandler();
 
-    GuvnorPlaceHistoryMapper getPlaceHistoryMapper();
+    PlaceHistoryMapper getPlaceHistoryMapper();
 
     ModuleEditorActivityView getModuleEditorActivityView();
 
@@ -62,4 +64,7 @@ public interface ClientFactory {
     CategoryServiceAsync getCategoryService();
 
     AssetServiceAsync getAssetService();
+
+    ActivityMapper getActivityMapper();
+
 }

@@ -23,8 +23,6 @@ public interface TabbedPanel {
                         IsWidget widget,
                         final String token );
 
-    boolean contains( String key );
-
     void show( String key );
 
     void close( String key );

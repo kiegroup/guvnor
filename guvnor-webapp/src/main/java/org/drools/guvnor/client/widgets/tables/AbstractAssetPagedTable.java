@@ -36,7 +36,7 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
 import org.drools.guvnor.client.ruleeditor.MultiViewRow;
@@ -78,16 +78,16 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
     private final ClientFactory clientFactory;
 
-    public AbstractAssetPagedTable( int pageSize,
-                                    ClientFactory clientFactory ) {
+    public AbstractAssetPagedTable(int pageSize,
+                                   ClientFactory clientFactory) {
         this( pageSize,
                 null,
                 clientFactory );
     }
 
-    public AbstractAssetPagedTable( int pageSize,
-                                    String feedURL,
-                                    ClientFactory clientFactory ) {
+    public AbstractAssetPagedTable(int pageSize,
+                                   String feedURL,
+                                   ClientFactory clientFactory) {
         super( pageSize );
         this.feedURL = feedURL;
         if ( this.feedURL == null
@@ -104,7 +104,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      *
      * @param unloadListener
      */
-    public void addUnloadListener( Command unloadListener ) {
+    public void addUnloadListener(Command unloadListener) {
         unloadListenerSet.add( unloadListener );
     }
 
@@ -137,17 +137,18 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * @param e
      */
     @UiHandler("openSelectedToSingleTabButton")
-    public void openSelectedToSingleTab( ClickEvent e ) {
+    public void openSelectedToSingleTab(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
         for (T selected : selectedSet) {
-            MultiViewRow row = new MultiViewRow();
-            row.uuid = selected.getUuid();
-            row.format = selected.getFormat();
-            row.name = selected.getName();
-            multiViewRowList.add( row );
+            multiViewRowList.add(
+                    new MultiViewRow(
+                            selected.getUuid(),
+                            selected.getName(),
+                            selected.getFormat() ) );
         }
-        TabContainer.getInstance().openAssetsToMultiView( multiViewRowList.toArray( new MultiViewRow[multiViewRowList.size()] ) );
+
+        clientFactory.getPlaceController().goTo( new MultiAssetPlace( multiViewRowList ) );
     }
 
     /**
@@ -168,7 +169,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     protected void doCellTable() {
 
         ProvidesKey<T> providesKey = new ProvidesKey<T>() {
-            public Object getKey( T row ) {
+            public Object getKey(T row) {
                 return row.getUuid();
             }
         };
@@ -182,7 +183,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         SortableHeaderGroup<T> sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
 
         final TextColumn<T> uuidNumberColumn = new TextColumn<T>() {
-            public String getValue( T row ) {
+            public String getValue(T row) {
                 return row.getUuid();
             }
         };
@@ -199,14 +200,14 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
         // Add "Open" button column
         Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
-            public String getValue( T row ) {
+            public String getValue(T row) {
                 return constants.Open();
             }
         };
         openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
-            public void update( int index,
-                                T row,
-                                String value ) {
+            public void update(int index,
+                               T row,
+                               String value) {
                 clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
             }
         } );
@@ -235,7 +236,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      *
      * @param dataProvider
      */
-    public void setDataProvider( AsyncDataProvider<T> dataProvider ) {
+    public void setDataProvider(AsyncDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
         this.dataProvider.addDataDisplay( cellTable );
     }
@@ -249,7 +250,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     }
 
     @UiHandler("feedImage")
-    void openFeed( ClickEvent e ) {
+    void openFeed(ClickEvent e) {
         if ( !feedImage.isVisible()
                 || feedURL == null
                 || "".equals( feedURL ) ) {
@@ -266,10 +267,10 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * @param e
      */
     @UiHandler("openSelectedButton")
-    void openSelected( ClickEvent e ) {
+    void openSelected(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for (T selected : selectedSet) {
-            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ));
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ) );
         }
     }
 
@@ -279,7 +280,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * @param e
      */
     @UiHandler("refreshButton")
-    void refresh( ClickEvent e ) {
+    void refresh(ClickEvent e) {
         refresh();
     }
 }

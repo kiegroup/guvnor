@@ -25,7 +25,8 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
                 SnapshotAssetListPlace.Tokenizer.class,
                 CategoryPlace.Tokenizer.class,
                 StatePlace.Tokenizer.class,
-                InboxPlace.Tokenizer.class
+                InboxPlace.Tokenizer.class,
+                MultiAssetPlace.Tokenizer.class
         }
 )
 public interface GuvnorPlaceHistoryMapper extends PlaceHistoryMapper {

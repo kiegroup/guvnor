@@ -38,61 +38,81 @@ public class MultiActivityManager implements
     private final EventBus eventBus;
     private PlaceHistoryMapper placeHistoryMapper;
     private final Map<String, Pair> activeActivities = new HashMap<String, Pair>();
+    private final ClientFactory clientFactory;
 
-    public MultiActivityManager( ActivityMapper activityMapper,
-                                 PlaceHistoryMapper placeHistoryMapper,
-                                 EventBus eventBus ) {
-        this.activityMapper = activityMapper;
-        this.placeHistoryMapper = placeHistoryMapper;
-        this.eventBus = eventBus;
+    public MultiActivityManager(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+        this.activityMapper = clientFactory.getActivityMapper();
+        this.placeHistoryMapper = clientFactory.getPlaceHistoryMapper();
+        this.eventBus = clientFactory.getEventBus();
 
         eventBus.addHandler(
-                PlaceChangeEvent.TYPE, this );
+                PlaceChangeEvent.TYPE,
+                this );
     }
 
-    public void setTabbedPanel( TabbedPanel tabbedPanel ) {
-        this.tabbedPanel = tabbedPanel;
-    }
-
-    public void onPlaceChange( PlaceChangeEvent event ) {
-
-        final String token = placeHistoryMapper.getToken( event.getNewPlace() );
-
-        if ( tabbedPanel.contains( token ) ) {
-
-            tabbedPanel.show( token );
-
-        } else if ( ifPlaceExists( event ) ) {
-            Activity activity = activityMapper.getActivity( event.getNewPlace() );
-
-
-            final ResettableEventBus resettableEventBus = new ResettableEventBus( eventBus );
-
-            activeActivities.put( token, new Pair( activity, resettableEventBus ) );
-
-            activity.start(
-                    new AcceptTabItem() {
-                        public void addTab( String tabTitle, IsWidget widget ) {
-                            tabbedPanel.addTab( tabTitle, widget, token );
-                        }
-                    },
-                    resettableEventBus );
+    public void setTabbedPanel(TabbedPanel tabbedPanel) {
+        if ( this.tabbedPanel == null ) {
+            this.tabbedPanel = tabbedPanel;
+        } else {
+            throw new IllegalStateException( TabbedPanel.class.getName() + " can only be set once." );
         }
     }
 
-    private boolean ifPlaceExists( PlaceChangeEvent event ) {
+    public void onPlaceChange(PlaceChangeEvent event) {
+
+        if ( tabbedPanel == null ) {
+            throw new IllegalStateException( TabbedPanel.class.getName() + " is not set for " + MultiActivityManager.class.getName() );
+        } else {
+
+            final String token = placeHistoryMapper.getToken( event.getNewPlace() );
+
+            if ( isActivityAlreadyActive( token ) ) {
+                showExistingActivity( token );
+            } else if ( ifPlaceExists( event ) ) {
+                startNewActivity( token, event.getNewPlace() );
+            }
+        }
+    }
+
+    private void showExistingActivity(String token) {
+        tabbedPanel.show( token );
+    }
+
+    private boolean isActivityAlreadyActive(String token) {
+        return activeActivities.keySet().contains( token );
+    }
+
+    private void startNewActivity(final String token, Place newPlace) {
+        Activity activity = activityMapper.getActivity( newPlace );
+
+        final ResettableEventBus resettableEventBus = new ResettableEventBus( eventBus );
+
+        activeActivities.put( token, new Pair( activity, resettableEventBus ) );
+
+        activity.start(
+                new AcceptTabItem() {
+                    public void addTab(String tabTitle, IsWidget widget) {
+                        tabbedPanel.addTab(
+                                tabTitle,
+                                widget,
+                                token );
+                    }
+                },
+                resettableEventBus );
+    }
+
+    private boolean ifPlaceExists(PlaceChangeEvent event) {
         return !event.getNewPlace().equals( Place.NOWHERE );
     }
 
-    public void onCloseTab( CloseTabEvent closeTabEvent ) {
+    public void onCloseTab(CloseTabEvent closeTabEvent) {
         Pair pair = activeActivities.get( closeTabEvent.getKey() );
-        if ( pair != null ) {
-            if ( pair.getActivity().mayStop() ) {
-                pair.getActivity().onStop();
-                pair.getResettableEventBus().removeHandlers();
-                activeActivities.remove( closeTabEvent.getKey() );
-                tabbedPanel.close( closeTabEvent.getKey() );
-            }
+        if ( pair != null && pair.getActivity().mayStop() ) {
+            pair.getActivity().onStop();
+            pair.getResettableEventBus().removeHandlers();
+            activeActivities.remove( closeTabEvent.getKey() );
+            tabbedPanel.close( closeTabEvent.getKey() );
         }
     }
 
@@ -101,7 +121,7 @@ public class MultiActivityManager implements
         private Activity activity;
         private ResettableEventBus resettableEventBus;
 
-        public Pair( Activity activity, ResettableEventBus resettableEventBus ) {
+        public Pair(Activity activity, ResettableEventBus resettableEventBus) {
             this.activity = activity;
             this.resettableEventBus = resettableEventBus;
         }

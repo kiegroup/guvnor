@@ -31,16 +31,16 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityViewImpl;
 
 public class ClientFactoryImpl
-    implements
-    ClientFactory {
+        implements
+        ClientFactory {
 
-    private final EventBus            eventBus        = new SimpleEventBus();
-    private final PlaceController     placeController = new PlaceController( eventBus );
-    private PerspectivesPanelView     perspectivesPanelView;
+    private final EventBus eventBus = new SimpleEventBus();
+    private final PlaceController placeController = new PlaceController( eventBus );
+    private PerspectivesPanelView perspectivesPanelView;
     private NavigationViewFactoryImpl authorNavigationViewFactory;
-    private AssetEditorFactory        assetEditorFactory;
-    private PlaceHistoryHandler       placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
+    private AssetEditorFactory assetEditorFactory;
+    private PlaceHistoryHandler placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
 
     public PlaceController getPlaceController() {
         return placeController;
@@ -48,7 +48,7 @@ public class ClientFactoryImpl
 
     public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
         return new AuthorPerspectiveViewImpl( this,
-                                              navigationPanelFactory );
+                navigationPanelFactory );
     }
 
     public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
@@ -62,9 +62,9 @@ public class ClientFactoryImpl
     public PerspectivesPanelView getPerspectivesPanelView() {
         if ( perspectivesPanelView == null ) {
             perspectivesPanelView = new PerspectivesPanelViewImpl(
-                                                                   getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
-                                                                   new ExplorerViewCenterPanel( this ),
-                                                                   hideTitle() );
+                    getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
+                    new ExplorerViewCenterPanel( this ),
+                    hideTitle() );
         }
         return perspectivesPanelView;
     }
@@ -85,10 +85,11 @@ public class ClientFactoryImpl
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager(
-                                         new GuvnorActivityMapper( this ),
-                                         getPlaceHistoryMapper(),
-                                         getEventBus() );
+        return new MultiActivityManager( this );
+    }
+
+    public GuvnorActivityMapper getActivityMapper() {
+        return new GuvnorActivityMapper( this );
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {

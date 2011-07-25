@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.CloseTabEvent;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -49,23 +50,24 @@ public class MultiViewEditor extends GuvnorEditor {
 
     private MultiViewEditorMenuBarCreator menuBarCreator;
 
-    public MultiViewEditor( MultiViewRow[] rows, ClientFactory clientFactory ) {
+    public MultiViewEditor(MultiViewRow[] rows,
+                           ClientFactory clientFactory) {
         this( rows,
                 clientFactory,
                 null );
     }
 
-    public MultiViewEditor( MultiViewRow[] rows,
-                            ClientFactory clientFactory,
-                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
+    public MultiViewEditor(MultiViewRow[] rows,
+                           ClientFactory clientFactory,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( Arrays.asList( rows ),
                 clientFactory,
                 individualActionToolbarButtonsConfigurationProvider );
     }
 
-    public MultiViewEditor( List<MultiViewRow> rows,
-                            ClientFactory clientFactory,
-                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
+    public MultiViewEditor(List<MultiViewRow> rows,
+                           ClientFactory clientFactory,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this.rows.addAll( rows );
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.clientFactory = clientFactory;
@@ -73,19 +75,19 @@ public class MultiViewEditor extends GuvnorEditor {
         init();
     }
 
-    public MultiViewEditor( RuleAsset[] assets,
-                            ClientFactory clientFactory,
-                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider ) {
+    public MultiViewEditor(RuleAsset[] assets,
+                           ClientFactory clientFactory,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( assets,
                 clientFactory,
                 individualActionToolbarButtonsConfigurationProvider,
                 null );
     }
 
-    public MultiViewEditor( RuleAsset[] assets,
-                            ClientFactory clientFactory,
-                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
-                            MultiViewEditorMenuBarCreator menuBarCreator ) {
+    public MultiViewEditor(RuleAsset[] assets,
+                           ClientFactory clientFactory,
+                           ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
+                           MultiViewEditorMenuBarCreator menuBarCreator) {
         this.rows.addAll( createRows( assets ) );
         this.clientFactory = clientFactory;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
@@ -94,20 +96,20 @@ public class MultiViewEditor extends GuvnorEditor {
         init();
     }
 
-    private void addAssets( RuleAsset[] assets ) {
+    private void addAssets(RuleAsset[] assets) {
         for (RuleAsset ruleAsset : assets) {
             this.assets.put( ruleAsset.getUuid(),
                     ruleAsset );
         }
     }
 
-    private static List<MultiViewRow> createRows( RuleAsset[] assets ) {
+    private static List<MultiViewRow> createRows(RuleAsset[] assets) {
         List<MultiViewRow> rows = new ArrayList<MultiViewRow>();
         for (RuleAsset ruleAsset : assets) {
-            MultiViewRow row = new MultiViewRow();
-            row.uuid = ruleAsset.getUuid();
-            row.name = ruleAsset.getName();
-            row.format = AssetFormats.BUSINESS_RULE;
+            MultiViewRow row = new MultiViewRow(
+                    ruleAsset.getUuid(),
+                    ruleAsset.getName(),
+                    AssetFormats.BUSINESS_RULE );
             rows.add( row );
         }
         return rows;
@@ -149,21 +151,21 @@ public class MultiViewEditor extends GuvnorEditor {
         int rowNumber = 1;
         for (final MultiViewRow row : rows) {
 
-            panel.add( row.name,
+            panel.add( row.getName(),
                     new LoadContentCommand() {
 
                         public Widget load() {
                             final SimplePanel content = new SimplePanel();
 
-                            if ( assets.containsKey( row.uuid ) ) {
+                            if ( assets.containsKey( row.getUuid() ) ) {
                                 addRuleViewInToSimplePanel( row,
                                         content,
-                                        assets.get( row.uuid ) );
+                                        assets.get( row.getUuid() ) );
                             } else {
-                                RepositoryServiceFactory.getAssetService().loadRuleAsset( row.uuid,
+                                RepositoryServiceFactory.getAssetService().loadRuleAsset( row.getUuid(),
                                         new GenericCallback<RuleAsset>() {
 
-                                            public void onSuccess( final RuleAsset asset ) {
+                                            public void onSuccess(final RuleAsset asset) {
                                                 assets.put( asset.getUuid(),
                                                         asset );
 
@@ -187,9 +189,9 @@ public class MultiViewEditor extends GuvnorEditor {
 
     }
 
-    private void addRuleViewInToSimplePanel( final MultiViewRow row,
-                                             final SimplePanel content,
-                                             final RuleAsset asset ) {
+    private void addRuleViewInToSimplePanel(final MultiViewRow row,
+                                            final SimplePanel content,
+                                            final RuleAsset asset) {
         SuggestionCompletionCache.getInstance().doAction( asset.getMetaData().getPackageName(),
                 new Command() {
 
@@ -202,7 +204,7 @@ public class MultiViewEditor extends GuvnorEditor {
                         Command closeCommand = new Command() {
                             public void execute() {
                                 // TODO: No handle for this -Rikkola-
-                                ruleViews.remove( row.uuid );
+                                ruleViews.remove( row.getUuid() );
                                 rows.remove( row );
                                 doViews();
                             }
@@ -218,14 +220,14 @@ public class MultiViewEditor extends GuvnorEditor {
                         content.add( ruleViewer );
                         ruleViewer.setWidth( "100%" );
                         ruleViewer.setHeight( "100%" );
-                        ruleViews.put( row.uuid,
+                        ruleViews.put( row.getUuid(),
                                 ruleViewer );
 
                     }
                 } );
     }
 
-    public void checkin( final boolean closeAfter ) {
+    public void checkin(final boolean closeAfter) {
         final CheckinPopup pop = new CheckinPopup( constants.CheckInChanges() );
         pop.setCommand( new Command() {
 
@@ -263,7 +265,7 @@ public class MultiViewEditor extends GuvnorEditor {
         // TODO Auto-generated method stub
     }
 
-    public void setCloseCommand( Command command ) {
+    public void setCloseCommand(Command command) {
         closeCommand = command;
     }
 }

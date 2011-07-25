@@ -16,58 +16,34 @@
 
 package org.drools.guvnor.client.common;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.DetailedSerializationException;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
 
 /**
  * Generic error dialog popup.
  */
 public class ErrorPopup extends Popup {
 
-    private static Images    images    = (Images) GWT.create( Images.class );
-    private Constants        constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images = (Images) GWT.create( Images.class );
+    private Constants constants = ((Constants) GWT.create( Constants.class ));
 
-    public static ErrorPopup instance  = null;
-    private VerticalPanel    body;
+    public static ErrorPopup instance = new ErrorPopup();
+    private VerticalPanel body = new VerticalPanel();
 
-    private ErrorPopup(String message,
-                       String longMessage) {
+    private ErrorPopup() {
 
         setTitle( constants.Error() );
         setWidth( 400 + "px" );
         setModal( true );
 
-        body = new VerticalPanel();
-
-        addMessage( message,
-                    longMessage );
-
         body.setWidth( "100%" );
 
         show();
-
-        addCloseHandler( new CloseHandler<PopupPanel>() {
-
-            public void onClose(CloseEvent<PopupPanel> event) {
-                instance = null;
-            }
-        } );
     }
 
     @Override
@@ -115,15 +91,12 @@ public class ErrorPopup extends Popup {
         body.add( detailPanel );
     }
 
-    /** Convenience method to popup the message. */
+    /**
+     * Convenience method to popup the message.
+     */
     public static void showMessage(String message) {
-        if ( instance != null ) {
-            instance.addMessage( message,
-                                 null );
-        } else {
-            instance = new ErrorPopup( message,
-                                       null );
-        }
+        instance.addMessage( message,
+                null );
 
         LoadingPopup.close();
     }
@@ -132,14 +105,8 @@ public class ErrorPopup extends Popup {
      * For showing a more detailed report.
      */
     public static void showMessage(DetailedSerializationException exception) {
-
-        if ( instance != null ) {
-            instance.addMessage( exception.getMessage(),
-                                 exception.getLongDescription() );
-        } else {
-            instance = new ErrorPopup( exception.getMessage(),
-                                       exception.getLongDescription() );
-        }
+        instance.addMessage( exception.getMessage(),
+                exception.getLongDescription() );
 
         LoadingPopup.close();
     }

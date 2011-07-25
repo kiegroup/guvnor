@@ -91,6 +91,10 @@ public class GuvnorActivityMapper
             return new InboxActivity(
                     (InboxPlace) place,
                     clientFactory );
+        } else if ( place instanceof MultiAssetPlace ) {
+            return new MultiAssetActivity(
+                    (MultiAssetPlace) place,
+                    clientFactory );
         } else {
             return null;
         }

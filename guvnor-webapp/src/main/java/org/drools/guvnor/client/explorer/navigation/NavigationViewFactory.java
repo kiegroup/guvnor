@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
@@ -58,4 +59,6 @@ public interface NavigationViewFactory {
     ModuleTreeItemView getModuleTreeItemView();
 
     RulesNewMenuView getRulesNewMenuView();
+
+    MultiAssetView getMultiAssetView();
 }

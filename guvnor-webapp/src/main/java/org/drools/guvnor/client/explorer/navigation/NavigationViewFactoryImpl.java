@@ -20,6 +20,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
+import org.drools.guvnor.client.explorer.MultiAssetView;
+import org.drools.guvnor.client.explorer.MultiAssetViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.*;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
@@ -120,5 +122,9 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public RulesNewMenuView getRulesNewMenuView() {
         return new RulesNewMenuViewImpl();
+    }
+
+    public MultiAssetView getMultiAssetView() {
+        return new MultiAssetViewImpl();
     }
 }

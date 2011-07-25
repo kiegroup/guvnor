@@ -17,7 +17,26 @@
 package org.drools.guvnor.client.ruleeditor;
 
 public class MultiViewRow {
-    public String uuid;
-    public String name;
-    public String format;
+
+    private final String uuid;
+    private final String name;
+    private final String format;
+
+    public MultiViewRow(String uuid, String name, String format) {
+        this.uuid = uuid;
+        this.name = name;
+        this.format = format;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getFormat() {
+        return format;
+    }
 }

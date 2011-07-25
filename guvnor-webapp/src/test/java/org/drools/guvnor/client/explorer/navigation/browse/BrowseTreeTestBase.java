@@ -23,8 +23,6 @@ import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoaderMock;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContainer;
-import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
 import org.drools.guvnor.client.rpc.CategoryServiceAsyncMock;
@@ -39,7 +37,6 @@ public class BrowseTreeTestBase {
 
     protected BrowseTreeView view;
     protected Presenter presenter;
-    protected TabManager tabManager;
     private RepositoryServiceAsyncMockImpl repositoryServiceAsyncMock;
     protected CategoryServiceAsyncMockImpl categoryServiceAsyncMock;
     protected IsTreeItem rootCategoryTreeItem;
@@ -58,7 +55,6 @@ public class BrowseTreeTestBase {
         setUpServices();
         setUpView();
         setUpPresenter();
-        setUpTabManager();
     }
 
     protected void setUpPresenter() {
@@ -98,11 +94,6 @@ public class BrowseTreeTestBase {
         );
 
         presenter = new BrowseTree( clientFactory );
-    }
-
-    private void setUpTabManager() {
-        tabManager = mock( TabManager.class );
-        TabContainer.init( tabManager );
     }
 
     private void setUpServices() {

@@ -29,7 +29,6 @@ import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContainer;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
