@@ -22,7 +22,9 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueFactory;
 import org.drools.guvnor.server.util.JVMDateConverter;
 import org.drools.ide.common.client.modeldriven.ModelField;
@@ -154,6 +156,11 @@ public class CellValueFactoryTests {
 
         factory = new DecisionTableCellValueFactory( sce,
                                                      dt );
+        
+        Map<String, String> preferences = new HashMap<String, String>();
+        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
+        ApplicationPreferences.setUp( preferences );
+        
         DecisionTableCellValueFactory.injectDateConvertor( JVMDateConverter.getInstance() );
 
     }

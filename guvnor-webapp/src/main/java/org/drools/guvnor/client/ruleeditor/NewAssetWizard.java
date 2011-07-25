@@ -282,10 +282,6 @@ public class NewAssetWizard extends FormStylePopup {
      */
     void ok() {
 
-        if ( !validatePathPerJSR170( this.name.getText() ) ) {
-            return;
-        }
-
         if ( "*".equals( getFormat() ) ) {
             Window.alert( constants.PleaseEnterAFormatFileType() );
             return;
@@ -348,43 +344,5 @@ public class NewAssetWizard extends FormStylePopup {
     protected void openEditor(String uuid) {
         afterCreate.open( uuid );
     }
-
-    /**
-     * Validate name per JSR-170. Only following characters are valid: char ::=
-     * nonspace | ' ' nonspace ::= (* Any Unicode character except: '/', ':',
-     * '[', ']', '*', ''', '"', '|' or any whitespace character *)
-     * 
-     * @param jsrPath
-     */
-    public static boolean validatePathPerJSR170(String jsrPath) {
-        int len = jsrPath == null ? 0 : jsrPath.trim().length();
-        if ( len == 0 ) {
-            Window.alert( GWT.<Constants> create( Constants.class ).emptyNameIsNotAllowed() );
-            return false;
-        }
-
-        int pos = 0;
-
-        while ( pos < len ) {
-            char c = jsrPath.charAt( pos );
-            pos++;
-
-            switch ( c ) {
-                case '/' :
-                case ':' :
-                case '[' :
-                case ']' :
-                case '*' :
-                case '\'' :
-                case '\"' :
-                    Window.alert( GWT.<Constants> create( Constants.class ).NonValidJCRName( jsrPath,
-                                                                                             c ) );
-                    return false;
-                default :
-            }
-        }
-
-        return true;
-    }
-
+    
 }

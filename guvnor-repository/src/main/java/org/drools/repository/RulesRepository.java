@@ -41,6 +41,7 @@ import javax.jcr.query.QueryResult;
 
 import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.migration.MigrateDroolsPackage;
+import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -392,11 +393,11 @@ public class RulesRepository {
         try {
             AssetItem source = loadAssetByUUID( uuidSource );
             String sourcePath = source.getNode().getPath();
-
-            String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
+            String safeDestinationName = NodeUtils.makeJSR170ComplaintName( destinationName );
+            String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + safeDestinationName;
             this.session.getWorkspace().copy( sourcePath,
                                               destPath );
-            AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
+            AssetItem dest = loadPackage( destinationPackage ).loadAsset( safeDestinationName );
             //            if (dest.getContent() != null ) {
             //                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
             //            }
@@ -574,13 +575,14 @@ public class RulesRepository {
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
-            if ( !snaps.hasNode( packageName ) ) {
-                snaps.addNode( packageName,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( packageName );
+            if ( !snaps.hasNode( nodePath ) ) {
+                snaps.addNode( nodePath,
                                "nt:folder" );
                 save();
             }
 
-            Node pkgSnaps = snaps.getNode( packageName );
+            Node pkgSnaps = snaps.getNode( nodePath );
 
             String newName = pkgSnaps.getPath() + "/" + snapshotName;
 
@@ -830,7 +832,8 @@ public class RulesRepository {
 
         try {
             // create the node - see section 6.7.22.6 of the spec
-            Node rulePackageNode = folderNode.addNode( name,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            Node rulePackageNode = folderNode.addNode( nodePath,
                                                        PackageItem.RULE_PACKAGE_TYPE_NAME );
 
             rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME,
@@ -937,12 +940,12 @@ public class RulesRepository {
     public StateItem getState(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
-            if ( !folderNode.hasNode( name ) ) {
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            if ( !folderNode.hasNode( nodePath ) ) {
                 throw new RulesRepositoryException( "The state called [" + name + "] does not exist." );
             }
-            Node stateNode = folderNode.getNode( name );// RulesRepository.addNodeIfNew(folderNode,
-            // name,
-            // StateItem.STATE_NODE_TYPE_NAME);
+            Node stateNode = folderNode.getNode( nodePath );
+            // RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
@@ -958,10 +961,11 @@ public class RulesRepository {
     public StateItem createState(String name) {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
             Node stateNode = RulesRepository.addNodeIfNew( folderNode,
-                                                           name,
+                                                           nodePath,
                                                            StateItem.STATE_NODE_TYPE_NAME );
-            log.debug( "Created the status [" + name + "]" );
+            log.debug( "Created the status [" + name + "] at [" + nodePath + "]");
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
@@ -1725,7 +1729,8 @@ public class RulesRepository {
         try {
             Node folderNode = getPerspectivesConfigurationArea();
 
-            Node configurationNode = folderNode.addNode( name,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            Node configurationNode = folderNode.addNode( nodePath,
                                                          IFramePerspectiveConfigurationItem.CONFIGURATION_NODE_TYPE_NAME );
 
             configurationNode.setProperty( IFramePerspectiveConfigurationItem.TITLE_PROPERTY_NAME,

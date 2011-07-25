@@ -571,9 +571,6 @@ public class RuleViewer extends GuvnorEditor {
                     return;
                 }
                 String name = newName.getText().trim();
-                if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
-                    return;
-                }
                 RepositoryServiceFactory.getAssetService().copyAsset( asset.uuid,
                                                                  sel.getSelectedPackage(),
                                                                  name,

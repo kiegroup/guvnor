@@ -68,7 +68,6 @@ public class StatusEditor extends FormStylePopup {
         if ( "".equals( this.name.getText() ) ) {
             ErrorPopup.showMessage( constants.CanTHaveAnEmptyStatusName() );
         } else {
-            if ( !NewAssetWizard.validatePathPerJSR170( this.name.getText() ) ) return;
             createStatus( name );
         }
     }
