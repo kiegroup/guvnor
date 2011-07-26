@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.TabType;
 
 import java.util.Collection;
@@ -51,7 +52,7 @@ public interface BrowseTreeView extends IsWidget {
 
     IsTreeItem addTreeItem(IsTreeItem rootTreeItem, String one);
 
-    void showMenu(RulesNewMenu rulesNewMenu);
+    void showMenu();
 
     void setPresenter(Presenter presenter);
 

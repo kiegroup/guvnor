@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.MultiAssetViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
@@ -39,11 +40,17 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     private static Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
 
+    private final ClientFactory clientFactory;
+
     private NavigationPanelView navigationPanelView;
     private KnowledgeModulesTreeViewImpl knowledgeModulesTreeView;
     private BrowseTreeViewImpl browseTreeView;
     private KnowledgeModulesTreeItemViewImpl knowledgeModulesTreeItemView;
     private ModulesNewAssetMenuViewImpl modulesNewAssetMenuView;
+
+    public NavigationViewFactoryImpl(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+    }
 
     public NavigationPanelView getNavigationPanelView() {
         if ( navigationPanelView == null ) {
@@ -58,7 +65,7 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public BrowseTreeView getBrowseTreeView() {
         if ( browseTreeView == null ) {
-            browseTreeView = new BrowseTreeViewImpl();
+            browseTreeView = new BrowseTreeViewImpl( clientFactory );
         }
         return browseTreeView;
     }

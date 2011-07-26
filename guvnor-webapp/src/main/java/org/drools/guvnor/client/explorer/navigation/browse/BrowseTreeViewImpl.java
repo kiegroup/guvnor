@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
@@ -39,6 +40,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     private TreeItem root;
     private TreeItem states;
     private TreeItem inbox;
+    private ClientFactory clientFactory;
 
     interface BrowseTreeViewImplBinder
             extends
@@ -50,13 +52,18 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     private Presenter presenter;
 
     @UiField
+    DockLayoutPanel layout;
+
+    @UiField
     SimplePanel menuContainer;
 
     @UiField
     Tree tree;
 
-    public BrowseTreeViewImpl() {
+    public BrowseTreeViewImpl(ClientFactory clientFactory) {
         initWidget( uiBinder.createAndBindUi( this ) );
+
+        this.clientFactory = clientFactory;
 
         addSelectionHandler();
         addOpenHandler();
@@ -65,7 +72,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
     private void addSelectionHandler() {
         tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
-            public void onSelection( SelectionEvent<TreeItem> treeItemSelectionEvent ) {
+            public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
                 TreeItem selectedItem = treeItemSelectionEvent.getSelectedItem();
                 presenter.onTreeItemSelection( selectedItem, selectedItem.getText() );
             }
@@ -74,13 +81,13 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
     private void addOpenHandler() {
         tree.addOpenHandler( new OpenHandler<TreeItem>() {
-            public void onOpen( OpenEvent<TreeItem> treeItemOpenEvent ) {
+            public void onOpen(OpenEvent<TreeItem> treeItemOpenEvent) {
                 presenter.onTreeItemOpen( treeItemOpenEvent.getTarget() );
             }
         } );
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
@@ -93,7 +100,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         return inbox.addItem( Util.getHeader( images.categorySmall(), constants.IncomingChanges() ) );
     }
 
-    public Collection<IsTreeItem> getChildren( IsTreeItem openedItem ) {
+    public Collection<IsTreeItem> getChildren(IsTreeItem openedItem) {
         Collection<IsTreeItem> children = new ArrayList<IsTreeItem>();
 
         TreeItem parent = openedItem.asTreeItem();
@@ -125,23 +132,23 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         return root.addItem( Util.getHeader( images.chartOrganisation(), constants.ByCategory() ) );
     }
 
-    public IsTreeItem addTreeItem( IsTreeItem parent, String name ) {
+    public IsTreeItem addTreeItem(IsTreeItem parent, String name) {
         return parent.asTreeItem().addItem( name );
     }
 
-    public void showMenu( RulesNewMenu rulesNewMenu ) {
-        menuContainer.add( rulesNewMenu );
+    public void showMenu() {
+        menuContainer.setWidget( new RulesNewMenu( clientFactory ) );
     }
 
     public void removeStates() {
         states.removeItems();
     }
 
-    public IsTreeItem addStateItem( String state ) {
+    public IsTreeItem addStateItem(String state) {
         return states.addItem( state );
     }
 
-    public void removeCategories( IsTreeItem treeItem ) {
+    public void removeCategories(IsTreeItem treeItem) {
         treeItem.asTreeItem().removeItems();
     }
 

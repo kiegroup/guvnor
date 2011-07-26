@@ -75,7 +75,7 @@ public class ClientFactoryImpl
 
     public NavigationViewFactory getNavigationViewFactory() {
         if ( authorNavigationViewFactory == null ) {
-            authorNavigationViewFactory = new NavigationViewFactoryImpl();
+            authorNavigationViewFactory = new NavigationViewFactoryImpl( this );
         }
         return authorNavigationViewFactory;
     }
