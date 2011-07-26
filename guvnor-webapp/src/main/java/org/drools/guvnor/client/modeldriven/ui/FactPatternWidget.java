@@ -765,11 +765,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                          popupCreator );
                     }
                 };
-
-                Image bind = new ImageButton( images.editTiny(),
-                                              constants.GiveFieldVarName() );
-
-                bind.addClickHandler( click );
                 ClickableLabel cl = new ClickableLabel( con.getFieldName(),
                                                         click,
                                                         !this.readOnly );
