@@ -156,7 +156,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( images.editTiny(),
+                h.add( new ImageButton( images.edit(),
                                         constants.AddFirstNewField(),
                                         new ClickHandler() {
 

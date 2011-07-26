@@ -209,9 +209,6 @@ public interface Images
     @Source("images/add_field_to_fact.gif")
     ImageResource addFieldToFact();
 
-    @Source("images/edit_tiny.gif")
-    ImageResource editTiny();
-
     @Source("images/add_connective.gif")
     ImageResource addConnective();
 
