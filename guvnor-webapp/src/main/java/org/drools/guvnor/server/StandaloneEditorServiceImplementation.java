@@ -29,7 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         implements
         StandaloneEditorService {
 
-    @In
+    @Inject
     public RulesRepository repository;
     private static final long serialVersionUID = 520l;
 

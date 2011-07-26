@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.jaxrs;
 
 
+import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -26,17 +27,25 @@ import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
-import org.jboss.seam.contexts.Contexts;
+import org.drools.guvnor.server.util.BeanManagerUtils;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 @Provider
 public class CXFAuthenticationHandler implements RequestHandler {
 
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private Credentials credentials;
+
     public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-        if (Contexts.isApplicationContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             //If the request is from same session, the user should be logged already.
-            Identity ids = Identity.instance();
-            if (ids.isLoggedIn()) {
+            if (identity.isLoggedIn()) {
                 return null;
             }
 
@@ -48,17 +57,15 @@ public class CXFAuthenticationHandler implements RequestHandler {
                 String username = policy.getUserName();
                 String password = policy.getPassword();
 
-                ids.getCredentials().setUsername(username);
-                ids.getCredentials().setPassword(password);
+                credentials.setUsername(username);
+                credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
             }
 
-            try {
-                ids.authenticate();
-                return null;
-            } catch (LoginException e) {
-                e.printStackTrace();
+            identity.login();
+            if ( !identity.isLoggedIn() ) {
                 throw new WebApplicationException(getErrorResponse());
             }
+            return null;
         } else {
             // NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             AuthorizationPolicy policy = (AuthorizationPolicy) m

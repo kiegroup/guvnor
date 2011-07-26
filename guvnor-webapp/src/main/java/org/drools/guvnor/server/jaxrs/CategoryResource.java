@@ -24,7 +24,7 @@ import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -46,7 +46,7 @@ import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
-@Name("CategoryResource")
+@Named("CategoryResource")
 @Path("/categories")
 public class CategoryResource extends Resource {
 

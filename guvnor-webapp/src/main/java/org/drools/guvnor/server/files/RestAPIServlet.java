@@ -16,12 +16,12 @@
 
 package org.drools.guvnor.server.files;
 
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,8 +145,9 @@ public class RestAPIServlet extends RepositoryServlet {
      * return a repo for test puposes if seam is not active.
      */
     static RulesRepository getRepository() {
-        if (Contexts.isApplicationContextActive()) {
-            return (RulesRepository) Component.getInstance("repository");
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (RulesRepository) BeanManagerUtils.getInstance("repository");
         } else {
             try {
                 return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));

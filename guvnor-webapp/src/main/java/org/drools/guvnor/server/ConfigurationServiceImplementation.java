@@ -22,15 +22,18 @@ import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.IFramePerspectiveConfiguration;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesInitializer;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesLoader;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.IFramePerspectiveConfigurationItem;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet
@@ -38,10 +41,12 @@ public class ConfigurationServiceImplementation
 
     private final ServiceSecurity serviceSecurity = new ServiceSecurity();
 
+    @Inject
+    private RulesRepository repository;
+
     public String save(IFramePerspectiveConfiguration configuration) {
         serviceSecurity.checkSecurityIsAdmin();
 
-        RulesRepository repository = getRepository();
         if (isNewConfiguration(configuration)) {
             IFramePerspectiveConfigurationItem perspectiveConfigurationItem = repository.createPerspectivesConfiguration(configuration.getName(), configuration.getUrl());
             return perspectiveConfigurationItem.getUuid();
@@ -64,14 +69,12 @@ public class ConfigurationServiceImplementation
 
         validateUuid(uuid);
 
-        RulesRepository repository = getRepository();
         IFramePerspectiveConfigurationItem perspectiveConfigurationItem = repository.loadPerspectivesConfiguration(uuid);
 
         return prepareResult(perspectiveConfigurationItem);
     }
 
     public Collection<IFramePerspectiveConfiguration> loadPerspectiveConfigurations() {
-        RulesRepository repository = getRepository();
         Collection<IFramePerspectiveConfigurationItem> perspectiveConfigurationItems = repository.listPerspectiveConfigurations();
         Collection<IFramePerspectiveConfiguration> result = new ArrayList<IFramePerspectiveConfiguration>(perspectiveConfigurationItems.size());
         for (IFramePerspectiveConfigurationItem perspectiveConfigurationItem : perspectiveConfigurationItems) {
@@ -83,7 +86,6 @@ public class ConfigurationServiceImplementation
 
     public void remove(String uuid) {
         serviceSecurity.checkSecurityIsAdmin();
-        RulesRepository repository = getRepository();
         IFramePerspectiveConfigurationItem perspectiveConfigurationItem = repository.loadPerspectivesConfiguration(uuid);
         perspectiveConfigurationItem.remove();
         repository.save();
@@ -109,18 +111,22 @@ public class ConfigurationServiceImplementation
         }
     }
 
-    protected RulesRepository getRepository() {
-        if (Contexts.isApplicationContextActive()) {
-            return (RulesRepository) Component.getInstance("repository");
-        } else {
-            try {
-                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get repo to run tests", e);
-            }
-
-        }
-    }
+//    protected RulesRepository getRepository() {
+//        BeanManager beanManager = (BeanManager) getServletContext()
+//                .getAttribute("org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager");
+//        return (RulesRepository) beanManager.getBeans("repository").iterator().next();
+//        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+//        if (beanManagerLocator.isBeanManagerAvailable()) {
+//            return (RulesRepository) BeanManagerUtils.getInstance("repository");
+//        } else {
+//            try {
+//                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
+//            } catch (Exception e) {
+//                throw new IllegalStateException("Unable to get repo to run tests", e);
+//            }
+//
+//        }
+//    }
 
     private IFramePerspectiveConfiguration configurationItemToConfiguration(IFramePerspectiveConfigurationItem perspectiveConfigurationItem) {
         IFramePerspectiveConfiguration configuration = new IFramePerspectiveConfiguration();

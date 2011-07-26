@@ -23,11 +23,12 @@ import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import java.io.*;
@@ -882,7 +883,8 @@ public class WebDAVImpl
     //REVISIT: We should never reach this code which is using webdav as regex,
     //i.e., input uri is sth like /webdav/packages/mypackage
     String[] getPath(String uri) {
-        if (Contexts.isSessionContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             return getPath(uri,
                     false);
         } else {
@@ -912,9 +914,10 @@ public class WebDAVImpl
     }
 
     private boolean isAdmin() {
-        if (Contexts.isSessionContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             try {
-                Identity.instance().checkPermission(new AdminType(),
+                BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new AdminType(),
                         RoleType.ADMIN.getName());
                 return true;
             } catch (Exception e) {
@@ -927,9 +930,10 @@ public class WebDAVImpl
 
     private boolean checkPackagePermission(String packageName,
                                            String type) {
-        if (Contexts.isSessionContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             try {
-                Identity.instance().checkPermission(new WebDavPackageNameType(packageName),
+                BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new WebDavPackageNameType(packageName),
                         type);
                 return true;
             } catch (Exception e) {

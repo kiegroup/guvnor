@@ -17,39 +17,41 @@
 package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Unwrap;
-import org.jboss.seam.contexts.Contexts;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.inject.Produces;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
  */
-@Scope(ScopeType.EVENT)
-@AutoCreate
-@Name("repository")
+@RequestScoped // TODO Shouldn't this be @ApplicationScoped?
 public class RulesRepositoryManager {
 
-    @In
+    @Inject
     RepositoryStartupService repositoryConfiguration;
+
+    @Inject
+    private Credentials credentials;
 
     private RulesRepository repository;
 
-    @Create
+    @PostConstruct
     public void create() {
         //Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
         //with limited privileges. In Guvnor, access control is done in a higher level. 
         String DEFAULT_USER = "guest";
         //String READ_ONLY_USER = "anonymous";
         String userName = DEFAULT_USER;
-        if (Contexts.isApplicationContextActive()) {
-            userName = Identity.instance().getCredentials().getUsername();
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            userName = credentials.getUsername();
         }
         if (userName == null) {
             userName = DEFAULT_USER;
@@ -57,14 +59,9 @@ public class RulesRepositoryManager {
         repository = new RulesRepository(repositoryConfiguration.newSession(userName));
     }
 
-    @Unwrap
+    @Produces @Named("repository") // TODO shouldn't this be @RequestScoped?
     public RulesRepository getRepository() {
         return repository;
-    }
-
-    @Destroy
-    public void close() {
-        repository.logout();
     }
 
 }

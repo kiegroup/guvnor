@@ -69,9 +69,12 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.VersionableItem;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -79,14 +82,16 @@ import com.google.gwt.user.client.rpc.SerializationException;
 /**
  * Handles operations for Assets
  */
-@Name("org.drools.guvnor.server.RepositoryAssetOperations")
-@AutoCreate
+@Named("org.drools.guvnor.server.RepositoryAssetOperations")
 public class RepositoryAssetOperations {
 
     private RulesRepository            repository;
 
     private static final LoggingHelper log = LoggingHelper
                                                    .getLogger( RepositoryAssetOperations.class );
+
+    @Inject
+    private Credentials credentials;
 
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
@@ -555,8 +560,9 @@ public class RepositoryAssetOperations {
         AssetLockManager lockManager = AssetLockManager.instance();
 
         String userName;
-        if ( Contexts.isApplicationContextActive() ) {
-            userName = Identity.instance().getCredentials().getUsername();
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if ( beanManagerLocator.isBeanManagerAvailable() ) {
+            userName = credentials.getUsername();
         } else {
             userName = "anonymous";
         }

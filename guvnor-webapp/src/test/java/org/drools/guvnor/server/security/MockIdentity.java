@@ -25,7 +25,7 @@ import java.util.Set;
 
 import javax.security.auth.login.LoginException;
 
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;

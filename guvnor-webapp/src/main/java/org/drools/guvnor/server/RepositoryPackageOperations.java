@@ -66,16 +66,14 @@ import org.drools.repository.PackageIterator;
 import org.drools.repository.RepositoryFilter;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
  * Handles operations for packages
  */
-@Name("org.drools.guvnor.server.RepositoryPackageOperations")
-@AutoCreate
+@Named("org.drools.guvnor.server.RepositoryPackageOperations")
 public class RepositoryPackageOperations {
 
     /**

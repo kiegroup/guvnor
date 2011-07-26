@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:weld="http://jboss.org/schema/weld/beans"
+    xmlns:security="urn:java:org.jboss.seam.security"
+    xmlns:s="urn:java:ee"
+    xmlns:my="urn:java:org.drools.guvnor.server.repository"
+    xsi:schemaLocation="
+        http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
+        http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
+
+  <weld:scan>
+    <!-- TODO remove me when GUVNOR-1196 is fixed -->
+    <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
+    <weld:exclude name="org.drools.guvnor.client.**"/>
+  </weld:scan>
+
+  <!-- WARNING: most of the customizable properties are defined in WEB-INF/classes/META-INF/seam-beans.xml -->
+  <!-- TODO Move seam-beans.xml under WEB-INF after fixing https://issues.jboss.org/browse/SEAMCONFIG-50 -->
+
+  <!--<security:IdentityImpl>-->
+  <!--<s:modifies/>-->
+  <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
+  <!--</security:IdentityImpl>-->
+</beans>

@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.junit.Test;
 
 public class RoleBasedPermissionResolverTest extends GuvnorTestBase {

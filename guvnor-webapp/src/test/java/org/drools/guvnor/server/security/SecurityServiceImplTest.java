@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.configurations.Capability;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
 import org.junit.Test;

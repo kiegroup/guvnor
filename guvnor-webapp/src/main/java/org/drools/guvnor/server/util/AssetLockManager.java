@@ -16,11 +16,8 @@
 
 package org.drools.guvnor.server.util;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +25,9 @@ import java.util.Map;
 /**
  * Manages the locks for assets.
  */
-@Scope(ScopeType.APPLICATION)
-@Startup
-@Name("assetLockManager")
+@ApplicationScoped
+//@Startup
+@Named("assetLockManager")
 public class AssetLockManager {
 
     private static final long LOCK_EXPIRATION_TIME = 1200000;
@@ -49,7 +46,7 @@ public class AssetLockManager {
     }
 
     public static AssetLockManager instance() {
-        return (AssetLockManager) Component.getInstance("assetLockManager");
+        return (AssetLockManager) BeanManagerUtils.getInstance("assetLockManager");
     }
 
     public boolean isAssetLocked(String uuid) {

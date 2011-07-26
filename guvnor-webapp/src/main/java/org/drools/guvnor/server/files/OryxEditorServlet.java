@@ -3,8 +3,10 @@ package org.drools.guvnor.server.files;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryServiceServlet;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import javax.security.auth.login.LoginException;
@@ -24,7 +26,8 @@ public class OryxEditorServlet extends HttpServlet {
             IOException {
         log.debug("Incoming request from Oryx Designer:" + request.getRequestURL());
 
-        if (!Contexts.isApplicationContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (!beanManagerLocator.isBeanManagerAvailable()) {
             throw new ServletException("No application context active.");
         }
 
@@ -41,16 +44,15 @@ public class OryxEditorServlet extends HttpServlet {
         }
 
         // log in
-        Identity ids = Identity.instance();
-        ids.getCredentials().setUsername(usr);
-        ids.getCredentials().setPassword(pwd);
+        Credentials credentials = BeanManagerUtils.getContextualInstance(Credentials.class);
+        credentials.setUsername(usr);
+        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
 
-        try {
-            ids.authenticate();
-        } catch (LoginException e) {
+        Identity identity = BeanManagerUtils.getContextualInstance(Identity.class);
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
             throw new ServletException(new IllegalArgumentException("Unable to authenticate user."));
         }
-
         log.debug("Successful login");
 
         try {

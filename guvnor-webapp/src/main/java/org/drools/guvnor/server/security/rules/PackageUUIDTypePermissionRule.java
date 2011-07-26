@@ -20,9 +20,9 @@ import java.util.List;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.Component;
 
 public class PackageUUIDTypePermissionRule
     implements
@@ -45,7 +45,7 @@ public class PackageUUIDTypePermissionRule
     }
 
     private RulesRepository fetchRulesRepository() {
-        return ((ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" )).getRulesRepository();
+        return ((ServiceImplementation) BeanManagerUtils.getInstance("org.drools.guvnor.client.rpc.RepositoryService")).getRulesRepository();
     }
 
 }

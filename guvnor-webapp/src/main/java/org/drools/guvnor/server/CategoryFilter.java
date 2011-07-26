@@ -17,8 +17,9 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.server.security.CategoryPathType;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {
@@ -28,19 +29,21 @@ public class CategoryFilter implements RepositoryFilter {
             return false;
         }
         // for GWT hosted mode - debug only
-        if ( !Contexts.isSessionContextActive() ) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if ( !beanManagerLocator.isBeanManagerAvailable() ) {
             return true;
         }
-        return Identity.instance().hasPermission( new CategoryPathType( (String) artifact ), action );
+        return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission( new CategoryPathType( (String) artifact ), action );
 
     }
 
     public boolean acceptNavigate(String parentPath, String child) {
         // for GWT hosted mode - debug only
-        if ( !Contexts.isSessionContextActive() ) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if ( !beanManagerLocator.isBeanManagerAvailable() ) {
             return true;
         }
-        return Identity.instance().hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
+        return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
 
     }
 

@@ -22,21 +22,19 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.jboss.seam.remoting.annotations.WebRemote;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.jboss.seam.security.annotations.LoggedIn;
 
-@Name("org.drools.guvnor.client.rpc.CategoryService")
-@AutoCreate
+@Named("org.drools.guvnor.client.rpc.CategoryService")
 public class RepositoryCategoryService
     implements
     CategoryService {
-    @In
+    @Inject
     private RulesRepository              repository;
 
     private static final long            serialVersionUID             = 12365;
@@ -44,7 +42,7 @@ public class RepositoryCategoryService
     private final ServiceSecurity              serviceSecurity              = new ServiceSecurity();
     private final RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
 
-    @Create
+    @PostConstruct
     public void create() {
         repositoryCategoryOperations.setRulesRepository( getRulesRepository() );
     }
@@ -60,7 +58,7 @@ public class RepositoryCategoryService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] loadChildCategories(String categoryPath) {
         return repositoryCategoryOperations.loadChildCategories( categoryPath );
     }
@@ -76,7 +74,7 @@ public class RepositoryCategoryService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void renameCategory(String fullPathAndName,
                                String newName) {
         repositoryCategoryOperations.renameCategory( fullPathAndName,
@@ -93,7 +91,7 @@ public class RepositoryCategoryService
      * @deprecated in favour of {@link loadRuleListForCategories(CategoryPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult loadRuleListForCategories(String categoryPath,
                                                      int skip,
                                                      int numRows,
@@ -105,7 +103,7 @@ public class RepositoryCategoryService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<CategoryPageRow> loadRuleListForCategories(CategoryPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -126,7 +124,7 @@ public class RepositoryCategoryService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removeCategory(String categoryPath) throws SerializationException {
         repositoryCategoryOperations.removeCategory( categoryPath );
     }

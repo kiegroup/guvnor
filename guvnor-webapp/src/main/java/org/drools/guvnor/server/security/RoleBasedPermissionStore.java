@@ -18,19 +18,17 @@ package org.drools.guvnor.server.security;
 
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Name("org.drools.guvnor.server.security.RoleBasedPermissionStore")
-@AutoCreate
+@Named("org.drools.guvnor.server.security.RoleBasedPermissionStore")
 public class RoleBasedPermissionStore {
 
-    @In
+    @Inject
     public RulesRepository repository;
 
 

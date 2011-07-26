@@ -28,12 +28,12 @@ import org.drools.guvnor.client.rpc.PackageService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -61,8 +61,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
      * reduce dependencies on libraries.
      */
     public static ServiceImplementation getService() {
-        if ( Contexts.isApplicationContextActive() ) {
-            return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (ServiceImplementation) BeanManagerUtils.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
         }
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {
@@ -83,8 +84,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public static RepositoryAssetService getAssetService() {
-        if ( Contexts.isApplicationContextActive() ) {
-            return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (RepositoryAssetService) beanManagerLocator.getBeanManager().getBeans( "org.drools.guvnor.client.rpc.AssetService" );
         }
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {
@@ -98,8 +100,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public static RepositoryPackageService getPackageService() {
-        if ( Contexts.isApplicationContextActive() ) {
-            return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (RepositoryPackageService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
         }
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {
@@ -112,8 +115,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
     
     public static RepositoryCategoryService getCategoryService() {
-        if ( Contexts.isApplicationContextActive() ) {
-            return (RepositoryCategoryService) Component.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (RepositoryCategoryService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
         }
         //this is only for out of container hosted mode in GWT
         synchronized ( RepositoryServiceServlet.class ) {

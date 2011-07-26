@@ -1,7 +1,7 @@
 package org.drools.guvnor.server;
 
 import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 
 public abstract class AbstractFilter<T>
     implements
@@ -20,7 +20,8 @@ public abstract class AbstractFilter<T>
             return false;
         }
         // for GWT hosted mode - debug only
-        if ( !Contexts.isSessionContextActive() ) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if ( !beanManagerLocator.isBeanManagerAvailable() ) {
             return true;
         }
         return checkPermission( (T) artifact,

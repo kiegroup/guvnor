@@ -41,7 +41,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;

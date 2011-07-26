@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.security;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +28,12 @@ import org.drools.guvnor.server.security.rules.PackagePermissionRule;
 import org.drools.guvnor.server.security.rules.PackageUUIDTypePermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRuleObjectConverter;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import javax.annotation.PostConstruct;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 /**
@@ -57,14 +53,12 @@ import org.jboss.seam.security.permission.PermissionResolver;
  * 2. The user has one of the following roles package.admin|package.developer|package.readonly on the requested
  * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly)
  *
- *
-
  */
-@Name("org.jboss.seam.security.roleBasedPermissionResolver")
-@Scope(APPLICATION)
-@BypassInterceptors
-@Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
-@Startup
+@Named("org.jboss.seam.security.roleBasedPermissionResolver") // TODO name probably dead code because beans.xml doesn't use it
+@ApplicationScoped
+//@BypassInterceptors
+//@Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
+//@Startup
 public class RoleBasedPermissionResolver
     implements
     PermissionResolver,
@@ -91,7 +85,7 @@ public class RoleBasedPermissionResolver
                                             new PackageNameTypeConverter() );
     }
 
-    @Create
+    @PostConstruct
     public void create() {
     }
 
@@ -141,7 +135,7 @@ public class RoleBasedPermissionResolver
     }
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
-        return ((RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" )).getRoleBasedPermission();
+        return ((RoleBasedPermissionManager) BeanManagerUtils.getInstance("roleBasedPermissionManager")).getRoleBasedPermission();
     }
 
     private boolean isInvalidInstance(Object requestedObject) {

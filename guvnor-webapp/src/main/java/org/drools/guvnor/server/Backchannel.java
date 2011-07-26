@@ -17,13 +17,16 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
-import org.jboss.seam.contexts.Contexts;
+import org.drools.guvnor.server.util.BeanManagerUtils;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.servlet.http.HttpSessionStatus;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.web.Session;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.enterprise.inject.spi.BeanManager;
 
 /**
  * This is the backchannel to send "push" messages to the browser.
@@ -55,11 +58,16 @@ public class Backchannel {
     }
 
     public List<PushResponse> subscribe() {
-
-        if (Contexts.isApplicationContextActive() && !Session.instance().isInvalid()) {
-            try {
-                return await(Identity.instance().getCredentials().getUsername());
-            } catch (InterruptedException e) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            HttpSessionStatus session = BeanManagerUtils.getContextualInstance(HttpSessionStatus.class);
+            if (session.isActive()) {
+                try {
+                    return await(BeanManagerUtils.getContextualInstance(Credentials.class).getUsername());
+                } catch (InterruptedException e) {
+                    return new ArrayList<PushResponse>();
+                }
+            } else {
                 return new ArrayList<PushResponse>();
             }
         } else {

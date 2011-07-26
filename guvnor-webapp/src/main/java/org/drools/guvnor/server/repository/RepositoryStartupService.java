@@ -20,12 +20,11 @@ package org.drools.guvnor.server.repository;
 import org.drools.repository.*;
 import org.drools.repository.events.CheckinEvent;
 import org.drools.repository.events.StorageEventManager;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,9 +43,9 @@ import java.util.Properties;
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
  */
-@Scope(ScopeType.APPLICATION)
-@Startup
-@Name("repositoryConfiguration")
+@ApplicationScoped
+//@Startup
+@Named("repositoryConfiguration")
 public class RepositoryStartupService {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
@@ -57,7 +56,6 @@ public class RepositoryStartupService {
     private static final String MAILMAN_USER_PROPERTY = "org.drools.repository.mailman.username";
     private static final String MAILMAN_PASSWORD_PROPERTY = "org.drools.repository.mailman.password";
     private static final String SECURE_PASSWORDS_PROPERTY = "org.drools.repository.secure.passwords";
-
 
     private RulesRepositoryConfigurator configurator;
     final Map<String, String> properties = new HashMap<String, String>();
@@ -78,7 +76,7 @@ public class RepositoryStartupService {
         return repository;
     }
 
-    @Create
+    @PostConstruct
     public void create() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         repository = getRepositoryInstance();
         String username = ADMIN;
@@ -171,7 +169,7 @@ public class RepositoryStartupService {
         }
     }
 
-    @Destroy
+    @PreDestroy
     public void close() {
         sessionForSetup.logout();
         MailboxService.getInstance().stop();

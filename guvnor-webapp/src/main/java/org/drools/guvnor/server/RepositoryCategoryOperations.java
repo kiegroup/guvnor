@@ -26,14 +26,12 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Name("org.drools.guvnor.server.RepositoryCategoryOperations")
-@AutoCreate
+@Named("org.drools.guvnor.server.RepositoryCategoryOperations")
 public class RepositoryCategoryOperations {
     private RulesRepository repository;
 
@@ -70,7 +68,7 @@ public class RepositoryCategoryOperations {
                                      String name,
                                      String description) {
 
-        log.info("USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]");
+        log.info("USER:" + getCurrentUserName() + " CREATING category: [" + name + "] in path [" + path + "]");
 
         if (path == null || "".equals(path)) {
             path = "/";

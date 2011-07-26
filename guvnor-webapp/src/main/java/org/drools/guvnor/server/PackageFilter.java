@@ -18,6 +18,7 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.security.PackageUUIDType;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.jboss.seam.security.Identity;
 
 public class PackageFilter extends AbstractFilter<PackageConfigData> {
@@ -29,7 +30,7 @@ public class PackageFilter extends AbstractFilter<PackageConfigData> {
     @Override
     protected boolean checkPermission(final PackageConfigData packageConfigData,
                                       final String action) {
-        return Identity.instance().hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
+        return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
                                                   action );
     }
 

@@ -35,7 +35,7 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.Before;
 import org.junit.Test;

@@ -20,44 +20,45 @@ package org.drools.guvnor.server.security;
 import java.util.List;
 import java.io.Serializable;
 
-import org.jboss.seam.Component;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.drools.guvnor.server.util.BeanManagerUtils;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
  */
-@Scope(ScopeType.SESSION)
-@AutoCreate
-@Name("roleBasedPermissionManager")
+@SessionScoped
+@Named("roleBasedPermissionManager")
 public class RoleBasedPermissionManager implements Serializable {
 
-    //    @In
+    //    @Inject
     private List<RoleBasedPermission> permissions;
+
+    @Inject
+    private Credentials credentials;
 
     //    @Unwrap
     public List<RoleBasedPermission> getRoleBasedPermission() {
         return permissions;
     }
 
-    @Create
+    @PostConstruct
     public void create() {
-        RoleBasedPermissionStore roleBasedPermissionStore = (RoleBasedPermissionStore) Component
+        RoleBasedPermissionStore roleBasedPermissionStore = (RoleBasedPermissionStore) BeanManagerUtils
                 .getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
-        permissions = roleBasedPermissionStore.getRoleBasedPermissionsByUserName(Identity
-                .instance().getCredentials().getUsername());
-
+        permissions = roleBasedPermissionStore.getRoleBasedPermissionsByUserName(credentials.getUsername());
     }
 
-    @Destroy
+    @PreDestroy
     public void close() {
 
     }
-
 
 }

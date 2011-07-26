@@ -26,6 +26,7 @@ import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
@@ -34,9 +35,9 @@ import org.drools.repository.AssetItem;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.annotations.LoggedIn;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import java.util.Set;
@@ -54,7 +55,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         hasPackageDeveloperPermission(packageUUID);
 
@@ -70,7 +71,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport verifyAsset(RuleAsset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
         hasPackageDeveloperPermission(asset);
@@ -82,7 +83,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
                                                            Set<String> activeWorkingIds) throws SerializationException {
         hasPackageDeveloperPermission(asset);
@@ -129,14 +130,16 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     private void hasPackageDeveloperPermission(String packageUUID) {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageUUIDType(packageUUID), RoleTypes.PACKAGE_DEVELOPER);
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageUUIDType(packageUUID), RoleTypes.PACKAGE_DEVELOPER);
         }
     }
 
     private void hasPackageDeveloperPermission(RuleAsset asset) {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageNameType(asset.metaData.packageName), RoleTypes.PACKAGE_DEVELOPER);
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(asset.metaData.packageName), RoleTypes.PACKAGE_DEVELOPER);
         }
     }
 }

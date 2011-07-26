@@ -16,24 +16,26 @@
 
 package org.drools.guvnor.server.security;
 
-
-
+import org.jboss.seam.security.Authenticator;
+import org.jboss.seam.security.BaseAuthenticator;
+import org.picketlink.idm.impl.api.model.SimpleUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jboss.seam.annotations.Name;
+
+import javax.inject.Named;
 
 /**
- * This will let any user in, effectively removing any authentication (as the system 
+ * This will let any user in, effectively removing any authentication (as the system
  * will attempt to auto login the first time).
  */
-@Name("nilAuthenticator")
-public class NilAuthenticator {
-    
-    private static final Logger log = LoggerFactory.getLogger( NilAuthenticator.class );
-    
-    public boolean authenticate() {
-        log.info( "All users are guests.");
+public class NilAuthenticator extends BaseAuthenticator {
 
-        return true;
+    private static final Logger log = LoggerFactory.getLogger(NilAuthenticator.class);
+
+    public void authenticate() {
+        log.info("All users are guests.");
+        setStatus(AuthenticationStatus.SUCCESS);
+        setUser(new SimpleUser("guest"));
     }
+
 }

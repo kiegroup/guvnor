@@ -16,11 +16,12 @@
 
 package org.drools.guvnor.server.files;
 
+import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,9 @@ public class RepositoryServlet extends HttpServlet {
     static final Logger log = LoggerFactory.getLogger(RepositoryServlet.class);
 
     public static FileManagerUtils getFileManager() {
-        if (Contexts.isApplicationContextActive()) {
-            return (FileManagerUtils) Component.getInstance("fileManager");
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (FileManagerUtils) BeanManagerUtils.getInstance("fileManager");
         } else {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             //THIS IS ALL THAT IS NEEDED FOR THE SERVLETS.
@@ -94,29 +96,30 @@ public class RepositoryServlet extends HttpServlet {
         String usr = null;
         String pwd = null;
 
-        if (Contexts.isApplicationContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             //If the request is from same session, the user should be logged already.
-            if (Identity.instance().isLoggedIn()) {
+            if (BeanManagerUtils.getContextualInstance(Identity.class).isLoggedIn()) {
                 return true;
             }
 
-            Identity ids = Identity.instance();
+            Identity ids = BeanManagerUtils.getContextualInstance(Identity.class);
             if (auth != null && auth.toUpperCase(Locale.ENGLISH).startsWith("BASIC ")) {
                 String[] a = unpack(auth);
                 usr = a[0];
                 pwd = a[1];
-                ids.getCredentials().setUsername(usr);
-                ids.getCredentials().setPassword(pwd);
+                Credentials credentials = BeanManagerUtils.getContextualInstance(Credentials.class);
+                credentials.setUsername(usr);
+                credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
             }
-            try {
-                ids.authenticate();
-                log.info(usr + " authenticated for rest api");
-
-                return true;
-            } catch (LoginException e) {
+            Identity identity = BeanManagerUtils.getContextualInstance(Identity.class);
+            identity.login();
+            if ( !identity.isLoggedIn() ) {
                 log.warn("Unable to authenticate for rest api: " + usr);
                 return false;
             }
+            log.info(usr + " authenticated for rest api");
+            return true;
         } else {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             String[] a = unpack(auth);
@@ -135,7 +138,8 @@ public class RepositoryServlet extends HttpServlet {
     static String[] unpack(String auth) {
 
         // Get encoded user and password, comes after "BASIC "
-        if (Contexts.isApplicationContextActive()) {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
             String userpassEncoded = auth.substring(6);
             String userpassDecoded = new String(Base64.decodeBase64(userpassEncoded.getBytes()));
 

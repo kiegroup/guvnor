@@ -83,13 +83,12 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.contexts.Contexts;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.annotations.LoggedIn;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -104,13 +103,12 @@ import freemarker.template.Template;
  * front end. Generally requests for this are passed through from
  * RepositoryServiceServlet - and Seam manages instances of this.
  */
-@Name("org.drools.guvnor.client.rpc.RepositoryService")
-@AutoCreate
+@Named("org.drools.guvnor.client.rpc.RepositoryService")
 public class ServiceImplementation
     implements
     RepositoryService {
 
-    @In
+    @Inject
     private RulesRepository                   repository;
 
     private static final long                 serialVersionUID            = 510l;
@@ -123,7 +121,7 @@ public class ServiceImplementation
     private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     /* This is called also by Seam AND Hosted mode */
-    @Create
+    @PostConstruct
     public void create() {
         repositoryAssetOperations.setRulesRepository( getRulesRepository() );
         repositoryPackageOperations.setRulesRepository( getRulesRepository() );
@@ -140,19 +138,19 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listWorkspaces() {
         return getRulesRepository().listWorkspaces();
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void createWorkspace(String workspace) {
         getRulesRepository().createWorkspace( workspace );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removeWorkspace(String workspace) {
         getRulesRepository().removeWorkspace( workspace );
     }
@@ -161,7 +159,7 @@ public class ServiceImplementation
      * For the time being, module == package
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void updateWorkspace(String workspace,
                                 String[] selectedModules,
                                 String[] unselectedModules) {
@@ -182,7 +180,7 @@ public class ServiceImplementation
      * initial state will be the draft state. Returns the UUID of the asset.
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
     public String createNewRule(String ruleName,
                                 String description,
@@ -228,7 +226,7 @@ public class ServiceImplementation
      * This will create a new asset which refers to an existing asset
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
@@ -254,7 +252,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void deleteUncheckedRule(String uuid) {
         serviceSecurity.checkSecurityIsPackageAdminWithAdminType();
 
@@ -274,7 +272,7 @@ public class ServiceImplementation
      * @deprecated in favour of {@link #loadRuleListForState(StatePageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult loadRuleListForState(String stateName,
                                                 int skip,
                                                 int numRows,
@@ -295,7 +293,7 @@ public class ServiceImplementation
      * @deprecated in favour of {@link AbstractPagedTable}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableConfig loadTableConfig(String listName) {
         TableDisplayHandler handler = new TableDisplayHandler( listName );
         return handler.loadTableConfig();
@@ -305,7 +303,7 @@ public class ServiceImplementation
      * @deprecated in favour of {@link #queryMetaData(QueryMetadataPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
                                          Date createdAfter,
                                          Date createdBefore,
@@ -378,7 +376,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String createState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
@@ -392,7 +390,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removeState(String name) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " REMOVING state: [" + name + "]" );
 
@@ -407,7 +405,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void renameState(String oldName,
                             String newName) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
@@ -417,7 +415,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listStates() throws SerializationException {
         StateItem[] states = getRulesRepository().listStates();
         String[] result = new String[states.length];
@@ -436,7 +434,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
@@ -451,20 +449,20 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] getCustomSelectors() throws SerializationException {
         return SelectorManager.getInstance().getCustomSelectors();
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listRulesInGlobalArea() throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
     
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listImagesInPackage( RulesRepository.RULE_GLOBAL_AREA );
@@ -520,7 +518,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] loadDropDownExpression(String[] valuePairs,
                                            String expression) {
         Map<String, String> context = new HashMap<String, String>();
@@ -557,13 +555,13 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #listUserPermissions(PageRequest)}
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();
         return new PermissionManager( getRulesRepository() ).listUsers();
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<PermissionsPageRow> listUserPermissions(PageRequest request) {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -596,7 +594,7 @@ public class ServiceImplementation
         return response;
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
         serviceSecurity.checkSecurityIsAdmin();
 
@@ -604,7 +602,7 @@ public class ServiceImplementation
         return pm.retrieveUserPermissions( userName );
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void updateUserPermissions(String userName,
                                       Map<String, List<String>> perms) {
         serviceSecurity.checkSecurityIsAdmin();
@@ -618,13 +616,13 @@ public class ServiceImplementation
     }
 
     @Deprecated
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listAvailablePermissionTypes() {
         serviceSecurity.checkSecurityIsAdmin();
         return RoleTypes.listAvailableTypes();
     }
     
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public List<String> listAvailablePermissionRoleTypes() {
         serviceSecurity.checkSecurityIsAdmin();
         RoleType[] roleTypes = RoleType.values();
@@ -635,7 +633,7 @@ public class ServiceImplementation
         return values;
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( getRulesRepository() );
@@ -643,7 +641,7 @@ public class ServiceImplementation
         getRulesRepository().save();
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void createUser(String userName) {
         log.info( "Creating user permissions, user name [" + userName + "]" );
         PermissionManager pm = new PermissionManager( getRulesRepository() );
@@ -654,7 +652,7 @@ public class ServiceImplementation
     /**
      * @deprecated in favour of {@link #loadInbox(InboxPageRequest)}
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
             UserInbox ib = new UserInbox( getRulesRepository() );
@@ -675,7 +673,7 @@ public class ServiceImplementation
         }
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<InboxPageRow> loadInbox(InboxPageRequest request) throws DetailedSerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -776,11 +774,12 @@ public class ServiceImplementation
      * Check to see if app context is active (not in hosted)
      */
     public Boolean isHostedMode() {
-        return Contexts.isApplicationContextActive() ? Boolean.FALSE : Boolean.TRUE;
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        return !beanManagerLocator.isBeanManagerAvailable();
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -813,7 +812,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<QueryPageRow> queryMetaData(QueryMetadataPageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );
@@ -875,7 +874,7 @@ public class ServiceImplementation
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<StatePageRow> loadRuleListForState(StatePageRequest request) throws SerializationException {
         if ( request == null ) {
             throw new IllegalArgumentException( "request cannot be null" );

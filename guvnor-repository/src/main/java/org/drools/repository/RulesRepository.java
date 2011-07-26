@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import javax.annotation.PreDestroy;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
@@ -196,6 +197,7 @@ public class RulesRepository {
     /**
      * Explicitly logout of the underlying JCR repository.
      */
+    @PreDestroy
     public void logout() {
         this.session.logout();
     }
