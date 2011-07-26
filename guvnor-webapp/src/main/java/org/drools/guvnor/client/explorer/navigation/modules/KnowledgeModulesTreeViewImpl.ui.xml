@@ -23,7 +23,7 @@
 
   <gwt:DockLayoutPanel>
     <gwt:north size="25">
-      <gwt:SimplePanel ui:field="menuContainer"/>
+      <gwt:SimplePanel ui:field="menuContainer" />
     </gwt:north>
     <gwt:center>
       <gwt:ScrollPanel>
@@ -33,14 +33,24 @@
         </gwt:VerticalPanel>
       </gwt:ScrollPanel>
     </gwt:center>
-    <gwt:south size="25">
-      <gwt:HorizontalPanel>
-        <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" styleName="icon-bar"/>
-        <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" styleName="icon-bar"/>
-        <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" styleName="icon-bar"/>
-        <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" styleName="icon-bar"/>
+    <gwt:south size="28">
+      <gwt:HorizontalPanel styleName="icon-bar">
+        <gwt:HorizontalPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" />
+          </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
-    </gwt:south>    
+      </gwt:HorizontalPanel>
+    </gwt:south>
   </gwt:DockLayoutPanel>
 
 </ui:UiBinder>
