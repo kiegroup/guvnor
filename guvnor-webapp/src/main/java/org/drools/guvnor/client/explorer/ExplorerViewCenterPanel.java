@@ -16,7 +16,8 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.place.shared.Place;
@@ -45,11 +46,24 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private ClientFactory clientFactory;
 
-    public ExplorerViewCenterPanel(ClientFactory clientFactory) {
+    public ExplorerViewCenterPanel(final ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
-        tabLayoutPanel = new ScrollTabLayoutPanel( 2,
-                Unit.EM );
+        tabLayoutPanel = new ScrollTabLayoutPanel();
+
+        addBeforeSelectionHandler();
+
         initWidget( tabLayoutPanel );
+    }
+
+    private void addBeforeSelectionHandler() {
+        tabLayoutPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
+            public void onBeforeSelection(BeforeSelectionEvent<Integer> integerBeforeSelectionEvent) {
+                if ( !tabLayoutPanel.isCanSelectTabToggle() ) {
+                    integerBeforeSelectionEvent.cancel();
+                    clientFactory.getPlaceController().goTo( openedTabs.getKey( integerBeforeSelectionEvent.getItem() ) );
+                }
+            }
+        } );
     }
 
     public boolean contains(Place key) {
