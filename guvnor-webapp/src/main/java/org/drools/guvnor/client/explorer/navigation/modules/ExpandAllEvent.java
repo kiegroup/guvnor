@@ -16,12 +16,23 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-public interface KnowledgeModulesTreeItemView extends ModulesTreeItemBaseView {
+import com.google.gwt.event.shared.GwtEvent;
 
-    void clearModulesTreeItem();
-    
-    void collapseAll();
-    
-    void expandAll();
+/**
+ * An event for when the Package Hierarchy needs to be fully expanded
+ */
+public class ExpandAllEvent extends GwtEvent<ExpandAllEventHandler> {
 
+    public static Type<ExpandAllEventHandler> TYPE = new Type<ExpandAllEventHandler>();
+
+    @Override
+    public Type<ExpandAllEventHandler> getAssociatedType() {
+        return TYPE;
+    }
+
+    @Override
+    protected void dispatch(ExpandAllEventHandler eventHandler) {
+        eventHandler.onExpandAll( this );
+    }
+    
 }

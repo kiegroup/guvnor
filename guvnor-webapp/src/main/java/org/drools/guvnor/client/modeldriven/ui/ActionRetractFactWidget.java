@@ -44,7 +44,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         layout.setStyleName( "model-builderInner-Background" );
 
         if (readOnly == null) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getBindingType(model.variableName));
+            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getLHSBindingType(model.variableName));
         } else {
             this.readOnly = readOnly;
         }
@@ -53,7 +53,7 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
             layout.addStyleName("editor-disabled-widget");
         }
 
-        String desc = modeller.getModel().getBindingType(model.variableName) + " [" + model.variableName + "]";
+        String desc = modeller.getModel().getLHSBindingType(model.variableName) + " [" + model.variableName + "]";
         layout.add(new SmallLabel(HumanReadable.getActionDisplayName( "retract" )+"&nbsp;<b>"  + desc  + "</b>"));
 
         //This widget couldn't be modified.

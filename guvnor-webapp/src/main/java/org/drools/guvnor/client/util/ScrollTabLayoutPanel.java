@@ -1,47 +1,46 @@
 package org.drools.guvnor.client.util;
 
-import org.drools.guvnor.client.resources.Images;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.layout.client.Layout.Alignment;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.LayoutPanel;
-import com.google.gwt.user.client.ui.TabLayoutPanel;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.resources.Images;
 
-public class ScrollTabLayoutPanel extends TabLayoutPanel {
-    private static Images       images             = GWT.create( Images.class );
+public class ScrollTabLayoutPanel extends Composite {
+    private static Images images = GWT.create( Images.class );
 
-    private Image               scrollLeft;
-    private Image               scrollRight;
-    private FlowPanel           tabBar             = null;
-    private LayoutPanel         panel;
-    private static final int    ScrollLengh        = 100;
 
-    private double              barHeight;
-    private Unit                barUnit;
-    private boolean             isScrollingEnabled = false;
+    private final double barHeight = 2;
+    private final Unit barUnit = Unit.EM;
+
+    private final CustomTabLayoutPanel layout = new CustomTabLayoutPanel( barHeight,
+            barUnit );
+
+    private Image scrollLeft;
+    private Image scrollRight;
+    private FlowPanel tabBar = null;
+    private LayoutPanel panel;
+
+    private static final int ScrollLengh = 100;
+    private boolean isScrollingEnabled = false;
 
     private HandlerRegistration windowResizeHandler;
 
-    public ScrollTabLayoutPanel(double barHeight,
-                                Unit barUnit) {
-        super( barHeight,
-               barUnit );
-        this.barHeight = barHeight;
-        this.barUnit = barUnit;
-        this.panel = (LayoutPanel) getWidget();
+    private boolean canSelectTabToggle = false;
 
-        for ( int i = 0; i < panel.getWidgetCount(); ++i ) {
+    public ScrollTabLayoutPanel() {
+        initWidget( layout );
+        this.panel = layout.getLayoutPanel();
+
+        for (int i = 0; i < panel.getWidgetCount(); ++i) {
             Widget widget = panel.getWidget( i );
             if ( widget instanceof FlowPanel ) {
                 tabBar = (FlowPanel) widget;
@@ -50,24 +49,33 @@ public class ScrollTabLayoutPanel extends TabLayoutPanel {
         }
     }
 
-    @Override
+    public HandlerRegistration addBeforeSelectionHandler(
+            BeforeSelectionHandler<Integer> handler) {
+        return layout.addBeforeSelectionHandler( handler );
+    }
+
+    public boolean isCanSelectTabToggle() {
+        return canSelectTabToggle;
+    }
+
+
+    public void selectTab(Widget child) {
+        canSelectTabToggle = true;
+        layout.selectTab( child );
+        canSelectTabToggle = false;
+    }
+
     public void add(Widget child,
                     Widget tab) {
-        super.add( child,
-                   tab );
+        canSelectTabToggle = true;
+        layout.add( child,
+                tab );
         checkIfScrollButtonsNecessary();
+        canSelectTabToggle = false;
     }
 
-    @Override
     public boolean remove(Widget w) {
-        boolean b = super.remove( w );
-        checkIfScrollButtonsNecessary();
-        return b;
-    }
-
-    @Override
-    public boolean remove(int index) {
-        boolean b = super.remove( index );
+        boolean b = layout.remove( w );
         checkIfScrollButtonsNecessary();
         return b;
     }
@@ -103,45 +111,45 @@ public class ScrollTabLayoutPanel extends TabLayoutPanel {
             scrollRight.addClickHandler( createScrollClickHandler( -ScrollLengh ) );
 
             panel.setWidgetLeftRight( tabBar,
-                                      30,
-                                      Unit.PX,
-                                      30,
-                                      Unit.PX );
+                    30,
+                    Unit.PX,
+                    30,
+                    Unit.PX );
             panel.setWidgetTopHeight( tabBar,
-                                      0,
-                                      Unit.PX,
-                                      barHeight,
-                                      barUnit );
+                    0,
+                    Unit.PX,
+                    barHeight,
+                    barUnit );
             panel.setWidgetVerticalPosition( tabBar,
-                                             Alignment.END );
+                    Alignment.END );
 
             panel.add( scrollRight );
             panel.setWidgetRightWidth( scrollRight,
-                                       0,
-                                       Unit.PX,
-                                       27,
-                                       Unit.PX );
+                    0,
+                    Unit.PX,
+                    27,
+                    Unit.PX );
             panel.setWidgetTopHeight( scrollRight,
-                                      0,
-                                      Unit.PX,
-                                      barHeight,
-                                      barUnit );
+                    0,
+                    Unit.PX,
+                    barHeight,
+                    barUnit );
             panel.setWidgetVerticalPosition( scrollRight,
-                                             Alignment.END );
+                    Alignment.END );
 
             panel.add( scrollLeft );
             panel.setWidgetLeftWidth( scrollLeft,
-                                      0,
-                                      Unit.PX,
-                                      27,
-                                      Unit.PX );
+                    0,
+                    Unit.PX,
+                    27,
+                    Unit.PX );
             panel.setWidgetTopHeight( scrollLeft,
-                                      0,
-                                      Unit.PX,
-                                      barHeight,
-                                      barUnit );
+                    0,
+                    Unit.PX,
+                    barHeight,
+                    barUnit );
             panel.setWidgetVerticalPosition( scrollLeft,
-                                             Alignment.END );
+                    Alignment.END );
 
             isScrollingEnabled = true;
         }
@@ -153,17 +161,17 @@ public class ScrollTabLayoutPanel extends TabLayoutPanel {
             panel.remove( scrollLeft );
 
             panel.setWidgetLeftRight( tabBar,
-                                      0,
-                                      Unit.PX,
-                                      0,
-                                      Unit.PX );
+                    0,
+                    Unit.PX,
+                    0,
+                    Unit.PX );
             panel.setWidgetTopHeight( tabBar,
-                                      0,
-                                      Unit.PX,
-                                      barHeight,
-                                      barUnit );
+                    0,
+                    Unit.PX,
+                    barHeight,
+                    barUnit );
             panel.setWidgetVerticalPosition( tabBar,
-                                             Alignment.END );
+                    Alignment.END );
 
             isScrollingEnabled = false;
         }
@@ -211,7 +219,7 @@ public class ScrollTabLayoutPanel extends TabLayoutPanel {
 
     private void scrollTo(int pos) {
         tabBar.getElement().getStyle().setLeft( pos,
-                                                Unit.PX );
+                Unit.PX );
     }
 
     private int getRightOfWidget(Widget widget) {
@@ -231,18 +239,37 @@ public class ScrollTabLayoutPanel extends TabLayoutPanel {
     private static int parsePosition(String positionString) {
         int position;
         try {
-            for ( int i = 0; i < positionString.length(); i++ ) {
+            for (int i = 0; i < positionString.length(); i++) {
                 char c = positionString.charAt( i );
                 if ( c != '-' && !(c >= '0' && c <= '9') ) {
                     positionString = positionString.substring( 0,
-                                                               i );
+                            i );
                 }
             }
 
             position = Integer.parseInt( positionString );
-        } catch ( NumberFormatException ex ) {
+        } catch (NumberFormatException ex) {
             position = 0;
         }
         return position;
+    }
+
+    public int getSelectedIndex() {
+        return layout.getSelectedIndex();
+    }
+
+    public int getWidgetCount() {
+        return layout.getWidgetCount();
+    }
+
+    class CustomTabLayoutPanel extends TabLayoutPanel {
+
+        public CustomTabLayoutPanel(double barHeight, Unit barUnit) {
+            super( barHeight, barUnit );
+        }
+
+        LayoutPanel getLayoutPanel() {
+            return (LayoutPanel) getWidget();
+        }
     }
 }

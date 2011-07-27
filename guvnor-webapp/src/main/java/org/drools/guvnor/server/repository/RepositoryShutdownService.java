@@ -45,8 +45,7 @@ public class RepositoryShutdownService
             log.info( "Shutting down repository...." );
             RulesRepositoryConfigurator.getInstance( null ).shutdown();
         } catch ( RepositoryException re ) {
-            re.fillInStackTrace();
-            re.printStackTrace( System.out );
+            log.error("Shutting down repository failed.", re);
         }
     }
 

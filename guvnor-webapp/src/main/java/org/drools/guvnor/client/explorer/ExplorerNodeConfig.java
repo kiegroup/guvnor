@@ -27,8 +27,8 @@ import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
-import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchy;
-import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchyNested;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -131,7 +131,7 @@ public class ExplorerNodeConfig {
     private static void deploymentListPackages( final TreeItem root ) {
         RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess( PackageConfigData[] values ) {
-                PackageHierarchy ph = new PackageHierarchyNested();
+                PackageView ph = new PackageHierarchicalView();
 
                 for (PackageConfigData val : values) {
                     ph.addPackage( val );

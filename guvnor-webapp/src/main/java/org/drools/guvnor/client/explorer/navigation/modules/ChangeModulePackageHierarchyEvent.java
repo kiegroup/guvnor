@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchy;
 
 import com.google.gwt.event.shared.GwtEvent;
 
@@ -27,9 +26,9 @@ public class ChangeModulePackageHierarchyEvent extends GwtEvent<ChangeModulePack
 
     public static Type<ChangeModulePackageHierarchyEventHandler> TYPE = new Type<ChangeModulePackageHierarchyEventHandler>();
 
-    private PackageHierarchy                                     packageHierarchy;
+    private PackageView                                     packageHierarchy;
 
-    public ChangeModulePackageHierarchyEvent(PackageHierarchy packageHierarchy) {
+    public ChangeModulePackageHierarchyEvent(PackageView packageHierarchy) {
         this.packageHierarchy = packageHierarchy;
     }
 
@@ -43,7 +42,7 @@ public class ChangeModulePackageHierarchyEvent extends GwtEvent<ChangeModulePack
         eventHandler.onChangeModulePackageHierarchy( this );
     }
 
-    public PackageHierarchy getPackageHierarchy() {
+    public PackageView getPackageHierarchy() {
         return packageHierarchy;
     }
 

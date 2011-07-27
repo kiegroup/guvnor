@@ -2373,10 +2373,17 @@ public interface Constants
     String OnlyDisplayDSLConditions();
     
     String OnlyDisplayDSLActions();
-    
-    String ShowFlatPackageHierarchy();
-    
+        
     String PackageAssets(String packageName);
     
     String ViewPackageConfiguration();
+    
+    String ExpandAll();
+    
+    String CollapseAll();
+    
+    String FlatView();
+    
+    String HierarchicalView();
+
 }

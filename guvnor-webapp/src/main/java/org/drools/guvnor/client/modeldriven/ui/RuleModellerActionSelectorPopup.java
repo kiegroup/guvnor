@@ -201,7 +201,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add update, not modify
     private void addUpdateNotModify() {
-        List<String> vars = model.getBoundFacts();
+        List<String> vars = model.getLHSBoundFacts();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -250,7 +250,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add Retractions
     private void addRetractions() {
-        List<String> vars = model.getBoundFacts();
+        List<String> vars = model.getLHSBoundFacts();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -273,7 +273,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add Modifies
     private void addModifies() {
-        List<String> vars = model.getBoundFacts();
+        List<String> vars = model.getLHSBoundFacts();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -341,7 +341,7 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add global collections
     private void addGlobalCollections() {
-        List<String> vars = model.getBoundFacts();
+        List<String> vars = model.getLHSBoundFacts();
         if ( vars.size() == 0 ) {
             return;
         }
@@ -374,8 +374,8 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
 
     //Add free-form DRL
     private void addFreeFormDRL() {
-        List<String> vars = model.getBoundFacts();
-        List<String> vars2 = model.getRhsBoundFacts();
+        List<String> vars = model.getLHSBoundFacts();
+        List<String> vars2 = model.getRHSBoundFacts();
         String[] globals = completions.getGlobalVariables();
 
         if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {

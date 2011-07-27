@@ -110,12 +110,12 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         presenter = new BrowseTree( clientFactory );
 
-        verify( view ).showMenu( any( RulesNewMenu.class ) );
+        verify( view ).showMenu();
     }
 
     @Test
     public void testShowRulesMenuNoCapability() throws Exception {
-        verify( view, never() ).showMenu( any( RulesNewMenu.class ) );
+        verify( view, never() ).showMenu();
     }
 
     @Test

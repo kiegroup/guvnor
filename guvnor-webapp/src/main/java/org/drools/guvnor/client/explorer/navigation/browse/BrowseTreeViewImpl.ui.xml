@@ -18,8 +18,8 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
-  <gwt:DockLayoutPanel>
-    <gwt:north size="2">
+  <gwt:DockLayoutPanel ui:field="layout">
+    <gwt:north size="25">
       <gwt:SimplePanel ui:field="menuContainer"/>
     </gwt:north>
     <gwt:center>

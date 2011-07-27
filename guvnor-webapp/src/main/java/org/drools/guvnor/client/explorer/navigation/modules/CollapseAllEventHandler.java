@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventHandler;
 
-public interface ChangeModulePackageHierarchyEventHandler extends EventHandler {
-    public void onChangeModulePackageHierarchy( ChangeModulePackageHierarchyEvent changeModulePackageHierarchyEvent );
+public interface CollapseAllEventHandler
+    extends
+    EventHandler {
+    public void onCollapseAll(CollapseAllEvent event);
 }

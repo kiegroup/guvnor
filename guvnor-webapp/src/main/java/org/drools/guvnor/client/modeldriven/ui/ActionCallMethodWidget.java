@@ -94,7 +94,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
 
             this.variableClass = (String) completions.getGlobalVariable( set.variable );
         } else {
-            FactPattern pattern = mod.getModel().getBoundFact( set.variable );
+            
+            FactPattern pattern = mod.getModel().getLHSBoundFact( set.variable );
             if ( pattern != null ) {
                 List<String> methodList = completions.getMethodNames( pattern.getFactType() );
                 fieldCompletionTexts = new String[methodList.size()];
@@ -107,11 +108,12 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                 }
                 this.variableClass = pattern.getFactType();
                 this.isBoundFact = true;
+                
             } else {
                 /*
                  *  if the call method is applied on a bound variable created in the rhs
                  */
-                ActionInsertFact patternRhs = mod.getModel().getRhsBoundFact( set.variable );
+                ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.variable );
                 if ( patternRhs != null ) {
                     List<String> methodList = completions.getMethodNames( patternRhs.factType );
                     fieldCompletionTexts = new String[methodList.size()];
@@ -247,9 +249,9 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         if ( completions.isGlobalVariable( this.model.variable ) ) {
             type = completions.getGlobalVariable( this.model.variable );
         } else {
-            type = this.getModeller().getModel().getBindingType( this.model.variable );
+            type = this.getModeller().getModel().getLHSBindingType( this.model.variable );
             if ( type == null ) {
-                type = this.getModeller().getModel().getRhsBoundFact( this.model.variable ).factType;
+                type = this.getModeller().getModel().getRHSBoundFact( this.model.variable ).factType;
             }
         }
 

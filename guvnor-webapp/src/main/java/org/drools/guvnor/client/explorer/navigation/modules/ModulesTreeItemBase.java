@@ -29,7 +29,7 @@ public abstract class ModulesTreeItemBase
     IsWidget,
     Presenter {
 
-    protected PackageHierarchy        packageHierarchy = new PackageHierarchyNested();
+    protected PackageView        packageHierarchy = new PackageHierarchicalView();
     protected ClientFactory           clientFactory;
     protected ModulesTreeItemBaseView view;
 

@@ -617,7 +617,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             }
         };
 
-        String patternName = (pattern.getBoundName() != null) ? pattern.getFactType() + " <b>[" + pattern.getBoundName() + "]</b>" : pattern.getFactType();
+        String patternName = (pattern.isBound()) ? pattern.getFactType() + " <b>[" + pattern.getBoundName() + "]</b>" : pattern.getFactType();
 
         String desc;
         if ( isAll0WithLabel ) {
@@ -765,11 +765,6 @@ public class FactPatternWidget extends RuleModellerWidget {
                                                          popupCreator );
                     }
                 };
-
-                Image bind = new ImageButton( images.editTiny(),
-                                              constants.GiveFieldVarName() );
-
-                bind.addClickHandler( click );
                 ClickableLabel cl = new ClickableLabel( con.getFieldName(),
                                                         click,
                                                         !this.readOnly );

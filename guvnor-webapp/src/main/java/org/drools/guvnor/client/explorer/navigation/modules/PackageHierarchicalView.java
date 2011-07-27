@@ -21,7 +21,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
  * A hierarchical representation of PackageConfigData, i.e. sub-packages are
  * held in sub-folders. A sub-package is a package name split on "."
  */
-public class PackageHierarchyNested extends PackageHierarchy {
+public class PackageHierarchicalView extends PackageView {
 
     void doAddPackage(String name,
                       PackageConfigData conf) {
