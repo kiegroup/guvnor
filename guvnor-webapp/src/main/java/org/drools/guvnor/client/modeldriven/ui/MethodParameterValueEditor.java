@@ -126,9 +126,9 @@ public class MethodParameterValueEditor extends DirtyableComposite {
          * variable type, then propose a list
          */
         ListBox listVariable = new ListBox();
-        List<String> vars = model.getModel().getBoundFacts();
+        List<String> vars = model.getModel().getLHSBoundFacts();
         for ( String v : vars ) {
-            FactPattern factPattern = model.getModel().getBoundFact( v );
+            FactPattern factPattern = model.getModel().getLHSBoundFact( v );
             if ( factPattern.getFactType().equals( this.methodParameter.type ) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
@@ -141,9 +141,9 @@ public class MethodParameterValueEditor extends DirtyableComposite {
         /*
          * add the bound variable of the rhs
          */
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
+        List<String> vars2 = model.getModel().getRHSBoundFacts();
         for ( String v : vars2 ) {
-            ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
+            ActionInsertFact factPattern = model.getModel().getRHSBoundFact( v );
             if ( factPattern.factType.equals( this.methodParameter.type ) ) {
                 // First selection is empty
                 if ( listVariable.getItemCount() == 0 ) {
@@ -262,8 +262,8 @@ public class MethodParameterValueEditor extends DirtyableComposite {
          * If there is a bound variable that is the same type of the current
          * variable type, then show abutton
          */
-        List<String> vars = model.getModel().getBoundFacts();
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
+        List<String> vars = model.getModel().getLHSBoundFacts();
+        List<String> vars2 = model.getModel().getRHSBoundFacts();
         for ( String i : vars2 ) {
             vars.add( i );
         }
@@ -271,12 +271,12 @@ public class MethodParameterValueEditor extends DirtyableComposite {
             boolean createButton = false;
             Button variable = new Button( constants.BoundVariable() );
             if ( vars2.contains( v ) == false ) {
-                FactPattern factPattern = model.getModel().getBoundFact( v );
+                FactPattern factPattern = model.getModel().getLHSBoundFact( v );
                 if ( factPattern.getFactType().equals( this.parameterType ) ) {
                     createButton = true;
                 }
             } else {
-                ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
+                ActionInsertFact factPattern = model.getModel().getRHSBoundFact( v );
                 if ( factPattern.factType.equals( this.parameterType ) ) {
                     createButton = true;
                 }

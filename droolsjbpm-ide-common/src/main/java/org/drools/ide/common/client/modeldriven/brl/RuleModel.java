@@ -44,95 +44,11 @@ public class RuleModel
     }
 
     /**
-     * This will return the fact pattern that a variable is bound to.
+     * This will return a List<String> of all FactPattern bindings
      * 
-     * @param var
-     *            The bound fact variable (NOT bound field).
-     * @return null or the FactPattern found.
+     * @return The bindings or an empty list if no bindings are found.
      */
-    public FactPattern getBoundFact(final String var) {
-        if ( this.lhs == null ) {
-            return null;
-        }
-        for ( int i = 0; i < this.lhs.length; i++ ) {
-
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-
-    public String getBindingType(final String var) {
-        if ( this.lhs == null ) {
-            return null;
-        }
-        for ( int i = 0; i < this.lhs.length; i++ ) {
-            if ( this.lhs[i] instanceof FactPattern ) {
-                final FactPattern p = (FactPattern) this.lhs[i];
-                if ( p.isBound() && var.equals( p.getBoundName() ) ) {
-                    return p.getFactType();
-                }
-                for ( FieldConstraint z : p.getFieldConstraints() ) {
-                    String type = giveFieldBinding( z,
-                                                    var );
-                    if ( type != null ) {
-                        return type;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private String giveFieldBinding(FieldConstraint f,
-                                    String var) {
-        if ( f instanceof SingleFieldConstraint ) {
-            SingleFieldConstraint s = (SingleFieldConstraint) f;
-            if ( s.isBound() && var.equals( s.getFieldBinding() ) ) {
-                return s.getFieldType();
-            }
-        }
-        if ( f instanceof CompositeFieldConstraint ) {
-            CompositeFieldConstraint s = (CompositeFieldConstraint) f;
-            //If the user didn't add any constraint yet, s.constraints is null
-            if ( s.constraints != null ) {
-                for ( FieldConstraint ss : s.constraints ) {
-                    return giveFieldBinding( ss,
-                                             var );
-                }
-            }
-        }
-        return null;
-    }
-
-    /*
-     * Get the bound fact of a rhs action
-     * Fix nheron
-     */
-    public ActionInsertFact getRhsBoundFact(final String var) {
-        if ( this.rhs == null ) {
-            return null;
-        }
-        for ( int i = 0; i < this.rhs.length; i++ ) {
-
-            if ( this.rhs[i] instanceof ActionInsertFact ) {
-                final ActionInsertFact p = (ActionInsertFact) this.rhs[i];
-                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
-                    return p;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @return A list of bound facts (String). Or empty list if none are found.
-     */
-    public List<String> getBoundFacts() {
+    public List<String> getLHSBoundFacts() {
         if ( this.lhs == null ) {
             return Collections.emptyList();
         }
@@ -143,51 +59,123 @@ public class RuleModel
                 if ( p.getBoundName() != null ) {
                     list.add( p.getBoundName() );
                 }
-                list.addAll( getListFieldBinding( p ) );
             }
         }
         return list;
-
-    }
-
-    private List<String> getListFieldBinding(FactPattern fact) {
-        List<String> result = new ArrayList<String>();
-
-        for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
-            FieldConstraint fc = fact.getFieldConstraints()[j];
-            List<String> s = getFieldBinding( fc );
-            result.addAll( s );
-        }
-        return result;
-    }
-
-    private List<String> getFieldBinding(FieldConstraint f) {
-        List<String> result = new ArrayList<String>();
-        if ( f instanceof SingleFieldConstraint ) {
-            SingleFieldConstraint sfc = (SingleFieldConstraint) f;
-            if ( sfc.isBound() ) {
-                result.add( sfc.getFieldBinding() );
-            }
-        }
-        if ( f instanceof CompositeFieldConstraint ) {
-            CompositeFieldConstraint cfc = (CompositeFieldConstraint) f;
-
-            //If the user didn't add any constraint yet, s.constraints is null
-            if ( cfc.constraints != null ) {
-                for ( FieldConstraint ss : cfc.constraints ) {
-                    List<String> t = getFieldBinding( ss );
-                    result.addAll( t );
-                }
-            }
-        }
-        return result;
     }
 
     /**
-     * @return A list of bound facts of the rhs(String). Or empty list if none
-     *         are found. Fix nheron
+     * This will return the FactPattern that a variable is bound to.
+     * 
+     * @param var
+     *            The bound fact variable (NOT bound field).
+     * 
+     * @return null or the FactPattern found.
      */
-    public List<String> getRhsBoundFacts() {
+    public FactPattern getLHSBoundFact(final String var) {
+        if ( this.lhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            if ( this.lhs[i] instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) this.lhs[i];
+                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This will return the FieldConstraint that a variable is bound to.
+     * 
+     * @param var
+     *            The bound field variable (NOT bound fact).
+     * 
+     * @return null or the FieldConstraint found.
+     */
+    public FieldConstraint getLHSBoundField(final String var) {
+        if ( this.lhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            if ( this.lhs[i] instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) this.lhs[i];
+                for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
+                    FieldConstraint fc = p.getFieldConstraints()[j];
+                    List<String> fieldBindings = getFieldBinding( fc );
+                    if ( fieldBindings.contains( var ) ) {
+                        return fc;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get the data-type associated with the binding
+     * 
+     * @param var
+     * 
+     * @return The data-type, or null if the binding could not be found
+     */
+    public String getLHSBindingType(final String var) {
+        if ( this.lhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            if ( this.lhs[i] instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) this.lhs[i];
+                if ( p.isBound() && var.equals( p.getBoundName() ) ) {
+                    return p.getFactType();
+                }
+                for ( FieldConstraint fc : p.getFieldConstraints() ) {
+                    String type = getFieldBinding( fc,
+                                                   var );
+                    if ( type != null ) {
+                        return type;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getFieldBinding(FieldConstraint fc,
+                                   String var) {
+        String fieldType = null;
+        if ( fc instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint s = (SingleFieldConstraint) fc;
+            if ( s.isBound() && var.equals( s.getFieldBinding() ) ) {
+                fieldType = s.getFieldType();
+            }
+        }
+        if ( fc instanceof SingleFieldConstraintEBLeftSide ) {
+            SingleFieldConstraintEBLeftSide s = (SingleFieldConstraintEBLeftSide) fc;
+            if ( s.isBound() && var.equals( s.getFieldBinding() ) ) {
+                fieldType = s.getExpressionLeftSide().getGenericType();
+            }
+        }
+        if ( fc instanceof CompositeFieldConstraint ) {
+            CompositeFieldConstraint s = (CompositeFieldConstraint) fc;
+            if ( s.constraints != null ) {
+                for ( FieldConstraint ss : s.constraints ) {
+                    fieldType = getFieldBinding( ss,
+                                                 var );
+                }
+            }
+        }
+        return fieldType;
+    }
+
+    /**
+     * This will return a List<String> of all ActionInsertFact bindings
+     * 
+     * @return The bindings or an empty list if no bindings are found.
+     */
+    public List<String> getRHSBoundFacts() {
         if ( this.rhs == null ) {
             return null;
         }
@@ -201,7 +189,135 @@ public class RuleModel
             }
         }
         return list;
+    }
 
+    /**
+     * This will return the ActionInsertFact that a variable is bound to.
+     * 
+     * @param var
+     *            The bound fact variable (NOT bound field).
+     * @return null or the ActionInsertFact found.
+     */
+    public ActionInsertFact getRHSBoundFact(final String var) {
+        if ( this.rhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.rhs.length; i++ ) {
+            if ( this.rhs[i] instanceof ActionInsertFact ) {
+                final ActionInsertFact p = (ActionInsertFact) this.rhs[i];
+                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This will return the FactPattern that a variable is bound to. If the
+     * variable is bound to a FieldConstraint the parent FactPattern will be
+     * returned.
+     * 
+     * @param var
+     *            The variable binding
+     * @return null or the FactPattern found.
+     */
+    public FactPattern getLHSParentFactPatternForBinding(final String var) {
+        if ( this.lhs == null ) {
+            return null;
+        }
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            if ( this.lhs[i] instanceof FactPattern ) {
+                final FactPattern p = (FactPattern) this.lhs[i];
+                if ( p.getBoundName() != null && var.equals( p.getBoundName() ) ) {
+                    return p;
+                }
+                for ( int j = 0; j < p.getFieldConstraints().length; j++ ) {
+                    FieldConstraint fc = p.getFieldConstraints()[j];
+                    List<String> fieldBindings = getFieldBinding( fc );
+                    if ( fieldBindings.contains( var ) ) {
+                        return p;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This will get a list of all bound variables, including bound fields..
+     */
+    public List<String> getAllVariables() {
+        List<String> result = new ArrayList<String>();
+        for ( int i = 0; i < this.lhs.length; i++ ) {
+            IPattern pat = this.lhs[i];
+            if ( pat instanceof FactPattern ) {
+                FactPattern fact = (FactPattern) pat;
+                if ( fact.isBound() ) {
+                    result.add( fact.getBoundName() );
+                }
+
+                for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
+                    FieldConstraint fc = fact.getFieldConstraints()[j];
+                    if ( fc instanceof SingleFieldConstraint ) {
+                        SingleFieldConstraint con = (SingleFieldConstraint) fc;
+                        if ( con.isBound() ) {
+                            result.add( con.getFieldBinding() );
+                        }
+                        if ( con.getExpressionValue() != null && con.getExpressionValue().isBound() ) {
+                            result.add( con.getExpressionValue().getBinding() );
+                        }
+                        if ( con instanceof SingleFieldConstraintEBLeftSide ) {
+                            SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
+                            if ( exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound() ) {
+                                result.add( exp.getExpressionLeftSide().getBinding() );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        for ( int i = 0; i < this.rhs.length; i++ ) {
+            IAction pat = this.rhs[i];
+            if ( pat instanceof ActionInsertFact ) {
+                ActionInsertFact fact = (ActionInsertFact) pat;
+                if ( fact.isBound() ) {
+                    result.add( fact.getBoundName() );
+                }
+            }
+        }
+        
+        return result;
+    }
+
+    private List<String> getFieldBinding(FieldConstraint f) {
+        List<String> result = new ArrayList<String>();
+        if ( f instanceof SingleFieldConstraint ) {
+            SingleFieldConstraint con = (SingleFieldConstraint) f;
+            if ( con.isBound() ) {
+                result.add( con.getFieldBinding() );
+            }
+            if ( con.getExpressionValue() != null && con.getExpressionValue().isBound() ) {
+                result.add( con.getExpressionValue().getBinding() );
+            }
+            if ( con instanceof SingleFieldConstraintEBLeftSide ) {
+                SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
+                if ( exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound() ) {
+                    result.add( exp.getExpressionLeftSide().getBinding() );
+                }
+            }
+
+        } else if ( f instanceof CompositeFieldConstraint ) {
+            CompositeFieldConstraint cfc = (CompositeFieldConstraint) f;
+            if ( cfc.constraints != null ) {
+                for ( FieldConstraint ss : cfc.constraints ) {
+                    List<String> t = getFieldBinding( ss );
+                    result.addAll( t );
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -556,52 +672,6 @@ public class RuleModel
                     }
                 }
 
-            }
-        }
-        return result;
-    }
-
-    /**
-     * This will get a list of all bound variables, including bound fields.
-     */
-    public List<String> getAllVariables() {
-        List<String> result = new ArrayList<String>();
-        for ( int i = 0; i < this.lhs.length; i++ ) {
-            IPattern pat = this.lhs[i];
-            if ( pat instanceof FactPattern ) {
-                FactPattern fact = (FactPattern) pat;
-                if ( fact.isBound() ) {
-                    result.add( fact.getBoundName() );
-                }
-
-                for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
-                    FieldConstraint fc = fact.getFieldConstraints()[j];
-                    if ( fc instanceof SingleFieldConstraint ) {
-                        SingleFieldConstraint con = (SingleFieldConstraint) fc;
-                        if ( con.isBound() ) {
-                            result.add( con.getFieldBinding() );
-                        }
-                        if ( con.getExpressionValue() != null && con.getExpressionValue().isBound() ) {
-                            result.add( con.getExpressionValue().getBinding() );
-                        }
-                        if ( con instanceof SingleFieldConstraintEBLeftSide ) {
-                            SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
-                            if ( exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound() ) {
-                                result.add( exp.getExpressionLeftSide().getBinding() );
-                            }
-                        }
-
-                    }
-                }
-            }
-        }
-        for ( int i = 0; i < this.rhs.length; i++ ) {
-            IAction pat = this.rhs[i];
-            if ( pat instanceof ActionInsertFact ) {
-                ActionInsertFact fact = (ActionInsertFact) pat;
-                if ( fact.isBound() ) {
-                    result.add( fact.getBoundName() );
-                }
             }
         }
         return result;

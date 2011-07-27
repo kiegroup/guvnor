@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -32,6 +33,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasOperator;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
@@ -268,71 +270,15 @@ public class ConstraintValueEditor extends DirtyableComposite {
             return new SmallLabel( this.constraint.getValue() );
         }
 
-        List<String> vars = this.model.getBoundVariablesInScope( this.constraint );
-
         final ListBox box = new ListBox();
+        box.addItem( constants.Choose() );
 
-        if ( this.constraint.getValue() == null || this.constraint.getValue().equals( "" ) ) {
-            box.addItem( constants.Choose() );
-        }
-
-        int j = 0;
-        for ( String var : vars ) {
-            boolean addVariable = false;
-            FactPattern f = model.getBoundFact( var );
-            String fv = model.getBindingType( var );
-
-            //Identical fact- or field-types can be compared
-            if ( (f != null && f.getFactType().equals( this.fieldType ))
-                    || (fv != null && fv.equals( this.fieldType )) ) {
-                addVariable = true;
-
-            }
-
-            //'this' can be compared to bound facts and fields of the same type
-            if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                if ( f != null && f.getFactType().equals( this.pattern.getFactType() ) ) {
-                    addVariable = true;
-                }
-                if ( fv != null && fv.equals( this.pattern.getFactType() ) ) {
-                    addVariable = true;
-                }
-            }
-
-            //'this' can be compared to bound events if using a CEP operator
-            if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( fv ) ) {
-                if ( this.constraint instanceof HasOperator ) {
-                    HasOperator hop = (HasOperator) this.constraint;
-                    if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
-                        addVariable = true;
-                    }
-                }
-            }
-
-            //Dates can be compared to bound events if using a CEP operator
-            if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( fv )) ) {
-                if ( this.constraint instanceof HasOperator ) {
-                    HasOperator hop = (HasOperator) this.constraint;
-                    if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
-                        addVariable = true;
-                    }
-                }
-            }
-
-            // for collection, present the list of possible bound variable
-            String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
-                                                                        this.fieldName );
-            if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType ))
-                        || (factCollectionType != null && factCollectionType.equals( fv )) ) {
-                addVariable = true;
-            }
-
-            if ( addVariable ) {
-                box.addItem( var );
-                if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
-                    box.setSelectedIndex( j );
-                }
-                j++;
+        List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
+        List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
+        for ( String var : applicableBindingsInScope ) {
+            box.addItem( var );
+            if ( this.constraint.getValue() != null && this.constraint.getValue().equals( var ) ) {
+                box.setSelectedIndex( box.getItemCount() - 1 );
             }
         }
 
@@ -340,7 +286,12 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
             public void onChange(ChangeEvent event) {
                 executeOnValueChangeCommand();
-                constraint.setValue( box.getItemText( box.getSelectedIndex() ) );
+                int selectedIndex = box.getSelectedIndex();
+                if ( selectedIndex > 0 ) {
+                    constraint.setValue( box.getItemText( selectedIndex ) );
+                } else {
+                    constraint.setValue( null );
+                }
             }
         } );
 
@@ -486,31 +437,25 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         //only want to show variables if we have some !
-        if ( this.model.getBoundVariablesInScope( this.constraint ).size() > 0
+        List<String> bindingsInScope = this.model.getBoundVariablesInScope( this.constraint );
+        if ( bindingsInScope.size() > 0
                 || SuggestionCompletionEngine.TYPE_COLLECTION.equals( this.fieldType ) ) {
 
-            List<String> vars = this.model.getBoundFacts();
-            for ( String var : vars ) {
-                FactPattern f = model.getBoundFact( var );
-                String fieldConstraint = model.getBindingType( var );
-                if ( isBoundVariableApplicable( con,
-                                                f,
-                                                fieldConstraint ) ) {
+            List<String> applicableBindingsInScope = getApplicableBindingsInScope( bindingsInScope );
+            if ( applicableBindingsInScope.size() > 0 ) {
 
-                    Button variable = new Button( constants.BoundVariable() );
-                    variable.addClickHandler( new ClickHandler() {
+                Button variable = new Button( constants.BoundVariable() );
+                variable.addClickHandler( new ClickHandler() {
 
-                        public void onClick(ClickEvent event) {
-                            con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
-                            doTypeChosen( form );
-                        }
-                    } );
-                    form.addAttribute( constants.AVariable(),
+                    public void onClick(ClickEvent event) {
+                        con.setConstraintValueType( SingleFieldConstraint.TYPE_VARIABLE );
+                        doTypeChosen( form );
+                    }
+                } );
+                form.addAttribute( constants.AVariable(),
                                        widgets( variable,
                                                 new InfoPopup( constants.ABoundVariable(),
                                                                constants.BoundVariableTip() ) ) );
-                    break;
-                }
             }
         }
 
@@ -577,66 +522,144 @@ public class ConstraintValueEditor extends DirtyableComposite {
         this.onValueChangeCommand = onValueChangeCommand;
     }
 
-    private boolean isBoundVariableApplicable(BaseSingleFieldConstraint con,
-                                              FactPattern f,
-                                              String fieldConstraint) {
+    private List<String> getApplicableBindingsInScope(List<String> bindingsInScope) {
+        List<String> applicableBindingsInScope = new ArrayList<String>();
 
-        //If Fact Types equal we can compare to bound Fact
-        if ( f != null && f.getFactType() != null && f.getFactType().equals( this.fieldType ) ) {
+        //Examine LHS Fact and Field bindings and RHS (new) Fact bindings
+        for ( String v : bindingsInScope ) {
+
+            //LHS FactPattern
+            FactPattern fp = model.getLHSBoundFact( v );
+            if ( fp != null ) {
+                if ( isLHSFactTypeEquivalent( v ) ) {
+                    applicableBindingsInScope.add( v );
+                }
+            }
+
+            //LHS FieldConstraint
+            FieldConstraint fc = model.getLHSBoundField( v );
+            if ( fc != null ) {
+                if ( isLHSFieldTypeEquivalent( v ) ) {
+                    applicableBindingsInScope.add( v );
+                }
+            }
+
+        }
+
+        return applicableBindingsInScope;
+    }
+
+    private boolean isLHSFactTypeEquivalent(String boundVariable) {
+        String boundFactType = model.getLHSBoundFact( boundVariable ).getFactType();
+        String boundFieldType = model.getLHSBindingType( boundVariable );
+
+        //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+        if ( boundFactType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            if ( !this.fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+                return false;
+            }
+            String[] dd = this.sce.getEnumValues( boundFactType,
+                                                  this.fieldName );
+            return isEnumEquivalent( dd );
+        }
+        return isBoundVariableApplicable( boundFactType,
+                                          boundFieldType );
+    }
+
+    private boolean isLHSFieldTypeEquivalent(String boundVariable) {
+        String boundFieldType = this.model.getLHSBindingType( boundVariable );
+
+        //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+        if ( boundFieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            if ( !this.fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+                return false;
+            }
+            FieldConstraint fc = this.model.getLHSBoundField( boundVariable );
+            if ( fc instanceof SingleFieldConstraint ) {
+                String fieldName = ((SingleFieldConstraint) fc).getFieldName();
+                String parentFactTypeForBinding = this.model.getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+                String[] dd = this.sce.getEnumValues( parentFactTypeForBinding,
+                                                      fieldName );
+                return isEnumEquivalent( dd );
+            }
+            return false;
+        }
+
+        return isBoundVariableApplicable( boundFieldType );
+    }
+
+    private boolean isEnumEquivalent(String[] values) {
+        if ( values == null && this.dropDownData.fixedList != null ) {
+            return false;
+        }
+        if ( values != null && this.dropDownData.fixedList == null ) {
+            return false;
+        }
+        if ( values.length != this.dropDownData.fixedList.length ) {
+            return false;
+        }
+        for ( int i = 0; i < values.length; i++ ) {
+            if ( !values[i].equals( this.dropDownData.fixedList[i] ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isBoundVariableApplicable(String boundFactType,
+                                              String boundFieldType) {
+
+        //Fields of the same type as the bound variable can be compared
+        if ( boundFactType != null && boundFactType.equals( this.fieldType ) ) {
             return true;
         }
 
-        //If Field Types equal we can compare to bound Field
-        if ( this.fieldType != null && this.fieldType.equals( fieldConstraint ) ) {
+        //'this' can be compared to bound facts of the same type
+        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+            if ( boundFactType != null && boundFactType.equals( this.pattern.getFactType() ) ) {
+                return true;
+            }
+        }
+
+        //For collection, present the list of possible bound variable
+        String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
+                                                                this.fieldName );
+        if ( boundFactType != null && factCollectionType != null && boundFactType.equals( factCollectionType ) ) {
             return true;
         }
 
-        if ( con instanceof SingleFieldConstraint && f != null && f.getFactType() != null ) {
-            SingleFieldConstraint sfc = (SingleFieldConstraint) con;
+        return isBoundVariableApplicable( boundFieldType );
+    }
 
-            //'this' and Dates can be compared to Events if using a CEP operator
-            if ( SuggestionCompletionEngine.isCEPOperator( sfc.getOperator() ) ) {
-                if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                        return true;
-                    }
-                } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                        return true;
-                    }
-                }
-            } else if ( sfc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+    private boolean isBoundVariableApplicable(String boundFieldType) {
 
-                //'this' can be compared to bound Fact Types of the same data-type
-                if ( f.getFactType().equals( this.pattern.getFactType() ) ) {
-                    return true;
-                }
+        //Field-types can be simply compared
+        if ( boundFieldType != null && boundFieldType.equals( this.fieldType ) ) {
+            return true;
+        }
 
-                //'this' can be compared to bound Fact Fields of the same data-type
-                if ( fieldConstraint != null && fieldConstraint.equals( this.pattern.getFactType() ) ) {
+        //'this' can be compared to bound fields of the same type
+        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+            if ( boundFieldType != null && boundFieldType.equals( this.pattern.getFactType() ) ) {
+                return true;
+            }
+        }
+
+        //'this' can be compared to bound events if using a CEP operator
+        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && sce.isFactTypeAnEvent( boundFieldType ) ) {
+            if ( this.constraint instanceof HasOperator ) {
+                HasOperator hop = (HasOperator) this.constraint;
+                if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
                     return true;
                 }
             }
         }
 
-        //Repeat of SingleFieldConstraint checks but for ConnectiveContraints (oh why don't they extend a single common ancestor)
-        if ( con instanceof ConnectiveConstraint && f != null && f.getFactType() != null ) {
-            ConnectiveConstraint cc = (ConnectiveConstraint) con;
-            if ( SuggestionCompletionEngine.isCEPOperator( cc.getOperator() ) ) {
-                if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                    if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                        return true;
-                    } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                        if ( sce.isFactTypeAnEvent( f.getFactType() ) ) {
-                            return true;
-                        }
-                    }
-                }
-            } else if ( cc.getFieldType().equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
-                if ( f.getFactType().equals( this.pattern.getFactType() ) ) {
-                    return true;
-                }
-                if ( fieldConstraint != null && fieldConstraint.equals( this.pattern.getFactType() ) ) {
+        //Dates can be compared to bound events if using a CEP operator
+        if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( boundFieldType )) ) {
+            if ( this.constraint instanceof HasOperator ) {
+                HasOperator hop = (HasOperator) this.constraint;
+                if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
                     return true;
                 }
             }
@@ -644,8 +667,8 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         //For collection, present the list of possible bound variable
         String factCollectionType = sce.getParametricFieldType( pattern.getFactType(),
-                                                                    this.fieldName );
-        if ( (f != null && factCollectionType != null && f.getFactType().equals( factCollectionType )) || (factCollectionType != null && factCollectionType.equals( fieldConstraint )) ) {
+                                                                this.fieldName );
+        if ( factCollectionType != null && factCollectionType.equals( boundFieldType ) ) {
             return true;
         }
 

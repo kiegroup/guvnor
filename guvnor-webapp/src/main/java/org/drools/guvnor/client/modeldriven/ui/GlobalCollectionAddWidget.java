@@ -50,7 +50,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         super(modeller);
 
         if (readOnly == null) {
-            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getBindingType(action.factName));
+            this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getLHSBindingType(action.factName));
         } else {
             this.readOnly = readOnly;
         }

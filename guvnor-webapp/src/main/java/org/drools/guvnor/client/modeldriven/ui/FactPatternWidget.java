@@ -617,7 +617,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             }
         };
 
-        String patternName = (pattern.getBoundName() != null) ? pattern.getFactType() + " <b>[" + pattern.getBoundName() + "]</b>" : pattern.getFactType();
+        String patternName = (pattern.isBound()) ? pattern.getFactType() + " <b>[" + pattern.getBoundName() + "]</b>" : pattern.getFactType();
 
         String desc;
         if ( isAll0WithLabel ) {

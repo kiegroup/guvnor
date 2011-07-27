@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
@@ -32,6 +33,8 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -141,6 +144,13 @@ public class ActionValueEditor extends DirtyableComposite {
             return;
         }
 
+        //Variable fields (including bound enumeration fields)
+        if ( value.nature == FieldNature.TYPE_VARIABLE ) {
+            Widget list = boundVariable( value );
+            root.add( list );
+            return;
+        }
+
         //Enumerations - since this does not use FieldNature it should follow those that do
         if ( enums != null && (enums.fixedList != null || enums.queryExpression != null) ) {
             Widget list = boundEnum( value );
@@ -148,12 +158,6 @@ public class ActionValueEditor extends DirtyableComposite {
             return;
         }
 
-        //Variable fields        
-        if ( value.nature == FieldNature.TYPE_VARIABLE ) {
-            Widget list = boundVariable( value );
-            root.add( list );
-            return;
-        }
         //Fall through for all remaining FieldNatures
         Widget box = boundTextBox( this.value );
         root.add( box );
@@ -161,40 +165,15 @@ public class ActionValueEditor extends DirtyableComposite {
     }
 
     private Widget boundVariable(final FieldNature c) {
-        /*
-         * If there is a bound variable that is the same type of the current
-         * variable type, then propose a list
-         */
+        // If there is a bound variable that is the same type of the current variable type, then display a list
         ListBox listVariable = new ListBox();
-        List<String> vars = model.getModel().getBoundFacts();
-        for ( String v : vars ) {
-            FactPattern factPattern = model.getModel().getBoundFact( v );
-            String fv = model.getModel().getBindingType( v );
-
-            if ( (factPattern != null && factPattern.getFactType().equals( this.variableType )) || (fv != null) ) {
-                // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
-                }
-
-                listVariable.addItem( v );
-            }
+        listVariable.addItem( constants.Choose() );
+        List<String> bindings = getApplicableBindings();
+        for ( String v : bindings ) {
+            listVariable.addItem( v );
         }
-        /*
-         * add the bound variable of the rhs
-         */
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
-        for ( String v : vars2 ) {
-            ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
-            if ( factPattern.factType.equals( this.variableType ) ) {
-                // First selection is empty
-                if ( listVariable.getItemCount() == 0 ) {
-                    listVariable.addItem( "..." );
-                }
 
-                listVariable.addItem( v );
-            }
-        }
+        //Pre-select applicable item
         if ( value.value.equals( "=" ) ) {
             listVariable.setSelectedIndex( 0 );
         } else {
@@ -204,8 +183,9 @@ public class ActionValueEditor extends DirtyableComposite {
                 }
             }
         }
-        if ( listVariable.getItemCount() > 0 ) {
 
+        //Add event handler
+        if ( listVariable.getItemCount() > 0 ) {
             listVariable.addChangeHandler( new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {
@@ -358,44 +338,22 @@ public class ActionValueEditor extends DirtyableComposite {
             }
         } );
 
-        /*
-         * If there is a bound variable that is the same type of the current
-         * variable type, then show abutton
-         */
-        List<String> vars = model.getModel().getBoundFacts();
-        List<String> vars2 = model.getModel().getRhsBoundFacts();
-        for ( String i : vars2 ) {
-            vars.add( i );
-        }
-        for ( String v : vars ) {
-            boolean createButton = false;
+        // If there is a bound Facts or Fields that are of the same type as the current variable type, then show a button
+        List<String> bindings = getApplicableBindings();
+        if ( bindings.size() > 0 ) {
             Button variable = new Button( constants.BoundVariable() );
-            if ( !vars2.contains( v ) ) {
-                FactPattern factPattern = model.getModel().getBoundFact( v );
-                if ( factPattern != null && factPattern.getFactType().equals( this.variableType ) ) {
-                    createButton = true;
-                }
-            } else {
-                ActionInsertFact factPattern = model.getModel().getRhsBoundFact( v );
-                if ( factPattern.factType.equals( this.variableType ) ) {
-                    createButton = true;
-                }
-            }
-            if ( createButton == true ) {
-                form.addAttribute( constants.BoundVariable() + ":",
-                                   variable );
-                variable.addClickHandler( new ClickHandler() {
+            form.addAttribute( constants.BoundVariable() + ":",
+                               variable );
+            variable.addClickHandler( new ClickHandler() {
 
-                    public void onClick(ClickEvent event) {
-                        value.nature = FieldNature.TYPE_VARIABLE;
-                        value.value = "=";
-                        makeDirty();
-                        refresh();
-                        form.hide();
-                    }
-                } );
-                break;
-            }
+                public void onClick(ClickEvent event) {
+                    value.nature = FieldNature.TYPE_VARIABLE;
+                    value.value = "=";
+                    makeDirty();
+                    refresh();
+                    form.hide();
+                }
+            } );
         }
 
         form.addAttribute( constants.Formula() + ":",
@@ -404,6 +362,130 @@ public class ActionValueEditor extends DirtyableComposite {
                                                    constants.FormulaTip() ) ) );
 
         form.show();
+    }
+
+    private List<String> getApplicableBindings() {
+        List<String> bindings = new ArrayList<String>();
+
+        //Examine LHS Fact and Field bindings and RHS (new) Fact bindings
+        for ( String v : model.getModel().getAllVariables() ) {
+
+            //LHS FactPattern
+            FactPattern fp = model.getModel().getLHSBoundFact( v );
+            if ( fp != null ) {
+                if ( isLHSFactTypeEquivalent( v ) ) {
+                    bindings.add( v );
+                }
+            }
+
+            //LHS FieldConstraint
+            FieldConstraint fc = model.getModel().getLHSBoundField( v );
+            if ( fc != null ) {
+                if ( isLHSFieldTypeEquivalent( v ) ) {
+                    bindings.add( v );
+                }
+            }
+
+            //RHS ActionInsertFact
+            ActionInsertFact aif = model.getModel().getRHSBoundFact( v );
+            if ( aif != null ) {
+                if ( isRHSFieldTypeEquivalent( v ) ) {
+                    bindings.add( v );
+                }
+            }
+        }
+
+        return bindings;
+    }
+
+    private boolean isLHSFactTypeEquivalent(String boundVariable) {
+        String boundFactType = model.getModel().getLHSBoundFact( boundVariable ).getFactType();
+
+        //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+        if ( boundFactType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+                return false;
+            }
+            String[] dd = this.model.getSuggestionCompletions().getEnumValues( boundFactType,
+                                                                               this.value.field );
+            return isEnumEquivalent( dd );
+        }
+
+        //If the types are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
+        if ( boundFactType.equals( this.variableType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLHSFieldTypeEquivalent(String boundVariable) {
+        String boundFieldType = model.getModel().getLHSBindingType( boundVariable );
+
+        //If the fieldTypes are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+        if ( boundFieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+                return false;
+            }
+            FieldConstraint fc = this.model.getModel().getLHSBoundField( boundVariable );
+            if ( fc instanceof SingleFieldConstraint ) {
+                String fieldName = ((SingleFieldConstraint) fc).getFieldName();
+                String parentFactTypeForBinding = this.model.getModel().getLHSParentFactPatternForBinding( boundVariable ).getFactType();
+                String[] dd = this.model.getSuggestionCompletions().getEnumValues( parentFactTypeForBinding,
+                                                                                   fieldName );
+                return isEnumEquivalent( dd );
+            }
+            return false;
+        }
+
+        //If the fieldTypes are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
+        if ( boundFieldType.equals( this.variableType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isRHSFieldTypeEquivalent(String boundVariable) {
+        String boundFactType = model.getModel().getRHSBoundFact( boundVariable ).factType;
+        if ( boundFactType == null ) {
+            return false;
+        }
+        if ( this.variableType == null ) {
+            return false;
+        }
+
+        //If the types are SuggestionCompletionEngine.TYPE_COMPARABLE check the enums are equivalent
+        if ( boundFactType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+            if ( !this.variableType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
+                return false;
+            }
+            String[] dd = this.model.getSuggestionCompletions().getEnumValues( boundFactType,
+                                                                               this.value.field );
+            return isEnumEquivalent( dd );
+        }
+
+        //If the types are identical (and not SuggestionCompletionEngine.TYPE_COMPARABLE) then return true
+        if ( boundFactType.equals( this.variableType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isEnumEquivalent(String[] values) {
+        if ( values == null && this.enums.fixedList != null ) {
+            return false;
+        }
+        if ( values != null && this.enums.fixedList == null ) {
+            return false;
+        }
+        if ( values.length != this.enums.fixedList.length ) {
+            return false;
+        }
+        for ( int i = 0; i < values.length; i++ ) {
+            if ( !values[i].equals( this.enums.fixedList[i] ) ) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private Widget widgets(Button lit,

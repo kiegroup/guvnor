@@ -233,7 +233,7 @@ public class TemplateModel extends RuleModel
         }
 
         private void visitActionFieldList(ActionSetField afl) {
-            String factType = model.getBindingType( afl.variable );
+            String factType = model.getLHSBindingType( afl.variable );
             for ( ActionFieldValue afv : afl.fieldValues ) {
                 if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
                     InterpolationVariable var = new InterpolationVariable( afv.getValue(),
@@ -247,7 +247,7 @@ public class TemplateModel extends RuleModel
         }
 
         private void visitActionFieldList(ActionUpdateField afl) {
-            String factType = model.getBindingType( afl.variable );
+            String factType = model.getLHSBindingType( afl.variable );
             for ( ActionFieldValue afv : afl.fieldValues ) {
                 if ( afv.nature == FieldNature.TYPE_TEMPLATE && !vars.containsKey( afv.value ) ) {
                     InterpolationVariable var = new InterpolationVariable( afv.getValue(),
