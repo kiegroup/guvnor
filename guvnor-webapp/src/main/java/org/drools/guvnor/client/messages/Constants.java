@@ -1232,6 +1232,10 @@ public interface Constants
 
     String CreateANewBPMN2Process();
 
+    String FormDefinition();
+    
+    String CreateANewFormDefinition();
+    
     String NewEnumeration();
 
     String CreateANewEnumerationDropDownMapping();

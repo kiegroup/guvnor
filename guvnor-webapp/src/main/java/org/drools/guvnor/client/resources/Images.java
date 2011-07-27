@@ -331,5 +331,8 @@ public interface Images
 
     @Source("images/user_permissions_large.png")
     ImageResource userPermissionsLarge();
+
+    @Source("images/form_def_icon.png")
+    ImageResource formDefIcon();
     
 }

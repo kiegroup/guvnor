@@ -99,6 +99,13 @@
     </asseteditor>
     
     <asseteditor>
+        <class>org.drools.guvnor.client.formeditor.FormEditor</class>
+        <format>formdef</format>
+        <icon>images.formDefIcon()</icon>
+        <title>constants.FormDefinition()</title>
+    </asseteditor>
+    
+    <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.BPELWrapper</class> 
         <format>bpel.jar</format>
         <icon>images.ruleflowSmall()</icon>

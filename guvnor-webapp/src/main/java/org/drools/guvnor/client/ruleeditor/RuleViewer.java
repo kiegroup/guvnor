@@ -144,6 +144,19 @@ public class RuleViewer extends GuvnorEditor {
                 editor.setHeight( "680px" );
             }
         }
+        
+        // for jbpm form builder we need to give it more playing room as well
+        if ( editor.getClass().getName().equals( "org.drools.guvnor.client.formeditor.FormEditor" ) ) {
+            if ( this.ruleViewerSettings.isStandalone() ) {
+                // standalone bigger dimensions"
+                editor.setWidth( "1600px" );
+                editor.setHeight( "1000px" );
+            } else {
+                // normal dimensions inside guvnor
+                editor.setWidth( "1000px" );
+                editor.setHeight( "680px" );
+            }
+        }
 
         toolbar = new ActionToolbar( getConfiguration(),
                 asset.getState() );

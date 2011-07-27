@@ -46,6 +46,8 @@ public interface ModulesNewAssetMenuView extends IsWidget {
         void onNewRuleFlow();
 
         void onNewBPMN2Process();
+        
+        void onNewFormDefinition();
 
         void onNewWorkitemDefinition();
 

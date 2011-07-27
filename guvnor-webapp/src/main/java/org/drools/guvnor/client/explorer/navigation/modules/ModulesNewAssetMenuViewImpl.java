@@ -53,6 +53,7 @@ public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
         addNewDSLMenuItem();
         addNewRuleFlowMenuItem();
         addNewBPMN2ProcessMenuItem();
+        addNewFormDefinitionMenuItem();
         addNewWorkItemDefinitionMenuItem();
         addNewEnumerationMenuItem();
         addNewTestScenarioMenuItem();
@@ -116,6 +117,16 @@ public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
                         presenter.onNewBPMN2Process();
                     }
                 } );
+    }
+    
+    private void addNewFormDefinitionMenuItem() {
+        createNewMenu.addItem( Util.getHeader( images.formDefIcon(), constants.FormDefinition() ).asString(),
+                true,
+                new Command() {
+                    public void execute() {
+                        presenter.onNewFormDefinition();
+                    }
+                });
     }
 
     private void addNewRuleFlowMenuItem() {

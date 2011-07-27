@@ -85,6 +85,10 @@ public class ModulesNewAssetMenu implements IsWidget, ModulesNewAssetMenuView.Pr
     public void onNewBPMN2Process() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory );
     }
+    
+    public void onNewFormDefinition() {
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory );
+    }
 
     public void onNewWorkitemDefinition() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION, clientFactory );

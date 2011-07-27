@@ -1,0 +1,73 @@
+package org.drools.guvnor.client.formeditor;
+
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.FormContentModel;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.ruleeditor.EditorWidget;
+import org.drools.guvnor.client.ruleeditor.RuleViewer;
+import org.drools.guvnor.client.ruleeditor.SaveEventListener;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Frame;
+
+public class FormEditor extends DirtyableComposite implements
+SaveEventListener,
+EditorWidget {
+
+    private String    modelUUID;
+    private RuleAsset asset;
+    private Frame     frame;
+
+    public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {
+        this.asset = asset;
+        modelUUID = asset.getUuid();
+        initWidgets();
+    }
+    
+    private void initWidgets() {
+        String name;
+
+        /**
+         EditorLauncher.HOSTED_MODE = Boolean.TRUE; // HACK to set it to HOSTED MODE
+         if ( EditorLauncher.HOSTED_MODE.booleanValue() ) {
+             name = "http://localhost:8080/jbpm-form-builder/embed";
+         } else {
+             name = "/jbpm-form-builder/embed";
+         } **/
+
+        name = "/jbpm-form-builder/embed?uuid=" + modelUUID + "&profile=guvnor";
+        frame = new Frame( name );
+        frame.getElement().setAttribute( "domain", Document.get().getDomain() );
+        frame.setWidth( "100%" );
+        frame.setHeight( "100%" );
+        initWidget( frame );
+        setWidth( "100%" );
+        setHeight( "100%" );
+    }
+
+    private final native String callSave(IFrameElement iframe) /*-{
+        return iframe.contentDocument.clientExportForm;
+    }-*/;
+
+    public void onSave() {
+        try {
+            String json = callSave( (IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement()) );
+            if ( asset.getContent() == null ) {
+                asset.setContent( new FormContentModel() );
+            }
+            ((FormContentModel) asset.getContent()).setJson( json );
+        } catch ( Exception e ) {
+            GWT.log( "JSNI method callSave() threw an exception:",
+                     e );
+            Window.alert( "JSNI method callSave() threw an exception: " + e );
+        }
+    }
+
+    public void onAfterSave() {
+    }
+
+}

@@ -74,6 +74,7 @@ public class NewAssetWizard extends FormStylePopup {
         else if ( format.equals( AssetFormats.DSL ) ) return constants.CreateANewDSLConfiguration();
         else if ( format.equals( AssetFormats.RULE_FLOW_RF ) ) return constants.CreateANewRuleFlow();
         else if ( format.equals( AssetFormats.BPMN2_PROCESS ) ) return constants.CreateANewBPMN2Process();
+        else if ( format.equals( AssetFormats.FORM_DEFINITION ) ) return constants.CreateANewFormDefinition();
         else if ( format.equals( AssetFormats.WORKITEM_DEFINITION ) ) return constants.NewWorkitemDefinition();
         else if ( format.equals( AssetFormats.ENUMERATION ) ) return constants.CreateANewEnumerationDropDownMapping();
         else if ( format.equals( AssetFormats.TEST_SCENARIO ) ) return constants.CreateATestScenario();

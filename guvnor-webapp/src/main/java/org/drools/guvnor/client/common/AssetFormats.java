@@ -79,6 +79,8 @@ public class AssetFormats {
     public static final String BPMN_PROCESS = "bpmn";
     public static final String BPMN2_PROCESS = "bpmn2";
     
+    public static final String FORM_DEFINITION = "formdef";
+    
     /**
      * For WorkItems
      */
