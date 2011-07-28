@@ -566,7 +566,7 @@
         <title>Retrieving the source code of the web decision table</title>
 
         <programlisting>WebClient client = WebClient.create("http://127.0.0.1:8080/");
-String content=client.path("guvnor-webapp-5.3.0-SNAPSHOT/rest/packages/essaiRest/assets/tab2/source").accept("text/plain").get(String.class);
+String content=client.path("guvnor-webapp-${project.version}/rest/packages/essaiRest/assets/tab2/source").accept("text/plain").get(String.class);
 GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal(content);        </programlisting>
       </example>
 
@@ -593,7 +593,7 @@ Do some stuff here
 String newContent = GuidedDTXMLPersistence.getInstance().marshal(dt);
 WebClient client2 = WebClient.create("http://127.0.0.1:8080/");
 client2.header("Authorization", authorizationHeader);
-Response response= client2.path("guvnor-webapp-5.3.0-SNAPSHOT/rest/packages/essaiRest/assets/tab2/source").accept("application/xml").put(newContent);        </programlisting>
+Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/essaiRest/assets/tab2/source").accept("application/xml").put(newContent);        </programlisting>
       </example>
 
        <para>In the first line of code above, we are first creating a java String variable that contains the
@@ -644,7 +644,7 @@ Response response= client2.path("guvnor-webapp-5.3.0-SNAPSHOT/rest/packages/essa
     &lt;dependency&gt;
       &lt;groupId&gt;org.drools&lt;/groupId&gt;
       &lt;artifactId&gt;droolsjbpm-ide-common&lt;/artifactId&gt;
-      &lt;version&gt;5.3.0-SNAPSHOT&lt;/version&gt;
+      &lt;version&gt;5.3.0&lt;/version&gt;
     &lt;/dependency&gt;
   &lt;/dependencies&gt;
 &lt;/project&gt;        </programlisting>
