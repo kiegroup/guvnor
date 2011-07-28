@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -31,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
@@ -39,6 +41,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
@@ -118,6 +121,29 @@ public class RuleModelTest {
 
     }
 
+    @Test
+    public void testAllVariableBindings2() {
+        final RuleModel model = new RuleModel();
+        model.lhs = new IPattern[1];
+        final FactPattern fp = new FactPattern( "Car" );
+        model.lhs[0] = fp;
+        fp.setBoundName( "$c" );
+
+        SingleFieldConstraint sfc = new SingleFieldConstraintEBLeftSide( "make" );
+        sfc.getExpressionValue().appendPart( new ExpressionField("make", "java.lang.String", SuggestionCompletionEngine.TYPE_STRING) );
+        sfc.setFieldBinding( "$m" );
+        fp.addConstraint( sfc );
+
+        List<String> vars = model.getAllVariables();
+        assertEquals( 2,
+                      vars.size() );
+        assertEquals( "$c",
+                      vars.get( 0 ) );
+        assertEquals( "$m",
+                      vars.get( 1 ) );
+
+    }
+    
     @Test
     public void testAttributes() {
         final RuleModel m = new RuleModel();
