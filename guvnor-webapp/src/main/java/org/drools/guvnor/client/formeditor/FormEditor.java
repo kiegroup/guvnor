@@ -3,7 +3,9 @@ package org.drools.guvnor.client.formeditor;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.FormContentModel;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
@@ -12,6 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
 
 public class FormEditor extends DirtyableComposite implements
@@ -21,11 +24,19 @@ EditorWidget {
     private String    modelUUID;
     private RuleAsset asset;
     private Frame     frame;
+    
+    private String[] username = new String[] { null }; 
 
     public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {
         this.asset = asset;
         modelUUID = asset.getUuid();
         initWidgets();
+        RepositoryServiceFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
+            public void onSuccess(UserSecurityContext result) {
+                username[0] = result.getUserName();
+            }
+            public void onFailure(Throwable caught) { }
+        });
     }
     
     private void initWidgets() {
@@ -40,6 +51,9 @@ EditorWidget {
          } **/
 
         name = "/jbpm-form-builder/embed?uuid=" + modelUUID + "&profile=guvnor";
+        if (username[0] != null) {
+            name += "&username=" + username[0];
+        }
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain", Document.get().getDomain() );
         frame.setWidth( "100%" );
