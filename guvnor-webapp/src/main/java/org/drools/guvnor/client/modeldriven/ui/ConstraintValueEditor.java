@@ -655,6 +655,16 @@ public class ConstraintValueEditor extends DirtyableComposite {
             }
         }
 
+        //'this' can be compared to bound Dates if using a CEP operator
+        if ( this.fieldType.equals( SuggestionCompletionEngine.TYPE_THIS ) && boundFieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            if ( this.constraint instanceof HasOperator ) {
+                HasOperator hop = (HasOperator) this.constraint;
+                if ( SuggestionCompletionEngine.isCEPOperator( hop.getOperator() ) ) {
+                    return true;
+                }
+            }
+        }
+        
         //Dates can be compared to bound events if using a CEP operator
         if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( boundFieldType )) ) {
             if ( this.constraint instanceof HasOperator ) {
