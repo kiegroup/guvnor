@@ -53,7 +53,7 @@
   </filelist>
 
   <filelist id="drools-ant" dir="lib">
-    <file name="drools-ant-5.2.0.jar" />
+    <file name="drools-ant-${project.version}.jar" />
   </filelist>
 
   <taskdef name="migrate" classname="org.drools.contrib.JackrabbitMigrationAntTask"
