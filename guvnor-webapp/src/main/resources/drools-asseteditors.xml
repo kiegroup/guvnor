@@ -142,7 +142,7 @@
     </asseteditor>   
     
      <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>xml</format>
         <icon>images.newFile()</icon>
         <title>constants.XMLProperties()</title>    

@@ -198,13 +198,17 @@ public class MetaDataWidget extends Composite {
             endSection( true );
         }
 
-        startSection( constants.VersionHistory() );
-        //Do not show version feed for asset due to GUVNOR-1308
-        if ( !(artifact instanceof RuleAsset) ) {
-            addAttribute( constants.VersionFeed(),
-                    new HTML( "<a href='"
-                            + getVersionFeed( artifact ) + "' target='_blank'><img src='"
-                            + new Image( images.feed() ).getUrl() + "'/></a>" ) );
+        startSection(constants.VersionHistory());
+        // Do not show version feed for asset due to GUVNOR-1308
+        if (!(artifact instanceof RuleAsset)) {
+            Image image = new Image(images.feed());
+            image.addClickHandler(new ClickHandler() {
+                public void onClick(ClickEvent arg0) {
+                    Window.open(getVersionFeed(artifact), "_blank", null);
+
+                }
+            });
+            addAttribute(constants.VersionFeed(), image);
         }
 
         addAttribute( constants.CurrentVersionNumber(),

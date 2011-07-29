@@ -259,19 +259,18 @@ public class RuleModel
 
                 for ( int j = 0; j < fact.getFieldConstraints().length; j++ ) {
                     FieldConstraint fc = fact.getFieldConstraints()[j];
-                    if ( fc instanceof SingleFieldConstraint ) {
+                    if ( fc instanceof SingleFieldConstraintEBLeftSide ) {
+                        SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) fc;
+                        if ( exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound() ) {
+                            result.add( exp.getExpressionLeftSide().getBinding() );
+                        }
+                    } else if ( fc instanceof SingleFieldConstraint ) {
                         SingleFieldConstraint con = (SingleFieldConstraint) fc;
                         if ( con.isBound() ) {
                             result.add( con.getFieldBinding() );
                         }
                         if ( con.getExpressionValue() != null && con.getExpressionValue().isBound() ) {
                             result.add( con.getExpressionValue().getBinding() );
-                        }
-                        if ( con instanceof SingleFieldConstraintEBLeftSide ) {
-                            SingleFieldConstraintEBLeftSide exp = (SingleFieldConstraintEBLeftSide) con;
-                            if ( exp.getExpressionLeftSide() != null && exp.getExpressionLeftSide().isBound() ) {
-                                result.add( exp.getExpressionLeftSide().getBinding() );
-                            }
                         }
                     }
                 }
