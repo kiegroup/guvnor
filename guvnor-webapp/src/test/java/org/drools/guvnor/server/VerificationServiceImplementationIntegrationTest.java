@@ -42,7 +42,6 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
     }
 
     @Test
-    @Ignore("NPE at org.drools.repository.RulesRepositoryAdministrator.isNamespaceRegistered(RulesRepositoryAdministrator.java:48). Runs OK locally.")
     public void testVerifierCauseTrace() throws Exception {
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifierCauseTrace",
                                                                                     "" );
@@ -61,7 +60,6 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
     }
 
     @Test
-    @Ignore("NPE at org.drools.repository.RulesRepositoryAdministrator.isNamespaceRegistered(RulesRepositoryAdministrator.java:48). Runs OK locally.")
     public void testVerifier() throws Exception {
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testVerifier",
                                                                           "" );
