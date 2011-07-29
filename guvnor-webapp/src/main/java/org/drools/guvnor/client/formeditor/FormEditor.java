@@ -3,6 +3,7 @@ package org.drools.guvnor.client.formeditor;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.FormContentModel;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
@@ -13,6 +14,11 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Frame;
@@ -27,16 +33,19 @@ EditorWidget {
     
     private String[] username = new String[] { null }; 
 
+    private final RepositoryServiceAsync repoService;
+    
     public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {
         this.asset = asset;
         modelUUID = asset.getUuid();
-        initWidgets();
         RepositoryServiceFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
             public void onSuccess(UserSecurityContext result) {
                 username[0] = result.getUserName();
             }
             public void onFailure(Throwable caught) { }
         });
+        this.repoService = clientFactory.getRepositoryService();
+        initWidgets();
     }
     
     private void initWidgets() {
@@ -82,6 +91,27 @@ EditorWidget {
     }
 
     public void onAfterSave() {
+        String json  = ((FormContentModel) asset.getContent()).getJson();
+        exportFormToFtl(json);
     }
 
+    private void exportFormToFtl(String jsonForm) {
+        String url = "/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
+        RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
+        builder.setCallback(new RequestCallback() {
+            public void onResponseReceived(Request request, Response response) {
+                //TODO see what to do here
+            }
+            public void onError(Request request, Throwable exception) {
+                GWT.log( "template creation threw an exception:", exception );
+                Window.alert( "template creation threw an exception: " + exception );
+            }
+        });
+        try {
+            builder.send();
+        } catch (RequestException e) {
+            GWT.log( "template creator invoke threw an exception:", e );
+            Window.alert( "template creator invoke threw an exception: " + e );
+        }
+    }
 }
