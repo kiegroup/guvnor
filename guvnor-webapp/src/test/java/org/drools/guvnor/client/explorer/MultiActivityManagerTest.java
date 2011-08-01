@@ -15,13 +15,15 @@
  */
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.ResettableEventBus;
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.user.client.ui.IsWidget;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
@@ -32,7 +34,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Matchers;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.*;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.ResettableEventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceChangeEvent;
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.ui.IsWidget;
 
 public class MultiActivityManagerTest {
 
@@ -143,13 +151,15 @@ public class MultiActivityManagerTest {
 
         HandlerRegistration handlerRegistration = mock( HandlerRegistration.class );
         ClosePlaceEvent.Handler handler = mock( ClosePlaceEvent.Handler.class );
-        when( eventBus.addHandler( ClosePlaceEvent.TYPE, handler ) ).thenReturn( handlerRegistration );
 
+        when( eventBus.addHandler( any(ClosePlaceEvent.TYPE.getClass()), any(HandlerRegistration.class) ) ).thenReturn( handlerRegistration );
+       
         Activity activity = goTo( place );
 
         when( activity.mayStop() ).thenReturn( true );
 
         verify( activity ).start( any( AcceptTabItem.class ), resettableEventBusArgumentCaptor.capture() );
+ 
         resettableEventBusArgumentCaptor.getValue().addHandler( ClosePlaceEvent.TYPE, handler );
 
         multiActivityManager.onCloseTab( new ClosePlaceEvent( place ) );

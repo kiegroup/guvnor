@@ -11,7 +11,7 @@
   <productnumber>5.3</productnumber>
   <edition>1</edition>
   <pubsnumber>1</pubsnumber>
-  <releaseinfo>5.3.0-SNAPSHOT</releaseinfo>
+  <releaseinfo>Version &project.version;</releaseinfo>
 
   <abstract>
     <para>

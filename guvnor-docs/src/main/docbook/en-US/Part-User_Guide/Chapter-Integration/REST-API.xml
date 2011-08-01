@@ -1,41 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~ Copyright 2011 JBoss Inc
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~       http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  -->
-<chapter version="5.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Rest and HTTP</title>
+  <title>REST API</title>
 
   <para>The repository back end can also be accessed via Rest. Rest is a http
   based protocol API - which has clients on all platforms and in all
   programming language.</para>
 
   <section>
-    <title>Rest</title>
+    <title>REST</title>
 
     <para>Representational State Transfer (REST) is a style of software
     architecture for distributed hypermedia systems such as the World Wide
     Web. The term Representational State Transfer was introduced and defined
-    in 2000 by <link linkend="http://en.wikipedia.org/wiki/Roy_Fielding">Roy
-    Fielding </link> in his doctoral dissertation.</para>
+    in 2000 by <link
+    xlink:href="http://en.wikipedia.org/wiki/Roy_Fielding">Roy Fielding</link>
+    in his doctoral dissertation.</para>
 
     <para>REST-style architectures consist of clients and servers. Clients
     initiate requests to servers; servers process requests and return
@@ -70,27 +55,19 @@
       <para>This part of the API uses as entry point the categories defined
       for each rule asset when it is created by the user in Guvnor</para>
 
-      <table frame="AssetByCategory">
+      <table>
         <title>Accessing Rule Assets by Category</title>
 
         <tgroup cols="4">
-          <colspec colname="col1" colnum="1" colwidth="2*" />
-
-          <colspec colname="col2" colnum="2" colwidth="0.25*" />
-
-          <colspec colname="col2" colnum="3" colwidth="0.75*" />
-
-          <colspec colname="col4" colnum="4" colwidth="3*" />
-
           <thead>
             <row>
-              <entry>address</entry>
+              <entry align="center">URL</entry>
 
-              <entry>mode</entry>
+              <entry align="center">Mode</entry>
 
-              <entry>produces media type</entry>
+              <entry align="center">MIME-Type</entry>
 
-              <entry>Description</entry>
+              <entry align="center">Description</entry>
             </row>
           </thead>
 
@@ -140,45 +117,35 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="left"
+            <imagedata align="center"
                        fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
-                       format="PNG" scalefit="0.5"></imagedata>
+                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
     </section>
 
     <section>
-      <title>Getting rule Assets by package</title>
+      <title>Accessing Rule Assets by Package</title>
 
       <para>This part of the API allows to access all rule asset by package
       (with its name) and by the asset name.</para>
 
-      <table frame="AssetByPaccakge">
+      <table>
         <title>Accessing Rule Assets by Package</title>
 
         <tgroup cols="5">
-          <colspec colname="col1" colnum="1" colwidth="2*" />
-
-          <colspec colname="col2" colnum="2" colwidth="0.25*" />
-
-          <colspec colname="col2" colnum="3" colwidth="0.75*" />
-
-          <colspec colname="col3" colnum="4" colwidth="0.75*" />
-
-          <colspec colname="col4" colnum="5" colwidth="3*" />
-
           <thead>
             <row>
-              <entry>address</entry>
+              <entry align="center">URL</entry>
 
-              <entry>mode</entry>
+              <entry align="center">Mode</entry>
 
-              <entry>produces Media Type</entry>
+              <entry align="center">Produces MIME-Type</entry>
 
-              <entry>consumes Media Type</entry>
+              <entry align="center">Consumes MIME-Type</entry>
 
-              <entry>Description</entry>
+              <entry align="center">Description</entry>
             </row>
           </thead>
 
@@ -192,7 +159,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns all packages contained in the Guvnor repository in Atom Feed format</entry>
+              <entry>Returns all packages contained in the Guvnor repository
+              in Atom Feed format</entry>
             </row>
 
             <row>
@@ -204,7 +172,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns all packages contained in the Guvnor repository in JSON or XML format</entry>
+              <entry>Returns all packages contained in the Guvnor repository
+              in JSON or XML format</entry>
             </row>
 
             <row>
@@ -216,9 +185,10 @@
 
               <entry>application/octet-stream</entry>
 
-              <entry>Creates a new package from an input stream of DRL. Returns the newly created package in Atom Entry format.</entry>
+              <entry>Creates a new package from an input stream of DRL.
+              Returns the newly created package in Atom Entry format.</entry>
             </row>
-            
+
             <row>
               <entry>/packages</entry>
 
@@ -228,9 +198,10 @@
 
               <entry>application/octet-stream</entry>
 
-              <entry>Creates a package from an input stream of DRL. Returns the newly created package in JSON or XML format.</entry>
+              <entry>Creates a package from an input stream of DRL. Returns
+              the newly created package in JSON or XML format.</entry>
             </row>
-            
+
             <row>
               <entry>/packages</entry>
 
@@ -240,7 +211,8 @@
 
               <entry>application/atom+xml</entry>
 
-              <entry>Creates a package from an Atom Entry. Returns the newly created package in Atom Entry format</entry>
+              <entry>Creates a package from an Atom Entry. Returns the newly
+              created package in Atom Entry format</entry>
             </row>
 
             <row>
@@ -252,7 +224,8 @@
 
               <entry>none</entry>
 
-              <entry>Creates a package from JSON or XML. Returns the newly created package in JSON or XML format.</entry>
+              <entry>Creates a package from JSON or XML. Returns the newly
+              created package in JSON or XML format.</entry>
             </row>
 
             <row>
@@ -264,7 +237,8 @@
 
               <entry>none</entry>
 
-              <entry>Returns the metadata of the package {packageName} as an Atom Entry.</entry>
+              <entry>Returns the metadata of the package {packageName} as an
+              Atom Entry.</entry>
             </row>
 
             <row>
@@ -302,8 +276,10 @@
 
               <entry>none</entry>
 
-              <entry>Returns the compiled binary of the package {packageName} as a binary stream. If the package has not 
-              been compiled yet or its binary is not up to date, this will compile the package first.</entry>
+              <entry>Returns the compiled binary of the package {packageName}
+              as a binary stream. If the package has not been compiled yet or
+              its binary is not up to date, this will compile the package
+              first.</entry>
             </row>
 
             <row>
@@ -355,8 +331,9 @@
               <entry>none</entry>
 
               <entry>Returns the binary (compiled code) of package
-              {packageName} and of version {version} as an octet stream. If the
-              package was never built, it returns HTTP code 500 with an error message.</entry>
+              {packageName} and of version {version} as an octet stream. If
+              the package was never built, it returns HTTP code 500 with an
+              error message.</entry>
             </row>
 
             <row>
@@ -368,8 +345,8 @@
 
               <entry>none</entry>
 
-              <entry>Updates the metadata of package {packageName} with a given
-              Atom Entry.</entry>
+              <entry>Updates the metadata of package {packageName} with a
+              given Atom Entry.</entry>
             </row>
 
             <row>
@@ -383,7 +360,7 @@
 
               <entry>Deletes package {packageName}.</entry>
             </row>
-            
+
             <row>
               <entry>/packages/{packageName}/assets</entry>
 
@@ -433,8 +410,8 @@
               <entry>none</entry>
 
               <entry>Returns the rule asset {assetName} contained in package
-              {packageName} as an Asset in JSON or XML format (see the UML representation
-              below).</entry>
+              {packageName} as an Asset in JSON or XML format (see the UML
+              representation below).</entry>
             </row>
 
             <row>
@@ -446,8 +423,9 @@
 
               <entry>none</entry>
 
-              <entry>Returns the binary content of rule asset {assetName} contained in package
-              {packageName}. If this asset has no binary content, this will return its source content instead</entry>
+              <entry>Returns the binary content of rule asset {assetName}
+              contained in package {packageName}. If this asset has no binary
+              content, this will return its source content instead</entry>
             </row>
 
             <row>
@@ -459,11 +437,11 @@
 
               <entry>none</entry>
 
-              <entry>Returns the content of rule asset {assetName}
-              contained in package {packageName}. If this is a binary asset, this will 
+              <entry>Returns the content of rule asset {assetName} contained
+              in package {packageName}. If this is a binary asset, this will
               return the binary data as a byte array.</entry>
             </row>
-            
+
             <row>
               <entry>/packages/{packageName}/assets</entry>
 
@@ -473,10 +451,12 @@
 
               <entry>application/atom+xml</entry>
 
-              <entry>Creates an asset in package {packageName} from the Atom Entry provided. Following info are required 
-              from the input Atom Entry: asset name, asset description, asset initial category, asset format</entry>
-            </row>  
-            
+              <entry>Creates an asset in package {packageName} from the Atom
+              Entry provided. Following info are required from the input Atom
+              Entry: asset name, asset description, asset initial category,
+              asset format</entry>
+            </row>
+
             <row>
               <entry>/packages/{packageName}/assets</entry>
 
@@ -486,9 +466,11 @@
 
               <entry>application/atom+xml</entry>
 
-              <entry>Creates a binary asset in package {packageName} from the input stream. The value of Slug header is used to 
-              indicate the name of the asset. This returns HTTP 500 error is the slug header is missing. </entry>
-            </row>           
+              <entry>Creates a binary asset in package {packageName} from the
+              input stream. The value of Slug header is used to indicate the
+              name of the asset. This returns HTTP 500 error is the slug
+              header is missing.</entry>
+            </row>
 
             <row>
               <entry>/packages/{packageName}/assets/{assetName}/source</entry>
@@ -502,7 +484,7 @@
               <entry>Updates the source code of the rule asset {assetName}
               contained in package {packageName}.</entry>
             </row>
-            
+
             <row>
               <entry>/packages/{packageName}/assets/{assetName}</entry>
 
@@ -538,14 +520,12 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata align="left"
+            <imagedata align="center"
                        fileref="images/Chapter-Guvnor/PackageUMLRepresentation.png"
-                       format="PNG" scalefit="0.5"></imagedata>
+                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
-
-
     </section>
   </section>
 
@@ -556,11 +536,12 @@
     API</para>
 
     <section>
-      <title>Retrieving and updating Web decision table </title>
+      <title>Retrieving and updating Web decision table</title>
 
       <para>We are using apache CXF in our example to show how to access the
       Rest API of Guvnor. In the example here we are getting and updating a
-      web decision table. But this example applies to all Guvnor asset type.</para>
+      web decision table. But this example applies to all Guvnor asset
+      type.</para>
 
       <example>
         <title>Retrieving the source code of the web decision table</title>
@@ -570,17 +551,22 @@ String content=client.path("guvnor-webapp-${project.version}/rest/packages/essai
 GuidedDecisionTable52 dt = GuidedDTXMLPersistence.getInstance().unmarshal(content);        </programlisting>
       </example>
 
-       <para>In the first line of code above, we are first creating a WebClient variable that points to the server
-         (here on localhost on port 8080). </para>
-      <para>In the second line of code above, we are retrieving the source content by accessing
-        the /rest/packages/{packageName}/assets/{assetName}/source where i our case packageName is "essaiRest"
-        and assetName is "tab2".</para>
-      <para>In the third line of code above, the source code we get is the data structure of a Web decision table.
-        So to be able to  manipulate the Web decision table, we have to transform the string variable
-        (the source code that contains the xml of the data structure of the web decision table) in the
-        java structure (a java class) for web decision table GuidedDecisionTable52.
-        All guided asset in Guvnor have a java structure to manipulate them</para>
+      <para>In the first line of code above, we are first creating a WebClient
+      variable that points to the server (here on localhost on port
+      8080).</para>
 
+      <para>In the second line of code above, we are retrieving the source
+      content by accessing the
+      /rest/packages/{packageName}/assets/{assetName}/source where i our case
+      packageName is "essaiRest" and assetName is "tab2".</para>
+
+      <para>In the third line of code above, the source code we get is the
+      data structure of a Web decision table. So to be able to manipulate the
+      Web decision table, we have to transform the string variable (the source
+      code that contains the xml of the data structure of the web decision
+      table) in the java structure (a java class) for web decision table
+      GuidedDecisionTable52. All guided asset in Guvnor have a java structure
+      to manipulate them</para>
 
       <example>
         <title>updating the source code of the web decision table</title>
@@ -596,22 +582,23 @@ client2.header("Authorization", authorizationHeader);
 Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/essaiRest/assets/tab2/source").accept("application/xml").put(newContent);        </programlisting>
       </example>
 
-       <para>In the first line of code above, we are first creating a java String variable that contains the
-         authorization element needed to update an asset on the Guvnor repository.
-       </para>
+      <para>In the first line of code above, we are first creating a java
+      String variable that contains the authorization element needed to update
+      an asset on the Guvnor repository.</para>
 
-         <para>In the next lines of code above, we are doing some stuff to modify the Web decision table.
-       </para>
+      <para>In the next lines of code above, we are doing some stuff to modify
+      the Web decision table.</para>
 
-       <para>In the following  lines of code above, we are first transforming the java structure in an xml structure
-         that we put in a java String variable.
-         Then we again create a WebClient but this time we are also filling the header with a variable "Authorization"
-         that contains the String we built in the first line and that contains  the user name "guest" and its password
-         (here no password). We then put the new content on the Guvnor repository.
-       </para>
+      <para>In the following lines of code above, we are first transforming
+      the java structure in an xml structure that we put in a java String
+      variable. Then we again create a WebClient but this time we are also
+      filling the header with a variable "Authorization" that contains the
+      String we built in the first line and that contains the user name
+      "guest" and its password (here no password). We then put the new content
+      on the Guvnor repository.</para>
 
-       <para>Next you can find the pom.xml file to use the Guvnor Rest API in case yuo are using Maven.
-       </para>
+      <para>Next you can find the pom.xml file to use the Guvnor Rest API in
+      case yuo are using Maven.</para>
 
       <example>
         <title>pom.xml content for our example</title>
@@ -649,9 +636,6 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
   &lt;/dependencies&gt;
 &lt;/project&gt;        </programlisting>
       </example>
-
-
-
     </section>
   </section>
-</chapter>
+</section>
