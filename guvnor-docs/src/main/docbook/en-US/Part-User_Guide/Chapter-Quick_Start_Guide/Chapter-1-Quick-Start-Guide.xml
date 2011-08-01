@@ -8,5 +8,6 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Quick Start Guide</title>
 
-  <xi:include href="Quick_Start_Guide.xml" xpointer="element(/1)" />
+  <xi:include href="Quick_Start_Guide.xml"
+              xpointer="element(/1)" />
 </chapter>

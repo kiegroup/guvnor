@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
-         xsi:schemaLocation="http://docbook.org/ns/docbook http://www.docbook.org/xml/5.0/xsd/docbook.xsd http://www.w3.org/1999/xlink http://www.docbook.org/xml/5.0/xsd/xlink.xsd"
-         xml:base="../" xmlns="http://docbook.org/ns/docbook"
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Eclipse Guvnor integration</title>
 
@@ -26,8 +27,8 @@
   <section>
     <title>Source Code and Plug-in Details</title>
 
-    <para>The source code for the EGT is available at: <ulink
-    url="http://github.com/droolsjbpm/droolsjbpm-tools/tree/master/drools-eclipse" />.
+    <para>The source code for the EGT is available in <link
+    xlink:href="http://github.com/droolsjbpm/droolsjbpm-tools/tree/master/drools-eclipse">github</link>.
     EGT consist of two plug-ins: org.guvnor.tools and org.eclipse.webdav. They
     require Eclipse 3.3.x. The current Eclipse Drools plug-ins are also useful
     for viewing Guvnor repository resources such as rule definitions, but not
@@ -51,9 +52,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT1.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT1.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -65,9 +65,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT2.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT2.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -96,9 +95,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT3.png" format="PNG"
-                     scalefit="0"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT3.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -110,9 +108,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT4.png" format="PNG"
-                     scalefit="0"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT4.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -125,19 +122,19 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT5.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT5.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>Default values appear in the Location, Port, and Repository fields.
-    (See <xref linkend="sect-guvnor-plugin-prefences" /> for details about how
-    to change these default values.) Of course, any of these fields can be
-    edited by typing in the corresponding text box. Drag-and-drop or paste
-    into the Location field of a typical Guvnor repository URL such as: <ulink
-    url="http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav" />
+    (See "<link linkend="section-guvnor-plugin-preferences">Guvnor plugin
+    Preferences</link>" for details about how to change these default values.)
+    Of course, any of these fields can be edited by typing in the
+    corresponding text box. Drag-and-drop or paste into the Location field of
+    a typical Guvnor repository URL such as <link
+    xlink:href="http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav">http://localhost:8080/guvnor-webapp/org.drools.guvnor.Guvnor/webdav</link>
     results in the URL being parsed into the respective fields as well. The
     authentication information (user name and password) can optionally be
     stored in the Eclipse workbench's key-ring file based on the selection of
@@ -156,9 +153,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT6.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT6.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -191,9 +187,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT7.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT7.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -216,9 +211,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT8.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT8.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -236,9 +230,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT9.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT9.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -253,9 +246,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT10.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT10.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -307,33 +299,31 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT11.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT11.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
 
     <para>Note the Guvnor icon decorator on the top right of the file images,
     and the Guvnor revision details appended to the file names. (The
-    presence/location of these can be changed. See <xref
-    linkend="sect-guvnor-plugin-prefences" /> for details.) Here we see that,
-    for example, <filename>simpleRule.drl</filename> is associated with a
-    Guvnor repository resource and the local copy is based on revision 3, with
-    a 7-15-2008, 15:37:34 date/time stamp. The file
-    <filename>deleteTest.txt</filename>, however, is not associated with a
-    Guvnor repository file. Further details about the association can be found
-    in the standard Eclipse properties page, via the context menu “Properties”
-    selection:</para>
+    presence/location of these can be changed. See "<link
+    linkend="section-guvnor-plugin-preferences">Guvnor plugin
+    Preferences</link>" for details.) Here we see that, for example,
+    <filename>simpleRule.drl</filename> is associated with a Guvnor repository
+    resource and the local copy is based on revision 3, with a 7-15-2008,
+    15:37:34 date/time stamp. The file <filename>deleteTest.txt</filename>,
+    however, is not associated with a Guvnor repository file. Further details
+    about the association can be found in the standard Eclipse properties
+    page, via the context menu “Properties” selection:</para>
 
     <figure>
       <title>Properties</title>
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT12.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT12.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -375,9 +365,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT13.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT13.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -394,9 +383,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT14.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT14.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -419,9 +407,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT15.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT15.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -434,9 +421,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT16.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT16.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -457,9 +443,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT17.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT17.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -491,9 +476,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT18.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT18.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -509,9 +493,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT19.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT19.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -545,9 +528,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT20.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT20.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -560,9 +542,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT21.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT21.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -575,9 +556,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT22.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT22.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -592,15 +572,14 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT23.png" format="PNG"
-                     scalefit="1"></imagedata>
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT23.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
   </section>
 
-  <section id="sect-guvnor-plugin-prefences">
+  <section xml:id="section-guvnor-plugin-preferences">
     <title>Guvnor plugin Preferences</title>
 
     <para>The EGT provides a preference page in the “Guvnor” category:</para>
@@ -610,9 +589,8 @@
 
       <mediaobject>
         <imageobject>
-          <imagedata align="center"
-                     fileref="../images/Chapter-Guvnor/EGT24.png" format="PNG"
-                     scalefit="1" />
+          <imagedata align="center" fileref="images/Chapter-Guvnor/EGT24.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
