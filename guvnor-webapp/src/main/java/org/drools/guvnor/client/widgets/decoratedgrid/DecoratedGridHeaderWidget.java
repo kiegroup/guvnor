@@ -99,8 +99,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     protected DecoratedGridWidget<T>              grid;
 
     // Resources
-    protected static final DecisionTableResources resource         = GWT
-                                                                            .create( DecisionTableResources.class );
+    protected static final DecisionTableResources resource         = GWT.create( DecisionTableResources.class );
     protected static final DecisionTableStyle     style            = resource.cellTableStyle();
     protected static final Constants              constants        = GWT.create( Constants.class );
 

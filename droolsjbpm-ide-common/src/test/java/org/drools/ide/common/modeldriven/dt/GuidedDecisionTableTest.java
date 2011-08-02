@@ -64,13 +64,20 @@ public class GuidedDecisionTableTest {
         dt.getConditionPatterns().add( p1_ );
 
         ConditionCol52 c1__ = new ConditionCol52();
+        c1__.setFactField( "sex" );
+        p1_.getConditions().add( c1__ );
+        c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        c1__.setValueList( "Male,Female" );
+        dt.getConditionPatterns().add( p1_ );
+
+        ConditionCol52 c1___ = new ConditionCol52();
         Pattern52 p1__ = new Pattern52();
         p1__.setBoundName( "c1" );
         p1__.setFactType( "Driver" );
-        c1__.setFactField( "name" );
-        c1__.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-        c1__.setValueList( "one,two,three" );
-        p1__.getConditions().add( c1__ );
+        c1___.setFactField( "name" );
+        c1___.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c1___.setValueList( "one,two,three" );
+        p1__.getConditions().add( c1___ );
         dt.getConditionPatterns().add( p1__ );
 
         ConditionCol52 c2 = new ConditionCol52();
@@ -126,11 +133,25 @@ public class GuidedDecisionTableTest {
         assertEquals( "michael",
                       r[1] );
 
-        assertEquals( 0,
-                      dt.getValueList( c1_,
-                                       sce ).length );
+        r = dt.getValueList( c1_,
+                                      sce );
+        assertEquals( 2,
+                      r.length );
+        assertEquals( "bob",
+                      r[0] );
+        assertEquals( "michael",
+                      r[1] );
 
         r = dt.getValueList( c1__,
+                             sce );
+        assertEquals( 2,
+                      r.length );
+        assertEquals( "Male",
+                      r[0] );
+        assertEquals( "Female",
+                      r[1] );
+
+        r = dt.getValueList( c1___,
                              sce );
         assertEquals( 3,
                       r.length );
@@ -612,6 +633,104 @@ public class GuidedDecisionTableTest {
                                           sce ) );
         assertTrue( dt.isConstraintValid( c6,
                                           sce ) );
+
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testConditionPredicateChoices() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        c1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        c1.setValueList( "age>10,age>20,age>30" );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
+
+        SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+
+        sce.setFieldsForTypes( new HashMap<String, ModelField[]>() {
+            {
+                put( "Driver",
+                        new ModelField[]{
+                                new ModelField( "age",
+                                                Integer.class.getName(),
+                                                FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                new ModelField( "name",
+                                                String.class.getName(),
+                                                FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                SuggestionCompletionEngine.TYPE_STRING )
+                        } );
+            }
+        } );
+
+        assertTrue( dt.getValueList( c1,
+                                     sce ).length > 0 );
+        assertTrue( dt.getValueList( c1,
+                                     sce ).length == 3 );
+        assertEquals( "age>10",
+                      dt.getValueList( c1,
+                                       sce )[0] );
+        assertEquals( "age>20",
+                      dt.getValueList( c1,
+                                       sce )[1] );
+        assertEquals( "age>30",
+                      dt.getValueList( c1,
+                                       sce )[2] );
+
+    }
+
+    @SuppressWarnings("serial")
+    @Test
+    public void testConditionFormulaChoices() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        ConditionCol52 c1 = new ConditionCol52();
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "c1" );
+        p1.setFactType( "Driver" );
+        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        c1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        c1.setValueList( "getAge()>10,getAge()>20,getAge()>30" );
+        p1.getConditions().add( c1 );
+        dt.getConditionPatterns().add( p1 );
+
+        SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
+
+        sce.setFieldsForTypes( new HashMap<String, ModelField[]>() {
+            {
+                put( "Driver",
+                        new ModelField[]{
+                                new ModelField( "age",
+                                                Integer.class.getName(),
+                                                FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                SuggestionCompletionEngine.TYPE_NUMERIC ),
+                                new ModelField( "name",
+                                                String.class.getName(),
+                                                FIELD_CLASS_TYPE.REGULAR_CLASS,
+                                                SuggestionCompletionEngine.TYPE_STRING )
+                        } );
+            }
+        } );
+
+        assertTrue( dt.getValueList( c1,
+                                     sce ).length > 0 );
+        assertTrue( dt.getValueList( c1,
+                                     sce ).length == 3 );
+        assertEquals( "getAge()>10",
+                      dt.getValueList( c1,
+                                       sce )[0] );
+        assertEquals( "getAge()>20",
+                      dt.getValueList( c1,
+                                       sce )[1] );
+        assertEquals( "getAge()>30",
+                      dt.getValueList( c1,
+                                       sce )[2] );
 
     }
 

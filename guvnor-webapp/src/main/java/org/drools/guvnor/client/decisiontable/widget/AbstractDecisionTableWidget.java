@@ -469,14 +469,13 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Ensure System Controlled values are correctly initialised
         updateSystemControlledColumnValues();
 
-        // Draw header first as the size of child Elements depends upon it
-        widget.getHeaderWidget().redraw();
-        widget.getSidebarWidget().redraw();
-
         // Schedule redraw of grid after sizes of child Elements have been set
         Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
             public void execute() {
+                // Draw header first as the size of child Elements depends upon it
+                widget.getHeaderWidget().redraw();
+                widget.getSidebarWidget().redraw();
                 widget.getGridWidget().redraw();
             }
 
@@ -780,6 +779,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bRedrawHeader = true;
         }
 
+        // Update column field in Header Widget
+        if ( !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+        
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
