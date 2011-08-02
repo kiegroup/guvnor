@@ -167,17 +167,20 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
         literal.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+                editingCol.setFactField( null );
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_LITERAL );
             }
         } );
 
         formula.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+                editingCol.setFactField( null );
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_RET_VALUE );
             }
         } );
         predicate.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+                editingCol.setFactField( null );
                 applyConsTypeChange( BaseSingleFieldConstraint.TYPE_PREDICATE );
             }
         } );
@@ -284,8 +287,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
                 } else {
 
-                    //Clear field and operator for predicates
-                    editingCol.setFactField( null );
+                    //Clear operator for predicates, but leave field intact for interpolation of $param values
                     editingCol.setOperator( null );
                 }
                 if ( isNew ) {
@@ -337,7 +339,11 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     private void doFieldLabel() {
         if ( editingCol.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-            fieldLabel.setText( constants.notNeededForPredicate() );
+            if ( this.editingCol.getFactField() == null || this.editingCol.getFactField().equals( "" ) ) {
+                fieldLabel.setText( constants.notNeededForPredicate() );
+            } else {
+                fieldLabel.setText( this.editingCol.getFactField() );
+            }
             fieldLabelInterpolationInfo.setVisible( true );
         } else if ( nil( editingPattern.getFactType() ) ) {
             fieldLabel.setText( constants.pleaseSelectAPatternFirst() );
