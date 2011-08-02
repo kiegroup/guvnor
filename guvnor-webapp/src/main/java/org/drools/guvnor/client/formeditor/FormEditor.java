@@ -101,6 +101,9 @@ EditorWidget {
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {
                 //TODO see what to do here
+                if (response.getStatusCode() == 500) {
+                    Window.alert( "there was a problem with the template creation. Please check the server logs");
+                }
             }
             public void onError(Request request, Throwable exception) {
                 GWT.log( "template creation threw an exception:", exception );
