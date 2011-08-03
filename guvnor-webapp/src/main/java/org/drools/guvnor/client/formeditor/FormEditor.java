@@ -96,7 +96,7 @@ EditorWidget {
     }
 
     private void exportFormToFtl(String jsonForm) {
-        String url = "/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
+        String url = "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {
