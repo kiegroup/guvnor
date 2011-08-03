@@ -40,6 +40,40 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>soaProfile</id>
+      <activation>
+        <property>
+          <name>soa</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>assemble-bulk-importer-example</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <appendAssemblyId>true</appendAssemblyId>
+                  <descriptors>
+                    <descriptor>src/main/assembly/assembly-bulk-importer-example.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
