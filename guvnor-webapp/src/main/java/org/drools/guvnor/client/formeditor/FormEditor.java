@@ -96,11 +96,13 @@ EditorWidget {
     }
 
     private void exportFormToFtl(String jsonForm) {
-        String url = "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
+        String hostName = Window.Location.getHostName();
+        String portNumber = Window.Location.getPort();
+        String protocol = Window.Location.getProtocol();
+        String url = protocol + "://" + hostName + ":" + portNumber + "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {
-                //TODO see what to do here
                 if (response.getStatusCode() == 500) {
                     Window.alert( "there was a problem with the template creation. Please check the server logs");
                 }
