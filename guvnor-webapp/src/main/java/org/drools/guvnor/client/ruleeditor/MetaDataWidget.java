@@ -199,17 +199,15 @@ public class MetaDataWidget extends Composite {
         }
 
         startSection(constants.VersionHistory());
-        // Do not show version feed for asset due to GUVNOR-1308
-        if (!(artifact instanceof RuleAsset)) {
-            Image image = new Image(images.feed());
-            image.addClickHandler(new ClickHandler() {
-                public void onClick(ClickEvent arg0) {
-                    Window.open(getVersionFeed(artifact), "_blank", null);
 
-                }
-            });
-            addAttribute(constants.VersionFeed(), image);
-        }
+        Image image = new Image(images.feed());
+        image.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                Window.open(getVersionFeed(artifact), "_blank", null);
+
+            }
+        });
+        addAttribute(constants.VersionFeed(), image);
 
         addAttribute( constants.CurrentVersionNumber(),
                 getVersionNumberLabel() );

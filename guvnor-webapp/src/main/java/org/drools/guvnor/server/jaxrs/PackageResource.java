@@ -28,6 +28,7 @@ import org.drools.guvnor.server.builder.PackageDRLAssembler;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
+import org.drools.repository.AssetHistoryIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageHistoryIterator;
 import org.drools.repository.PackageItem;
@@ -36,6 +37,7 @@ import org.jboss.seam.annotations.Name;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
+
 import java.io.InputStream;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -630,7 +632,55 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
+    
+    @GET
+    @Path("{packageName}/assets/{assetName}/versions")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Feed getAssetVersionsAsFeed(@PathParam("packageName") String packageName, 
+                                       @PathParam("assetName") String assetName) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
+            
+            Factory factory = Abdera.getNewFactory();
+            Feed f = factory.getAbdera().newFeed();
+            f.setTitle("Version history of " + asset.getName());
 
+            UriBuilder base;            
+            if (asset.isHistoricalVersion()) {
+                base = uriInfo.getBaseUriBuilder().path("packages").path(asset.getPackageName()).path("assets").path("versions").path(Long.toString(asset.getVersionNumber()));
+            } else {
+                base = uriInfo.getBaseUriBuilder().path("packages").path(asset.getPackageName()).path("assets").path(asset.getName()).path("versions");
+            }
+            f.setBaseUri(base.build().toString());
+                        
+            AssetHistoryIterator it = asset.getHistory();
+            while (it.hasNext()) {
+                    AssetItem historicalAsset = it.next();
+                    if (historicalAsset.getVersionNumber() != 0) {
+                        Entry e = factory.getAbdera().newEntry();
+                        e.setTitle(Long.toString(historicalAsset
+                                .getVersionNumber()));
+                        e.setUpdated(historicalAsset.getLastModified().getTime());
+                        Link l = factory.newLink();
+                        l.setHref(uriInfo
+                                .getBaseUriBuilder()
+                                .path("packages")
+                                .path(asset.getPackageName())
+                                .path("assets")
+                                .path(asset.getName())
+                                .path("versions")
+                                .path(Long.toString(historicalAsset.getVersionNumber())).build().toString());
+                        e.addLink(l);
+                        f.addEntry(e);
+                    }
+            }
+            return f;
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
+    
     //HTTP header names are case-insensitive
     private String getHttpHeader(HttpHeaders headers, String headerName) {
 
