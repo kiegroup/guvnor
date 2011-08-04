@@ -73,12 +73,26 @@ EditorWidget {
     }
 
     private final native String callSave(IFrameElement iframe) /*-{
-        return iframe.contentDocument.clientExportForm;
+        var exportForm = null;
+        if (typeof(iframe.contentWindow) != 'undefined' && typeof(iframe.contentWindow.document) != 'undefined') {
+            if (typeof(iframe.contentWindow.document.clientExportForm) != 'undefined') {
+                exportForm = iframe.contentWindow.document.clientExportForm;
+            }
+        } 
+        if ((exportForm == null || exportForm == "") && typeof(iframe.contentDocument) != 'undefined') {
+            if (typeof(iframe.contentDocument.clientExportForm) != 'undefined') {
+                exportForm = iframe.contentDocument.clientExportForm;
+            }
+        }
+        return exportForm;
     }-*/;
 
     public void onSave() {
         try {
             String json = callSave( (IFrameElement) ((com.google.gwt.dom.client.Element) frame.getElement()) );
+            if (json == null || "".equals(json.trim())) {
+                Window.alert("Warning: form is empty from guvnor perspective.");
+            }
             if ( asset.getContent() == null ) {
                 asset.setContent( new FormContentModel() );
             }
