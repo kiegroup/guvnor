@@ -99,7 +99,8 @@ EditorWidget {
         String hostName = Window.Location.getHostName();
         String portNumber = Window.Location.getPort();
         String protocol = Window.Location.getProtocol();
-        String url = protocol + "://" + hostName + ":" + portNumber + "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
+        protocol = protocol.charAt(protocol.length() -1) == ':' ? protocol : protocol + ":";
+        String url = protocol + "//" + hostName + ":" + portNumber + "/jbpm-form-builder/exportTemplate?uuid=" + modelUUID + "&profile=jbpm";
         RequestBuilder builder = new RequestBuilder(RequestBuilder.GET, url);
         builder.setCallback(new RequestCallback() {
             public void onResponseReceived(Request request, Response response) {

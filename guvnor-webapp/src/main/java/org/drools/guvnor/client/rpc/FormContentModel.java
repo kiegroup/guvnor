@@ -12,6 +12,11 @@ public class FormContentModel implements PortableObject {
         super();
     }
     
+    public FormContentModel(String json) {
+        this();
+        this.json = json;
+    }
+    
     public String getJson() {
         return json;
     }
