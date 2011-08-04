@@ -929,6 +929,37 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(result.indexOf("declare Album2") > -1);
     }
     
+    @Test
+    public void testGetAssetVersionsForAtom() throws MalformedURLException, IOException {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));
+        
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+        Document<Feed> doc = abdera.getParser().parse(in);
+        Feed feed = doc.getRoot();
+        assertEquals("Version history of model1", feed.getTitle());
+        
+        List<Entry> entries = feed.getEntries();
+        assertEquals(2, entries.size());
+
+        Map<String, Entry> entriesMap = new HashMap<String, Entry>();
+        for(Entry entry : entries){
+            entriesMap.put(entry.getTitle(), entry);
+        }
+        
+        assertEquals("/packages/restPackage1/assets/model1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());       
+        assertTrue(entriesMap.get("1").getUpdated() != null);       
+        assertEquals("/packages/restPackage1/assets/model1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());       
+        assertTrue(entriesMap.get("2").getUpdated() != null);     
+    }
+    
     public String generateBaseUrl() {
     	return "http://localhost:9080";
     }
@@ -977,6 +1008,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         JAXBContext c = JAXBContext.newInstance(new Class[]{Package.class});
         Unmarshaller u = c.createUnmarshaller();
         return (Package)u.unmarshal(is);
+    }
+    
+    public void main(String[] args) throws Exception {
+        BasicPackageResourceTest.startServers();
     }
     
 }
