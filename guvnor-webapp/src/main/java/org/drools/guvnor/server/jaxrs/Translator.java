@@ -211,7 +211,7 @@ public class Translator {
     public static Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
         UriBuilder base;
         if (a.isHistoricalVersion()) {
-            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path("versions").path(Long.toString(a.getVersionNumber()));
+            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName()).path("versions").path(Long.toString(a.getVersionNumber()));
         } else {
             base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName());
         }

@@ -680,6 +680,52 @@ public class PackageResource extends Resource {
             throw new WebApplicationException(e);
         }
     }
+
+    @GET
+    @Path("{packageName}/assets/{assetName}/versions/{versionNumber}")
+    @Produces(MediaType.APPLICATION_ATOM_XML)
+    public Entry getHistoricalAssetAsEntry(@PathParam("packageName") String packageName,
+                                           @PathParam("assetName") String assetName,
+                                           @PathParam("versionNumber") long versionNumber) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"), versionNumber); 
+            return ToAssetEntryAbdera(asset, uriInfo);
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }   
+
+    @GET
+    @Path("{packageName}/assets/{assetName}/versions/{versionNumber}/source")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String getHistoricalAssetSource(@PathParam("packageName") String packageName,
+                                           @PathParam("assetName") String assetName,
+                                           @PathParam("versionNumber") long versionNumber) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"), versionNumber); 
+            return asset.getContent();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
+
+    @GET
+    @Path("{packageName}/assets/{assetName}/versions/{versionNumber}/binary")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getHistoricalAssetBinary(@PathParam("packageName") String packageName,
+                                             @PathParam("assetName") String assetName,
+                                             @PathParam("versionNumber") long versionNumber) {
+        try {
+            //Throws RulesRepositoryException if the package or asset does not exist
+            AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName, versionNumber);
+            String fileName = asset.getName() + "." + asset.getFormat();
+            return Response.ok(asset.getBinaryContentAttachment()).header("Content-Disposition", "attachment; filename=" + fileName).build();
+        } catch (Exception e) {
+            throw new WebApplicationException(e);
+        }
+    }
     
     //HTTP header names are case-insensitive
     private String getHttpHeader(HttpHeaders headers, String headerName) {

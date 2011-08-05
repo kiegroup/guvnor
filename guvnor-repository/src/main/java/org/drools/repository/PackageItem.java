@@ -782,6 +782,24 @@ public class PackageItem extends VersionableItem {
             throw new RulesRepositoryException( e );
         }
     }
+    
+    /**
+     * Load a specific rule asset by name.
+     */
+    public AssetItem loadAsset(String name, long versionNumber) {
+        AssetItem asset = loadAsset(name);
+        
+        AssetHistoryIterator it = asset.getHistory();
+        while ( it.hasNext() ) {
+            AssetItem historical = it.next();
+            long version = historical.getVersionNumber();
+            if (version == versionNumber) {
+                return historical;
+            }
+        }
+        throw new RulesRepositoryException(
+                "Unable to load asset [" + name + "] with version[" + versionNumber + "]");  
+    }
 
     /**
      * Returns true if this package item contains an asset of the given name.
