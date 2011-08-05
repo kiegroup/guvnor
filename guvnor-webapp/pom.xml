@@ -92,10 +92,10 @@
             <id>clean gwtutil classes</id>
             <phase>prepare-package</phase>
             <configuration>
-            <tasks>
-              <delete
-                dir="${project.build.directory}/classes/org/drools/guvnor/gwtutil" />
-            </tasks>
+              <tasks>
+                <delete
+                  dir="${project.build.directory}/classes/org/drools/guvnor/gwtutil" />
+              </tasks>
             </configuration>
           <goals>
             <goal>run</goal>
