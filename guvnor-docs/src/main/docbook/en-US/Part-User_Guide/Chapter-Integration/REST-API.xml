@@ -10,7 +10,7 @@
 
   <para>The repository back end can also be accessed via Rest. Rest is a http
   based protocol API - which has clients on all platforms and in all
-  programming language.</para>
+  programming languages.</para>
 
   <section>
     <title>REST</title>
@@ -425,7 +425,7 @@
 
               <entry>Returns the binary content of rule asset {assetName}
               contained in package {packageName}. If this asset has no binary
-              content, this will return its source content instead.</entry>
+              content, returns its source content instead.</entry>
             </row>
 
             <row>
@@ -438,8 +438,8 @@
               <entry>none</entry>
 
               <entry>Returns the content of rule asset {assetName} contained
-              in package {packageName}. If this is a binary asset, this will
-              return the binary data as a byte array.</entry>
+              in package {packageName}. If this is a binary asset, returns the 
+              binary data as a byte array.</entry>
             </row>
 
             <row>
@@ -477,7 +477,7 @@
 
               <entry>PUT</entry>
 
-              <entry>application/json and application/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
@@ -490,7 +490,7 @@
 
               <entry>PUT</entry>
 
-              <entry>application/atom+xml</entry>
+              <entry>application/json and application/xml</entry>
 
               <entry>none</entry>
 
@@ -575,7 +575,7 @@
 
               <entry>Returns the binary content of rule asset {assetName} of version {version} 
               contained in package {packageName}.  If this asset has no binary
-              content, this will return its source content instead.</entry>
+              content, returns its source content instead.</entry>
             </row>
             
             <row>
