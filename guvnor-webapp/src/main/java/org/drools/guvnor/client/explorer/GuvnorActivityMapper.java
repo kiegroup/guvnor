@@ -17,15 +17,25 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.place.shared.Place;
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
+import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
+import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
+import org.drools.guvnor.client.explorer.navigation.browse.*;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
+import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListActivity;
+import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierActivity;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 
 public class GuvnorActivityMapper
-    implements
-    ActivityMapper {
+        implements
+        ActivityMapper {
     private ClientFactory clientFactory;
 
     public GuvnorActivityMapper(ClientFactory clientFactory) {
@@ -35,17 +45,56 @@ public class GuvnorActivityMapper
 
     public Activity getActivity(Place place) {
         if ( place instanceof FindPlace ) {
-            return new FindActivity();
+            return new FindActivity( clientFactory );
         } else if ( place instanceof AssetEditorPlace ) {
-            return new AssetEditorActivity();
+            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
         } else if ( place instanceof ModuleEditorPlace ) {
             return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
-                                             clientFactory );
+                    clientFactory );
         } else if ( place instanceof AssetViewerPlace ) {
             return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
-                                            clientFactory );
-        } else if ( place instanceof ModuleFormatsGrid ) {
-            return new ModuleFormatsGridPlace( (ModuleFormatsGrid) place );
+                    clientFactory );
+        } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
+            return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace(
+                    (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
+                    clientFactory );
+        } else if ( place instanceof ManagerPlace ) {
+            return new ManagerActivity(
+                    ((ManagerPlace) place).getId(),
+                    clientFactory );
+        } else if ( place instanceof TestScenarioListPlace ) {
+            return new TestScenarioListActivity(
+                    ((TestScenarioListPlace) place).getModuleUuid(),
+                    clientFactory );
+        } else if ( place instanceof VerifierPlace ) {
+            return new VerifierActivity(
+                    ((VerifierPlace) place).getModuleUuid(),
+                    clientFactory );
+        } else if ( place instanceof SnapshotPlace ) {
+            return new SnapshotActivity(
+                    ((SnapshotPlace) place).getModuleName(),
+                    ((SnapshotPlace) place).getSnapshotName(),
+                    clientFactory );
+        } else if ( place instanceof SnapshotAssetListPlace ) {
+            return new SnapshotAssetListActivity(
+                    (SnapshotAssetListPlace) place,
+                    clientFactory );
+        } else if ( place instanceof CategoryPlace ) {
+            return new CategoryActivity(
+                    ((CategoryPlace) place).getCategoryPath(),
+                    clientFactory );
+        } else if ( place instanceof StatePlace ) {
+            return new StateActivity(
+                    ((StatePlace) place).getStateName(),
+                    clientFactory );
+        } else if ( place instanceof InboxPlace ) {
+            return new InboxActivity(
+                    (InboxPlace) place,
+                    clientFactory );
+        } else if ( place instanceof MultiAssetPlace ) {
+            return new MultiAssetActivity(
+                    (MultiAssetPlace) place,
+                    clientFactory );
         } else {
             return null;
         }

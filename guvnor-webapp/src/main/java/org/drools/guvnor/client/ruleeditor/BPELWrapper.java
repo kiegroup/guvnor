@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.common.DefaultContentUploadEditor;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
-import org.drools.guvnor.client.rpc.RuleAsset;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -28,15 +23,21 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.rpc.RuleAsset;
 
 public class BPELWrapper extends Composite
-    implements
-    EditorWidget {
+        implements
+        EditorWidget {
 
     private Constants constants = GWT.create( Constants.class );
 
-    public BPELWrapper(RuleAsset asset,
-                       RuleViewer viewer) {
+    public BPELWrapper( RuleAsset asset,
+                        RuleViewer viewer,
+                        ClientFactory clientFactory ) {
 
         final String uuid = asset.getUuid();
         final String fileName = asset.getName();
@@ -44,8 +45,10 @@ public class BPELWrapper extends Composite
         final String servletName = "workflowmanager";
         final String isNew = (asset.getContent() == null ? "true" : "false");
 
-        AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor( asset,
-                                                                                 viewer );
+        AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor(
+                asset,
+                viewer,
+                clientFactory );
 
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );
@@ -56,10 +59,10 @@ public class BPELWrapper extends Composite
         final String url = "bpeleditor/BPELEditor.html?uuid=" + uuid + "&fileName=" + fileName + "&dirName=" + dirName
                 + "&servletName=" + servletName + "&isNew=" + isNew;
         viewSource.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent arg0) {
+            public void onClick( ClickEvent arg0 ) {
                 Window.open( url,
-                             "_" + fileName,
-                             null );
+                        "_" + fileName,
+                        null );
             }
         } );
 

@@ -19,8 +19,7 @@ package org.drools.guvnor.client.explorer.navigation.admin;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.MenuBar;
-import org.drools.guvnor.client.explorer.TabContainer;
-import org.drools.guvnor.client.explorer.TabManager;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -34,8 +33,10 @@ public class AdministrationTree extends NavigationItemBuilderOld {
 
     private static Constants constants = GWT.create(Constants.class);
     private static Images images = GWT.create(Images.class);
+    private final ClientFactory clientFactory;
 
-    public AdministrationTree() {
+    public AdministrationTree(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
         mainTree.addSelectionHandler(this);
     }
 
@@ -65,11 +66,10 @@ public class AdministrationTree extends NavigationItemBuilderOld {
 
     // Show the associated widget in the deck panel
     public void onSelection(SelectionEvent<TreeItem> event) {
-        TabManager tabManager = TabContainer.getInstance();
         TreeItem item = event.getSelectedItem();
         String widgetID = itemWidgets.get(item);
 
         int id = Integer.parseInt(widgetID);
-        tabManager.openAdministrationSelection(id);
+        clientFactory.getPlaceController().goTo( new ManagerPlace(id) );
     }
 }

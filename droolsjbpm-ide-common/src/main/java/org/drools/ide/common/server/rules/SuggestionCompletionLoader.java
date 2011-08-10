@@ -382,66 +382,17 @@ public class SuggestionCompletionLoader
         if ( clazz != null ) {
 
             Method[] methods = clazz.getMethods();
-            Map<String, Class< ? >> methodReturnTypes = new HashMap<String, Class< ? >>();
-            Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
-
-            //Determine accessors for methods
-            for ( Method method : methods ) {
-                boolean addMethod = false;
-                String name = method.getName();
-                if ( method.getParameterTypes().length > 0 ) {
-
-                    //Strip bare mutator name
-                    if ( name.startsWith( "set" ) ) {
-                        addMethod = true;
-                        name = Introspector.decapitalize( name.substring( 3 ) );
-                    }
-
-                    if ( addMethod ) {
-                        String factField = className + "." + name;
-                        if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.ACCESSOR ) {
-                            accessorsAndMutators.put( factField,
-                                                      FieldAccessorsAndMutators.BOTH );
-                        } else {
-                            accessorsAndMutators.put( factField,
-                                                      FieldAccessorsAndMutators.MUTATOR );
-                        }
-                    }
-
-                } else if ( !method.getReturnType().equals( "void" ) ) {
-
-                    //Strip bare accessor name
-                    if ( name.startsWith( "get" ) ) {
-                        addMethod = true;
-                        name = Introspector.decapitalize( name.substring( 3 ) );
-                    } else if ( name.startsWith( "is" ) ) {
-                        addMethod = true;
-                        name = Introspector.decapitalize( name.substring( 2 ) );
-                    }
-
-                    if ( addMethod ) {
-                        String factField = className + "." + name;
-                        methodReturnTypes.put( factField,
-                                               method.getReturnType() );
-                        if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.MUTATOR ) {
-                            accessorsAndMutators.put( factField,
-                                                      FieldAccessorsAndMutators.BOTH );
-                        } else {
-                            accessorsAndMutators.put( factField,
-                                                      FieldAccessorsAndMutators.ACCESSOR );
-                        }
-                    }
-                }
-            }
+            Map<String, MethodSignature> methodSignatures = getMethodSignatures( className,
+                                                                                 methods );
 
             TypeDeclarationDescr td = new TypeDeclarationDescr();
             td.setTypeName( className );
 
-            for ( Map.Entry<String, FieldAccessorsAndMutators> e : accessorsAndMutators.entrySet() ) {
-                if ( e.getValue() == FieldAccessorsAndMutators.BOTH ) {
+            for ( Map.Entry<String, MethodSignature> e : methodSignatures.entrySet() ) {
+                if ( e.getValue().accessorAndMutator == FieldAccessorsAndMutators.BOTH ) {
                     String fieldShortName = getShortNameOfClass( e.getKey() );
                     TypeFieldDescr fieldDescr = new TypeFieldDescr( fieldShortName );
-                    PatternDescr patternDescr = new PatternDescr( methodReturnTypes.get( e.getKey() ).getName() );
+                    PatternDescr patternDescr = new PatternDescr( e.getValue().returnType.getName() );
                     fieldDescr.setPattern( patternDescr );
                     td.addField( fieldDescr );
                 }
@@ -518,6 +469,84 @@ public class SuggestionCompletionLoader
         this.builder.addFieldsForType( declaredType,
                                        fieldNames.toArray( new String[fieldNames.size()] ) );
         this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
+
+    }
+
+    private Map<String, MethodSignature> getMethodSignatures(String className,
+                                                             Method[] methods) {
+
+        Map<String, MethodSignature> methodSignatures = new HashMap<String, MethodSignature>();
+
+        //Determine accessors for methods
+        for ( Method method : methods ) {
+            boolean addMethod = false;
+            String name = method.getName();
+            if ( method.getParameterTypes().length > 0 ) {
+
+                //Strip bare mutator name
+                if ( name.startsWith( "set" ) ) {
+                    addMethod = true;
+                    name = Introspector.decapitalize( name.substring( 3 ) );
+                }
+
+                if ( addMethod ) {
+                    String factField = className + "." + name;
+                    if ( !methodSignatures.containsKey( factField ) ) {
+                        methodSignatures.put( factField,
+                                              new MethodSignature( FieldAccessorsAndMutators.MUTATOR,
+                                                                   void.class ) );
+                    } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.ACCESSOR ) {
+                        MethodSignature signature = methodSignatures.get( factField );
+                        signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
+                    }
+                }
+
+            } else if ( !method.getReturnType().equals( "void" ) ) {
+
+                //Strip bare accessor name
+                if ( name.startsWith( "get" ) ) {
+                    addMethod = true;
+                    name = Introspector.decapitalize( name.substring( 3 ) );
+                } else if ( name.startsWith( "is" ) ) {
+                    addMethod = true;
+                    name = Introspector.decapitalize( name.substring( 2 ) );
+                }
+
+                if ( addMethod ) {
+                    String factField = className + "." + name;
+                    if ( !methodSignatures.containsKey( factField ) ) {
+                        methodSignatures.put( factField,
+                                              new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                                   method.getReturnType() ) );
+                    } else if ( methodSignatures.get( factField ).accessorAndMutator == FieldAccessorsAndMutators.MUTATOR ) {
+                        MethodSignature signature = methodSignatures.get( factField );
+                        signature.accessorAndMutator = FieldAccessorsAndMutators.BOTH;
+                    }
+                }
+            }
+        }
+        return methodSignatures;
+    }
+
+    private Map<String, FieldAccessorsAndMutators> extractFieldAccessorsAndMutators(Map<String, MethodSignature> methodSignatures) {
+        Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+        for ( Map.Entry<String, MethodSignature> e : methodSignatures.entrySet() ) {
+            accessorsAndMutators.put( e.getKey(),
+                                      e.getValue().accessorAndMutator );
+        }
+        return accessorsAndMutators;
+    }
+
+    private static class MethodSignature {
+
+        MethodSignature(FieldAccessorsAndMutators accessorAndMutator,
+                        Class< ? > returnType) {
+            this.accessorAndMutator = accessorAndMutator;
+            this.returnType = returnType;
+        }
+
+        FieldAccessorsAndMutators accessorAndMutator;
+        Class< ? >                returnType;
 
     }
 
@@ -623,64 +652,27 @@ public class SuggestionCompletionLoader
 
         Method[] methods = clazz.getMethods();
         List<String> modifierStrings = new ArrayList<String>();
-        Map<String, FieldAccessorsAndMutators> accessorsAndMutators = new HashMap<String, FieldAccessorsAndMutators>();
+        Map<String, MethodSignature> methodSignatures = getMethodSignatures( shortTypeName,
+                                                                             methods );
 
         //'this' is a special case
         fields.add( 0,
                     "this" );
-        accessorsAndMutators.put( shortTypeName + ".this",
-                                  FieldAccessorsAndMutators.ACCESSOR );
+        methodSignatures.put( shortTypeName + ".this",
+                                  new MethodSignature( FieldAccessorsAndMutators.ACCESSOR,
+                                                       clazz ) );
         this.builder.addFieldType( shortTypeName + ".this",
                                    SuggestionCompletionEngine.TYPE_THIS,
                                    clazz );
         this.builder.addFieldsForType( shortTypeName,
                                        fields.toArray( new String[fields.size()] ) );
 
-        //Determine accessors for methods
-        for ( Method method : methods ) {
-            modifierStrings.add( method.getName() );
-            String name = method.getName();
-            if ( method.getParameterTypes().length > 0 ) {
-
-                //Strip bare mutator name
-                if ( name.startsWith( "set" ) ) {
-                    name = Introspector.decapitalize( name.substring( 3 ) );
-                }
-                String factField = shortTypeName + "." + name;
-
-                if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.ACCESSOR ) {
-                    accessorsAndMutators.put( factField,
-                                              FieldAccessorsAndMutators.BOTH );
-                } else {
-                    accessorsAndMutators.put( factField,
-                                              FieldAccessorsAndMutators.MUTATOR );
-                }
-            } else if ( !method.getReturnType().equals( "void" ) ) {
-
-                //Strip bare accessor name
-                if ( name.startsWith( "get" ) ) {
-                    name = Introspector.decapitalize( name.substring( 3 ) );
-                } else if ( name.startsWith( "is" ) ) {
-                    name = Introspector.decapitalize( name.substring( 2 ) );
-                }
-                String factField = shortTypeName + "." + name;
-
-                if ( accessorsAndMutators.get( factField ) == FieldAccessorsAndMutators.MUTATOR ) {
-                    accessorsAndMutators.put( factField,
-                                              FieldAccessorsAndMutators.BOTH );
-                } else {
-                    accessorsAndMutators.put( shortTypeName + "." + name,
-                                              FieldAccessorsAndMutators.ACCESSOR );
-                }
-            }
-        }
-
         //Configure modifiers and accessors
         String[] modifiers = new String[modifierStrings.size()];
         modifierStrings.toArray( modifiers );
         this.builder.addModifiersForType( shortTypeName,
                                           modifiers );
-        this.builder.addFieldAccessorsAndMutatorsForField( accessorsAndMutators );
+        this.builder.addFieldAccessorsAndMutatorsForField( extractFieldAccessorsAndMutators( methodSignatures ) );
 
         //Configure other fields
         fields.remove( "this" );

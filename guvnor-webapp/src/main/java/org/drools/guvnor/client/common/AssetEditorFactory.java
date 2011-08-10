@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.common;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 
@@ -35,6 +36,6 @@ public interface AssetEditorFactory {
     /**
      * This will return the appropriate viewer for the asset.
      */
-    public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer);
+    public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory);
 
  }

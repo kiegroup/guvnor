@@ -135,7 +135,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                 GLOBAL_VARIABLE_VALUE_PREFIX + "." + gv );
         }
 
-        for ( String v : getRuleModel().getBoundFacts() ) {
+        for ( String v : getRuleModel().getLHSBoundFacts() ) {
             startPoint.addItem( v,
                                 VARIABLE_VALUE_PREFIX + "." + v );
         }
@@ -170,7 +170,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                                          dotPos );
         String attrib = value.substring( dotPos + 1 );
         if ( prefix.equals( VARIABLE_VALUE_PREFIX ) ) {
-            FactPattern fact = getRuleModel().getBoundFact( attrib );
+            FactPattern fact = getRuleModel().getLHSBoundFact( attrib );
             ExpressionPart variable;
             if ( fact != null ) {
                 variable = new ExpressionVariable( fact );

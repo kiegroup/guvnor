@@ -48,6 +48,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class DSLSentenceWidget extends RuleModellerWidget {
 
+    private static final Constants constants = GWT.create( Constants.class );
+    
     private static final String ENUM_TAG    = "ENUM";
     private static final String DATE_TAG    = "DATE";
     private static final String BOOLEAN_TAG = "BOOLEAN";
@@ -381,9 +383,10 @@ public class DSLSentenceWidget extends RuleModellerWidget {
             String[] data = completions.getEnumValues( type,
                                                        field );
             ListBox list = new ListBox();
+            list.addItem( constants.Choose() );
 
             if ( data != null ) {
-                int selected = -1;
+                int selected = 0;
                 for ( int i = 0; i < data.length; i++ ) {
                     String[] vs = ConstraintValueEditorHelper.splitValue( data[i] );
                     String realValue = vs[0];
@@ -416,7 +419,12 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         }
 
         public String getSelectedValue() {
-            return resultWidget.getValue( resultWidget.getSelectedIndex() );
+            int selectedIndex = resultWidget.getSelectedIndex();
+            if ( selectedIndex > 0 ) {
+                return resultWidget.getValue( selectedIndex );
+            } else {
+                return "";
+            }
         }
 
     }

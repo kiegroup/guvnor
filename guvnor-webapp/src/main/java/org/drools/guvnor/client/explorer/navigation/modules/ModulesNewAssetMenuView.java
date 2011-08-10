@@ -63,11 +63,11 @@ public interface ModulesNewAssetMenuView extends IsWidget {
 
     void setPresenter( Presenter presenter );
 
-    void openNewPackageWizard(ClientFactory clientFactory);
+    void openNewPackageWizard( ClientFactory clientFactory );
 
-    void openNewAssetWizardWithoutCategories( String format );
+    void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory );
 
-    void openNewAssetWizardWithCategories( String format );
+    void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory );
 
     void confirmRebuild();
 

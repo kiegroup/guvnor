@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Status management</title>
+
+  <para>Each asset (and also package) in Guvnor has a status flag set. The
+  values of the status flag are set in the Administration section of the
+  Guvnor. (you can add your own status names). Similar to Categories, Statuses
+  do NOT effect the execution in any way, and are purely informational. Unlike
+  categories, assets only have one status AT A TIME.</para>
+
+  <para>Using statuses is completely optional. You can use it to manage the
+  lifecycle of assets (which you can alternatively do with categories if you
+  like).</para>
+
+  <figure>
+    <title>Asset status</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/AssetChangeStatus.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>You can change the status of an individual asset (like in the diagram
+  above). Its change takes effect immediately, no separate save is
+  needed.</para>
+
+  <figure>
+    <title>Asset status</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/PackageChangeStatus.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>You can change the status of a whole package - this sets the status
+  flag on the package itself, but it ALSO changes the statuses on ALL the
+  assets that belong to this package in one hit (to be the same as what you
+  set the package to).</para>
+</section>

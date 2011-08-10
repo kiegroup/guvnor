@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
@@ -55,7 +56,9 @@ public class WorkingSetEditor extends Composite
     private FactsConstraintsEditorPanel factsConstraintsgEditorPanel;
     private CustomFormsEditorPanel      customFormsEditorPanel;
     
-	public WorkingSetEditor(RuleAsset asset, RuleViewer viewer) {
+	public WorkingSetEditor(RuleAsset asset,
+                            RuleViewer viewer,
+                        ClientFactory clientFactory) {
 		this(asset);
 	}
 	

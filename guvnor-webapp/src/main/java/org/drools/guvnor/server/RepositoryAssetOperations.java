@@ -48,14 +48,14 @@ import org.drools.guvnor.server.builder.pagerow.ArchivedAssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.AssetPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.QuickFindPageRowBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.contenthandler.FactModelContentHandler;
 import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleType;
+import org.drools.guvnor.server.util.AssetEditorConfiguration;
+import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.util.AssetFormatHelper;
 import org.drools.guvnor.server.util.AssetLockManager;
 import org.drools.guvnor.server.util.Discussion;
@@ -87,11 +87,23 @@ public class RepositoryAssetOperations {
 
     private RulesRepository            repository;
 
-    private static final LoggingHelper log = LoggingHelper
-                                                   .getLogger( RepositoryAssetOperations.class );
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetOperations.class );
 
     @Inject
     private Credentials credentials;
+
+    private String[]                   registeredFormats;
+
+    public RepositoryAssetOperations() {
+        //Load recognised formats from configuration file
+        AssetEditorConfigurationParser parser = new AssetEditorConfigurationParser();
+        List<AssetEditorConfiguration> rfs = parser.getAssetEditors();
+        this.registeredFormats = new String[rfs.size()];
+        for ( int i = 0; i < rfs.size(); i++ ) {
+            AssetEditorConfiguration config = rfs.get( i );
+            registeredFormats[i] = config.getFormat();
+        }
+    }
 
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;
@@ -493,8 +505,8 @@ public class RepositoryAssetOperations {
             iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
 
         } else {
-            if ( request.getFormatIsRegistered() != null ) {
-                iterator = packageItem.listAssetsNotOfFormat( AssetFormatHelper.listRegisteredTypes() );
+            if ( request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals( Boolean.FALSE ) ) {
+                iterator = packageItem.listAssetsNotOfFormat( registeredFormats );
             } else {
                 iterator = packageItem.queryAssets( "" );
             }
@@ -560,9 +572,8 @@ public class RepositoryAssetOperations {
         AssetLockManager lockManager = AssetLockManager.instance();
 
         String userName;
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if ( beanManagerLocator.isBeanManagerAvailable() ) {
-            userName = credentials.getUsername();
+        if ( Contexts.isApplicationContextActive() ) {
+            userName = Identity.instance().getCredentials().getUsername();
         } else {
             userName = "anonymous";
         }

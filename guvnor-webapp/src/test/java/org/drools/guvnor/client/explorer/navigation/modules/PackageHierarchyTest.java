@@ -34,7 +34,7 @@ public class PackageHierarchyTest {
         //Expect the following packages:-
         // \- foo.bar
 
-        PackageHierarchy ph = new PackageHierarchyFlat();
+        PackageView ph = new PackageFlatView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );
@@ -61,7 +61,7 @@ public class PackageHierarchyTest {
         // \- foo.bar
         // \- foo.bar.wee.yoo
 
-        PackageHierarchy ph = new PackageHierarchyFlat();
+        PackageView ph = new PackageFlatView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );
@@ -99,7 +99,7 @@ public class PackageHierarchyTest {
         // \- foo.bar.wee.yoo
         // \- foo.bar.wee.yoo.zee.goo
 
-        PackageHierarchy ph = new PackageHierarchyFlat();
+        PackageView ph = new PackageFlatView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );
@@ -140,7 +140,7 @@ public class PackageHierarchyTest {
         // \- foo
         //    \- bar
 
-        PackageHierarchy ph = new PackageHierarchyNested();
+        PackageView ph = new PackageHierarchicalView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );
@@ -176,7 +176,7 @@ public class PackageHierarchyTest {
         //       \- wee
         //          \- yoo
 
-        PackageHierarchy ph = new PackageHierarchyNested();
+        PackageView ph = new PackageHierarchicalView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );
@@ -232,7 +232,7 @@ public class PackageHierarchyTest {
         //             \- zee
         //                \- goo
 
-        PackageHierarchy ph = new PackageHierarchyNested();
+        PackageView ph = new PackageHierarchicalView();
         ph.addPackage( pc );
 
         assertNotNull( ph.getRootFolder() );

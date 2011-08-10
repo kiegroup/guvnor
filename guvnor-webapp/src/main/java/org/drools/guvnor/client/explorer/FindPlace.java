@@ -21,13 +21,32 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class FindPlace extends Place {
 
+    private String FIND = "FIND";
+
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        FindPlace findPlace = (FindPlace) o;
+
+        if ( FIND != null ? !FIND.equals( findPlace.FIND ) : findPlace.FIND != null ) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return FIND != null ? FIND.hashCode() : 0;
+    }
+
     public static class Tokenizer implements PlaceTokenizer<FindPlace> {
 
-        public String getToken( FindPlace place ) {
+        public String getToken(FindPlace place) {
             return "FIND";
         }
 
-        public FindPlace getPlace( String token ) {
+        public FindPlace getPlace(String token) {
             return new FindPlace();
         }
     }

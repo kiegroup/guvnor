@@ -16,16 +16,8 @@
 
 package org.drools.guvnor.server;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.drools.guvnor.client.rpc.AssetService;
-import org.drools.guvnor.client.rpc.CategoryService;
-import org.drools.guvnor.client.rpc.PackageService;
-import org.drools.guvnor.client.rpc.RepositoryService;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.util.BeanManagerUtils;
@@ -36,24 +28,26 @@ import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
- * This passes on all requests unmolested to the underlying ServiceImplemention class. 
- * 
+ * This passes on all requests unmolested to the underlying ServiceImplemention class.
  */
 public class RepositoryServiceServlet extends RemoteServiceServlet
-    implements
-    RepositoryService,
-    AssetService,
-    PackageService, 
-    CategoryService {
+        implements
+        RepositoryService,
+        AssetService,
+        PackageService,
+        CategoryService {
 
-    private static final long          serialVersionUID = 495822L;
+    private static final long serialVersionUID = 495822L;
 
-    private static final LoggingHelper log              = LoggingHelper.getLogger( RepositoryServiceServlet.class );
-    private static boolean             testListenerInit = false;
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryServiceServlet.class );
+    private static boolean testListenerInit = false;
 
     /**
      * This is used by the pass through methods below.
@@ -66,7 +60,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             return (ServiceImplementation) BeanManagerUtils.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
         }
         //this is only for out of container hosted mode in GWT
-        synchronized ( RepositoryServiceServlet.class ) {
+        synchronized (RepositoryServiceServlet.class) {
             ServiceImplementation serviceImplementation = new ServiceImplementation();
             serviceImplementation.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
             handleTestListenerInit();
@@ -89,7 +83,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             return (RepositoryAssetService) beanManagerLocator.getBeanManager().getBeans( "org.drools.guvnor.client.rpc.AssetService" );
         }
         //this is only for out of container hosted mode in GWT
-        synchronized ( RepositoryServiceServlet.class ) {
+        synchronized (RepositoryServiceServlet.class) {
             RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
             repositoryAssetService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
@@ -105,7 +99,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             return (RepositoryPackageService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
         }
         //this is only for out of container hosted mode in GWT
-        synchronized ( RepositoryServiceServlet.class ) {
+        synchronized (RepositoryServiceServlet.class) {
             RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
             repositoryPackageService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
@@ -113,14 +107,14 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             return repositoryPackageService;
         }
     }
-    
+
     public static RepositoryCategoryService getCategoryService() {
         BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
         if (beanManagerLocator.isBeanManagerAvailable()) {
             return (RepositoryCategoryService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
         }
         //this is only for out of container hosted mode in GWT
-        synchronized ( RepositoryServiceServlet.class ) {
+        synchronized (RepositoryServiceServlet.class) {
             RepositoryCategoryService repositoryCategoryService = new RepositoryCategoryService();
             repositoryCategoryService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
@@ -137,28 +131,28 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             try {
                 writer = response.getWriter();
                 log.error( e.getMessage(),
-                           e.getCause() );
+                        e.getCause() );
                 e.printStackTrace();
                 response.setContentType( "text/plain" );
                 response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
                 writer.write( "Sorry, insufficient permissions to perform this action." );
-            } catch ( IOException ex ) {
+            } catch (IOException ex) {
                 getServletContext().log( "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-                                         ex );
+                        ex );
             } finally {
                 close( writer );
             }
         } else if ( e.getCause() instanceof RulesRepositoryException ) {
             log.error( e.getMessage(),
-                       e.getCause() );
+                    e.getCause() );
             sendErrorMessage( e.getCause().getMessage() );
         } else {
             if ( e.getCause() != null ) {
                 log.error( e.getMessage(),
-                           e.getCause() );
+                        e.getCause() );
             } else {
                 log.error( e.getMessage(),
-                           e );
+                        e );
             }
             sendErrorMessage( "Sorry, a technical error occurred. Please contact a system administrator." );
         }
@@ -179,38 +173,46 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         try {
             writer = response.getWriter();
             writer.write( msg );
-        } catch ( IOException ex ) {
+        } catch (IOException ex) {
             getServletContext().log( "respondWithUnexpectedFailure failed while sending the previous failure to the client",
-                                     ex );
+                    ex );
         } finally {
             close( writer );
         }
     }
-    
-    /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
 
-    public java.lang.String[] loadChildCategories(java.lang.String p0)  {
-         return getCategoryService().loadChildCategories( p0);
+    /**
+     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
+     */
+
+    public java.lang.String[] loadChildCategories(java.lang.String p0) {
+        return getCategoryService().loadChildCategories( p0 );
     }
+
     public org.drools.guvnor.client.rpc.TableDataResult loadRuleListForCategories(java.lang.String p0, int p1, int p2, java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
-         return getCategoryService().loadRuleListForCategories( p0,  p1,  p2,  p3);
+        return getCategoryService().loadRuleListForCategories( p0, p1, p2, p3 );
     }
+
     public org.drools.guvnor.client.rpc.PageResponse loadRuleListForCategories(org.drools.guvnor.client.rpc.CategoryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-         return getCategoryService().loadRuleListForCategories( p0);
+        return getCategoryService().loadRuleListForCategories( p0 );
     }
-    public java.lang.Boolean createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2)  {
-         return getCategoryService().createCategory( p0,  p1,  p2);
+
+    public java.lang.Boolean createCategory(java.lang.String p0, java.lang.String p1, java.lang.String p2) {
+        return getCategoryService().createCategory( p0, p1, p2 );
     }
+
     public void removeCategory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        getCategoryService().removeCategory( p0);
-    }
-    public void renameCategory(java.lang.String p0, java.lang.String p1)  {
-        getCategoryService().renameCategory( p0,  p1);
+        getCategoryService().removeCategory( p0 );
     }
 
+    public void renameCategory(java.lang.String p0, java.lang.String p1) {
+        getCategoryService().renameCategory( p0, p1 );
+    }
 
 
-    /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
+    /**
+     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
+     */
 
     public org.drools.guvnor.client.rpc.PackageConfigData[] listPackages(java.lang.String p0) {
         return getPackageService().listPackages( p0 );
@@ -228,28 +230,32 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return getPackageService().loadGlobalPackage();
     }
 
+    public SnapshotInfo loadSnapshotInfo(String packageName, String snapshotName) {
+        return getPackageService().loadSnapshotInfo( packageName, snapshotName );
+    }
+
     public java.lang.String createPackage(java.lang.String p0,
                                           java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().createPackage( p0,
-                                                  p1 );
+                p1 );
     }
 
     public java.lang.String createSubPackage(java.lang.String p0,
                                              java.lang.String p1,
                                              java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().createSubPackage( p0,
-                                                     p1,
-                                                     p2 );
+                p1,
+                p2 );
     }
 
     public org.drools.guvnor.client.rpc.PackageConfigData loadPackageConfig(java.lang.String p0) {
         return getPackageService().loadPackageConfig( p0 );
     }
-    
+
     public org.drools.guvnor.client.rpc.ValidatedResponse validatePackageConfiguration(org.drools.guvnor.client.rpc.PackageConfigData p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().validatePackageConfiguration( p0 );
     }
-    
+
     public void savePackage(org.drools.guvnor.client.rpc.PackageConfigData p0) throws com.google.gwt.user.client.rpc.SerializationException {
         getPackageService().savePackage( p0 );
     }
@@ -259,9 +265,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                       boolean p2,
                                       java.lang.String p3) {
         getPackageService().createPackageSnapshot( p0,
-                                                   p1,
-                                                   p2,
-                                                   p3 );
+                p1,
+                p2,
+                p3 );
     }
 
     public void copyOrRemoveSnapshot(java.lang.String p0,
@@ -269,9 +275,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                      boolean p2,
                                      java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
         getPackageService().copyOrRemoveSnapshot( p0,
-                                                  p1,
-                                                  p2,
-                                                  p3 );
+                p1,
+                p2,
+                p3 );
     }
 
     public org.drools.guvnor.client.rpc.BuilderResult buildPackage(java.lang.String p0,
@@ -285,15 +291,15 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                    boolean p8,
                                                                    java.lang.String p9) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().buildPackage( p0,
-                                                 p1,
-                                                 p2,
-                                                 p3,
-                                                 p4,
-                                                 p5,
-                                                 p6,
-                                                 p7,
-                                                 p8,
-                                                 p9 );
+                p1,
+                p2,
+                p3,
+                p4,
+                p5,
+                p6,
+                p7,
+                p8,
+                p9 );
     }
 
     public java.lang.String buildPackageSource(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -301,9 +307,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public String copyPackage(java.lang.String p0,
-                            java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
+                              java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().copyPackage( p0,
-                                         p1 );
+                p1 );
     }
 
     public void removePackage(java.lang.String p0) {
@@ -313,7 +319,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.lang.String renamePackage(java.lang.String p0,
                                           java.lang.String p1) {
         return getPackageService().renamePackage( p0,
-                                                  p1 );
+                p1 );
     }
 
     public void rebuildSnapshots() throws com.google.gwt.user.client.rpc.SerializationException {
@@ -327,7 +333,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.lang.String[] listRulesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().listRulesInPackage( p0 );
     }
-    
+
     public java.lang.String[] listImagesInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().listImagesInPackage( p0 );
     }
@@ -343,23 +349,23 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void installSampleRepository() throws com.google.gwt.user.client.rpc.SerializationException {
         getPackageService().installSampleRepository();
     }
-    
+
     public org.drools.guvnor.client.rpc.SnapshotDiffs compareSnapshots(java.lang.String p0,
                                                                        java.lang.String p1,
                                                                        java.lang.String p2) {
         return getPackageService().compareSnapshots( p0,
-                                              p1,
-                                              p2 );
+                p1,
+                p2 );
     }
 
     public org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse compareSnapshots(org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest p0) {
         return getPackageService().compareSnapshots( p0 );
     }
-    
+
     public org.drools.guvnor.client.rpc.SingleScenarioResult runScenario(java.lang.String p0,
                                                                          org.drools.ide.common.client.modeldriven.testing.Scenario p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getPackageService().runScenario( p0,
-                                         p1 );
+                p1 );
     }
 
     public org.drools.guvnor.client.rpc.BulkTestRunResult runScenariosInPackage(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -367,8 +373,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
 
-
-    /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
+    /**
+     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
+     */
 
     public org.drools.guvnor.client.rpc.PageResponse quickFindAsset(org.drools.guvnor.client.rpc.QueryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().quickFindAsset( p0 );
@@ -379,9 +386,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                        int p2,
                                                                        int p3) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().quickFindAsset( p0,
-                                                 p1,
-                                                 p2,
-                                                 p3 );
+                p1,
+                p2,
+                p3 );
     }
 
     public org.drools.guvnor.client.rpc.TableDataResult queryFullText(java.lang.String p0,
@@ -389,9 +396,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                       int p2,
                                                                       int p3) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().queryFullText( p0,
-                                                p1,
-                                                p2,
-                                                p3 );
+                p1,
+                p2,
+                p3 );
     }
 
     public java.lang.String getAssetLockerUserName(java.lang.String p0) {
@@ -417,7 +424,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void archiveAssets(java.lang.String[] p0,
                               boolean p1) {
         getAssetService().archiveAssets( p0,
-                                         p1 );
+                p1 );
     }
 
     public void removeAsset(java.lang.String p0) {
@@ -433,13 +440,13 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public org.drools.guvnor.client.rpc.BuilderResult validateAsset(org.drools.guvnor.client.rpc.RuleAsset p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().validateAsset(p0);
+        return getAssetService().validateAsset( p0 );
     }
 
     public java.lang.String renameAsset(java.lang.String p0,
                                         java.lang.String p1) {
         return getAssetService().renameAsset( p0,
-                                              p1 );
+                p1 );
     }
 
     public org.drools.guvnor.client.rpc.RuleAsset loadRuleAsset(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -453,7 +460,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.TableDataResult loadAssetHistory(java.lang.String p0,
                                                                          java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().loadAssetHistory( p0,
-                                                   p1 );
+                p1 );
     }
 
     public org.drools.guvnor.client.rpc.TableDataResult loadItemHistory(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -467,7 +474,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public org.drools.guvnor.client.rpc.TableDataResult loadArchivedAssets(int p0,
                                                                            int p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().loadArchivedAssets( p0,
-                                                     p1 );
+                p1 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse findAssetPage(org.drools.guvnor.client.rpc.AssetPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -480,10 +487,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                    int p3,
                                                                    java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().listAssets( p0,
-                                             p1,
-                                             p2,
-                                             p3,
-                                             p4 );
+                p1,
+                p2,
+                p3,
+                p4 );
     }
 
     public org.drools.guvnor.client.rpc.TableDataResult listAssetsWithPackageName(java.lang.String p0,
@@ -492,18 +499,18 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                                   int p3,
                                                                                   java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
         return getAssetService().listAssetsWithPackageName( p0,
-                                                            p1,
-                                                            p2,
-                                                            p3,
-                                                            p4 );
+                p1,
+                p2,
+                p3,
+                p4 );
     }
 
     public java.lang.String copyAsset(java.lang.String p0,
                                       java.lang.String p1,
                                       java.lang.String p2) {
         return getAssetService().copyAsset( p0,
-                                            p1,
-                                            p2 );
+                p1,
+                p2 );
     }
 
     public void promoteAssetToGlobalArea(java.lang.String p0) {
@@ -514,22 +521,22 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                    java.lang.String p1,
                                    java.lang.String p2) {
         getAssetService().changeAssetPackage( p0,
-                                              p1,
-                                              p2 );
+                p1,
+                p2 );
     }
-    
+
     public void changeState(java.lang.String p0,
                             java.lang.String p1) {
         getAssetService().changeState( p0,
-                                  p1);
+                p1 );
     }
-    
+
     public void changePackageState(java.lang.String p0,
-                            java.lang.String p1) {
+                                   java.lang.String p1) {
         getAssetService().changePackageState( p0,
-                                  p1 );
+                p1 );
     }
-    
+
     public java.util.List loadDiscussionForAsset(java.lang.String p0) {
         return getAssetService().loadDiscussionForAsset( p0 );
     }
@@ -537,7 +544,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.util.List addToDiscussionForAsset(java.lang.String p0,
                                                   java.lang.String p1) {
         return getAssetService().addToDiscussionForAsset( p0,
-                                                     p1 );
+                p1 );
     }
 
     public void clearAllDiscussionsForAsset(java.lang.String p0) {
@@ -545,8 +552,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
 
-
-    /** PLACE THE FOLLOWING IN RepositoryServiceServlet.java **/
+    /**
+     * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *
+     */
 
 
     public org.drools.guvnor.client.rpc.PageResponse loadRuleListForState(org.drools.guvnor.client.rpc.StatePageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -558,9 +566,9 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                              int p2,
                                                                              java.lang.String p3) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().loadRuleListForState( p0,
-                                                  p1,
-                                                  p2,
-                                                  p3 );
+                p1,
+                p2,
+                p3 );
     }
 
     public org.drools.guvnor.client.rpc.TableConfig loadTableConfig(java.lang.String p0) {
@@ -573,16 +581,16 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                           java.lang.String p3,
                                           java.lang.String p4) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().createNewRule( p0,
-                                           p1,
-                                           p2,
-                                           p3,
-                                           p4 );
+                p1,
+                p2,
+                p3,
+                p4 );
     }
 
     public java.lang.String createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().createNewImportedRule( p0,
-                                                   p1 );
+                p1 );
     }
 
     public void deleteUncheckedRule(java.lang.String p0) {
@@ -609,14 +617,14 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                 java.lang.String[] p1,
                                 java.lang.String[] p2) {
         getService().updateWorkspace( p0,
-                                      p1,
-                                      p2 );
+                p1,
+                p2 );
     }
 
     public void updateDependency(java.lang.String p0,
                                  java.lang.String p1) {
-    	getPackageService().updateDependency( p0,
-                                       p1 );
+        getPackageService().updateDependency( p0,
+                p1 );
     }
 
     public java.lang.String[] getDependencies(java.lang.String p0) {
@@ -631,8 +639,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                java.lang.String p1,
                                java.lang.String p2) {
         getAssetService().restoreVersion( p0,
-                                     p1,
-                                     p2 );
+                p1,
+                p2 );
     }
 
     public java.lang.String[] listStates() throws com.google.gwt.user.client.rpc.SerializationException {
@@ -646,7 +654,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void renameState(java.lang.String p0,
                             java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         getService().renameState( p0,
-                                  p1 );
+                p1 );
     }
 
     public void removeState(java.lang.String p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -676,7 +684,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.lang.String[] loadDropDownExpression(java.lang.String[] p0,
                                                      java.lang.String p1) {
         return getService().loadDropDownExpression( p0,
-                                                    p1 );
+                p1 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse queryFullText(org.drools.guvnor.client.rpc.QueryPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
@@ -696,13 +704,13 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                                                                       int p6,
                                                                       int p7) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().queryMetaData( p0,
-                                           p1,
-                                           p2,
-                                           p3,
-                                           p4,
-                                           p5,
-                                           p6,
-                                           p7 );
+                p1,
+                p2,
+                p3,
+                p4,
+                p5,
+                p6,
+                p7 );
     }
 
     public org.drools.guvnor.client.rpc.PageResponse listUserPermissions(org.drools.guvnor.client.rpc.PageRequest p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
@@ -720,13 +728,13 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void updateUserPermissions(java.lang.String p0,
                                       java.util.Map p1) {
         getService().updateUserPermissions( p0,
-                                            p1 );
+                p1 );
     }
 
     public java.lang.String[] listAvailablePermissionTypes() {
         return getService().listAvailablePermissionTypes();
     }
-    
+
     public List<String> listAvailablePermissionRoleTypes() {
         return getService().listAvailablePermissionRoleTypes();
     }
@@ -754,7 +762,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.lang.String processTemplate(java.lang.String p0,
                                             java.util.Map p1) {
         return getService().processTemplate( p0,
-                                             p1 );
+                p1 );
     }
 
     public java.lang.Boolean isHostedMode() {
@@ -764,7 +772,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public java.util.Map loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadSpringContextElementData();
     }
-    
+
     public java.util.Map loadWorkitemDefinitionElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadWorkitemDefinitionElementData();
     }

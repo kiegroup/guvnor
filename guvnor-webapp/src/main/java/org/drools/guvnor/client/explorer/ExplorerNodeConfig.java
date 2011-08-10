@@ -27,8 +27,8 @@ import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.navigation.modules.Folder;
-import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchy;
-import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchyNested;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
+import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -50,11 +50,7 @@ public class ExplorerNodeConfig {
     private static Images images = GWT.create( Images.class );
 
     // Browse
-    public static final String FIND_ID = "find";
-    public static final String CATEGORY_ROOT_ID = "rootcategory";                             // NON-NLS
-    public static final String CATEGORY_ID = "category";                                 // NON-NLS
-    public static final String STATES_ID = "states";                                   // NON-NLS
-    public static final String STATES_ROOT_ID = "rootstates";                               // NON-NLS
+     public static final String CATEGORY_ID = "category";                                 // NON-NLS
     public static final String RECENT_EDITED_ID = "recentEdited";
     public static final String RECENT_VIEWED_ID = "recentViewed";
     public static final String INCOMING_ID = "incoming";
@@ -68,7 +64,6 @@ public class ExplorerNodeConfig {
     // Table configurations
     public static final String RULE_LIST_TABLE_ID = "rulelist";
     public static final String PACKAGEVIEW_LIST_TABLE_ID = "packageviewlist";
-    public static final String ARCHIVED_RULE_LIST_TABLE_ID = "archivedrulelist";
 
     // Package snapshot
     public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
@@ -126,92 +121,6 @@ public class ExplorerNodeConfig {
         }
     }
 
-    public static TreeItem getPackageItemStructureOld( String packageName, String uuid, final Map<TreeItem, String> itemWidgets ) {
-        TreeItem pkg = new TreeItem( Util.getHeader( images.packages(),
-                packageName ) );
-        itemWidgets.put( pkg,
-                uuid );
-
-        TreeItem item = new TreeItem( Util.getHeader( images.ruleAsset(), constants.BusinessRuleAssets() ) );
-        item.setUserObject( AssetFormats.BUSINESS_RULE_FORMATS );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.technicalRuleAssets(), constants.TechnicalRuleAssets() ) );
-        itemWidgets.put( item, AssetFormats.DRL );
-        item.setUserObject( new String[]{AssetFormats.DRL} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.functionAssets(), constants.Functions() ) );
-        itemWidgets.put( item, AssetFormats.FUNCTION );
-        item.setUserObject( new String[]{AssetFormats.FUNCTION} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.dsl(), constants.DSLConfigurations() ) );
-        itemWidgets.put( item, AssetFormats.DSL );
-        item.setUserObject( new String[]{AssetFormats.DSL} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.modelAsset(), constants.Model() ) );
-        itemWidgets.put( item, AssetFormats.DRL_MODEL );
-        item.setUserObject( new String[]{AssetFormats.DRL_MODEL, AssetFormats.MODEL} );
-        pkg.addItem( item );
-
-        if ( ApplicationPreferences.showFlewBPELEditor() ) {
-            item = new TreeItem( Util.getHeader( images.ruleflowSmall(),
-                    constants.RuleFlows() ) );
-            itemWidgets.put( item,
-                    AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS, AssetFormats.BPEL_PACKAGE} );
-            pkg.addItem( item );
-        } else {
-            item = new TreeItem( Util.getHeader( images.ruleflowSmall(), constants.RuleFlows() ) );
-            itemWidgets.put( item, AssetFormats.RULE_FLOW_RF );
-            item.setUserObject( new String[]{AssetFormats.RULE_FLOW_RF, AssetFormats.BPMN_PROCESS, AssetFormats.BPMN2_PROCESS} );
-            pkg.addItem( item );
-        }
-
-        item = new TreeItem( Util.getHeader( images.enumeration(), constants.Enumerations() ) );
-        itemWidgets.put( item, AssetFormats.ENUMERATION );
-        item.setUserObject( new String[]{AssetFormats.ENUMERATION} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.testManager(), constants.TestScenarios() ) );
-        itemWidgets.put( item, AssetFormats.TEST_SCENARIO );
-        item.setUserObject( new String[]{AssetFormats.TEST_SCENARIO} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.newFile(), constants.XMLProperties() ) );
-        itemWidgets.put( item, AssetFormats.PROPERTIES );
-        item.setUserObject( new String[]{AssetFormats.PROPERTIES} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.newFile(), constants.OtherAssetsDocumentation() ) );
-        itemWidgets.put( item, AssetFormats.PROPERTIES );
-        item.setUserObject( new String[0] );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.workingset(), constants.WorkingSets() ) );
-        itemWidgets.put( item, AssetFormats.WORKING_SET );
-        item.setUserObject( new String[]{AssetFormats.WORKING_SET} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.enumeration(),
-                constants.SpringContext() ) );
-        itemWidgets.put( item,
-                AssetFormats.SPRING_CONTEXT );
-        item.setUserObject( new String[]{AssetFormats.SPRING_CONTEXT} );
-        pkg.addItem( item );
-
-        item = new TreeItem( Util.getHeader( images.enumeration(),
-                constants.WorkItemDefinition() ) );
-        itemWidgets.put( item,
-                AssetFormats.WORKITEM_DEFINITION );
-        item.setUserObject( new String[]{AssetFormats.WORKITEM_DEFINITION} );
-        pkg.addItem( item );
-
-        return pkg;
-    }
-
     public static void setupDeploymentTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
         TreeItem root = tree.addItem( Util.getHeader( images.chartOrganisation(), constants.PackageSnapshots() ) );
         root.setState( true );
@@ -222,7 +131,7 @@ public class ExplorerNodeConfig {
     private static void deploymentListPackages( final TreeItem root ) {
         RepositoryServiceFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
             public void onSuccess( PackageConfigData[] values ) {
-                PackageHierarchy ph = new PackageHierarchyNested();
+                PackageView ph = new PackageHierarchicalView();
 
                 for (PackageConfigData val : values) {
                     ph.addPackage( val );
@@ -247,53 +156,6 @@ public class ExplorerNodeConfig {
                 buildDeploymentTree( tn, c );
             }
         }
-    }
-
-    public static void setupBrowseTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
-
-        TreeItem root = tree.addItem( Util.getHeader( images.ruleAsset(), constants.AssetsTreeView() ) );
-
-        TreeItem find = root.addItem( Util.getHeader( images.find(), constants.Find() ) );
-        itemWidgets.put( find, FIND_ID );
-
-        TreeItem inbox = getInboxStructure( itemWidgets );
-        inbox.setState( true );
-        root.addItem( inbox );
-
-        if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW ) ) {
-            final TreeItem byStatus = new TreeItem( Util.getHeader( images.statusSmall(), constants.ByStatus() ) );
-            itemWidgets.put( byStatus, STATES_ROOT_ID );
-            setupStatesStructure( byStatus, itemWidgets );
-            root.addItem( byStatus );
-        }
-
-        TreeItem byCategory = new TreeItem( Util.getHeader( images.chartOrganisation(), constants.ByCategory() ) );
-        itemWidgets.put( byCategory, CATEGORY_ROOT_ID );
-
-        setupCategoriesStructure( byCategory, itemWidgets );
-        root.addItem( byCategory );
-    }
-
-    private static TreeItem getInboxStructure( Map<TreeItem, String> itemWidgets ) {
-        TreeItem inbox = new TreeItem( Util.getHeader( images.inbox(), constants.Inbox() ) );
-
-        TreeItem incomingChanges = new TreeItem( Util.getHeader( images.categorySmall(), constants.IncomingChanges() ) );
-        itemWidgets.put( incomingChanges, INCOMING_ID );
-        inbox.addItem( incomingChanges );
-
-        TreeItem recentOpened = new TreeItem( Util.getHeader( images.categorySmall(), constants.RecentlyOpened() ) );
-        itemWidgets.put( recentOpened, RECENT_VIEWED_ID );
-        inbox.addItem( recentOpened );
-
-        TreeItem recentEdited = new TreeItem( Util.getHeader( images.categorySmall(), constants.RecentlyEdited() ) );
-        itemWidgets.put( recentEdited, RECENT_EDITED_ID );
-        inbox.addItem( recentEdited );
-
-        return inbox;
-    }
-
-    public static void setupCategoriesStructure( TreeItem byCategory, final Map<TreeItem, String> itemWidgets ) {
-        doCategoryNode( byCategory, "/", itemWidgets );
     }
 
     private static void doCategoryNode( final TreeItem treeItem, final String path, final Map<TreeItem, String> itemWidgets ) {
@@ -371,21 +233,6 @@ public class ExplorerNodeConfig {
 
     private static void infanticide( final TreeItem treeNode ) {
         treeNode.removeItems();
-    }
-
-    public static void setupStatesStructure( final TreeItem byStatus, final Map<TreeItem, String> itemWidgets ) {
-        RepositoryServiceFactory.getService().listStates( new GenericCallback<String[]>() {
-            public void onSuccess( String[] value ) {
-                for (int i = 0; i < value.length; i++) {
-                    TreeItem childNode = new TreeItem( Util.getHeader( images.categorySmall(), value[i] ) );
-
-                    //ID for state tabs. 
-                    String widgetID = STATES_ID + "-" + value[i];
-                    itemWidgets.put( childNode, widgetID );
-                    byStatus.addItem( childNode );
-                }
-            }
-        } );
     }
 
     public static Tree getQAStructure( final Map<TreeItem, String> itemWidgets ) {

@@ -19,10 +19,11 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field='images' type='org.drools.guvnor.client.resources.Images' />
 
   <gwt:DockLayoutPanel>
     <gwt:north size="25">
-      <gwt:SimplePanel ui:field="menuContainer"/>
+      <gwt:SimplePanel ui:field="menuContainer" />
     </gwt:north>
     <gwt:center>
       <gwt:ScrollPanel>
@@ -32,12 +33,24 @@
         </gwt:VerticalPanel>
       </gwt:ScrollPanel>
     </gwt:center>
-    <gwt:south size="25">
-      <gwt:HorizontalPanel>
-        <gwt:CheckBox ui:field="chkIsFlatTreeHierarchy"/>
-        <gwt:Label text="{i18n.ShowFlatPackageHierarchy}"/>
+    <gwt:south size="28">
+      <gwt:HorizontalPanel styleName="icon-bar">
+        <gwt:HorizontalPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgExpandAll" resource="{images.expandAll}" title="{i18n.ExpandAll}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgCollapseAll" resource="{images.collapseAll}" title="{i18n.CollapseAll}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgFlatView" resource="{images.flatView}" title="{i18n.FlatView}" />
+          </gwt:HTMLPanel>
+          <gwt:HTMLPanel styleName="icon-bar-item">
+            <gwt:Image ui:field="imgHierarchicalView" resource="{images.hierarchicalView}" title="{i18n.HierarchicalView}" />
+          </gwt:HTMLPanel>
         </gwt:HorizontalPanel>
-    </gwt:south>    
+      </gwt:HorizontalPanel>
+    </gwt:south>
   </gwt:DockLayoutPanel>
 
 </ui:UiBinder>

@@ -25,13 +25,14 @@ import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
+import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -233,24 +234,24 @@ public class KnowledgeModulesTreeItemTest {
         packageConfigData.setUuid( "defaultUuid" );
 
         presenter.onModuleSelected(
-                new ModuleFormatsGrid(
+                new ModuleFormatsGridPlace(
                                        packageConfigData,
                                        "Rules",
                                        new String[]{AssetFormats.DRL, AssetFormats.BUSINESS_RULE} ) );
 
-        ArgumentCaptor<ModuleFormatsGrid> moduleFormatsArgumentCaptor = ArgumentCaptor.forClass( ModuleFormatsGrid.class );
+        ArgumentCaptor<ModuleFormatsGridPlace> moduleFormatsArgumentCaptor = ArgumentCaptor.forClass( ModuleFormatsGridPlace.class );
         verify( placeController ).goTo( moduleFormatsArgumentCaptor.capture() );
-        ModuleFormatsGrid moduleFormatsGrid = moduleFormatsArgumentCaptor.getValue();
+        ModuleFormatsGridPlace moduleFormatsGridPlace = moduleFormatsArgumentCaptor.getValue();
 
         assertEquals( "defaultUuid",
-                      moduleFormatsGrid.getPackageConfigData().getUuid() );
+                      moduleFormatsGridPlace.getPackageConfigData().getUuid() );
         assertEquals( "default",
-                      moduleFormatsGrid.getPackageConfigData().getName() );
+                      moduleFormatsGridPlace.getPackageConfigData().getName() );
         assertEquals( "Rules",
-                      moduleFormatsGrid.getTitle() );
-        assertContains( moduleFormatsGrid.getFormats(),
+                      moduleFormatsGridPlace.getTitle() );
+        assertContains( moduleFormatsGridPlace.getFormats(),
                         AssetFormats.DRL );
-        assertContains( moduleFormatsGrid.getFormats(),
+        assertContains( moduleFormatsGridPlace.getFormats(),
                         AssetFormats.BUSINESS_RULE );
     }
 
@@ -311,5 +312,6 @@ public class KnowledgeModulesTreeItemTest {
         public void listPackages(AsyncCallback<PackageConfigData[]> cb) {
             cb.onSuccess( packageConfigDatas );
         }
+
     }
 }

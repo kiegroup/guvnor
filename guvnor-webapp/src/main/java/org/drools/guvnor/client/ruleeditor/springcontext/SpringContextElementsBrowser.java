@@ -186,14 +186,14 @@ public class SpringContextElementsBrowser extends Composite {
             public void onSuccess(SnapshotInfo[] result) {
                 for (int j = 0; j < result.length; j++) {
                     final SnapshotInfo snapshotInfo = result[j];
-                    RepositoryServiceFactory.getPackageService().loadPackageConfig(snapshotInfo.uuid, new AsyncCallback<PackageConfigData>()    {
+                    RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(), new AsyncCallback<PackageConfigData>()    {
 
                         public void onFailure(Throwable caught) {
                             ErrorPopup.showMessage("Error listing snapshots information!");
                         }
 
                         public void onSuccess(PackageConfigData result) {
-                            TreeItem leafItem = new TreeItem(new ClickableLabel(snapshotInfo.name, new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
+                            TreeItem leafItem = new TreeItem(new ClickableLabel( snapshotInfo.getName(), new LeafClickHandler(packageConfigData.getName(), resourceElement.replace("{url}", PackageBuilderWidget.getDownloadLink(result)))));
                             packageItem.addItem(leafItem);
                         }
                     });

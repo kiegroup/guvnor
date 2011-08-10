@@ -43,63 +43,63 @@ public class ModulesNewAssetMenu implements IsWidget, ModulesNewAssetMenuView.Pr
     }
 
     public void onNewSpringContext() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory );
     }
 
     public void onNewWorkingSet() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKING_SET );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKING_SET, clientFactory );
     }
 
     public void onNewRule() {
-        view.openNewAssetWizardWithCategories( null );
+        view.openNewAssetWizardWithCategories( null, clientFactory );
     }
 
     public void onNewRuleTemplate() {
-        view.openNewAssetWizardWithCategories( AssetFormats.RULE_TEMPLATE );
+        view.openNewAssetWizardWithCategories( AssetFormats.RULE_TEMPLATE, clientFactory );
     }
 
     public void onNewPojoModel() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.MODEL );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.MODEL, clientFactory );
     }
 
     public void onNewDeclarativeModel() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.DRL_MODEL );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.DRL_MODEL, clientFactory );
     }
 
     public void onNewBPELPackage() {
-        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE );
+        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory );
     }
 
     public void onNewFunction() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION, clientFactory );
     }
 
     public void onNewDSL() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.DSL );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.DSL, clientFactory );
     }
 
     public void onNewRuleFlow() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory );
     }
 
     public void onNewBPMN2Process() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory );
     }
 
     public void onNewWorkitemDefinition() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION, clientFactory );
     }
 
     public void onNewEnumeration() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.ENUMERATION );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.ENUMERATION, clientFactory );
     }
 
     public void onNewTestScenario() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.TEST_SCENARIO );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.TEST_SCENARIO, clientFactory );
     }
 
     public void onNewFile() {
-        view.openNewAssetWizardWithoutCategories( "*" );
+        view.openNewAssetWizardWithoutCategories( "*", clientFactory );
     }
 
     public void onRebuildAllPackages() {

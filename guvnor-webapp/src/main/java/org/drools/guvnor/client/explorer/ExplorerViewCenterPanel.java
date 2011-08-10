@@ -16,18 +16,21 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
+import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
-import org.drools.guvnor.client.util.TabOpenerImpl;
 import org.drools.guvnor.client.util.TabbedPanel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,31 +40,40 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private final ScrollTabLayoutPanel tabLayoutPanel;
 
-    private BiDirectionalMap openedTabs = new BiDirectionalMap();
+    private PanelMap openedTabs = new PanelMap();
 
     private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
     private ClientFactory clientFactory;
 
-    public ExplorerViewCenterPanel( ClientFactory clientFactory ) {
+    public ExplorerViewCenterPanel(final ClientFactory clientFactory) {
         this.clientFactory = clientFactory;
-        tabLayoutPanel = new ScrollTabLayoutPanel( 2,
-                Unit.EM );
-        initWidget( tabLayoutPanel );
+        tabLayoutPanel = new ScrollTabLayoutPanel();
 
-        TabContainer.init( new TabOpenerImpl( clientFactory, this ) {
+        addBeforeSelectionHandler();
+
+        initWidget( tabLayoutPanel );
+    }
+
+    private void addBeforeSelectionHandler() {
+        tabLayoutPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
+            public void onBeforeSelection(BeforeSelectionEvent<Integer> integerBeforeSelectionEvent) {
+                if ( !tabLayoutPanel.isCanSelectTabToggle() ) {
+                    integerBeforeSelectionEvent.cancel();
+                    clientFactory.getPlaceController().goTo( openedTabs.getKey( integerBeforeSelectionEvent.getItem() ) );
+                }
+            }
         } );
     }
 
-    public boolean contains( String key ) {
+    public boolean contains(Place key) {
         return openedTabs.contains( key );
     }
 
-    public void show( String key ) {
+    public void show(Place key) {
         if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
-            Panel tpi = openedTabs.get( key );
-            tabLayoutPanel.selectTab( tpi );
+            tabLayoutPanel.selectTab( openedTabs.get( key ) );
         }
     }
 
@@ -70,18 +82,18 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
      *
      * @param tabname The displayed tab name.
      * @param widget  The contents.
-     * @param key     A key which is unique.
+     * @param place   A place which is unique.
      */
-    public void addTab( final String tabname,
-                        IsWidget widget,
-                        final String key ) {
+    public void addTab(final String tabname,
+                       IsWidget widget,
+                       final Place place) {
 
         ScrollPanel localTP = new ScrollPanel();
         localTP.add( widget );
         tabLayoutPanel.add( localTP,
                 newClosableLabel(
                         tabname,
-                        key
+                        place
                 ) );
         tabLayoutPanel.selectTab( localTP );
 
@@ -90,17 +102,17 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
                     (PackageEditorWrapper) widget );
         }
 
-        openedTabs.put( key,
+        openedTabs.put( place,
                 localTP );
     }
 
-    private Widget newClosableLabel( final String title,
-                                     final String panelId ) {
+    private Widget newClosableLabel(final String title,
+                                    final Place place) {
         ClosableLabel closableLabel = new ClosableLabel( title );
 
         closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
-            public void onClose( CloseEvent<ClosableLabel> event ) {
-                close( panelId );
+            public void onClose(CloseEvent<ClosableLabel> event) {
+                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( place ) );
             }
 
         } );
@@ -108,65 +120,56 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return closableLabel;
     }
 
-    /**
-     * Will open if existing. If not it will return false;
-     */
-    public boolean showIfOpen( String key ) {
-        if ( openedTabs.contains( key ) ) {
-            LoadingPopup.close();
-            Panel tpi = openedTabs.get( key );
-            tabLayoutPanel.selectTab( tpi );
-            return true;
+    public void close(Place key) {
+
+        int widgetIndex = openedTabs.getIndex( key );
+
+        Place nextPlace = getPlace( widgetIndex );
+
+        tabLayoutPanel.remove( openedTabs.get( key ) );
+        openedTabs.remove( key );
+
+        if ( nextPlace != null ) {
+            goTo( nextPlace );
         }
-        return false;
     }
 
-    public void close( String key ) {
-
-        int widgetIndex = tabLayoutPanel.getWidgetIndex(
-                openedTabs.remove( key ) );
-
+    private Place getPlace(int widgetIndex) {
         if ( isOnlyOneTabLeft() ) {
-            clientFactory.getPlaceController().goTo( Place.NOWHERE );
+            return Place.NOWHERE;
         } else if ( isSelectedTabIndex( widgetIndex ) ) {
-            selectOtherTab( widgetIndex );
-        }
-
-        tabLayoutPanel.remove( widgetIndex );
-    }
-
-    private void selectOtherTab( int widgetIndex ) {
-        if ( isLeftMost( widgetIndex ) ) {
-            clientFactory.getPlaceController().goTo(
-                    getNextPlace() );
+            return getNeighbour( widgetIndex );
         } else {
-            clientFactory.getPlaceController().goTo(
-                    getPreviousPlace() );
+            return null;
         }
     }
 
-    private boolean isLeftMost( int widgetIndex ) {
+    private void goTo(Place place) {
+        clientFactory.getPlaceController().goTo( place );
+    }
+
+    private Place getNeighbour(int widgetIndex) {
+        if ( isLeftMost( widgetIndex ) ) {
+            return getNextPlace();
+        } else {
+            return getPreviousPlace();
+        }
+    }
+
+    private boolean isLeftMost(int widgetIndex) {
         return widgetIndex == 0;
     }
 
-    private boolean isSelectedTabIndex( int widgetIndex ) {
+    private boolean isSelectedTabIndex(int widgetIndex) {
         return tabLayoutPanel.getSelectedIndex() == widgetIndex;
     }
 
     private Place getPreviousPlace() {
-        return clientFactory.getPlaceHistoryMapper().getPlace(
-                getTabKey( tabLayoutPanel.getSelectedIndex() - 1 ) );
+        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 );
     }
 
     private Place getNextPlace() {
-        return clientFactory.getPlaceHistoryMapper().getPlace(
-                getTabKey( tabLayoutPanel.getSelectedIndex() + 1 ) );
-    }
-
-    private String getTabKey( int index ) {
-        return openedTabs.get( (Panel)
-                tabLayoutPanel.getWidget(
-                        index ) );
+        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 );
     }
 
     private boolean isOnlyOneTabLeft() {
@@ -177,31 +180,34 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return openedPackageEditors;
     }
 
-    private class BiDirectionalMap {
-        private Map<String, Panel> keysToPanel = new HashMap<String, Panel>();
-        private Map<Panel, String> panelsToKeys = new HashMap<Panel, String>();
+    private class PanelMap {
+        private final Map<Place, Panel> keysToPanel = new HashMap<Place, Panel>();
+        private final List<Place> keys = new ArrayList<Place>();
 
-        Panel get( String key ) {
+        Panel get(Place key) {
             return keysToPanel.get( key );
         }
 
-        String get( Panel panel ) {
-            return panelsToKeys.get( panel );
+        Place getKey(int index) {
+            return keys.get( index );
         }
 
-        Panel remove( String key ) {
-            Panel panel = keysToPanel.remove( key );
-            panelsToKeys.remove( panel );
-            return panel;
+        void remove(Place key) {
+            keys.remove( key );
+            keysToPanel.remove( key );
         }
 
-        public boolean contains( String key ) {
+        public boolean contains(Place key) {
             return keysToPanel.containsKey( key );
         }
 
-        public void put( String key, Panel panel ) {
+        public void put(Place key, Panel panel) {
+            keys.add( key );
             keysToPanel.put( key, panel );
-            panelsToKeys.put( panel, key );
+        }
+
+        public int getIndex(Place key) {
+            return keys.indexOf( key );
         }
     }
 }

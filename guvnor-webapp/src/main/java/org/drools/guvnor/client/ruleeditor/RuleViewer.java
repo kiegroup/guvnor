@@ -16,36 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.Set;
-
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.common.StatusChangePopup;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.packages.PackageBuilderWidget;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
-import org.drools.guvnor.client.packages.WorkingSetManager;
-import org.drools.guvnor.client.qa.VerifierResultWidget;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.VerificationService;
-import org.drools.guvnor.client.rpc.VerificationServiceAsync;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -53,107 +23,100 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
+import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.packages.ClosePlaceEvent;
+import org.drools.guvnor.client.packages.PackageBuilderWidget;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
+
+import java.util.Set;
 
 /**
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewer extends GuvnorEditor {
-    
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
     interface RuleViewerBinder
-        extends
-        UiBinder<Widget, RuleViewer> {
+            extends
+            UiBinder<Widget, RuleViewer> {
 
     }
 
-    private static RuleViewerBinder                   uiBinder  = GWT.create( RuleViewerBinder.class );
+    private static RuleViewerBinder uiBinder = GWT.create( RuleViewerBinder.class );
 
     @UiField(provided = true)
-    final Widget                                      editor;
+    final Widget editor;
 
     @UiField(provided = true)
-    final ActionToolbar                               toolbar;
+    final ActionToolbar toolbar;
 
     @UiField
-    MessageWidget                                     messageWidget;
+    MessageWidget messageWidget;
 
-    private Command                                   afterCheckinEvent;
+    private Command afterCheckinEvent;
 
-    private Command                                   closeCommand;
 
-    private Command                                   archiveCommand;
+    protected RuleAsset asset;
+    private boolean readOnly;
+    private final RuleViewerSettings ruleViewerSettings;
 
-    public Command                                    checkedInCommand;
-    private final OpenItemCommand                     openItemCommand;
-    public Command                                    refreshCommand;
-    protected RuleAsset                               asset;
-    private boolean                                   readOnly;
-    private final RuleViewerSettings                  ruleViewerSettings;
+    private final ClientFactory clientFactory;
 
-    private long                                      lastSaved = System.currentTimeMillis();
+    private long lastSaved = System.currentTimeMillis();
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand openItemCommand) {
+                      ClientFactory clientFactory) {
         this( asset,
-              openItemCommand,
-              null,
-              null,
-              null,
-              null,
-              false,
-              null,
-              null );
+                clientFactory,
+                false,
+                null,
+                null );
     }
 
     /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand openItemCommand,
+                      ClientFactory clientFactory,
                       boolean historicalReadOnly) {
         this( asset,
-              openItemCommand,
-              null,
-              null,
-              null,
-              null,
-              historicalReadOnly,
-              null,
-              null );
+                clientFactory,
+                historicalReadOnly,
+                null,
+                null );
     }
 
     /**
-     * @param historicalReadOnly
-     *            true if this is a read only view for historical purposes.
+     * @param historicalReadOnly true if this is a read only view for historical purposes.
      * @param actionToolbarButtonsConfigurationProvider
-     *            used to change the default button configuration provider.
+     *                           used to change the default button configuration provider.
      */
     public RuleViewer(RuleAsset asset,
-                      final OpenItemCommand openItemCommand,
-                      final Command closeCommand,
-                      final Command checkedInCommand,
-                      final Command archiveCommand,
-                      final Command refreshCommand,
+                      ClientFactory clientFactory,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
         this.asset = asset;
-        this.openItemCommand = openItemCommand;
-        this.closeCommand = closeCommand;
-        this.checkedInCommand = checkedInCommand;
-        this.archiveCommand = archiveCommand;
-        this.refreshCommand = refreshCommand;
         this.readOnly = historicalReadOnly || asset.isReadonly();
+
+        this.clientFactory = clientFactory;
 
         if ( ruleViewerSettings == null ) {
             this.ruleViewerSettings = new RuleViewerSettings();
@@ -166,7 +129,8 @@ public class RuleViewer extends GuvnorEditor {
         //editor = EditorLauncher.getEditorViewer( asset, this );
         AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
         editor = assetEditorFactory.getAssetEditor( asset,
-                                                    this );
+                this,
+                clientFactory );
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
@@ -182,7 +146,7 @@ public class RuleViewer extends GuvnorEditor {
         }
 
         toolbar = new ActionToolbar( getConfiguration(),
-                                     asset.getState() );
+                asset.getState() );
 
         initWidget( uiBinder.createAndBindUi( this ) );
         setWidth( "100%" );
@@ -190,18 +154,6 @@ public class RuleViewer extends GuvnorEditor {
         initActionToolBar();
 
         LoadingPopup.close();
-    }
-
-    public void setCloseCommand(Command closeCommand) {
-        this.closeCommand = closeCommand;
-    }
-
-    public void setArchiveCommand(Command archiveCommand) {
-        this.archiveCommand = archiveCommand;
-    }
-
-    public void setCheckedInCommand(Command checkedInCommand) {
-        this.checkedInCommand = checkedInCommand;
     }
 
     public ActionToolbar getActionToolbar() {
@@ -216,7 +168,7 @@ public class RuleViewer extends GuvnorEditor {
     private ActionToolbarButtonsConfigurationProvider getConfiguration() {
         if ( actionToolbarButtonsConfigurationProvider == null ) {
             return new DefaultActionToolbarButtonsConfigurationProvider( asset,
-                                                                         (EditorWidget) editor );
+                    (EditorWidget) editor );
         } else {
             return actionToolbarButtonsConfigurationProvider;
         }
@@ -230,7 +182,7 @@ public class RuleViewer extends GuvnorEditor {
     private void initActionToolBar() {
         // the action widgets (checkin/close etc).
         if ( readOnly
-             || asset.isReadonly() || this.ruleViewerSettings.isStandalone() ) {
+                || asset.isReadonly() || this.ruleViewerSettings.isStandalone() ) {
             toolbar.setVisible( false );
         } else {
             toolbar.setPromtToGlobalCommand( new Command() {
@@ -275,12 +227,12 @@ public class RuleViewer extends GuvnorEditor {
                     onSave();
                     LoadingPopup.showMessage( constants.CalculatingSource() );
                     RepositoryServiceFactory.getAssetService().buildAssetSource( asset,
-                                                                                 new GenericCallback<String>() {
+                            new GenericCallback<String>() {
 
-                                                                                     public void onSuccess(String src) {
-                                                                                         showSource( src );
-                                                                                     }
-                                                                                 } );
+                                public void onSuccess(String src) {
+                                    showSource( src );
+                                }
+                            } );
 
                 }
             } );
@@ -296,12 +248,12 @@ public class RuleViewer extends GuvnorEditor {
                     onSave();
                     LoadingPopup.showMessage( constants.ValidatingItemPleaseWait() );
                     RepositoryServiceFactory.getAssetService().validateAsset( asset,
-                                                                              new GenericCallback<BuilderResult>() {
+                            new GenericCallback<BuilderResult>() {
 
-                                                                                  public void onSuccess(BuilderResult results) {
-                                                                                      RuleValidatorWrapper.showBuilderErrors( results );
-                                                                                  }
-                                                                              } );
+                                public void onSuccess(BuilderResult results) {
+                                    RuleValidatorWrapper.showBuilderErrors( results );
+                                }
+                            } );
 
                 }
             } );
@@ -331,7 +283,7 @@ public class RuleViewer extends GuvnorEditor {
      */
     private void showStatusChanger() {
         final StatusChangePopup pop = new StatusChangePopup( asset.getUuid(),
-                                                             false );
+                false );
         pop.setChangeStatusEvent( new Command() {
 
             public void execute() {
@@ -348,7 +300,7 @@ public class RuleViewer extends GuvnorEditor {
 
                 public void execute() {
                     if ( ((RuleModeller) editor).hasVerifierErrors()
-                         || ((RuleModeller) editor).hasVerifierWarnings() ) {
+                            || ((RuleModeller) editor).hasVerifierWarnings() ) {
                         if ( !Window.confirm( constants.theRuleHasErrorsOrWarningsDotDoYouWantToContinue() ) ) {
                             return;
                         }
@@ -371,7 +323,7 @@ public class RuleViewer extends GuvnorEditor {
 
             public void execute() {
                 doCheckin( pop.getCheckinComment(),
-                           closeAfter );
+                        closeAfter );
                 if ( afterCheckinEvent != null ) {
                     afterCheckinEvent.execute();
                 }
@@ -389,13 +341,12 @@ public class RuleViewer extends GuvnorEditor {
             ((SaveEventListener) editor).onSave();
         }
         performCheckIn( comment,
-                        closeAfter );
+                closeAfter );
         if ( editor instanceof SaveEventListener ) {
             ((SaveEventListener) editor).onAfterSave();
         }
-        if ( checkedInCommand != null ) {
-            checkedInCommand.execute();
-        }
+
+        clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
         lastSaved = System.currentTimeMillis();
         resetDirty();
     }
@@ -409,30 +360,29 @@ public class RuleViewer extends GuvnorEditor {
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 
         verificationService.verifyAsset( asset,
-                                         activeWorkingSets,
-                                         new GenericCallback<AnalysisReport>() {
+                activeWorkingSets,
+                new GenericCallback<AnalysisReport>() {
 
-                                             public void onSuccess(AnalysisReport report) {
-                                                 LoadingPopup.close();
-                                                 final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
-                                                                                                 constants.VerificationReport() );
-                                                 ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
-                                                                                                                      false,
-                                                                                                                      openItemCommand ) );
-                                                 scrollPanel.setWidth( "800px" );
-                                                 scrollPanel.setHeight( "200px" );
-                                                 form.addRow( scrollPanel );
+                    public void onSuccess(AnalysisReport report) {
+                        LoadingPopup.close();
+                        final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
+                                constants.VerificationReport() );
+                        ScrollPanel scrollPanel = new ScrollPanel( new VerifierResultWidget( report,
+                                false ) );
+                        scrollPanel.setWidth( "800px" );
+                        scrollPanel.setHeight( "200px" );
+                        form.addRow( scrollPanel );
 
-                                                 LoadingPopup.close();
-                                                 form.show();
-                                             }
-                                         } );
+                        LoadingPopup.close();
+                        form.show();
+                    }
+                } );
 
     }
 
     private void showSource(String src) {
         PackageBuilderWidget.showSource( src,
-                                         this.asset.getName() );
+                this.asset.getName() );
         LoadingPopup.close();
     }
 
@@ -447,7 +397,7 @@ public class RuleViewer extends GuvnorEditor {
 
     protected void showWorkingSetsSelection(RuleModeller modeller) {
         new WorkingSetSelectorPopup( modeller,
-                                     asset ).show();
+                asset ).show();
     }
 
     protected boolean hasDirty() {
@@ -455,31 +405,31 @@ public class RuleViewer extends GuvnorEditor {
         return false;
     }
 
-    /** closes itself */
+    /**
+     * closes itself
+     */
     private void close() {
-        closeCommand.execute();
+        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
     }
 
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
-                                                                   new GenericCallback<Void>() {
-                                                                       public void onSuccess(Void o) {
-                                                                           close();
-                                                                       }
-                                                                   } );
+                new GenericCallback<Void>() {
+                    public void onSuccess(Void o) {
+                        close();
+                    }
+                } );
     }
 
     private void doArchive() {
         RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
-                                                                 new GenericCallback<Void>() {
-                                                                     public void onSuccess(Void o) {
-                                                                         if ( archiveCommand != null ) {
-                                                                             archiveCommand.execute();
-                                                                         }
-                                                                         close();
-                                                                     }
-                                                                 } );
+                new GenericCallback<Void>() {
+                    public void onSuccess(Void o) {
+                        clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                        close();
+                    }
+                } );
     }
 
     private void performCheckIn(String comment,
@@ -489,34 +439,34 @@ public class RuleViewer extends GuvnorEditor {
 
         if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
         RepositoryServiceFactory.getAssetService().checkinVersion( this.asset,
-                                                                   new GenericCallback<String>() {
+                new GenericCallback<String>() {
 
-                                                                       public void onSuccess(String uuid) {
-                                                                           if ( uuid == null ) {
-                                                                               ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
-                                                                               return;
-                                                                           }
+                    public void onSuccess(String uuid) {
+                        if ( uuid == null ) {
+                            ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
+                            return;
+                        }
 
-                                                                           if ( uuid.startsWith( "ERR" ) ) { // NON-NLS
-                                                                               ErrorPopup.showMessage( uuid.substring( 5 ) );
-                                                                               return;
-                                                                           }
+                        if ( uuid.startsWith( "ERR" ) ) { // NON-NLS
+                            ErrorPopup.showMessage( uuid.substring( 5 ) );
+                            return;
+                        }
 
-                                                                           flushSuggestionCompletionCache();
+                        flushSuggestionCompletionCache();
 
-                                                                           if ( editor instanceof DirtyableComposite ) {
-                                                                               ((DirtyableComposite) editor).resetDirty();
-                                                                           }
+                        if ( editor instanceof DirtyableComposite ) {
+                            ((DirtyableComposite) editor).resetDirty();
+                        }
 
-                                                                           LoadingPopup.close();
-                                                                           saved[0] = true;
+                        LoadingPopup.close();
+                        saved[0] = true;
 
-                                                                           showInfoMessage( constants.SavedOK() );
-                                                                           if ( !closeAfter ) {
-                                                                               refreshCommand.execute();
-                                                                           }
-                                                                       }
-                                                                   } );
+                        showInfoMessage( constants.SavedOK() );
+                        if ( !closeAfter ) {
+                            clientFactory.getEventBus().fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                        }
+                    }
+                } );
     }
 
     public void showInfoMessage(String message) {
@@ -532,11 +482,11 @@ public class RuleViewer extends GuvnorEditor {
         if ( AssetFormats.isPackageDependency( this.asset.getMetaData().getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().getPackageName(),
-                                                                    new Command() {
-                                                                        public void execute() {
-                                                                            LoadingPopup.close();
-                                                                        }
-                                                                    } );
+                    new Command() {
+                        public void execute() {
+                            LoadingPopup.close();
+                        }
+                    } );
         }
     }
 
@@ -545,7 +495,7 @@ public class RuleViewer extends GuvnorEditor {
      */
     protected void doCloseUnsavedWarning() {
         final FormStylePopup pop = new FormStylePopup( images.warningLarge(),
-                                                       constants.WARNINGUnCommittedChanges() );
+                constants.WARNINGUnCommittedChanges() );
         Button dis = new Button( constants.Discard() );
         Button can = new Button( constants.Cancel() );
         HorizontalPanel hor = new HorizontalPanel();
@@ -574,87 +524,84 @@ public class RuleViewer extends GuvnorEditor {
 
     private void doCopy() {
         final FormStylePopup form = new FormStylePopup( images.ruleAsset(),
-                                                        constants.CopyThisItem() );
+                constants.CopyThisItem() );
         final TextBox newName = new TextBox();
         form.addAttribute( constants.NewName(),
-                           newName );
+                newName );
         final RulePackageSelector sel = new RulePackageSelector();
         form.addAttribute( constants.NewPackage(),
-                           sel );
+                sel );
 
         Button ok = new Button( constants.CreateCopy() );
 
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 if ( newName.getText() == null
-                     || newName.getText().equals( "" ) ) {
+                        || newName.getText().equals( "" ) ) {
                     Window.alert( constants.AssetNameMustNotBeEmpty() );
                     return;
                 }
                 String name = newName.getText().trim();
-                if ( !NewAssetWizard.validatePathPerJSR170( name ) ) {
-                    return;
-                }
                 RepositoryServiceFactory.getAssetService().copyAsset( asset.getUuid(),
-                                                                      sel.getSelectedPackage(),
-                                                                      name,
-                                                                      new GenericCallback<String>() {
-                                                                          public void onSuccess(String data) {
-                                                                              completedCopying( newName.getText(),
-                                                                                                sel.getSelectedPackage(),
-                                                                                                data );
-                                                                              form.hide();
-                                                                          }
+                        sel.getSelectedPackage(),
+                        name,
+                        new GenericCallback<String>() {
+                            public void onSuccess(String data) {
+                                completedCopying( newName.getText(),
+                                        sel.getSelectedPackage(),
+                                        data );
+                                form.hide();
+                            }
 
-                                                                          @Override
-                                                                          public void onFailure(Throwable t) {
-                                                                              if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
-                                                                                  Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
-                                                                              } else {
-                                                                                  super.onFailure( t );
-                                                                              }
-                                                                          }
-                                                                      } );
+                            @Override
+                            public void onFailure(Throwable t) {
+                                if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
+                                    Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
+                                } else {
+                                    super.onFailure( t );
+                                }
+                            }
+                        } );
             }
 
         } );
 
         form.addAttribute( "",
-                           ok );
+                ok );
 
         form.show();
     }
 
     private void doRename() {
         final FormStylePopup pop = new FormStylePopup( images.packageLarge(),
-                                                       constants.RenameThisItem() );
+                constants.RenameThisItem() );
         final TextBox box = new TextBox();
         box.setText( asset.getName() );
         pop.addAttribute( constants.NewNameAsset(),
-                          box );
+                box );
         Button ok = new Button( constants.RenameItem() );
         pop.addAttribute( "",
-                          ok );
+                ok );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
                 RepositoryServiceFactory.getAssetService().renameAsset( asset.getUuid(),
-                                                                        box.getText(),
-                                                                        new GenericCallback<java.lang.String>() {
-                                                                            public void onSuccess(String data) {
-                                                                                Window.alert( constants.ItemHasBeenRenamed() );
-                                                                                closeAndReopen( data );
-                                                                                pop.hide();
-                                                                            }
+                        box.getText(),
+                        new GenericCallback<java.lang.String>() {
+                            public void onSuccess(String data) {
+                                Window.alert( constants.ItemHasBeenRenamed() );
+                                closeAndReopen( data );
+                                pop.hide();
+                            }
 
-                                                                            @Override
-                                                                            public void onFailure(Throwable t) {
-                                                                                if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
-                                                                                    Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
-                                                                                } else {
-                                                                                    super.onFailure( t );
-                                                                                }
-                                                                            }
-                                                                        } );
+                            @Override
+                            public void onFailure(Throwable t) {
+                                if ( t.getMessage().indexOf( "ItemExistsException" ) > -1 ) { // NON-NLS
+                                    Window.alert( constants.ThatNameIsInUsePleaseTryAnother() );
+                                } else {
+                                    super.onFailure( t );
+                                }
+                            }
+                        } );
             }
         } );
 
@@ -668,36 +615,31 @@ public class RuleViewer extends GuvnorEditor {
         }
         if ( Window.confirm( constants.PromoteAreYouSure() ) ) {
             RepositoryServiceFactory.getAssetService().promoteAssetToGlobalArea( asset.getUuid(),
-                                                                                 new GenericCallback<Void>() {
-                                                                                     public void onSuccess(Void data) {
-                                                                                         Window.alert( constants.Promoted() );
-                                                                                         closeAndReopen( asset.getUuid() );
-                                                                                     }
+                    new GenericCallback<Void>() {
+                        public void onSuccess(Void data) {
+                            Window.alert( constants.Promoted() );
+                            closeAndReopen( asset.getUuid() );
+                        }
 
-                                                                                     @Override
-                                                                                     public void onFailure(Throwable t) {
-                                                                                         super.onFailure( t );
-                                                                                     }
-                                                                                 } );
+                        @Override
+                        public void onFailure(Throwable t) {
+                            super.onFailure( t );
+                        }
+                    } );
         }
     }
 
     private void closeAndReopen(String newAssetUUID) {
-        if ( closeCommand != null ) {
-            closeCommand.execute();
-        }
-        if ( openItemCommand != null ) {
-            openItemCommand.open( newAssetUUID );
-        }
+        close();
+
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 
     private void completedCopying(String name,
                                   String pkg,
                                   String newAssetUUID) {
         Window.alert( constants.CreatedANewItemSuccess( name,
-                                                        pkg ) );
-        if ( openItemCommand != null ) {
-            openItemCommand.open( newAssetUUID );
-        }
+                pkg ) );
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 }

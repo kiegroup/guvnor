@@ -128,12 +128,16 @@ public class BackupManager extends Composite {
         uploadFormPanel.addSubmitHandler( new SubmitHandler() {
 
             public void onSubmit(SubmitEvent event) {
-                if ( upload.getFilename().length() == 0 ) {
+                String fileName = upload.getFilename();
+                if ( fileName.length() == 0 ) {
                     Window.alert( constants.NoExportFilename() );
                     event.cancel();
-                } else if ( !upload.getFilename().endsWith( ".xml" ) ) {
-                    Window.alert( constants.PleaseSpecifyAValidRepositoryXmlFile() );
-                    event.cancel();
+                } else {
+                    String lowerCaseFileName = fileName.toLowerCase();
+                    if ( !lowerCaseFileName.endsWith( ".xml" ) && !lowerCaseFileName.endsWith( ".zip" ) ) {
+                        Window.alert( constants.PleaseSpecifyAValidRepositoryXmlFile() );
+                        event.cancel();
+                    }
                 }
             }
         } );

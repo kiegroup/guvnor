@@ -18,8 +18,6 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.packages.ChangeModulePackageHierarchyEvent;
-import org.drools.guvnor.client.packages.ChangeModulePackageHierarchyEventHandler;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -34,6 +32,8 @@ public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
 
         setRefreshHandler( clientFactory );
         setPackageHierarchyChangeHandler( clientFactory );
+        setCollapseAllChangeHandler( clientFactory );
+        setExpandAllChangeHandler( clientFactory );
     }
 
     private void setRefreshHandler(ClientFactory clientFactory) {
@@ -53,6 +53,24 @@ public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
                                                         getView().clearModulesTreeItem();
                                                         packageHierarchy = event.getPackageHierarchy();
                                                         setUpRootItem();
+                                                    }
+                                                } );
+    }
+
+    private void setCollapseAllChangeHandler(ClientFactory clientFactory) {
+        clientFactory.getEventBus().addHandler( CollapseAllEvent.TYPE,
+                                                new CollapseAllEventHandler() {
+                                                    public void onCollapseAll(CollapseAllEvent event) {
+                                                        getView().collapseAll();
+                                                    }
+                                                } );
+    }
+
+    private void setExpandAllChangeHandler(ClientFactory clientFactory) {
+        clientFactory.getEventBus().addHandler( ExpandAllEvent.TYPE,
+                                                new ExpandAllEventHandler() {
+                                                    public void onExpandAll(ExpandAllEvent event) {
+                                                        getView().expandAll();
                                                     }
                                                 } );
     }

@@ -24,7 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.explorer.navigation.RulesNewMenu;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
@@ -35,20 +35,24 @@ import java.util.Collection;
 public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
     private TreeItem root;
     private TreeItem states;
     private TreeItem inbox;
+    private ClientFactory clientFactory;
 
     interface BrowseTreeViewImplBinder
             extends
             UiBinder<Widget, BrowseTreeViewImpl> {
     }
 
-    private static BrowseTreeViewImplBinder uiBinder = GWT.create(BrowseTreeViewImplBinder.class);
+    private static BrowseTreeViewImplBinder uiBinder = GWT.create( BrowseTreeViewImplBinder.class );
 
     private Presenter presenter;
+
+    @UiField
+    DockLayoutPanel layout;
 
     @UiField
     SimplePanel menuContainer;
@@ -56,29 +60,31 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     @UiField
     Tree tree;
 
-    public BrowseTreeViewImpl() {
-        initWidget(uiBinder.createAndBindUi(this));
+    public BrowseTreeViewImpl(ClientFactory clientFactory) {
+        initWidget( uiBinder.createAndBindUi( this ) );
+
+        this.clientFactory = clientFactory;
 
         addSelectionHandler();
         addOpenHandler();
-        inbox = tree.addItem(Util.getHeader(images.inbox(), constants.Inbox()));
+        inbox = tree.addItem( Util.getHeader( images.inbox(), constants.Inbox() ) );
     }
 
     private void addSelectionHandler() {
-        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
+        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
             public void onSelection(SelectionEvent<TreeItem> treeItemSelectionEvent) {
                 TreeItem selectedItem = treeItemSelectionEvent.getSelectedItem();
-                presenter.onTreeItemSelection(selectedItem, selectedItem.getText());
+                presenter.onTreeItemSelection( selectedItem, selectedItem.getText() );
             }
-        });
+        } );
     }
 
     private void addOpenHandler() {
-        tree.addOpenHandler(new OpenHandler<TreeItem>() {
+        tree.addOpenHandler( new OpenHandler<TreeItem>() {
             public void onOpen(OpenEvent<TreeItem> treeItemOpenEvent) {
-                presenter.onTreeItemOpen(treeItemOpenEvent.getTarget());
+                presenter.onTreeItemOpen( treeItemOpenEvent.getTarget() );
             }
-        });
+        } );
     }
 
     public void setPresenter(Presenter presenter) {
@@ -86,12 +92,12 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     }
 
     public IsTreeItem addRootTreeItem() {
-        root = tree.addItem(Util.getHeader(images.ruleAsset(), constants.AssetsTreeView()));
+        root = tree.addItem( Util.getHeader( images.ruleAsset(), constants.AssetsTreeView() ) );
         return root;
     }
 
     public IsTreeItem addInboxIncomingTreeItem() {
-        return inbox.addItem(Util.getHeader(images.categorySmall(), constants.IncomingChanges()));
+        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.IncomingChanges() ) );
     }
 
     public Collection<IsTreeItem> getChildren(IsTreeItem openedItem) {
@@ -99,39 +105,39 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
         TreeItem parent = openedItem.asTreeItem();
         for (int i = 0; i < parent.getChildCount(); i++) {
-            children.add(parent.getChild(i));
+            children.add( parent.getChild( i ) );
         }
 
         return children;
     }
 
     public IsTreeItem addInboxRecentEditedTreeItem() {
-        return inbox.addItem(Util.getHeader(images.categorySmall(), constants.RecentlyOpened()));
+        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.RecentlyOpened() ) );
     }
 
     public IsTreeItem addInboxRecentViewedTreeItem() {
-        return inbox.addItem(Util.getHeader(images.categorySmall(), constants.RecentlyEdited()));
+        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.RecentlyEdited() ) );
     }
 
     public IsTreeItem addFind() {
-        return root.addItem(Util.getHeader(images.find(), constants.Find()));
+        return root.addItem( Util.getHeader( images.find(), constants.Find() ) );
     }
 
     public IsTreeItem addRootStateTreeItem() {
-        states = root.addItem(Util.getHeader(images.statusSmall(), constants.ByStatus()));
+        states = root.addItem( Util.getHeader( images.statusSmall(), constants.ByStatus() ) );
         return states;
     }
 
     public IsTreeItem addRootCategoryTreeItem() {
-        return root.addItem(Util.getHeader(images.chartOrganisation(), constants.ByCategory()));
+        return root.addItem( Util.getHeader( images.chartOrganisation(), constants.ByCategory() ) );
     }
 
     public IsTreeItem addTreeItem(IsTreeItem parent, String name) {
-        return parent.asTreeItem().addItem(name);
+        return parent.asTreeItem().addItem( name );
     }
 
     public void showMenu() {
-        menuContainer.add( RulesNewMenu.getMenu());
+        menuContainer.setWidget( new RulesNewMenu( clientFactory ) );
     }
 
     public void removeStates() {
@@ -139,7 +145,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     }
 
     public IsTreeItem addStateItem(String state) {
-        return states.addItem(state);
+        return states.addItem( state );
     }
 
     public void removeCategories(IsTreeItem treeItem) {

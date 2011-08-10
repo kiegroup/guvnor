@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0"
+         xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Guided decision tables (web based)</title>
+
+  <para>The guided decision table feature allows decision tables to be edited
+  in place on the web. This works similar to the guided editor by
+  introspecting what facts and fields are available to guide the creation of a
+  decision table. Rule attributes, meta-data, conditions and actions can be
+  defined in a tabular format thus facilitating rapid entry of large sets of
+  related rules. Web-based decision table rules are compiled into DRL like all
+  other rule assets.</para>
+
+  <para>Cells can be selected in a variety of ways:-<itemizedlist>
+      <listitem>
+        <para>Firstly individual cells can be double-clicked and a pop-up
+        editor corresponding to the underlying data-type will appear. Groups
+        of cells in the same column can be selected by either clicking in the
+        first and dragging the mouse pointer or clicking in the first and
+        clicking the extent of the required range with the shift key
+        pressed.</para>
+      </listitem>
+
+      <listitem>
+        <para>Secondly the keyboard cursor keys can be used to navigate around
+        the table. Pressing the enter key will pop-up the correspondig editor.
+        Ranges can be selected by pressing the shift key whilst extending the
+        range with the cursor keys.</para>
+      </listitem>
+    </itemizedlist></para>
+
+  <para>Columns can be resized by hovering over the corresponding divider in
+  the table header. The mouse cursor will change and then the column width
+  dragged either narrower or wider.</para>
+
+  <figure>
+    <title>Decision table</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/dtable-complete.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <section>
+    <title>Main components</title>
+
+    <para>The guided decision table is split into two main
+    sections:-<itemizedlist>
+        <listitem>
+          <para>The upper section allows table columns to be defined
+          representing rule attributes, meta-data, conditions and
+          actions.</para>
+        </listitem>
+
+        <listitem>
+          <para>The lower section contains the actual table itself; where
+          individual rows define seperate rules.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <figure>
+      <title>Main components</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/dtable-sections.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Column configuration</title>
+
+    <para>When you edit or create a new column, you will be given a choice of
+    the type of constraint:-<itemizedlist>
+        <listitem>
+          <para>Literal : The value in the cell will be compared with the
+          field using the operator.</para>
+        </listitem>
+
+        <listitem>
+          <para>Formula: The expression in the cell will be evaluated and then
+          compared with the field.</para>
+        </listitem>
+
+        <listitem>
+          <para>Predicate : No field is needed, the expression will be
+          evaluated to true or false.</para>
+        </listitem>
+      </itemizedlist></para>
+
+    <para>You can set a default value, but normally if there is no value in
+    the cell, that constraint will not apply.</para>
+
+    <figure>
+      <title>Column configuration</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/dtable-column-config.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <section>
+      <title>Utility columns</title>
+
+      <para>Two columns containing rule number and description are provided by
+      default.</para>
+    </section>
+
+    <section>
+      <title>Attribute columns</title>
+
+      <para>Zero or more attribue columns representing any of the DRL rule
+      attributes can be added. An additional pseudo attribute is provide in
+      the guided decision table editor to "negate" a rule. Use of this
+      attribute allows complete rules to be negated. For example the following
+      simple rule can be negated as also shown.<programlisting>when
+  $c : Cheese( name == "Cheddar" )
+then
+  ...
+end</programlisting><programlisting>when
+  not Cheese( name == "Cheddar" )
+then
+  ...
+end</programlisting></para>
+    </section>
+
+    <section>
+      <title>Meta-data columns</title>
+
+      <para>Zero or more meta-data columns can be defined, each represents the
+      normal meta-data annotation on DRL rules.</para>
+    </section>
+
+    <section>
+      <title>Condition columns</title>
+
+      <para>Conditions represent fact patterns defined in the right-hand side,
+      or "when" portion, of a rule. To define a condition column you must
+      define a binding to a model class or select one that has previously been
+      defined. You can choose to negate the pattern. Once this has been
+      completed you can define field constraints. If two or more columns are
+      defined using the same fact pattern binding the field constraints become
+      composite field constraints on the same pattern. If you define multiple
+      bindings for a single model class each binding becomes a seperate model
+      class in the right-hand side of the rule.</para>
+    </section>
+
+    <section>
+      <title>Action columns</title>
+
+      <para>Action columns can be defined to perform simple operations on
+      bound facts within the rule engine's working memory or create new facts
+      entirely. New facts can be inserted logically into the rule engine's
+      working memory thus being subject to truth maintenance as usual. Please
+      refer to the "Drools Expert" documentation for discussion on truth
+      maintenance and logical insertions.</para>
+    </section>
+  </section>
+
+  <section>
+    <title>Rule definition</title>
+
+    <para>This section alows individual rules to be defined using the columns
+    defined earlier.</para>
+
+    <figure>
+      <title>Rule definition</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/dtable-body.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Cell merging</title>
+
+    <para>The icon in the top left of the decision table toggles cell merging
+    on and off. When cells are merged those in the same column with identical
+    values are merged into a single cell. This simplifies changing the value
+    of multiple cells that shared the same original value. When cells are
+    merged they also gain an icon in the top-left of the cell that allows rows
+    spanning the merged cell to be grouped.</para>
+
+    <figure>
+      <title>Cell merging</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/dtable-merged.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+
+  <section>
+    <title>Cell grouping</title>
+
+    <para>Cells that have been merged can be further collapsed into a single
+    row. Clicking the [+\-] icon in the top left of a merged cell collapses
+    the corresponding rows into a single entry. Cells in other columns
+    spanning the collapsed rows that have identical values are shown
+    unchanged. Cells in other columns spanning the collapsed rows that have
+    different values are highlighted and the first value displayed.</para>
+
+    <figure>
+      <title>Cell grouping</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/dtable-grouped.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+
+    <para>When the value of a grouped cell is altered all cells that have been
+    collapsed also have their values updated.</para>
+  </section>
+
+  <section>
+    <title>Operation of "otherwise"</title>
+
+    <para>Condition columns defined with literal values that use either the
+    equality (==) or inequality (!=) operators can take advantage of a special
+    decision table cell value of "otherwise". This special value allows a rule
+    to be defined that matches on all values not explicitly defined in all
+    other rules defined in the table. This is best illustrated with an
+    example:-<programlisting>when
+  Cheese( name not in ("Cheddar", "Edam", "Brie") )
+  ...
+then
+  ...
+end</programlisting><programlisting>when
+  Cheese( name in ("Cheddar", "Edam", "Brie") )
+  ...
+then
+  ...
+end</programlisting></para>
+  </section>
+</section>

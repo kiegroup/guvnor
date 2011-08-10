@@ -16,27 +16,29 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.HTML;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.messages.Constants;
-
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.core.client.GWT;
 
 /**
  * For ruleflow upload.
  */
 public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    public RuleFlowUploadWidget(RuleAsset asset,
-                                RuleViewer viewer) {
+    public RuleFlowUploadWidget( RuleAsset asset,
+                                 RuleViewer viewer,
+                                 ClientFactory clientFactory ) {
         super( asset,
-               viewer );
+                viewer,
+                clientFactory );
         super.addDescription( new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" ) ); //NON-NLS
     }
 

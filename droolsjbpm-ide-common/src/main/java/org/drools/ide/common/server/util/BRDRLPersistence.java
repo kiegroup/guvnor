@@ -463,7 +463,7 @@ public class BRDRLPersistence
         private void generateFactPattern(FactPattern pattern) {
             if ( pattern.isNegated() ) {
                 buf.append( "not " );
-            } else if ( pattern.getBoundName() != null ) {
+            } else if ( pattern.isBound() ) {
                 buf.append( pattern.getBoundName() );
                 buf.append( " : " );
             }
@@ -546,7 +546,7 @@ public class BRDRLPersistence
                 buf.append( constr.getValue() );
                 buf.append( " )" );
             } else {
-                if ( constr.getFieldBinding() != null ) {
+                if ( constr.isBound() ) {
                     buf.append( constr.getFieldBinding() );
                     buf.append( " : " );
                 }

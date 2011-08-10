@@ -66,7 +66,6 @@ public class WorkspaceEditor extends FormStylePopup {
         if ( "".equals( this.name.getText() ) ) {
             ErrorPopup.showMessage( constants.CanTHaveAnEmptyWorkspaceName() );
         } else {
-            if ( !NewAssetWizard.validatePathPerJSR170( this.name.getText() ) ) return;
             createWorkspace( name );
         }
     }

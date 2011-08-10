@@ -25,7 +25,7 @@ public class AssetViewerPlace extends Place {
 
     private final String uuid;
 
-    public AssetViewerPlace( String uuid ) {
+    public AssetViewerPlace(String uuid) {
         this.uuid = uuid;
     }
 
@@ -33,16 +33,31 @@ public class AssetViewerPlace extends Place {
         return uuid;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( o == null || getClass() != o.getClass() ) return false;
+
+        AssetViewerPlace that = (AssetViewerPlace) o;
+
+        if ( uuid != null ? !uuid.equals( that.uuid ) : that.uuid != null ) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid != null ? uuid.hashCode() : 0;
+    }
+
     public static class Tokenizer implements PlaceTokenizer<AssetViewerPlace> {
 
-        private final String PLACE_ID = "MODULE_ASSETS_VIEWER=";
-
-        public String getToken( AssetViewerPlace place ) {
-            return PLACE_ID + place.getUuid();
+        public String getToken(AssetViewerPlace place) {
+            return place.getUuid();
         }
 
-        public AssetViewerPlace getPlace( String token ) {
-            return new AssetViewerPlace( token.substring( PLACE_ID.length() ) );
+        public AssetViewerPlace getPlace(String token) {
+            return new AssetViewerPlace( token );
         }
     }
 }

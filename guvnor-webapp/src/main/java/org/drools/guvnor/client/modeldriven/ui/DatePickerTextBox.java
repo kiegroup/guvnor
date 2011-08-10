@@ -35,7 +35,7 @@ public class DatePickerTextBox extends DatePicker {
     private Constants     constants = GWT.create( Constants.class );
     private static Images images    = GWT.create( Images.class );
 
-    private ImageButton   select    = new ImageButton( images.editTiny() );
+    private ImageButton   select    = new ImageButton( images.edit() );
 
     public DatePickerTextBox(String selectedDate) {
         this( selectedDate,

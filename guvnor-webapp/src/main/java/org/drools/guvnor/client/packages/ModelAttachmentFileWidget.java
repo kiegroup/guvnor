@@ -16,17 +16,17 @@
 
 package org.drools.guvnor.client.packages;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
-import org.drools.guvnor.client.messages.Constants;
-
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.core.client.GWT;
 
 /**
  * This wraps a file uploader utility for model packages.
@@ -34,18 +34,20 @@ import com.google.gwt.core.client.GWT;
  */
 
 public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
-    implements
-    SaveEventListener,
-    EditorWidget {
+        implements
+        SaveEventListener,
+        EditorWidget {
 
     private static Images images = GWT.create( Images.class );
 
-    private String        packageName;
+    private String packageName;
 
-    public ModelAttachmentFileWidget(RuleAsset asset,
-                                     RuleViewer viewer) {
+    public ModelAttachmentFileWidget( RuleAsset asset,
+                                      RuleViewer viewer,
+                                      ClientFactory clientFactory ) {
         super( asset,
-               viewer );
+                viewer,
+                clientFactory );
         this.packageName = asset.getMetaData().getPackageName();
     }
 
@@ -66,11 +68,11 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
     public void onAfterSave() {
         LoadingPopup.showMessage( ((Constants) GWT.create( Constants.class )).RefreshingModel() );
         SuggestionCompletionCache.getInstance().loadPackage( packageName,
-                                                             new Command() {
-                                                                 public void execute() {
-                                                                     LoadingPopup.close();
-                                                                 }
-                                                             } );
+                new Command() {
+                    public void execute() {
+                        LoadingPopup.close();
+                    }
+                } );
 
     }
 

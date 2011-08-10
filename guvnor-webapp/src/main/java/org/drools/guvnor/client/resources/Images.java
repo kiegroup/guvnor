@@ -200,17 +200,20 @@ public interface Images
     @Source("images/collapse.gif")
     ImageResource collapse();
 
+    @Source("images/collapseall.gif")
+    ImageResource collapseAll();
+
     @Source("images/expand.gif")
     ImageResource expand();
 
+    @Source("images/expandall.gif")
+    ImageResource expandAll();
+    
     @Source("images/newex_wiz.gif")
     ImageResource newexWiz();
 
     @Source("images/add_field_to_fact.gif")
     ImageResource addFieldToFact();
-
-    @Source("images/edit_tiny.gif")
-    ImageResource editTiny();
 
     @Source("images/add_connective.gif")
     ImageResource addConnective();
@@ -332,4 +335,10 @@ public interface Images
     @Source("images/user_permissions_large.png")
     ImageResource userPermissionsLarge();
     
+    @Source("images/flatView.gif")
+    ImageResource flatView();
+
+    @Source("images/hierarchicalView.gif")
+    ImageResource hierarchicalView();
+
 }

@@ -30,6 +30,8 @@ public class ModuleEditorActivity extends Activity {
     private ModuleEditorActivityView view;
     private String uuid;
 
+    // TODO: add handler for module refresh event -Rikkola-
+
     public ModuleEditorActivity( String uuid, ClientFactory clientFactory ) {
         this.view = clientFactory.getModuleEditorActivityView();
 

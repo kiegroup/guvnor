@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.factmodel;
 
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -43,7 +44,8 @@ public class FactModelsWidget extends Composite
     private static Constants constants = ((Constants) GWT.create( Constants.class ));
 
     public FactModelsWidget(RuleAsset asset,
-                            RuleViewer viewer) {
+                            RuleViewer viewer,
+                        ClientFactory clientFactory) {
         this( asset );
     }
 

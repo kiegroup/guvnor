@@ -16,26 +16,26 @@
 
 package org.drools.guvnor.client.widgets.assetviewer;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
+import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
-import com.google.gwt.event.shared.EventBus;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An Activity to view a Package's assets
  */
 public class AssetViewerActivity extends Activity
-    implements
-    AssetViewerActivityView.Presenter {
+        implements
+        AssetViewerActivityView.Presenter {
 
     private final ClientFactory     clientFactory;
     private PackageConfigData       packageConfigData;
@@ -43,7 +43,7 @@ public class AssetViewerActivity extends Activity
     private String                  uuid;
 
     public AssetViewerActivity(String uuid,
-                               ClientFactory clientFactory) {
+                                ClientFactory clientFactory) {
         this.uuid = uuid;
         this.clientFactory = clientFactory;
         this.view = clientFactory.getAssetViewerActivityView();
@@ -52,7 +52,7 @@ public class AssetViewerActivity extends Activity
 
     @Override
     public void start(final AcceptTabItem acceptTabItem,
-                      EventBus eventBus) {
+                       EventBus eventBus) {
 
         view.showLoadingPackageInformationMessage();
 
@@ -60,7 +60,7 @@ public class AssetViewerActivity extends Activity
                                                              new GenericCallback<PackageConfigData>() {
                                                                  public void onSuccess(PackageConfigData conf) {
                                                                      packageConfigData = conf;
-                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
+                                                                     RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
                                                                      acceptTabItem.addTab( conf.getName(),
                                                                                            view );
 
@@ -79,10 +79,6 @@ public class AssetViewerActivity extends Activity
     private void fillModuleItemStructure() {
         //If two or more asset editors (that are associated with different formats) have same titles,
         //we group them together and display them as one node on the package tree.
-
-        //TODO We need to get a list of all asset format types in the repository for this package
-        //TODO Any not in one of the known categories need to be added to a default
-
         String[] registeredFormats = clientFactory.getAssetEditorFactory().getRegisteredAssetEditorFormats();
 
         //Use list to preserve the order of asset editors defined in configuration.
@@ -117,11 +113,27 @@ public class AssetViewerActivity extends Activity
             if ( formatList.size() > 0 ) {
                 view.addAssetFormat( clientFactory.getAssetEditorFactory().getAssetEditorIcon( formatList.getFirst() ),
                                      getTitle( formatList.getFirst() ),
-                                     new ModuleFormatsGrid( packageConfigData,
-                                                            getTitle( formatList.getFirst() ),
-                                                            formatList.getFormats() ) );
+                                     packageConfigData.getName(),
+                                     makeTable( formatList ) );
             }
         }
+    }
+
+    private AssetPagedTable makeTable(FormatList formatList) {
+
+        List<String> formatsInList = null;
+        Boolean formatIsRegistered = null;
+        if ( formatList.getFormats() != null && formatList.getFormats().length > 0 ) {
+            formatsInList = Arrays.asList( formatList.getFormats() );
+        } else {
+            formatIsRegistered = false;
+        }
+        return new AssetPagedTable(
+                                    packageConfigData.getUuid(),
+                                    formatsInList,
+                                    formatIsRegistered,
+                                    view.getFeedUrl( packageConfigData.getName() ),
+                                    clientFactory );
     }
 
     class FormatList {
@@ -140,7 +152,7 @@ public class AssetViewerActivity extends Activity
         }
 
         private boolean hasSameTitle(String format,
-                                     String addedFormat) {
+                                      String addedFormat) {
             return getTitle( addedFormat ).equals( getTitle( format ) );
         }
 

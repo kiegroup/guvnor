@@ -16,14 +16,13 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.ConfigurationsLoaderMock;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabContainer;
-import org.drools.guvnor.client.explorer.TabManager;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView.Presenter;
 import org.drools.guvnor.client.rpc.CategoryServiceAsyncMock;
@@ -38,7 +37,6 @@ public class BrowseTreeTestBase {
 
     protected BrowseTreeView view;
     protected Presenter presenter;
-    protected TabManager tabManager;
     private RepositoryServiceAsyncMockImpl repositoryServiceAsyncMock;
     protected CategoryServiceAsyncMockImpl categoryServiceAsyncMock;
     protected IsTreeItem rootCategoryTreeItem;
@@ -57,7 +55,6 @@ public class BrowseTreeTestBase {
         setUpServices();
         setUpView();
         setUpPresenter();
-        setUpTabManager();
     }
 
     protected void setUpPresenter() {
@@ -89,12 +86,14 @@ public class BrowseTreeTestBase {
         ).thenReturn(
                 view
         );
-        presenter = new BrowseTree( clientFactory );
-    }
+        RulesNewMenuView rulesNewMenuView = mock( RulesNewMenuView.class );
+        when(
+                navigationViewFactory.getRulesNewMenuView()
+        ).thenReturn(
+                rulesNewMenuView
+        );
 
-    private void setUpTabManager() {
-        tabManager = mock( TabManager.class );
-        TabContainer.init( tabManager );
+        presenter = new BrowseTree( clientFactory );
     }
 
     private void setUpServices() {
@@ -120,23 +119,23 @@ public class BrowseTreeTestBase {
         when( view.addInboxRecentViewedTreeItem() ).thenReturn( inboxRecentViewed );
     }
 
-    protected void setUpStates( String... states ) {
+    protected void setUpStates(String... states) {
         repositoryServiceAsyncMock.setStates( states );
     }
 
-    protected void setUpChildren( IsTreeItem parent, IsTreeItem... children ) {
+    protected void setUpChildren(IsTreeItem parent, IsTreeItem... children) {
         ArrayList rootChildList = new ArrayList();
         rootChildList.addAll( Arrays.asList( children ) );
         when( view.getChildren( parent ) ).thenReturn( rootChildList );
     }
 
-    protected void setUpCapabilities( Capability... list ) {
+    protected void setUpCapabilities(Capability... list) {
         List<Capability> capabilities = new ArrayList<Capability>();
         capabilities.addAll( Arrays.asList( list ) );
         ConfigurationsLoaderMock.loadUserCapabilities( capabilities );
     }
 
-    protected void verifyAddedTreeItemsToCategory( IsTreeItem parent, String... categories ) {
+    protected void verifyAddedTreeItemsToCategory(IsTreeItem parent, String... categories) {
         for (String category : categories) {
             verify( view ).addTreeItem( parent, category );
         }
@@ -145,11 +144,11 @@ public class BrowseTreeTestBase {
     class RepositoryServiceAsyncMockImpl extends RepositoryServiceAsyncMock {
         private String[] states;
 
-        public void setStates( String... states ) {
+        public void setStates(String... states) {
             this.states = states;
         }
 
-        public void listStates( AsyncCallback<String[]> cb ) {
+        public void listStates(AsyncCallback<String[]> cb) {
             cb.onSuccess( states );
         }
     }
@@ -157,11 +156,11 @@ public class BrowseTreeTestBase {
     class CategoryServiceAsyncMockImpl extends CategoryServiceAsyncMock {
         private Map<String, String[]> categories = new HashMap<String, String[]>();
 
-        public void addCategorySelection( String path, String... categories ) {
+        public void addCategorySelection(String path, String... categories) {
             this.categories.put( path, categories );
         }
 
-        public void loadChildCategories( String path, AsyncCallback<String[]> cb ) {
+        public void loadChildCategories(String path, AsyncCallback<String[]> cb) {
             String[] subCategories = categories.get( path );
             cb.onSuccess( subCategories );
         }

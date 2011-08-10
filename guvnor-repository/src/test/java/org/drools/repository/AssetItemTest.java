@@ -835,9 +835,34 @@ public class AssetItemTest extends RepositoryTestCase {
             assertTrue(it.hasNext());
             it.next();
         }
-
     }
+    
+    @Test
+    public void testGetAssetItemWithSpecifiedVersion() throws Exception {
+        AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetAssetItemWithSpecifiedVersion", "test description");
+        ruleItem1.checkin( "version0" );
 
+        ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
+        ruleItem1.updateContent( "wo" );
+        ruleItem1.checkin( "version1" );
+
+        ruleItem1 = getRepo().loadAssetByUUID( ruleItem1.getUUID() );
+        ruleItem1.updateContent( "ya" );
+        ruleItem1.checkin( "version2" );
+
+        AssetItem assetItemVersion1 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 1);
+        assertEquals("", assetItemVersion1.getContent());
+        assertEquals(1, assetItemVersion1.getVersionNumber());
+        
+        AssetItem assetItemVersion2 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 2);
+        assertEquals("wo", assetItemVersion2.getContent());
+        assertEquals(2, assetItemVersion2.getVersionNumber());
+        
+        AssetItem assetItemVersion3 = getRepo().loadDefaultPackage().loadAsset("testGetAssetItemWithSpecifiedVersion", 3);
+        assertEquals("ya", assetItemVersion3.getContent());
+        assertEquals(3, assetItemVersion3.getVersionNumber());
+    }
+    
     @Test
     public void testGetTitle() {
             AssetItem ruleItem1 = getRepo().loadDefaultPackage().addAsset("testGetTitle", "test content");

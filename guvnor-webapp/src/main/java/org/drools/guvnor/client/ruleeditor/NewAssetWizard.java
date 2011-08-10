@@ -27,7 +27,8 @@ import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -58,6 +59,7 @@ public class NewAssetWizard extends FormStylePopup {
 
     private final NewAssetFormStyleLayout newAssetLayout = new NewAssetFormStyleLayout();
     private final ImportAssetFormStyleLayout importAssetLayout = new ImportAssetFormStyleLayout();
+    private final ClientFactory clientFactory;
 
 
     private static String getTitle( String format ) {
@@ -85,10 +87,12 @@ public class NewAssetWizard extends FormStylePopup {
      * This is used when creating a new rule.
      */
     public NewAssetWizard( boolean showCategories,
-                           String format ) {
+                           String format,
+                           ClientFactory clientFactory) {
         super( images.newWiz(),
                 getTitle( format ) );
         this.format = format;
+        this.clientFactory = clientFactory;
 
         RadioButton newPackage = new RadioButton( "layoutgroup",
                 constants.CreateNewAsset() ); // NON-NLS
@@ -285,10 +289,6 @@ public class NewAssetWizard extends FormStylePopup {
      */
     void ok() {
 
-        if ( !validatePathPerJSR170( this.name.getText() ) ) {
-            return;
-        }
-
         if ( "*".equals( getFormat() ) ) {
             Window.alert( constants.PleaseEnterAFormatFileType() );
             return;
@@ -349,45 +349,7 @@ public class NewAssetWizard extends FormStylePopup {
      * @param uuid
      */
     protected void openEditor( String uuid ) {
-        TabContainer.getInstance().openAsset( uuid );
-    }
-
-    /**
-     * Validate name per JSR-170. Only following characters are valid: char ::=
-     * nonspace | ' ' nonspace ::= (* Any Unicode character except: '/', ':',
-     * '[', ']', '*', ''', '"', '|' or any whitespace character *)
-     *
-     * @param jsrPath
-     */
-    public static boolean validatePathPerJSR170( String jsrPath ) {
-        int len = jsrPath == null ? 0 : jsrPath.trim().length();
-        if ( len == 0 ) {
-            Window.alert( GWT.<Constants>create( Constants.class ).emptyNameIsNotAllowed() );
-            return false;
-        }
-
-        int pos = 0;
-
-        while (pos < len) {
-            char c = jsrPath.charAt( pos );
-            pos++;
-
-            switch (c) {
-                case '/':
-                case ':':
-                case '[':
-                case ']':
-                case '*':
-                case '\'':
-                case '\"':
-                    Window.alert( GWT.<Constants>create( Constants.class ).NonValidJCRName( jsrPath,
-                            c ) );
-                    return false;
-                default:
-            }
-        }
-
-        return true;
+        clientFactory.getPlaceController().goTo( new AssetEditorPlace( uuid ));
     }
 
 }

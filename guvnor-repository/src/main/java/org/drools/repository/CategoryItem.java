@@ -25,6 +25,7 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,7 +113,8 @@ public class CategoryItem extends Item {
     public CategoryItem addCategory(String name,
                                     String description) {
         try {
-            Node child = this.node.addNode( name, CategoryItem.TAG_NODE_TYPE_NAME );
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            Node child = this.node.addNode( nodePath, CategoryItem.TAG_NODE_TYPE_NAME );
             this.rulesRepository.getSession().save();
             return new CategoryItem(this.rulesRepository, child);
         } catch (Exception e) {

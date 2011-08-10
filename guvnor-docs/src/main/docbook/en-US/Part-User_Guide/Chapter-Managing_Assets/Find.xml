@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/2000/svg"
+         xmlns:ns3="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns="http://docbook.org/ns/docbook">
+  <title>Navigating and finding rules</title>
+
+  <para>The two main ways of viewing the repository are by using user-driven
+  Categorization (tagging) as outlined above, and the package explorer
+  view.</para>
+
+  <para>The category view provides a way to navigate your rules in a way that
+  makes sense to your organization.</para>
+
+  <figure>
+    <title>Category view</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/CategoryExplorer.png"
+                   format="PNG" scalefit="0" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The above diagram shows categories in action. Generally under each
+  category you should have no more then a few dozen rules, if possible.</para>
+
+  <para>The alternative and more technical view is to use the package
+  explorer. This shows the rules (assets) closer to how they are actually
+  stored in the database, and also separates rules into packages (name spaces)
+  and their type (format, as rules can be in many different formats).</para>
+
+  <figure>
+    <title>Package view</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/PackageExplorer.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The above shows the alternate way of exploring - using
+  packages.</para>
+</section>

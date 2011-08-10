@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.FactTypeBrowser.ClickEvent;
@@ -30,7 +31,8 @@ public class DrlEditor extends Composite
     EditorWidget {
 
     public DrlEditor(RuleAsset a,
-                     RuleViewer v) {
+                     RuleViewer v,
+                        ClientFactory clientFactory) {
         this( a );
     }
 

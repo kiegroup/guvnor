@@ -57,19 +57,19 @@ public class PackageEditor extends PrettyFormLayout {
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();
     private final ClientFactory clientFactory;
 
-    public PackageEditor( PackageConfigData data,
-                          ClientFactory clientFactory,
-                          Command refreshCommand ) {
+    public PackageEditor(PackageConfigData data,
+                         ClientFactory clientFactory,
+                         Command refreshCommand) {
         this( data,
                 clientFactory,
                 false,
                 refreshCommand );
     }
 
-    public PackageEditor( PackageConfigData data,
-                          ClientFactory clientFactory,
-                          boolean historicalReadOnly,
-                          Command refreshCommand ) {
+    public PackageEditor(PackageConfigData data,
+                         ClientFactory clientFactory,
+                         boolean historicalReadOnly,
+                         Command refreshCommand) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
         this.isHistoricalReadOnly = historicalReadOnly;
@@ -139,7 +139,7 @@ public class PackageEditor extends PrettyFormLayout {
             Button save = new Button( constants.ValidateConfiguration() );
             save.addClickHandler( new ClickHandler() {
 
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     doValidatePackageConfiguration( null );
                 }
             } );
@@ -160,7 +160,9 @@ public class PackageEditor extends PrettyFormLayout {
 
         if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
             startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget( this.packageConfigData ) );
+            addRow( new PackageBuilderWidget(
+                    this.packageConfigData,
+                    clientFactory ) );
             endSection();
         }
 
@@ -169,7 +171,7 @@ public class PackageEditor extends PrettyFormLayout {
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 PackageBuilderWidget.doBuildSource( packageConfigData.getUuid(),
                         packageConfigData.getName() );
             }
@@ -217,7 +219,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         GenericCallback<TableDataResult> callBack = new GenericCallback<TableDataResult>() {
 
-            public void onSuccess( TableDataResult resultTable ) {
+            public void onSuccess(TableDataResult resultTable) {
 
                 if ( resultTable.data.length == 0 ) {
                     removeRow( rowNumber );
@@ -243,8 +245,8 @@ public class PackageEditor extends PrettyFormLayout {
         endSection();
     }
 
-    private Widget createHPanel( Widget widget,
-                                 String popUpText ) {
+    private Widget createHPanel(Widget widget,
+                                String popUpText) {
         HorizontalPanel hPanel = new HorizontalPanel();
         hPanel.add( widget );
         hPanel.add( new InfoPopup( constants.Tip(),
@@ -275,11 +277,11 @@ public class PackageEditor extends PrettyFormLayout {
         return new HTML( "&nbsp;&nbsp;" );
     }
 
-    private Image getRemoveCatRulesIcon( final String rule ) {
+    private Image getRemoveCatRulesIcon(final String rule) {
         Image remove = new Image( images.deleteItemSmall() );
         remove.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 if ( Window.confirm( constants.RemoveThisCategoryRule() ) ) {
                     packageConfigData.getCatRules().remove( rule );
                     refreshWidgets();
@@ -295,7 +297,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         add.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 showCatRuleSelector( (Widget) event.getSource() );
             }
         } );
@@ -307,8 +309,8 @@ public class PackageEditor extends PrettyFormLayout {
         return hp;
     }
 
-    private void addToCatRules( String category,
-                                String rule ) {
+    private void addToCatRules(String category,
+                               String rule) {
         if ( null != category && null != rule ) {
             if ( packageConfigData.getCatRules() == null ) {
                 packageConfigData.setCatRules( new HashMap<String, String>() );
@@ -318,14 +320,14 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    protected void showCatRuleSelector( Widget w ) {
+    protected void showCatRuleSelector(Widget w) {
         final FormStylePopup pop = new FormStylePopup( images.config(),
                 constants.AddACategoryRuleToThePackage() );
         final Button addbutton = new Button( constants.OK() );
         final TextBox ruleName = new TextBox();
 
         final CategoryExplorerWidget exw = new CategoryExplorerWidget( new CategorySelectHandler() {
-            public void selected( String selectedPath ) { //not needed
+            public void selected(String selectedPath) { //not needed
             }
         } );
 
@@ -335,7 +337,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         addbutton.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 if ( exw.getSelectedPath().length() > 0 && ruleName.getText().trim().length() > 0 ) {
                     addToCatRules( exw.getSelectedPath(),
                             ruleName.getText() );
@@ -355,7 +357,7 @@ public class PackageEditor extends PrettyFormLayout {
         pop.show();
     }
 
-    private void showValidatePackageConfigurationResult( final ValidatedResponse validatedResponse ) {
+    private void showValidatePackageConfigurationResult(final ValidatedResponse validatedResponse) {
         packageConfigurationValidationResult.clear();
 
         if ( validatedResponse != null && validatedResponse.hasErrors && !validatedResponse.errorMessage.startsWith( "Class" ) ) {
@@ -365,7 +367,7 @@ public class PackageEditor extends PrettyFormLayout {
             packageConfigurationValidationResult.add( msg );
             Button show = new Button( constants.ViewErrors() );
             show.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent event ) {
+                public void onClick(ClickEvent event) {
                     ValidationMessageWidget wid = new ValidationMessageWidget( validatedResponse.errorHeader,
                             validatedResponse.errorMessage );
                     wid.show();
@@ -380,41 +382,41 @@ public class PackageEditor extends PrettyFormLayout {
         }
     }
 
-    static String getDocumentationDownload( PackageConfigData conf ) {
+    static String getDocumentationDownload(PackageConfigData conf) {
         return makeLink( conf ) + "/documentation.pdf"; //NON-NLS
     }
 
-    static String getSourceDownload( PackageConfigData conf ) {
+    static String getSourceDownload(PackageConfigData conf) {
         return makeLink( conf ) + ".drl"; //NON-NLS
     }
 
-    static String getBinaryDownload( PackageConfigData conf ) {
+    static String getBinaryDownload(PackageConfigData conf) {
         return makeLink( conf );
     }
 
-    static String getScenarios( PackageConfigData conf ) {
+    static String getScenarios(PackageConfigData conf) {
         return makeLink( conf ) + "/SCENARIOS"; //NON-NLS
     }
 
-    static String getChangeset( PackageConfigData conf ) {
+    static String getChangeset(PackageConfigData conf) {
         return makeLink( conf ) + "/ChangeSet.xml"; //NON-NLS
     }
 
-    public static String getModelDownload( PackageConfigData conf ) {
+    public static String getModelDownload(PackageConfigData conf) {
         return makeLink( conf ) + "/MODEL"; //NON-NLS
     }
 
-    static String getSpringContextDownload( PackageConfigData conf,
-                                            String name ) {
+    static String getSpringContextDownload(PackageConfigData conf,
+                                           String name) {
         return makeLink( conf ) + "/SpringContext/" + name;
     }
 
-    static String getVersionFeed( PackageConfigData conf ) {
+    static String getVersionFeed(PackageConfigData conf) {
         String hurl = getRESTBaseURL() + "packages/" + conf.getName() + "/versions";
         return hurl;
     }
 
-    String getPackageSourceURL( PackageConfigData conf ) {
+    String getPackageSourceURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = getRESTBaseURL() + "packages/" + conf.getName() +
@@ -425,7 +427,7 @@ public class PackageEditor extends PrettyFormLayout {
         return url;
     }
 
-    String getPackageBinaryURL( PackageConfigData conf ) {
+    String getPackageBinaryURL(PackageConfigData conf) {
         String url;
         if ( isHistoricalReadOnly ) {
             url = getRESTBaseURL() + "packages/" + conf.getName() +
@@ -445,7 +447,7 @@ public class PackageEditor extends PrettyFormLayout {
     /**
      * Get a download link for the binary package.
      */
-    public static String makeLink( PackageConfigData conf ) {
+    public static String makeLink(PackageConfigData conf) {
         String hurl = GWT.getModuleBaseURL() + "package/" + conf.getName();
         if ( !conf.isSnapshot() ) {
             hurl = hurl + "/" + SnapshotView.LATEST_SNAPSHOT;
@@ -486,11 +488,11 @@ public class PackageEditor extends PrettyFormLayout {
                 ok );
 
         ok.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 RepositoryServiceFactory.getPackageService().renamePackage( packageConfigData.getUuid(),
                         name.getText(),
                         new GenericCallback<String>() {
-                            public void onSuccess( String data ) {
+                            public void onSuccess(String data) {
                                 completedRenaming( data );
                                 pop.hide();
                             }
@@ -501,16 +503,16 @@ public class PackageEditor extends PrettyFormLayout {
         pop.show();
     }
 
-    private void completedRenaming( String newAssetUUID ) {
+    private void completedRenaming(String newAssetUUID) {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getEventBus().fireEvent( new CloseTabEvent( newAssetUUID ) );
+        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
 
         openModule( newAssetUUID );
     }
 
-    private void openModule( String newAssetUUID ) {
+    private void openModule(String newAssetUUID) {
         clientFactory.getPlaceController().goTo( new ModuleEditorPlace( newAssetUUID ) );
     }
 
@@ -530,7 +532,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         ok.addClickHandler( new ClickHandler() {
 
-            public void onClick( ClickEvent event ) {
+            public void onClick(ClickEvent event) {
                 if ( !PackageNameValidator.validatePackageName( name.getText() ) ) {
                     Window.alert( constants.NotAValidPackageName() );
                     return;
@@ -539,7 +541,7 @@ public class PackageEditor extends PrettyFormLayout {
                 RepositoryServiceFactory.getPackageService().copyPackage( packageConfigData.getName(),
                         name.getText(),
                         new GenericCallback<String>() {
-                            public void onSuccess( String uuid ) {
+                            public void onSuccess(String uuid) {
                                 completedCopying( uuid );
                                 pop.hide();
                             }
@@ -550,19 +552,19 @@ public class PackageEditor extends PrettyFormLayout {
         pop.show();
     }
 
-    private void completedCopying( String newAssetUUID ) {
+    private void completedCopying(String newAssetUUID) {
         Window.alert( constants.PackageCopiedSuccessfully() );
         refreshPackageList();
 
         openModule( newAssetUUID );
     }
 
-    private void doSave( final Command refresh ) {
+    private void doSave(final Command refresh) {
         LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
 
         RepositoryServiceFactory.getPackageService().savePackage( this.packageConfigData,
                 new GenericCallback<Void>() {
-                    public void onSuccess( Void data ) {
+                    public void onSuccess(Void data) {
                         refreshCommand.execute();
                         LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
 
@@ -579,7 +581,7 @@ public class PackageEditor extends PrettyFormLayout {
                 } );
     }
 
-    private void doValidatePackageConfiguration( final Command refresh ) {
+    private void doValidatePackageConfiguration(final Command refresh) {
         final HorizontalPanel busy = new HorizontalPanel();
         busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
         busy.add( new Image( images.redAnime() ) );
@@ -588,7 +590,7 @@ public class PackageEditor extends PrettyFormLayout {
 
         RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.packageConfigData,
                 new GenericCallback<ValidatedResponse>() {
-                    public void onSuccess( ValidatedResponse data ) {
+                    public void onSuccess(ValidatedResponse data) {
                         showValidatePackageConfigurationResult( data );
                     }
                 } );
@@ -607,7 +609,7 @@ public class PackageEditor extends PrettyFormLayout {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                clientFactory.getEventBus().fireEvent( new CloseTabEvent( packageConfigData.uuid ) );
+                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
                 refreshPackageList();
             }
         };

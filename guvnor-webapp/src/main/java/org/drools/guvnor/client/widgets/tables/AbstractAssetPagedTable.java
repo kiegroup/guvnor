@@ -16,17 +16,6 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.drools.guvnor.client.explorer.TabContainer;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
@@ -45,6 +34,17 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.MultiAssetPlace;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
+import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Widget that shows rows of paged data where columns "uuid", "name" and
@@ -64,9 +64,9 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             UiBinder<Widget, AbstractAssetPagedTable> {
     }
 
-    protected static final Constants constants = GWT.create(Constants.class);
+    protected static final Constants constants = GWT.create( Constants.class );
 
-    private static AssetPagedTableBinder uiBinder = GWT.create(AssetPagedTableBinder.class);
+    private static AssetPagedTableBinder uiBinder = GWT.create( AssetPagedTableBinder.class );
 
     @UiField()
     protected Image feedImage;
@@ -76,20 +76,26 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
 
     protected String feedURL;
 
-    public AbstractAssetPagedTable(int pageSize) {
-        this(pageSize,
-                null);
+    private final ClientFactory clientFactory;
+
+    public AbstractAssetPagedTable(int pageSize,
+                                   ClientFactory clientFactory) {
+        this( pageSize,
+                null,
+                clientFactory );
     }
 
     public AbstractAssetPagedTable(int pageSize,
-                                   String feedURL) {
-        super(pageSize);
+                                   String feedURL,
+                                   ClientFactory clientFactory) {
+        super( pageSize );
         this.feedURL = feedURL;
-        if (this.feedURL == null
-                || "".equals(feedURL)) {
-            this.feedImage.setVisible(false);
+        if ( this.feedURL == null
+                || "".equals( feedURL ) ) {
+            this.feedImage.setVisible( false );
         }
 
+        this.clientFactory = clientFactory;
     }
 
     /**
@@ -99,7 +105,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      * @param unloadListener
      */
     public void addUnloadListener(Command unloadListener) {
-        unloadListenerSet.add(unloadListener);
+        unloadListenerSet.add( unloadListener );
     }
 
     /**
@@ -112,7 +118,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
         Set<T> selectedRows = selectionModel.getSelectedSet();
 
         // Compatibility with existing API
-        if (selectedRows.size() == 0) {
+        if ( selectedRows.size() == 0 ) {
             return null;
         }
 
@@ -133,15 +139,16 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     @UiHandler("openSelectedToSingleTabButton")
     public void openSelectedToSingleTab(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
-        List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>(selectedSet.size());
+        List<MultiViewRow> multiViewRowList = new ArrayList<MultiViewRow>( selectedSet.size() );
         for (T selected : selectedSet) {
-            MultiViewRow row = new MultiViewRow();
-            row.uuid = selected.getUuid();
-            row.format = selected.getFormat();
-            row.name = selected.getName();
-            multiViewRowList.add(row);
+            multiViewRowList.add(
+                    new MultiViewRow(
+                            selected.getUuid(),
+                            selected.getName(),
+                            selected.getFormat() ) );
         }
-        TabContainer.getInstance().openAssetsToMultiView(multiViewRowList.toArray(new MultiViewRow[multiViewRowList.size()]));
+
+        clientFactory.getPlaceController().goTo( new MultiAssetPlace( multiViewRowList ) );
     }
 
     /**
@@ -149,8 +156,8 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      */
     public void refresh() {
         selectionModel.clear();
-        cellTable.setVisibleRangeAndClearData(cellTable.getVisibleRange(),
-                true);
+        cellTable.setVisibleRangeAndClearData( cellTable.getVisibleRange(),
+                true );
     }
 
     /**
@@ -167,48 +174,48 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
             }
         };
 
-        cellTable = new CellTable<T>(providesKey);
-        selectionModel = new MultiSelectionModel<T>(providesKey);
-        cellTable.setSelectionModel(selectionModel);
-        SelectionColumn.createAndAddSelectionColumn(cellTable);
+        cellTable = new CellTable<T>( providesKey );
+        selectionModel = new MultiSelectionModel<T>( providesKey );
+        cellTable.setSelectionModel( selectionModel );
+        SelectionColumn.createAndAddSelectionColumn( cellTable );
 
-        ColumnPicker<T> columnPicker = new ColumnPicker<T>(cellTable);
-        SortableHeaderGroup<T> sortableHeaderGroup = new SortableHeaderGroup<T>(cellTable);
+        ColumnPicker<T> columnPicker = new ColumnPicker<T>( cellTable );
+        SortableHeaderGroup<T> sortableHeaderGroup = new SortableHeaderGroup<T>( cellTable );
 
         final TextColumn<T> uuidNumberColumn = new TextColumn<T>() {
             public String getValue(T row) {
                 return row.getUuid();
             }
         };
-        columnPicker.addColumn(uuidNumberColumn,
+        columnPicker.addColumn( uuidNumberColumn,
                 new SortableHeader<T, String>(
                         sortableHeaderGroup,
                         constants.uuid(),
-                        uuidNumberColumn),
-                false);
+                        uuidNumberColumn ),
+                false );
 
         // Add any additional columns
-        addAncillaryColumns(columnPicker,
-                sortableHeaderGroup);
+        addAncillaryColumns( columnPicker,
+                sortableHeaderGroup );
 
         // Add "Open" button column
-        Column<T, String> openColumn = new Column<T, String>(new ButtonCell()) {
+        Column<T, String> openColumn = new Column<T, String>( new ButtonCell() ) {
             public String getValue(T row) {
                 return constants.Open();
             }
         };
-        openColumn.setFieldUpdater(new FieldUpdater<T, String>() {
+        openColumn.setFieldUpdater( new FieldUpdater<T, String>() {
             public void update(int index,
                                T row,
                                String value) {
-                TabContainer.getInstance().openAsset(row.getUuid());
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ) );
             }
-        });
-        columnPicker.addColumn(openColumn,
-                new TextHeader(constants.Open()),
-                true);
+        } );
+        columnPicker.addColumn( openColumn,
+                new TextHeader( constants.Open() ),
+                true );
 
-        cellTable.setWidth("100%");
+        cellTable.setWidth( "100%" );
         columnPickerButton = columnPicker.createToggleButton();
 
     }
@@ -231,7 +238,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      */
     public void setDataProvider(AsyncDataProvider<T> dataProvider) {
         this.dataProvider = dataProvider;
-        this.dataProvider.addDataDisplay(cellTable);
+        this.dataProvider.addDataDisplay( cellTable );
     }
 
     /**
@@ -239,19 +246,19 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
      */
     @Override
     protected Widget makeWidget() {
-        return uiBinder.createAndBindUi(this);
+        return uiBinder.createAndBindUi( this );
     }
 
     @UiHandler("feedImage")
     void openFeed(ClickEvent e) {
-        if (!feedImage.isVisible()
+        if ( !feedImage.isVisible()
                 || feedURL == null
-                || "".equals(feedURL)) {
+                || "".equals( feedURL ) ) {
             return;
         }
-        Window.open(feedURL,
+        Window.open( feedURL,
                 "_blank",
-                null);
+                null );
     }
 
     /**
@@ -263,7 +270,7 @@ public abstract class AbstractAssetPagedTable<T extends AbstractAssetPageRow> ex
     void openSelected(ClickEvent e) {
         Set<T> selectedSet = selectionModel.getSelectedSet();
         for (T selected : selectedSet) {
-            TabContainer.getInstance().openAsset(selected.getUuid());
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ) );
         }
     }
 

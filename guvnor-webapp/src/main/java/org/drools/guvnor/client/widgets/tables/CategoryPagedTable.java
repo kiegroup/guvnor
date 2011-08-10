@@ -20,12 +20,11 @@ import java.util.Date;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.DateCell;
@@ -48,21 +47,21 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
      * Constructor
      * 
      * @param categoryName
-     * @param editEvent
      * @param feedURL
      */
-    public CategoryPagedTable(
-                              final String categoryName,
-                              final String feedURL) {
+    public CategoryPagedTable(final String categoryName,
+                              final String feedURL,
+                              ClientFactory clientFactory) {
         super( PAGE_SIZE,
-               feedURL );
+               feedURL,
+                clientFactory);
         setDataProvider( new AsyncDataProvider<CategoryPageRow>() {
             protected void onRangeChanged(HasData<CategoryPageRow> display) {
                 CategoryPageRequest request = new CategoryPageRequest();
                 request.setCategoryPath( categoryName );
                 request.setStartRowIndex( pager.getPageStart() );
                 request.setPageSize( pageSize );
-                CategoryService.loadRuleListForCategories( request,
+                categoryService.loadRuleListForCategories( request,
                                                              new GenericCallback<PageResponse<CategoryPageRow>>() {
                                                                  public void onSuccess(PageResponse<CategoryPageRow> response) {
                                                                      updateRowCount( response.getTotalRowSize(),

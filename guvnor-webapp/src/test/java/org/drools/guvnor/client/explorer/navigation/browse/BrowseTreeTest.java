@@ -22,7 +22,9 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class BrowseTreeTest extends BrowseTreeTestBase {
@@ -50,21 +52,27 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
     public void testInboxIncomingSelection() throws Exception {
         presenter.onTreeItemSelection( incomingInboxTreeItem, "title1" );
 
-        verify( tabManager ).openInboxIncomingPagedTable( ExplorerNodeConfig.INCOMING_ID );
+        ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
+        verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
+        assertEquals( ExplorerNodeConfig.INCOMING_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
     }
 
     @Test
     public void testInboxRecentEditedSelection() throws Exception {
         presenter.onTreeItemSelection( inboxRecentEdited, "title2" );
 
-        verify( tabManager ).openInboxPagedTable( ExplorerNodeConfig.RECENT_EDITED_ID );
+        ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
+        verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
+        assertEquals( ExplorerNodeConfig.RECENT_EDITED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
     }
 
     @Test
     public void testInboxRecentViewedSelection() throws Exception {
         presenter.onTreeItemSelection( inboxRecentViewed, "title3" );
 
-        verify( tabManager ).openInboxPagedTable( ExplorerNodeConfig.RECENT_VIEWED_ID );
+        ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
+        verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
+        assertEquals( ExplorerNodeConfig.RECENT_VIEWED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
     }
 
     @Test
@@ -81,7 +89,10 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
         presenter.onTreeItemOpen( rootTreeItem );
         presenter.onTreeItemSelection( state, "title1" );
 
-        verify( tabManager ).openStatePagedTable( "title1" );
+        ArgumentCaptor<StatePlace> statePlaceArgumentCaptor = ArgumentCaptor.forClass( StatePlace.class );
+        verify( placeController ).goTo( statePlaceArgumentCaptor.capture() );
+
+        assertEquals( "title1", statePlaceArgumentCaptor.getValue().getStateName() );
     }
 
     @Test
@@ -118,7 +129,10 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
         presenter.onTreeItemOpen( rootCategoryTreeItem );
         presenter.onTreeItemSelection( category1, "categoryName1" );
 
-        verify( tabManager ).openCategory( "categoryName1", "/categoryName1" );
+        ArgumentCaptor<CategoryPlace> categoryPlaceArgumentCaptor = ArgumentCaptor.forClass( CategoryPlace.class );
+        verify( placeController ).goTo( categoryPlaceArgumentCaptor.capture() );
+
+        assertEquals( "/categoryName1", categoryPlaceArgumentCaptor.getValue().getCategoryPath() );
     }
 
     @Test

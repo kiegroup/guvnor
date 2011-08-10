@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import com.google.gwt.user.client.ui.Composite;
@@ -25,7 +26,8 @@ public class FunctionEditor extends Composite
     EditorWidget {
 
     public FunctionEditor(RuleAsset a,
-                          RuleViewer v) {
+                          RuleViewer v,
+                        ClientFactory clientFactory) {
         this( a );
     }
 

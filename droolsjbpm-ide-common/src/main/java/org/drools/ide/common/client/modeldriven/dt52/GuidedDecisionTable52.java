@@ -298,20 +298,14 @@ public class GuidedDecisionTable52
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
 
-        Pattern52 pattern = getPattern( col );
-
-        // If its a formula just return String[0] otherwise check with the sce
-        if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
-            return new String[0];
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
         } else {
-            if ( col.getValueList() != null
-                     && !"".equals( col.getValueList() ) ) {
-                return col.getValueList().split( "," );
-            } else {
-                String[] r = sce.getEnumValues( pattern.getFactType(),
-                                                col.getFactField() );
-                return (r != null) ? r : new String[0];
-            }
+            Pattern52 pattern = getPattern( col );
+            String[] r = sce.getEnumValues( pattern.getFactType(),
+                                            col.getFactField() );
+            return (r != null) ? r : new String[0];
         }
     }
 

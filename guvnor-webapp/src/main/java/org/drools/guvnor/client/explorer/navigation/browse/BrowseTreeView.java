@@ -18,6 +18,7 @@ package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.TabType;
 
 import java.util.Collection;

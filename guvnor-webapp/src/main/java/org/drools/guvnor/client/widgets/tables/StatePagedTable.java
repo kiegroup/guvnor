@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.StatePageRequest;
@@ -44,8 +45,10 @@ public class StatePagedTable extends AbstractAssetPagedTable<StatePageRow> {
     private static final int PAGE_SIZE = 10;
 
     public StatePagedTable(
-            final String stateName) {
-        super(PAGE_SIZE);
+            final String stateName,
+            ClientFactory clientFactory ) {
+        super( PAGE_SIZE,
+                clientFactory );
         setDataProvider(new AsyncDataProvider<StatePageRow>() {
             protected void onRangeChanged(HasData<StatePageRow> display) {
                 StatePageRequest request = new StatePageRequest();

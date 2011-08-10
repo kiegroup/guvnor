@@ -24,7 +24,6 @@ import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,7 +64,6 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -395,11 +393,11 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertEquals( 1,
                       snaps.length );
         assertEquals( "X",
-                      snaps[0].name );
+                snaps[0].getName() );
         assertEquals( "ya",
-                      snaps[0].comment );
-        assertNotNull( snaps[0].uuid );
-        PackageConfigData confSnap = repositoryPackageService.loadPackageConfig( snaps[0].uuid );
+                snaps[0].getComment() );
+        assertNotNull( snaps[0].getUuid() );
+        PackageConfigData confSnap = repositoryPackageService.loadPackageConfig( snaps[0].getUuid() );
         assertEquals( "testSnapshot",
                       confSnap.getName() );
 
@@ -1366,4 +1364,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "yeahMan();" ) > 0 );
 
     }
+
+
 }

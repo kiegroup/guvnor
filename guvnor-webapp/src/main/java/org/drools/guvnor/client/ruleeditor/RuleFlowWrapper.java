@@ -16,18 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
-import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -37,46 +25,61 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.FormStyleLayout;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.client.rulefloweditor.RuleFlowViewer;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
 public class RuleFlowWrapper extends Composite
-    implements
-    SaveEventListener,
-    EditorWidget {
+        implements
+        SaveEventListener,
+        EditorWidget {
 
-    private Constants                constants = GWT.create( Constants.class );
-    private static Images            images    = GWT.create( Images.class );
+    private Constants constants = GWT.create( Constants.class );
+    private static Images images = GWT.create( Images.class );
 
-    private RuleViewer               viewer;
-    private RuleAsset                asset;
+    private RuleViewer viewer;
+    private RuleAsset asset;
 
-    private RuleFlowViewer           ruleFlowViewer;
+    private RuleFlowViewer ruleFlowViewer;
     private DecoratedDisclosurePanel parameterPanel;
+    private final ClientFactory clientFactory;
 
-    public RuleFlowWrapper(final RuleAsset asset,
-                           final RuleViewer viewer) {
+    public RuleFlowWrapper( final RuleAsset asset,
+                            final RuleViewer viewer,
+                            ClientFactory clientFactory ) {
         this.viewer = viewer;
         this.asset = asset;
-        initWidgets( asset.getUuid(),
-                     asset.getName() );
+        this.clientFactory = clientFactory;
+        initWidgets();
     }
 
-    protected void initWidgets(final String uuid,
-                               String formName) {
+    protected void initWidgets() {
 
-        RuleFlowUploadWidget uploadWidget = new RuleFlowUploadWidget( asset,
-                                                                      viewer );
+        RuleFlowUploadWidget uploadWidget = new RuleFlowUploadWidget(
+                asset,
+                viewer,
+                clientFactory );
 
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );
 
-        if ( ApplicationPreferences.showVisualRuleFlow()) {
+        if ( ApplicationPreferences.showVisualRuleFlow() ) {
             initRuleflowViewer();
 
             if ( ruleFlowViewer != null && parameterPanel != null ) {
                 Button viewSource = new Button();
                 viewSource.setText( constants.OpenEditorInNewWindow() );
                 viewSource.addClickHandler( new ClickHandler() {
-                    public void onClick(ClickEvent arg0) {
+                    public void onClick( ClickEvent arg0 ) {
                         doViewDiagram();
 
                         ruleFlowViewer.update();
@@ -97,14 +100,14 @@ public class RuleFlowWrapper extends Composite
 
         try {
             FormStylePopup pop = new FormStylePopup( images.viewSource(),
-                                                     constants.ViewingDiagram(),
-                                                     new Integer( 800 ) );
+                    constants.ViewingDiagram(),
+                    new Integer( 800 ) );
 
             pop.addRow( new ScrollPanel( ruleFlowViewer ) );
             pop.addRow( parameterPanel );
 
             pop.show();
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             ErrorPopup.showMessage( constants.CouldNotCreateTheRuleflowDiagramItIsPossibleThatTheRuleflowFileIsInvalid() );
         }
 
@@ -126,8 +129,8 @@ public class RuleFlowWrapper extends Composite
                 parameterPanel.setContent( parametersForm );
 
                 ruleFlowViewer = new RuleFlowViewer( rfcm,
-                                                     parametersForm );
-            } catch ( Exception e ) {
+                        parametersForm );
+            } catch (Exception e) {
                 Window.alert( e.toString() );
             }
         } else if ( rfcm != null && rfcm.getXml() == null ) {

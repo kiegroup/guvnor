@@ -24,6 +24,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -41,7 +42,7 @@ public class ArchivedAssetManager extends Composite {
     private Button btnRestorePackage;
     private Button btnDeletePackage;
 
-    public ArchivedAssetManager() {
+    public ArchivedAssetManager(ClientFactory clientFactory) {
 
         PrettyFormLayout pf = new PrettyFormLayout();
 
@@ -93,8 +94,10 @@ public class ArchivedAssetManager extends Composite {
 
         };
 
-        table = new AdminArchivedPagedTable(restoreSelectedAssetCommand,
-                deleteSelectedAssetCommand);
+        table = new AdminArchivedPagedTable(
+                restoreSelectedAssetCommand,
+                deleteSelectedAssetCommand,
+                clientFactory);
         HorizontalPanel packagesToolbar = new HorizontalPanel();
         btnRestorePackage = new Button(constants.RestoreSelectedPackage());
         btnRestorePackage.addClickHandler(new ClickHandler() {

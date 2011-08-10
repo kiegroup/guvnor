@@ -42,6 +42,7 @@ import javax.jcr.query.QueryResult;
 
 import org.drools.repository.events.StorageEventManager;
 import org.drools.repository.migration.MigrateDroolsPackage;
+import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -385,7 +386,7 @@ public class RulesRepository {
 
     /**
      * This will copy an assets content to the new location.
-     * 
+     *
      * @return the UUID of the new asset.
      */
     public String copyAsset(String uuidSource,
@@ -394,11 +395,11 @@ public class RulesRepository {
         try {
             AssetItem source = loadAssetByUUID( uuidSource );
             String sourcePath = source.getNode().getPath();
-
-            String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + destinationName;
+            String safeDestinationName = NodeUtils.makeJSR170ComplaintName( destinationName );
+            String destPath = this.getAreaNode( RULE_PACKAGE_AREA ).getPath() + "/" + destinationPackage + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + safeDestinationName;
             this.session.getWorkspace().copy( sourcePath,
                                               destPath );
-            AssetItem dest = loadPackage( destinationPackage ).loadAsset( destinationName );
+            AssetItem dest = loadPackage( destinationPackage ).loadAsset( safeDestinationName );
             //            if (dest.getContent() != null ) {
             //                dest.updateContent( dest.getContent().replaceAll( source.getName(), dest.getName() ) );
             //            }
@@ -420,7 +421,7 @@ public class RulesRepository {
     /**
      * Loads a RulePackage for the specified package name. Will throw an
      * exception if the specified rule package does not exist.
-     * 
+     *
      * @param name
      *            the name of the package to load
      * @return a RulePackageItem object
@@ -453,7 +454,7 @@ public class RulesRepository {
     /**
      * Loads a RulePackage for the specified package name and version. Will
      * throw an exception if the specified rule package does not exist.
-     * 
+     *
      * @param name
      *            the name of the package to load
      * @param versionNumber
@@ -576,13 +577,14 @@ public class RulesRepository {
         try {
             Node snaps = this.getAreaNode( PACKAGE_SNAPSHOT_AREA );
 
-            if ( !snaps.hasNode( packageName ) ) {
-                snaps.addNode( packageName,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( packageName );
+            if ( !snaps.hasNode( nodePath ) ) {
+                snaps.addNode( nodePath,
                                "nt:folder" );
                 save();
             }
 
-            Node pkgSnaps = snaps.getNode( packageName );
+            Node pkgSnaps = snaps.getNode( nodePath );
 
             String newName = pkgSnaps.getPath() + "/" + snapshotName;
 
@@ -633,7 +635,7 @@ public class RulesRepository {
     /**
      * Copies a snapshot to the new location/label. If one exists at that
      * location, it will be replaced.
-     * 
+     *
      * @param packageName
      *            The name of the package.
      * @param snapshotName
@@ -695,7 +697,7 @@ public class RulesRepository {
 
     /**
      * Similar to above. Loads a RulePackage for the specified uuid.
-     * 
+     *
      * @param uuid
      *            the uuid of the package to load
      * @return a RulePackageItem object
@@ -721,7 +723,7 @@ public class RulesRepository {
     /**
      * Similar to above. Loads a RulePackage or an AssetItem for the specified
      * uuid.
-     * 
+     *
      * @param uuid
      *            the uuid of the package or asset to load
      * @return a VersionableItem object
@@ -758,7 +760,7 @@ public class RulesRepository {
     /**
      * This will restore the historical version, save, and check it in as a new
      * version with the given comment.
-     * 
+     *
      * @param versionToRestore
      * @param headVersion
      * @param comment
@@ -800,7 +802,7 @@ public class RulesRepository {
 
     /**
      * Adds a package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -817,7 +819,7 @@ public class RulesRepository {
 
     /**
      * Adds a package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -832,7 +834,8 @@ public class RulesRepository {
 
         try {
             // create the node - see section 6.7.22.6 of the spec
-            Node rulePackageNode = folderNode.addNode( name,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            Node rulePackageNode = folderNode.addNode( nodePath,
                                                        PackageItem.RULE_PACKAGE_TYPE_NAME );
 
             rulePackageNode.addNode( PackageItem.ASSET_FOLDER_NAME,
@@ -876,7 +879,7 @@ public class RulesRepository {
 
     /**
      * Adds a Sub package to the repository.
-     * 
+     *
      * @param name
      *            what to name the node added
      * @param description
@@ -930,7 +933,7 @@ public class RulesRepository {
     /**
      * Gets a StateItem for the specified state name. If a node for the
      * specified state does not yet exist, one is first created.
-     * 
+     *
      * @param name
      *            the name of the state to get
      * @return a StateItem object encapsulating the retrieved node
@@ -939,12 +942,12 @@ public class RulesRepository {
     public StateItem getState(String name) throws RulesRepositoryException {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
-            if ( !folderNode.hasNode( name ) ) {
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            if ( !folderNode.hasNode( nodePath ) ) {
                 throw new RulesRepositoryException( "The state called [" + name + "] does not exist." );
             }
-            Node stateNode = folderNode.getNode( name );// RulesRepository.addNodeIfNew(folderNode,
-            // name,
-            // StateItem.STATE_NODE_TYPE_NAME);
+            Node stateNode = folderNode.getNode( nodePath );
+            // RulesRepository.addNodeIfNew(folderNode, name, StateItem.STATE_NODE_TYPE_NAME);
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
@@ -960,10 +963,11 @@ public class RulesRepository {
     public StateItem createState(String name) {
         try {
             Node folderNode = this.getAreaNode( STATE_AREA );
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
             Node stateNode = RulesRepository.addNodeIfNew( folderNode,
-                                                           name,
+                                                           nodePath,
                                                            StateItem.STATE_NODE_TYPE_NAME );
-            log.debug( "Created the status [" + name + "]" );
+            log.debug( "Created the status [" + name + "] at [" + nodePath + "]");
             return new StateItem( this,
                                   stateNode );
         } catch ( Exception e ) {
@@ -1051,7 +1055,7 @@ public class RulesRepository {
 
     /**
      * This will return a category for the given category path.
-     * 
+     *
      * @param tagName
      *            the name of the tag to get. If the tag to get is within a
      *            hierarchy of tag nodes, specify the full path to the tag node
@@ -1116,7 +1120,7 @@ public class RulesRepository {
      * <p/>
      * Pass in startRow of 0 to start at zero, numRowsToReturn can be set to -1
      * should you want it all.
-     * 
+     *
      * @param filter
      *            an AssetItem filter
      */
@@ -1156,7 +1160,7 @@ public class RulesRepository {
     /**
      * Finds the AssetItem's linked to the requested state. Similar to finding
      * by category.
-     * 
+     *
      * @param filter
      *            an AssetItem filter
      */
@@ -1202,9 +1206,9 @@ public class RulesRepository {
                     if ( filter == null || filter.accept( ai,
                                                           "package.readonly" ) ) {
 
-                        //If the current row returned by the iterator is greater than the number of rows 
-                        //being skipped add it to the results collection (but only if we have not already 
-                        //constructed a full "page" of data - we look ahead one additional row to check 
+                        //If the current row returned by the iterator is greater than the number of rows
+                        //being skipped add it to the results collection (but only if we have not already
+                        //constructed a full "page" of data - we look ahead one additional row to check
                         //whether there is are additional pages of data)
                         rows++;
                         int numRowsInPage = rows - skip;
@@ -1418,7 +1422,7 @@ public class RulesRepository {
     /**
      * This moves a rule asset from one package to another, preserving history
      * etc etc.
-     * 
+     *
      * @param newPackage
      *            The destination package.
      * @param uuid
@@ -1455,7 +1459,7 @@ public class RulesRepository {
 
     /**
      * This will rename an asset and apply the change immediately.
-     * 
+     *
      * @return the UUID of the new asset
      */
     public String renameAsset(String uuid,
@@ -1482,7 +1486,7 @@ public class RulesRepository {
 
     /**
      * Rename a category.
-     * 
+     *
      * @param originalPath
      *            The full path to the category.
      * @param newName
@@ -1524,7 +1528,7 @@ public class RulesRepository {
 
     /**
      * This will rename a package and apply the change immediately.
-     * 
+     *
      * @return the UUID of the package
      */
     public String renamePackage(String uuid,
@@ -1615,7 +1619,7 @@ public class RulesRepository {
 
     /**
      * This will search assets, looking for matches against the name.
-     * 
+     *
      * @param name
      *            The search text
      * @param seekArchived
@@ -1703,7 +1707,7 @@ public class RulesRepository {
 
     /**
      * This will do a general predicate search.
-     * 
+     *
      * @param params
      *            - a map of field to a list of possible values (which are or-ed
      *            together if there is more then one).
@@ -1775,7 +1779,8 @@ public class RulesRepository {
         try {
             Node folderNode = getPerspectivesConfigurationArea();
 
-            Node configurationNode = folderNode.addNode( name,
+            String nodePath = NodeUtils.makeJSR170ComplaintName( name );
+            Node configurationNode = folderNode.addNode( nodePath,
                                                          IFramePerspectiveConfigurationItem.CONFIGURATION_NODE_TYPE_NAME );
 
             configurationNode.setProperty( IFramePerspectiveConfigurationItem.TITLE_PROPERTY_NAME,
@@ -1853,9 +1858,6 @@ public class RulesRepository {
         return perspectiveConfigurationItems;
     }
 
-    /**
-     * Used for querying based on date.
-     */
     public static class DateQuery {
         private String after;
         private String before;

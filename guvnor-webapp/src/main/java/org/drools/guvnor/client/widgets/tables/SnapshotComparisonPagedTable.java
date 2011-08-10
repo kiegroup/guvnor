@@ -19,6 +19,8 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
@@ -48,6 +50,8 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotComparisonPageRow> {
 
+    private final ClientFactory clientFactory;
+
     // UI
     interface SnapshotComparisonPagedTableBinder
         extends
@@ -63,9 +67,6 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
         return this.selectionModel;
     }
 
-    // Commands for UI
-    protected OpenItemCommand                                 openSelectedCommand;
-
     // Other stuff
     private static final int                                  PAGE_SIZE = 10;
     protected MultiSelectionModel<SnapshotComparisonPageRow>  selectionModel;
@@ -78,14 +79,13 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
      * @param packageName
      * @param firstSnapshotName
      * @param secondSnapshotName
-     * @param openSelectedCommand
      */
     public SnapshotComparisonPagedTable(final String packageName,
                                         final String firstSnapshotName,
                                         final String secondSnapshotName,
-                                        OpenItemCommand openSelectedCommand) {
+                                        ClientFactory clientFactory) {
         super( PAGE_SIZE );
-        this.openSelectedCommand = openSelectedCommand;
+        this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<SnapshotComparisonPageRow>() {
             protected void onRangeChanged(HasData<SnapshotComparisonPageRow> display) {
@@ -155,7 +155,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
             public void update(int index,
                                SnapshotComparisonPageRow row,
                                String value) {
-                openSelectedCommand.open( row.getDiff().rightUuid );
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getDiff().rightUuid ));
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -221,7 +221,7 @@ public class SnapshotComparisonPagedTable extends AbstractPagedTable<SnapshotCom
     void openSelected(ClickEvent e) {
         Set<SnapshotComparisonPageRow> selectedSet = selectionModel.getSelectedSet();
         for ( SnapshotComparisonPageRow selected : selectedSet ) {
-            openSelectedCommand.open( selected.getDiff().rightUuid );
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getDiff().rightUuid ));
         }
     }
 

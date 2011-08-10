@@ -81,14 +81,14 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             this.fieldCompletions = completions.getFieldCompletionsForGlobalVariable( set.variable );
             this.variableClass = completions.getGlobalVariable( set.variable );
         } else {
-            String type = mod.getModel().getBindingType( set.variable );
+            String type = mod.getModel().getLHSBindingType( set.variable );
             if ( type != null ) {
                 this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                                          type );
                 this.variableClass = type;
                 this.isBoundFact = true;
             } else {
-                ActionInsertFact patternRhs = mod.getModel().getRhsBoundFact( set.variable );
+                ActionInsertFact patternRhs = mod.getModel().getRHSBoundFact( set.variable );
                 if ( patternRhs != null ) {
                     this.fieldCompletions = completions.getFieldCompletions( FieldAccessorsAndMutators.MUTATOR,
                                                                              patternRhs.factType );
@@ -156,7 +156,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             HorizontalPanel h = new HorizontalPanel();
             h.add( getSetterLabel() );
             if ( !this.readOnly ) {
-                h.add( new ImageButton( images.editTiny(),
+                h.add( new ImageButton( images.edit(),
                                         constants.AddFirstNewField(),
                                         new ClickHandler() {
 
@@ -189,7 +189,7 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
             modifyType = "modify";
         }
 
-        String type = this.getModeller().getModel().getBindingType( model.variable );
+        String type = this.getModeller().getModel().getLHSBindingType( model.variable );
 
         String descFact = (type != null) ? type + " <b>[" + model.variable + "]</b>" : model.variable;
 
@@ -241,12 +241,12 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         if ( completions.isGlobalVariable( this.model.variable ) ) {
             type = (String) completions.getGlobalVariable( this.model.variable );
         } else {
-            type = this.getModeller().getModel().getBindingType( this.model.variable );
+            type = this.getModeller().getModel().getLHSBindingType( this.model.variable );
             /*
              * to take in account if the using a rhs bound variable
              */
             if ( type == null ) {
-                type = this.getModeller().getModel().getRhsBoundFact( this.model.variable ).factType;
+                type = this.getModeller().getModel().getRHSBoundFact( this.model.variable ).factType;
             }
         }
 

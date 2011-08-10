@@ -26,15 +26,13 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.TabContainer;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
 import com.google.gwt.core.client.GWT;
@@ -74,10 +72,13 @@ public class PackageBuilderWidget extends Composite {
     private final FormStyleLayout builtInSelectorLayout   = new FormStyleLayout();
     private final FormStyleLayout customSelectorLayout    = new FormStyleLayout();
     private String                buildMode               = "buildWholePackage";
+    private final ClientFactory   clientFactory;
 
-    public PackageBuilderWidget(final PackageConfigData conf) {
+    public PackageBuilderWidget(final PackageConfigData conf,
+                                ClientFactory clientFactory) {
 
         this.conf = conf;
+        this.clientFactory = clientFactory;
 
         // UI above the results table
         layout = new FormStyleLayout();
@@ -306,7 +307,8 @@ public class PackageBuilderWidget extends Composite {
                                                                                 showSuccessfulBuild( buildResults );
                                                                             } else {
                                                                                 showBuilderErrors( result,
-                                                                                                   buildResults );
+                                                                                                   buildResults,
+                                                                                                   clientFactory);
                                                                             }
                                                                         }
 
@@ -505,20 +507,11 @@ public class PackageBuilderWidget extends Composite {
      * This is called in the unhappy event of there being errors.
      */
     public static void showBuilderErrors(BuilderResult results,
-                                         Panel buildResults) {
+                                         Panel buildResults,
+                                         ClientFactory clientFactory) {
         buildResults.clear();
 
-        BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable( new OpenItemCommand() {
-
-            public void open(String key) {
-                TabContainer.getInstance().openAsset( key );
-            }
-
-            public void open(MultiViewRow[] rows) {
-                // Do nothing, not supported
-            }
-
-        } );
+        BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable(clientFactory);
         errorsTable.setRowData( results.getLines() );
         errorsTable.setRowCount( results.getLines().size() );
         buildResults.add( errorsTable );
@@ -547,7 +540,7 @@ public class PackageBuilderWidget extends Composite {
                                                                  public void onSuccess(SnapshotInfo[] result) {
                                                                      for ( int i = 0; i < result.length; i++ ) {
                                                                          RadioButton existing = new RadioButton( "snapshotNameGroup",
-                                                                                                                 result[i].name ); // NON-NLS
+                                                                                 result[i].getName() ); // NON-NLS
                                                                          radioList.add( existing );
                                                                          vert.add( existing );
                                                                      }

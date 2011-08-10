@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGrid;
+import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace;
 import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 
@@ -32,11 +32,11 @@ public class ModuleTreeItemViewImpl implements ModuleTreeItemView {
         root = treeItem.asTreeItem();
     }
 
-    public void add( ImageResource formatIcon, String formatText, ModuleFormatsGrid formats ) {
+    public void add( ImageResource formatIcon, String formatText, ModuleFormatsGridPlace formatsPlace ) {
         TreeItem treeItem = new TreeItem( Util.getHeader(
                 formatIcon,
                 formatText ) );
-        treeItem.setUserObject( formats );
+        treeItem.setUserObject( formatsPlace );
         root.addItem( treeItem );
     }
 

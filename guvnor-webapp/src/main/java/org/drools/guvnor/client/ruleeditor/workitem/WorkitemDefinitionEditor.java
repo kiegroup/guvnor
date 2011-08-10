@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.ruleeditor.workitem;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
@@ -42,7 +43,9 @@ public class WorkitemDefinitionEditor extends DirtyableComposite implements
     final private RuleContentText data;
     final private RuleAsset asset;
 
-    public WorkitemDefinitionEditor(RuleAsset a, RuleViewer v) {
+    public WorkitemDefinitionEditor(RuleAsset a,
+                                    RuleViewer v,
+                        ClientFactory clientFactory) {
         this(a);
     }
 

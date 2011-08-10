@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -46,14 +47,15 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
     private static final int PAGE_SIZE = 10;
 
-    public QueryPagedTable(
-                           final List<MetaDataQuery> metadata,
+    public QueryPagedTable(final List<MetaDataQuery> metadata,
                            final Date createdAfter,
                            final Date createdBefore,
                            final Date lastModifiedAfter,
                            final Date lastModifiedBefore,
-                           final Boolean searchArchived) {
-        super( PAGE_SIZE );
+                           final Boolean searchArchived,
+                           ClientFactory clientFactory) {
+        super( PAGE_SIZE,
+                clientFactory);
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryMetadataPageRequest request = new QueryMetadataPageRequest();
@@ -79,8 +81,10 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
     }
 
     public QueryPagedTable(final String searchText,
-                           final Boolean searchArchived) {
-        super( PAGE_SIZE );
+                           final Boolean searchArchived,
+                           ClientFactory clientFactory) {
+        super( PAGE_SIZE,
+                clientFactory);
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryPageRequest request = new QueryPageRequest();
@@ -110,8 +114,10 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
      */
     public QueryPagedTable(final String searchText,
                            final Boolean searchArchived,
-                           final Boolean isCaseSensitive) {
-        super( PAGE_SIZE );
+                           final Boolean isCaseSensitive,
+                           ClientFactory clientFactory) {
+        super( PAGE_SIZE,
+                clientFactory);
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryPageRequest request = new QueryPageRequest();

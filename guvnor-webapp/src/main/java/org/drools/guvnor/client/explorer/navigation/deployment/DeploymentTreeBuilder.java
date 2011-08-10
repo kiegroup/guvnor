@@ -21,26 +21,30 @@ import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 
 public class DeploymentTreeBuilder extends NavigationItemBuilder {
 
-    private DeploymentTree deploymentTree = new DeploymentTree();
+    private final DeploymentTree deploymentTree;
+
+    public DeploymentTreeBuilder(ClientFactory clientFactory) {
+        this.deploymentTree = new DeploymentTree(clientFactory);
+    }
 
     @Override
     public boolean hasPermissionToBuild() {
         return UserCapabilities.INSTANCE.hasCapability(
                 Capability.SHOW_DEPLOYMENT,
-                Capability.SHOW_DEPLOYMENT_NEW);
+                Capability.SHOW_DEPLOYMENT_NEW );
     }
 
     @Override
     public IsWidget getHeader() {
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader(view);
-        header.setName(deploymentTree.getName());
-        header.setImageResource(deploymentTree.getImage());
+        StackItemHeader header = new StackItemHeader( view );
+        header.setName( deploymentTree.getName() );
+        header.setImageResource( deploymentTree.getImage() );
         return view;
     }
 

@@ -19,6 +19,8 @@ package org.drools.guvnor.client.widgets.tables;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.ruleeditor.EditorLauncher;
@@ -45,6 +47,8 @@ import com.google.gwt.view.client.ProvidesKey;
  */
 public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderResultLine> {
 
+    private final ClientFactory clientFactory;
+
     // UI
     interface BuildPackageErrorsSimpleTableBinder
         extends
@@ -56,14 +60,11 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
 
     private static BuildPackageErrorsSimpleTableBinder uiBinder = GWT.create( BuildPackageErrorsSimpleTableBinder.class );
 
-    // Commands for UI
-    private OpenItemCommand                            openSelectedCommand;
-
     private MultiSelectionModel<BuilderResultLine>     selectionModel;
 
-    public BuildPackageErrorsSimpleTable(OpenItemCommand openSelectedCommand) {
+    public BuildPackageErrorsSimpleTable(ClientFactory clientFactory) {
         super();
-        this.openSelectedCommand = openSelectedCommand;
+        this.clientFactory = clientFactory;
     }
 
     @Override
@@ -154,7 +155,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
             public void update(int index,
                                BuilderResultLine row,
                                String value) {
-                openSelectedCommand.open( row.getUuid() );
+                clientFactory.getPlaceController().goTo( new AssetEditorPlace( row.getUuid() ));
             }
         } );
         columnPicker.addColumn( openColumn,
@@ -172,7 +173,7 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
     void openSelected(ClickEvent e) {
         Set<BuilderResultLine> selectedSet = selectionModel.getSelectedSet();
         for ( BuilderResultLine selected : selectedSet ) {
-            openSelectedCommand.open( selected.getUuid() );
+            clientFactory.getPlaceController().goTo( new AssetEditorPlace( selected.getUuid() ));
         }
     }
 

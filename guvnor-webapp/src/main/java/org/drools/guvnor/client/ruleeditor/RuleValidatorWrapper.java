@@ -16,39 +16,36 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 /**
  * This widget wraps a rule asset widget, and provides actions to validate and view source.
  */
 public class RuleValidatorWrapper extends DirtyableComposite
-    implements
-    SaveEventListener,
-    EditorWidget {
+        implements
+        SaveEventListener,
+        EditorWidget {
 
     private static Constants constants = GWT.create( Constants.class );
-    private static Images    images    = GWT.create( Images.class );
+    private static Images images = GWT.create( Images.class );
 
-    private VerticalPanel    layout    = new VerticalPanel();
-    private Widget           editor;
+    private VerticalPanel layout = new VerticalPanel();
+    private Widget editor;
 
-    public RuleValidatorWrapper(RuleAsset asset, RuleViewer viewer) {
+    public RuleValidatorWrapper( RuleAsset asset,
+                                 RuleViewer viewer,
+                                 ClientFactory clientFactory ) {
         this.editor = new DSLRuleEditor( asset );
 
         layout.add( editor );
@@ -62,7 +59,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
     /**
      * This will show a popup of error messages in compilation.
      */
-    public static void showBuilderErrors(BuilderResult result) {
+    public static void showBuilderErrors( BuilderResult result ) {
 
         if ( result == null || result.getLines() == null || result.getLines().size() == 0 ) {
             FormStylePopup pop = new FormStylePopup();
@@ -75,23 +72,23 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.show();
         } else {
             FormStylePopup pop = new FormStylePopup( images.packageBuilder(),
-                                                     constants.ValidationResults() );
+                    constants.ValidationResults() );
             FlexTable errTable = new FlexTable();
             errTable.setStyleName( "build-Results" ); //NON-NLS
-            for ( int i = 0; i < result.getLines().size(); i++ ) {
+            for (int i = 0; i < result.getLines().size(); i++) {
                 int row = i;
                 final BuilderResultLine res = result.getLines().get( i );
                 errTable.setWidget( row,
-                                    0,
-                                    new Image( images.error() ) );
+                        0,
+                        new Image( images.error() ) );
                 if ( res.getAssetFormat().equals( "package" ) ) {
                     errTable.setText( row,
-                                      1,
-                                      constants.packageConfigurationProblem() + res.getMessage() );
+                            1,
+                            constants.packageConfigurationProblem() + res.getMessage() );
                 } else {
                     errTable.setText( row,
-                                      1,
-                                      "[" + res.getAssetName() + "] " + res.getMessage() );
+                            1,
+                            "[" + res.getAssetName() + "] " + res.getMessage() );
                 }
 
             }

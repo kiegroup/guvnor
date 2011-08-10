@@ -33,9 +33,9 @@
       <guvnor-ruleeditor:MessageWidget
         ui:field="messageWidget">
       </guvnor-ruleeditor:MessageWidget>
-      <guvnor-ruleeditor:MetaDataWidgetNew
+      <guvnor-ruleeditor:MetaDataWidget
         ui:field="metaWidget" styleName="{style.metadata-widget}">
-      </guvnor-ruleeditor:MetaDataWidgetNew>
+      </guvnor-ruleeditor:MetaDataWidget>
       <guvnor-ruleeditor:RuleDocumentWidget
         ui:field="ruleDocumentWidget">
       </guvnor-ruleeditor:RuleDocumentWidget>

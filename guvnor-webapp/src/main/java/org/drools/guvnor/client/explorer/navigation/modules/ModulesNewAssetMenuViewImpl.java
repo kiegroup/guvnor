@@ -39,7 +39,6 @@ public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
     private MenuBar createNewMenu = new MenuBar( true );
     private Presenter presenter;
 
-
     private MenuBar getMenu() {
 
         addNewPackageMenuItem();
@@ -244,16 +243,16 @@ public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
         wiz.show();
     }
 
-    public void openNewAssetWizardWithoutCategories( String format ) {
-        openWizard( format, false );
+    public void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory ) {
+        openWizard( format, false, clientFactory );
     }
 
-    public void openNewAssetWizardWithCategories( String format ) {
-        openWizard( format, true );
+    public void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory ) {
+        openWizard( format, true, clientFactory );
     }
 
-    private void openWizard( String format, boolean showCategories ) {
-        NewAssetWizard pop = new NewAssetWizard( showCategories, format );
+    private void openWizard( String format, boolean showCategories, ClientFactory clientFactory ) {
+        NewAssetWizard pop = new NewAssetWizard( showCategories, format, clientFactory );
 
         pop.show();
     }

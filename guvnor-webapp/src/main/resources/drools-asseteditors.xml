@@ -121,7 +121,7 @@
     </asseteditor>       
     
     <asseteditor>
-        <class>org.drools.guvnor.client.qa.testscenarios.ScenarioWidget</class> 
+        <class>org.drools.guvnor.client.explorer.navigation.qa.testscenarios.ScenarioWidget</class>
         <format>scenario</format>
         <icon>images.testManager()</icon>
         <title>constants.TestScenarios()</title>    
@@ -135,7 +135,7 @@
     </asseteditor>   
     
      <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class> 
         <format>xml</format>
         <icon>images.newFile()</icon>
         <title>constants.XMLProperties()</title>    
@@ -143,7 +143,7 @@
     
     <asseteditor>
         <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget</class> 
-        <format>txt</format>
+        <format></format>
         <icon>images.newFile()</icon>
         <title>constants.OtherAssetsDocumentation()</title>    
     </asseteditor>

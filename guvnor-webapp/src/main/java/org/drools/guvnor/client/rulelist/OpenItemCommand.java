@@ -20,7 +20,10 @@ import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 /**
  * This is used by the list view to "open" an item.
+ *
+ * Places and activities deprecate this.
  */
+@Deprecated
 public interface OpenItemCommand {
 
     /**

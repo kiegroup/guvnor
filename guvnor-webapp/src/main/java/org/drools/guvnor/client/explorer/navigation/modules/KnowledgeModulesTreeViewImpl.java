@@ -17,12 +17,12 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,7 +43,16 @@ public class KnowledgeModulesTreeViewImpl extends Composite
     SimplePanel                                       menuContainer;
 
     @UiField
-    CheckBox                                          chkIsFlatTreeHierarchy;
+    Image                                             imgFlatView;
+
+    @UiField
+    Image                                             imgHierarchicalView;
+
+    @UiField
+    Image                                             imgExpandAll;
+
+    @UiField
+    Image                                             imgCollapseAll;
 
     @UiField
     SimplePanel                                       modulesTreeContainer;
@@ -53,6 +62,7 @@ public class KnowledgeModulesTreeViewImpl extends Composite
 
     public KnowledgeModulesTreeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
+
     }
 
     public void setPresenter(Presenter presenter) {
@@ -71,9 +81,24 @@ public class KnowledgeModulesTreeViewImpl extends Composite
         modulesTreeContainer.setWidget( knowledgeModulesTreeItem );
     }
 
-    @UiHandler("chkIsFlatTreeHierarchy")
-    public void doValueChange(ValueChangeEvent<Boolean> event) {
-        presenter.setPackageHierarchy( event.getValue() );
+    @UiHandler("imgHierarchicalView")
+    public void doOnClickHierarchyView(ClickEvent event) {
+        presenter.setHierarchyView();
+    }
+
+    @UiHandler("imgFlatView")
+    public void doOnClickFlatView(ClickEvent event) {
+        presenter.setFlatView();
+    }
+
+    @UiHandler("imgCollapseAll")
+    public void doOnClickCollapseAll(ClickEvent event) {
+        presenter.collapseAll();
+    }
+
+    @UiHandler("imgExpandAll")
+    public void doOnClickExpandAll(ClickEvent event) {
+        presenter.expandAll();
     }
 
 }

@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
@@ -70,8 +71,10 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
     private static final int                     PAGE_SIZE = 10;
 
     public AdminArchivedPagedTable(Command restoreSelectedAssetCommand,
-                                   Command deleteSelectedAssetCommand) {
-        super( PAGE_SIZE );
+                                   Command deleteSelectedAssetCommand,
+                                   ClientFactory clientFactory) {
+        super( PAGE_SIZE,
+                clientFactory);
         this.restoreSelectedAssetCommand = restoreSelectedAssetCommand;
         this.deleteSelectedAssetCommand = deleteSelectedAssetCommand;
         setDataProvider( new AsyncDataProvider<AdminArchivedPageRow>() {

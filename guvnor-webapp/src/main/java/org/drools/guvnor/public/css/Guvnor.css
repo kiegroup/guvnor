@@ -522,10 +522,8 @@ input,.constraint-value-Editor {
 }
 
 .guvnor-LazyStackPanel-row-header {
-    border: 1px solid #BBBBBB;
-    padding: 1px 0px 1px 5px;
+    padding: 1px 0px 0px 5px;
     min-width: 640px;
-    background-color: #E3E3E3;
 }
 
 .guvnor-LazyStackPanel-row-header-icon {
@@ -549,13 +547,15 @@ input,.constraint-value-Editor {
 
 .guvnor-lazyStackPanel {
     border-collapse: collapse;
+    width: 100%;
 }
 
 .guvnor-modelview-button-bar {
     background-color: #EBEBEB;
     border: 1px solid #BBBBBB;
     border-top: 0px;
-    margin-left: 1px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .guvnor-cursor {
@@ -615,4 +615,21 @@ input,.constraint-value-Editor {
 
 .paddedLabel {
     padding-right: 2px;
+}
+
+.icon-bar {
+    width: 100%;
+    background-color: rgb(220,220,220);
+    border-top: 1px solid rgb(200,200,200);
+}
+
+.icon-bar-item {
+    margin-top: 4px;
+    margin-left: 2px;
+    margin-right: 2px;
+    padding: 2px;
+}
+
+.icon-bar-item:hover {
+    background-color: rgb(180,180,180);
 }

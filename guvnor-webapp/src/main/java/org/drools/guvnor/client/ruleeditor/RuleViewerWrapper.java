@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -30,13 +29,12 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 /**
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewerWrapper extends GuvnorEditor {
-    private Constants constants = GWT.create( Constants.class );
+    private Constants                         constants            = GWT.create( Constants.class );
 
     private ArtifactEditor artifactEditor;
     private RuleViewer ruleViewer;
@@ -44,43 +42,38 @@ public class RuleViewerWrapper extends GuvnorEditor {
     private RuleAsset asset;
     private boolean isHistoricalReadOnly = false;
     private final RuleViewerSettings ruleViewerSettings;
-    private final OpenItemCommand openItemCommand;
-    private Command closeCommand;
-    private Command archiveCommand;
-    private Command checkedInCommand;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    VerticalPanel layout = new VerticalPanel();
-    private final ClientFactory clientFactory;
+    VerticalPanel                             layout               = new VerticalPanel();
+    private final ClientFactory               clientFactory;
 
     public RuleViewerWrapper( ClientFactory clientFactory,
-                              RuleAsset asset,
-                              final OpenItemCommand openItemCommand,
-                              final Command closeCommand,
-                              final Command checkedInCommand,
-                              final Command archiveCommand ) {
-        this( clientFactory, asset, openItemCommand, closeCommand, checkedInCommand,
-                archiveCommand, false, null, null );
+                              RuleAsset asset ) {
+        this( clientFactory,
+                asset,
+                false,
+                null,
+                null );
     }
 
-    public RuleViewerWrapper( ClientFactory clientFactory,
+    public RuleViewerWrapper(ClientFactory clientFactory,
                               RuleAsset asset,
-                              final OpenItemCommand event,
-                              final Command closeCommand,
-                              final Command checkedInCommand,
-                              final Command archiveCommand,
                               boolean isHistoricalReadOnly,
                               ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                              RuleViewerSettings ruleViewerSettings ) {
+                              RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
-        this.openItemCommand = event;
         this.ruleViewerSettings = ruleViewerSettings;
-        this.closeCommand = closeCommand;
-        this.checkedInCommand = checkedInCommand;
-        this.archiveCommand = archiveCommand;
+
+        clientFactory.getEventBus().addHandler(
+                RefreshAssetEditorEvent.TYPE,
+                new RefreshAssetEditorEvent.Handler() {
+                    public void onRefreshAsset( RefreshAssetEditorEvent refreshAssetEditorEvent ) {
+                        refresh();
+                    }
+                } );
 
         initWidget( layout );
         render();
@@ -91,26 +84,11 @@ public class RuleViewerWrapper extends GuvnorEditor {
         this.artifactEditor = new ArtifactEditor(
                 clientFactory,
                 asset,
-                this.isHistoricalReadOnly,
-                new Command() {
-                    public void execute() {
-                        refresh();
-                    }
-                },
-                this.openItemCommand,
-                this.closeCommand );
+                this.isHistoricalReadOnly );
 
         this.ruleViewer = new RuleViewer(
                 asset,
-                this.openItemCommand,
-                this.closeCommand,
-                this.checkedInCommand,
-                this.archiveCommand,
-                new Command() {
-                    public void execute() {
-                        refresh();
-                    }
-                },
+                clientFactory,
                 this.isHistoricalReadOnly,
                 actionToolbarButtonsConfigurationProvider,
                 ruleViewerSettings );
@@ -124,13 +102,15 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
         ScrollPanel pnl = new ScrollPanel();
         pnl.add( this.artifactEditor );
-        tPanel.add( pnl, "Attributes" );
+        tPanel.add( pnl,
+                    "Attributes" );
         // tPanel.selectTab(0);
 
         pnl = new ScrollPanel();
         // pnl1.setWidth("100%");
         pnl.add( this.ruleViewer );
-        tPanel.add( pnl, "Edit" );
+        tPanel.add( pnl,
+                    "Edit" );
         tPanel.selectTab( 1 );
 
         layout.add( tPanel );
@@ -139,12 +119,12 @@ public class RuleViewerWrapper extends GuvnorEditor {
     public void refresh() {
         LoadingPopup.showMessage( constants.RefreshingItem() );
         RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
-                new GenericCallback<RuleAsset>() {
-                    public void onSuccess( RuleAsset a ) {
-                        asset = a;
-                        render();
-                        LoadingPopup.close();
-                    }
-                } );
+                                                                  new GenericCallback<RuleAsset>() {
+                                                                      public void onSuccess(RuleAsset a) {
+                                                                          asset = a;
+                                                                          render();
+                                                                          LoadingPopup.close();
+                                                                      }
+                                                                  } );
     }
 }

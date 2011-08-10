@@ -16,22 +16,43 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-import com.google.gwt.safehtml.shared.SafeHtml;
+import java.util.Iterator;
+
 import org.drools.guvnor.client.util.Util;
+
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.client.ui.TreeItem;
 
 public class KnowledgeModulesTreeItemViewImpl
         extends ModulesTreeItemBaseViewImpl
-        implements KnowledgeModulesTreeItemView {
-
+        implements
+    KnowledgeModulesTreeItemView {
 
     @Override
     protected SafeHtml getTreeHeader() {
         return Util.getHeader(
-                images.chartOrganisation(),
-                constants.Packages() );
+                               images.chartOrganisation(),
+                               constants.Packages() );
     }
 
-    public void clearModulesTreeItem() {
+    public void clearModulesTreeItem() {        
         tree.clear();
     }
+
+    public void collapseAll() {
+        Iterator<TreeItem> i = tree.treeItemIterator();
+        while(i.hasNext()) {
+            TreeItem ti = i.next();
+            ti.setState( false );
+        }
+    }
+    
+    public void expandAll() {
+        Iterator<TreeItem> i = tree.treeItemIterator();
+        while(i.hasNext()) {
+            TreeItem ti = i.next();
+            ti.setState( true, false );
+        }
+    }
+
 }

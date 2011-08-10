@@ -50,5 +50,5 @@ public interface PackageServiceAsync {
     public void runScenariosInPackage(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.BulkTestRunResult> cb);
     public void updateDependency(String uuid, String dependencyPath, AsyncCallback cb);
     public void getDependencies(String uuid, AsyncCallback<java.lang.String[]> cb);
- 
+    public void loadSnapshotInfo(String packageName, String snapshotName, AsyncCallback<SnapshotInfo> async);
 }
