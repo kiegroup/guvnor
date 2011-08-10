@@ -572,8 +572,9 @@ public class RepositoryAssetOperations {
         AssetLockManager lockManager = AssetLockManager.instance();
 
         String userName;
-        if ( Contexts.isApplicationContextActive() ) {
-            userName = Identity.instance().getCredentials().getUsername();
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if ( beanManagerLocator.isBeanManagerAvailable() ) {
+            userName = credentials.getUsername();
         } else {
             userName = "anonymous";
         }
