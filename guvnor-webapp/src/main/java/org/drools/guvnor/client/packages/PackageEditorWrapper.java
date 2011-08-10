@@ -20,16 +20,19 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 
 /**
  * This is the package editor and viewer for package configuration.
@@ -64,6 +67,9 @@ public class PackageEditorWrapper extends Composite {
     }
 
     private void render() {
+        final TabPanel tPanel = new TabPanel();
+        tPanel.setWidth( "100%" );
+
         this.artifactEditor = new ArtifactEditor( clientFactory, packageConfigData, this.isHistoricalReadOnly );
         this.packageEditor = new PackageEditor(
                 packageConfigData,
@@ -73,25 +79,39 @@ public class PackageEditorWrapper extends Composite {
                     public void execute() {
                         refresh();
                     }
-                } );
-        this.actionToolBar = this.packageEditor.getActionToolbar();
-
+                } );        
+        this.actionToolBar = this.packageEditor.getActionToolbar();    
         layout.clear();
-        layout.add( this.actionToolBar );
-
-        TabPanel tPanel = new TabPanel();
-        tPanel.setWidth( "100%" );
-
+        layout.add( this.actionToolBar );       
+        
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
+                clientFactory);
+        assetViewerActivity.start(new AcceptTabItem() {
+            public void addTab(String tabTitle, IsWidget widget) {                
+                ScrollPanel pnl = new ScrollPanel();
+                pnl.setWidth( "100%" );
+                pnl.add( widget );                
+                tPanel.add(pnl, constants.Assets());
+            }
+        }, null);
+/*        
+        ScrollPanel pnl = new ScrollPanel();
+        pnl.setWidth( "100%" );
+        pnl.add( assetViewerActivity.getView() );
+        tPanel.add( pnl, constants.Assets() );
+        tPanel.selectTab( 0 );*/
+        
+ 
         ScrollPanel pnl = new ScrollPanel();
         pnl.setWidth( "100%" );
         pnl.add( this.artifactEditor );
-        tPanel.add( pnl, "Attributes" );
-        tPanel.selectTab( 0 );
-
+        tPanel.add( pnl, constants.AttributeForModuleEditor() );
+        tPanel.selectTab( 0 );        
+          
         pnl = new ScrollPanel();
         pnl.setWidth( "100%" );
         pnl.add( this.packageEditor );
-        tPanel.add( pnl, "Edit" );
+        tPanel.add( pnl, constants.Edit() );
         tPanel.selectTab( 0 );
 
         tPanel.setHeight( "100%" );

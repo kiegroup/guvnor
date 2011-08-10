@@ -55,14 +55,14 @@ public class AssetViewerActivity extends Activity
                        EventBus eventBus) {
 
         view.showLoadingPackageInformationMessage();
-
+        // title is not used.
+        acceptTabItem.addTab(null, view);
         clientFactory.getPackageService().loadPackageConfig( uuid,
                                                              new GenericCallback<PackageConfigData>() {
                                                                  public void onSuccess(PackageConfigData conf) {
                                                                      packageConfigData = conf;
                                                                      RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
-                                                                     acceptTabItem.addTab( conf.getName(),
-                                                                                           view );
+
 
                                                                      fillModuleItemStructure();
 
