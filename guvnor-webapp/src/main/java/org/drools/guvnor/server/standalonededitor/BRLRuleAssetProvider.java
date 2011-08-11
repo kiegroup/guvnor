@@ -27,6 +27,7 @@ import org.drools.ide.common.server.util.BRXMLPersistence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * BRL -> RuleAsset converter used by standalone editor.
@@ -83,7 +84,7 @@ public class BRLRuleAssetProvider
     private RuleAsset createAsset(RuleModel ruleModel) {
         RuleAsset asset = new RuleAsset();
 
-        asset.setUuid("mock");
+        asset.setUuid("mock-"+UUID.randomUUID().toString());
         asset.setContent(ruleModel);
         asset.setName(ruleModel.name);
         asset.setMetaData(createMetaData());

@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace;
 import org.drools.guvnor.client.util.Util;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.IsTreeItem;
@@ -40,7 +40,7 @@ public class ModuleTreeItemViewImpl implements ModuleTreeItemView {
         root.addItem( treeItem );
     }
 
-    public void setRootUserObject( AssetViewerPlace place ) {
+    public void setRootUserObject( ModuleEditorPlace place ) {
         root.setUserObject( place );
     }
 }

@@ -2385,5 +2385,7 @@ public interface Constants
     String FlatView();
     
     String HierarchicalView();
+    
+    String AttributeForModuleEditor();
 
 }

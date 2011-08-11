@@ -472,7 +472,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		//Test update package
         Entry e = abdera.newEntry();
         e.setTitle("testUpdatePackageFromAtom");
-        org.apache.abdera.model.Link l = abdera.getNewFactory().newLink();
+        org.apache.abdera.model.Link l = Abdera.getNewFactory().newLink();
         l.setHref(generateBaseUrl() + "/packages/" + "testCreatePackageFromAtom");
         l.setRel("self");
         e.addLink(l);
@@ -702,7 +702,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     @Test
-    public void testUpdateAssetSource() throws Exception {
+    public void testUpdateAndGetAssetSource() throws Exception {
         /*
          *  Get the content of rule4
          */
@@ -718,7 +718,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
            * update the content
            */
         URL url2 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
-        HttpURLConnection connection2 = (HttpURLConnection) url.openConnection();
+        HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
         connection2.setDoOutput(true);
         connection2.setRequestMethod("PUT");
         connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -743,7 +743,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
     
     @Test
-    public void testCreateAndUpdateAssetFromBinary() throws Exception {      
+    public void testCreateAndUpdateAndGetBinaryAsset() throws Exception {      
         //Query if the asset exist
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -960,6 +960,195 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(entriesMap.get("2").getUpdated() != null);     
     }
     
+    @Test
+    public void testGetHistoricalAssetForAtom() throws MalformedURLException, IOException {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/1");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));
+        InputStream in = connection.getInputStream();
+        
+        assertNotNull(in);
+        Document<Entry> doc = abdera.getParser().parse(in);
+        Entry entry = doc.getRoot();
+        assertEquals("model1", entry.getTitle());
+        assertTrue(entry.getPublished() != null);        
+        assertEquals("/packages/restPackage1/assets/model1/versions/1", entry.getId().getPath());
+        assertEquals("/packages/restPackage1/assets/model1/versions/1/binary", entry.getContentSrc().getPath());
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+        assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);   
+        assertEquals("Draft", stateExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);   
+        assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
+        
+        
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/2");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));
+        in = connection.getInputStream();
+        
+        assertNotNull(in);
+        doc = abdera.getParser().parse(in);
+        entry = doc.getRoot();
+        assertEquals("model1", entry.getTitle());
+        assertTrue(entry.getPublished() != null);        
+        assertEquals("/packages/restPackage1/assets/model1/versions/2", entry.getId().getPath());
+        assertEquals("/packages/restPackage1/assets/model1/versions/2/binary", entry.getContentSrc().getPath());
+        metadataExtension  = entry.getExtension(Translator.METADATA); 
+        formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+        assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
+        stateExtension = metadataExtension.getExtension(Translator.STATE);   
+        assertEquals("Draft", stateExtension.getSimpleExtension(Translator.VALUE)); 
+        archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);   
+        assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
+  
+    }
+    
+    @Test
+    public void testGetHistoricalAssetSource() throws Exception {
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/1/source");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.WILDCARD);
+        connection.connect();
+
+        assertEquals(200, connection.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
+        String result = GetContent(connection);
+        System.out.println(result);
+
+        assertTrue(result.indexOf( "declare Album1" ) >= 0 );
+        assertTrue(result.indexOf( "genre1: String" ) >= 0 );
+        
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/2/source");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.WILDCARD);
+        connection.connect();
+
+        assertEquals(200, connection.getResponseCode());
+        assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
+        result = GetContent(connection);
+        System.out.println(result);
+
+        assertTrue(result.indexOf( "declare Album2" ) >= 0 );
+        assertTrue(result.indexOf( "genre2: String" ) >= 0 );
+    }  
+    
+    @Test
+    public void testGetHistoricalAssetBinary() throws Exception {
+        //Query if the asset exist
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        String userpassword = "test" + ":" + "password";
+        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        //The asset should not exist
+        assertEquals(500, connection.getResponseCode());
+
+        //Create the asset from binary
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Slug", "testGetHistoricalAssetBinary.gif");
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.setDoOutput(true);
+        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] data = new byte[1000];
+        int count = 0;
+        InputStream is = this.getClass().getResourceAsStream("Error-image.gif");
+        while((count = is.read(data,0,1000)) != -1) {
+            out.write(data, 0, count);
+        }
+        connection.getOutputStream ().write(out.toByteArray());
+        out.close();
+        assertEquals(200, connection.getResponseCode());
+        
+        //Update asset binary
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/binary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setDoOutput(true);
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+        byte[] data2 = new byte[1000];
+        int count2 = 0;
+        InputStream is2 = this.getClass().getResourceAsStream("Error-image-new.gif");
+        while((count2 = is2.read(data2,0,1000)) != -1) {
+            out2.write(data2, 0, count2);
+        }
+        connection.getOutputStream ().write(out2.toByteArray());
+        out2.close();
+        assertEquals(204, connection.getResponseCode());
+                
+        //Get the asset binary version 1 and verify
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/1/binary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        assertEquals(200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+        
+        //Get the asset binary version 2 and verify
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/2/binary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        assertEquals(200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
+        in = connection.getInputStream();
+        assertNotNull(in);
+        
+        //Roll back changes. 
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("DELETE");
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        System.out.println(GetContent(connection));
+        assertEquals(204, connection.getResponseCode());
+
+        //Verify the package is indeed deleted
+        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.setRequestProperty("Authorization", "Basic "
+                + new String(authEncBytes));
+        connection.connect();
+        assertEquals(500, connection.getResponseCode());
+    } 
+    
     public String generateBaseUrl() {
     	return "http://localhost:9080";
     }
@@ -1008,10 +1197,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         JAXBContext c = JAXBContext.newInstance(new Class[]{Package.class});
         Unmarshaller u = c.createUnmarshaller();
         return (Package)u.unmarshal(is);
-    }
-    
-    public void main(String[] args) throws Exception {
-        BasicPackageResourceTest.startServers();
     }
     
 }

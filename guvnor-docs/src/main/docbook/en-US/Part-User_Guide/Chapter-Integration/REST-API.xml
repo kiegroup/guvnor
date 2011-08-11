@@ -10,7 +10,7 @@
 
   <para>The repository back end can also be accessed via Rest. Rest is a http
   based protocol API - which has clients on all platforms and in all
-  programming language.</para>
+  programming languages.</para>
 
   <section>
     <title>REST</title>
@@ -33,15 +33,15 @@
   </section>
 
   <section>
-    <title>Guvnor API</title>
+    <title>Guvnor REST API</title>
 
     <para>The Guvnor Rest API is divided in two groups of services : one
-    around getting rule assets by categories and the second getting rule
-    assets by their names and packages.</para>
+    around accessing rule assets by their names and packages and the second 
+    accessing rule assets by categories.</para>
 
     <para>A rule asset represents all elements that can be stored and handled
-    in Guvnor : a guided rule, a web decision table, a scenario test,
-    etc..</para>
+    in Guvnor : a guided rule, a web decision table, a test scenario,
+    etc.</para>
 
     <para>The http address to use as base address is
     http://{ServerName}/{httpPort}/{drools-Guvnor}/rest where ServerName is
@@ -128,7 +128,7 @@
     <section>
       <title>Accessing Rule Assets by Package</title>
 
-      <para>This part of the API allows to access all rule asset by package
+      <para>This part of the API allows to access all rule assets by package
       (with its name) and by the asset name.</para>
 
       <table>
@@ -222,7 +222,7 @@
 
               <entry>application/json and application/xml</entry>
 
-              <entry>none</entry>
+              <entry>application/json and application/xml</entry>
 
               <entry>Creates a package from JSON or XML. Returns the newly
               created package in JSON or XML format.</entry>
@@ -291,7 +291,7 @@
 
               <entry>none</entry>
 
-              <entry>Returns the list of versions of package {packageName} as
+              <entry>Returns the list of package {packageName} versions as
               an Atom Feed .</entry>
             </row>
 
@@ -332,7 +332,7 @@
 
               <entry>Returns the binary (compiled code) of package
               {packageName} and of version {version} as an octet stream. If
-              the package was never built, it returns HTTP code 500 with an
+              the package version was never built, it returns HTTP code 500 with an
               error message.</entry>
             </row>
 
@@ -384,7 +384,7 @@
               <entry>none</entry>
 
               <entry>Returns the list of rule assets contained in package
-              {packageName}in JSON or XML format</entry>
+              {packageName} in JSON or XML format</entry>
             </row>
 
             <row>
@@ -425,7 +425,7 @@
 
               <entry>Returns the binary content of rule asset {assetName}
               contained in package {packageName}. If this asset has no binary
-              content, this will return its source content instead</entry>
+              content, returns its source content instead.</entry>
             </row>
 
             <row>
@@ -438,8 +438,8 @@
               <entry>none</entry>
 
               <entry>Returns the content of rule asset {assetName} contained
-              in package {packageName}. If this is a binary asset, this will
-              return the binary data as a byte array.</entry>
+              in package {packageName}. If this is a binary asset, returns the 
+              binary data as a byte array.</entry>
             </row>
 
             <row>
@@ -454,7 +454,7 @@
               <entry>Creates an asset in package {packageName} from the Atom
               Entry provided. Following info are required from the input Atom
               Entry: asset name, asset description, asset initial category,
-              asset format</entry>
+              asset format.</entry>
             </row>
 
             <row>
@@ -473,18 +473,18 @@
             </row>
 
             <row>
-              <entry>/packages/{packageName}/assets/{assetName}/source</entry>
+              <entry>/packages/{packageName}/assets/{assetName}</entry>
 
               <entry>PUT</entry>
 
-              <entry>application/json and application/xml</entry>
+              <entry>application/atom+xml</entry>
 
               <entry>none</entry>
 
-              <entry>Updates the source code of the rule asset {assetName}
-              contained in package {packageName}.</entry>
+              <entry>Updates the metadata of the rule asset {assetName}
+              contained in package {packageName} with a given Atom Entry.</entry>
             </row>
-
+            
             <row>
               <entry>/packages/{packageName}/assets/{assetName}</entry>
 
@@ -495,10 +495,89 @@
               <entry>none</entry>
 
               <entry>Updates the metadata of the rule asset {assetName}
-              contained in package {packageName} given in an Asset (see the
+              contained in package {packageName} with a given Asset (see the
               UML representation below).</entry>
             </row>
+            
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/source</entry>
 
+              <entry>PUT</entry>
+
+              <entry>plain/text</entry>
+
+              <entry>none</entry>
+
+              <entry>Updates the source code of the rule asset {assetName}
+              contained in package {packageName}.</entry>
+            </row>
+            
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/binary</entry>
+
+              <entry>PUT</entry>
+
+              <entry>application/octet-stream</entry>
+
+              <entry>none</entry>
+
+              <entry>Updates the binary content of the rule asset {assetName}
+              contained in package {packageName}.</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/versions</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>none</entry>
+
+              <entry>Returns the list of rule asset {assetName} versions contained in package {packageName} as
+              an Atom Feed .</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/atom+xml</entry>
+
+              <entry>none</entry>
+
+              <entry>Returns the metadata of rule asset {assetName} of version {version} 
+              contained in package {packageName} as an Atom Entry .</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}/source</entry>
+
+              <entry>GET</entry>
+
+              <entry>text/plain</entry>
+
+              <entry>none</entry>
+
+              <entry>Returns the source code of rule asset {assetName} of version {version} 
+              contained in package {packageName} as a text file.</entry>
+            </row>
+
+            <row>
+              <entry>/packages/{packageName}/assets/{assetName}/versions/{version}/binary</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/octet-stream</entry>
+
+              <entry>none</entry>
+
+              <entry>Returns the binary content of rule asset {assetName} of version {version} 
+              contained in package {packageName}.  If this asset has no binary
+              content, returns its source content instead.</entry>
+            </row>
+            
             <row>
               <entry>/packages/{packageName}/assets/{assetName}</entry>
 
@@ -598,7 +677,7 @@ Response response= client2.path("guvnor-webapp-${project.version}/rest/packages/
       on the Guvnor repository.</para>
 
       <para>Next you can find the pom.xml file to use the Guvnor Rest API in
-      case yuo are using Maven.</para>
+      case you are using Maven.</para>
 
       <example>
         <title>pom.xml content for our example</title>

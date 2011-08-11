@@ -45,58 +45,49 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-jcr</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-jackrabbit</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository-connector-modeshape</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-repository</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>droolsjbpm-ide-common</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <version>${guvnor.version}</version>
       <classifier>jboss-as-5.1</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <version>${guvnor.version}</version>
       <classifier>jboss-as-6.0</classifier>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-distribution-wars</artifactId>
       <type>war</type>
-      <version>${guvnor.version}</version>
       <classifier>tomcat-6.0</classifier>
     </dependency>
 
@@ -108,7 +99,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-examples</artifactId>
-      <version>${guvnor.version}</version>
       <classifier>sources</classifier>
     </dependency>
 

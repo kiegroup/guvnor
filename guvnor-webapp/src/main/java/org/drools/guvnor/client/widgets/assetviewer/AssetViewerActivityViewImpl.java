@@ -17,7 +17,6 @@
 package org.drools.guvnor.client.widgets.assetviewer;
 
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -30,14 +29,10 @@ import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -66,33 +61,11 @@ public class AssetViewerActivityViewImpl extends Composite
 
     private Label                                    caption;
 
-    @UiField(provided = true)
-    PrettyFormLayout                                 prettyForm = new PrettyFormLayout();
-
     @UiField
     VerticalPanel                                    assetGroupsContainer;
 
     public AssetViewerActivityViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
-
-        //PrettyFormLayout cannot be setup with UiBinder
-        caption = new Label();
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        prettyForm.addHeader( images.packageLarge(),
-                              caption );
-
-        Button button = new Button( constants.ViewPackageConfiguration() );
-        button.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                presenter.viewPackageDetail( packageConfigData );
-            }
-
-        } );
-
-        prettyForm.startSection();
-        prettyForm.addRow( button );
-        prettyForm.endSection();
     }
 
     public void setPresenter(Presenter presenter) {
@@ -109,7 +82,6 @@ public class AssetViewerActivityViewImpl extends Composite
 
     public void setPackageConfigData(PackageConfigData packageConfigData) {
         this.packageConfigData = packageConfigData;
-        caption.setText( constants.PackageAssets( packageConfigData.getName() ) );
     }
 
     public String getFeedUrl(String packageName) {
