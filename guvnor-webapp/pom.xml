@@ -16,6 +16,8 @@
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
   <build>
+<!-- TODO seam3Upgrade REMOVE ME! -->
+<testSourceDirectory>src/test/prototype-test</testSourceDirectory>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler-->
@@ -227,9 +229,9 @@
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
-      <version>${gwt.version}</version>      
+      <version>${gwt.version}</version>
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
-    </dependency>    
+    </dependency>
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
@@ -313,12 +315,61 @@
       <version>3.0.0.Final</version>
     </dependency>
     <!-- Arquillian (testing for weld) -->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.junit</groupId>-->
+      <!--<artifactId>arquillian-junit-standalone</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>1.0.0-beta-5</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
-      <artifactId>arquillian-junit-standalone</artifactId>
+      <artifactId>arquillian-junit-container</artifactId>
       <version>1.0.0.CR2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.container</groupId>
+      <artifactId>arquillian-tomcat-embedded-6</artifactId>
+      <version>1.0.0.CR1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat</groupId>
+      <artifactId>catalina</artifactId>
+      <version>6.0.29</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.tomcat</groupId>
+       <artifactId>coyote</artifactId>
+       <version>6.0.29</version>
+       <scope>provided</scope>
+    </dependency>
+    <dependency>
+       <groupId>org.apache.tomcat</groupId>
+       <artifactId>jasper</artifactId>
+       <version>6.0.29</version>
+       <scope>provided</scope>
+    </dependency>
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-weld-se-embedded-1.1</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-tomcat-embedded-6</artifactId>-->
+      <!--<version>1.0.0.CR1</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
 
     <dependency>
       <groupId>javax.ejb</groupId>
