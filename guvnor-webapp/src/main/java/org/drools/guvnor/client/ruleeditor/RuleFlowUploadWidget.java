@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -35,10 +36,12 @@ public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
     public RuleFlowUploadWidget( RuleAsset asset,
                                  RuleViewer viewer,
-                                 ClientFactory clientFactory ) {
+                                 ClientFactory clientFactory,
+                                 EventBus eventBus) {
         super( asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus);
         super.addDescription( new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" ) ); //NON-NLS
     }
 

@@ -18,6 +18,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.TextArea;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -34,10 +35,12 @@ public class XmlFileWidget extends AssetAttachmentFileWidget
 
     public XmlFileWidget( final RuleAsset asset,
                           final RuleViewer viewer,
-                          ClientFactory clientFactory ) {
+                          ClientFactory clientFactory,
+                          EventBus eventBus) {
         super( asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus );
         data = (RuleContentText) asset.getContent();
 
         if ( data.content == null ) {

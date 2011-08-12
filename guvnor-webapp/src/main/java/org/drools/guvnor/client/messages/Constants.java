@@ -2320,8 +2320,6 @@ public interface Constants
 
     String PleaseSelectAPerspective();
 
-    String FailedToLoadPerspectiveUnknownId0(String perspectiveId);
-
     String FailedToLoadPerspective();
 
     String NameCanNotBeEmpty();
@@ -2388,4 +2386,5 @@ public interface Constants
     
     String AttributeForModuleEditor();
 
+    String RunTimePerspective();
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -57,14 +58,16 @@ public class VersionChooser extends Composite {
     private List<TableDataRow> versionInfo = new ArrayList<TableDataRow>();
     private String currentVersion;
     private final ClientFactory clientFactory;
-
+    private final EventBus eventBus;
 
     public VersionChooser( ClientFactory clientFactory,
+                           EventBus eventBus,
                            String currentVersion,
                            String pacakgeUUID,
                            String assetName,
                            Command ref ) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.packageUUID = pacakgeUUID;
         this.assetName = assetName;
         this.currentVersion = currentVersion;
@@ -177,6 +180,7 @@ public class VersionChooser extends Composite {
 
                                                                      RuleViewerWrapper viewer = new RuleViewerWrapper(
                                                                              clientFactory,
+                                                                             eventBus,
                                                                              asset,
                                                                              true,
                                                                              null,

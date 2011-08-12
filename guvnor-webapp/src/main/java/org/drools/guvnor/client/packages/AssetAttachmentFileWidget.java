@@ -19,6 +19,7 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -49,12 +50,15 @@ public abstract class AssetAttachmentFileWidget extends Composite
     protected FormStyleLayout layout;
     protected RuleAsset asset;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public AssetAttachmentFileWidget( final RuleAsset asset,
                                       final RuleViewer viewer,
-                                      ClientFactory clientFactory ) {
+                                      ClientFactory clientFactory,
+                                      EventBus eventBus) {
         this.viewer = viewer;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.asset = asset;
         initWidgets( asset.getUuid(),
                 asset.getName() );
@@ -127,7 +131,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
                 LoadingPopup.close();
 
                 if ( asset.getMetaData().getFormat().equals( AssetFormats.MODEL ) ) {
-                    clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getUuid() ) );
+                    eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getUuid() ) );
                 }
 
                 if ( event.getResults().indexOf( "OK" ) > -1 ) {

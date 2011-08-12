@@ -9,13 +9,14 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-             xmlns:guvnor-explorer='urn:import:org.drools.guvnor.client.explorer'>
+             xmlns:guvnor-explorer='urn:import:org.drools.guvnor.client.explorer'
+             xmlns:guvnor-navigation='urn:import:org.drools.guvnor.client.explorer.navigation'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants"/>
   <ui:with field='guvnorResources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
   <ui:with field='titlePanelHeight'
-           type='org.drools.guvnor.client.explorer.PerspectivesPanelViewImpl.TitlePanelHeight'/>
+           type='org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl.TitlePanelHeight'/>
 
   <gwt:DockLayoutPanel unit='EM'>
     <gwt:north size='{titlePanelHeight.getHeight}'>
@@ -34,7 +35,7 @@
               </small>
             </div>
             <div class='{guvnorResources.headerCss.perspectivesClass}'>
-              <gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1" visible="false"/>
+              <gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1"/>
             </div>
           </div>
           <div style="clear:both;"></div>
@@ -44,7 +45,7 @@
     <gwt:center>
       <gwt:SplitLayoutPanel>
         <gwt:west size="250">
-          <gwt:Widget ui:field="navigationPanel"/>
+          <guvnor-navigation:NavigationPanel ui:field="navigationPanel"/>
         </gwt:west>
         <gwt:center>
           <guvnor-explorer:ExplorerViewCenterPanel ui:field="explorerCenterPanel"/>

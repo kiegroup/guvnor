@@ -14,32 +14,19 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.admin;
+package org.drools.guvnor.client.explorer.perspectives;
 
-interface PerspectiveEditorPopUpView {
+import java.util.ArrayList;
+import java.util.Collection;
 
-    interface Presenter {
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
-        void onSave();
+public class RunTimePerspective extends Perspective {
 
-        void onCancel();
+    @Override
+    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
+        return new ArrayList<NavigationItemBuilder>();
     }
-
-    void show();
-
-    void hide();
-
-    void setPresenter(Presenter presenter);
-
-    void setName(String s);
-
-    String getName();
-
-    void setUrl(String s);
-
-    String getUrl();
-
-    void showNameCanNotBeEmptyWarning();
-
-    void showUrlCanNotBeEmptyWarning();
 }

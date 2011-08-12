@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
@@ -26,9 +27,11 @@ public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
 
     private final ClientFactory clientFactory;
     private KnowledgeModulesTree knowledgeModulesTree;
+    private final EventBus eventBus;
 
-    public KnowledgeModulesTreeBuilder( ClientFactory clientFactory ) {
+    public KnowledgeModulesTreeBuilder( ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -50,6 +53,6 @@ public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
     }
 
     private void createKnowledgeModuleTree() {
-        knowledgeModulesTree = new KnowledgeModulesTree( clientFactory );
+        knowledgeModulesTree = new KnowledgeModulesTree( clientFactory, eventBus );
     }
 }

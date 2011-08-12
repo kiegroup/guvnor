@@ -16,21 +16,50 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
 
-public class NavigationPanel {
+public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget {
 
-    private NavigationPanelView view;
+    private final NavigationPanelView view;
+    private final ClientFactory clientFactory;
+    private final ResettableEventBus eventBus;
 
-    public NavigationPanel(NavigationPanelView navigationPanelView) {
-        view = navigationPanelView;
+    public NavigationPanel(ClientFactory clientFactory, EventBus eventBus) {
+        view = clientFactory.getNavigationViewFactory().getNavigationPanelView();
+        eventBus.addHandler(ChangePerspectiveEvent.TYPE, this);
+        this.eventBus = new ResettableEventBus(eventBus);
+        this.clientFactory = clientFactory;
     }
 
     public void add(IsWidget header, IsWidget content) {
         view.add(header, content);
     }
 
-    public NavigationPanelView getView() {
-        return view;
+    public void onChangePerspective(ChangePerspectiveEvent changePerspectiveEvent) {
+        view.clear();
+        eventBus.removeHandlers();
+
+        addNavigationItems(changePerspectiveEvent);
+    }
+
+    private void addNavigationItems(ChangePerspectiveEvent changePerspectiveEvent) {
+        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective().getBuilders(clientFactory, eventBus)) {
+            addNavigationItem(navigationItemBuilder);
+        }
+    }
+
+    private void addNavigationItem(NavigationItemBuilder navigationItemBuilder) {
+        if (navigationItemBuilder.hasPermissionToBuild()) {
+            view.add(navigationItemBuilder.getHeader(), navigationItemBuilder.getContent());
+        }
+    }
+
+    public Widget asWidget() {
+        return view.asWidget();
     }
 }

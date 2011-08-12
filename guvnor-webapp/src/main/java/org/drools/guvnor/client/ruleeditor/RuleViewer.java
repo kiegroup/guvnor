@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
@@ -51,6 +52,7 @@ public class RuleViewer extends GuvnorEditor {
 
     private Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
+    private final EventBus eventBus;
 
     interface RuleViewerBinder
             extends
@@ -81,10 +83,13 @@ public class RuleViewer extends GuvnorEditor {
     private long lastSaved = System.currentTimeMillis();
     private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    public RuleViewer(RuleAsset asset,
-                      ClientFactory clientFactory) {
+    public RuleViewer(
+            RuleAsset asset,
+            ClientFactory clientFactory,
+            EventBus eventBus) {
         this( asset,
                 clientFactory,
+                eventBus,
                 false,
                 null,
                 null );
@@ -95,9 +100,11 @@ public class RuleViewer extends GuvnorEditor {
      */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,
+                      EventBus eventBus,
                       boolean historicalReadOnly) {
         this( asset,
                 clientFactory,
+                eventBus,
                 historicalReadOnly,
                 null,
                 null );
@@ -110,11 +117,13 @@ public class RuleViewer extends GuvnorEditor {
      */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,
+                      EventBus eventBus,
                       boolean historicalReadOnly,
                       ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                       RuleViewerSettings ruleViewerSettings) {
         this.asset = asset;
         this.readOnly = historicalReadOnly || asset.isReadonly();
+        this.eventBus = eventBus;
 
         this.clientFactory = clientFactory;
 
@@ -359,7 +368,7 @@ public class RuleViewer extends GuvnorEditor {
             ((SaveEventListener) editor).onAfterSave();
         }
 
-        clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+        eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData().getPackageUUID()));
         lastSaved = System.currentTimeMillis();
         resetDirty();
     }
@@ -422,7 +431,7 @@ public class RuleViewer extends GuvnorEditor {
      * closes itself
      */
     private void close() {
-        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
     }
 
     void doDelete() {
@@ -439,7 +448,7 @@ public class RuleViewer extends GuvnorEditor {
         RepositoryServiceFactory.getAssetService().archiveAsset( asset.getUuid(),
                 new GenericCallback<Void>() {
                     public void onSuccess(Void o) {
-                        clientFactory.getEventBus().fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                        eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                         close();
                     }
                 } );
@@ -476,7 +485,7 @@ public class RuleViewer extends GuvnorEditor {
 
                         showInfoMessage( constants.SavedOK() );
                         if ( !closeAfter ) {
-                            clientFactory.getEventBus().fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
                         }
                     }
                 } );

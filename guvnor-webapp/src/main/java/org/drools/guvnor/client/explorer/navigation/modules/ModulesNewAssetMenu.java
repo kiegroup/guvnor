@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.AssetFormats;
@@ -26,10 +27,11 @@ public class ModulesNewAssetMenu implements IsWidget, ModulesNewAssetMenuView.Pr
 
     private ModulesNewAssetMenuView view;
     private ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-
-    public ModulesNewAssetMenu( ClientFactory clientFactory ) {
+    public ModulesNewAssetMenu( ClientFactory clientFactory, EventBus eventBus ) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.view = clientFactory.getNavigationViewFactory().getModulesNewAssetMenuView();
         view.setPresenter( this );
     }
@@ -39,7 +41,7 @@ public class ModulesNewAssetMenu implements IsWidget, ModulesNewAssetMenuView.Pr
     }
 
     public void onNewModule() {
-        view.openNewPackageWizard( clientFactory );
+        view.openNewPackageWizard( clientFactory, eventBus );
     }
 
     public void onNewSpringContext() {

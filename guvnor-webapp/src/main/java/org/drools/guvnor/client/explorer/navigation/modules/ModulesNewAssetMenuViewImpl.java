@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -249,8 +250,8 @@ public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
         this.presenter = presenter;
     }
 
-    public void openNewPackageWizard( ClientFactory clientFactory ) {
-        NewPackageWizard wiz = new NewPackageWizard( clientFactory );
+    public void openNewPackageWizard( ClientFactory clientFactory, EventBus eventBus) {
+        NewPackageWizard wiz = new NewPackageWizard( clientFactory, eventBus );
         wiz.show();
     }
 

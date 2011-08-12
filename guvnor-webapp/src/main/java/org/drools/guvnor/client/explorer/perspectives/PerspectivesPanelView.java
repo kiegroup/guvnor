@@ -14,7 +14,27 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
-public class UnknownPerspective extends Exception {
+import com.google.gwt.user.client.ui.IsWidget;
+import org.drools.guvnor.client.util.TabbedPanel;
+
+public interface PerspectivesPanelView extends IsWidget {
+
+    interface Presenter {
+
+        void onChangePerspectiveToAuthor();
+
+        void onChangePerspectiveToRunTime();
+    }
+
+    void setPresenter(Presenter presenter);
+
+    void setUserName(String userName);
+
+    void addAuthorPerspective();
+
+    void addRunTimePerspective();
+
+    TabbedPanel getTabbedPanel();
 }

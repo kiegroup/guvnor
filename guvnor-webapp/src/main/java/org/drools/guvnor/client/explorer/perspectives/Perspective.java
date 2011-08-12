@@ -14,10 +14,15 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.Collection;
 
-public interface PerspectiveView extends IsWidget {
-    String getName();
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+
+public abstract class Perspective {
+
+    public abstract Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus);
 }

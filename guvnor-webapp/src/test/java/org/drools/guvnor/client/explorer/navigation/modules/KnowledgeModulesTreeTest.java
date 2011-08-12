@@ -95,13 +95,8 @@ public class KnowledgeModulesTreeTest {
                 globalAreaTreeItemView
         );
         EventBus eventBus = mock( EventBus.class );
-        when(
-                clientFactory.getEventBus()
-        ).thenReturn(
-                eventBus
-        );
 
-        presenter = new KnowledgeModulesTree( clientFactory );
+        presenter = new KnowledgeModulesTree( clientFactory ,eventBus);
     }
 
     private void setUpUserCapabilities( boolean canMakeNewAssets ) {

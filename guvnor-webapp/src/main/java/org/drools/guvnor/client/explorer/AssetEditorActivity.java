@@ -35,6 +35,7 @@ public class AssetEditorActivity extends Activity {
 
     private final AssetEditorPlace place;
     private final ClientFactory clientFactory;
+    private EventBus eventBus;
 
     public AssetEditorActivity(AssetEditorPlace place,
                                ClientFactory clientFactory) {
@@ -44,6 +45,7 @@ public class AssetEditorActivity extends Activity {
 
     @Override
     public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+        this.eventBus = eventBus;
         final boolean[] loading = {true};
 
         Timer t = new Timer() {
@@ -89,6 +91,7 @@ public class AssetEditorActivity extends Activity {
                                 ruleAsset.getName(),
                                 new RuleViewerWrapper(
                                         clientFactory,
+                                        eventBus,
                                         ruleAsset ) );
 
                         LoadingPopup.close();
