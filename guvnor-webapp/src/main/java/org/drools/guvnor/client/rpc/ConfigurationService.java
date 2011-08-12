@@ -28,13 +28,5 @@ import java.util.Map;
 @RemoteServiceRelativePath("configurationService")
 public interface ConfigurationService extends RemoteService {
 
-    String save(IFramePerspectiveConfiguration newConfiguration);
-
-    IFramePerspectiveConfiguration load(String uuid) throws SerializationException;
-
-    Collection<IFramePerspectiveConfiguration> loadPerspectiveConfigurations();
-
-    void remove(String uuid);
-
     Map<String, String> loadPreferences();
 }
