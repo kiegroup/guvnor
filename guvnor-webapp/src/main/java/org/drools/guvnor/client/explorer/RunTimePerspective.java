@@ -16,8 +16,15 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import java.util.ArrayList;
+import java.util.Collection;
 
-public interface PerspectiveView extends IsWidget {
-    String getName();
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+
+public class RunTimePerspective extends Perspective {
+
+    @Override
+    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory) {
+        return new ArrayList<NavigationItemBuilder>();
+    }
 }

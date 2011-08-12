@@ -48,9 +48,7 @@ public class AppController {
     }
 
     private PerspectivesPanel createPerspectivesPanel() {
-        return new PerspectivesPanel(
-                clientFactory.getPerspectivesPanelView(),
-                clientFactory.getPlaceController());
+        return new PerspectivesPanel(clientFactory);
     }
 
     private void setUpActivityMapper() {

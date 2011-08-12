@@ -23,7 +23,6 @@ import com.google.gwt.user.client.ui.StackLayoutPanel;
 
 public class NavigationPanelViewImpl extends Composite implements NavigationPanelView {
 
-
     private StackLayoutPanel layout = new StackLayoutPanel(Style.Unit.EM);
 
     public NavigationPanelViewImpl() {
@@ -36,5 +35,9 @@ public class NavigationPanelViewImpl extends Composite implements NavigationPane
                 header.asWidget(),
                 2
         );
+    }
+
+    public void clear() {
+        layout.clear();
     }
 }

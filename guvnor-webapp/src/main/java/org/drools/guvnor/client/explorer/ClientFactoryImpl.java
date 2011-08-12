@@ -21,12 +21,16 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Window;
 import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
+import org.drools.guvnor.client.rpc.ConfigurationService;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityViewImpl;
 
@@ -35,9 +39,9 @@ public class ClientFactoryImpl
         ClientFactory {
 
     private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController( eventBus );
+    private final PlaceController placeController = new PlaceController(eventBus);
     private PerspectivesPanelView perspectivesPanelView;
-    private NavigationViewFactoryImpl authorNavigationViewFactory;
+    private NavigationViewFactoryImpl navigationViewFactory;
     private AssetEditorFactory assetEditorFactory;
     private PlaceHistoryHandler placeHistoryHandler;
     private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
@@ -46,62 +50,46 @@ public class ClientFactoryImpl
         return placeController;
     }
 
-    public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
-        return new AuthorPerspectiveViewImpl( this,
-                navigationPanelFactory );
-    }
-
-    public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
-        return null; //TODO: Generated code -Rikkola-
-    }
-
     public EventBus getEventBus() {
         return eventBus;
     }
 
     public PerspectivesPanelView getPerspectivesPanelView() {
-        if ( perspectivesPanelView == null ) {
-            perspectivesPanelView = new PerspectivesPanelViewImpl(
-                    getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
-                    new ExplorerViewCenterPanel( this ),
-                    hideTitle() );
+        if (perspectivesPanelView == null) {
+            perspectivesPanelView = new PerspectivesPanelViewImpl(this);
         }
         return perspectivesPanelView;
     }
 
-    public IFramePerspectiveView getIFramePerspectiveView() {
-        return new IFramePerspectiveViewImpl();
-    }
-
     public NavigationViewFactory getNavigationViewFactory() {
-        if ( authorNavigationViewFactory == null ) {
-            authorNavigationViewFactory = new NavigationViewFactoryImpl( this );
+        if (navigationViewFactory == null) {
+            navigationViewFactory = new NavigationViewFactoryImpl(this);
         }
-        return authorNavigationViewFactory;
+        return navigationViewFactory;
     }
 
     public ConfigurationServiceAsync getConfigurationService() {
-        return GWT.create( ConfigurationService.class );
+        return GWT.create(ConfigurationService.class);
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager( this );
+        return new MultiActivityManager(this);
     }
 
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorActivityMapper( this );
+        return new GuvnorActivityMapper(this);
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
-        if ( placeHistoryHandler == null ) {
-            placeHistoryHandler = new PlaceHistoryHandler( getPlaceHistoryMapper() );
+        if (placeHistoryHandler == null) {
+            placeHistoryHandler = new PlaceHistoryHandler(getPlaceHistoryMapper());
         }
         return placeHistoryHandler;
     }
 
     public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
-        if ( guvnorPlaceHistoryMapper == null ) {
-            guvnorPlaceHistoryMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
+        if (guvnorPlaceHistoryMapper == null) {
+            guvnorPlaceHistoryMapper = GWT.create(GuvnorPlaceHistoryMapper.class);
         }
         return guvnorPlaceHistoryMapper;
     }
@@ -119,8 +107,8 @@ public class ClientFactoryImpl
     }
 
     public AssetEditorFactory getAssetEditorFactory() {
-        if ( assetEditorFactory == null ) {
-            assetEditorFactory = GWT.create( AssetEditorFactory.class );
+        if (assetEditorFactory == null) {
+            assetEditorFactory = GWT.create(AssetEditorFactory.class);
         }
         return assetEditorFactory;
     }
@@ -135,15 +123,5 @@ public class ClientFactoryImpl
 
     public AssetServiceAsync getAssetService() {
         return RepositoryServiceFactory.getAssetService();
-    }
-
-    private boolean hideTitle() {
-        String parameter = Window.Location.getParameter( "nochrome" );
-
-        if ( parameter == null ) {
-            return true;
-        } else {
-            return parameter.equals( "true" );
-        }
     }
 }

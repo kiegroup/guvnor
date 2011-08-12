@@ -16,44 +16,46 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.PerspectivesPanelView.Presenter;
-import org.drools.guvnor.client.util.TabbedPanel;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.drools.guvnor.client.explorer.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
-    private final PlaceController placeController;
+    private final ClientFactory clientFactory;
 
-    private Map<String, Perspective> perspectives = new HashMap<String, Perspective>();
+    private final Map<String, Perspective> perspectives = new HashMap<String, Perspective>();
 
-    public PerspectivesPanel( PerspectivesPanelView view, PlaceController placeController ) {
-        this.view = view;
-        this.view.setPresenter( this );
-        this.placeController = placeController;
+    public PerspectivesPanel(ClientFactory clientFactory) {
+        this.clientFactory = clientFactory;
+        this.view = clientFactory.getPerspectivesPanelView();
+        this.view.setPresenter(this);
+        setPerspective(new AuthorPerspective());
+        view.addAuthorPerspective();
+        view.addRunTimePerspective();
+    }
+
+    private void setPerspective(Perspective perspective) {
+        clientFactory.getEventBus().fireEvent(new ChangePerspectiveEvent(perspective));
     }
 
     public PerspectivesPanelView getView() {
         return view;
     }
 
-    public void setUserName( String userName ) {
-        view.setUserName( userName );
+    public void setUserName(String userName) {
+        view.setUserName(userName);
     }
 
-    public void addPerspective( Perspective perspective ) {
-        String name = perspective.getName();
-        perspectives.put( name, perspective );
-        view.addPerspectiveToList( name, name );
+    public void onChangePerspectiveToAuthor() {
+        setPerspective(new AuthorPerspective());
     }
 
-    public void onPerspectiveChange( String perspectiveId ) throws UnknownPerspective {
-        // TODO: Change perspective, probably with an event -Rikkola-
-//        placeController.goTo( perspectives.get( perspectiveId ) );
+    public void onChangePerspectiveToRunTime() {
+        setPerspective(new RunTimePerspective());
     }
 
     public TabbedPanel getTabbedPanel() {

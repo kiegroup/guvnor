@@ -16,16 +16,13 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import java.util.Collection;
+
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabType;
-
-import java.util.Collection;
-import java.util.List;
-
 
 public interface BrowseTreeView extends IsWidget {
+
     interface Presenter {
 
         void onTreeItemSelection(IsTreeItem selectedItem, String title);

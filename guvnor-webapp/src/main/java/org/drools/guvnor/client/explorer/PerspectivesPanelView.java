@@ -22,14 +22,19 @@ import org.drools.guvnor.client.util.TabbedPanel;
 public interface PerspectivesPanelView extends IsWidget {
 
     interface Presenter {
-        void onPerspectiveChange(String perspectiveId) throws UnknownPerspective;
+
+        void onChangePerspectiveToAuthor();
+
+        void onChangePerspectiveToRunTime();
     }
 
     void setPresenter(Presenter presenter);
 
     void setUserName(String userName);
 
-    void addPerspectiveToList(String perspectiveId, String perspectiveName);
+    void addAuthorPerspective();
+
+    void addRunTimePerspective();
 
     TabbedPanel getTabbedPanel();
 }

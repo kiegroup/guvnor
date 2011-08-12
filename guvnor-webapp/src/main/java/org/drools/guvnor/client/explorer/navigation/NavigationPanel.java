@@ -17,20 +17,44 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.explorer.ChangePerspectiveEvent;
+import org.drools.guvnor.client.explorer.ClientFactory;
 
-public class NavigationPanel {
+public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget {
 
-    private NavigationPanelView view;
+    private final NavigationPanelView view;
+    private final ClientFactory clientFactory;
 
-    public NavigationPanel(NavigationPanelView navigationPanelView) {
-        view = navigationPanelView;
+    public NavigationPanel(ClientFactory clientFactory) {
+        view = clientFactory.getNavigationViewFactory().getNavigationPanelView();
+        clientFactory.getEventBus().addHandler(ChangePerspectiveEvent.TYPE, this);
+        this.clientFactory = clientFactory;
     }
 
     public void add(IsWidget header, IsWidget content) {
         view.add(header, content);
     }
 
-    public NavigationPanelView getView() {
-        return view;
+    public void onChangePerspective(ChangePerspectiveEvent changePerspectiveEvent) {
+        view.clear();
+
+        addNavigationItems(changePerspectiveEvent);
+    }
+
+    private void addNavigationItems(ChangePerspectiveEvent changePerspectiveEvent) {
+        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective().getBuilders(clientFactory)) {
+            addNavigationItem(navigationItemBuilder);
+        }
+    }
+
+    private void addNavigationItem(NavigationItemBuilder navigationItemBuilder) {
+        if (navigationItemBuilder.hasPermissionToBuild()) {
+            view.add(navigationItemBuilder.getHeader(), navigationItemBuilder.getContent());
+        }
+    }
+
+    public Widget asWidget() {
+        return view.asWidget();
     }
 }

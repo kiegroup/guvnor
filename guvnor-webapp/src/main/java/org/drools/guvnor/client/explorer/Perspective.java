@@ -16,7 +16,11 @@
 
 package org.drools.guvnor.client.explorer;
 
+import java.util.Collection;
+
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+
 public abstract class Perspective {
 
-    public abstract String getName();
+    public abstract Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory);
 }

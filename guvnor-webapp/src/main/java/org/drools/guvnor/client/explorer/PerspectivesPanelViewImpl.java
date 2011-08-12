@@ -22,8 +22,12 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.common.ErrorPopup;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.explorer.navigation.NavigationPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.util.TabbedPanel;
 
@@ -34,11 +38,12 @@ public class PerspectivesPanelViewImpl extends Composite
     interface PerspectivesPanelViewImplBinder
             extends
             UiBinder<Widget, PerspectivesPanelViewImpl> {
+
     }
 
-    private static PerspectivesPanelViewImplBinder uiBinder = GWT.create( PerspectivesPanelViewImplBinder.class );
+    private static PerspectivesPanelViewImplBinder uiBinder = GWT.create(PerspectivesPanelViewImplBinder.class);
 
-    private static Constants constants = GWT.create( Constants.class );
+    private static Constants constants = GWT.create(Constants.class);
 
     private Presenter presenter;
 
@@ -52,57 +57,69 @@ public class PerspectivesPanelViewImpl extends Composite
     HTMLPanel titlePanel;
 
     @UiField(provided = true)
-    Widget navigationPanel;
+    NavigationPanel navigationPanel;
 
     @UiField(provided = true)
     ExplorerViewCenterPanel explorerCenterPanel;
 
-    public PerspectivesPanelViewImpl( IsWidget navigationPanel,
-                                      ExplorerViewCenterPanel explorerCenterPanel,
-                                      boolean showTitle ) {
-        this.navigationPanel = navigationPanel.asWidget();
-        this.explorerCenterPanel = explorerCenterPanel;
+    public PerspectivesPanelViewImpl(ClientFactory clientFactory) {
+        this.navigationPanel = new NavigationPanel(clientFactory);
 
-        showTitle( showTitle );
+        this.explorerCenterPanel = new ExplorerViewCenterPanel(clientFactory);
 
-        initWidget( uiBinder.createAndBindUi( this ) );
+        showTitle(canShowTitle());
 
-        titlePanel.setVisible( showTitle );
+        initWidget(uiBinder.createAndBindUi(this));
+
+        titlePanel.setVisible(canShowTitle());
     }
 
-    private void showTitle( boolean showTitle ) {
-        if ( showTitle ) {
+    private boolean canShowTitle() {
+        String parameter = Window.Location.getParameter("nochrome");
+
+        if (parameter == null) {
+            return true;
+        } else {
+            return parameter.equals("true");
+        }
+    }
+
+    private void showTitle(boolean showTitle) {
+        if (showTitle) {
             TitlePanelHeight.show();
         } else {
             TitlePanelHeight.hide();
         }
     }
 
-    public void setUserName( String userName ) {
-        this.userName.setInnerText( userName );
+    public void setUserName(String userName) {
+        this.userName.setInnerText(userName);
     }
 
-    public TabbedPanel getTabbedPanel(){
+    public void addAuthorPerspective() {
+        perspectives.addItem(constants.AuthorPerspective(),
+                constants.AuthorPerspective());
+    }
+
+    public void addRunTimePerspective() {
+        perspectives.addItem(constants.RunTimePerspective(),
+                constants.RunTimePerspective());
+    }
+
+    public TabbedPanel getTabbedPanel() {
         return explorerCenterPanel;
     }
 
-    public void addPerspectiveToList( String perspectiveId,
-                                      String perspectiveName ) {
-        perspectives.addItem( perspectiveName,
-                perspectiveId );
-    }
-
-    public void setPresenter( Presenter presenter ) {
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     @UiHandler("perspectives")
-    public void handleChange( ChangeEvent event ) {
-        String perspectiveId = perspectives.getValue( perspectives.getSelectedIndex() );
-        try {
-            presenter.onPerspectiveChange( perspectiveId );
-        } catch (UnknownPerspective unknownPerspective) {
-            ErrorPopup.showMessage( constants.FailedToLoadPerspectiveUnknownId0( perspectiveId ) );
+    public void handleChange(ChangeEvent event) {
+        if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.AuthorPerspective())) {
+            presenter.onChangePerspectiveToAuthor();
+        } else if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.RunTimePerspective())) {
+            presenter.onChangePerspectiveToRunTime();
         }
     }
 

@@ -16,9 +16,32 @@
 
 package org.drools.guvnor.client.explorer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.modules.KnowledgeModulesTreeBuilder;
+import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
+
 public class AuthorPerspective extends Perspective {
 
-    public String getName() {
-        return "Author";
+    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory) {
+
+        Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
+
+        navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory));
+
+        navigationItemBuilders.add(new KnowledgeModulesTreeBuilder(clientFactory));
+
+        navigationItemBuilders.add(new QATreeBuilder(clientFactory));
+
+        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory));
+
+        navigationItemBuilders.add(new AdminTreeBuilder(clientFactory));
+
+        return navigationItemBuilders;
     }
 }
