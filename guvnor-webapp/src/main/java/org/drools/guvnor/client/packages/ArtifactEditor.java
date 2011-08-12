@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.packages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
@@ -54,8 +55,9 @@ public class ArtifactEditor extends GuvnorEditor {
      * @param Artifact artifact
      */
     public ArtifactEditor( ClientFactory clientFactory,
+                           EventBus eventBus,
                            Artifact artifact ) {
-        this( clientFactory, artifact, false );
+        this( clientFactory, eventBus, artifact, false );
     }
 
     /**
@@ -63,6 +65,7 @@ public class ArtifactEditor extends GuvnorEditor {
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
     public ArtifactEditor( ClientFactory clientFactory,
+                           EventBus eventBus,
                            Artifact artifact,
                            boolean historicalReadOnly ) {
         this.artifact = artifact;
@@ -73,6 +76,7 @@ public class ArtifactEditor extends GuvnorEditor {
 
         metaWidget = new MetaDataWidget(
                 clientFactory,
+                eventBus,
                 this.artifact,
                 readOnly,
                 this.artifact.getUuid() );

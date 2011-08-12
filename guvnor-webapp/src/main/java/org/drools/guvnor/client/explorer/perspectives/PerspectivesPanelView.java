@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.util.TabbedPanel;

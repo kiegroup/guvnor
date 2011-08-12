@@ -20,6 +20,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
@@ -46,11 +47,14 @@ public class VersionBrowser extends Composite {
     private final String uuid;
     private final boolean isPackage;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public VersionBrowser( ClientFactory clientFactory,
+                           EventBus eventBus,
                            String uuid,
                            boolean isPackage ) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.uuid = uuid;
         this.isPackage = isPackage;
 
@@ -208,6 +212,7 @@ public class VersionBrowser extends Composite {
                             PackageEditorWrapper ed = new PackageEditorWrapper(
                                     conf,
                                     clientFactory,
+                                    eventBus,
                                     true );
                             ed.setWidth( "100%" );
                             ed.setHeight( "100%" );
@@ -239,7 +244,7 @@ public class VersionBrowser extends Composite {
                                             versionUUID,
                                             new Command() {
                                                 public void execute() {
-                                                    clientFactory.getEventBus().fireEvent( new RefreshAssetEditorEvent(uuid) );
+                                                    eventBus.fireEvent( new RefreshAssetEditorEvent(uuid) );
                                                     pop.hide();
                                                 }
                                             } );
@@ -248,6 +253,7 @@ public class VersionBrowser extends Composite {
 
                             RuleViewerWrapper viewer = new RuleViewerWrapper(
                                     clientFactory,
+                                    eventBus,
                                     asset,
                                     true,
                                     null,

@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.ChangePerspectiveEvent;
+import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.Perspective;
+import org.drools.guvnor.client.explorer.perspectives.Perspective;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,12 +51,7 @@ public class NavigationPanelTest {
                 view
         );
         eventBus = mock(EventBus.class);
-        when(
-                clientFactory.getEventBus()
-        ).thenReturn(
-                eventBus
-        );
-        presenter = new NavigationPanel(clientFactory);
+        presenter = new NavigationPanel(clientFactory, eventBus);
     }
 
     @Test
@@ -78,7 +73,7 @@ public class NavigationPanelTest {
         navigationItemBuilders.add(createNavigationItemBuilder(true, header, content));
         navigationItemBuilders.add(createNavigationItemBuilder(false, headerThatIsNeverShown, contentThatIsNeverShown));
         when(
-                perspective.getBuilders(clientFactory)
+                perspective.getBuilders(clientFactory, eventBus)
         ).thenReturn(
                 navigationItemBuilders
         );

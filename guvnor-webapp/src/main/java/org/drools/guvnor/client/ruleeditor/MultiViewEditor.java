@@ -16,6 +16,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -50,47 +51,58 @@ public class MultiViewEditor extends GuvnorEditor {
     private Map<String, RuleAsset> assets = new HashMap<String, RuleAsset>();
 
     private MultiViewEditorMenuBarCreator menuBarCreator;
+    private final EventBus eventBus;
 
     public MultiViewEditor(MultiViewRow[] rows,
-                           ClientFactory clientFactory) {
+                           ClientFactory clientFactory,
+                           EventBus eventBus) {
         this( rows,
                 clientFactory,
+                eventBus,
                 null );
     }
 
     public MultiViewEditor(MultiViewRow[] rows,
                            ClientFactory clientFactory,
+                           EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( Arrays.asList( rows ),
                 clientFactory,
+                eventBus,
                 individualActionToolbarButtonsConfigurationProvider );
     }
 
     public MultiViewEditor(List<MultiViewRow> rows,
                            ClientFactory clientFactory,
+                           EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this.rows.addAll( rows );
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
 
         init();
     }
 
     public MultiViewEditor(RuleAsset[] assets,
                            ClientFactory clientFactory,
+                           EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider) {
         this( assets,
                 clientFactory,
+                eventBus,
                 individualActionToolbarButtonsConfigurationProvider,
                 null );
     }
 
     public MultiViewEditor(RuleAsset[] assets,
                            ClientFactory clientFactory,
+                           EventBus eventBus,
                            ActionToolbarButtonsConfigurationProvider individualActionToolbarButtonsConfigurationProvider,
                            MultiViewEditorMenuBarCreator menuBarCreator) {
         this.rows.addAll( createRows( assets ) );
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.individualActionToolbarButtonsConfigurationProvider = individualActionToolbarButtonsConfigurationProvider;
         this.menuBarCreator = menuBarCreator;
         addAssets( assets );
@@ -212,6 +224,7 @@ public class MultiViewEditor extends GuvnorEditor {
                         };
                         final RuleViewer ruleViewer = new RuleViewer( asset,
                                 clientFactory,
+                                eventBus,
                                 false,
                                 individualActionToolbarButtonsConfigurationProvider,
                                 ruleViewerSettings );
@@ -247,7 +260,7 @@ public class MultiViewEditor extends GuvnorEditor {
     }
 
     public void close() {
-        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new MultiAssetPlace( rows ) ) );
+        eventBus.fireEvent(new ClosePlaceEvent(new MultiAssetPlace(rows)));
         if ( closeCommand != null ) {
             closeCommand.execute();
         }

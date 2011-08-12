@@ -14,11 +14,13 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
@@ -28,13 +30,13 @@ import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
 
 public class AuthorPerspective extends Perspective {
 
-    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory) {
+    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
         navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory));
 
-        navigationItemBuilders.add(new KnowledgeModulesTreeBuilder(clientFactory));
+        navigationItemBuilders.add(new KnowledgeModulesTreeBuilder(clientFactory, eventBus));
 
         navigationItemBuilders.add(new QATreeBuilder(clientFactory));
 

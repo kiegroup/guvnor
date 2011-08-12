@@ -23,6 +23,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
+import org.drools.guvnor.client.explorer.perspectives.AuthorPerspective;
+import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanel;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.explorer.perspectives.RunTimePerspective;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -47,13 +52,8 @@ public class PerspectivesPanelTest {
         ).thenReturn(
                 view
         );
-        when(
-                clientFactory.getEventBus()
-        ).thenReturn(
-                eventBus
-        );
 
-        perspectivesPanel = new PerspectivesPanel(clientFactory);
+        perspectivesPanel = new PerspectivesPanel(clientFactory, eventBus);
         presenter = getPresenter();
     }
 

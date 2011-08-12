@@ -16,73 +16,77 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
-import com.google.gwt.user.client.ui.IsTreeItem;
-
 public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
 
-    public KnowledgeModulesTreeItem(ClientFactory clientFactory) {
-        super( clientFactory,
-               clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeItemView() );
+    private final EventBus eventBus;
 
-        setRefreshHandler( clientFactory );
-        setPackageHierarchyChangeHandler( clientFactory );
-        setCollapseAllChangeHandler( clientFactory );
-        setExpandAllChangeHandler( clientFactory );
+    public KnowledgeModulesTreeItem(ClientFactory clientFactory, EventBus eventBus) {
+        super(clientFactory,
+                clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeItemView());
+
+        this.eventBus = eventBus;
+
+        setRefreshHandler();
+        setPackageHierarchyChangeHandler();
+        setCollapseAllChangeHandler();
+        setExpandAllChangeHandler();
     }
 
-    private void setRefreshHandler(ClientFactory clientFactory) {
-        clientFactory.getEventBus().addHandler( RefreshModuleListEvent.TYPE,
-                                                new RefreshModuleListEventHandler() {
-                                                    public void onRefreshList(RefreshModuleListEvent refreshModuleListEvent) {
-                                                        getView().clearModulesTreeItem();
-                                                        setUpRootItem();
-                                                    }
-                                                } );
+    private void setRefreshHandler() {
+        eventBus.addHandler(RefreshModuleListEvent.TYPE,
+                new RefreshModuleListEventHandler() {
+                    public void onRefreshList(RefreshModuleListEvent refreshModuleListEvent) {
+                        getView().clearModulesTreeItem();
+                        setUpRootItem();
+                    }
+                });
     }
 
-    private void setPackageHierarchyChangeHandler(ClientFactory clientFactory) {
-        clientFactory.getEventBus().addHandler( ChangeModulePackageHierarchyEvent.TYPE,
-                                                new ChangeModulePackageHierarchyEventHandler() {
-                                                    public void onChangeModulePackageHierarchy(ChangeModulePackageHierarchyEvent event) {
-                                                        getView().clearModulesTreeItem();
-                                                        packageHierarchy = event.getPackageHierarchy();
-                                                        setUpRootItem();
-                                                    }
-                                                } );
+    private void setPackageHierarchyChangeHandler() {
+        eventBus.addHandler(ChangeModulePackageHierarchyEvent.TYPE,
+                new ChangeModulePackageHierarchyEventHandler() {
+                    public void onChangeModulePackageHierarchy(ChangeModulePackageHierarchyEvent event) {
+                        getView().clearModulesTreeItem();
+                        packageHierarchy = event.getPackageHierarchy();
+                        setUpRootItem();
+                    }
+                });
     }
 
-    private void setCollapseAllChangeHandler(ClientFactory clientFactory) {
-        clientFactory.getEventBus().addHandler( CollapseAllEvent.TYPE,
-                                                new CollapseAllEventHandler() {
-                                                    public void onCollapseAll(CollapseAllEvent event) {
-                                                        getView().collapseAll();
-                                                    }
-                                                } );
+    private void setCollapseAllChangeHandler() {
+        eventBus.addHandler(CollapseAllEvent.TYPE,
+                new CollapseAllEventHandler() {
+                    public void onCollapseAll(CollapseAllEvent event) {
+                        getView().collapseAll();
+                    }
+                });
     }
 
-    private void setExpandAllChangeHandler(ClientFactory clientFactory) {
-        clientFactory.getEventBus().addHandler( ExpandAllEvent.TYPE,
-                                                new ExpandAllEventHandler() {
-                                                    public void onExpandAll(ExpandAllEvent event) {
-                                                        getView().expandAll();
-                                                    }
-                                                } );
+    private void setExpandAllChangeHandler() {
+        eventBus.addHandler(ExpandAllEvent.TYPE,
+                new ExpandAllEventHandler() {
+                    public void onExpandAll(ExpandAllEvent event) {
+                        getView().expandAll();
+                    }
+                });
     }
 
     @Override
     protected void fillModulesTree(final IsTreeItem treeItem) {
-        clientFactory.getPackageService().listPackages( new GenericCallback<PackageConfigData[]>() {
+        clientFactory.getPackageService().listPackages(new GenericCallback<PackageConfigData[]>() {
             public void onSuccess(PackageConfigData[] packageConfigDatas) {
-                addModules( packageConfigDatas,
-                            treeItem );
+                addModules(packageConfigDatas,
+                        treeItem);
             }
-        } );
+        });
     }
 
     private KnowledgeModulesTreeItemView getView() {

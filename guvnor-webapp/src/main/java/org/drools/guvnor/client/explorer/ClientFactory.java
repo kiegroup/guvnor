@@ -22,6 +22,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
@@ -29,8 +30,6 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 public interface ClientFactory {
 
     PlaceController getPlaceController();
-
-    EventBus getEventBus();
 
     PerspectivesPanelView getPerspectivesPanelView();
 

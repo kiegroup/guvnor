@@ -21,6 +21,8 @@ import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Visibility;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
@@ -28,6 +30,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
@@ -47,7 +50,7 @@ public class JBRMSEntryPoint
         implements
         EntryPoint {
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
     private AppController appController;
 
     public void onModuleLoad() {
@@ -68,58 +71,57 @@ public class JBRMSEntryPoint
      * show the app, in all its glory !
      */
     private void checkLogIn() {
-        RepositoryServiceFactory.getSecurityService().getCurrentUser( new GenericCallback<UserSecurityContext>() {
-            public void onSuccess( UserSecurityContext userSecurityContext ) {
+        RepositoryServiceFactory.getSecurityService().getCurrentUser(new GenericCallback<UserSecurityContext>() {
+            public void onSuccess(UserSecurityContext userSecurityContext) {
                 String userName = userSecurityContext.getUserName();
-                if ( userName != null ) {
-                    showMain( userName );
+                if (userName != null) {
+                    showMain(userName);
                 } else {
                     logIn();
                 }
             }
-        } );
+        });
     }
 
     private void logIn() {
         final LoginWidget loginWidget = new LoginWidget();
-        loginWidget.setLoggedInEvent( new Command() {
+        loginWidget.setLoggedInEvent(new Command() {
             public void execute() {
-                showMain( loginWidget.getUserName() );
+                showMain(loginWidget.getUserName());
             }
-        } );
+        });
         loginWidget.show();
     }
 
-    private void showMain( final String userName ) {
+    private void showMain(final String userName) {
 
-        Window.setStatus( constants.LoadingUserPermissions() );
+        Window.setStatus(constants.LoadingUserPermissions());
 
-        loadConfigurations( userName );
+        loadConfigurations(userName);
     }
 
-    private void loadConfigurations( final String userName ) {
-        ConfigurationsLoader.loadPreferences( new Command() {
+    private void loadConfigurations(final String userName) {
+        ConfigurationsLoader.loadPreferences(new Command() {
             public void execute() {
-                loadUserCapabilities( userName );
+                loadUserCapabilities(userName);
             }
-        } );
+        });
     }
 
-    private void loadUserCapabilities( final String userName ) {
-        ConfigurationsLoader.loadUserCapabilities( new Command() {
+    private void loadUserCapabilities(final String userName) {
+        ConfigurationsLoader.loadUserCapabilities(new Command() {
             public void execute() {
-                setUpMain( userName );
+                setUpMain(userName);
             }
-        } );
+        });
     }
 
-    private void setUpMain( String userName ) {
-        Window.setStatus( " " );
+    private void setUpMain(String userName) {
+        Window.setStatus(" ");
 
         createMain();
 
-
-        appController.setUserName( userName );
+        appController.setUserName(userName);
     }
 
     /**
@@ -129,39 +131,38 @@ public class JBRMSEntryPoint
      * render the view. If not, the default view is shown.
      */
     private void createMain() {
+        EventBus eventBus = new SimpleEventBus();
+        ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
+        appController = new AppController(clientFactory,eventBus);
 
-        ClientFactory clientFactory = GWT.create( ClientFactory.class );
-        appController = new AppController( clientFactory );
-
-        if ( Window.Location.getPath().contains( "StandaloneEditor.html" ) ) {
-            RootLayoutPanel.get().add( new StandaloneEditorManager( clientFactory ).getBaseLayout() );
+        if (Window.Location.getPath().contains("StandaloneEditor.html")) {
+            RootLayoutPanel.get().add(new StandaloneEditorManager(clientFactory, eventBus).getBaseLayout());
         } else {
 
-
-            RootLayoutPanel.get().add( appController.getMainPanel() );
+            RootLayoutPanel.get().add(appController.getMainPanel());
         }
 
     }
 
     //Fade out the "Loading application" pop-up
     private void hideLoadingPopup() {
-        final Element e = RootPanel.get( "loading" ).getElement();
+        final Element e = RootPanel.get("loading").getElement();
 
         Animation r = new Animation() {
 
             @Override
-            protected void onUpdate( double progress ) {
-                e.getStyle().setOpacity( 1.0 - progress );
+            protected void onUpdate(double progress) {
+                e.getStyle().setOpacity(1.0 - progress);
             }
 
             @Override
             protected void onComplete() {
-                e.getStyle().setVisibility( Visibility.HIDDEN );
+                e.getStyle().setVisibility(Visibility.HIDDEN);
             }
 
         };
 
-        r.run( 500 );
+        r.run(500);
 
     }
 

@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.packages;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -58,11 +59,14 @@ public class DependencyWidget extends Composite {
     private PackageConfigData      conf;
     private boolean                isHistoricalReadOnly = false;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public DependencyWidget(ClientFactory clientFactory,
+                            EventBus eventBus,
                             final PackageConfigData conf,
                             boolean isHistoricalReadOnly) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.conf = conf;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         layout = new FormStyleLayout();
@@ -135,6 +139,7 @@ public class DependencyWidget extends Composite {
         editor.addAttribute( "Dependency Path: ",
                              new Label( decodeDependencyPath( dependencyPath )[0] ) );
         final VersionChooser versionChoose = new VersionChooser( clientFactory,
+                                                                 eventBus,
                                                                  decodeDependencyPath( dependencyPath )[1],
                                                                  conf.getUuid(),
                                                                  decodeDependencyPath( dependencyPath )[0],

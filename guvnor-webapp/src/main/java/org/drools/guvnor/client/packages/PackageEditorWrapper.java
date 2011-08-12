@@ -18,6 +18,7 @@ package org.drools.guvnor.client.packages;
 
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.IsWidget;
@@ -48,17 +49,21 @@ public class PackageEditorWrapper extends Composite {
 
     VerticalPanel layout = new VerticalPanel();
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public PackageEditorWrapper( PackageConfigData data,
-                                 ClientFactory clientFactory ) {
-        this( data, clientFactory, false );
+                                 ClientFactory clientFactory,
+                                 EventBus eventBus) {
+        this( data, clientFactory, eventBus, false );
     }
 
     public PackageEditorWrapper( PackageConfigData data,
                                  ClientFactory clientFactory,
+                                 EventBus eventBus,
                                  boolean isHistoricalReadOnly ) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
 
         initWidget( layout );
@@ -70,10 +75,11 @@ public class PackageEditorWrapper extends Composite {
         final TabPanel tPanel = new TabPanel();
         tPanel.setWidth( "100%" );
 
-        this.artifactEditor = new ArtifactEditor( clientFactory, packageConfigData, this.isHistoricalReadOnly );
+        this.artifactEditor = new ArtifactEditor( clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly );
         this.packageEditor = new PackageEditor(
                 packageConfigData,
                 clientFactory,
+                eventBus,
                 this.isHistoricalReadOnly,
                 new Command() {
                     public void execute() {

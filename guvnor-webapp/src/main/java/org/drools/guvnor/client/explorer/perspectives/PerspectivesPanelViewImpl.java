@@ -14,11 +14,12 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -27,6 +28,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ExplorerViewCenterPanel;
 import org.drools.guvnor.client.explorer.navigation.NavigationPanel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.util.TabbedPanel;
@@ -62,10 +65,10 @@ public class PerspectivesPanelViewImpl extends Composite
     @UiField(provided = true)
     ExplorerViewCenterPanel explorerCenterPanel;
 
-    public PerspectivesPanelViewImpl(ClientFactory clientFactory) {
-        this.navigationPanel = new NavigationPanel(clientFactory);
+    public PerspectivesPanelViewImpl(ClientFactory clientFactory, EventBus eventBus) {
+        this.navigationPanel = new NavigationPanel(clientFactory, eventBus);
 
-        this.explorerCenterPanel = new ExplorerViewCenterPanel(clientFactory);
+        this.explorerCenterPanel = new ExplorerViewCenterPanel(clientFactory, eventBus);
 
         showTitle(canShowTitle());
 

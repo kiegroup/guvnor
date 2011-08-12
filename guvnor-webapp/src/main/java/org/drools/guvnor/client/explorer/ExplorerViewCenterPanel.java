@@ -20,6 +20,7 @@ import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -45,9 +46,11 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
 
     private ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public ExplorerViewCenterPanel(final ClientFactory clientFactory) {
+    public ExplorerViewCenterPanel(final ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         tabLayoutPanel = new ScrollTabLayoutPanel();
 
         addBeforeSelectionHandler();
@@ -112,7 +115,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
         closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> event) {
-                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( place ) );
+                eventBus.fireEvent( new ClosePlaceEvent( place ) );
             }
 
         } );

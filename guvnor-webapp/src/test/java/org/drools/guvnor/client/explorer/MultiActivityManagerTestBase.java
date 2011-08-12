@@ -55,13 +55,8 @@ public abstract class MultiActivityManagerTestBase {
         ).thenReturn(
                 placeHistoryMapper
         );
-        when(
-                clientFactory.getEventBus()
-        ).thenReturn(
-                eventBus
-        );
 
-        multiActivityManager = new MultiActivityManager(clientFactory);
+        multiActivityManager = new MultiActivityManager(clientFactory, eventBus);
     }
 
     protected EventBus setUpEventBus() {

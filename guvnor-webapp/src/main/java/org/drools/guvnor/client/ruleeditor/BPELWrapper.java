@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -37,7 +38,8 @@ public class BPELWrapper extends Composite
 
     public BPELWrapper( RuleAsset asset,
                         RuleViewer viewer,
-                        ClientFactory clientFactory ) {
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
 
         final String uuid = asset.getUuid();
         final String fileName = asset.getName();
@@ -48,7 +50,8 @@ public class BPELWrapper extends Composite
         AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor(
                 asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus );
 
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );

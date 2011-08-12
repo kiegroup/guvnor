@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -26,9 +27,11 @@ public class KnowledgeModulesTree
 
     private KnowledgeModulesTreeView view;
     private ClientFactory            clientFactory;
+    private final EventBus eventBus;
 
-    public KnowledgeModulesTree(ClientFactory clientFactory) {
+    public KnowledgeModulesTree(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.view = clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeView();
         this.view.setPresenter( this );
         addRootPanels();
@@ -37,32 +40,32 @@ public class KnowledgeModulesTree
     private void addRootPanels() {
         view.setGlobalAreaTreeItem( new GlobalAreaTreeItem( clientFactory ) );
 
-        view.setKnowledgeModulesTreeItem( new KnowledgeModulesTreeItem( clientFactory ) );
+        view.setKnowledgeModulesTreeItem( new KnowledgeModulesTreeItem( clientFactory, eventBus ) );
 
         if ( UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET ) ) {
             view.setNewAssetMenu(
-                    new ModulesNewAssetMenu( clientFactory ) );
+                    new ModulesNewAssetMenu( clientFactory, eventBus ) );
         }
     }
 
     public void setFlatView() {
         ChangeModulePackageHierarchyEvent event = new ChangeModulePackageHierarchyEvent( new PackageFlatView() );
-        clientFactory.getEventBus().fireEvent( event );
+        eventBus.fireEvent( event );
     }
 
     public void setHierarchyView() {
         ChangeModulePackageHierarchyEvent event = new ChangeModulePackageHierarchyEvent( new PackageHierarchicalView() );
-        clientFactory.getEventBus().fireEvent( event );
+        eventBus.fireEvent( event );
     }
 
     public void expandAll() {
         ExpandAllEvent event = new ExpandAllEvent();
-        clientFactory.getEventBus().fireEvent( event );
+        eventBus.fireEvent( event );
     }
 
     public void collapseAll() {
         CollapseAllEvent event = new CollapseAllEvent();
-        clientFactory.getEventBus().fireEvent( event );
+        eventBus.fireEvent( event );
     }
 
 }

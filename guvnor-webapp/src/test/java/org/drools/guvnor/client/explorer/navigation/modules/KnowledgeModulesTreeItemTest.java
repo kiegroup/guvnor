@@ -102,14 +102,10 @@ public class KnowledgeModulesTreeItemTest {
                 );
 
         eventBus = mock( EventBus.class );
-        when(
-                clientFactory.getEventBus() ).thenReturn(
-                                                          eventBus
-                );
     }
 
     private void setUpPresenter() {
-        presenter = new KnowledgeModulesTreeItem( clientFactory );
+        presenter = new KnowledgeModulesTreeItem( clientFactory, eventBus );
     }
 
     @Test

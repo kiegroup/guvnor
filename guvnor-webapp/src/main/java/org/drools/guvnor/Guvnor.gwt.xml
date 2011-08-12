@@ -49,10 +49,6 @@
   <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">
     <when-type-assignable class="org.drools.guvnor.client.common.AssetEditorFactory"/>
   </generate-with>  
-  
-  <replace-with class="org.drools.guvnor.client.explorer.ClientFactoryImpl">
-    <when-type-is class="org.drools.guvnor.client.explorer.ClientFactory" />
-  </replace-with>
 
   <!-- Deferred binding to handle the calculation of cell heights in a VerticalMergedGrid -->
   <replace-with class="org.drools.guvnor.client.widgets.decoratedgrid.CellHeightCalculatorImpl">

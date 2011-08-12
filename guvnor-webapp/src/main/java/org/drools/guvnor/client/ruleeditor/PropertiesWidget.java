@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -39,10 +40,12 @@ public class PropertiesWidget extends AssetAttachmentFileWidget
 
     public PropertiesWidget( final RuleAsset asset,
                              final RuleViewer viewer,
-                             ClientFactory clientFactory ) {
+                             ClientFactory clientFactory,
+                             EventBus eventBus) {
         super( asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus);
 
         if ( asset.getContent() == null ) {
             properties = new PropertiesHolder();

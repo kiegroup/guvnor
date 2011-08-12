@@ -14,17 +14,19 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
 public class RunTimePerspective extends Perspective {
 
     @Override
-    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory) {
+    public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
         return new ArrayList<NavigationItemBuilder>();
     }
 }

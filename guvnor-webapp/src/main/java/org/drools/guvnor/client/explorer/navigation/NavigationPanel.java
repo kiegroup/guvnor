@@ -16,19 +16,22 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.explorer.ChangePerspectiveEvent;
+import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
 import org.drools.guvnor.client.explorer.ClientFactory;
 
 public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget {
 
     private final NavigationPanelView view;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public NavigationPanel(ClientFactory clientFactory) {
+    public NavigationPanel(ClientFactory clientFactory, EventBus eventBus) {
         view = clientFactory.getNavigationViewFactory().getNavigationPanelView();
-        clientFactory.getEventBus().addHandler(ChangePerspectiveEvent.TYPE, this);
+        this.eventBus = eventBus;
+        eventBus.addHandler(ChangePerspectiveEvent.TYPE, this);
         this.clientFactory = clientFactory;
     }
 
@@ -43,7 +46,7 @@ public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget
     }
 
     private void addNavigationItems(ChangePerspectiveEvent changePerspectiveEvent) {
-        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective().getBuilders(clientFactory)) {
+        for (NavigationItemBuilder navigationItemBuilder : changePerspectiveEvent.getPerspective().getBuilders(clientFactory, eventBus)) {
             addNavigationItem(navigationItemBuilder);
         }
     }

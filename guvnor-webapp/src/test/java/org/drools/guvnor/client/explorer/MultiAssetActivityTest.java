@@ -53,9 +53,12 @@ public class MultiAssetActivityTest {
         AcceptTabItem acceptTabItem = mock( AcceptTabItem.class );
         startActivity( acceptTabItem );
 
+        EventBus eventBus = mock(EventBus.class);
+
         verify( view ).init(
                 place.getMultiViewRows().toArray( new MultiViewRow[place.getMultiViewRows().size()] ),
-                clientFactory );
+                clientFactory,
+                eventBus );
 
         verify( acceptTabItem ).addTab( "[ firstName, secondName, thirdName ]", view );
     }

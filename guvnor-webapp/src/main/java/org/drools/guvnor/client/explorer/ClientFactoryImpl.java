@@ -18,12 +18,13 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
@@ -38,25 +39,26 @@ public class ClientFactoryImpl
         implements
         ClientFactory {
 
-    private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController(eventBus);
+    private final PlaceController placeController;
     private PerspectivesPanelView perspectivesPanelView;
     private NavigationViewFactoryImpl navigationViewFactory;
     private AssetEditorFactory assetEditorFactory;
     private PlaceHistoryHandler placeHistoryHandler;
     private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
+    private final EventBus eventBus;
+
+    public ClientFactoryImpl(EventBus eventBus) {
+        this.eventBus = eventBus;
+        this.placeController = new PlaceController(eventBus);
+    }
 
     public PlaceController getPlaceController() {
         return placeController;
     }
 
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
     public PerspectivesPanelView getPerspectivesPanelView() {
         if (perspectivesPanelView == null) {
-            perspectivesPanelView = new PerspectivesPanelViewImpl(this);
+            perspectivesPanelView = new PerspectivesPanelViewImpl(this, eventBus);
         }
         return perspectivesPanelView;
     }
@@ -73,11 +75,11 @@ public class ClientFactoryImpl
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager(this);
+        return new MultiActivityManager(this, eventBus);
     }
 
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorActivityMapper(this);
+        return new GuvnorActivityMapper(this, eventBus);
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {

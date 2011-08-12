@@ -19,6 +19,7 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -56,22 +57,27 @@ public class PackageEditor extends PrettyFormLayout {
 
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public PackageEditor(PackageConfigData data,
                          ClientFactory clientFactory,
+                         EventBus eventBus,
                          Command refreshCommand) {
         this( data,
                 clientFactory,
+                eventBus,
                 false,
                 refreshCommand );
     }
 
     public PackageEditor(PackageConfigData data,
                          ClientFactory clientFactory,
+                         EventBus eventBus,
                          boolean historicalReadOnly,
                          Command refreshCommand) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.isHistoricalReadOnly = historicalReadOnly;
         this.refreshCommand = refreshCommand;
 
@@ -153,6 +159,7 @@ public class PackageEditor extends PrettyFormLayout {
             startSection( constants.Dependencies() );
             addRow( new DependencyWidget(
                     clientFactory,
+                    eventBus,
                     this.packageConfigData,
                     isHistoricalReadOnly ) );
             endSection();
@@ -507,7 +514,7 @@ public class PackageEditor extends PrettyFormLayout {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
 
         openModule( newAssetUUID );
     }
@@ -609,7 +616,7 @@ public class PackageEditor extends PrettyFormLayout {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
+                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
                 refreshPackageList();
             }
         };
@@ -617,6 +624,6 @@ public class PackageEditor extends PrettyFormLayout {
     }
 
     private void refreshPackageList() {
-        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
+        eventBus.fireEvent( new RefreshModuleListEvent() );
     }
 }

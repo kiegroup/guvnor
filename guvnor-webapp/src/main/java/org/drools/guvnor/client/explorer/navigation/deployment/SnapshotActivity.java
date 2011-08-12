@@ -20,13 +20,16 @@ public class SnapshotActivity extends Activity {
     private final ClientFactory clientFactory;
     private final String moduleName;
     private final String snapshotName;
+    private final EventBus eventBus;
 
     public SnapshotActivity(String moduleName,
                             String snapshotName,
-                            ClientFactory clientFactory) {
+                            ClientFactory clientFactory,
+                            EventBus eventBus) {
         this.moduleName = moduleName;
         this.snapshotName = snapshotName;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class SnapshotActivity extends Activity {
                         tabbedPanel.addTab( constants.SnapshotLabel( snapshotInfo.getName() ),
                                 new SnapshotView(
                                         clientFactory,
+                                        eventBus,
                                         snapshotInfo,
                                         conf ) );
                         LoadingPopup.close();

@@ -14,23 +14,25 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.perspectives;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.drools.guvnor.client.explorer.PerspectivesPanelView.Presenter;
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView.Presenter;
 import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    private final Map<String, Perspective> perspectives = new HashMap<String, Perspective>();
-
-    public PerspectivesPanel(ClientFactory clientFactory) {
+    public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.view = clientFactory.getPerspectivesPanelView();
         this.view.setPresenter(this);
         setPerspective(new AuthorPerspective());
@@ -39,7 +41,7 @@ public class PerspectivesPanel implements Presenter {
     }
 
     private void setPerspective(Perspective perspective) {
-        clientFactory.getEventBus().fireEvent(new ChangePerspectiveEvent(perspective));
+        eventBus.fireEvent(new ChangePerspectiveEvent(perspective));
     }
 
     public PerspectivesPanelView getView() {

@@ -22,7 +22,8 @@ public class MultiAssetActivity extends Activity {
 
         view.init(
                 place.getMultiViewRows().toArray( new MultiViewRow[place.getMultiViewRows().size()] ),
-                clientFactory );
+                clientFactory,
+                eventBus );
 //        addRows( view );
 
         tabbedPanel.addTab( getTitle(), view );

@@ -40,11 +40,11 @@ public class MultiActivityManager implements
     private final Map<Place, Pair> activeActivities = new HashMap<Place, Pair>();
     private final ClientFactory clientFactory;
 
-    public MultiActivityManager(ClientFactory clientFactory) {
+    public MultiActivityManager(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.activityMapper = clientFactory.getActivityMapper();
         this.placeHistoryMapper = clientFactory.getPlaceHistoryMapper();
-        this.eventBus = clientFactory.getEventBus();
+        this.eventBus = eventBus;
 
         eventBus.addHandler(
                 PlaceChangeEvent.TYPE,
