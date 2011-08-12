@@ -17,14 +17,22 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.EventHandler;
+import com.google.gwt.event.shared.GwtEvent;
+import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
+import com.google.web.bindery.event.shared.Event;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
 import org.drools.guvnor.client.explorer.perspectives.Perspective;
+import org.drools.guvnor.client.ruleeditor.RefreshAssetEditorEvent;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.*;
 
@@ -34,6 +42,7 @@ public class NavigationPanelTest {
     private NavigationPanel presenter;
     private EventBus eventBus;
     private ClientFactory clientFactory;
+    private HandlerRegistration handlerRegistration;
 
     @Before
     public void setUp() throws Exception {
@@ -50,7 +59,8 @@ public class NavigationPanelTest {
         ).thenReturn(
                 view
         );
-        eventBus = mock(EventBus.class);
+        handlerRegistration = mock(HandlerRegistration.class);
+        eventBus = spy(new EventBusMock());
         presenter = new NavigationPanel(clientFactory, eventBus);
     }
 
@@ -73,7 +83,7 @@ public class NavigationPanelTest {
         navigationItemBuilders.add(createNavigationItemBuilder(true, header, content));
         navigationItemBuilders.add(createNavigationItemBuilder(false, headerThatIsNeverShown, contentThatIsNeverShown));
         when(
-                perspective.getBuilders(clientFactory, eventBus)
+                perspective.getBuilders(eq(clientFactory), any(ResettableEventBus.class))
         ).thenReturn(
                 navigationItemBuilders
         );
@@ -83,6 +93,30 @@ public class NavigationPanelTest {
         verify(view).clear();
         verify(view).add(header, content);
         verify(view, never()).add(headerThatIsNeverShown, contentThatIsNeverShown);
+    }
+
+    @Test
+    public void testEventBusClearedOnPerspectiveChange() throws Exception {
+        Perspective perspective = mock(Perspective.class);
+
+        ArgumentCaptor<ResettableEventBus> resettableEventBusArgumentCaptor = ArgumentCaptor.forClass(ResettableEventBus.class);
+        when(
+                perspective.getBuilders(eq(clientFactory), resettableEventBusArgumentCaptor.capture())
+        ).thenReturn(
+                Collections.<NavigationItemBuilder>emptyList()
+        );
+
+        presenter.onChangePerspective(new ChangePerspectiveEvent(perspective));
+
+        resettableEventBusArgumentCaptor.getValue().addHandler(RefreshAssetEditorEvent.TYPE, new RefreshAssetEditorEvent.Handler() {
+            public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
+                //Nothing here, just setting one up se we can see if this gets cleared.
+            }
+        });
+
+        presenter.onChangePerspective(new ChangePerspectiveEvent(perspective));
+
+        verify(handlerRegistration).removeHandler();
     }
 
     private NavigationItemBuilder createNavigationItemBuilder(final boolean permissionToBuild, final IsWidget header, final IsWidget content) {
@@ -101,4 +135,26 @@ public class NavigationPanelTest {
         };
     }
 
+    class EventBusMock extends EventBus {
+
+        @Override
+        public <H> com.google.web.bindery.event.shared.HandlerRegistration addHandler(Event.Type<H> type, H handler) {
+            return handlerRegistration;
+        }
+
+        @Override
+        public <H extends EventHandler> HandlerRegistration addHandler(GwtEvent.Type<H> type, H handler) {
+            return handlerRegistration;
+        }
+
+        @Override public <H extends EventHandler> HandlerRegistration addHandlerToSource(GwtEvent.Type<H> type, Object source, H handler) {
+            return null;
+        }
+
+        @Override public void fireEvent(GwtEvent<?> event) {
+        }
+
+        @Override public void fireEventFromSource(GwtEvent<?> event, Object source) {
+        }
+    }
 }
