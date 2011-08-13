@@ -139,7 +139,8 @@ public class RuleViewer extends GuvnorEditor {
         AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
         editor = assetEditorFactory.getAssetEditor( asset,
                 this,
-                clientFactory );
+                clientFactory,
+                eventBus);
 
         // for designer we need to give it more playing room
         if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {

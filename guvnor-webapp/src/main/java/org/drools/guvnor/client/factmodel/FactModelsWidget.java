@@ -28,6 +28,7 @@ import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -45,7 +46,8 @@ public class FactModelsWidget extends Composite
 
     public FactModelsWidget(RuleAsset asset,
                             RuleViewer viewer,
-                        ClientFactory clientFactory) {
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
         this( asset );
     }
 

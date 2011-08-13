@@ -27,6 +27,7 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
 
@@ -44,7 +45,8 @@ public class BusinessProcessEditor extends DirtyableComposite
 
     public BusinessProcessEditor(RuleAsset asset,
                                  RuleViewer viewer,
-                                 ClientFactory clientFactory) {
+                                 ClientFactory clientFactory,
+                                 EventBus eventBus) {
         this.asset = asset;
         modelUUID = asset.getUuid();
         initWidgets();

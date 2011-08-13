@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -45,7 +46,8 @@ public class RuleValidatorWrapper extends DirtyableComposite
 
     public RuleValidatorWrapper( RuleAsset asset,
                                  RuleViewer viewer,
-                                 ClientFactory clientFactory ) {
+                                 ClientFactory clientFactory,
+                                 EventBus eventBus) {
         this.editor = new DSLRuleEditor( asset );
 
         layout.add( editor );

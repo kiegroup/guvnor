@@ -26,6 +26,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.TextArea;
 
 /**
@@ -42,7 +43,8 @@ public class DefaultRuleContentWidget extends DirtyableComposite
 
     public DefaultRuleContentWidget(RuleAsset a,
                                     RuleViewer v,
-                        ClientFactory clientFactory) {
+                                    ClientFactory clientFactory, 
+                                    EventBus eventBus) {
         this( a );
     }
 

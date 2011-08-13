@@ -36,6 +36,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -58,7 +59,8 @@ public class WorkingSetEditor extends Composite
     
 	public WorkingSetEditor(RuleAsset asset,
                             RuleViewer viewer,
-                        ClientFactory clientFactory) {
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
 		this(asset);
 	}
 	
