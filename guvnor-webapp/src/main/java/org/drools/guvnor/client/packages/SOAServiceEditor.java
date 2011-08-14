@@ -19,6 +19,7 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -26,13 +27,11 @@ import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
@@ -56,22 +55,27 @@ public class SOAServiceEditor extends AbstractModuleEditor {
 
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public SOAServiceEditor(PackageConfigData data,
-                         ClientFactory clientFactory,
-                         Command refreshCommand) {
+                            ClientFactory clientFactory,
+                            EventBus eventBus,
+                            Command refreshCommand) {
         this( data,
                 clientFactory,
                 false,
+                eventBus,
                 refreshCommand );
     }
 
     public SOAServiceEditor(PackageConfigData data,
                          ClientFactory clientFactory,
                          boolean historicalReadOnly,
+                         EventBus eventBus,
                          Command refreshCommand) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.isHistoricalReadOnly = historicalReadOnly;
         this.refreshCommand = refreshCommand;
 
@@ -467,7 +471,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
 
         openModule( newAssetUUID );
     }
@@ -569,7 +573,7 @@ public class SOAServiceEditor extends AbstractModuleEditor {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
+                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
                 refreshPackageList();
             }
         };
@@ -577,6 +581,6 @@ public class SOAServiceEditor extends AbstractModuleEditor {
     }
 
     private void refreshPackageList() {
-        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
+        eventBus.fireEvent( new RefreshModuleListEvent() );
     }
 }

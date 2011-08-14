@@ -1,6 +1,9 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -27,7 +30,7 @@ public class ModulesTreeTest {
     public void testNewAssetMenuIsSet() throws Exception {
         setUpPresenter();
 
-        verify( view ).setNewAssetMenu( (any( PackagesNewAssetMenu.class )).asWidget() );
+        verify( view ).setNewAssetMenu( (any( MenuBar.class )) );
     }
 
     @Test
@@ -36,7 +39,7 @@ public class ModulesTreeTest {
 
         createPresenter();
 
-        verify( view, never() ).setNewAssetMenu( (any( PackagesNewAssetMenu.class )).asWidget() );
+        verify( view, never() ).setNewAssetMenu( (any( MenuBar.class )) );
     }
 
     @Test
@@ -88,7 +91,14 @@ public class ModulesTreeTest {
         ).thenReturn(
                 modulesNewAssetMenuView
         );
-
+/*        
+        MenuBar rootMenuBar = new MenuBar( true ); 
+        when(
+                modulesNewAssetMenuView.asWidget()
+        ).thenReturn(
+                rootMenuBar
+        );*/
+        
         GlobalAreaTreeItemView globalAreaTreeItemView = mock( GlobalAreaTreeItemView.class );
         when(
                 navigationViewFactory.getGlobalAreaTreeItemView()
