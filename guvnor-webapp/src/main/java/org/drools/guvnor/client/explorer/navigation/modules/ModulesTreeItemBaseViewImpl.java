@@ -20,7 +20,7 @@ public abstract class ModulesTreeItemBaseViewImpl
     protected static Images    images    = GWT.create( Images.class );
 
     protected final Tree       tree      = new Tree();
-    private Presenter          presenter;
+    protected Presenter          presenter;
 
     public ModulesTreeItemBaseViewImpl() {
         tree.setStyleName( "guvnor-Tree" );

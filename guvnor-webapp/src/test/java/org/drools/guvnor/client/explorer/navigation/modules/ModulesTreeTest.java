@@ -5,6 +5,7 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.perspectives.AuthorPerspective;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,21 +13,21 @@ import org.mockito.Matchers;
 
 import static org.mockito.Mockito.*;
 
-public class KnowledgeModulesTreeTest {
+public class ModulesTreeTest {
 
-    private KnowledgeModulesTreeView view;
-    private KnowledgeModulesTree presenter;
+    private ModulesTreeView view;
+    private ModulesTree presenter;
 
     @Before
     public void setUp() throws Exception {
-        view = mock( KnowledgeModulesTreeView.class );
+        view = mock( ModulesTreeView.class );
     }
 
     @Test
     public void testNewAssetMenuIsSet() throws Exception {
         setUpPresenter();
 
-        verify( view ).setNewAssetMenu( any( ModulesNewAssetMenu.class ) );
+        verify( view ).setNewAssetMenu( (any( PackagesNewAssetMenu.class )).asWidget() );
     }
 
     @Test
@@ -35,7 +36,7 @@ public class KnowledgeModulesTreeTest {
 
         createPresenter();
 
-        verify( view, never() ).setNewAssetMenu( any( ModulesNewAssetMenu.class ) );
+        verify( view, never() ).setNewAssetMenu( (any( PackagesNewAssetMenu.class )).asWidget() );
     }
 
     @Test
@@ -43,7 +44,7 @@ public class KnowledgeModulesTreeTest {
         setUpPresenter();
 
         verify( view ).setGlobalAreaTreeItem( Matchers.<GlobalAreaTreeItem>any() );
-        verify( view ).setKnowledgeModulesTreeItem( Matchers.<KnowledgeModulesTreeItem>any() );
+        verify( view ).setModulesTreeItem( Matchers.<ModulesTreeItem>any() );
     }
 
     private void setUpPresenter() {
@@ -62,14 +63,14 @@ public class KnowledgeModulesTreeTest {
         );
 
         when(
-                navigationViewFactory.getKnowledgeModulesTreeView()
+                navigationViewFactory.getModulesTreeView()
         ).thenReturn(
                 view
         );
 
-        KnowledgeModulesTreeItemView knowledgeModulesTreeItemView = mock( KnowledgeModulesTreeItemView.class );
+        ModulesTreeItemView knowledgeModulesTreeItemView = mock( ModulesTreeItemView.class );
         when(
-                navigationViewFactory.getKnowledgeModulesTreeItemView()
+                navigationViewFactory.getModulesTreeItemView()
         ).thenReturn(
                 knowledgeModulesTreeItemView
         );
@@ -81,9 +82,9 @@ public class KnowledgeModulesTreeTest {
                 packageService
         );
 
-        ModulesNewAssetMenuView modulesNewAssetMenuView = mock( ModulesNewAssetMenuView.class );
+        PackagesNewAssetMenuView modulesNewAssetMenuView = mock( PackagesNewAssetMenuView.class );
         when(
-                navigationViewFactory.getModulesNewAssetMenuView()
+                navigationViewFactory.getPackagesNewAssetMenuView()
         ).thenReturn(
                 modulesNewAssetMenuView
         );
@@ -96,7 +97,7 @@ public class KnowledgeModulesTreeTest {
         );
         EventBus eventBus = mock( EventBus.class );
 
-        presenter = new KnowledgeModulesTree( clientFactory ,eventBus);
+        presenter = new ModulesTree( clientFactory ,eventBus, AuthorPerspective.AUTHOR_PERSPECTIVE);
     }
 
     private void setUpUserCapabilities( boolean canMakeNewAssets ) {

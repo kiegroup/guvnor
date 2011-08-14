@@ -24,18 +24,19 @@ import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
-public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
+public class ModulesTreeItem extends ModulesTreeItemBase {
 
     private final EventBus eventBus;
 
-    public KnowledgeModulesTreeItem(ClientFactory clientFactory, EventBus eventBus) {
+    public ModulesTreeItem(ClientFactory clientFactory, EventBus eventBus, String perspectiveTypes) {
         super(clientFactory,
-                clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeItemView());
+              clientFactory.getNavigationViewFactory().getModulesTreeItemView(),
+              perspectiveTypes);
 
         this.eventBus = eventBus;
 
         setRefreshHandler();
-        setPackageHierarchyChangeHandler();
+        setModuleHierarchyChangeHandler();
         setCollapseAllChangeHandler();
         setExpandAllChangeHandler();
     }
@@ -50,10 +51,10 @@ public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
                 });
     }
 
-    private void setPackageHierarchyChangeHandler() {
-        eventBus.addHandler(ChangeModulePackageHierarchyEvent.TYPE,
-                new ChangeModulePackageHierarchyEventHandler() {
-                    public void onChangeModulePackageHierarchy(ChangeModulePackageHierarchyEvent event) {
+    private void setModuleHierarchyChangeHandler() {
+        eventBus.addHandler(ChangeModuleHierarchyEvent.TYPE,
+                new ChangeModuleHierarchyEventHandler() {
+                    public void onChangeModuleHierarchy(ChangeModuleHierarchyEvent event) {
                         getView().clearModulesTreeItem();
                         packageHierarchy = event.getPackageHierarchy();
                         setUpRootItem();
@@ -89,8 +90,8 @@ public class KnowledgeModulesTreeItem extends ModulesTreeItemBase {
         });
     }
 
-    private KnowledgeModulesTreeItemView getView() {
-        return (KnowledgeModulesTreeItemView) view;
+    private ModulesTreeItemView getView() {
+        return (ModulesTreeItemView) view;
     }
 
 }

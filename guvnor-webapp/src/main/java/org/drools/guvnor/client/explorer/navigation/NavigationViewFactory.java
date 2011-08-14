@@ -16,7 +16,10 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
@@ -42,18 +45,22 @@ public interface NavigationViewFactory {
 
     QATreeView getQATreeView();
 
-    KnowledgeModulesTreeView getKnowledgeModulesTreeView();
+    ModulesTreeView getModulesTreeView();
 
     RepositoryServiceAsync getRepositoryService();
 
     CategoryServiceAsync getCategoryService();
 
-    IsWidget getKnowledgeModulesHeaderView();
+    IsWidget getModulesHeaderView(String perspectiveType);
+    
+    SafeHtml getModulesTreeRootNodeHeader(String perspectiveType);
 
-    KnowledgeModulesTreeItemView getKnowledgeModulesTreeItemView();
+    ModulesTreeItemView getModulesTreeItemView();
 
-    ModulesNewAssetMenuView getModulesNewAssetMenuView();
-
+    PackagesNewAssetMenuView getPackagesNewAssetMenuView();
+    
+    SOAServicesNewAssetMenuView getServicesNewAssetMenuView();
+    
     GlobalAreaTreeItemView getGlobalAreaTreeItemView();
 
     ModuleTreeItemView getModuleTreeItemView();
@@ -61,4 +68,6 @@ public interface NavigationViewFactory {
     RulesNewMenuView getRulesNewMenuView();
 
     MultiAssetView getMultiAssetView();
+    
+    Widget getModulesNewAssetMenu(String perspectiveType);
 }

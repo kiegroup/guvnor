@@ -23,15 +23,17 @@ import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
-public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
+public class ModulesTreeBuilder extends NavigationItemBuilder {
 
     private final ClientFactory clientFactory;
-    private KnowledgeModulesTree knowledgeModulesTree;
+    private ModulesTree modulesTree;
     private final EventBus eventBus;
-
-    public KnowledgeModulesTreeBuilder( ClientFactory clientFactory, EventBus eventBus) {
+    private final String perspectiveType;
+    
+    public ModulesTreeBuilder( ClientFactory clientFactory, EventBus eventBus, String perspectiveType) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
+        this.perspectiveType = perspectiveType;
     }
 
     @Override
@@ -41,18 +43,18 @@ public class KnowledgeModulesTreeBuilder extends NavigationItemBuilder {
 
     @Override
     public IsWidget getHeader() {
-        return clientFactory.getNavigationViewFactory().getKnowledgeModulesHeaderView();
+        return clientFactory.getNavigationViewFactory().getModulesHeaderView(this.perspectiveType);
     }
 
     @Override
     public IsWidget getContent() {
-        if ( knowledgeModulesTree == null ) {
-            createKnowledgeModuleTree();
+        if ( modulesTree == null ) {
+            createModuleTree();
         }
-        return clientFactory.getNavigationViewFactory().getKnowledgeModulesTreeView();
+        return clientFactory.getNavigationViewFactory().getModulesTreeView();
     }
 
-    private void createKnowledgeModuleTree() {
-        knowledgeModulesTree = new KnowledgeModulesTree( clientFactory, eventBus );
+    private void createModuleTree() {
+        modulesTree = new ModulesTree( clientFactory, eventBus,  perspectiveType);
     }
 }

@@ -19,7 +19,6 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -44,9 +43,9 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * This is the module editor for Drools Package.
+ * This is the package editor and viewer for package configuration.
  */
-public class PackageEditor extends AbstractModuleEditor {
+public class SOAServiceEditor extends AbstractModuleEditor {
     private Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
 
@@ -57,27 +56,22 @@ public class PackageEditor extends AbstractModuleEditor {
 
     private HorizontalPanel packageConfigurationValidationResult = new HorizontalPanel();
     private final ClientFactory clientFactory;
-    private final EventBus eventBus;
 
-    public PackageEditor(PackageConfigData data,
+    public SOAServiceEditor(PackageConfigData data,
                          ClientFactory clientFactory,
-                         EventBus eventBus,
                          Command refreshCommand) {
         this( data,
                 clientFactory,
-                eventBus,
                 false,
                 refreshCommand );
     }
 
-    public PackageEditor(PackageConfigData data,
+    public SOAServiceEditor(PackageConfigData data,
                          ClientFactory clientFactory,
-                         EventBus eventBus,
                          boolean historicalReadOnly,
                          Command refreshCommand) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
         this.isHistoricalReadOnly = historicalReadOnly;
         this.refreshCommand = refreshCommand;
 
@@ -128,52 +122,11 @@ public class PackageEditor extends AbstractModuleEditor {
 
         startSection( constants.ConfigurationSection() );
 
-        packageConfigurationValidationResult.clear();
-        addRow( packageConfigurationValidationResult );
-
-        addAttribute( constants.Configuration(),
-                header() );
-
-        if ( !isHistoricalReadOnly ) {
-            addAttribute( constants.CategoryRules(),
-                    getAddCatRules() );
-        }
-        addAttribute( "",
-                getShowCatRules() );
-
-        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            Button save = new Button( constants.ValidateConfiguration() );
-            save.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    doValidatePackageConfiguration( null );
-                }
-            } );
-            addAttribute( "",
-                    save );
-        }
+        addAttribute("NOTE:", new HTML("Add any SOA service editor specific UI here") );
 
         endSection();
-
-        if ( isHistoricalReadOnly ) {
-            startSection( constants.Dependencies() );
-            addRow( new DependencyWidget(
-                    clientFactory,
-                    eventBus,
-                    this.packageConfigData,
-                    isHistoricalReadOnly ) );
-            endSection();
-        }
-
-        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget(
-                    this.packageConfigData,
-                    clientFactory ) );
-            endSection();
-        }
-
-        startSection( constants.InformationAndImportantURLs() );
+        
+ /*       startSection( constants.InformationAndImportantURLs() );
 
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
@@ -250,7 +203,7 @@ public class PackageEditor extends AbstractModuleEditor {
                 callBack );
 
         endSection();
-    }
+*/    }
 
     private Widget createHPanel(Widget widget,
                                 String popUpText) {
@@ -514,7 +467,7 @@ public class PackageEditor extends AbstractModuleEditor {
         Window.alert( constants.PackageRenamedSuccessfully() );
         refreshPackageList();
 
-        eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
+        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
 
         openModule( newAssetUUID );
     }
@@ -616,7 +569,7 @@ public class PackageEditor extends AbstractModuleEditor {
         packageConfigData.setArchived( true );
         Command ref = new Command() {
             public void execute() {
-                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
+                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
                 refreshPackageList();
             }
         };
@@ -624,6 +577,6 @@ public class PackageEditor extends AbstractModuleEditor {
     }
 
     private void refreshPackageList() {
-        eventBus.fireEvent( new RefreshModuleListEvent() );
+        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
     }
 }

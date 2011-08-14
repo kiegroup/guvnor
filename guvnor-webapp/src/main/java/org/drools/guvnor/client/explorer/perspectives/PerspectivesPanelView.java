@@ -26,6 +26,8 @@ public interface PerspectivesPanelView extends IsWidget {
         void onChangePerspectiveToAuthor();
 
         void onChangePerspectiveToRunTime();
+        
+        void onChangePerspectiveToSOA();
     }
 
     void setPresenter(Presenter presenter);
@@ -35,6 +37,8 @@ public interface PerspectivesPanelView extends IsWidget {
     void addAuthorPerspective();
 
     void addRunTimePerspective();
-
+    
+    void addSOAPerspective();
+    
     TabbedPanel getTabbedPanel();
 }

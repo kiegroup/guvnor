@@ -18,21 +18,17 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 
 import java.util.Iterator;
 
-import org.drools.guvnor.client.util.Util;
-
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.TreeItem;
 
-public class KnowledgeModulesTreeItemViewImpl
+public class ModulesTreeItemViewImpl
         extends ModulesTreeItemBaseViewImpl
         implements
-    KnowledgeModulesTreeItemView {
+    ModulesTreeItemView {
 
     @Override
     protected SafeHtml getTreeHeader() {
-        return Util.getHeader(
-                               images.chartOrganisation(),
-                               constants.Packages() );
+        return this.presenter.getModuleTreeRootNodeHeader();
     }
 
     public void clearModulesTreeItem() {        

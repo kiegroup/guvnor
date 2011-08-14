@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.place.shared.Place;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -32,12 +33,15 @@ public abstract class ModulesTreeItemBase
     protected PackageView        packageHierarchy = new PackageHierarchicalView();
     protected ClientFactory           clientFactory;
     protected ModulesTreeItemBaseView view;
-
+    protected String perspectiveTypes;
+    
     public ModulesTreeItemBase(ClientFactory clientFactory,
-                               ModulesTreeItemBaseView view) {
+                               ModulesTreeItemBaseView view,
+                               String perspectiveTypes) {
         this.view = view;
         view.setPresenter( this );
         this.clientFactory = clientFactory;
+        this.perspectiveTypes = perspectiveTypes;
         setUpRootItem();
     }
 
@@ -52,7 +56,11 @@ public abstract class ModulesTreeItemBase
             clientFactory.getPlaceController().goTo( (Place) userObject );
         }
     }
-
+    
+    public SafeHtml getModuleTreeRootNodeHeader() {
+       return clientFactory.getNavigationViewFactory().getModulesTreeRootNodeHeader(perspectiveTypes);
+    }
+    
     protected void addModules(PackageConfigData[] packageConfigDatas,
                               IsTreeItem treeItem) {
         

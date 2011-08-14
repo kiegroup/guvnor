@@ -2383,4 +2383,6 @@ public interface Constants
     String AttributeForModuleEditor();
 
     String RunTimePerspective();
+    
+    String SOAPerspective();
 }

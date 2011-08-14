@@ -25,7 +25,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.ClosePlaceEvent;
-import org.drools.guvnor.client.packages.PackageEditorWrapper;
+import org.drools.guvnor.client.packages.ModuleEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabbedPanel;
 
@@ -43,7 +43,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private PanelMap openedTabs = new PanelMap();
 
-    private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
+    private Map<String, ModuleEditorWrapper> openedModuleEditors = new HashMap<String, ModuleEditorWrapper>();
 
     private ClientFactory clientFactory;
     private final EventBus eventBus;
@@ -100,9 +100,9 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
                 ) );
         tabLayoutPanel.selectTab( localTP );
 
-        if ( widget instanceof PackageEditorWrapper ) {
-            this.getOpenedPackageEditors().put( tabname,
-                    (PackageEditorWrapper) widget );
+        if ( widget instanceof ModuleEditorWrapper ) {
+            this.getOpenedModuleEditors().put( tabname,
+                    (ModuleEditorWrapper) widget );
         }
 
         openedTabs.put( place,
@@ -179,8 +179,8 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return tabLayoutPanel.getWidgetCount() == 1;
     }
 
-    public Map<String, PackageEditorWrapper> getOpenedPackageEditors() {
-        return openedPackageEditors;
+    public Map<String, ModuleEditorWrapper> getOpenedModuleEditors() {
+        return openedModuleEditors;
     }
 
     private class PanelMap {

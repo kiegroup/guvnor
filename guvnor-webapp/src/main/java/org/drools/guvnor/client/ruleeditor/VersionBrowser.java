@@ -27,7 +27,7 @@ import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.PackageEditorWrapper;
+import org.drools.guvnor.client.packages.ModuleEditorWrapper;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 
@@ -209,7 +209,7 @@ public class VersionBrowser extends Composite {
                                             conf.getName() ),
                                     new Integer( 800 ) );
 
-                            PackageEditorWrapper ed = new PackageEditorWrapper(
+                            ModuleEditorWrapper ed = new ModuleEditorWrapper(
                                     conf,
                                     clientFactory,
                                     eventBus,

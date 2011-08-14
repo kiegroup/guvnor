@@ -20,15 +20,20 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Command;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
 import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl;
+import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -65,7 +70,7 @@ public class ClientFactoryImpl
 
     public NavigationViewFactory getNavigationViewFactory() {
         if (navigationViewFactory == null) {
-            navigationViewFactory = new NavigationViewFactoryImpl(this);
+            navigationViewFactory = new NavigationViewFactoryImpl(this, eventBus);
         }
         return navigationViewFactory;
     }
@@ -126,4 +131,22 @@ public class ClientFactoryImpl
     public AssetServiceAsync getAssetService() {
         return RepositoryServiceFactory.getAssetService();
     }
+    
+    //TODO: return ModuleEditor from configuration
+    public AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand) {
+        //TODO: Add format property to PackageConfigData. 
+        /*        if(packageConfigData.format.equals("droolspackage")) {
+
+        } else if(packageConfigData.format.equals("soaservice")) {
+
+        } */
+        
+        return new PackageEditor(
+                packageConfigData,
+                clientFactory,
+                eventBus,
+                historicalReadOnly, 
+                refreshCommand);    
+    }
+
 }

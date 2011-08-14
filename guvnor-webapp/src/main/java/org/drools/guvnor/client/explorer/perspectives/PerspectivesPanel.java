@@ -38,6 +38,7 @@ public class PerspectivesPanel implements Presenter {
         setPerspective(new AuthorPerspective());
         view.addAuthorPerspective();
         view.addRunTimePerspective();
+        //view.addSOAPerspective();
     }
 
     private void setPerspective(Perspective perspective) {
@@ -60,6 +61,10 @@ public class PerspectivesPanel implements Presenter {
         setPerspective(new RunTimePerspective());
     }
 
+    public void onChangePerspectiveToSOA() {
+        setPerspective(new SOAPerspective());
+    }
+    
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
     }

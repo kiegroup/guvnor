@@ -28,11 +28,11 @@ import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
+import org.drools.guvnor.client.explorer.perspectives.AuthorPerspective;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
-import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -45,9 +45,9 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class KnowledgeModulesTreeItemTest {
+public class ModulesTreeItemTest {
 
-    private KnowledgeModulesTreeItemView view;
+    private ModulesTreeItemView view;
     private Presenter                    presenter;
     private PackageConfigData[]          packageConfigDatas = new PackageConfigData[0];
     private PlaceController              placeController;
@@ -57,7 +57,7 @@ public class KnowledgeModulesTreeItemTest {
 
     @Before
     public void setUp() throws Exception {
-        view = mock( KnowledgeModulesTreeItemView.class );
+        view = mock( ModulesTreeItemView.class );
 
         modulesTreeItem = mock( IsTreeItem.class );
         when( view.addModulesTreeItem() ).thenReturn( modulesTreeItem );
@@ -81,7 +81,7 @@ public class KnowledgeModulesTreeItemTest {
                 );
 
         when(
-                navigationViewFactory.getKnowledgeModulesTreeItemView() ).thenReturn(
+                navigationViewFactory.getModulesTreeItemView() ).thenReturn(
                                                                                       view
                 );
 
@@ -105,7 +105,7 @@ public class KnowledgeModulesTreeItemTest {
     }
 
     private void setUpPresenter() {
-        presenter = new KnowledgeModulesTreeItem( clientFactory, eventBus );
+        presenter = new ModulesTreeItem( clientFactory, eventBus, AuthorPerspective.AUTHOR_PERSPECTIVE );
     }
 
     @Test

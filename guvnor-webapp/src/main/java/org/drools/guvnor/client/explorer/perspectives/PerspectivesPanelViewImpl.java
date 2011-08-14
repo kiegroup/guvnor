@@ -109,6 +109,11 @@ public class PerspectivesPanelViewImpl extends Composite
                 constants.RunTimePerspective());
     }
 
+    public void addSOAPerspective() {
+        perspectives.addItem(constants.SOAPerspective(),
+                constants.SOAPerspective());
+    }
+
     public TabbedPanel getTabbedPanel() {
         return explorerCenterPanel;
     }
@@ -123,6 +128,8 @@ public class PerspectivesPanelViewImpl extends Composite
             presenter.onChangePerspectiveToAuthor();
         } else if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.RunTimePerspective())) {
             presenter.onChangePerspectiveToRunTime();
+        } else if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.SOAPerspective())) {
+            presenter.onChangePerspectiveToSOA();
         }
     }
 

@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
-public interface KnowledgeModulesTreeItemView extends ModulesTreeItemBaseView {
+public interface ModulesTreeItemView extends ModulesTreeItemBaseView {
 
     void clearModulesTreeItem();
     

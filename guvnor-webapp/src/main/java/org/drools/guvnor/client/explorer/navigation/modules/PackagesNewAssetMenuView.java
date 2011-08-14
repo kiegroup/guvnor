@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 
-public interface ModulesNewAssetMenuView extends IsWidget {
+public interface PackagesNewAssetMenuView extends IsWidget {
 
     interface Presenter {
 

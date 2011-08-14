@@ -1,8 +1,9 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 
-public interface KnowledgeModulesTreeView
+public interface ModulesTreeView
     extends
     IsWidget {
 
@@ -18,11 +19,11 @@ public interface KnowledgeModulesTreeView
 
     }
 
-    void setNewAssetMenu(ModulesNewAssetMenu modulesNewAssetMenu);
+    void setNewAssetMenu(Widget modulesNewAssetMenu);
 
     void setGlobalAreaTreeItem(GlobalAreaTreeItem globalAreaTreeItem);
 
-    void setKnowledgeModulesTreeItem(KnowledgeModulesTreeItem knowledgeModulesTreeItem);
+    void setModulesTreeItem(ModulesTreeItem modulesTreeItem);
 
     void setPresenter(Presenter presenter);
     

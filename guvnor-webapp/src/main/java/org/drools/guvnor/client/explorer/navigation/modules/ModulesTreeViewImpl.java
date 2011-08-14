@@ -26,18 +26,18 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class KnowledgeModulesTreeViewImpl extends Composite
+public class ModulesTreeViewImpl extends Composite
     implements
-    KnowledgeModulesTreeView {
+    ModulesTreeView {
 
-    interface KnowledgeModulesTreeViewImplBinder
+    interface ModulesTreeViewImplBinder
             extends
-            UiBinder<Widget, KnowledgeModulesTreeViewImpl> {
+            UiBinder<Widget, ModulesTreeViewImpl> {
     }
 
     private Presenter                                 presenter;
 
-    private static KnowledgeModulesTreeViewImplBinder uiBinder = GWT.create( KnowledgeModulesTreeViewImplBinder.class );
+    private static ModulesTreeViewImplBinder uiBinder = GWT.create( ModulesTreeViewImplBinder.class );
 
     @UiField
     SimplePanel                                       menuContainer;
@@ -60,7 +60,7 @@ public class KnowledgeModulesTreeViewImpl extends Composite
     @UiField
     SimplePanel                                       globalModulesTreeContainer;
 
-    public KnowledgeModulesTreeViewImpl() {
+    public ModulesTreeViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
 
     }
@@ -69,7 +69,7 @@ public class KnowledgeModulesTreeViewImpl extends Composite
         this.presenter = presenter;
     }
 
-    public void setNewAssetMenu(ModulesNewAssetMenu modulesNewAssetMenu) {
+    public void setNewAssetMenu(Widget modulesNewAssetMenu) {
         menuContainer.setWidget( modulesNewAssetMenu );
     }
 
@@ -77,7 +77,7 @@ public class KnowledgeModulesTreeViewImpl extends Composite
         globalModulesTreeContainer.setWidget( globalAreaTreeItem.asWidget() );
     }
 
-    public void setKnowledgeModulesTreeItem(KnowledgeModulesTreeItem knowledgeModulesTreeItem) {
+    public void setModulesTreeItem(ModulesTreeItem knowledgeModulesTreeItem) {
         modulesTreeContainer.setWidget( knowledgeModulesTreeItem );
     }
 

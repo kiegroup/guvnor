@@ -23,16 +23,16 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 
-public class ModulesNewAssetMenu implements IsWidget, ModulesNewAssetMenuView.Presenter {
+public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.Presenter {
 
-    private ModulesNewAssetMenuView view;
+    private PackagesNewAssetMenuView view;
     private ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public ModulesNewAssetMenu( ClientFactory clientFactory, EventBus eventBus ) {
+    public PackagesNewAssetMenu( ClientFactory clientFactory, EventBus eventBus ) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
-        this.view = clientFactory.getNavigationViewFactory().getModulesNewAssetMenuView();
+        this.view = clientFactory.getNavigationViewFactory().getPackagesNewAssetMenuView();
         view.setPresenter( this );
     }
 

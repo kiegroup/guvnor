@@ -32,7 +32,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;
 
-public class ModulesNewAssetMenuViewImpl implements ModulesNewAssetMenuView {
+public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
 
     private static Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );

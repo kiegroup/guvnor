@@ -36,13 +36,13 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 
 /**
- * This is the package editor and viewer for package configuration.
+ * This is the module editor.
  */
-public class PackageEditorWrapper extends Composite {
+public class ModuleEditorWrapper extends Composite {
     private Constants constants = GWT.create( Constants.class );
 
     private ArtifactEditor artifactEditor;
-    private PackageEditor packageEditor;
+    private AbstractModuleEditor moduleEditor;
     private ActionToolbar actionToolBar;
     private PackageConfigData packageConfigData;
     private boolean isHistoricalReadOnly = false;
@@ -51,13 +51,13 @@ public class PackageEditorWrapper extends Composite {
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public PackageEditorWrapper( PackageConfigData data,
+    public ModuleEditorWrapper( PackageConfigData data,
                                  ClientFactory clientFactory,
                                  EventBus eventBus) {
         this( data, clientFactory, eventBus, false );
     }
 
-    public PackageEditorWrapper( PackageConfigData data,
+    public ModuleEditorWrapper( PackageConfigData data,
                                  ClientFactory clientFactory,
                                  EventBus eventBus,
                                  boolean isHistoricalReadOnly ) {
@@ -76,7 +76,7 @@ public class PackageEditorWrapper extends Composite {
         tPanel.setWidth( "100%" );
 
         this.artifactEditor = new ArtifactEditor( clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly );
-        this.packageEditor = new PackageEditor(
+/*        this.moduleEditor = new PackageEditor(
                 packageConfigData,
                 clientFactory,
                 eventBus,
@@ -85,8 +85,14 @@ public class PackageEditorWrapper extends Composite {
                     public void execute() {
                         refresh();
                     }
-                } );        
-        this.actionToolBar = this.packageEditor.getActionToolbar();    
+                } );   */     
+        this.moduleEditor = clientFactory.getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
+            public void execute() {
+                refresh();
+            }
+        } );
+        
+        this.actionToolBar = this.moduleEditor.getActionToolbar();    
         layout.clear();
         layout.add( this.actionToolBar );       
         
@@ -100,13 +106,6 @@ public class PackageEditorWrapper extends Composite {
                 tPanel.add(pnl, constants.Assets());
             }
         }, null);
-/*        
-        ScrollPanel pnl = new ScrollPanel();
-        pnl.setWidth( "100%" );
-        pnl.add( assetViewerActivity.getView() );
-        tPanel.add( pnl, constants.Assets() );
-        tPanel.selectTab( 0 );*/
-        
  
         ScrollPanel pnl = new ScrollPanel();
         pnl.setWidth( "100%" );
@@ -116,7 +115,7 @@ public class PackageEditorWrapper extends Composite {
           
         pnl = new ScrollPanel();
         pnl.setWidth( "100%" );
-        pnl.add( this.packageEditor );
+        pnl.add( this.moduleEditor );
         tPanel.add( pnl, constants.Edit() );
         tPanel.selectTab( 0 );
 
