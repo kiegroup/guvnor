@@ -48,6 +48,8 @@ public interface PackagesNewAssetMenuView extends IsWidget {
 
         void onNewBPMN2Process();
 
+        void onNewFormDefinition();
+
         void onNewWorkitemDefinition();
 
         void onNewEnumeration();

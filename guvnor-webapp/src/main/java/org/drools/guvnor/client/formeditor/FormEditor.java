@@ -14,6 +14,7 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.http.client.Request;
 import com.google.gwt.http.client.RequestBuilder;
 import com.google.gwt.http.client.RequestCallback;
@@ -35,7 +36,7 @@ EditorWidget {
 
     private final RepositoryServiceAsync repoService;
     
-    public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {
+    public FormEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus bus) {
         this.asset = asset;
         modelUUID = asset.getUuid();
         RepositoryServiceFactory.getSecurityService().getCurrentUser(new AsyncCallback<UserSecurityContext>() {
