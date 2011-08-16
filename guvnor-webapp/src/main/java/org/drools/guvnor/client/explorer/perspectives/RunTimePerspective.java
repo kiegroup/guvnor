@@ -22,11 +22,22 @@ import java.util.Collection;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksNavigationItemBuilder;
 
 public class RunTimePerspective extends Perspective {
 
     @Override
     public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
-        return new ArrayList<NavigationItemBuilder>();
+        Collection<NavigationItemBuilder> builders = new ArrayList<NavigationItemBuilder>();
+
+        builders.add(new TasksNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
+        builders.add(new ProcessesNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
+        builders.add(new ReportingNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
+        builders.add(new SettingsNavigationItemBuilder(clientFactory.getNavigationViewFactory(), clientFactory.getPlaceController()));
+
+        return builders;
     }
 }

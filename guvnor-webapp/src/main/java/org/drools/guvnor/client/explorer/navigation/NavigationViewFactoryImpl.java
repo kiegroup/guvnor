@@ -64,7 +64,7 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     }
 
     public NavigationPanelView getNavigationPanelView() {
-        if ( navigationPanelView == null ) {
+        if (navigationPanelView == null) {
             navigationPanelView = new NavigationPanelViewImpl();
         }
         return navigationPanelView;
@@ -75,8 +75,8 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     }
 
     public BrowseTreeView getBrowseTreeView() {
-        if ( browseTreeView == null ) {
-            browseTreeView = new BrowseTreeViewImpl( clientFactory );
+        if (browseTreeView == null) {
+            browseTreeView = new BrowseTreeViewImpl(clientFactory);
         }
         return browseTreeView;
     }
