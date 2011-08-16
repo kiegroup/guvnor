@@ -128,7 +128,7 @@ public class AssetEditorFactoryGenerator extends Generator {
         for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
             String assetEditorClassName = a.getEditorClass();
-            sourceWriter.println( "if(asset.getMetaData().getFormat().equals(\"" + format + "\")) {" );
+            sourceWriter.println( "if(asset.getFormat().equals(\"" + format + "\")) {" );
             sourceWriter.indent();
             sourceWriter.println( "return new " + assetEditorClassName + "(asset, viewer, clientFactory, eventBus);" );
             sourceWriter.outdent();
