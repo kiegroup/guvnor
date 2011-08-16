@@ -185,8 +185,8 @@ public class PackagesNewMenu {
 
 
         MenuBar rootMenuBar = new MenuBar(true);
-        rootMenuBar.setAutoOpen(true);
-        rootMenuBar.setAnimationEnabled(true);
+        rootMenuBar.setAutoOpen(false);
+        rootMenuBar.setAnimationEnabled(false);
         
         rootMenuBar.addItem(new MenuItem(constants.CreateNew(), createNewMenu));
 
