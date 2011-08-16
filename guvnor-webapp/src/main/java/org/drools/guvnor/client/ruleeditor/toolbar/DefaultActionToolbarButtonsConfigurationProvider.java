@@ -85,7 +85,7 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showViewSourceButton() {
-        return isMemberOfFormats( asset.metaData.format,
+        return isMemberOfFormats( asset.getFormat(),
                                   SOURCE_FORMATS );
     }
 
@@ -94,12 +94,12 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     private boolean isValidatorTypeAsset() {
-        return isMemberOfFormats( asset.metaData.format,
+        return isMemberOfFormats( asset.getFormat(),
                                   VALIDATING_FORMATS );
     }
 
     private boolean isVerificationTypeAsset() {
-        return isMemberOfFormats( asset.metaData.format,
+        return isMemberOfFormats( asset.getFormat(),
                                   VERIFY_FORMATS );
     }
 

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.packages.AbstractModuleEditor;
 import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.packages.SOAServiceEditor;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
@@ -134,19 +135,30 @@ public class ClientFactoryImpl
     
     //TODO: return ModuleEditor from configuration
     public AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand) {
-        //TODO: Add format property to PackageConfigData. 
-        /*        if(packageConfigData.format.equals("droolspackage")) {
-
-        } else if(packageConfigData.format.equals("soaservice")) {
-
-        } */
-        
-        return new PackageEditor(
+        if(packageConfigData.getFormat().equals("package")) {        
+            return new PackageEditor(
                 packageConfigData,
                 clientFactory,
                 eventBus,
                 historicalReadOnly, 
-                refreshCommand);    
+                refreshCommand);   
+        } else if(packageConfigData.format.equals("soaservice")) {
+            return new SOAServiceEditor(
+                packageConfigData,
+                clientFactory,
+                eventBus,
+                historicalReadOnly, 
+                refreshCommand);  
+        } else {
+            //default:
+            return new PackageEditor(
+                    packageConfigData,
+                    clientFactory,
+                    eventBus,
+                    historicalReadOnly, 
+                    refreshCommand);               
+        }
+ 
     }
 
 }

@@ -293,7 +293,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getMetaData().getPackageName() );
         assertEquals( AssetFormats.DRL,
-                      asset.getMetaData().getFormat() );
+                      asset.getFormat() );
         assertNotNull( asset.getDateCreated() );
 
         assertEquals( 1,

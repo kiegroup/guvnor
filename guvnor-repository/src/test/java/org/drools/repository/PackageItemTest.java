@@ -775,16 +775,31 @@ public class PackageItemTest extends RepositoryTestCase {
 
     @Test
     public void testGetFormatAndUpToDate() {
-            PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat", "woot");
-            assertNotNull(rulePackageItem1);
-            assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
-            assertFalse(rulePackageItem1.isBinaryUpToDate());
-            rulePackageItem1.updateBinaryUpToDate(true);
-            assertTrue(rulePackageItem1.isBinaryUpToDate());
-            rulePackageItem1.updateBinaryUpToDate(false);
-            assertFalse(rulePackageItem1.isBinaryUpToDate());
+        PackageItem rulePackageItem1 = getRepo().createPackage("testGetFormat",
+                "woot");
+        assertNotNull(rulePackageItem1);
+        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
+        assertFalse(rulePackageItem1.isBinaryUpToDate());
+        rulePackageItem1.updateBinaryUpToDate(true);
+        assertTrue(rulePackageItem1.isBinaryUpToDate());
+        rulePackageItem1.updateBinaryUpToDate(false);
+        assertFalse(rulePackageItem1.isBinaryUpToDate());
     }
 
+    @Test
+    public void testFormatOtherThanDroolsPackage() {
+        PackageItem rulePackageItem1 = getRepo().createPackage(
+                "testFormatOtherThanDroolsPackage", "woot");
+        assertNotNull(rulePackageItem1);
+        // PACKAGE_FORMAT is the default module format
+        assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
+        rulePackageItem1.updateFormat("SOAService");
+
+        PackageItem item = getRepo().loadPackage(
+                "testFormatOtherThanDroolsPackage");
+        assertEquals("SOAService", item.getFormat());
+    }
+    
     public static void updateHeader(String h, PackageItem pkg) {
         pkg.checkout();
         AssetItem as = null;

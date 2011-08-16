@@ -63,15 +63,15 @@ public class SOAServiceEditor extends AbstractModuleEditor {
                             Command refreshCommand) {
         this( data,
                 clientFactory,
-                false,
                 eventBus,
+                false,
                 refreshCommand );
     }
 
     public SOAServiceEditor(PackageConfigData data,
                          ClientFactory clientFactory,
-                         boolean historicalReadOnly,
                          EventBus eventBus,
+                         boolean historicalReadOnly,
                          Command refreshCommand) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;

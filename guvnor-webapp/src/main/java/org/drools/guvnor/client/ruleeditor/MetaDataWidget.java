@@ -120,7 +120,7 @@ public class MetaDataWidget extends Composite {
                     readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
             addAttribute( constants.FormatMetaData(),
                     new SmallLabel( "<b>"
-                            + ((RuleAsset) artifact).getMetaData().getFormat() + "</b>" ) );
+                            + artifact.getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
                     packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );

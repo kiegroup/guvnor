@@ -98,6 +98,7 @@ public class VerificationServiceImplementationTest {
 
         ruleAsset.uuid = "mockUUID";
         ruleAsset.metaData = getMetaData();
+        ruleAsset.setFormat( AssetFormats.DRL);
         ruleAsset.content = getRuleContentText(content);
         return ruleAsset;
     }
@@ -120,7 +121,6 @@ public class VerificationServiceImplementationTest {
     public MetaData getMetaData() {
         MetaData metaData = new MetaData();
         metaData.packageName = "mockPackage";
-        metaData.format = AssetFormats.DRL;
         return metaData;
     }
 

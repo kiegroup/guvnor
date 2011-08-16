@@ -489,7 +489,7 @@ public class RuleViewer extends GuvnorEditor {
      * editor though.
      */
     public void flushSuggestionCompletionCache() {
-        if ( AssetFormats.isPackageDependency( this.asset.getMetaData().getFormat() ) ) {
+        if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
             SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().getPackageName(),
                     new Command() {

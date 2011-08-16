@@ -117,7 +117,7 @@ public class RepositoryAssetOperations {
     protected BuilderResult validateAsset(RuleAsset asset) {
         try {
             ContentHandler handler = ContentManager
-                    .getHandler( asset.metaData.format );
+                    .getHandler( asset.getFormat() );
             AssetItem item = getRulesRepository().loadAssetByUUID( asset.uuid );
 
             handler.storeAssetContent( asset,
@@ -139,7 +139,7 @@ public class RepositoryAssetOperations {
     private BuilderResultLine createBuilderResultLine(RuleAsset asset) {
         BuilderResultLine builderResultLine = new BuilderResultLine();
         builderResultLine.setAssetName( asset.name );
-        builderResultLine.setAssetFormat( asset.metaData.format );
+        builderResultLine.setAssetFormat( asset.getFormat() );
         builderResultLine.setMessage( "Unable to validate this asset. (Check log for detailed messages)." );
         builderResultLine.setUuid( asset.uuid );
         return builderResultLine;
@@ -166,7 +166,7 @@ public class RepositoryAssetOperations {
         handler.storeAssetContent( asset,
                                    repoAsset );
 
-        if ( !(asset.getMetaData().getFormat().equals( AssetFormats.TEST_SCENARIO )) || asset.getMetaData().getFormat().equals( AssetFormats.ENUMERATION ) ) {
+        if ( !asset.getFormat().equals( AssetFormats.TEST_SCENARIO ) || asset.getFormat().equals( AssetFormats.ENUMERATION ) ) {
             PackageItem pkg = repoAsset.getPackage();
             pkg.updateBinaryUpToDate( false );
             RuleBaseCache.getInstance().remove( pkg.getUUID() );
@@ -453,7 +453,7 @@ public class RepositoryAssetOperations {
 
     // TODO: Very hard to unit test -> needs refactoring
     protected String buildAssetSource(RuleAsset asset) throws SerializationException {
-        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
+        ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
 
         StringBuilder stringBuilder = new StringBuilder();
         if ( handler.isRuleAsset() ) {
@@ -609,7 +609,7 @@ public class RepositoryAssetOperations {
         asset.setVersionNumber( item.getVersionNumber() );
 
         asset.setMetaData( populateMetaData( item ) );
-        ContentHandler handler = ContentManager.getHandler( asset.getMetaData().getFormat() );
+        ContentHandler handler = ContentManager.getHandler( asset.getFormat() );
         handler.retrieveAssetContent( asset,
                                       item );
 

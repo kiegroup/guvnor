@@ -130,7 +130,7 @@ public abstract class AssetAttachmentFileWidget extends Composite
             public void onSubmitComplete( SubmitCompleteEvent event ) {
                 LoadingPopup.close();
 
-                if ( asset.getMetaData().getFormat().equals( AssetFormats.MODEL ) ) {
+                if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
                     eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getUuid() ) );
                 }
 

@@ -295,6 +295,9 @@ public class RepositoryPackageOperations {
         item.updateDescription( data.getDescription() );
         item.archiveItem( data.isArchived() );
         item.updateBinaryUpToDate( false );
+        if(!data.getFormat().equals("")) {
+            item.updateFormat(data.getFormat());
+        }
         RuleBaseCache.getInstance().remove( data.getUuid() );
         item.checkin( data.getDescription() );
 

@@ -65,8 +65,8 @@ public class WorkingSetEditor extends Composite
 	}
 	
     public WorkingSetEditor(RuleAsset asset) {
-        if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().getFormat() ) ) {
-            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().getFormat() );
+        if ( !AssetFormats.WORKING_SET.equals( asset.getFormat() ) ) {
+            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getFormat() );
         }
         workingSet = asset;
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.getContent();
