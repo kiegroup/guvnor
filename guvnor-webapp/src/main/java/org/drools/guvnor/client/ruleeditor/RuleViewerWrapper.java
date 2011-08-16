@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -47,10 +48,13 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     VerticalPanel                             layout               = new VerticalPanel();
     private final ClientFactory               clientFactory;
+    private final EventBus eventBus;
 
     public RuleViewerWrapper( ClientFactory clientFactory,
+                              EventBus eventBus,
                               RuleAsset asset ) {
         this( clientFactory,
+                eventBus,
                 asset,
                 false,
                 null,
@@ -58,22 +62,24 @@ public class RuleViewerWrapper extends GuvnorEditor {
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
+                              EventBus eventBus,
                               RuleAsset asset,
                               boolean isHistoricalReadOnly,
                               ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                               RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
         this.ruleViewerSettings = ruleViewerSettings;
 
-        clientFactory.getEventBus().addHandler(
+        eventBus.addHandler(
                 RefreshAssetEditorEvent.TYPE,
                 new RefreshAssetEditorEvent.Handler() {
-                    public void onRefreshAsset( RefreshAssetEditorEvent refreshAssetEditorEvent ) {
+                    public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
                         refresh();
                     }
-                } );
+                });
 
         initWidget( layout );
         render();
@@ -83,12 +89,14 @@ public class RuleViewerWrapper extends GuvnorEditor {
     private void render() {
         this.artifactEditor = new ArtifactEditor(
                 clientFactory,
+                eventBus,
                 asset,
                 this.isHistoricalReadOnly );
 
         this.ruleViewer = new RuleViewer(
                 asset,
                 clientFactory,
+                eventBus,
                 this.isHistoricalReadOnly,
                 actionToolbarButtonsConfigurationProvider,
                 ruleViewerSettings );

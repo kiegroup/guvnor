@@ -18,15 +18,26 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Command;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl;
+import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.packages.SOAServiceEditor;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
+import org.drools.guvnor.client.rpc.ConfigurationService;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityViewImpl;
 
@@ -34,74 +45,59 @@ public class ClientFactoryImpl
         implements
         ClientFactory {
 
-    private final EventBus eventBus = new SimpleEventBus();
-    private final PlaceController placeController = new PlaceController( eventBus );
+    private final PlaceController placeController;
     private PerspectivesPanelView perspectivesPanelView;
-    private NavigationViewFactoryImpl authorNavigationViewFactory;
+    private NavigationViewFactoryImpl navigationViewFactory;
     private AssetEditorFactory assetEditorFactory;
     private PlaceHistoryHandler placeHistoryHandler;
     private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
+    private final EventBus eventBus;
+
+    public ClientFactoryImpl(EventBus eventBus) {
+        this.eventBus = eventBus;
+        this.placeController = new PlaceController(eventBus);
+    }
 
     public PlaceController getPlaceController() {
         return placeController;
     }
 
-    public AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory) {
-        return new AuthorPerspectiveViewImpl( this,
-                navigationPanelFactory );
-    }
-
-    public RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory) {
-        return null; //TODO: Generated code -Rikkola-
-    }
-
-    public EventBus getEventBus() {
-        return eventBus;
-    }
-
     public PerspectivesPanelView getPerspectivesPanelView() {
-        if ( perspectivesPanelView == null ) {
-            perspectivesPanelView = new PerspectivesPanelViewImpl(
-                    getAuthorPerspectiveView( new NavigationPanelFactory( getNavigationViewFactory() ) ),
-                    new ExplorerViewCenterPanel( this ),
-                    hideTitle() );
+        if (perspectivesPanelView == null) {
+            perspectivesPanelView = new PerspectivesPanelViewImpl(this, eventBus);
         }
         return perspectivesPanelView;
     }
 
-    public IFramePerspectiveView getIFramePerspectiveView() {
-        return new IFramePerspectiveViewImpl();
-    }
-
     public NavigationViewFactory getNavigationViewFactory() {
-        if ( authorNavigationViewFactory == null ) {
-            authorNavigationViewFactory = new NavigationViewFactoryImpl( this );
+        if (navigationViewFactory == null) {
+            navigationViewFactory = new NavigationViewFactoryImpl(this, eventBus);
         }
-        return authorNavigationViewFactory;
+        return navigationViewFactory;
     }
 
     public ConfigurationServiceAsync getConfigurationService() {
-        return GWT.create( ConfigurationService.class );
+        return GWT.create(ConfigurationService.class);
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager( this );
+        return new MultiActivityManager(this, eventBus);
     }
 
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorActivityMapper( this );
+        return new GuvnorActivityMapper(this, eventBus);
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
-        if ( placeHistoryHandler == null ) {
-            placeHistoryHandler = new PlaceHistoryHandler( getPlaceHistoryMapper() );
+        if (placeHistoryHandler == null) {
+            placeHistoryHandler = new PlaceHistoryHandler(getPlaceHistoryMapper());
         }
         return placeHistoryHandler;
     }
 
     public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
-        if ( guvnorPlaceHistoryMapper == null ) {
-            guvnorPlaceHistoryMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
+        if (guvnorPlaceHistoryMapper == null) {
+            guvnorPlaceHistoryMapper = GWT.create(GuvnorPlaceHistoryMapper.class);
         }
         return guvnorPlaceHistoryMapper;
     }
@@ -119,8 +115,8 @@ public class ClientFactoryImpl
     }
 
     public AssetEditorFactory getAssetEditorFactory() {
-        if ( assetEditorFactory == null ) {
-            assetEditorFactory = GWT.create( AssetEditorFactory.class );
+        if (assetEditorFactory == null) {
+            assetEditorFactory = GWT.create(AssetEditorFactory.class);
         }
         return assetEditorFactory;
     }
@@ -136,14 +132,33 @@ public class ClientFactoryImpl
     public AssetServiceAsync getAssetService() {
         return RepositoryServiceFactory.getAssetService();
     }
-
-    private boolean hideTitle() {
-        String parameter = Window.Location.getParameter( "nochrome" );
-
-        if ( parameter == null ) {
-            return true;
+    
+    //TODO: return ModuleEditor from configuration
+    public AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand) {
+        if(packageConfigData.getFormat().equals("package")) {        
+            return new PackageEditor(
+                packageConfigData,
+                clientFactory,
+                eventBus,
+                historicalReadOnly, 
+                refreshCommand);   
+        } else if(packageConfigData.format.equals("soaservice")) {
+            return new SOAServiceEditor(
+                packageConfigData,
+                clientFactory,
+                eventBus,
+                historicalReadOnly, 
+                refreshCommand);  
         } else {
-            return parameter.equals( "true" );
+            //default:
+            return new PackageEditor(
+                    packageConfigData,
+                    clientFactory,
+                    eventBus,
+                    historicalReadOnly, 
+                    refreshCommand);               
         }
+ 
     }
+
 }

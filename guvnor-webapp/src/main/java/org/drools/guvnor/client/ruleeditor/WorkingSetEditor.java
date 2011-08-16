@@ -36,6 +36,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
@@ -58,13 +59,14 @@ public class WorkingSetEditor extends Composite
     
 	public WorkingSetEditor(RuleAsset asset,
                             RuleViewer viewer,
-                        ClientFactory clientFactory) {
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
 		this(asset);
 	}
 	
     public WorkingSetEditor(RuleAsset asset) {
-        if ( !AssetFormats.WORKING_SET.equals( asset.getMetaData().getFormat() ) ) {
-            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getMetaData().getFormat() );
+        if ( !AssetFormats.WORKING_SET.equals( asset.getFormat() ) ) {
+            throw new IllegalArgumentException( "asset must a be a workingset not a: " + asset.getFormat() );
         }
         workingSet = asset;
         WorkingSetConfigData wsData = (WorkingSetConfigData) workingSet.getContent();

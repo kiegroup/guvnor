@@ -25,13 +25,5 @@ import java.util.Map;
 
 public interface ConfigurationServiceAsync {
 
-    void save(IFramePerspectiveConfiguration newConfiguration, AsyncCallback<String> async);
-
-    void load(String uuid, AsyncCallback<IFramePerspectiveConfiguration> async) throws SerializationException;
-
-    void remove(String uuid, AsyncCallback<Void> async);
-
-    void loadPerspectiveConfigurations(AsyncCallback<Collection<IFramePerspectiveConfiguration>> async);
-
     void loadPreferences(AsyncCallback<Map<String, String>> preferences);
 }

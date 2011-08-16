@@ -21,6 +21,7 @@ import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.FactTypeBrowser.ClickEvent;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -32,7 +33,8 @@ public class DrlEditor extends Composite
 
     public DrlEditor(RuleAsset a,
                      RuleViewer v,
-                        ClientFactory clientFactory) {
+                     ClientFactory clientFactory,
+                     EventBus eventBus) {
         this( a );
     }
 

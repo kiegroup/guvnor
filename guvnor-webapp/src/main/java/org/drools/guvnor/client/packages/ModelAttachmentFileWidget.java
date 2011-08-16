@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.packages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -44,10 +45,12 @@ public class ModelAttachmentFileWidget extends AssetAttachmentFileWidget
 
     public ModelAttachmentFileWidget( RuleAsset asset,
                                       RuleViewer viewer,
-                                      ClientFactory clientFactory ) {
+                                      ClientFactory clientFactory,
+                                      EventBus eventBus ) {
         super( asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus );
         this.packageName = asset.getMetaData().getPackageName();
     }
 

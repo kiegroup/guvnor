@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -52,13 +53,16 @@ public class RuleFlowWrapper extends Composite
     private RuleFlowViewer ruleFlowViewer;
     private DecoratedDisclosurePanel parameterPanel;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public RuleFlowWrapper( final RuleAsset asset,
                             final RuleViewer viewer,
-                            ClientFactory clientFactory ) {
+                            ClientFactory clientFactory,
+                            EventBus eventBus) {
         this.viewer = viewer;
         this.asset = asset;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         initWidgets();
     }
 
@@ -67,7 +71,8 @@ public class RuleFlowWrapper extends Composite
         RuleFlowUploadWidget uploadWidget = new RuleFlowUploadWidget(
                 asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus );
 
         VerticalPanel panel = new VerticalPanel();
         panel.add( uploadWidget );

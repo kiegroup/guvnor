@@ -16,24 +16,28 @@
 
 package org.drools.guvnor.client;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.*;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-
-import java.util.Collection;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.FindPlace;
+import org.drools.guvnor.client.explorer.MultiActivityManager;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanel;
 
 public class AppController {
 
     private final ClientFactory clientFactory;
 
     private final PerspectivesPanel perspectivesPanel;
+    private final EventBus eventBus;
 
-    public AppController( ClientFactory clientFactory ) {
+    public AppController(
+            ClientFactory clientFactory,
+            EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
 
         perspectivesPanel = createPerspectivesPanel();
-        loadPerspectives();
         setUpActivityMapper();
         setUpHistoryMapper();
     }
@@ -42,41 +46,26 @@ public class AppController {
         PlaceHistoryHandler historyHandler = clientFactory.getPlaceHistoryHandler();
         historyHandler.register(
                 clientFactory.getPlaceController(),
-                clientFactory.getEventBus(),
-                new FindPlace() );
+                eventBus,
+                new FindPlace());
 
         historyHandler.handleCurrentHistory();
     }
 
     private PerspectivesPanel createPerspectivesPanel() {
-        return new PerspectivesPanel(
-                clientFactory.getPerspectivesPanelView(),
-                clientFactory.getPlaceController() );
+        return new PerspectivesPanel(clientFactory, eventBus);
     }
 
     private void setUpActivityMapper() {
         MultiActivityManager activityManager = clientFactory.getActivityManager();
-        activityManager.setTabbedPanel( perspectivesPanel.getTabbedPanel() );
+        activityManager.setTabbedPanel(perspectivesPanel.getTabbedPanel());
     }
 
     public IsWidget getMainPanel() {
         return perspectivesPanel.getView();
     }
 
-    private void loadPerspectives() {
-        ConfigurationServiceAsync configurationServiceAsync = clientFactory.getConfigurationService();
-
-        PerspectiveLoader perspectiveLoader = new PerspectiveLoader( configurationServiceAsync );
-        perspectiveLoader.loadPerspectives( new LoadPerspectives() {
-            public void loadPerspectives( Collection<Perspective> perspectives ) {
-                for (Perspective perspective : perspectives) {
-                    perspectivesPanel.addPerspective( perspective );
-                }
-            }
-        } );
-    }
-
-    public void setUserName( String userName ) {
-        perspectivesPanel.setUserName( userName );
+    public void setUserName(String userName) {
+        perspectivesPanel.setUserName(userName);
     }
 }

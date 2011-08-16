@@ -19,6 +19,7 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -45,11 +46,13 @@ public class NewPackageWizard extends FormStylePopup {
     private final FormStyleLayout importLayout = new FormStyleLayout();
     private final FormStyleLayout newPackageLayout = new FormStyleLayout();
     private ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public NewPackageWizard( ClientFactory clientFactory ) {
+    public NewPackageWizard( ClientFactory clientFactory, EventBus eventBus ) {
         super( images.newexWiz(),
                 constants.CreateANewPackage() );
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         nameBox = new TextBox();
         descBox = new TextBox();
 
@@ -144,7 +147,7 @@ public class NewPackageWizard extends FormStylePopup {
                     public void onSuccess( String uuid ) {
                         RulePackageSelector.currentlySelectedPackage = name;
                         LoadingPopup.close();
-                        clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
+                        eventBus.fireEvent( new RefreshModuleListEvent() );
                     }
                 } );
     }
@@ -205,7 +208,7 @@ public class NewPackageWizard extends FormStylePopup {
                     LoadingPopup.close();
                     Window.alert( constants.PackageWasImportedSuccessfully() );
 
-                    clientFactory.getEventBus().fireEvent( new RefreshModuleListEvent() );
+                    eventBus.fireEvent( new RefreshModuleListEvent() );
                     parent.hide();
                     if ( packageNamePopup != null ) {
                         packageNamePopup.hide();

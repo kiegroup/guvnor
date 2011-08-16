@@ -20,11 +20,12 @@ import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.packages.ClosePlaceEvent;
-import org.drools.guvnor.client.packages.PackageEditorWrapper;
+import org.drools.guvnor.client.packages.ModuleEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabbedPanel;
 
@@ -42,12 +43,14 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
     private PanelMap openedTabs = new PanelMap();
 
-    private Map<String, PackageEditorWrapper> openedPackageEditors = new HashMap<String, PackageEditorWrapper>();
+    private Map<String, ModuleEditorWrapper> openedModuleEditors = new HashMap<String, ModuleEditorWrapper>();
 
     private ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public ExplorerViewCenterPanel(final ClientFactory clientFactory) {
+    public ExplorerViewCenterPanel(final ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         tabLayoutPanel = new ScrollTabLayoutPanel();
 
         addBeforeSelectionHandler();
@@ -97,9 +100,9 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
                 ) );
         tabLayoutPanel.selectTab( localTP );
 
-        if ( widget instanceof PackageEditorWrapper ) {
-            this.getOpenedPackageEditors().put( tabname,
-                    (PackageEditorWrapper) widget );
+        if ( widget instanceof ModuleEditorWrapper ) {
+            this.getOpenedModuleEditors().put( tabname,
+                    (ModuleEditorWrapper) widget );
         }
 
         openedTabs.put( place,
@@ -112,7 +115,7 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
 
         closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> event) {
-                clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( place ) );
+                eventBus.fireEvent( new ClosePlaceEvent( place ) );
             }
 
         } );
@@ -176,8 +179,8 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
         return tabLayoutPanel.getWidgetCount() == 1;
     }
 
-    public Map<String, PackageEditorWrapper> getOpenedPackageEditors() {
-        return openedPackageEditors;
+    public Map<String, ModuleEditorWrapper> getOpenedModuleEditors() {
+        return openedModuleEditors;
     }
 
     private class PanelMap {

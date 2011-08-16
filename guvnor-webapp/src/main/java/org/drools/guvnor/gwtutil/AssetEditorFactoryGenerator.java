@@ -23,6 +23,7 @@ import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
@@ -73,6 +74,7 @@ public class AssetEditorFactoryGenerator extends Generator {
         composerFactory.addImport( Widget.class.getCanonicalName() );
         composerFactory.addImport( GWT.class.getCanonicalName() );
         composerFactory.addImport( ClientFactory.class.getCanonicalName() );
+        composerFactory.addImport( EventBus.class.getCanonicalName() );
         composerFactory.addImplementedInterface( objectType
                 .getQualifiedSourceName() );
 
@@ -120,19 +122,19 @@ public class AssetEditorFactoryGenerator extends Generator {
     }
 
     private void generateGetAssetEditorMethod( SourceWriter sourceWriter, List<AssetEditorConfiguration> registeredEditors ) {
-        sourceWriter.println( "public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory) {" );
+        sourceWriter.println( "public Widget getAssetEditor(RuleAsset asset, RuleViewer viewer, ClientFactory clientFactory, EventBus eventBus) {" );
         sourceWriter.indent();
 
         for (AssetEditorConfiguration a : registeredEditors) {
             String format = a.getFormat();
             String assetEditorClassName = a.getEditorClass();
-            sourceWriter.println( "if(asset.getMetaData().getFormat().equals(\"" + format + "\")) {" );
+            sourceWriter.println( "if(asset.getFormat().equals(\"" + format + "\")) {" );
             sourceWriter.indent();
-            sourceWriter.println( "return new " + assetEditorClassName + "(asset, viewer, clientFactory);" );
+            sourceWriter.println( "return new " + assetEditorClassName + "(asset, viewer, clientFactory, eventBus);" );
             sourceWriter.outdent();
             sourceWriter.println( "}" );
         }
-        sourceWriter.println( "return new DefaultContentUploadEditor(asset, viewer, clientFactory);" );
+        sourceWriter.println( "return new DefaultContentUploadEditor(asset, viewer, clientFactory, eventBus);" );
         sourceWriter.outdent();
         sourceWriter.println( "}" );
     }

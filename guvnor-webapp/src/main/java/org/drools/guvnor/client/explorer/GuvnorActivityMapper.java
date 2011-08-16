@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
@@ -37,10 +38,12 @@ public class GuvnorActivityMapper
         implements
         ActivityMapper {
     private ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public GuvnorActivityMapper(ClientFactory clientFactory) {
+    public GuvnorActivityMapper(ClientFactory clientFactory, EventBus eventBus) {
         super();
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     public Activity getActivity(Place place) {
@@ -74,7 +77,8 @@ public class GuvnorActivityMapper
             return new SnapshotActivity(
                     ((SnapshotPlace) place).getModuleName(),
                     ((SnapshotPlace) place).getSnapshotName(),
-                    clientFactory );
+                    clientFactory,
+                    eventBus);
         } else if ( place instanceof SnapshotAssetListPlace ) {
             return new SnapshotAssetListActivity(
                     (SnapshotAssetListPlace) place,

@@ -87,6 +87,7 @@ public class BRLRuleAssetProvider
         asset.setUuid("mock-"+UUID.randomUUID().toString());
         asset.setContent(ruleModel);
         asset.setName(ruleModel.name);
+        asset.setFormat(AssetFormats.BUSINESS_RULE);
         asset.setMetaData(createMetaData());
 
         return asset;
@@ -96,7 +97,6 @@ public class BRLRuleAssetProvider
         MetaData metaData = new MetaData();
 
         metaData.setPackageName(packageName);
-        metaData.setFormat(AssetFormats.BUSINESS_RULE);
 
         metaData.setPackageUUID("mock");
 

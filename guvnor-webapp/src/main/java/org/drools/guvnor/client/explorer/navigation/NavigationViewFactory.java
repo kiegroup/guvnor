@@ -16,15 +16,30 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuView;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
-import org.drools.guvnor.client.explorer.navigation.modules.*;
+import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
+import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenuView;
+import org.drools.guvnor.client.explorer.navigation.modules.SOAServicesNewAssetMenuView;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderView;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeView;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 
@@ -42,17 +57,21 @@ public interface NavigationViewFactory {
 
     QATreeView getQATreeView();
 
-    KnowledgeModulesTreeView getKnowledgeModulesTreeView();
+    ModulesTreeView getModulesTreeView();
 
     RepositoryServiceAsync getRepositoryService();
 
     CategoryServiceAsync getCategoryService();
 
-    IsWidget getKnowledgeModulesHeaderView();
+    IsWidget getModulesHeaderView(String perspectiveType);
 
-    KnowledgeModulesTreeItemView getKnowledgeModulesTreeItemView();
+    SafeHtml getModulesTreeRootNodeHeader(String perspectiveType);
 
-    ModulesNewAssetMenuView getModulesNewAssetMenuView();
+    ModulesTreeItemView getModulesTreeItemView();
+
+    PackagesNewAssetMenuView getPackagesNewAssetMenuView();
+
+    SOAServicesNewAssetMenuView getServicesNewAssetMenuView();
 
     GlobalAreaTreeItemView getGlobalAreaTreeItemView();
 
@@ -61,4 +80,22 @@ public interface NavigationViewFactory {
     RulesNewMenuView getRulesNewMenuView();
 
     MultiAssetView getMultiAssetView();
+
+    Widget getModulesNewAssetMenu(String perspectiveType);
+
+    SettingsHeaderView getSettingsHeaderView();
+
+    SettingsTreeView getSettingsTreeView();
+
+    ProcessesHeaderView getProcessesHeaderView();
+
+    ProcessesTreeView getProcessesTreeView();
+
+    ReportingHeaderView getReportingHeaderView();
+
+    ReportingTreeView getReportingTreeView();
+
+    TasksHeaderView getTasksHeaderView();
+
+    TasksTreeView getTasksTreeView();
 }

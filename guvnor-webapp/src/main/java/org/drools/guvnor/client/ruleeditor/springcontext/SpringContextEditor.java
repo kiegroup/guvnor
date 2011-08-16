@@ -29,6 +29,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -51,8 +52,9 @@ public class SpringContextEditor extends DirtyableComposite
     final private RuleAsset       asset;
 
     public SpringContextEditor(RuleAsset a,
-                                    RuleViewer v,
-                        ClientFactory clientFactory) {
+                               RuleViewer v,
+                        ClientFactory clientFactory,
+                        EventBus eventBus) {
         this( a );
     }
 

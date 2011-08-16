@@ -788,7 +788,27 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         assertFalse( res.hasErrors );
     }
+    
+    @Test
+    public void testUpdateModuleFormat() throws Exception {
+        RepositoryService impl = getServiceImplementation();
+        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        String uuid = repositoryPackageService.createPackage( "testUpdateModuleFormat",
+                                                              "a desc" );
+        PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
+        assertEquals( "a desc",
+                data.getDescription() );
+        assertEquals( "package",
+                data.getFormat() );
+          
+        data.setFormat("SOAService");
+        repositoryPackageService.savePackage(data);
 
+        data = repositoryPackageService.loadPackageConfig( uuid );
+        assertEquals( "SOAService",
+                data.getFormat() );
+    }
+    
     @Test
     public void testRemovePackage() throws Exception {
         ServiceImplementation impl = getServiceImplementation();
@@ -1213,7 +1233,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         // the binary test below "testLoadAndExecBinary"
         boolean saveBinPackage = false;
         if ( saveBinPackage ) {
-            FileOutputStream out = new FileOutputStream( "RepoBinPackage.pkg" );
+            FileOutputStream out = new FileOutputStream( "guvnor-webapp/src/test/resources/RepoBinPackage.pkg" );
             out.write( binPackage );
             out.flush();
             out.close();

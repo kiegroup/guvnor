@@ -2,6 +2,7 @@ package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -36,9 +37,11 @@ public class StandaloneEditorManager {
     private MultiViewEditor editor;
     private StandaloneEditorServiceAsync standaloneEditorService = GWT.create( StandaloneEditorService.class );
     private RuleAsset[] assets;
+    private final EventBus eventBus;
 
-    public StandaloneEditorManager( ClientFactory clientFactory ) {
+    public StandaloneEditorManager( ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     public Panel getBaseLayout() {
@@ -131,6 +134,7 @@ public class StandaloneEditorManager {
                         editor = new MultiViewEditor(
                                 parameters.getAssetsToBeEdited(),
                                 clientFactory,
+                                eventBus,
                                 new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
                                 editorMenuBarCreator );
 

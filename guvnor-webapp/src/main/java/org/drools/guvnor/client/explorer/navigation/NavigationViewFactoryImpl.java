@@ -17,43 +17,86 @@
 package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.StackItemHeader;
 import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.MultiAssetViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
-import org.drools.guvnor.client.explorer.navigation.browse.*;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
+import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuView;
+import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuViewImpl;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
-import org.drools.guvnor.client.explorer.navigation.modules.*;
+import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemViewImpl;
+import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemViewImpl;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemViewImpl;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
+import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenu;
+import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenuView;
+import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenuViewImpl;
+import org.drools.guvnor.client.explorer.navigation.modules.SOAServicesNewAssetMenu;
+import org.drools.guvnor.client.explorer.navigation.modules.SOAServicesNewAssetMenuView;
+import org.drools.guvnor.client.explorer.navigation.modules.SOAServicesNewAssetMenuViewImpl;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeViewImpl;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderView;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeView;
+import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeViewImpl;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderViewImpl;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
+import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeViewImpl;
+import org.drools.guvnor.client.explorer.perspectives.AuthorPerspective;
+import org.drools.guvnor.client.explorer.perspectives.SOAPerspective;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.util.Util;
 
 public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
-
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     private NavigationPanelView navigationPanelView;
-    private KnowledgeModulesTreeViewImpl knowledgeModulesTreeView;
+    private ModulesTreeViewImpl modulesTreeView;
     private BrowseTreeViewImpl browseTreeView;
-    private KnowledgeModulesTreeItemViewImpl knowledgeModulesTreeItemView;
-    private ModulesNewAssetMenuViewImpl modulesNewAssetMenuView;
+    private ModulesTreeItemViewImpl modulesTreeItemView;
+    private PackagesNewAssetMenuViewImpl modulesNewAssetMenuView;
+    private SOAServicesNewAssetMenuViewImpl servicesNewAssetMenuView;
 
-    public NavigationViewFactoryImpl(ClientFactory clientFactory) {
+    public NavigationViewFactoryImpl(ClientFactory clientFactory, EventBus eventBus) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     public NavigationPanelView getNavigationPanelView() {
-        if ( navigationPanelView == null ) {
+        if (navigationPanelView == null) {
             navigationPanelView = new NavigationPanelViewImpl();
         }
         return navigationPanelView;
@@ -64,8 +107,8 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     }
 
     public BrowseTreeView getBrowseTreeView() {
-        if ( browseTreeView == null ) {
-            browseTreeView = new BrowseTreeViewImpl( clientFactory );
+        if (browseTreeView == null) {
+            browseTreeView = new BrowseTreeViewImpl(clientFactory);
         }
         return browseTreeView;
     }
@@ -82,11 +125,11 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
         return null;  //TODO: Generated code -Rikkola-
     }
 
-    public KnowledgeModulesTreeView getKnowledgeModulesTreeView() {
-        if ( knowledgeModulesTreeView == null ) {
-            knowledgeModulesTreeView = new KnowledgeModulesTreeViewImpl();
+    public ModulesTreeView getModulesTreeView() {
+        if (modulesTreeView == null) {
+            modulesTreeView = new ModulesTreeViewImpl();
         }
-        return knowledgeModulesTreeView;
+        return modulesTreeView;
     }
 
     public RepositoryServiceAsync getRepositoryService() {
@@ -97,26 +140,69 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
         return RepositoryServiceFactory.getCategoryService();
     }
 
-    public IsWidget getKnowledgeModulesHeaderView() {
+    //TODO: get header from configuration instead of hard coding. - JLIU
+    public IsWidget getModulesHeaderView(String perspectiveType) {
+        String title;
+        ImageResource image;
+        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
+            title = "Services";
+            image = images.packages();
+        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
+            title = constants.KnowledgeBases();
+            image = images.packages();
+        } else {
+            //Default
+            title = constants.KnowledgeBases();
+            image = images.packages();
+        }
+
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader( view );
-        header.setName( constants.KnowledgeBases() );
-        header.setImageResource( images.packages() );
+        StackItemHeader header = new StackItemHeader(view);
+        header.setName(title);
+        header.setImageResource(image);
         return view;
     }
 
-    public KnowledgeModulesTreeItemView getKnowledgeModulesTreeItemView() {
-        if ( knowledgeModulesTreeItemView == null ) {
-            knowledgeModulesTreeItemView = new KnowledgeModulesTreeItemViewImpl();
+    //TODO: get header from configuration instead of hard coding. - JLIU
+    public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {
+        String title;
+        ImageResource image;
+        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
+            title = "Services";
+            image = images.packages();
+        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
+            title = constants.Packages();
+            image = images.chartOrganisation();
+        } else {
+            //Default
+            title = constants.Packages();
+            image = images.chartOrganisation();
         }
-        return knowledgeModulesTreeItemView;
+
+        return Util.getHeader(image, title);
     }
 
-    public ModulesNewAssetMenuView getModulesNewAssetMenuView() {
-        if ( modulesNewAssetMenuView == null ) {
-            modulesNewAssetMenuView = new ModulesNewAssetMenuViewImpl();
+    public ModulesTreeItemView getModulesTreeItemView() {
+        if (modulesTreeItemView == null) {
+            modulesTreeItemView = new ModulesTreeItemViewImpl();
+        }
+        return modulesTreeItemView;
+    }
+
+    //TODO: auto generate from configuration - JLIU
+    public PackagesNewAssetMenuView getPackagesNewAssetMenuView() {
+        if (modulesNewAssetMenuView == null) {
+            modulesNewAssetMenuView = new PackagesNewAssetMenuViewImpl();
         }
         return modulesNewAssetMenuView;
+    }
+
+    //TODO: auto generate from configuration - JLIU
+    public SOAServicesNewAssetMenuView getServicesNewAssetMenuView() {
+        if (servicesNewAssetMenuView == null) {
+            servicesNewAssetMenuView = new SOAServicesNewAssetMenuViewImpl();
+        }
+        return servicesNewAssetMenuView;
     }
 
     public GlobalAreaTreeItemView getGlobalAreaTreeItemView() {
@@ -133,5 +219,49 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public MultiAssetView getMultiAssetView() {
         return new MultiAssetViewImpl();
+    }
+
+    //TODO: get from configuration instead of hard coding. - JLIU
+    public Widget getModulesNewAssetMenu(String perspectiveType) {
+        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
+            return (new SOAServicesNewAssetMenu(clientFactory, eventBus)).asWidget();
+        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
+            return (new PackagesNewAssetMenu(clientFactory, eventBus)).asWidget();
+        } else {
+            //Default
+            return (new PackagesNewAssetMenu(clientFactory, eventBus)).asWidget();
+        }
+    }
+
+    public SettingsHeaderView getSettingsHeaderView() {
+        return new SettingsHeaderViewImpl();
+    }
+
+    public SettingsTreeView getSettingsTreeView() {
+        return new SettingsTreeViewImpl();
+    }
+
+    public ProcessesHeaderView getProcessesHeaderView() {
+        return new ProcessesHeaderViewImpl();
+    }
+
+    public ProcessesTreeView getProcessesTreeView() {
+        return new ProcessesTreeViewImpl();
+    }
+
+    public ReportingHeaderView getReportingHeaderView() {
+        return new ReportingHeaderViewImpl();
+    }
+
+    public ReportingTreeView getReportingTreeView() {
+        return new ReportingTreeViewImpl();
+    }
+
+    public TasksHeaderView getTasksHeaderView() {
+        return new TasksHeaderViewImpl();
+    }
+
+    public TasksTreeView getTasksTreeView() {
+        return new TasksTreeViewImpl();
     }
 }

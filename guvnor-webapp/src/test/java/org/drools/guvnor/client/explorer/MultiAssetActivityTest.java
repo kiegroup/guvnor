@@ -51,18 +51,18 @@ public class MultiAssetActivityTest {
     public void testStart() throws Exception {
 
         AcceptTabItem acceptTabItem = mock( AcceptTabItem.class );
-        startActivity( acceptTabItem );
+        EventBus eventBus = mock( EventBus.class );       
+        startActivity( acceptTabItem, eventBus );
 
         verify( view ).init(
                 place.getMultiViewRows().toArray( new MultiViewRow[place.getMultiViewRows().size()] ),
-                clientFactory );
+                clientFactory,
+                eventBus);
 
         verify( acceptTabItem ).addTab( "[ firstName, secondName, thirdName ]", view );
     }
 
-    private void startActivity(AcceptTabItem acceptTabItem) {
-        EventBus eventBus = mock( EventBus.class );
-
+    private void startActivity(AcceptTabItem acceptTabItem, EventBus eventBus) {
         activity.start( acceptTabItem, eventBus );
     }
 

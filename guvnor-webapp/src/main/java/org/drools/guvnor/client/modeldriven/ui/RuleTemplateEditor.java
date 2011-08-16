@@ -19,6 +19,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -51,7 +52,8 @@ public class RuleTemplateEditor extends DirtyableComposite
 
     public RuleTemplateEditor( RuleAsset a,
                                RuleViewer v,
-                               ClientFactory clientFactory ) {
+                               ClientFactory clientFactory,
+                               EventBus eventBus) {
         this( a );
     }
 

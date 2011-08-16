@@ -20,4 +20,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface NavigationPanelView extends IsWidget {
     void add(IsWidget header, IsWidget widget);
+
+    void clear();
 }
