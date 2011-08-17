@@ -93,7 +93,7 @@ public class NewSOAServiceWizard extends FormStylePopup {
                                       final String descr ) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
         RepositoryServiceFactory.getPackageService().createPackage( name,
-                descr, "SOAService",
+                descr, "soaservice",
                 new GenericCallback<java.lang.String>() {
                     public void onSuccess( String uuid ) {
                         RulePackageSelector.currentlySelectedPackage = name;

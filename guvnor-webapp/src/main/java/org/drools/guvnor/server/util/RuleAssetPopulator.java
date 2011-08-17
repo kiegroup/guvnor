@@ -30,6 +30,7 @@ public class RuleAssetPopulator {
         ruleAsset.setDateCreated( assetItem.getCreatedDate().getTime() );
         ruleAsset.setCheckinComment( assetItem.getCheckinComment() );
         ruleAsset.setVersionNumber( assetItem.getVersionNumber() );
+        ruleAsset.setFormat(assetItem.getFormat());
         return ruleAsset;
     }
 
