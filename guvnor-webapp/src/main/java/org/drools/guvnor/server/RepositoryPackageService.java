@@ -210,7 +210,7 @@ public class RepositoryPackageService
     public String createPackage(String name,
                                 String description,
                                 String format) throws RulesRepositoryException {
-        return createPackage( name,
+        return repositoryPackageOperations.createPackage( name,
                 description,
                 format);
     }
