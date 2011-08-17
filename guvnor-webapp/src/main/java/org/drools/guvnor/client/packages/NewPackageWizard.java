@@ -142,7 +142,7 @@ public class NewPackageWizard extends FormStylePopup {
                                       final String descr ) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
         RepositoryServiceFactory.getPackageService().createPackage( name,
-                descr,
+                descr, "package", 
                 new GenericCallback<java.lang.String>() {
                     public void onSuccess( String uuid ) {
                         RulePackageSelector.currentlySelectedPackage = name;

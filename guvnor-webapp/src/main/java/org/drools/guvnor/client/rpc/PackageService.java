@@ -53,7 +53,8 @@ public interface PackageService
      * @return UUID of the created item.
      */
     public String createPackage(String name,
-                                String description) throws SerializationException;
+                                String description,
+                                String format) throws SerializationException;
 
     /**
      * This creates a package of the given name, and checks it in.

@@ -38,7 +38,7 @@ public class PerspectivesPanel implements Presenter {
         setPerspective(new AuthorPerspective());
         view.addAuthorPerspective();
         view.addRunTimePerspective();
-        //view.addSOAPerspective();
+        view.addSOAPerspective();
     }
 
     private void setPerspective(Perspective perspective) {

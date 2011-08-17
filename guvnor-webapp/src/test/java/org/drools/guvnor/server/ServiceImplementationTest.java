@@ -604,7 +604,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testListByFormat",
-                                                                 "used for listing by format." );
+                                                                 "used for listing by format.",
+                                                                 "package" );
 
         String uuid = impl.createNewRule( "testListByFormat",
                                           "x",
@@ -728,7 +729,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testQuickFind",
-                                                "for testing quick find." );
+                                                "for testing quick find.",
+                                                "package" );
         String uuid = impl.createNewRule( "testQuickFindmyRule1",
                                           "desc",
                                           cat,
@@ -784,7 +786,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testTextRule1",
                                           "desc",
@@ -866,7 +869,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       match );
 
         String packagUUID = repositoryPackageService.createPackage( "testStatus",
-                                                                    "description" );
+                                                                    "description" ,
+                                                                    "package");
         String ruleUUID = impl.createNewRule( "testStatus",
                                               "desc",
                                               null,
@@ -1454,7 +1458,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription",
+                                                "package" );
         impl.createState( status );
 
         uuid = impl.createNewRule( "testTextRule1",
@@ -1517,7 +1522,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                   cat,
                                                   "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription",
+                                                "package" );
         impl.createState( status );
 
         uuid = impl.createNewRule( "testTextRule1",

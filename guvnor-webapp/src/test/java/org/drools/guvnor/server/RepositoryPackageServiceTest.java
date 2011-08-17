@@ -80,7 +80,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                   "snapshotDiffTesting",
                                                   "y" );
         String packageUuid = repositoryPackageService.createPackage( "testSnapshotDiff",
-                                                                     "d" );
+                                                                     "d",
+                                                                     "package" );
 
         assertNotNull( packageUuid );
 
@@ -325,9 +326,11 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                       "d" );
         }
         String sourcePkgId = repositoryPackageService.createPackage( "sourcePackage",
-                                                                     "description" );
+                                                                     "description",
+                                                                     "package" );
         String destPkgId = repositoryPackageService.createPackage( "targetPackage",
-                                                                   "description" );
+                                                                   "description",
+                                                                   "package" );
 
         String cat = repositoryCategoryService.loadChildCategories( "/" )[0];
 
@@ -377,7 +380,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                   "snapshotTesting",
                                                   "y" );
         repositoryPackageService.createPackage( "testSnapshot",
-                                                "d" );
+                                                "d",
+                                                "package" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testSnapshotRule",
                                           "",
@@ -597,7 +601,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         @SuppressWarnings("unused")
         String uuid = repositoryPackageService.createPackage( "testCreateArchivedPackage",
-                                                              "this is a new package" );
+                                                              "this is a new package",
+                                                              "package" );
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         PackageItem item = impl.getRulesRepository().loadPackage( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
@@ -629,7 +634,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         PackageConfigData[] pkgs = repositoryPackageService.listPackages();
         String uuid = repositoryPackageService.createPackage( "testCreatePackage",
-                                                              "this is a new package" );
+                                                              "this is a new package",
+                                                              "package" );
         assertNotNull( uuid );
 
         PackageItem item = impl.getRulesRepository().loadPackage( "testCreatePackage" );
@@ -711,7 +717,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testArchiveAndUnarchivePackageAndHeader",
-                                                              "a desc" );
+                                                              "a desc",
+                                                              "package" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
         PackageItem it = impl.getRulesRepository().loadPackageByUUID( uuid );
         data.setArchived( true );
@@ -756,7 +763,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testPackageConfSave",
-                                                              "a desc" );
+                                                              "a desc",
+                                                              "package" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
 
         data.setDescription( "new desc" );
@@ -794,7 +802,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         RepositoryService impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testUpdateModuleFormat",
-                                                              "a desc" );
+                                                              "a desc",
+                                                              "package" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
         assertEquals( "a desc",
                 data.getDescription() );
@@ -837,7 +846,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                   "snapshotDiffTestingCategory",
                                                   "snapshotDiffTestingCategoryDescription" );
         String packageUuid = repositoryPackageService.createPackage( "snapshotDiffTestingPackage",
-                                                                     "snapshotDiffTestingPackageDescription" );
+                                                                     "snapshotDiffTestingPackageDescription",
+                                                                     "package" );
         assertNotNull( packageUuid );
 
         // Create some rules
@@ -964,7 +974,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                   "snapshotDiffTestingCategory",
                                                   "snapshotDiffTestingCategoryDescription" );
         String packageUuid = repositoryPackageService.createPackage( "snapshotDiffTestingPackage",
-                                                                     "snapshotDiffTestingPackageDescription" );
+                                                                     "snapshotDiffTestingPackageDescription",
+                                                                     "package" );
         assertNotNull( packageUuid );
 
         // Create some rules

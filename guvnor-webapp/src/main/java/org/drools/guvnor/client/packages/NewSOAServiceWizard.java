@@ -30,7 +30,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
 /**
- * This is the wizard used when creating new packages or importing them.
+ * This is the wizard used when creating new SOA service.
  */
 public class NewSOAServiceWizard extends FormStylePopup {
 
@@ -39,26 +39,22 @@ public class NewSOAServiceWizard extends FormStylePopup {
 
     private TextBox nameBox;
     private TextBox descBox;
-    private final FormStyleLayout newPackageLayout = new FormStyleLayout();
     private ClientFactory clientFactory;
     private EventBus eventBus;
 
     public NewSOAServiceWizard( ClientFactory clientFactory, EventBus eventBus ) {
         super( images.newexWiz(),
-               "Create new SOA service" );
+               "Create New SOA service" );
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         nameBox = new TextBox();
         descBox = new TextBox();
-
-        newPackageLayout.addAttribute( constants.NameColon(),
+        addAttribute( constants.NameColon(),
                 nameBox );
-        newPackageLayout.addAttribute( constants.DescriptionColon(),
+        addAttribute( constants.DescriptionColon(),
                 descBox );
 
         nameBox.setTitle( constants.PackageNameTip() );
-
-        newPackageLayout.setVisible( true );
 
         this.setAfterShow( new Command() {
             public void execute() {
@@ -66,14 +62,12 @@ public class NewSOAServiceWizard extends FormStylePopup {
             }
         } );
 
-        addRow( newPackageLayout );
-
         HorizontalPanel hp = new HorizontalPanel();
         Button create = new Button( "Create SOA Service" );
         create.addClickHandler( new ClickHandler() {
             public void onClick( ClickEvent arg0 ) {
                 if ( PackageNameValidator.validatePackageName( nameBox.getText() ) ) {
-                    createPackageAction( nameBox.getText(),
+                    createSOAServiceAction( nameBox.getText(),
                             descBox.getText() );
                     hide();
                 } else {
@@ -91,17 +85,15 @@ public class NewSOAServiceWizard extends FormStylePopup {
             }
         } );
         hp.add( cancel );
-
-        newPackageLayout.addAttribute( "",
+        addAttribute( "",
                 hp );
-
     }
 
-    private void createPackageAction( final String name,
+    private void createSOAServiceAction( final String name,
                                       final String descr ) {
         LoadingPopup.showMessage( constants.CreatingPackagePleaseWait() );
         RepositoryServiceFactory.getPackageService().createPackage( name,
-                descr,
+                descr, "SOAService",
                 new GenericCallback<java.lang.String>() {
                     public void onSuccess( String uuid ) {
                         RulePackageSelector.currentlySelectedPackage = name;

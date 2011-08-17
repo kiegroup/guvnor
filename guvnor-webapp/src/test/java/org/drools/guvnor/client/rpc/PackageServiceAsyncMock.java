@@ -36,7 +36,7 @@ public abstract class PackageServiceAsyncMock implements PackageServiceAsync {
     public void loadGlobalPackage(AsyncCallback<PackageConfigData> cb) {
     }
 
-    public void createPackage(String p0, String p1, AsyncCallback<String> cb) {
+    public void createPackage(String p0, String p1, String p2, AsyncCallback<String> cb) {
     }
 
     public void createSubPackage(String p0, String p1, String p2, AsyncCallback<String> cb) {
