@@ -43,6 +43,10 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import org.apache.abdera.protocol.Response.ResponseType;
+import org.apache.abdera.protocol.client.AbderaClient;
+import org.apache.abdera.protocol.client.ClientResponse;
+import org.apache.abdera.protocol.client.RequestOptions;
 
 
 public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
@@ -251,6 +255,84 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         //logger.log(LogLevel, GetContent(connection));
     }
 
+    @Test
+    public void testCreateAssetFromAtom() throws Exception {
+        
+        //Check there is no model1-New asset
+        AbderaClient client = new AbderaClient(abdera);
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1-New");
+        
+        //If the asset doesn't exist, an HTTP 500 Error is expected. :S
+        if (resp.getType() != ResponseType.SERVER_ERROR){
+            fail("I was expecting an HTTP 500 Error because 'model1-New' shouldn't exist. "
+                    + "Instead of that I got-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        
+        //--------------------------------------------------------------
+        
+        
+        //Get asset 'model1' from Guvnor
+        client = new AbderaClient(abdera);
+        
+        options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+
+        resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve 'model1' asset-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        //Get the entry element
+        Document<Entry> doc = resp.getDocument();
+        Entry entry = doc.getRoot();
+        
+        
+        //--------------------------------------------------------------
+        
+        
+        //Change the title of the asset
+        entry.setTitle(entry.getTitle()+"-New");
+        
+        //Save it as a new Asset
+        client = new AbderaClient(abdera);
+        
+        options = client.getDefaultRequestOptions();
+        options.setContentType(MediaType.APPLICATION_ATOM_XML);
+
+        resp = client.post(generateBaseUrl() + "/packages/restPackage1/assets", entry, options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't store 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        
+        //--------------------------------------------------------------
+        
+        
+        //Check that the new asset is in the repository
+        client = new AbderaClient(abdera);
+        options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+
+        resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1-New");
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        //Get the entry element
+        doc = resp.getDocument();
+        entry = doc.getRoot();
+        
+        //Compare the title :P
+        assertEquals(entry.getTitle(),"model1-New");
+    }
+    
     @Test
     public void testUpdateAssetFromAtom() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
