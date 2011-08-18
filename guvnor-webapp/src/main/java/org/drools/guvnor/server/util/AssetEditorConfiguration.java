@@ -17,35 +17,42 @@
 package org.drools.guvnor.server.util;
 
 public class AssetEditorConfiguration {
-    public String format;    
-    public String icon;
-    public String title;
-    public String editorClass;
-    
+    private String format;
+    private String icon;
+    private String title;
+    private String editorClass;
+
     public String getFormat() {
         return format;
     }
+
     public void setFormat(String format) {
         this.format = format;
     }
+
     public String getIcon() {
         return icon;
     }
+
     public void setIcon(String icon) {
         this.icon = icon;
     }
+
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String displayText) {
         this.title = displayText;
     }
+
     public String getEditorClass() {
         return editorClass;
     }
+
     public void setEditorClass(String editorClass) {
         this.editorClass = editorClass;
     }
-    
-    
- }
+
+
+}
