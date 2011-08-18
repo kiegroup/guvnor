@@ -226,12 +226,7 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
     </dependency>
-    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
-    </dependency>
+    <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
@@ -321,18 +316,30 @@
       <!--<version>1.0.0.CR2</version>-->
       <!--<scope>test</scope>-->
     <!--</dependency>-->
-    <dependency>
-      <groupId>org.jboss.shrinkwrap.resolver</groupId>
-      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>1.0.0-beta-5</version>
-      <scope>test</scope>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.shrinkwrap.resolver</groupId>-->
+      <!--<artifactId>shrinkwrap-resolver-impl-maven</artifactId>-->
+      <!--<version>1.0.0-beta-5</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-      <version>1.0.0.CR2</version>
+      <version>1.0.0.CR4</version>
       <scope>test</scope>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-jetty-embedded-7</artifactId>-->
+      <!--<version>1.0.0.CR1</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-tomcat-embedded-6</artifactId>
@@ -349,27 +356,14 @@
        <groupId>org.apache.tomcat</groupId>
        <artifactId>coyote</artifactId>
        <version>6.0.29</version>
-       <scope>provided</scope>
+       <scope>test</scope>
     </dependency>
     <dependency>
        <groupId>org.apache.tomcat</groupId>
        <artifactId>jasper</artifactId>
        <version>6.0.29</version>
-       <scope>provided</scope>
+       <scope>test</scope>
     </dependency>
-
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-weld-se-embedded-1.1</artifactId>-->
-      <!--<version>1.0.0.CR2</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.arquillian.container</groupId>-->
-      <!--<artifactId>arquillian-tomcat-embedded-6</artifactId>-->
-      <!--<version>1.0.0.CR1</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
 
     <dependency>
       <groupId>javax.ejb</groupId>
@@ -493,6 +487,14 @@
       <artifactId>jetty-webapp</artifactId>
       <version>7.2.2.v20101205</version>
       <scope>test</scope>
+    </dependency>
+
+    <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwt.version}</version>
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
   </dependencies>
 </project>

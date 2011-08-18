@@ -18,6 +18,8 @@ package org.drools.guvnor.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.files.WebDAVImpl;
@@ -26,14 +28,21 @@ import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+//import org.jboss.arquillian.api.Deployment;
 
+@RunWith(Arquillian.class)
 public abstract class GuvnorTestBase {
 
-    private static RulesRepository repository;
+    @Inject
+    private RulesRepository repository;
 
     // ************************************************************************
     // Lifecycle methods
@@ -41,17 +50,13 @@ public abstract class GuvnorTestBase {
 
     @Before
     public void setUpGuvnorTestBase() {
+        System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
         setUpSeam();
         setUpRepository();
         setUpMockIdentity();
     }
 
     protected void setUpSeam() {
-        System.setProperty( KeyStoreHelper.PROP_SIGN,
-                            "false" );
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
     }
 
     protected void setUpRepository() {
@@ -67,16 +72,6 @@ public abstract class GuvnorTestBase {
         RepositoryCategoryService repositoryCategoryService = new RepositoryCategoryService();
         repositoryCategoryService.setRulesRepository( getRulesRepository() );
 
-        Contexts.getSessionContext().set( "repository",
-                                          repository );
-        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                          serviceImplementation );
-        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.AssetService",
-                                          repositoryAssetService );
-        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.PackageService",
-                                          repositoryPackageService );
-        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.CategoryService",
-                                          repositoryCategoryService );
     }
 
     private RulesRepository getRulesRepository() {
@@ -103,11 +98,6 @@ public abstract class GuvnorTestBase {
     @After
     public void tearDownGuvnorTestBase() {
         repository = null;
-        Contexts.removeFromAllContexts( "repository" );
-        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.RepositoryService" );
-        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.AssetService" );
-        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.PackageService" );
-        Contexts.removeFromAllContexts( "org.drools.guvnor.client.rpc.CategoryService" );
         Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();

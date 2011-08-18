@@ -23,9 +23,11 @@ import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,17 +38,27 @@ public class WebappPrototypeArqTest {
 
     @Deployment
     public static WebArchive createDeployment() {
-        return ShrinkWrap.create(WebArchive.class)
-            .addAsResource(new File("../guvnor-webapp/target/classes"), "WEB-INF/classes")
-            .addAsLibraries(
-                    DependencyResolvers.use(MavenDependencyResolver.class)
-                            .includeDependenciesFromPom("pom.xml")
-            // Debug on breakpoint on TomcatContainer.java:321: org.apache.catalina.startup.Embedded.createConnector
-            // Then evaluate expression "embedded.getClass().getProtectionDomain().getCodeSource()" and see that it still has gwt-dev.jar
-                            .exclusion("com.google.gwt:gwt-dev") // Not applied - bug?
-                            .resolveAsFiles()
-            );
+        return ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
+                .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
+                .as(WebArchive.class);
     }
+
+//    @Deployment
+//    public static WebArchive createDeployment() {
+//
+//        // TODO gwt dev is in the classpath so it shades tomcat and the arq container can't boot (nevermind the classpath of shrinkwrap!)
+//        WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
+//                .addAsResource(new File("target/classes/"))
+//                .addAsWebInfResource(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/WEB-INF/web.xml"), "web.xml")
+//                .addAsWebInfResource(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/WEB-INF/beans.xml"), "beans.xml")
+//                .addAsLibraries(
+//                        DependencyResolvers.use(MavenDependencyResolver.class)
+//                                .includeDependenciesFromPom("pom.xml")
+//                                .resolveAsFiles(new ScopeFilter("", "compile", "runtime")));
+//
+//        return webArchive;
+//        // TODO use loadMetadataFromPom instead
+//    }
 
 
     @Inject
