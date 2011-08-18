@@ -28,6 +28,7 @@ public class OryxEditorServlet extends HttpServlet {
             throw new ServletException("No application context active.");
         }
 
+        //action never used. Why? - JT
         String action = request.getParameter("action");
         String uuid = request.getParameter("uuid");
         String usr = request.getParameter("usr");
@@ -36,9 +37,10 @@ public class OryxEditorServlet extends HttpServlet {
         if (uuid == null) {
             throw new ServletException(new IllegalArgumentException("Parameter uuid not specified."));
         }
-        if (action == null) {
+        //action never used. Why? - JT
+        /*if (action == null) {
             action = "json";
-        }
+        } */
 
         // log in
         Identity ids = Identity.instance();
@@ -61,9 +63,8 @@ public class OryxEditorServlet extends HttpServlet {
                 String content = asset.getContent().toString();
                 if (asset.getContent() instanceof RuleFlowContentModel) {
                     content = ((RuleFlowContentModel) asset.getContent()).getXml();
-                } else {
-                    content = asset.getContent().toString();
                 }
+
                 if (content != null) {
                     response.getOutputStream().write(content.getBytes("UTF-8"));
                     response.getOutputStream().close();
