@@ -37,7 +37,6 @@ public class EventLogViewImpl extends Composite
         EventLogPresenter.EventLogView {
 
     private static Images images = (Images) GWT.create(Images.class);
-    ;
 
     private VerticalPanel layout;
     private LogPagedTable table;
