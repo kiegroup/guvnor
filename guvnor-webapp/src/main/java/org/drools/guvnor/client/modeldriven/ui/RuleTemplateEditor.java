@@ -44,17 +44,16 @@ public class RuleTemplateEditor extends DirtyableComposite
 
     private TemplateModel model;
     private RuleModeller ruleModeller;
-    private Constants constants = GWT.create( Constants.class );
-    private String packageName;
+    private Constants constants = GWT.create(Constants.class);
     private SuggestionCompletionEngine sce;
 
     private TemplateDataTableWidget table;
 
-    public RuleTemplateEditor( RuleAsset a,
-                               RuleViewer v,
-                               ClientFactory clientFactory,
-                               EventBus eventBus) {
-        this( a );
+    public RuleTemplateEditor(RuleAsset a,
+                              RuleViewer v,
+                              ClientFactory clientFactory,
+                              EventBus eventBus) {
+        this(a);
     }
 
     /**
@@ -62,68 +61,68 @@ public class RuleTemplateEditor extends DirtyableComposite
      *
      * @param asset
      */
-    public RuleTemplateEditor( RuleAsset asset ) {
+    public RuleTemplateEditor(RuleAsset asset) {
 
         model = (TemplateModel) asset.getContent();
-        ruleModeller = new RuleModeller( asset,
+        ruleModeller = new RuleModeller(asset,
                 null,
-                new TemplateModellerWidgetFactory() );
+                new TemplateModellerWidgetFactory());
 
-        this.packageName = asset.getMetaData().getPackageName();
-        sce = SuggestionCompletionCache.getInstance().getEngineFromCache( this.packageName );
+        String packageName = asset.getMetaData().getPackageName();
+        sce = SuggestionCompletionCache.getInstance().getEngineFromCache(packageName);
 
         final VerticalPanel tPanel = new VerticalPanel();
-        tPanel.setWidth( "100%" );
+        tPanel.setWidth("100%");
 
-        tPanel.add( new Button( constants.LoadTemplateData(),
+        tPanel.add(new Button(constants.LoadTemplateData(),
                 new ClickHandler() {
 
-                    public void onClick( ClickEvent event ) {
+                    public void onClick(ClickEvent event) {
                         int height = (int) (Window.getClientHeight() * 0.7);
                         int width = (int) (Window.getClientWidth() * 0.7);
 
-                        final FormStylePopup popUp = new FormStylePopup( null,
+                        final FormStylePopup popUp = new FormStylePopup(null,
                                 constants.TemplateData(),
-                                width );
-                        popUp.setHeight( height + "px" );
+                                width);
+                        popUp.setHeight(height + "px");
 
                         //Initialise table to edit data
-                        table = new TemplateDataTableWidget( sce );
-                        table.setPixelSize( width,
-                                height );
-                        table.setModel( model );
-                        popUp.addAttribute( "",
-                                table );
+                        table = new TemplateDataTableWidget(sce);
+                        table.setPixelSize(width,
+                                height);
+                        table.setModel(model);
+                        popUp.addAttribute("",
+                                table);
 
-                        Button btnSaveAndClose = new Button( constants.SaveAndClose(),
+                        Button btnSaveAndClose = new Button(constants.SaveAndClose(),
                                 new ClickHandler() {
-                                    public void onClick( ClickEvent event ) {
-                                        table.scrapeData( model );
+                                    public void onClick(ClickEvent event) {
+                                        table.scrapeData(model);
                                         popUp.hide();
                                     }
-                                } );
+                                });
 
-                        Button btnAddRow = new Button( constants.AddRow(),
+                        Button btnAddRow = new Button(constants.AddRow(),
                                 new ClickHandler() {
 
-                                    public void onClick( ClickEvent event ) {
+                                    public void onClick(ClickEvent event) {
                                         table.appendRow();
                                     }
 
-                                } );
+                                });
 
                         HorizontalPanel pnlClose = new HorizontalPanel();
-                        pnlClose.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
-                        pnlClose.add( btnSaveAndClose );
-                        pnlClose.add( btnAddRow );
-                        popUp.addAttribute( "",
-                                pnlClose );
+                        pnlClose.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+                        pnlClose.add(btnSaveAndClose);
+                        pnlClose.add(btnAddRow);
+                        popUp.addAttribute("",
+                                pnlClose);
 
                         popUp.show();
                     }
-                } ) );
-        tPanel.add( ruleModeller );
-        initWidget( tPanel );
+                }));
+        tPanel.add(ruleModeller);
+        initWidget(tPanel);
     }
 
     public RuleModeller getRuleModeller() {

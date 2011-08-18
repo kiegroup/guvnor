@@ -19,7 +19,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
-import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
@@ -36,59 +35,55 @@ public class MultiActivityManager implements
     private final ActivityMapper activityMapper;
     private TabbedPanel tabbedPanel;
     private final EventBus eventBus;
-    private PlaceHistoryMapper placeHistoryMapper;
     private final Map<Place, Pair> activeActivities = new HashMap<Place, Pair>();
-    private final ClientFactory clientFactory;
 
     public MultiActivityManager(ClientFactory clientFactory, EventBus eventBus) {
-        this.clientFactory = clientFactory;
         this.activityMapper = clientFactory.getActivityMapper();
-        this.placeHistoryMapper = clientFactory.getPlaceHistoryMapper();
         this.eventBus = eventBus;
 
         eventBus.addHandler(
                 PlaceChangeEvent.TYPE,
-                this );
+                this);
         eventBus.addHandler(
                 ClosePlaceEvent.TYPE,
-                this );
+                this);
     }
 
     public void setTabbedPanel(TabbedPanel tabbedPanel) {
-        if ( this.tabbedPanel == null ) {
+        if (this.tabbedPanel == null) {
             this.tabbedPanel = tabbedPanel;
         } else {
-            throw new IllegalStateException( TabbedPanel.class.getName() + " can only be set once." );
+            throw new IllegalStateException(TabbedPanel.class.getName() + " can only be set once.");
         }
     }
 
     public void onPlaceChange(PlaceChangeEvent event) {
 
-        if ( tabbedPanel == null ) {
-            throw new IllegalStateException( TabbedPanel.class.getName() + " is not set for " + MultiActivityManager.class.getName() );
+        if (tabbedPanel == null) {
+            throw new IllegalStateException(TabbedPanel.class.getName() + " is not set for " + MultiActivityManager.class.getName());
         } else {
-            if ( isActivityAlreadyActive( event.getNewPlace() ) ) {
-                showExistingActivity( event.getNewPlace() );
-            } else if ( ifPlaceExists( event ) ) {
-                startNewActivity( event.getNewPlace() );
+            if (isActivityAlreadyActive(event.getNewPlace())) {
+                showExistingActivity(event.getNewPlace());
+            } else if (ifPlaceExists(event)) {
+                startNewActivity(event.getNewPlace());
             }
         }
     }
 
     private void showExistingActivity(Place token) {
-        tabbedPanel.show( token );
+        tabbedPanel.show(token);
     }
 
     private boolean isActivityAlreadyActive(Place token) {
-        return activeActivities.keySet().contains( token );
+        return activeActivities.keySet().contains(token);
     }
 
     private void startNewActivity(final Place newPlace) {
-        Activity activity = activityMapper.getActivity( newPlace );
+        Activity activity = activityMapper.getActivity(newPlace);
 
-        final ResettableEventBus resettableEventBus = new ResettableEventBus( eventBus );
+        final ResettableEventBus resettableEventBus = new ResettableEventBus(eventBus);
 
-        activeActivities.put( newPlace, new Pair( activity, resettableEventBus ) );
+        activeActivities.put(newPlace, new Pair(activity, resettableEventBus));
 
         activity.start(
                 new AcceptTabItem() {
@@ -96,23 +91,23 @@ public class MultiActivityManager implements
                         tabbedPanel.addTab(
                                 tabTitle,
                                 widget,
-                                newPlace );
+                                newPlace);
                     }
                 },
-                resettableEventBus );
+                resettableEventBus);
     }
 
     private boolean ifPlaceExists(PlaceChangeEvent event) {
-        return !event.getNewPlace().equals( Place.NOWHERE );
+        return !event.getNewPlace().equals(Place.NOWHERE);
     }
 
     public void onCloseTab(ClosePlaceEvent closePlaceEvent) {
-        Pair pair = activeActivities.get( closePlaceEvent.getPlace() );
-        if ( pair != null && pair.getActivity().mayStop() ) {
+        Pair pair = activeActivities.get(closePlaceEvent.getPlace());
+        if (pair != null && pair.getActivity().mayStop()) {
             pair.getActivity().onStop();
             pair.getResettableEventBus().removeHandlers();
-            activeActivities.remove( closePlaceEvent.getPlace() );
-            tabbedPanel.close( closePlaceEvent.getPlace() );
+            activeActivities.remove(closePlaceEvent.getPlace());
+            tabbedPanel.close(closePlaceEvent.getPlace());
         }
     }
 

@@ -104,8 +104,8 @@ abstract class VerifierRunner {
 
     private void addHeaderToVerifier() {
         StringBuilder header = new StringBuilder();
-        header.append("package " + packageItem.getName() + "\n");
-        header.append(DroolsHeader.getDroolsHeader(packageItem) + "\n");
+        header.append("package ").append(packageItem.getName()).append("\n");
+        header.append(DroolsHeader.getDroolsHeader(packageItem)).append("\n");
 
         verifier.addResourcesToVerify(
                 ResourceFactory.newReaderResource(new StringReader(header.toString())),

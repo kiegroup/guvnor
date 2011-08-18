@@ -128,7 +128,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             String package1Name = "testLoadRuleAssetPackageReadonlyPack1";
             @SuppressWarnings("unused")
             String package1Uuid = repositoryPackageService.createPackage( package1Name,
-                                                                          "desc" );
+                                                                          "desc",
+                                                                          "package" );
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetPackageReadonlyCat1",
                                                       "this is a cat" );
@@ -642,7 +643,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageUuid = repositoryPackageService.createPackage( "testCheckinWithPackageReadonlyPack",
-                                                                     "desc" );
+                                                                     "desc",
+                                                                     "package" );
         repositoryCategoryService.createCategory( "/",
                                                   "testCheckinWithPackageReadonlyCat",
                                                   "this is a description" );
@@ -711,7 +713,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String packageName = "testCheckinPackageDeveloperPack1";
         @SuppressWarnings("unused")
         String packageUuid = repositoryPackageService.createPackage( packageName,
-                                                                     "desc" );
+                                                                     "desc",
+                                                                     "package" );
         repositoryCategoryService.createCategory( "/",
                                                   "testCheckinPackageDeveloperCat1",
                                                   "this is a description" );
@@ -779,7 +782,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
             @SuppressWarnings("unused")
             String package3Uuid = repositoryPackageService.createPackage( package3Name,
-                                                                          "desc" );
+                                                                          "desc",
+                                                                          "package" );
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
                                                       "this is a cat" );

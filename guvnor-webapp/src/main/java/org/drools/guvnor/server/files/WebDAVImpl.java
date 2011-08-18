@@ -47,9 +47,9 @@ public class WebDAVImpl
     /**
      * for the rubbish OSX double data (the ._ rubbish)
      */
-    static final Map<String, byte[]> osxDoubleData = Collections.synchronizedMap(new WeakHashMap<String, byte[]>());
+    private static final Map<String, byte[]> osxDoubleData = Collections.synchronizedMap(new WeakHashMap<String, byte[]>());
 
-    final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();
+    private final ThreadLocal<RulesRepository> tlRepo = new ThreadLocal<RulesRepository>();
 
     public WebDAVImpl(File f) {
 

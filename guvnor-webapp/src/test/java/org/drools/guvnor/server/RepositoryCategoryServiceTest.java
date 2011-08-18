@@ -128,7 +128,8 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                   cat,
                                                   "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription" ,
+                                                "package");
 
         impl.createNewRule( "testTextRule1",
                             "testCategoryRule1",
@@ -179,7 +180,8 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                   cat,
                                                   "testCategoryDescription" );
         repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription" );
+                                                "testCategoryPackageDescription",
+                                                "package" );
 
         impl.createNewRule( "testTextRule1",
                             "testCategoryRule1",

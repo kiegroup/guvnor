@@ -1,15 +1,11 @@
 package org.drools.guvnor.server.ruleeditor.workitem;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class WorkitemDefinitionElementsManager {
-    public static final String WORKITEM_DEFINITION_ELEMENTS_PROPERTIES = "/workitemDefinitionElements.properties";
+    private static final String WORKITEM_DEFINITION_ELEMENTS_PROPERTIES = "/workitemDefinitionElements.properties";
     private static WorkitemDefinitionElementsManager INSTANCE;
 
     private final Map<String, String> properties = new LinkedHashMap<String, String>();

@@ -16,23 +16,21 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-
 public class CallMethodLabelButton extends HorizontalPanel {
 
-    private Constants constants = ((Constants) GWT.create(Constants.class));
-
     public CallMethodLabelButton(ExecutionTrace previousEx, Scenario scenario,
-            ExecutionTrace executionTrace, ScenarioWidget scenarioWidget) {
+                                 ExecutionTrace executionTrace, ScenarioWidget scenarioWidget) {
 
         add(new CallMethodOnNewDataButton(previousEx, scenario, executionTrace,
                 scenarioWidget));
+        Constants constants = ((Constants) GWT.create(Constants.class));
         add(new SmallLabel(constants.CALL()));
 
     }

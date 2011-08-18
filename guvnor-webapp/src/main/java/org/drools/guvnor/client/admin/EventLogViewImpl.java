@@ -16,12 +16,6 @@
 
 package org.drools.guvnor.client.admin;
 
-import org.drools.guvnor.client.common.PrettyFormLayout;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.LogPageRow;
-import org.drools.guvnor.client.widgets.tables.LogPagedTable;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -29,16 +23,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.AsyncDataProvider;
+import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.LogPageRow;
+import org.drools.guvnor.client.widgets.tables.LogPagedTable;
 
 /**
  * View for Event Log
  */
 public class EventLogViewImpl extends Composite
-    implements
-    EventLogPresenter.EventLogView {
+        implements
+        EventLogPresenter.EventLogView {
 
-    private static Images images    = (Images) GWT.create( Images.class );
-    private Constants     constants = ((Constants) GWT.create( Constants.class )); ;
+    private static Images images = (Images) GWT.create(Images.class);
 
     private VerticalPanel layout;
     private LogPagedTable table;
@@ -48,28 +46,29 @@ public class EventLogViewImpl extends Composite
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        Label caption = new Label( constants.ShowRecentLogTip() );
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        header.add( caption );
+        Constants constants = ((Constants) GWT.create(Constants.class));
+        Label caption = new Label(constants.ShowRecentLogTip());
+        caption.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+        header.add(caption);
 
-        pf.addHeader( images.eventLogLarge(),
-                      header );
+        pf.addHeader(images.eventLogLarge(),
+                header);
 
         layout = new VerticalPanel();
-        layout.setHeight( "100%" );
-        layout.setWidth( "100%" );
+        layout.setHeight("100%");
+        layout.setWidth("100%");
 
         pf.startSection();
-        pf.addRow( layout );
+        pf.addRow(layout);
         pf.endSection();
 
         setupWidget();
-        initWidget( pf );
+        initWidget(pf);
     }
 
     private void setupWidget() {
         this.table = new LogPagedTable();
-        layout.add( table );
+        layout.add(table);
     }
 
     public HasClickHandlers getClearEventLogButton() {
@@ -81,7 +80,7 @@ public class EventLogViewImpl extends Composite
     }
 
     public void setDataProvider(AsyncDataProvider<LogPageRow> provider) {
-        this.table.setDataProvider( provider );
+        this.table.setDataProvider(provider);
     }
 
     public void refresh() {

@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 public class AssetValidationIterator implements Iterator<AssetItem> {
 
-    private Iterator<AssetItem> assetItemIterator;
+    private final Iterator<AssetItem> assetItemIterator;
     private AssetItem assetItemUnderValidation;
 
     public AssetValidationIterator(Iterator<AssetItem> assetItemIterator) {

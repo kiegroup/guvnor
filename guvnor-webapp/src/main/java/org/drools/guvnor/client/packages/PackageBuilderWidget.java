@@ -16,16 +16,16 @@
 
 package org.drools.guvnor.client.packages;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
-import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.InfoPopup;
-import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -35,26 +35,8 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is the widget for building packages, validating etc. Visually decorates
@@ -62,17 +44,16 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class PackageBuilderWidget extends Composite {
 
-    private static Constants      constants               = GWT.create( Constants.class );
-    private static Images         images                  = GWT.create( Images.class );
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
-    private FormStyleLayout       layout;
-    private PackageConfigData     conf;
+    private PackageConfigData conf;
 
     private final FormStyleLayout buildWholePackageLayout = new FormStyleLayout();
-    private final FormStyleLayout builtInSelectorLayout   = new FormStyleLayout();
-    private final FormStyleLayout customSelectorLayout    = new FormStyleLayout();
-    private String                buildMode               = "buildWholePackage";
-    private final ClientFactory   clientFactory;
+    private final FormStyleLayout builtInSelectorLayout = new FormStyleLayout();
+    private final FormStyleLayout customSelectorLayout = new FormStyleLayout();
+    private String buildMode = "buildWholePackage";
+    private final ClientFactory clientFactory;
 
     public PackageBuilderWidget(final PackageConfigData conf,
                                 ClientFactory clientFactory) {
@@ -81,194 +62,194 @@ public class PackageBuilderWidget extends Composite {
         this.clientFactory = clientFactory;
 
         // UI above the results table
-        layout = new FormStyleLayout();
+        FormStyleLayout layout = new FormStyleLayout();
         final VerticalPanel container = new VerticalPanel();
         final VerticalPanel buildResults = new VerticalPanel();
 
-        RadioButton wholePackageRadioButton = new RadioButton( "action",
-                                                               constants.BuildWholePackage() );
-        RadioButton builtInSelectorRadioButton = new RadioButton( "action",
-                                                                  constants.BuildPackageUsingBuiltInSelector() );
-        RadioButton customSelectorRadioButton = new RadioButton( "action",
-                                                                 constants.BuildPackageUsingCustomSelector() );
-        wholePackageRadioButton.addClickHandler( new ClickHandler() {
+        RadioButton wholePackageRadioButton = new RadioButton("action",
+                constants.BuildWholePackage());
+        RadioButton builtInSelectorRadioButton = new RadioButton("action",
+                constants.BuildPackageUsingBuiltInSelector());
+        RadioButton customSelectorRadioButton = new RadioButton("action",
+                constants.BuildPackageUsingCustomSelector());
+        wholePackageRadioButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                buildWholePackageLayout.setVisible( true );
-                builtInSelectorLayout.setVisible( false );
-                customSelectorLayout.setVisible( false );
+                buildWholePackageLayout.setVisible(true);
+                builtInSelectorLayout.setVisible(false);
+                customSelectorLayout.setVisible(false);
                 buildMode = "buildWholePackage";
             }
-        } );
-        builtInSelectorRadioButton.addClickHandler( new ClickHandler() {
+        });
+        builtInSelectorRadioButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                buildWholePackageLayout.setVisible( false );
-                builtInSelectorLayout.setVisible( true );
-                customSelectorLayout.setVisible( false );
+                buildWholePackageLayout.setVisible(false);
+                builtInSelectorLayout.setVisible(true);
+                customSelectorLayout.setVisible(false);
                 buildMode = "builtInSelector";
             }
-        } );
-        customSelectorRadioButton.addClickHandler( new ClickHandler() {
+        });
+        customSelectorRadioButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                buildWholePackageLayout.setVisible( false );
-                builtInSelectorLayout.setVisible( false );
-                customSelectorLayout.setVisible( true );
+                buildWholePackageLayout.setVisible(false);
+                builtInSelectorLayout.setVisible(false);
+                customSelectorLayout.setVisible(true);
                 buildMode = "customSelector";
             }
-        } );
+        });
 
         VerticalPanel verticalPanel = new VerticalPanel();
 
         HorizontalPanel wholePackageRadioButtonPanel = new HorizontalPanel();
-        wholePackageRadioButtonPanel.add( wholePackageRadioButton );
-        wholePackageRadioButtonPanel.add( new InfoPopup( constants.BuildWholePackage(),
-                                                         constants.BuildWholePackageTip() ) );
-        verticalPanel.add( wholePackageRadioButtonPanel );
+        wholePackageRadioButtonPanel.add(wholePackageRadioButton);
+        wholePackageRadioButtonPanel.add(new InfoPopup(constants.BuildWholePackage(),
+                constants.BuildWholePackageTip()));
+        verticalPanel.add(wholePackageRadioButtonPanel);
 
         HorizontalPanel builtInSelectorRadioButtonPanel = new HorizontalPanel();
-        builtInSelectorRadioButtonPanel.add( builtInSelectorRadioButton );
-        builtInSelectorRadioButtonPanel.add( new InfoPopup( constants.BuiltInSelector(),
-                                                            constants.BuiltInSelectorTip() ) );
-        verticalPanel.add( builtInSelectorRadioButtonPanel );
+        builtInSelectorRadioButtonPanel.add(builtInSelectorRadioButton);
+        builtInSelectorRadioButtonPanel.add(new InfoPopup(constants.BuiltInSelector(),
+                constants.BuiltInSelectorTip()));
+        verticalPanel.add(builtInSelectorRadioButtonPanel);
 
         HorizontalPanel customSelectorRadioButtonPanel = new HorizontalPanel();
-        customSelectorRadioButtonPanel.add( customSelectorRadioButton );
-        customSelectorRadioButtonPanel.add( new InfoPopup( constants.CustomSelector(),
-                                                           constants.SelectorTip() ) );
-        verticalPanel.add( customSelectorRadioButtonPanel );
+        customSelectorRadioButtonPanel.add(customSelectorRadioButton);
+        customSelectorRadioButtonPanel.add(new InfoPopup(constants.CustomSelector(),
+                constants.SelectorTip()));
+        verticalPanel.add(customSelectorRadioButtonPanel);
 
-        layout.addAttribute( "",
-                             verticalPanel );
-        wholePackageRadioButton.setValue( true );
+        layout.addAttribute("",
+                verticalPanel);
+        wholePackageRadioButton.setValue(true);
 
-        buildWholePackageLayout.setVisible( true );
-        builtInSelectorLayout.setVisible( false );
-        customSelectorLayout.setVisible( false );
+        buildWholePackageLayout.setVisible(true);
+        builtInSelectorLayout.setVisible(false);
+        customSelectorLayout.setVisible(false);
 
         // Build whole package layout
-        layout.addRow( buildWholePackageLayout );
+        layout.addRow(buildWholePackageLayout);
 
         // Built-in selector layout
-        builtInSelectorLayout.addRow( new HTML( "&nbsp;&nbsp;<i>"
-                                                + constants.BuildPackageUsingFollowingAssets()
-                                                + "</i>" ) );
+        builtInSelectorLayout.addRow(new HTML("&nbsp;&nbsp;<i>"
+                + constants.BuildPackageUsingFollowingAssets()
+                + "</i>"));
 
         HorizontalPanel builtInSelectorStatusPanel = new HorizontalPanel();
         final CheckBox enableStatusCheckBox = new CheckBox();
-        enableStatusCheckBox.setValue( false );
-        builtInSelectorStatusPanel.add( enableStatusCheckBox );
-        builtInSelectorStatusPanel.add( new HTML( "&nbsp;&nbsp;<i>"
-                                                  + constants.BuildPackageUsingBuiltInSelectorStatus()
-                                                  + " </i>" ) );
+        enableStatusCheckBox.setValue(false);
+        builtInSelectorStatusPanel.add(enableStatusCheckBox);
+        builtInSelectorStatusPanel.add(new HTML("&nbsp;&nbsp;<i>"
+                + constants.BuildPackageUsingBuiltInSelectorStatus()
+                + " </i>"));
         final ListBox statusOperator = new ListBox();
         String[] vals = new String[]{"=", "!="};
-        for ( int i = 0; i < vals.length; i++ ) {
-            statusOperator.addItem( vals[i],
-                                    vals[i] );
+        for (int i = 0; i < vals.length; i++) {
+            statusOperator.addItem(vals[i],
+                    vals[i]);
         }
-        builtInSelectorStatusPanel.add( statusOperator );
+        builtInSelectorStatusPanel.add(statusOperator);
 
         final TextBox statusValue = new TextBox();
-        statusValue.setTitle( constants.WildCardsSearchTip() );
-        builtInSelectorStatusPanel.add( statusValue );
+        statusValue.setTitle(constants.WildCardsSearchTip());
+        builtInSelectorStatusPanel.add(statusValue);
 
-        builtInSelectorLayout.addRow( builtInSelectorStatusPanel );
+        builtInSelectorLayout.addRow(builtInSelectorStatusPanel);
 
         HorizontalPanel builtInSelectorCatPanel = new HorizontalPanel();
         final CheckBox enableCategoryCheckBox = new CheckBox();
-        enableCategoryCheckBox.setValue( false );
-        builtInSelectorCatPanel.add( enableCategoryCheckBox );
-        builtInSelectorCatPanel.add( new HTML( "&nbsp;&nbsp;<i>"
-                                               + constants.BuildPackageUsingBuiltInSelectorCat()
-                                               + " </i>" ) );
+        enableCategoryCheckBox.setValue(false);
+        builtInSelectorCatPanel.add(enableCategoryCheckBox);
+        builtInSelectorCatPanel.add(new HTML("&nbsp;&nbsp;<i>"
+                + constants.BuildPackageUsingBuiltInSelectorCat()
+                + " </i>"));
         final ListBox catOperator = new ListBox();
         String[] catVals = new String[]{"=", "!="};
-        for ( int i = 0; i < catVals.length; i++ ) {
-            catOperator.addItem( catVals[i],
-                                 catVals[i] );
+        for (int i = 0; i < catVals.length; i++) {
+            catOperator.addItem(catVals[i],
+                    catVals[i]);
         }
-        builtInSelectorCatPanel.add( catOperator );
-        final CategoryExplorerWidget catChooser = new CategoryExplorerWidget( new CategorySelectHandler() {
+        builtInSelectorCatPanel.add(catOperator);
+        final CategoryExplorerWidget catChooser = new CategoryExplorerWidget(new CategorySelectHandler() {
             public void selected(String selectedPath) {
             }
-        } );
-        ScrollPanel catScroll = new ScrollPanel( catChooser );
-        catScroll.setAlwaysShowScrollBars( true );
-        catScroll.setSize( "300px",
-                           "130px" );
+        });
+        ScrollPanel catScroll = new ScrollPanel(catChooser);
+        catScroll.setAlwaysShowScrollBars(true);
+        catScroll.setSize("300px",
+                "130px");
 
-        builtInSelectorCatPanel.add( catScroll );
-        builtInSelectorLayout.addRow( builtInSelectorCatPanel );
+        builtInSelectorCatPanel.add(catScroll);
+        builtInSelectorLayout.addRow(builtInSelectorCatPanel);
 
-        layout.addRow( builtInSelectorLayout );
+        layout.addRow(builtInSelectorLayout);
 
         // Custom selector layout
-        customSelectorLayout.setVisible( false );
+        customSelectorLayout.setVisible(false);
         HorizontalPanel customSelectorPanel = new HorizontalPanel();
-        customSelectorPanel.add( new HTML( "&nbsp;&nbsp;<i>"
-                                           + constants.BuildPackageUsingCustomSelectorSelector()
-                                           + " </i>" ) ); // NON-NLS
+        customSelectorPanel.add(new HTML("&nbsp;&nbsp;<i>"
+                + constants.BuildPackageUsingCustomSelectorSelector()
+                + " </i>")); // NON-NLS
 
         final ListBox customSelector = new ListBox();
-        customSelector.setTitle( constants.WildCardsSearchTip() );
-        customSelectorPanel.add( customSelector );
-        loadCustomSelectorList( customSelector );
+        customSelector.setTitle(constants.WildCardsSearchTip());
+        customSelectorPanel.add(customSelector);
+        loadCustomSelectorList(customSelector);
 
-        customSelectorLayout.addRow( customSelectorPanel );
-        layout.addRow( customSelectorLayout );
+        customSelectorLayout.addRow(customSelectorPanel);
+        layout.addRow(customSelectorLayout);
 
-        final Button b = new Button( constants.BuildPackage() );
-        b.setTitle( constants.ThisWillValidateAndCompileAllTheAssetsInAPackage() );
-        b.addClickHandler( new ClickHandler() {
+        final Button b = new Button(constants.BuildPackage());
+        b.setTitle(constants.ThisWillValidateAndCompileAllTheAssetsInAPackage());
+        b.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                doBuild( buildResults,
-                         statusOperator.getValue( statusOperator.getSelectedIndex() ),
-                         statusValue.getText(),
-                         enableStatusCheckBox.getValue(),
-                         catOperator.getValue( catOperator.getSelectedIndex() ),
-                         catChooser.getSelectedPath(),
-                         enableCategoryCheckBox.getValue(),
-                         customSelector.getSelectedIndex() != -1 ? customSelector.getValue( customSelector.getSelectedIndex() ) : null );
+                doBuild(buildResults,
+                        statusOperator.getValue(statusOperator.getSelectedIndex()),
+                        statusValue.getText(),
+                        enableStatusCheckBox.getValue(),
+                        catOperator.getValue(catOperator.getSelectedIndex()),
+                        catChooser.getSelectedPath(),
+                        enableCategoryCheckBox.getValue(),
+                        customSelector.getSelectedIndex() != -1 ? customSelector.getValue(customSelector.getSelectedIndex()) : null);
             }
-        } );
+        });
         HorizontalPanel buildStuff = new HorizontalPanel();
-        buildStuff.add( b );
+        buildStuff.add(b);
 
-        layout.addAttribute( constants.BuildBinaryPackage(),
-                             buildStuff );
-        layout.addRow( new HTML( "<i><small>"
-                                 + constants.BuildingPackageNote()
-                                 + "</small></i>" ) );// NON-NLS
-        container.add( layout );
+        layout.addAttribute(constants.BuildBinaryPackage(),
+                buildStuff);
+        layout.addRow(new HTML("<i><small>"
+                + constants.BuildingPackageNote()
+                + "</small></i>"));// NON-NLS
+        container.add(layout);
 
         // The build results
-        container.add( buildResults );
+        container.add(buildResults);
 
         // UI below the results table
         layout = new FormStyleLayout();
-        Button snap = new Button( constants.CreateSnapshotForDeployment() );
-        snap.addClickHandler( new ClickHandler() {
+        Button snap = new Button(constants.CreateSnapshotForDeployment());
+        snap.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                showSnapshotDialog( conf.getName(),
-                                    null );
+                showSnapshotDialog(conf.getName(),
+                        null);
             }
-        } );
-        layout.addAttribute( constants.TakeSnapshot(),
-                             snap );
-        container.add( layout );
+        });
+        layout.addAttribute(constants.TakeSnapshot(),
+                snap);
+        container.add(layout);
 
-        initWidget( container );
+        initWidget(container);
     }
 
     private void loadCustomSelectorList(final ListBox customSelector) {
-        RepositoryServiceFactory.getService().getCustomSelectors( new GenericCallback<String[]>() {
+        RepositoryServiceFactory.getService().getCustomSelectors(new GenericCallback<String[]>() {
 
             public void onSuccess(String[] list) {
-                for ( int i = 0; i < list.length; i++ ) {
-                    customSelector.addItem( list[i],
-                                            list[i] );
+                for (int i = 0; i < list.length; i++) {
+                    customSelector.addItem(list[i],
+                            list[i]);
                 }
             }
-        } );
+        });
     }
 
     private void doBuild(final Panel buildResults,
@@ -282,43 +263,43 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
 
         final HorizontalPanel busy = new HorizontalPanel();
-        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
-        busy.add( new Image( images.redAnime() ) );
+        busy.add(new Label(constants.ValidatingAndBuildingPackagePleaseWait()));
+        busy.add(new Image(images.redAnime()));
 
-        buildResults.add( busy );
+        buildResults.add(busy);
 
         Scheduler scheduler = Scheduler.get();
-        scheduler.scheduleDeferred( new Command() {
+        scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackage( conf.getUuid(),
-                                                                    true,
-                                                                    buildMode,
-                                                                    statusOperator,
-                                                                    statusValue,
-                                                                    enableStatusSelector,
-                                                                    categoryOperator,
-                                                                    category,
-                                                                    enableCategorySelector,
-                                                                    customSelector,
-                                                                    new GenericCallback<BuilderResult>() {
-                                                                        public void onSuccess(BuilderResult result) {
-                                                                            LoadingPopup.close();
-                                                                            if ( result == null || !result.hasLines()) {
-                                                                                showSuccessfulBuild( buildResults );
-                                                                            } else {
-                                                                                showBuilderErrors( result,
-                                                                                                   buildResults,
-                                                                                                   clientFactory);
-                                                                            }
-                                                                        }
+                RepositoryServiceFactory.getPackageService().buildPackage(conf.getUuid(),
+                        true,
+                        buildMode,
+                        statusOperator,
+                        statusValue,
+                        enableStatusSelector,
+                        categoryOperator,
+                        category,
+                        enableCategorySelector,
+                        customSelector,
+                        new GenericCallback<BuilderResult>() {
+                            public void onSuccess(BuilderResult result) {
+                                LoadingPopup.close();
+                                if (result == null || !result.hasLines()) {
+                                    showSuccessfulBuild(buildResults);
+                                } else {
+                                    showBuilderErrors(result,
+                                            buildResults,
+                                            clientFactory);
+                                }
+                            }
 
-                                                                        public void onFailure(Throwable t) {
-                                                                            buildResults.clear();
-                                                                            super.onFailure( t );
-                                                                        }
-                                                                    } );
+                            public void onFailure(Throwable t) {
+                                buildResults.clear();
+                                super.onFailure(t);
+                            }
+                        });
             }
-        } );
+        });
 
     }
 
@@ -327,20 +308,20 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void doBuildSource(final String uuid,
                                      final String name) {
-        LoadingPopup.showMessage( constants.AssemblingPackageSource() );
+        LoadingPopup.showMessage(constants.AssemblingPackageSource());
 
         Scheduler scheduler = Scheduler.get();
-        scheduler.scheduleDeferred( new Command() {
+        scheduler.scheduleDeferred(new Command() {
             public void execute() {
-                RepositoryServiceFactory.getPackageService().buildPackageSource( uuid,
-                                                                          new GenericCallback<java.lang.String>() {
-                                                                              public void onSuccess(String content) {
-                                                                                  showSource( content,
-                                                                                              name );
-                                                                              }
-                                                                          } );
+                RepositoryServiceFactory.getPackageService().buildPackageSource(uuid,
+                        new GenericCallback<java.lang.String>() {
+                            public void onSuccess(String content) {
+                                showSource(content,
+                                        name);
+                            }
+                        });
             }
-        } );
+        });
     }
 
     /**
@@ -348,34 +329,34 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showSource(final String content,
                                   String name) {
-        Constants constants = GWT.create( Constants.class );
-        final FormStylePopup pop = new FormStylePopup( images.viewSource(),
-                                                        constants.ViewingSourceFor0( name ),
-                                                       new Integer( 600 ) );
+        Constants constants = GWT.create(Constants.class);
+        final FormStylePopup pop = new FormStylePopup(images.viewSource(),
+                constants.ViewingSourceFor0(name),
+                new Integer(600));
 
-        String[] rows = content.split( "\n" );
+        String[] rows = content.split("\n");
 
         FlexTable table = new FlexTable();
-        for ( int i = 0; i < rows.length; i++ ) {
+        for (int i = 0; i < rows.length; i++) {
 
-            table.setHTML( i,
-                           0,
-                           "<span style='color:grey;'>"
-                                   + (i + 1)
-                                   + ".</span>" );
-            table.setHTML( i,
-                           1,
-                           "<span style='color:green;' >|</span>" );
-            table.setHTML( i,
-                           2,
-                           addSyntaxHilights( rows[i] ) );
+            table.setHTML(i,
+                    0,
+                    "<span style='color:grey;'>"
+                            + (i + 1)
+                            + ".</span>");
+            table.setHTML(i,
+                    1,
+                    "<span style='color:green;' >|</span>");
+            table.setHTML(i,
+                    2,
+                    addSyntaxHilights(rows[i]));
         }
 
-        ScrollPanel scrollPanel = new ScrollPanel( table );
+        ScrollPanel scrollPanel = new ScrollPanel(table);
 
-        scrollPanel.setHeight( "400px" );
+        scrollPanel.setHeight("400px");
 
-        pop.addRow( scrollPanel );
+        pop.addRow(scrollPanel);
 
         LoadingPopup.close();
 
@@ -385,67 +366,67 @@ public class PackageBuilderWidget extends Composite {
 
     private static String addSyntaxHilights(String text) {
 
-        if ( text.trim().startsWith( "#" ) ) {
+        if (text.trim().startsWith("#")) {
             text = "<span style='color:green'>"
-                   + text
-                   + "</span>";
+                    + text
+                    + "</span>";
         } else {
 
             String[] keywords = {"rule", "when", "then", "end", "accumulate", "collect", "from", "null", "over", "lock-on-active", "date-effective", "date-expires", "no-loop", "auto-focus", "activation-group", "agenda-group", "ruleflow-group",
                     "entry-point", "duration", "package", "import", "dialect", "salience", "enabled", "attributes", "extend", "template", "query", "declare", "function", "global", "eval", "exists", "forall", "action", "reverse", "result", "end",
                     "init"};
 
-            for ( String keyword : keywords ) {
-                if ( text.contains( keyword ) ) {
-                    text = text.replace( keyword,
-                                         "<span style='color:red;'>"
-                                                 + keyword
-                                                 + "</span>" );
+            for (String keyword : keywords) {
+                if (text.contains(keyword)) {
+                    text = text.replace(keyword,
+                            "<span style='color:red;'>"
+                                    + keyword
+                                    + "</span>");
                 }
             }
 
-            text = handleStrings( "\"",
-                                  text );
+            text = handleStrings("\"",
+                    text);
         }
-        text = text.replace( "\t",
-                             "&nbsp;&nbsp;&nbsp;&nbsp;" );
+        text = text.replace("\t",
+                "&nbsp;&nbsp;&nbsp;&nbsp;");
 
         return text;
     }
 
     private static String handleStrings(String character,
                                         String text) {
-        int stringStart = text.indexOf( character );
-        while ( stringStart >= 0 ) {
-            int stringEnd = text.indexOf( character,
-                                          stringStart + 1 );
-            if ( stringEnd < 0 ) {
+        int stringStart = text.indexOf(character);
+        while (stringStart >= 0) {
+            int stringEnd = text.indexOf(character,
+                    stringStart + 1);
+            if (stringEnd < 0) {
                 stringStart = -1;
                 break;
             }
 
-            String oldString = text.substring( stringStart,
-                                               stringEnd + 1 );
+            String oldString = text.substring(stringStart,
+                    stringEnd + 1);
 
             String newString = "<span style='color:green;'>"
-                               + oldString
-                               + "</span>";
+                    + oldString
+                    + "</span>";
 
-            String beginning = text.substring( 0,
-                                               stringStart );
-            String end = text.substring( stringEnd + 1 );
+            String beginning = text.substring(0,
+                    stringStart);
+            String end = text.substring(stringEnd + 1);
 
             text = beginning
-                   + newString
-                   + end;
+                    + newString
+                    + end;
 
             int searchStart = stringStart
-                              + newString.length()
-                              + 1;
+                    + newString.length()
+                    + 1;
 
-            if ( searchStart < text.length() ) {
-                stringStart = text.indexOf( character,
-                                            searchStart );
+            if (searchStart < text.length()) {
+                stringStart = text.indexOf(character,
+                        searchStart);
             } else {
                 stringStart = -1;
             }
@@ -455,32 +436,32 @@ public class PackageBuilderWidget extends Composite {
 
     /**
      * This is called to display the success (and a download option).
-     * 
+     *
      * @param buildResults
      */
     private void showSuccessfulBuild(Panel buildResults) {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add( new HTML( "<img src='"
-                            + images.greenTick().getURL()
-                            + "'/><i>"
-                            + constants.PackageBuiltSuccessfully()
-                            + " "
-                            + conf.getLastModified()
-                            + "</i>" ) );
+        vert.add(new HTML("<img src='"
+                + images.greenTick().getURL()
+                + "'/><i>"
+                + constants.PackageBuiltSuccessfully()
+                + " "
+                + conf.getLastModified()
+                + "</i>"));
 
-        final String hyp = getDownloadLink( this.conf );
+        final String hyp = getDownloadLink(this.conf);
 
-        HTML html = new HTML( "<a href='"
-                              + hyp
-                              + "' target='_blank'>"
-                              + constants.DownloadBinaryPackage()
-                              + "</a>" );
+        HTML html = new HTML("<a href='"
+                + hyp
+                + "' target='_blank'>"
+                + constants.DownloadBinaryPackage()
+                + "</a>");
 
-        vert.add( html );
+        vert.add(html);
 
-        buildResults.add( vert );
+        buildResults.add(vert);
     }
 
     /**
@@ -488,16 +469,16 @@ public class PackageBuilderWidget extends Composite {
      */
     public static String getDownloadLink(PackageConfigData conf) {
         String hurl = GWT.getModuleBaseURL()
-                      + "package/"
-                      + conf.getName(); // NON-NLS
-        if ( !conf.isSnapshot() ) {
+                + "package/"
+                + conf.getName(); // NON-NLS
+        if (!conf.isSnapshot()) {
             hurl = hurl
-                   + "/"
-                   + SnapshotView.LATEST_SNAPSHOT;
+                    + "/"
+                    + SnapshotView.LATEST_SNAPSHOT;
         } else {
             hurl = hurl
-                   + "/"
-                   + conf.getSnapshotName();
+                    + "/"
+                    + conf.getSnapshotName();
         }
         final String uri = hurl;
         return uri;
@@ -512,9 +493,9 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
 
         BuildPackageErrorsSimpleTable errorsTable = new BuildPackageErrorsSimpleTable(clientFactory);
-        errorsTable.setRowData( results.getLines() );
-        errorsTable.setRowCount( results.getLines().size() );
-        buildResults.add( errorsTable );
+        errorsTable.setRowData(results.getLines());
+        errorsTable.setRowCount(results.getLines().size());
+        buildResults.add(errorsTable);
     }
 
     /**
@@ -522,97 +503,97 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showSnapshotDialog(final String packageName,
                                           final Command refreshCmd) {
-        LoadingPopup.showMessage( constants.LoadingExistingSnapshots() );
-        final FormStylePopup form = new FormStylePopup( images.snapshot(),
-                                                        constants.CreateASnapshotForDeployment() );
-        form.addRow( new HTML( constants.SnapshotDescription() ) );
+        LoadingPopup.showMessage(constants.LoadingExistingSnapshots());
+        final FormStylePopup form = new FormStylePopup(images.snapshot(),
+                constants.CreateASnapshotForDeployment());
+        form.addRow(new HTML(constants.SnapshotDescription()));
 
         final VerticalPanel vert = new VerticalPanel();
-        form.addAttribute( constants.ChooseOrCreateSnapshotName(),
-                           vert );
+        form.addAttribute(constants.ChooseOrCreateSnapshotName(),
+                vert);
         final List<RadioButton> radioList = new ArrayList<RadioButton>();
         final TextBox newName = new TextBox();
         final String newSnapshotText = constants.NEW()
-                                       + ": ";
+                + ": ";
 
-        RepositoryServiceFactory.getPackageService().listSnapshots( packageName,
-                                                             new GenericCallback<SnapshotInfo[]>() {
-                                                                 public void onSuccess(SnapshotInfo[] result) {
-                                                                     for ( int i = 0; i < result.length; i++ ) {
-                                                                         RadioButton existing = new RadioButton( "snapshotNameGroup",
-                                                                                 result[i].getName() ); // NON-NLS
-                                                                         radioList.add( existing );
-                                                                         vert.add( existing );
-                                                                     }
-                                                                     HorizontalPanel newSnap = new HorizontalPanel();
+        RepositoryServiceFactory.getPackageService().listSnapshots(packageName,
+                new GenericCallback<SnapshotInfo[]>() {
+                    public void onSuccess(SnapshotInfo[] result) {
+                        for (int i = 0; i < result.length; i++) {
+                            RadioButton existing = new RadioButton("snapshotNameGroup",
+                                    result[i].getName()); // NON-NLS
+                            radioList.add(existing);
+                            vert.add(existing);
+                        }
+                        HorizontalPanel newSnap = new HorizontalPanel();
 
-                                                                     final RadioButton newSnapRadio = new RadioButton( "snapshotNameGroup",
-                                                                                                                       newSnapshotText ); // NON-NLS
-                                                                     newSnap.add( newSnapRadio );
-                                                                     newName.setEnabled( false );
-                                                                     newSnapRadio.addClickHandler( new ClickHandler() {
-                                                                         public void onClick(ClickEvent event) {
-                                                                             newName.setEnabled( true );
-                                                                         }
+                        final RadioButton newSnapRadio = new RadioButton("snapshotNameGroup",
+                                newSnapshotText); // NON-NLS
+                        newSnap.add(newSnapRadio);
+                        newName.setEnabled(false);
+                        newSnapRadio.addClickHandler(new ClickHandler() {
+                            public void onClick(ClickEvent event) {
+                                newName.setEnabled(true);
+                            }
 
-                                                                     } );
+                        });
 
-                                                                     newSnap.add( newName );
-                                                                     radioList.add( newSnapRadio );
-                                                                     vert.add( newSnap );
+                        newSnap.add(newName);
+                        radioList.add(newSnapRadio);
+                        vert.add(newSnap);
 
-                                                                     LoadingPopup.close();
-                                                                 }
-                                                             } );
+                        LoadingPopup.close();
+                    }
+                });
 
         final TextBox comment = new TextBox();
-        form.addAttribute( constants.Comment(),
-                           comment );
+        form.addAttribute(constants.Comment(),
+                comment);
 
-        Button create = new Button( constants.CreateNewSnapshot() );
-        form.addAttribute( "",
-                           create );
+        Button create = new Button(constants.CreateNewSnapshot());
+        form.addAttribute("",
+                create);
 
-        create.addClickHandler( new ClickHandler() {
+        create.addClickHandler(new ClickHandler() {
             String name = "";
 
             public void onClick(ClickEvent event) {
                 boolean replace = false;
-                for ( RadioButton but : radioList ) {
-                    if ( but.getValue() ) {
+                for (RadioButton but : radioList) {
+                    if (but.getValue()) {
                         name = but.getText();
-                        if ( !but.getText().equals( newSnapshotText ) ) {
+                        if (!but.getText().equals(newSnapshotText)) {
                             replace = true;
                         }
                         break;
                     }
                 }
-                if ( name.equals( newSnapshotText ) ) {
+                if (name.equals(newSnapshotText)) {
                     name = newName.getText();
                 }
 
-                if ( name.equals( "" ) ) {
-                    Window.alert( constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot() );
+                if (name.equals("")) {
+                    Window.alert(constants.YouHaveToEnterOrChoseALabelNameForTheSnapshot());
                     return;
                 }
 
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().createPackageSnapshot( packageName,
-                                                                             name,
-                                                                             replace,
-                                                                             comment.getText(),
-                                                                             new GenericCallback<java.lang.Void>() {
-                                                                                 public void onSuccess(Void v) {
-                                                                                     Window.alert( constants.TheSnapshotCalled0WasSuccessfullyCreated( name ) );
-                                                                                     form.hide();
-                                                                                     if ( refreshCmd != null ) {
-                                                                                         refreshCmd.execute();
-                                                                                     }
-                                                                                     LoadingPopup.close();
-                                                                                 }
-                                                                             } );
+                LoadingPopup.showMessage(constants.PleaseWaitDotDotDot());
+                RepositoryServiceFactory.getPackageService().createPackageSnapshot(packageName,
+                        name,
+                        replace,
+                        comment.getText(),
+                        new GenericCallback<java.lang.Void>() {
+                            public void onSuccess(Void v) {
+                                Window.alert(constants.TheSnapshotCalled0WasSuccessfullyCreated(name));
+                                form.hide();
+                                if (refreshCmd != null) {
+                                    refreshCmd.execute();
+                                }
+                                LoadingPopup.close();
+                            }
+                        });
             }
-        } );
+        });
         form.show();
 
     }

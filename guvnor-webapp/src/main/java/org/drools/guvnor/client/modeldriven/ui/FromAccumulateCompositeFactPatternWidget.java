@@ -16,59 +16,46 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
-import org.drools.ide.common.client.modeldriven.brl.IPattern;
-
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
+import org.drools.guvnor.client.common.ClickableLabel;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.*;
 
 public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactPatternWidget {
 
-    private RuleModellerWidget sourcePatternWidget;
-
     public FromAccumulateCompositeFactPatternWidget(RuleModeller modeller,
-            FromAccumulateCompositeFactPattern pattern, Boolean readOnly) {
+                                                    FromAccumulateCompositeFactPattern pattern, Boolean readOnly) {
         super(modeller, pattern, readOnly);
     }
 
     public FromAccumulateCompositeFactPatternWidget(RuleModeller modeller,
-            FromAccumulateCompositeFactPattern pattern) {
+                                                    FromAccumulateCompositeFactPattern pattern) {
         super(modeller, pattern);
     }
 
     @Override
     protected Widget getCompositeLabel() {
-        ClickHandler leftPatternclick =  new ClickHandler() {
+        ClickHandler leftPatternclick = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                Widget w= (Widget)event.getSource();
+                Widget w = (Widget) event.getSource();
                 showFactTypeSelector(w);
             }
         };
         ClickHandler sourcePatternClick = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                Widget w= (Widget)event.getSource();
-                 showSourcePatternSelector(w);
+                Widget w = (Widget) event.getSource();
+                showSourcePatternSelector(w);
             }
         };
 
@@ -92,22 +79,23 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
             IPattern rPattern = this.getFromAccumulatePattern()
                     .getSourcePattern();
 
+            RuleModellerWidget sourcePatternWidget;
             if (rPattern instanceof FactPattern) {
-                this.sourcePatternWidget = new FactPatternWidget(
+                sourcePatternWidget = new FactPatternWidget(
                         this.getModeller(), rPattern, true,
                         true, this.readOnly);
             } else if (rPattern instanceof FromAccumulateCompositeFactPattern) {
-                this.sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(
+                sourcePatternWidget = new FromAccumulateCompositeFactPatternWidget(
                         this.getModeller(),
                         (FromAccumulateCompositeFactPattern) rPattern,
                         this.readOnly);
             } else if (rPattern instanceof FromCollectCompositeFactPattern) {
-                this.sourcePatternWidget = new FromCollectCompositeFactPatternWidget(
+                sourcePatternWidget = new FromCollectCompositeFactPatternWidget(
                         this.getModeller(),
                         (FromCollectCompositeFactPattern) rPattern,
                         this.readOnly);
             } else if (rPattern instanceof FromCompositeFactPattern) {
-                this.sourcePatternWidget = new FromCompositeFactPatternWidget(
+                sourcePatternWidget = new FromCompositeFactPatternWidget(
                         this.getModeller(),
                         (FromCompositeFactPattern) rPattern, this.readOnly);
             } else {
@@ -115,7 +103,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                         + rPattern + " for right side of FROM ACCUMULATE");
             }
 
-            this.sourcePatternWidget.addOnModifiedCommand(new Command() {
+            sourcePatternWidget.addOnModifiedCommand(new Command() {
                 public void execute() {
                     setModified(true);
                 }
@@ -124,7 +112,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
             panel.setWidget(
                     r++,
                     0,
-                    addRemoveButton(this.sourcePatternWidget,
+                    addRemoveButton(sourcePatternWidget,
                             new ClickHandler() {
 
                                 public void onClick(ClickEvent event) {
@@ -149,7 +137,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         int codeTableCol = 0;
 
         codeTable.setWidget(codeTableRow, codeTableCol++, new HTML("<div class='form-field'>Init:</div>"));
-        
+
         final TextBox initField = new TextBox();
         initField.setTitle("init code");
         initField.setText(getFromAccumulatePattern().getInitCode());
@@ -181,8 +169,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         //panel.setWidget(r++, 0, codeTable);
         ScrollPanel codePanel = new ScrollPanel();
         codePanel.add(codeTable);
-        
-        tPanel.add(codePanel,"Custom Code");
+
+        tPanel.add(codePanel, "Custom Code");
 
         DirtyableFlexTable functionTable = new DirtyableFlexTable();
 
@@ -197,13 +185,13 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
         ScrollPanel functionPanel = new ScrollPanel();
         functionPanel.add(functionTable);
-        
-        
-        tPanel.add(functionPanel,"Function");
+
+
+        tPanel.add(functionPanel, "Function");
         ChangeHandler changehandler = new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                Widget sender = (Widget)event.getSource();
+                Widget sender = (Widget) event.getSource();
                 TextBox senderTB = (TextBox) event.getSource();
                 String code = senderTB.getText();
                 setModified(true);
@@ -242,8 +230,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
 
 
         boolean useFunction = getFromAccumulatePattern().useFunctionOrCode().equals(FromAccumulateCompositeFactPattern.USE_FUNCTION);
-        
-        tPanel.selectTab(useFunction?1:0);
+
+        tPanel.selectTab(useFunction ? 1 : 0);
 
         panel.setWidget(r++, 0, tPanel);
 
@@ -276,7 +264,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                 pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();            }
+                popup.hide();
+            }
         });
         popup.show();
     }
@@ -305,7 +294,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
                 getFromAccumulatePattern().setSourcePattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
                 setModified(true);
                 getModeller().refreshWidget();
-                popup.hide();            }
+                popup.hide();
+            }
         });
 
         final Button fromBtn = new Button(constants.From());

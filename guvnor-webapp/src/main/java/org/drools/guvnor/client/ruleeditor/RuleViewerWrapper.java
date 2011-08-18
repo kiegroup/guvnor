@@ -35,38 +35,35 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigura
  * The main layout parent/controller the rule viewer.
  */
 public class RuleViewerWrapper extends GuvnorEditor {
-    private Constants                         constants            = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
-    private ArtifactEditor artifactEditor;
-    private RuleViewer ruleViewer;
-    private ActionToolbar actionToolBar;
     private RuleAsset asset;
     private boolean isHistoricalReadOnly = false;
     private final RuleViewerSettings ruleViewerSettings;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    VerticalPanel                             layout               = new VerticalPanel();
-    private final ClientFactory               clientFactory;
+    VerticalPanel layout = new VerticalPanel();
+    private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public RuleViewerWrapper( ClientFactory clientFactory,
-                              EventBus eventBus,
-                              RuleAsset asset ) {
-        this( clientFactory,
+    public RuleViewerWrapper(ClientFactory clientFactory,
+                             EventBus eventBus,
+                             RuleAsset asset) {
+        this(clientFactory,
                 eventBus,
                 asset,
                 false,
                 null,
-                null );
+                null);
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
-                              EventBus eventBus,
-                              RuleAsset asset,
-                              boolean isHistoricalReadOnly,
-                              ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                              RuleViewerSettings ruleViewerSettings) {
+                             EventBus eventBus,
+                             RuleAsset asset,
+                             boolean isHistoricalReadOnly,
+                             ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
+                             RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
@@ -81,58 +78,58 @@ public class RuleViewerWrapper extends GuvnorEditor {
                     }
                 });
 
-        initWidget( layout );
+        initWidget(layout);
         render();
-        setWidth( "100%" );
+        setWidth("100%");
     }
 
     private void render() {
-        this.artifactEditor = new ArtifactEditor(
+        ArtifactEditor artifactEditor = new ArtifactEditor(
                 clientFactory,
                 eventBus,
                 asset,
-                this.isHistoricalReadOnly );
+                this.isHistoricalReadOnly);
 
-        this.ruleViewer = new RuleViewer(
+        RuleViewer ruleViewer = new RuleViewer(
                 asset,
                 clientFactory,
                 eventBus,
                 this.isHistoricalReadOnly,
                 actionToolbarButtonsConfigurationProvider,
-                ruleViewerSettings );
-        this.actionToolBar = this.ruleViewer.getActionToolbar();
+                ruleViewerSettings);
+        ActionToolbar actionToolBar = ruleViewer.getActionToolbar();
 
         layout.clear();
-        layout.add( this.actionToolBar );
+        layout.add(actionToolBar);
 
         TabPanel tPanel = new TabPanel();
-        tPanel.setWidth( "100%" );
+        tPanel.setWidth("100%");
 
         ScrollPanel pnl = new ScrollPanel();
-        pnl.add( this.artifactEditor );
-        tPanel.add( pnl,
-                    "Attributes" );
+        pnl.add(artifactEditor);
+        tPanel.add(pnl,
+                "Attributes");
         // tPanel.selectTab(0);
 
         pnl = new ScrollPanel();
         // pnl1.setWidth("100%");
-        pnl.add( this.ruleViewer );
-        tPanel.add( pnl,
-                    "Edit" );
-        tPanel.selectTab( 1 );
+        pnl.add(ruleViewer);
+        tPanel.add(pnl,
+                "Edit");
+        tPanel.selectTab(1);
 
-        layout.add( tPanel );
+        layout.add(tPanel);
     }
 
     public void refresh() {
-        LoadingPopup.showMessage( constants.RefreshingItem() );
-        RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
-                                                                  new GenericCallback<RuleAsset>() {
-                                                                      public void onSuccess(RuleAsset a) {
-                                                                          asset = a;
-                                                                          render();
-                                                                          LoadingPopup.close();
-                                                                      }
-                                                                  } );
+        LoadingPopup.showMessage(constants.RefreshingItem());
+        RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
+                new GenericCallback<RuleAsset>() {
+                    public void onSuccess(RuleAsset a) {
+                        asset = a;
+                        render();
+                        LoadingPopup.close();
+                    }
+                });
     }
 }

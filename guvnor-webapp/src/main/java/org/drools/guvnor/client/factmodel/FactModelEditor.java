@@ -15,12 +15,6 @@
  */
 package org.drools.guvnor.client.factmodel;
 
-import java.util.List;
-
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -36,47 +30,45 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.util.AbstractLazyStackPanelHeader;
+
+import java.util.List;
 
 public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
-    private static Constants constants = ((Constants) GWT.create( Constants.class ));
-    private static Images    images    = (Images) GWT.create( Images.class );
+    private static Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Images images = (Images) GWT.create(Images.class);
 
     interface FactModelEditorBinder
-        extends
-        UiBinder<Widget, FactModelEditor> {
+            extends
+            UiBinder<Widget, FactModelEditor> {
     }
 
-    private static FactModelEditorBinder uiBinder           = GWT.create( FactModelEditorBinder.class );
+    private static FactModelEditorBinder uiBinder = GWT.create(FactModelEditorBinder.class);
 
     @UiField
-    Image                                icon;
+    Image icon;
     @UiField
-    Label                                titleLabel;
+    Label titleLabel;
     @UiField
-    Image                                editIcon;
+    Image editIcon;
     @UiField
-    Image                                moveUpIcon;
+    Image moveUpIcon;
     @UiField
-    Image                                moveDownIcon;
+    Image moveDownIcon;
     @UiField
-    Image                                deleteIcon;
+    Image deleteIcon;
 
-    private ClickHandler                 expandClickHandler = new ClickHandler() {
+    private final FactMetaModel factMetaModel;
+    private final List<FactMetaModel> factModels;
+    private Command deleteEvent;
 
-                                                                public void onClick(ClickEvent event) {
-                                                                    onTitleClicked();
-                                                                }
-                                                            };
+    private Command moveUpCommand;
+    private Command moveDownCommand;
 
-    private final FactMetaModel          factMetaModel;
-    private final List<FactMetaModel>    factModels;
-    private Command                      deleteEvent;
-
-    private Command                      moveUpCommand;
-    private Command                      moveDownCommand;
-
-    private ModelNameHelper              modelNameHelper;
+    private ModelNameHelper modelNameHelper;
 
     public void setDeleteEvent(Command deleteEvent) {
 
@@ -89,55 +81,61 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
         this.factModels = factModels;
         this.factMetaModel = factMetaModel;
 
-        add( uiBinder.createAndBindUi( this ) );
+        add(uiBinder.createAndBindUi(this));
 
-        titleLabel.setText( getTitleText() );
+        titleLabel.setText(getTitleText());
 
-        icon.addClickHandler( expandClickHandler );
-        titleLabel.addClickHandler( expandClickHandler );
+        ClickHandler expandClickHandler = new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                onTitleClicked();
+            }
+        };
+        icon.addClickHandler(expandClickHandler);
+        titleLabel.addClickHandler(expandClickHandler);
 
         setIconImage();
 
-        moveUpIcon.setTitle( constants.MoveUp() );
-        moveDownIcon.setTitle( constants.MoveDown() );
-        deleteIcon.setTitle( constants.RemoveThisFactType() );
+        moveUpIcon.setTitle(constants.MoveUp());
+        moveDownIcon.setTitle(constants.MoveDown());
+        deleteIcon.setTitle(constants.RemoveThisFactType());
 
-        addOpenHandler( new OpenHandler<AbstractLazyStackPanelHeader>() {
+        addOpenHandler(new OpenHandler<AbstractLazyStackPanelHeader>() {
             public void onOpen(OpenEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = true;
                 setIconImage();
             }
-        } );
+        });
 
-        addCloseHandler( new CloseHandler<AbstractLazyStackPanelHeader>() {
+        addCloseHandler(new CloseHandler<AbstractLazyStackPanelHeader>() {
             public void onClose(CloseEvent<AbstractLazyStackPanelHeader> event) {
                 expanded = false;
                 setIconImage();
             }
-        } );
+        });
     }
 
     private String getTitleText() {
         StringBuilder sb = new StringBuilder();
-        sb.append( factMetaModel.getName() );
-        if ( factMetaModel.hasSuperType() ) {
-            sb.append( " extends " );
-            sb.append( factMetaModel.getSuperType() );
+        sb.append(factMetaModel.getName());
+        if (factMetaModel.hasSuperType()) {
+            sb.append(" extends ");
+            sb.append(factMetaModel.getSuperType());
         }
         return sb.toString();
     }
 
     @UiHandler("editIcon")
     void editIconClick(ClickEvent event) {
-        final FactEditorPopup popup = new FactEditorPopup( factMetaModel,
-                                                           factModels,
-                                                           modelNameHelper );
+        final FactEditorPopup popup = new FactEditorPopup(factMetaModel,
+                factModels,
+                modelNameHelper);
 
-        popup.setOkCommand( new Command() {
+        popup.setOkCommand(new Command() {
             public void execute() {
-                titleLabel.setText( getTitleText() );
+                titleLabel.setText(getTitleText());
             }
-        } );
+        });
 
         popup.show();
     }
@@ -154,7 +152,7 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
 
     @UiHandler("deleteIcon")
     void deleteClick(ClickEvent event) {
-        if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFact() ) ) {
+        if (Window.confirm(constants.AreYouSureYouWantToRemoveThisFact())) {
             deleteEvent.execute();
         }
     }
@@ -164,10 +162,10 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     private void setIconImage() {
-        if ( expanded ) {
-            icon.setResource( images.collapse() );
+        if (expanded) {
+            icon.setResource(images.collapse());
         } else {
-            icon.setResource( images.expand() );
+            icon.setResource(images.expand());
         }
 
     }
@@ -181,32 +179,32 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     public void setUpVisible(boolean visible) {
-        moveUpIcon.setVisible( visible );
+        moveUpIcon.setVisible(visible);
     }
 
     public void setDownVisible(boolean visible) {
-        moveDownIcon.setVisible( visible );
+        moveDownIcon.setVisible(visible);
     }
 
     public void expand() {
-        if ( !expanded ) {
+        if (!expanded) {
             onTitleClicked();
         }
     }
 
     public void collapse() {
-        if ( expanded ) {
+        if (expanded) {
             onTitleClicked();
         }
     }
 
     private void onTitleClicked() {
-        if ( expanded ) {
-            CloseEvent.fire( this,
-                             this );
+        if (expanded) {
+            CloseEvent.fire(this,
+                    this);
         } else {
-            OpenEvent.fire( this,
-                            this );
+            OpenEvent.fire(this,
+                    this);
         }
     }
 
@@ -215,8 +213,8 @@ public class FactModelEditor extends AbstractLazyStackPanelHeader {
     }
 
     public Widget getContent() {
-        return new FactFieldsEditor( factMetaModel.getFields(),
-                                     factMetaModel.getAnnotations(),
-                                     modelNameHelper );
+        return new FactFieldsEditor(factMetaModel.getFields(),
+                factMetaModel.getAnnotations(),
+                modelNameHelper);
     }
 }

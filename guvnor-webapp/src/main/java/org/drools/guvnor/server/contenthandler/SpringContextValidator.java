@@ -1,25 +1,24 @@
 package org.drools.guvnor.server.contenthandler;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * The Meaning of this class is to validate the Syntax of the Spring Context XML FILE.
- **/
+ */
 public class SpringContextValidator {
 
-    static final String JAXP_SCHEMA_LANGUAGE =
+    private static final String JAXP_SCHEMA_LANGUAGE =
             "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-    static final String W3C_XML_SCHEMA =
+    private static final String W3C_XML_SCHEMA =
             "http://www.w3.org/2001/XMLSchema";
     private InputStream content;
 
@@ -52,7 +51,6 @@ public class SpringContextValidator {
         } catch (IOException e) {
             return e.getMessage();
         }
-
 
 
         return "";

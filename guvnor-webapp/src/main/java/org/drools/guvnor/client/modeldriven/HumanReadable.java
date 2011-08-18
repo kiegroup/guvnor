@@ -15,17 +15,17 @@
  */
 
 package org.drools.guvnor.client.modeldriven;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
+import org.drools.guvnor.client.messages.Constants;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This contains some simple mappings between operators, conditional elements and the human readable
  * equivalent.
- *
+ * <p/>
  * Yes, I am making the presumption that programmers are not human,
  * but I think they (we) are cool with that.
  */
@@ -35,44 +35,42 @@ public class HumanReadable {
     public static Map<String, String> operatorExtensionDisplayMap = new HashMap<String, String>();
     public static Map<String, String> ceDisplayMap = new HashMap<String, String>();
     public static Map<String, String> actionDisplayMap = new HashMap<String, String>();
-    public static final String[] CONDITIONAL_ELEMENTS = new String[] {"not", "exists", "or"};
-    public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[] {"from","from accumulate","from collect", "from entry-point"};
-
-    private static Constants constants;
+    public static final String[] CONDITIONAL_ELEMENTS = new String[]{"not", "exists", "or"};
+    public static final String[] FROM_CONDITIONAL_ELEMENTS = new String[]{"from", "from accumulate", "from collect", "from entry-point"};
 
     static {
-        constants = ((Constants) GWT.create(Constants.class));
-        operatorDisplayMap.put( "==", constants.isEqualTo());
-        operatorDisplayMap.put( "!=", constants.isNotEqualTo());
-        operatorDisplayMap.put( "<", constants.isLessThan());
-        operatorDisplayMap.put( "<=", constants.lessThanOrEqualTo());
-        operatorDisplayMap.put( ">", constants.greaterThan());
-        operatorDisplayMap.put( ">=", constants.greaterThanOrEqualTo());
-        operatorDisplayMap.put( "|| ==", constants.orEqualTo());
-        operatorDisplayMap.put( "|| !=", constants.orNotEqualTo());
-        operatorDisplayMap.put( "&& !=", constants.andNotEqualTo());
-        operatorDisplayMap.put( "&& >", constants.andGreaterThan());
-        operatorDisplayMap.put( "&& <", constants.andLessThan());
-        operatorDisplayMap.put( "|| >", constants.orGreaterThan());
-        operatorDisplayMap.put( "|| <", constants.orLessThan());
-        operatorDisplayMap.put( "&& <", constants.andLessThan());
-        operatorDisplayMap.put( "|| >=", constants.orGreaterThanOrEqualTo());
-        operatorDisplayMap.put( "|| <=", constants.orLessThanOrEqualTo());
-        operatorDisplayMap.put( "&& >=", constants.andGreaterThanOrEqualTo());
-        operatorDisplayMap.put( "&& <=", constants.andLessThanOrEqualTo());
-        operatorDisplayMap.put( "&& contains", constants.andContains());
-        operatorDisplayMap.put( "|| contains", constants.orContains());
-        operatorDisplayMap.put( "&& matches", constants.andMatches());
-        operatorDisplayMap.put( "|| matches", constants.orMatches());
-        operatorDisplayMap.put( "|| excludes", constants.orExcludes());
-        operatorDisplayMap.put( "&& excludes", constants.andExcludes());
-        operatorDisplayMap.put( "soundslike", constants.soundsLike());
+        Constants constants = ((Constants) GWT.create(Constants.class));
+        operatorDisplayMap.put("==", constants.isEqualTo());
+        operatorDisplayMap.put("!=", constants.isNotEqualTo());
+        operatorDisplayMap.put("<", constants.isLessThan());
+        operatorDisplayMap.put("<=", constants.lessThanOrEqualTo());
+        operatorDisplayMap.put(">", constants.greaterThan());
+        operatorDisplayMap.put(">=", constants.greaterThanOrEqualTo());
+        operatorDisplayMap.put("|| ==", constants.orEqualTo());
+        operatorDisplayMap.put("|| !=", constants.orNotEqualTo());
+        operatorDisplayMap.put("&& !=", constants.andNotEqualTo());
+        operatorDisplayMap.put("&& >", constants.andGreaterThan());
+        operatorDisplayMap.put("&& <", constants.andLessThan());
+        operatorDisplayMap.put("|| >", constants.orGreaterThan());
+        operatorDisplayMap.put("|| <", constants.orLessThan());
+        operatorDisplayMap.put("&& <", constants.andLessThan());
+        operatorDisplayMap.put("|| >=", constants.orGreaterThanOrEqualTo());
+        operatorDisplayMap.put("|| <=", constants.orLessThanOrEqualTo());
+        operatorDisplayMap.put("&& >=", constants.andGreaterThanOrEqualTo());
+        operatorDisplayMap.put("&& <=", constants.andLessThanOrEqualTo());
+        operatorDisplayMap.put("&& contains", constants.andContains());
+        operatorDisplayMap.put("|| contains", constants.orContains());
+        operatorDisplayMap.put("&& matches", constants.andMatches());
+        operatorDisplayMap.put("|| matches", constants.orMatches());
+        operatorDisplayMap.put("|| excludes", constants.orExcludes());
+        operatorDisplayMap.put("&& excludes", constants.andExcludes());
+        operatorDisplayMap.put("soundslike", constants.soundsLike());
         operatorDisplayMap.put("in", constants.isContainedInTheFollowingList());
         operatorDisplayMap.put("== null", constants.isEqualToNull());
         operatorDisplayMap.put("!= null", constants.isNotEqualToNull());
-        
+
         operatorDisplayMap.put("|| after", constants.orAfter());
-        operatorDisplayMap.put("|| before", constants.orBefore()); 
+        operatorDisplayMap.put("|| before", constants.orBefore());
         operatorDisplayMap.put("|| coincides", constants.orCoincides());
         operatorDisplayMap.put("&& after", constants.andAfter());
         operatorDisplayMap.put("&& before", constants.andBefore());
@@ -97,24 +95,24 @@ public class HumanReadable {
         operatorDisplayMap.put("&& overlappedby", constants.andOverlappedBy());
         operatorDisplayMap.put("&& starts", constants.andStarts());
         operatorDisplayMap.put("&& startedby", constants.andStartedBy());
-        operatorDisplayMap.put( "over window:time", constants.OverCEPWindowTime());
-        operatorDisplayMap.put( "over window:length", constants.OverCEPWindowLength());
+        operatorDisplayMap.put("over window:time", constants.OverCEPWindowTime());
+        operatorDisplayMap.put("over window:length", constants.OverCEPWindowLength());
 
-        ceDisplayMap.put( "not", constants.ThereIsNo());
-        ceDisplayMap.put( "exists", constants.ThereExists());
-        ceDisplayMap.put( "or", constants.AnyOf1());
-        ceDisplayMap.put( "from", constants.From());
-        ceDisplayMap.put( "from accumulate", constants.FromAccumulate());
-        ceDisplayMap.put( "from collect", constants.FromCollect());
-        ceDisplayMap.put( "from entry-point", constants.FromEntryPoint());
-        ceDisplayMap.put( "from entry-point", constants.FromEntryPoint());
+        ceDisplayMap.put("not", constants.ThereIsNo());
+        ceDisplayMap.put("exists", constants.ThereExists());
+        ceDisplayMap.put("or", constants.AnyOf1());
+        ceDisplayMap.put("from", constants.From());
+        ceDisplayMap.put("from accumulate", constants.FromAccumulate());
+        ceDisplayMap.put("from collect", constants.FromCollect());
+        ceDisplayMap.put("from entry-point", constants.FromEntryPoint());
+        ceDisplayMap.put("from entry-point", constants.FromEntryPoint());
 
-        actionDisplayMap.put( "assert", constants.Insert());
-        actionDisplayMap.put( "assertLogical", constants.LogicallyInsert());
-        actionDisplayMap.put( "retract", constants.Retract());
-        actionDisplayMap.put( "set", constants.Set());
-        actionDisplayMap.put( "modify", constants.Modify() );
-        actionDisplayMap.put( "call", constants.CallMethod());
+        actionDisplayMap.put("assert", constants.Insert());
+        actionDisplayMap.put("assertLogical", constants.LogicallyInsert());
+        actionDisplayMap.put("retract", constants.Retract());
+        actionDisplayMap.put("set", constants.Set());
+        actionDisplayMap.put("modify", constants.Modify());
+        actionDisplayMap.put("call", constants.CallMethod());
 
     }
 
@@ -123,7 +121,7 @@ public class HumanReadable {
     }
 
     public static String getCEDisplayName(String ce) {
-        return lookup( ce, ceDisplayMap );
+        return lookup(ce, ceDisplayMap);
     }
 
     private static String lookup(String ce, Map<String, String> map) {

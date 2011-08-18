@@ -19,22 +19,16 @@
 
 package org.drools.guvnor.client.ruleeditor.springcontext;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.RuleContentText;
-
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
-
 import com.google.gwt.user.client.ui.TextArea;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
 import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.client.ruleeditor.SaveEventListener;
@@ -43,139 +37,136 @@ import org.drools.guvnor.client.ruleeditor.SaveEventListener;
  * This is the default Spring editor widget - more to come later.
  */
 public class SpringContextEditor extends DirtyableComposite
-    implements
-    EditorWidget, SaveEventListener {
+        implements
+        EditorWidget, SaveEventListener {
 
-    private TextArea              text;
+    private TextArea text;
     final private RuleContentText data;
-
-    final private RuleAsset       asset;
 
     public SpringContextEditor(RuleAsset a,
                                RuleViewer v,
-                        ClientFactory clientFactory,
-                        EventBus eventBus) {
-        this( a );
+                               ClientFactory clientFactory,
+                               EventBus eventBus) {
+        this(a);
     }
 
     public SpringContextEditor(RuleAsset a) {
-        this( a,
-              -1 );
+        this(a,
+                -1);
     }
 
-    public SpringContextEditor(RuleAsset a,
-                                    int visibleLines) {
-        asset = a;
-                       
+    public SpringContextEditor(RuleAsset asset,
+                               int visibleLines) {
+
         data = (RuleContentText) asset.getContent();
-        
-        if ( data.content == null ) {
+
+        if (data.content == null) {
             data.content = "Empty!";
         }
- 
-        Grid layout = new Grid( 1,
-                                2 );
-        
-        
+
+        Grid layout = new Grid(1,
+                2);
+
+
         SpringContextElementsBrowser browser = new SpringContextElementsBrowser(new SpringContextElementSelectedListener() {
 
             public void onElementSelected(String elementName, String pasteValue) {
-                insertText(pasteValue,true);
+                insertText(pasteValue, true);
             }
         });
-        
-        layout.setWidget( 0,
-                          0,
-                          browser );
+
+        layout.setWidget(0,
+                0,
+                browser);
         text = new TextArea();
-        text.setWidth( "100%" );
-        text.setVisibleLines( (visibleLines == -1) ? 25 : visibleLines );
-        text.setText( data.content );
-        text.getElement().setAttribute( "spellcheck",
-                                        "false" ); //NON-NLS
+        text.setWidth("100%");
+        text.setVisibleLines((visibleLines == -1) ? 25 : visibleLines);
+        text.setText(data.content);
+        text.getElement().setAttribute("spellcheck",
+                "false"); //NON-NLS
 
-        text.setStyleName( "default-text-Area" ); //NON-NLS
+        text.setStyleName("default-text-Area"); //NON-NLS
 
-        text.addChangeHandler( new ChangeHandler() {
+        text.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 data.content = text.getText();
                 makeDirty();
             }
-        } );
+        });
 
-        text.addKeyDownHandler( new KeyDownHandler() {
+        text.addKeyDownHandler(new KeyDownHandler() {
 
             public void onKeyDown(KeyDownEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
                     event.preventDefault();
                     event.stopPropagation();
                     int pos = text.getCursorPos();
-                    insertText( "\t", false );
-                    text.setCursorPos( pos + 1 );
+                    insertText("\t", false);
+                    text.setCursorPos(pos + 1);
                     text.cancelKey();
-                    text.setFocus( true );
+                    text.setFocus(true);
                 }
             }
-        } );
+        });
 
-        layout.setWidget( 0,
-                          1,
-                          text );
-        
-        
-        layout.getColumnFormatter().setWidth( 0,
-                                              "10%" );
-        layout.getColumnFormatter().setWidth( 1,
-                                              "90%" );
-        layout.getCellFormatter().setAlignment( 0,
-                                                0,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.getCellFormatter().setAlignment( 0,
-                                                1,
-                                                HasHorizontalAlignment.ALIGN_LEFT,
-                                                HasVerticalAlignment.ALIGN_TOP );
-        layout.setWidth( "95%" );
-        
-        initWidget( layout );
+        layout.setWidget(0,
+                1,
+                text);
+
+
+        layout.getColumnFormatter().setWidth(0,
+                "10%");
+        layout.getColumnFormatter().setWidth(1,
+                "90%");
+        layout.getCellFormatter().setAlignment(0,
+                0,
+                HasHorizontalAlignment.ALIGN_LEFT,
+                HasVerticalAlignment.ALIGN_TOP);
+        layout.getCellFormatter().setAlignment(0,
+                1,
+                HasHorizontalAlignment.ALIGN_LEFT,
+                HasVerticalAlignment.ALIGN_TOP);
+        layout.setWidth("95%");
+
+        initWidget(layout);
 
     }
 
     void insertText(String ins, boolean isSpecialPaste) {
-        
+
         text.setFocus(true);
-        
+
         int i = text.getCursorPos();
-        String left = text.getText().substring( 0,
-                                                i );
-        String right = text.getText().substring( i,
-                                                 text.getText().length() );
+        String left = text.getText().substring(0,
+                i);
+        String right = text.getText().substring(i,
+                text.getText().length());
         int cursorPosition = left.toCharArray().length;
-        if (isSpecialPaste){
+        if (isSpecialPaste) {
             int p = ins.indexOf("|");
-            if (p > -1){
+            if (p > -1) {
                 cursorPosition += p;
                 ins = ins.replaceAll("\\|", "");
             }
-            
+
         }
-        
-        text.setText( left + ins + right );
+
+        text.setText(left + ins + right);
         this.data.content = text.getText();
-        
+
         text.setCursorPos(cursorPosition);
     }
 
-    
+
     public void onSave() {
-            //data.content = text.getText();
-    //asset.content = data;
+        //data.content = text.getText();
+        //asset.content = data;
 
     }
 
     public void onAfterSave() {
 
     }
-        
+
 
 }

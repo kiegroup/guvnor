@@ -47,7 +47,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetWithSpaces() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetSpaces", "");
+        PackageItem pkg = repo.createPackage("testRestGetSpaces", "", PackageItem.PACKAGE_FORMAT);
         AssetItem ass = pkg.addAsset("some space", "");
         ass.updateFormat("drl");
         ass.checkin("hey");
@@ -70,7 +70,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetBasics() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetBasics", "");
+        PackageItem pkg = repo.createPackage("testRestGetBasics", "", PackageItem.PACKAGE_FORMAT);
         pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
         repo.save();
 
@@ -180,7 +180,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testGetVersionHistory() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "");
+        PackageItem pkg = repo.createPackage("testRestGetVersionHistory", "", PackageItem.PACKAGE_FORMAT);
         repo.save();
 
 
@@ -235,7 +235,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testVersionHistoryAndArchived() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testVersionHistoryAndArchived", "");
+        PackageItem pkg = repo.createPackage("testVersionHistoryAndArchived", "", PackageItem.PACKAGE_FORMAT);
         repo.save();
 
 
@@ -281,7 +281,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testPost() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestPost", "");
+        PackageItem pkg = repo.createPackage("testRestPost", "", PackageItem.PACKAGE_FORMAT);
         pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
         repo.save();
 
@@ -327,7 +327,7 @@ public class RestAPITest extends RepositoryTestCase {
     public void testPut() throws Exception {
         //need to test both asset and .package shite.
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestPut", "");
+        PackageItem pkg = repo.createPackage("testRestPut", "", PackageItem.PACKAGE_FORMAT);
         pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
         repo.save();
 
@@ -384,7 +384,7 @@ public class RestAPITest extends RepositoryTestCase {
     @Test
     public void testDelete() throws Exception {
         RulesRepository repo = RepositorySessionUtil.getRepository();
-        PackageItem pkg = repo.createPackage("testRestDelete", "");
+        PackageItem pkg = repo.createPackage("testRestDelete", "", PackageItem.PACKAGE_FORMAT);
         pkg.updateStringProperty("This is some header", PackageItem.HEADER_PROPERTY_NAME);
         repo.save();
 

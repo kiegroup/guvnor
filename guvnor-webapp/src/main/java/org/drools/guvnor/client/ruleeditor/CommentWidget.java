@@ -15,72 +15,68 @@
  */
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
-import org.drools.guvnor.client.util.DecoratedTextArea;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.Artifact;
+import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
+import org.drools.guvnor.client.util.DecoratedTextArea;
 
 public class CommentWidget extends DirtyableComposite {
-    private Constants                      constants = GWT.create( Constants.class );
-    private final DecoratedTextArea        text;
-    private final DecoratedDisclosurePanel disclosurePanel;
-    private boolean                        readOnly;
+    private Constants constants = GWT.create(Constants.class);
+    private final DecoratedTextArea text;
 
     public CommentWidget(final Artifact artifact,
                          boolean readOnly) {
-        this.readOnly = readOnly;
 
         text = getTextArea();
-        text.setEnabled( !this.readOnly );
+        text.setEnabled(!readOnly);
 
-        disclosurePanel = getDisclosurePanel();
+        DecoratedDisclosurePanel disclosurePanel = getDisclosurePanel();
 
-        disclosurePanel.setContent( text );
+        disclosurePanel.setContent(text);
 
-        disclosurePanel.addOpenHandler( new OpenHandler<DisclosurePanel>() {
+        disclosurePanel.addOpenHandler(new OpenHandler<DisclosurePanel>() {
             public void onOpen(OpenEvent<DisclosurePanel> event) {
-                loadData( artifact );
+                loadData(artifact);
             }
-        } );
+        });
 
-        disclosurePanel.setOpen( false );
+        disclosurePanel.setOpen(false);
 
-        initWidget( disclosurePanel );
+        initWidget(disclosurePanel);
     }
 
     private DecoratedDisclosurePanel getDisclosurePanel() {
-        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( constants.Description() );
-        disclosurePanel.setWidth( "100%" );
+        DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel(constants.Description());
+        disclosurePanel.setWidth("100%");
         return disclosurePanel;
     }
 
     private DecoratedTextArea getTextArea() {
         DecoratedTextArea text = new DecoratedTextArea();
-        text.setWidth( "95%" );
-        text.setVisibleLines( 5 );
-        text.setTitle( constants.RuleDocHint() );
+        text.setWidth("95%");
+        text.setVisibleLines(5);
+        text.setTitle(constants.RuleDocHint());
         return text;
     }
 
     private void loadData(final Artifact data) {
-        text.setText( data.getDescription() );
-        text.addChangeHandler( new ChangeHandler() {
+        text.setText(data.getDescription());
+        text.addChangeHandler(new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                data.setDescription( text.getText() );
+                data.setDescription(text.getText());
                 makeDirty();
             }
-        } );
-        if ( data.getDescription() == null || "".equals( data.getDescription() ) ) {
-            text.setText( constants.documentationDefault() );
+        });
+        if (data.getDescription() == null || "".equals(data.getDescription())) {
+            text.setText(constants.documentationDefault());
         }
     }
 }

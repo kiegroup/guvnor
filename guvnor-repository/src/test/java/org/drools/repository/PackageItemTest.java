@@ -793,11 +793,11 @@ public class PackageItemTest extends RepositoryTestCase {
         assertNotNull(rulePackageItem1);
         // PACKAGE_FORMAT is the default module format
         assertEquals(PackageItem.PACKAGE_FORMAT, rulePackageItem1.getFormat());
-        rulePackageItem1.updateFormat("SOAService");
+        rulePackageItem1.updateFormat("soaservice");
 
         PackageItem item = getRepo().loadPackage(
                 "testFormatOtherThanDroolsPackage");
-        assertEquals("SOAService", item.getFormat());
+        assertEquals("soaservice", item.getFormat());
     }
     
     public static void updateHeader(String h, PackageItem pkg) {

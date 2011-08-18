@@ -16,93 +16,86 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.ui.TextArea;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.TextArea;
-
 /**
  * This is the default rule editor widget (just text editor based) - more to come later.
  */
 public class DefaultRuleContentWidget extends DirtyableComposite
-    implements
-    EditorWidget {
+        implements
+        EditorWidget {
 
-    private TextArea              text;
+    private TextArea text;
     final private RuleContentText data;
-
-    final private RuleAsset       asset;
 
     public DefaultRuleContentWidget(RuleAsset a,
                                     RuleViewer v,
-                                    ClientFactory clientFactory, 
+                                    ClientFactory clientFactory,
                                     EventBus eventBus) {
-        this( a );
+        this(a);
     }
 
     public DefaultRuleContentWidget(RuleAsset a) {
-        this( a,
-              -1 );
+        this(a,
+                -1);
     }
 
     public DefaultRuleContentWidget(RuleAsset a,
                                     int visibleLines) {
-        asset = a;
+        RuleAsset asset = a;
         data = (RuleContentText) asset.getContent();
 
-        if ( data.content == null ) {
+        if (data.content == null) {
             data.content = "";
         }
 
         text = new TextArea();
-        text.setWidth( "100%" );
-        text.setVisibleLines( (visibleLines == -1) ? 16 : visibleLines );
-        text.setText( data.content );
+        text.setWidth("100%");
+        text.setVisibleLines((visibleLines == -1) ? 16 : visibleLines);
+        text.setText(data.content);
 
-        text.getElement().setAttribute( "spellcheck",
-                                        "false" ); //NON-NLS
+        text.getElement().setAttribute("spellcheck",
+                "false"); //NON-NLS
 
-        text.setStyleName( "default-text-Area" ); //NON-NLS
+        text.setStyleName("default-text-Area"); //NON-NLS
 
-        text.addChangeHandler( new ChangeHandler() {
+        text.addChangeHandler(new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 data.content = text.getText();
                 makeDirty();
             }
-        } );
+        });
 
-        text.addKeyDownHandler( new KeyDownHandler() {
+        text.addKeyDownHandler(new KeyDownHandler() {
 
             public void onKeyDown(KeyDownEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_TAB ) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
                     int pos = text.getCursorPos();
-                    insertText( "\t" );
-                    text.setCursorPos( pos + 1 );
+                    insertText("\t");
+                    text.setCursorPos(pos + 1);
                     text.cancelKey();
-                    text.setFocus( true );
+                    text.setFocus(true);
                 }
             }
-        } );
+        });
 
-        initWidget( text );
+        initWidget(text);
 
     }
 
     void insertText(String ins) {
         int i = text.getCursorPos();
-        String left = text.getText().substring( 0,
-                                                i );
-        String right = text.getText().substring( i,
-                                                 text.getText().length() );
-        text.setText( left + ins + right );
+        String left = text.getText().substring(0,
+                i);
+        String right = text.getText().substring(i,
+                text.getText().length());
+        text.setText(left + ins + right);
         this.data.content = text.getText();
     }
 

@@ -53,7 +53,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule1",
                             "desc",
@@ -111,7 +112,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule1",
                             "desc",
@@ -160,7 +162,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule1",
                             "desc",
@@ -219,7 +222,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule1",
                             "desc",
@@ -516,7 +520,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule",
                             "desc",
@@ -567,7 +572,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule",
                             "desc",
@@ -627,7 +633,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule",
                             "desc",
@@ -675,7 +682,8 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                   cat,
                                                   "qkfnd" );
         repositoryPackageService.createPackage( "testTextSearch",
-                                                "for testing search." );
+                                                "for testing search.",
+                                                "package" );
 
         impl.createNewRule( "testTextRule",
                             "desc",

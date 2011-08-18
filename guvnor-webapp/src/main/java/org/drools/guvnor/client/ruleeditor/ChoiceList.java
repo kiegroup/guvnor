@@ -16,130 +16,115 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.*;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.FocusEvent;
-import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import java.util.List;
 
 /**
- * This is a popup list for "content assistance" - although on the web, 
+ * This is a popup list for "content assistance" - although on the web,
  * its not assistance - its mandatory ;)
  */
 public class ChoiceList extends PopupPanel {
 
-    private ListBox             list;
+    private ListBox list;
     private final DSLSentence[] sentences;
-    private HorizontalPanel     buttons;
-    private TextBox             filter;
-    private Constants           constants = ((Constants) GWT.create( Constants.class ));
+    private TextBox filter;
 
     /**
-    * Pass in a list of suggestions for the popup lists.
-    * Set a click listener to get notified when the OK button is clicked.
-    */
+     * Pass in a list of suggestions for the popup lists.
+     * Set a click listener to get notified when the OK button is clicked.
+     */
     public ChoiceList(final DSLSentence[] sen,
                       final DSLRuleEditor self) {
-        super( true );
+        super(true);
 
-        setGlassEnabled( true );
+        setGlassEnabled(true);
         this.sentences = sen;
         filter = new TextBox();
-        filter.setWidth( "100%" );
+        filter.setWidth("100%");
+        Constants constants = ((Constants) GWT.create(Constants.class));
         final String defaultMessage = constants.enterTextToFilterList();
-        filter.setText( defaultMessage );
-        filter.addFocusHandler( new FocusHandler() {
+        filter.setText(defaultMessage);
+        filter.addFocusHandler(new FocusHandler() {
             public void onFocus(FocusEvent event) {
-                filter.setText( "" );
+                filter.setText("");
             }
-        } );
+        });
 
-        filter.addBlurHandler( new BlurHandler() {
+        filter.addBlurHandler(new BlurHandler() {
             public void onBlur(BlurEvent event) {
-                filter.setText( defaultMessage );
+                filter.setText(defaultMessage);
             }
-        } );
+        });
 
-        filter.addKeyUpHandler( new KeyUpHandler() {
+        filter.addKeyUpHandler(new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
-                    applyChoice( self );
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                    applyChoice(self);
                 } else {
-                    populateList( ListUtil.filter( sentences,
-                                                   filter.getText() ) );
+                    populateList(ListUtil.filter(sentences,
+                            filter.getText()));
                 }
             }
 
-        } );
-        filter.setFocus( true );
+        });
+        filter.setFocus(true);
 
         VerticalPanel panel = new VerticalPanel();
-        panel.add( filter );
+        panel.add(filter);
 
         list = new ListBox();
-        list.setVisibleItemCount( 5 );
+        list.setVisibleItemCount(5);
 
-        populateList( ListUtil.filter( this.sentences,
-                                       "" ) );
+        populateList(ListUtil.filter(this.sentences,
+                ""));
 
-        panel.add( list );
+        panel.add(list);
 
-        Button ok = new Button( constants.OK() );
-        ok.addClickHandler( new ClickHandler() {
+        Button ok = new Button(constants.OK());
+        ok.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                applyChoice( self );
+                applyChoice(self);
             }
-        } );
+        });
 
-        Button cancel = new Button( constants.Cancel() );
-        cancel.addClickHandler( new ClickHandler() {
+        Button cancel = new Button(constants.Cancel());
+        cancel.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 hide();
             }
-        } );
+        });
 
-        buttons = new HorizontalPanel();
+        HorizontalPanel buttons = new HorizontalPanel();
 
-        buttons.add( ok );
-        buttons.add( cancel );
+        buttons.add(ok);
+        buttons.add(cancel);
 
-        panel.add( buttons );
+        panel.add(buttons);
 
-        add( panel );
-        setStyleName( "ks-popups-Popup" ); //NON-NLS
+        add(panel);
+        setStyleName("ks-popups-Popup"); //NON-NLS
 
     }
 
     private void applyChoice(final DSLRuleEditor self) {
-        self.insertText( getSelectedItem() );
+        self.insertText(getSelectedItem());
         hide();
     }
 
     private void populateList(List<DSLSentence> filtered) {
         list.clear();
-        for ( int i = 0; i < filtered.size(); i++ ) {
-            list.addItem( ((DSLSentence) filtered.get( i )).getDefinition() );
+        for (int i = 0; i < filtered.size(); i++) {
+            list.addItem(((DSLSentence) filtered.get(i)).getDefinition());
         }
     }
 
     public String getSelectedItem() {
-        return list.getItemText( list.getSelectedIndex() );
+        return list.getItemText(list.getSelectedIndex());
     }
 
 }

@@ -16,60 +16,53 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.messages.Constants;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextArea;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.messages.Constants;
 
 /**
- *
  * A popup and confirmation dialog for committing an asset.
  */
 public class CheckinPopup extends FormStylePopup {
 
-    private Constants constants = ((Constants) GWT.create( Constants.class ));
+    private TextArea comment;
+    private Button save;
 
-    private TextArea  comment;
-    private Button    save;
-
-    private Command   checkin;
+    private Command checkin;
 
     public CheckinPopup(String message) {
-        setTitle( message );
+        setTitle(message);
         comment = new TextArea();
-        comment.setWidth( "100%" );
-        comment.setTitle( constants.AddAnOptionalCheckInComment() );
+        comment.setWidth("100%");
+        Constants constants = ((Constants) GWT.create(Constants.class));
+        comment.setTitle(constants.AddAnOptionalCheckInComment());
 
-        save = new Button( constants.CheckIn() );
-        addRow( comment );
-        addRow( save );
+        save = new Button(constants.CheckIn());
+        addRow(comment);
+        addRow(save);
 
     }
 
     public void setCommand(final Command checkin) {
         this.checkin = checkin;
 
-        save.addClickHandler( new ClickHandler() {
+        save.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 checkIn();
             }
-        } );
+        });
 
-        comment.addKeyUpHandler( new KeyUpHandler() {
+        comment.addKeyUpHandler(new KeyUpHandler() {
             public void onKeyUp(KeyUpEvent event) {
-                if ( event.getNativeKeyCode() == KeyCodes.KEY_ENTER ) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
                     checkIn();
                 }
             }
-        } );
+        });
     }
 
     private void checkIn() {
@@ -78,13 +71,13 @@ public class CheckinPopup extends FormStylePopup {
     }
 
     public void show() {
-        setAfterShow( new Command() {
+        setAfterShow(new Command() {
             public void execute() {
-                comment.setFocus( true );
+                comment.setFocus(true);
             }
-        } );
+        });
         super.show();
-        comment.setFocus( true );
+        comment.setFocus(true);
 
     }
 

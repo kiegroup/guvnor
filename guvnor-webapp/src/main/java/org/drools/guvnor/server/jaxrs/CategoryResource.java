@@ -50,9 +50,9 @@ import org.jboss.resteasy.plugins.providers.atom.Link;*/
 @Path("/categories")
 public class CategoryResource extends Resource {
 
-    static final String Encoding = "UTF-8";
+    private static final String Encoding = "UTF-8";
 
-    final int pageSize = 10;
+    private final int pageSize = 10;
 
 
     @GET
