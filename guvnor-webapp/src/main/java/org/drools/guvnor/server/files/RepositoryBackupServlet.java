@@ -16,6 +16,16 @@
 
 package org.drools.guvnor.server.files;
 
+import org.apache.commons.fileupload.FileItem;
+import org.drools.RuntimeDroolsException;
+import org.drools.guvnor.server.util.FormData;
+import org.drools.guvnor.server.util.LoggingHelper;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -25,37 +35,27 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.fileupload.FileItem;
-import org.drools.RuntimeDroolsException;
-import org.drools.guvnor.server.util.FormData;
-import org.drools.guvnor.server.util.LoggingHelper;
-
 /**
  * This servlet deals with import and export of the repository to XML/zip files.
  */
 public class RepositoryBackupServlet extends RepositoryServlet {
 
-    private static final LoggingHelper log              = LoggingHelper.getLogger( RepositoryBackupServlet.class );
-    private static final long          serialVersionUID = 510l;
+    private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryBackupServlet.class);
+    private static final long serialVersionUID = 510l;
 
-    private static final List<String>  zipMimeTypes     = new ArrayList<String>();
-    {
-        zipMimeTypes.add( "application/zip" );
-        zipMimeTypes.add( "application/x-compress" );
-        zipMimeTypes.add( "application/x-compressed" );
-        zipMimeTypes.add( "application/x-zip" );
-        zipMimeTypes.add( "application/x-zip-compressed" );
-        zipMimeTypes.add( "application/zip-compressed" );
-        zipMimeTypes.add( "application/x-7zip-compressed" );
+    private static final List<String> zipMimeTypes = new ArrayList<String>();
+
+    static {
+        zipMimeTypes.add("application/zip");
+        zipMimeTypes.add("application/x-compress");
+        zipMimeTypes.add("application/x-compressed");
+        zipMimeTypes.add("application/x-zip");
+        zipMimeTypes.add("application/x-zip-compressed");
+        zipMimeTypes.add("application/zip-compressed");
+        zipMimeTypes.add("application/x-7zip-compressed");
 
         //Firefox maps .zip file extensions to this in /mimeTypes.rdf
-        zipMimeTypes.add( "application/x-sdlc" );
+        zipMimeTypes.add("application/x-sdlc");
     }
 
     /**
@@ -63,52 +63,52 @@ public class RepositoryBackupServlet extends RepositoryServlet {
      */
     protected void doPost(final HttpServletRequest request,
                           final HttpServletResponse response) throws ServletException,
-                                                             IOException {
+            IOException {
 
-        doAuthorizedAction( request,
-                            response,
-                            new Command() {
-                                public void execute() throws Exception {
+        doAuthorizedAction(request,
+                response,
+                new Command() {
+                    public void execute() throws Exception {
 
-                                    String repoConfig = request.getParameter( "repoConfig" );
+                        String repoConfig = request.getParameter("repoConfig");
 
-                                    if ( repoConfig != null ) {
-                                        processExportRepoConfig( response,
-                                                                 repoConfig );
-                                    } else {
-                                        response.setContentType( "text/html" );
-                                        FormData uploadItem = FileManagerUtils.getFormData( request );
+                        if (repoConfig != null) {
+                            processExportRepoConfig(response,
+                                    repoConfig);
+                        } else {
+                            response.setContentType("text/html");
+                            FormData uploadItem = FileManagerUtils.getFormData(request);
 
-                                        String packageImport = request.getParameter( "packageImport" );
+                            String packageImport = request.getParameter("packageImport");
 
-                                        InputStream is = uploadItem.getFile().getInputStream();
-                                        if ( isFileZipped( uploadItem.getFile() ) ) {
-                                            ZipInputStream zipInputStream = new ZipInputStream( is );
-                                            ZipEntry zipEntry = zipInputStream.getNextEntry();
-                                            if ( zipEntry != null ) {
-                                                is = zipInputStream;
-                                            } else {
-                                                new RuntimeDroolsException( "Invalid compressed reporitory" );
-                                            }
-                                        }
-
-                                        if ( "true".equals( packageImport ) ) {
-                                            boolean importAsNew = "true".equals( request.getParameter( "importAsNew" ) );
-                                            response.getWriter().write( processImportPackage( is,
-                                                                                              importAsNew ) );
-                                        } else {
-                                            response.getWriter().write( processImportRepository( is ) );
-                                        }
-                                        is.close();
-
-                                    }
+                            InputStream is = uploadItem.getFile().getInputStream();
+                            if (isFileZipped(uploadItem.getFile())) {
+                                ZipInputStream zipInputStream = new ZipInputStream(is);
+                                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                                if (zipEntry != null) {
+                                    is = zipInputStream;
+                                } else {
+                                    new RuntimeDroolsException("Invalid compressed reporitory");
                                 }
-                            } );
+                            }
+
+                            if ("true".equals(packageImport)) {
+                                boolean importAsNew = "true".equals(request.getParameter("importAsNew"));
+                                response.getWriter().write(processImportPackage(is,
+                                        importAsNew));
+                            } else {
+                                response.getWriter().write(processImportRepository(is));
+                            }
+                            is.close();
+
+                        }
+                    }
+                });
     }
 
     private boolean isFileZipped(FileItem file) throws IOException {
         String mimeType = file.getContentType().toLowerCase();
-        return zipMimeTypes.contains( mimeType );
+        return zipMimeTypes.contains(mimeType);
     }
 
     /**
@@ -116,91 +116,91 @@ public class RepositoryBackupServlet extends RepositoryServlet {
      */
     protected void doGet(final HttpServletRequest req,
                          final HttpServletResponse res)
-                                                       throws ServletException,
-                                                       IOException {
+            throws ServletException,
+            IOException {
 
-        doAuthorizedAction( req,
-                            res,
-                            new Command() {
-                                public void execute() throws Exception {
+        doAuthorizedAction(req,
+                res,
+                new Command() {
+                    public void execute() throws Exception {
 
-                                    try {
-                                        String packageName = req.getParameter( "packageName" );
+                        try {
+                            String packageName = req.getParameter("packageName");
 
-                                        if ( packageName == null ) {
-                                            processExportRepositoryDownload( res );
-                                        } else {
-                                            processExportPackageFromRepositoryDownload( res,
-                                                                                        packageName );
-                                        }
+                            if (packageName == null) {
+                                processExportRepositoryDownload(res);
+                            } else {
+                                processExportPackageFromRepositoryDownload(res,
+                                        packageName);
+                            }
 
-                                    } catch ( Exception e ) {
-                                        e.printStackTrace( new PrintWriter( res.getOutputStream() ) );
-                                    }
-                                }
-                            } );
+                        } catch (Exception e) {
+                            e.printStackTrace(new PrintWriter(res.getOutputStream()));
+                        }
+                    }
+                });
     }
 
     private void processExportRepoConfig(HttpServletResponse res,
                                          String repoConfig)
-                                                           throws IOException {
-        log.debug( "Exporting Repository Config..." );
-        res.setContentType( "application/x-download" );
-        res.setHeader( "Content-Disposition",
-                       "attachment; filename=repository.xml;" );
-        log.debug( "Starting to process repository configuration" );
-        res.getOutputStream().write( repoConfig.getBytes() );
+            throws IOException {
+        log.debug("Exporting Repository Config...");
+        res.setContentType("application/x-download");
+        res.setHeader("Content-Disposition",
+                "attachment; filename=repository.xml;");
+        log.debug("Starting to process repository configuration");
+        res.getOutputStream().write(repoConfig.getBytes());
         res.getOutputStream().flush();
-        log.debug( "Done exporting repository config!" );
+        log.debug("Done exporting repository config!");
     }
 
     private void processExportRepositoryDownload(HttpServletResponse res)
-                                                                         throws PathNotFoundException,
-                                                                         IOException,
-                                                                         RepositoryException {
-        log.debug( "Exporting..." );
-        res.setContentType( "application/zip" );
-        res.setHeader( "Content-Disposition",
-                       "attachment; filename=repository_export.zip;" );
+            throws PathNotFoundException,
+            IOException,
+            RepositoryException {
+        log.debug("Exporting...");
+        res.setContentType("application/zip");
+        res.setHeader("Content-Disposition",
+                "attachment; filename=repository_export.zip;");
 
-        log.debug( "Starting to process export" );
-        ZipOutputStream zout = new ZipOutputStream( res.getOutputStream() );
-        zout.putNextEntry( new ZipEntry( "repository_export.xml" ) );
-        getFileManager().exportRulesRepository( zout );
+        log.debug("Starting to process export");
+        ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
+        zout.putNextEntry(new ZipEntry("repository_export.xml"));
+        getFileManager().exportRulesRepository(zout);
         zout.closeEntry();
         zout.finish();
         res.getOutputStream().flush();
-        log.debug( "Done exporting!" );
+        log.debug("Done exporting!");
     }
 
     private void processExportPackageFromRepositoryDownload(
-                                                            HttpServletResponse res,
-                                                            String packageName)
-                                                                               throws PathNotFoundException,
-                                                                               IOException,
-                                                                               RepositoryException {
-        res.setContentType( "application/zip" );
-        res.setHeader( "Content-Disposition",
-                       "inline; filename=" + packageName
-                               + ".zip;" );
+            HttpServletResponse res,
+            String packageName)
+            throws PathNotFoundException,
+            IOException,
+            RepositoryException {
+        res.setContentType("application/zip");
+        res.setHeader("Content-Disposition",
+                "inline; filename=" + packageName
+                        + ".zip;");
 
         res.getOutputStream().write(
-                                     getFileManager().exportPackageFromRepository( packageName ) );
+                getFileManager().exportPackageFromRepository(packageName));
         res.getOutputStream().flush();
     }
 
     private String processImportRepository(InputStream file) throws IOException {
-        getFileManager().importRulesRepository( file );
+        getFileManager().importRulesRepository(file);
         return "OK";
     }
 
     private String processImportPackage(InputStream file,
                                         boolean importAsNew)
-                                                            throws IOException {
+            throws IOException {
         byte[] byteArray = new byte[file.available()];
-        file.read( byteArray );
-        getFileManager().importPackageToRepository( byteArray,
-                                                    importAsNew );
+        file.read(byteArray);
+        getFileManager().importPackageToRepository(byteArray,
+                importAsNew);
         return "OK";
     }
 
