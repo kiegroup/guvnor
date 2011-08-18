@@ -167,6 +167,18 @@
     </profile>
   </profiles>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>1.0.0.CR4</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -328,6 +340,12 @@
       <version>1.0.0.CR4</version>
       <scope>test</scope>
     </dependency>
+    <!--<dependency>&lt;!&ndash; Override the version specified by arquillian-tomcat/jetty &ndash;&gt;-->
+      <!--<groupId>org.jboss.arquillian.protocol</groupId>-->
+      <!--<artifactId>arquillian-protocol-servlet</artifactId>-->
+      <!--<version>1.0.0.CR4</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
     <!--<dependency>-->
       <!--<groupId>org.jboss.arquillian.container</groupId>-->
       <!--<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>-->

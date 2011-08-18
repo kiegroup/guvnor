@@ -25,9 +25,9 @@ import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+//import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+//import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+//import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
