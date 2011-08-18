@@ -31,18 +31,18 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  */
 public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static Images images = GWT.create(Images.class);
 
-    public RuleFlowUploadWidget( RuleAsset asset,
-                                 RuleViewer viewer,
-                                 ClientFactory clientFactory,
-                                 EventBus eventBus) {
-        super( asset,
+    public RuleFlowUploadWidget(RuleAsset asset,
+                                RuleViewer viewer,
+                                ClientFactory clientFactory,
+                                EventBus eventBus) {
+        super(asset,
                 viewer,
                 clientFactory,
                 eventBus);
-        super.addDescription( new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" ) ); //NON-NLS
+        Constants constants = GWT.create(Constants.class);
+        super.addDescription(new HTML("<small><i>" + constants.RuleFlowUploadTip() + "</i></small>")); //NON-NLS
     }
 
     public ImageResource getIcon() {

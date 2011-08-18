@@ -16,9 +16,6 @@
 
 package org.drools.guvnor.client.explorer.perspectives;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView.Presenter;
@@ -27,11 +24,9 @@ import org.drools.guvnor.client.util.TabbedPanel;
 public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
-    private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
     public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
-        this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.view = clientFactory.getPerspectivesPanelView();
         this.view.setPresenter(this);
@@ -64,7 +59,7 @@ public class PerspectivesPanel implements Presenter {
     public void onChangePerspectiveToSOA() {
         setPerspective(new SOAPerspective());
     }
-    
+
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
     }

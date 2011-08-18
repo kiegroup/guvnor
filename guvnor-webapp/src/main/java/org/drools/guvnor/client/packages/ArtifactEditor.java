@@ -36,7 +36,7 @@ public class ArtifactEditor extends GuvnorEditor {
     interface ArtifactEditorBinder extends UiBinder<Widget, ArtifactEditor> {
     }
 
-    private static ArtifactEditorBinder uiBinder = GWT.create( ArtifactEditorBinder.class );
+    private static ArtifactEditorBinder uiBinder = GWT.create(ArtifactEditorBinder.class);
 
     @UiField(provided = true)
     final MetaDataWidget metaWidget;
@@ -48,41 +48,40 @@ public class ArtifactEditor extends GuvnorEditor {
     MessageWidget messageWidget;
 
     protected Artifact artifact;
-    private boolean readOnly;
     private long lastSaved = System.currentTimeMillis();
 
     /**
      * @param Artifact artifact
      */
-    public ArtifactEditor( ClientFactory clientFactory,
-                           EventBus eventBus,
-                           Artifact artifact ) {
-        this( clientFactory, eventBus, artifact, false );
+    public ArtifactEditor(ClientFactory clientFactory,
+                          EventBus eventBus,
+                          Artifact artifact) {
+        this(clientFactory, eventBus, artifact, false);
     }
 
     /**
      * @param Artifact           artifact
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-    public ArtifactEditor( ClientFactory clientFactory,
-                           EventBus eventBus,
-                           Artifact artifact,
-                           boolean historicalReadOnly ) {
+    public ArtifactEditor(ClientFactory clientFactory,
+                          EventBus eventBus,
+                          Artifact artifact,
+                          boolean historicalReadOnly) {
         this.artifact = artifact;
-        this.readOnly = historicalReadOnly || artifact.isReadonly();
+        boolean readOnly = historicalReadOnly || artifact.isReadonly();
 
-        ruleDocumentWidget = new RuleDocumentWidget( this.artifact,
-                readOnly );
+        ruleDocumentWidget = new RuleDocumentWidget(this.artifact,
+                readOnly);
 
         metaWidget = new MetaDataWidget(
                 clientFactory,
                 eventBus,
                 this.artifact,
                 readOnly,
-                this.artifact.getUuid() );
+                this.artifact.getUuid());
 
-        initWidget( uiBinder.createAndBindUi( this ) );
-        setWidth( "100%" );
+        initWidget(uiBinder.createAndBindUi(this));
+        setWidth("100%");
         LoadingPopup.close();
     }
 
@@ -96,7 +95,7 @@ public class ArtifactEditor extends GuvnorEditor {
         return false;
     }
 
-    public void showInfoMessage( String message ) {
-        messageWidget.showMessage( message );
+    public void showInfoMessage(String message) {
+        messageWidget.showMessage(message);
     }
 }

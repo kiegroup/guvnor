@@ -17,12 +17,10 @@
 package org.drools.guvnor.client.modeldriven.ui;
 
 
-
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
-
-import com.google.gwt.user.client.ui.HorizontalPanel;
 
 /**
  * This is used when you want to retract a fact. It will provide a list of
@@ -30,7 +28,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
  */
 public class ActionRetractFactWidget extends RuleModellerWidget {
 
-    private HorizontalPanel layout;
     private boolean readOnly;
 
     public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model) {
@@ -39,9 +36,9 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
 
     public ActionRetractFactWidget(RuleModeller modeller, ActionRetractFact model, Boolean readOnly) {
         super(modeller);
-        layout = new HorizontalPanel();
+        HorizontalPanel layout = new HorizontalPanel();
         layout.setWidth("100%");
-        layout.setStyleName( "model-builderInner-Background" );
+        layout.setStyleName("model-builderInner-Background");
 
         if (readOnly == null) {
             this.readOnly = !modeller.getSuggestionCompletions().containsFactType(modeller.getModel().getLHSBindingType(model.variableName));
@@ -54,21 +51,18 @@ public class ActionRetractFactWidget extends RuleModellerWidget {
         }
 
         String desc = modeller.getModel().getLHSBindingType(model.variableName) + " [" + model.variableName + "]";
-        layout.add(new SmallLabel(HumanReadable.getActionDisplayName( "retract" )+"&nbsp;<b>"  + desc  + "</b>"));
+        layout.add(new SmallLabel(HumanReadable.getActionDisplayName("retract") + "&nbsp;<b>" + desc + "</b>"));
 
         //This widget couldn't be modified.
         this.setModified(false);
 
-        initWidget( layout );
+        initWidget(layout);
     }
 
     @Override
     public boolean isReadOnly() {
         return this.readOnly;
     }
-
-
-
 
 
 }

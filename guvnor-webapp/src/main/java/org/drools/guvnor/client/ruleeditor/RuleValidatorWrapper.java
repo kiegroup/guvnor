@@ -38,65 +38,65 @@ public class RuleValidatorWrapper extends DirtyableComposite
         SaveEventListener,
         EditorWidget {
 
-    private static Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
-    private VerticalPanel layout = new VerticalPanel();
     private Widget editor;
 
-    public RuleValidatorWrapper( RuleAsset asset,
-                                 RuleViewer viewer,
-                                 ClientFactory clientFactory,
-                                 EventBus eventBus) {
-        this.editor = new DSLRuleEditor( asset );
+    public RuleValidatorWrapper(RuleAsset asset,
+                                RuleViewer viewer,
+                                ClientFactory clientFactory,
+                                EventBus eventBus) {
+        this.editor = new DSLRuleEditor(asset);
 
-        layout.add( editor );
+        VerticalPanel layout = new VerticalPanel();
+        layout.add(editor);
 
-        layout.setWidth( "100%" );
-        layout.setHeight( "100%" );
+        layout.setWidth("100%");
+        layout.setHeight("100%");
 
-        initWidget( layout );
+        initWidget(layout);
     }
 
     /**
      * This will show a popup of error messages in compilation.
      */
-    public static void showBuilderErrors( BuilderResult result ) {
+    public static void showBuilderErrors(BuilderResult result) {
 
-        if ( result == null || result.getLines() == null || result.getLines().size() == 0 ) {
+        if (result == null || result.getLines() == null || result.getLines().size() == 0) {
             FormStylePopup pop = new FormStylePopup();
-            pop.setWidth( 200 + "px" );
-            pop.setTitle( constants.ValidationResultsDotDot() );
+            pop.setWidth(200 + "px");
+            pop.setTitle(constants.ValidationResultsDotDot());
             HorizontalPanel h = new HorizontalPanel();
-            h.add( new SmallLabel( "<img src='" + new Image( images.greenTick() ).getUrl() + "'/><i>"
-                    + constants.ItemValidatedSuccessfully() + "</i>" ) );
-            pop.addRow( h );
+            h.add(new SmallLabel("<img src='" + new Image(images.greenTick()).getUrl() + "'/><i>"
+                    + constants.ItemValidatedSuccessfully() + "</i>"));
+            pop.addRow(h);
             pop.show();
         } else {
-            FormStylePopup pop = new FormStylePopup( images.packageBuilder(),
-                    constants.ValidationResults() );
+            FormStylePopup pop = new FormStylePopup(images.packageBuilder(),
+                    constants.ValidationResults());
             FlexTable errTable = new FlexTable();
-            errTable.setStyleName( "build-Results" ); //NON-NLS
+            errTable.setStyleName("build-Results"); //NON-NLS
             for (int i = 0; i < result.getLines().size(); i++) {
                 int row = i;
-                final BuilderResultLine res = result.getLines().get( i );
-                errTable.setWidget( row,
+                final BuilderResultLine res = result.getLines().get(i);
+                errTable.setWidget(row,
                         0,
-                        new Image( images.error() ) );
-                if ( res.getAssetFormat().equals( "package" ) ) {
-                    errTable.setText( row,
+                        new Image(images.error()));
+                if (res.getAssetFormat().equals("package")) {
+                    errTable.setText(row,
                             1,
-                            constants.packageConfigurationProblem() + res.getMessage() );
+                            constants.packageConfigurationProblem() + res.getMessage());
                 } else {
-                    errTable.setText( row,
+                    errTable.setText(row,
                             1,
-                            "[" + res.getAssetName() + "] " + res.getMessage() );
+                            "[" + res.getAssetName() + "] " + res.getMessage());
                 }
 
             }
-            ScrollPanel scroll = new ScrollPanel( errTable );
-            scroll.setWidth( "100%" );
-            pop.addRow( scroll );
+            ScrollPanel scroll = new ScrollPanel(errTable);
+            scroll.setWidth("100%");
+            pop.addRow(scroll);
             pop.show();
         }
 
@@ -104,14 +104,14 @@ public class RuleValidatorWrapper extends DirtyableComposite
     }
 
     public void onSave() {
-        if ( editor instanceof SaveEventListener ) {
+        if (editor instanceof SaveEventListener) {
             SaveEventListener el = (SaveEventListener) editor;
             el.onSave();
         }
     }
 
     public void onAfterSave() {
-        if ( editor instanceof SaveEventListener ) {
+        if (editor instanceof SaveEventListener) {
             SaveEventListener el = (SaveEventListener) editor;
             el.onAfterSave();
         }

@@ -16,27 +16,20 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
-import com.google.gwt.user.client.ui.VerticalPanel;
-
 public class FactTypeBrowser extends Composite {
 
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
+    private static Images images = GWT.create(Images.class);
 
     public FactTypeBrowser(SuggestionCompletionEngine sce,
                            final ClickEvent ev) {
@@ -46,49 +39,50 @@ public class FactTypeBrowser extends Composite {
 
         HorizontalPanel hp = new HorizontalPanel();
 
-        hp.add( new SmallLabel( constants.FactTypes() ) );
-        hp.add( new ClickableLabel( constants.hide(),
-                                    new ClickHandler() {
-                                        public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
-                                            panel.setVisible( false );
-                                        }
-                                    } ) );
-        panel.add( hp );
+        Constants constants = GWT.create(Constants.class);
+        hp.add(new SmallLabel(constants.FactTypes()));
+        hp.add(new ClickableLabel(constants.hide(),
+                new ClickHandler() {
+                    public void onClick(com.google.gwt.event.dom.client.ClickEvent event) {
+                        panel.setVisible(false);
+                    }
+                }));
+        panel.add(hp);
 
-        panel.add( tree );
-        if ( sce.getFactTypes() != null ) {
-            for ( String type : sce.getFactTypes() ) {
+        panel.add(tree);
+        if (sce.getFactTypes() != null) {
+            for (String type : sce.getFactTypes()) {
                 TreeItem it = new TreeItem();
-                it.setHTML( "<img src='" + new Image( images.classImage() ).getUrl() + "'/><small>"
-                        + type + "</small>" );
-                it.setUserObject( type + "( )" );
-                tree.addItem( it );
+                it.setHTML("<img src='" + new Image(images.classImage()).getUrl() + "'/><small>"
+                        + type + "</small>");
+                it.setUserObject(type + "( )");
+                tree.addItem(it);
 
-                String[] fields = (String[]) sce.getModelFields( type );
-                if ( fields != null ) {
-                    for ( String field : fields ) {
+                String[] fields = (String[]) sce.getModelFields(type);
+                if (fields != null) {
+                    for (String field : fields) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML( "<img src='" + new Image( images.field() ).getUrl() + "'/><small>"
-                                + field + "</small>" );
-                        fi.setUserObject( field );
-                        it.addItem( fi );
+                        fi.setHTML("<img src='" + new Image(images.field()).getUrl() + "'/><small>"
+                                + field + "</small>");
+                        fi.setUserObject(field);
+                        it.addItem(fi);
                     }
                 }
             }
         }
 
-        tree.setStyleName( "category-explorer-Tree" ); //NON-NLS
-        tree.addSelectionHandler( new SelectionHandler<TreeItem>() {
+        tree.setStyleName("category-explorer-Tree"); //NON-NLS
+        tree.addSelectionHandler(new SelectionHandler<TreeItem>() {
 
             public void onSelection(SelectionEvent<TreeItem> event) {
                 Object o = event.getSelectedItem().getUserObject();
-                if ( o instanceof String ) {
-                    ev.selected( (String) o );
+                if (o instanceof String) {
+                    ev.selected((String) o);
                 }
             }
-        } );
+        });
 
-        initWidget( panel );
+        initWidget(panel);
     }
 
     public static interface ClickEvent {

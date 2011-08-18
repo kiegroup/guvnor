@@ -20,11 +20,7 @@ package org.drools.guvnor.client.packages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
@@ -39,11 +35,8 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
  * This is the module editor.
  */
 public class ModuleEditorWrapper extends Composite {
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
-    private ArtifactEditor artifactEditor;
-    private AbstractModuleEditor moduleEditor;
-    private ActionToolbar actionToolBar;
     private PackageConfigData packageConfigData;
     private boolean isHistoricalReadOnly = false;
 
@@ -51,31 +44,31 @@ public class ModuleEditorWrapper extends Composite {
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public ModuleEditorWrapper( PackageConfigData data,
-                                 ClientFactory clientFactory,
-                                 EventBus eventBus) {
-        this( data, clientFactory, eventBus, false );
+    public ModuleEditorWrapper(PackageConfigData data,
+                               ClientFactory clientFactory,
+                               EventBus eventBus) {
+        this(data, clientFactory, eventBus, false);
     }
 
-    public ModuleEditorWrapper( PackageConfigData data,
-                                 ClientFactory clientFactory,
-                                 EventBus eventBus,
-                                 boolean isHistoricalReadOnly ) {
+    public ModuleEditorWrapper(PackageConfigData data,
+                               ClientFactory clientFactory,
+                               EventBus eventBus,
+                               boolean isHistoricalReadOnly) {
         this.packageConfigData = data;
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
 
-        initWidget( layout );
+        initWidget(layout);
         render();
-        setWidth( "100%" );
+        setWidth("100%");
     }
 
     private void render() {
         final TabPanel tPanel = new TabPanel();
-        tPanel.setWidth( "100%" );
+        tPanel.setWidth("100%");
 
-        this.artifactEditor = new ArtifactEditor( clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly );
+        ArtifactEditor artifactEditor = new ArtifactEditor(clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly);
 /*        this.moduleEditor = new PackageEditor(
                 packageConfigData,
                 clientFactory,
@@ -85,57 +78,57 @@ public class ModuleEditorWrapper extends Composite {
                     public void execute() {
                         refresh();
                     }
-                } );   */     
-        this.moduleEditor = clientFactory.getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
+                } );   */
+        AbstractModuleEditor moduleEditor = clientFactory.getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
             public void execute() {
                 refresh();
             }
-        } );
-        
-        this.actionToolBar = this.moduleEditor.getActionToolbar();    
+        });
+
+        ActionToolbar actionToolBar = moduleEditor.getActionToolbar();
         layout.clear();
-        layout.add( this.actionToolBar );       
-        
+        layout.add(actionToolBar);
+
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
                 clientFactory);
         assetViewerActivity.start(new AcceptTabItem() {
-            public void addTab(String tabTitle, IsWidget widget) {                
-                ScrollPanel pnl = new ScrollPanel();
-                pnl.setWidth( "100%" );
-                pnl.add( widget );                
-                tPanel.add(pnl, constants.Assets());
-            }
-        }, null);
- 
-        ScrollPanel pnl = new ScrollPanel();
-        pnl.setWidth( "100%" );
-        pnl.add( this.artifactEditor );
-        tPanel.add( pnl, constants.AttributeForModuleEditor() );
-        tPanel.selectTab( 0 );        
-          
-        pnl = new ScrollPanel();
-        pnl.setWidth( "100%" );
-        pnl.add( this.moduleEditor );
-        tPanel.add( pnl, constants.Edit() );
-        tPanel.selectTab( 0 );
+                    public void addTab(String tabTitle, IsWidget widget) {
+                        ScrollPanel pnl = new ScrollPanel();
+                        pnl.setWidth("100%");
+                        pnl.add(widget);
+                        tPanel.add(pnl, constants.Assets());
+                    }
+                }, null);
 
-        tPanel.setHeight( "100%" );
-        layout.add( tPanel );
-        layout.setHeight( "100%" );
+        ScrollPanel pnl = new ScrollPanel();
+        pnl.setWidth("100%");
+        pnl.add(artifactEditor);
+        tPanel.add(pnl, constants.AttributeForModuleEditor());
+        tPanel.selectTab(0);
+
+        pnl = new ScrollPanel();
+        pnl.setWidth("100%");
+        pnl.add(moduleEditor);
+        tPanel.add(pnl, constants.Edit());
+        tPanel.selectTab(0);
+
+        tPanel.setHeight("100%");
+        layout.add(tPanel);
+        layout.setHeight("100%");
     }
 
     /**
      * Will refresh all the data.
      */
     public void refresh() {
-        LoadingPopup.showMessage( constants.RefreshingPackageData() );
-        RepositoryServiceFactory.getPackageService().loadPackageConfig( this.packageConfigData.getUuid(),
+        LoadingPopup.showMessage(constants.RefreshingPackageData());
+        RepositoryServiceFactory.getPackageService().loadPackageConfig(this.packageConfigData.getUuid(),
                 new GenericCallback<PackageConfigData>() {
-                    public void onSuccess( PackageConfigData data ) {
+                    public void onSuccess(PackageConfigData data) {
                         LoadingPopup.close();
                         packageConfigData = data;
                         render();
                     }
-                } );
+                });
     }
 }

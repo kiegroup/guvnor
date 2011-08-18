@@ -16,6 +16,9 @@
 
 package org.drools.guvnor.client.admin;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.FontWeight;
+import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
@@ -23,60 +26,50 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTablePresenter;
 import org.drools.guvnor.client.widgets.tables.PermissionsPagedTableView;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.FontWeight;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
-
 public class PermissionViewer extends Composite {
-    private static Images         images    = (Images) GWT.create( Images.class );
-    private Constants             constants = ((Constants) GWT.create( Constants.class ));
+    private static Images images = (Images) GWT.create(Images.class);
+    private Constants constants = ((Constants) GWT.create(Constants.class));
 
-    private VerticalPanel         layout;
-    private PermissionsPagedTableView table;
+    private VerticalPanel layout;
 
     public PermissionViewer() {
         PrettyFormLayout pf = new PrettyFormLayout();
 
         VerticalPanel header = new VerticalPanel();
-        Label caption = new Label( constants.PermissionDetails() );
-        caption.getElement().getStyle().setFontWeight( FontWeight.BOLD );
-        header.add( caption );
-        header.add( howToTurnOn() );
+        Label caption = new Label(constants.PermissionDetails());
+        caption.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+        header.add(caption);
+        header.add(howToTurnOn());
 
-        pf.addHeader( images.userPermissionsLarge(),
-                      header );
+        pf.addHeader(images.userPermissionsLarge(),
+                header);
 
         layout = new VerticalPanel();
-        layout.setHeight( "100%" );
-        layout.setWidth( "100%" );
+        layout.setHeight("100%");
+        layout.setWidth("100%");
 
         pf.startSection();
-        pf.addRow( layout );
+        pf.addRow(layout);
         pf.endSection();
 
         setupWidget();
-        initWidget( pf );
+        initWidget(pf);
     }
 
     private Widget howToTurnOn() {
         HorizontalPanel hp = new HorizontalPanel();
-        hp.add( new HTML( "<small><i>"
-                          + constants.TipAuthEnable()
-                          + "</i></small>" ) );
-        InfoPopup pop = new InfoPopup( constants.EnablingAuthorization(),
-                                       constants.EnablingAuthPopupTip() );
-        hp.add( pop );
+        hp.add(new HTML("<small><i>"
+                + constants.TipAuthEnable()
+                + "</i></small>"));
+        InfoPopup pop = new InfoPopup(constants.EnablingAuthorization(),
+                constants.EnablingAuthPopupTip());
+        hp.add(pop);
         return hp;
     }
 
     private void setupWidget() {
-        table = new PermissionsPagedTableView();
+        PermissionsPagedTableView table = new PermissionsPagedTableView();
         PermissionsPagedTablePresenter presenter = new PermissionsPagedTablePresenter(table);
-        layout.add( table );
+        layout.add(table);
     }
 }
