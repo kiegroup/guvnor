@@ -92,5 +92,11 @@ public class RulePackageSelector extends Composite {
         String value = packageList.getItemText( index );
         return value;
     }
+    
+    public String getSelectedPackageUUID() {
+        int index = packageList.getSelectedIndex();
+        String UUID = packageList.getValue(index);
+        return UUID;
+    }
 
 }

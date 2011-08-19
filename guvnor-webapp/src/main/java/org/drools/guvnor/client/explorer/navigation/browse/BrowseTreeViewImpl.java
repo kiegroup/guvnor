@@ -24,6 +24,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -136,10 +137,10 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         return parent.asTreeItem().addItem( name );
     }
 
-    public void showMenu() {
-        menuContainer.setWidget( new RulesNewMenu( clientFactory ) );
+    public void setNewAssetMenu(Widget modulesNewAssetMenu) {
+        menuContainer.setWidget( modulesNewAssetMenu );
     }
-
+    
     public void removeStates() {
         states.removeItems();
     }

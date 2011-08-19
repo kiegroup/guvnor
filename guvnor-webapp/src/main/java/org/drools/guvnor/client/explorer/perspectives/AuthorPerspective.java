@@ -35,7 +35,7 @@ public class AuthorPerspective extends Perspective {
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
-        navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory));
+        navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory, eventBus));
 
         navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
 

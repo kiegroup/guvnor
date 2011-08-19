@@ -43,23 +43,23 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
     }
 
     public void onNewSpringContext() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory, eventBus );
     }
 
     public void onNewBPELPackage() {
-        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory );
+        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory, eventBus );
     }
 
     public void onNewRuleFlow() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory, eventBus );
     }
 
     public void onNewBPMN2Process() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory, eventBus );
     }
 
     public void onNewFile() {
-        view.openNewAssetWizardWithoutCategories( "*", clientFactory );
+        view.openNewAssetWizardWithoutCategories( "*", clientFactory, eventBus );
     }
 
 }
