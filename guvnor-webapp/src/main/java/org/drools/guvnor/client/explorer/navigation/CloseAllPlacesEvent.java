@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,37 +14,28 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.place.shared.Place;
 
-public class ClosePlaceEvent extends GwtEvent<ClosePlaceEvent.Handler> {
+public class CloseAllPlacesEvent extends GwtEvent<CloseAllPlacesEvent.Handler> {
 
     public interface Handler extends EventHandler {
-        public void onCloseTab(ClosePlaceEvent closePlaceEvent);
+
+        public void onCloseAllPlaces(CloseAllPlacesEvent event);
     }
 
-    public static Type<ClosePlaceEvent.Handler> TYPE = new Type<ClosePlaceEvent.Handler>();
-
-    private final Place place;
-
-    public ClosePlaceEvent(Place place) {
-        this.place = place;
-    }
-
-    public Place getPlace() {
-        return place;
-    }
+    public static Type<CloseAllPlacesEvent.Handler> TYPE = new Type<CloseAllPlacesEvent.Handler>();
 
     @Override
-    public Type<ClosePlaceEvent.Handler> getAssociatedType() {
+    public Type<Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(ClosePlaceEvent.Handler eventHandler) {
-        eventHandler.onCloseTab( this );
+    protected void dispatch(Handler handler) {
+        handler.onCloseAllPlaces(this);
     }
+
 }

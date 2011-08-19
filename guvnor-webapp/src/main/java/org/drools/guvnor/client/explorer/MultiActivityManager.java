@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,22 +15,26 @@
  */
 package org.drools.guvnor.client.explorer;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceChangeEvent;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.packages.ClosePlaceEvent;
+import org.drools.guvnor.client.explorer.navigation.CloseAllPlacesEvent;
+import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.util.TabbedPanel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class MultiActivityManager implements
         PlaceChangeEvent.Handler,
-        ClosePlaceEvent.Handler {
+        ClosePlaceEvent.Handler,
+        CloseAllPlacesEvent.Handler {
 
     private final ActivityMapper activityMapper;
     private TabbedPanel tabbedPanel;
@@ -46,6 +50,9 @@ public class MultiActivityManager implements
                 this);
         eventBus.addHandler(
                 ClosePlaceEvent.TYPE,
+                this);
+        eventBus.addHandler(
+                CloseAllPlacesEvent.TYPE,
                 this);
     }
 
@@ -101,13 +108,22 @@ public class MultiActivityManager implements
         return !event.getNewPlace().equals(Place.NOWHERE);
     }
 
-    public void onCloseTab(ClosePlaceEvent closePlaceEvent) {
+    public void onClosePlace(ClosePlaceEvent closePlaceEvent) {
         Pair pair = activeActivities.get(closePlaceEvent.getPlace());
         if (pair != null && pair.getActivity().mayStop()) {
             pair.getActivity().onStop();
             pair.getResettableEventBus().removeHandlers();
             activeActivities.remove(closePlaceEvent.getPlace());
             tabbedPanel.close(closePlaceEvent.getPlace());
+        }
+    }
+
+    public void onCloseAllPlaces(CloseAllPlacesEvent event) {
+        Set<Place> places = new HashSet<Place>();
+        places.addAll(activeActivities.keySet());
+
+        for (Place place : places) {
+            eventBus.fireEvent(new ClosePlaceEvent(place));
         }
     }
 
