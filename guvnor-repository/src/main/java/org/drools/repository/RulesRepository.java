@@ -1575,12 +1575,12 @@ public class RulesRepository {
     public AssetItemIterator findArchivedAssets() {
         try {
 
-            String sql = "SELECT " + AssetItem.TITLE_PROPERTY_NAME + ", " + AssetItem.DESCRIPTION_PROPERTY_NAME + ", " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " FROM " + AssetItem.RULE_NODE_TYPE_NAME;
-            sql += " WHERE ";
-            sql += " jcr:path LIKE '/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "/%'";
-            sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("SELECT ").append(AssetItem.TITLE_PROPERTY_NAME).append(", ").append(AssetItem.DESCRIPTION_PROPERTY_NAME).append(", ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" FROM ").append(AssetItem.RULE_NODE_TYPE_NAME)
+                    .append(" WHERE ").append(" jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'")
+                    .append(" AND ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'true'");
 
-            Query q = this.session.getWorkspace().getQueryManager().createQuery(sql,
+            Query q = this.session.getWorkspace().getQueryManager().createQuery(stringBuilder.toString(),
                     Query.SQL);
 
             QueryResult res = q.execute();
