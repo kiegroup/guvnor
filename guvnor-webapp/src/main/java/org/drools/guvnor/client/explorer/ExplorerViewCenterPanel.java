@@ -20,16 +20,26 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
+import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.packages.PackageEditor;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageEditorWrapper;
 import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
-
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
 import org.drools.guvnor.client.util.TabOpener;
 
 /**
@@ -53,7 +63,27 @@ public class ExplorerViewCenterPanel extends Composite {
     public ExplorerViewCenterPanel() {
         tabLayoutPanel = new ScrollTabLayoutPanel(2,
                 Unit.EM);
-        initWidget(tabLayoutPanel);
+
+        Constants constants = GWT.create(Constants.class);
+
+        DockLayoutPanel layoutPanel = new DockLayoutPanel(Unit.EM);
+        Button button = new Button(constants.CloseAllItems());
+        button.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                closeAll();
+            }
+        });
+
+        HorizontalPanel bottomPanel = new HorizontalPanel();
+        bottomPanel.setWidth("100%");
+        bottomPanel.setStyleName("bottom-panel");
+        bottomPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+        bottomPanel.add(button);
+
+        layoutPanel.addSouth(bottomPanel, 2);
+        layoutPanel.add(tabLayoutPanel);
+
+        initWidget(layoutPanel);
 
         TabOpener.initIstance(this);
         TabOpener.getInstance().openFind();
@@ -61,14 +91,13 @@ public class ExplorerViewCenterPanel extends Composite {
 
     /**
      * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
-     *
      * @param tabname The displayed tab name.
-     * @param widget  The contents.
-     * @param key     A key which is unique.
+     * @param widget The contents.
+     * @param key A key which is unique.
      */
     public void addTab(final String tabname,
-                       IsWidget widget,
-                       final String key) {
+            IsWidget widget,
+            final String key) {
         addTab(tabname,
                 widget,
                 new String[]{key});
@@ -76,14 +105,13 @@ public class ExplorerViewCenterPanel extends Composite {
 
     /**
      * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
-     *
      * @param tabname The displayed tab name.
-     * @param widget  The contents.
-     * @param keys    An array of keys which are unique.
+     * @param widget The contents.
+     * @param keys An array of keys which are unique.
      */
     public void addTab(final String tabname,
-                       IsWidget widget,
-                       final String[] keys) {
+            IsWidget widget,
+            final String[] keys) {
         final String panelId = (keys.length == 1 ? keys[0] + id++ : Arrays.toString(keys) + id++);
 
         ScrollPanel localTP = new ScrollPanel();
@@ -120,7 +148,7 @@ public class ExplorerViewCenterPanel extends Composite {
     }
 
     private Widget newClosableLabel(final Panel panel,
-                                    final String title) {
+            final String title) {
         ClosableLabel closableLabel = new ClosableLabel(title);
 
         closableLabel.addCloseHandler(new CloseHandler<ClosableLabel>() {
@@ -164,7 +192,7 @@ public class ExplorerViewCenterPanel extends Composite {
 
         int widgetIndex = tabLayoutPanel.getWidgetIndex(tpi);
         if (widgetIndex == tabLayoutPanel.getSelectedIndex()) {
-            if(widgetIndex>0) {
+            if (widgetIndex > 0) {
                 tabLayoutPanel.selectTab(widgetIndex - 1);
             }
         }
@@ -177,4 +205,11 @@ public class ExplorerViewCenterPanel extends Composite {
         return openedPackageEditors;
     }
 
+    public void closeAll() {
+        tabLayoutPanel.clear();
+        openedTabs.clear();
+        openedAssetEditors.clear();
+        openedPackageEditors.clear();
+        itemWidgets.clear();
+    }
 }
