@@ -462,8 +462,7 @@ public class RuleViewer extends GuvnorEditor {
                             return;
                         }
 
-                        flushSuggestionCompletionCache();
-
+                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                         if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }
@@ -488,10 +487,10 @@ public class RuleViewer extends GuvnorEditor {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache() {
+    public void flushSuggestionCompletionCache(String packageName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().getPackageName(),
+            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
                     new Command() {
                         public void execute() {
                             LoadingPopup.close();
@@ -557,6 +556,8 @@ public class RuleViewer extends GuvnorEditor {
                         name,
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                flushSuggestionCompletionCache(sel.getSelectedPackage());
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
                                         data );
@@ -599,6 +600,7 @@ public class RuleViewer extends GuvnorEditor {
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                                 closeAndReopen( data );
                                 pop.hide();
                             }
@@ -628,6 +630,10 @@ public class RuleViewer extends GuvnorEditor {
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );
+
+                            flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
+                            flushSuggestionCompletionCache("globalArea");
+                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                             closeAndReopen( asset.getUuid() );
                         }
 
