@@ -1,3 +1,19 @@
+/*
+ * Copyright 2011 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.event.shared.EventBus;
@@ -7,7 +23,8 @@ import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.web.bindery.event.shared.Event;
-import org.drools.guvnor.client.packages.ClosePlaceEvent;
+import org.drools.guvnor.client.explorer.navigation.CloseAllPlacesEvent;
+import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.util.Activity;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,16 +52,16 @@ public class MultiActivityManagerCloseTabsTest extends MultiActivityManagerTestB
 
     @Test
     public void testItIsSafeToCloseATabThatDoesNotExist() throws Exception {
-        multiActivityManager.onCloseTab(new ClosePlaceEvent(new AssetEditorPlace("I-do-Not-Exist")));
+        multiActivityManager.onClosePlace(new ClosePlaceEvent(new AssetEditorPlace("I-do-Not-Exist")));
         // Does nothing
     }
 
     @Test
     public void testClosingATabIsBlockedByTheActivity() throws Exception {
         Activity activity = goTo(place);
-        when(activity.mayStop()).thenReturn(false);
+        setUpMayStop(activity, false);
 
-        multiActivityManager.onCloseTab(new ClosePlaceEvent(place));
+        multiActivityManager.onClosePlace(new ClosePlaceEvent(place));
         verify(activity, never()).onStop();
     }
 
@@ -56,15 +73,40 @@ public class MultiActivityManagerCloseTabsTest extends MultiActivityManagerTestB
 
         Activity activity = goTo(place);
 
-        when(activity.mayStop()).thenReturn(true);
+        setUpMayStop(activity, true);
 
         verify(activity).start(any(AcceptTabItem.class), resettableEventBusArgumentCaptor.capture());
 
         resettableEventBusArgumentCaptor.getValue().addHandler(ClosePlaceEvent.TYPE, handler);
 
-        multiActivityManager.onCloseTab(new ClosePlaceEvent(place));
+        multiActivityManager.onClosePlace(new ClosePlaceEvent(place));
         verify(activity).onStop();
         verify(handlerRegistration).removeHandler();
+    }
+
+    @Test
+    public void testCloseAllTabs() throws Exception {
+        Place place1 = mock(Place.class);
+        Place place2 = mock(Place.class);
+        Place place3 = mock(Place.class);
+        Activity activity1 = setUpMayStop(goTo(place1), true);
+        Activity activity2 = setUpMayStop(goTo(place2), true);
+        Activity activity3 = setUpMayStop(goTo(place3), true);
+
+        multiActivityManager.onCloseAllPlaces(new CloseAllPlacesEvent());
+
+        verify(activity1).onStop();
+        verify(activity2).onStop();
+        verify(activity3).onStop();
+    }
+
+    private Activity setUpMayStop(Activity activity, boolean value) {
+        when(
+                activity.mayStop()
+        ).thenReturn(
+                value
+        );
+        return activity;
     }
 
     class EventBusMock extends EventBus {
@@ -86,6 +128,9 @@ public class MultiActivityManagerCloseTabsTest extends MultiActivityManagerTestB
 
         @Override
         public void fireEvent(GwtEvent<?> event) {
+            if (event instanceof ClosePlaceEvent) {
+                multiActivityManager.onClosePlace((ClosePlaceEvent) event);
+            }
         }
 
         @Override
