@@ -16,34 +16,16 @@
 
 package org.drools.repository;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-
-import javax.jcr.Binary;
-import javax.jcr.ItemExistsException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-
 import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * A PackageItem object aggregates a set of assets (for example, rules). This is
@@ -55,65 +37,63 @@ import org.slf4j.LoggerFactory;
  * types of containers). This is a container "node".
  */
 public class PackageItem extends VersionableItem {
-    private static final Logger log                                = LoggerFactory.getLogger( PackageItem.class );
+    private static final Logger log = LoggerFactory.getLogger(PackageItem.class);
 
     /**
      * This is the name of the rules "subfolder" where rules are kept for this
      * package.
      */
-    public static final String  ASSET_FOLDER_NAME                  = "assets";
+    public static final String ASSET_FOLDER_NAME = "assets";
 
     /**
      * The dublin core format attribute.
      */
-    public static final String  PACKAGE_FORMAT                     = "package";
+    public static final String PACKAGE_FORMAT = "package";
 
     /**
      * The name of the rule package node type
      */
-    public static final String  RULE_PACKAGE_TYPE_NAME             = "drools:packageNodeType";
+    public static final String RULE_PACKAGE_TYPE_NAME = "drools:packageNodeType";
 
-    public static final String  HEADER_PROPERTY_NAME               = "drools:header";
-    public static final String  EXTERNAL_URI_PROPERTY_NAME         = "drools:externalURI";
-    public static final String  CATEGORY_RULE_KEYS_PROPERTY_NAME   = "categoryRuleKeys";
-    public static final String  CATEGORY_RULE_VALUES_PROPERTY_NAME = "categoryRuleValues";
-    public static final String  WORKSPACE_PROPERTY_NAME            = "drools:workspace";
-    public static final String  DEPENDENCIES_PROPERTY_NAME         = "drools:dependencies";
+    public static final String HEADER_PROPERTY_NAME = "drools:header";
+    public static final String EXTERNAL_URI_PROPERTY_NAME = "drools:externalURI";
+    public static final String CATEGORY_RULE_KEYS_PROPERTY_NAME = "categoryRuleKeys";
+    public static final String CATEGORY_RULE_VALUES_PROPERTY_NAME = "categoryRuleValues";
+    public static final String WORKSPACE_PROPERTY_NAME = "drools:workspace";
+    public static final String DEPENDENCIES_PROPERTY_NAME = "drools:dependencies";
 
-    private static final String COMPILED_PACKAGE_PROPERTY_NAME     = "drools:compiledPackage";
-    private final String        BINARY_UP_TO_DATE                  = "drools:binaryUpToDate";
+    private static final String COMPILED_PACKAGE_PROPERTY_NAME = "drools:compiledPackage";
+    private final String BINARY_UP_TO_DATE = "drools:binaryUpToDate";
 
     /**
      * Constructs an object of type RulePackageItem corresponding the specified
      * node
-     * 
-     * @param rulesRepository
-     *            the rulesRepository that instantiated this object
-     * @param node
-     *            the node to which this object corresponds
+     *
+     * @param rulesRepository the rulesRepository that instantiated this object
+     * @param node            the node to which this object corresponds
      * @throws RulesRepositoryException
      */
     public PackageItem(RulesRepository rulesRepository,
                        Node node) throws RulesRepositoryException {
-        super( rulesRepository,
-                node );
+        super(rulesRepository,
+                node);
 
         try {
             //make sure this node is a rule package node
-            if ( !(this.node.getPrimaryNodeType().getName().equals( RULE_PACKAGE_TYPE_NAME ) || isHistoricalVersion()) ) {
+            if (!(this.node.getPrimaryNodeType().getName().equals(RULE_PACKAGE_TYPE_NAME) || isHistoricalVersion())) {
                 String message = this.node.getName() + " is not a node of type " + RULE_PACKAGE_TYPE_NAME + ". It is a node of type: " + this.node.getPrimaryNodeType().getName();
-                log.error( message );
-                throw new RulesRepositoryException( message );
+                log.error(message);
+                throw new RulesRepositoryException(message);
             }
-        } catch ( Exception e ) {
-            log.error( "Caught exception: " + e );
-            throw new RulesRepositoryException( e );
+        } catch (Exception e) {
+            log.error("Caught exception: " + e);
+            throw new RulesRepositoryException(e);
         }
     }
 
     PackageItem() {
-        super( null,
-               null );
+        super(null,
+                null);
     }
 
     /**
@@ -128,9 +108,9 @@ public class PackageItem extends VersionableItem {
      */
     public boolean isSnapshot() {
         try {
-            return (!this.rulesRepository.isNotSnapshot( this.node.getParent() ));
-        } catch ( RepositoryException e ) {
-            throw new IllegalStateException( e );
+            return (!this.rulesRepository.isNotSnapshot(this.node.getParent()));
+        } catch (RepositoryException e) {
+            throw new IllegalStateException(e);
         }
     }
 
@@ -141,30 +121,26 @@ public class PackageItem extends VersionableItem {
         try {
             checkIsUpdateable();
             this.checkout();
-            node.setProperty( BINARY_UP_TO_DATE,
-                              status );
-        } catch ( RepositoryException e ) {
-            log.error( "fail to update drools:binaryUpToDate of " + getName(),
-                       e );
+            node.setProperty(BINARY_UP_TO_DATE,
+                    status);
+        } catch (RepositoryException e) {
+            log.error("fail to update drools:binaryUpToDate of " + getName(),
+                    e);
         }
     }
 
     /**
      * Return true if the binary is "up to date".
-     * 
+     *
      * @return
      */
     public boolean isBinaryUpToDate() {
         try {
-            if ( this.node.hasProperty( BINARY_UP_TO_DATE ) ) {
-                return node.getProperty( BINARY_UP_TO_DATE ).getBoolean();
-            } else {
-                return false;
-            }
-        } catch ( RepositoryException e ) {
-            log.error( "fail to get drools:binaryUpToDate of " + getName(),
-                       e );
-            throw new RulesRepositoryException( e );
+            return this.node.hasProperty(BINARY_UP_TO_DATE) && node.getProperty(BINARY_UP_TO_DATE).getBoolean();
+        } catch (RepositoryException e) {
+            log.error("fail to get drools:binaryUpToDate of " + getName(),
+                    e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -176,8 +152,8 @@ public class PackageItem extends VersionableItem {
     public String getSnapshotName() {
         try {
             return this.node.getName();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -186,66 +162,62 @@ public class PackageItem extends VersionableItem {
      * @throws RulesRepositoryException
      */
     public String[] getWorkspaces() throws RulesRepositoryException {
-        return getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+        return getStringPropertyArray(WORKSPACE_PROPERTY_NAME);
     }
 
     /**
      * This sets the Workspace
-     * 
+     *
      * @param workspace
      */
     public void updateWorkspace(String[] workspace) {
-        this.updateStringArrayProperty( workspace,
-                                        WORKSPACE_PROPERTY_NAME,
-                                        false );
+        this.updateStringArrayProperty(workspace,
+                WORKSPACE_PROPERTY_NAME,
+                false);
     }
 
     /**
      * This adds a workspace
-     * 
+     *
      * @param workspace
      */
     public void addWorkspace(String workspace) {
-        String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
+        String[] existingWorkspaces = getStringPropertyArray(WORKSPACE_PROPERTY_NAME);
         boolean found = false;
-        for ( String existingWorkspace : existingWorkspaces ) {
-            if ( existingWorkspace.equals( workspace ) ) {
+        for (String existingWorkspace : existingWorkspaces) {
+            if (existingWorkspace.equals(workspace)) {
                 found = true;
                 break;
             }
         }
-        if ( !found ) {
+        if (!found) {
             String[] newWorkspaces = new String[existingWorkspaces.length + 1];
-            for ( int i = 0; i < existingWorkspaces.length; i++ ) {
-                newWorkspaces[i] = existingWorkspaces[i];
-            }
+            System.arraycopy(existingWorkspaces, 0, newWorkspaces, 0, existingWorkspaces.length);
             newWorkspaces[existingWorkspaces.length] = workspace;
-            this.updateStringArrayProperty( newWorkspaces,
-                                            WORKSPACE_PROPERTY_NAME,
-                                            false );
+            this.updateStringArrayProperty(newWorkspaces,
+                    WORKSPACE_PROPERTY_NAME,
+                    false);
         }
     }
 
     /**
      * This removes a workspace
-     * 
+     *
      * @param workspace
      */
     public void removeWorkspace(String workspace) {
-        String[] existingWorkspaces = getStringPropertyArray( WORKSPACE_PROPERTY_NAME );
-        if ( existingWorkspaces.length == 0 ) {
+        String[] existingWorkspaces = getStringPropertyArray(WORKSPACE_PROPERTY_NAME);
+        if (existingWorkspaces.length == 0) {
             return;
         }
 
-        List<String> existingWorkspaceList = new ArrayList<String>( existingWorkspaces.length );
-        for ( String existingWorkspace : existingWorkspaces ) {
-            existingWorkspaceList.add( existingWorkspace );
-        }
-        existingWorkspaceList.remove( workspace );
-        if ( existingWorkspaceList.size() != existingWorkspaces.length ) {
-            this.updateStringArrayProperty( existingWorkspaceList.toArray( new String[existingWorkspaceList.size()] ),
-                                            WORKSPACE_PROPERTY_NAME,
-                                            false );
+        List<String> existingWorkspaceList = new ArrayList<String>(existingWorkspaces.length);
+        Collections.addAll(existingWorkspaceList, existingWorkspaces);
+        existingWorkspaceList.remove(workspace);
+        if (existingWorkspaceList.size() != existingWorkspaces.length) {
+            this.updateStringArrayProperty(existingWorkspaceList.toArray(new String[existingWorkspaceList.size()]),
+                    WORKSPACE_PROPERTY_NAME,
+                    false);
         }
     }
 
@@ -256,10 +228,10 @@ public class PackageItem extends VersionableItem {
      */
     public AssetItem addAsset(String assetName,
                               String description) {
-        return addAsset( assetName,
-                         description,
-                         null,
-                         null );
+        return addAsset(assetName,
+                description,
+                null,
+                null);
     }
 
     /**
@@ -267,17 +239,13 @@ public class PackageItem extends VersionableItem {
      * With the given category.
      * <p/>
      * This will NOT check the asset in, just create the basic record.
-     * 
-     * @param assetName
-     *            The name of the asset (the file name minus the extension)
-     * @param description
-     *            A description of the asset.
-     * @param initialCategory
-     *            The initial category the asset is placed in (can belong to
-     *            multiple ones later).
-     * @param format
-     *            The dublin core format (which also determines what editor is
-     *            used) - this is effectively the file extension.
+     *
+     * @param assetName       The name of the asset (the file name minus the extension)
+     * @param description     A description of the asset.
+     * @param initialCategory The initial category the asset is placed in (can belong to
+     *                        multiple ones later).
+     * @param format          The dublin core format (which also determines what editor is
+     *                        used) - this is effectively the file extension.
      */
     public AssetItem addAsset(String assetName,
                               String description,
@@ -286,54 +254,54 @@ public class PackageItem extends VersionableItem {
         Node ruleNode;
         try {
             assetName = assetName.trim();
-            Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
-            String assetPath = NodeUtils.makeJSR170ComplaintName( assetName );
-            ruleNode = rulesFolder.addNode( assetPath,
-                                            AssetItem.RULE_NODE_TYPE_NAME );
-            ruleNode.setProperty( AssetItem.TITLE_PROPERTY_NAME,
-                                  assetName );
+            Node rulesFolder = this.node.getNode(ASSET_FOLDER_NAME);
+            String assetPath = NodeUtils.makeJSR170ComplaintName(assetName);
+            ruleNode = rulesFolder.addNode(assetPath,
+                    AssetItem.RULE_NODE_TYPE_NAME);
+            ruleNode.setProperty(AssetItem.TITLE_PROPERTY_NAME,
+                    assetName);
 
-            ruleNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
-                                  description );
-            if ( format != null ) {
-                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                      format );
+            ruleNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+                    description);
+            if (format != null) {
+                ruleNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
+                        format);
             } else {
-                ruleNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                      AssetItem.DEFAULT_CONTENT_FORMAT );
+                ruleNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
+                        AssetItem.DEFAULT_CONTENT_FORMAT);
             }
 
-            ruleNode.setProperty( VersionableItem.CHECKIN_COMMENT,
-                                  "Initial" );
+            ruleNode.setProperty(VersionableItem.CHECKIN_COMMENT,
+                    "Initial");
 
             Calendar lastModified = Calendar.getInstance();
 
-            ruleNode.setProperty( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
-                                  lastModified );
-            ruleNode.setProperty( AssetItem.PACKAGE_NAME_PROPERTY,
-                                  this.getName() );
-            ruleNode.setProperty( CREATOR_PROPERTY_NAME,
-                                  this.node.getSession().getUserID() );
+            ruleNode.setProperty(AssetItem.LAST_MODIFIED_PROPERTY_NAME,
+                    lastModified);
+            ruleNode.setProperty(AssetItem.PACKAGE_NAME_PROPERTY,
+                    this.getName());
+            ruleNode.setProperty(CREATOR_PROPERTY_NAME,
+                    this.node.getSession().getUserID());
 
             rulesRepository.getSession().save();
 
-            AssetItem rule = new AssetItem( this.rulesRepository,
-                                            ruleNode );
+            AssetItem rule = new AssetItem(this.rulesRepository,
+                    ruleNode);
 
-            rule.updateState( StateItem.DRAFT_STATE_NAME );
+            rule.updateState(StateItem.DRAFT_STATE_NAME);
 
-            if ( initialCategory != null ) {
-                rule.addCategory( initialCategory );
+            if (initialCategory != null) {
+                rule.addCategory(initialCategory);
             }
 
             return rule;
 
-        } catch ( RepositoryException e ) {
-            if ( e instanceof ItemExistsException ) {
-                throw new RulesRepositoryException( "A rule of that name already exists in that package.",
-                                                    e );
+        } catch (RepositoryException e) {
+            if (e instanceof ItemExistsException) {
+                throw new RulesRepositoryException("A rule of that name already exists in that package.",
+                        e);
             } else {
-                throw new RulesRepositoryException( e );
+                throw new RulesRepositoryException(e);
             }
         }
 
@@ -343,42 +311,40 @@ public class PackageItem extends VersionableItem {
      * This adds a rule which is imported from global area.
      * <p/>
      * This will NOT check the asset in, just create the basic record.
-     * 
-     * @param sharedAssetName
-     *            The name of the imported asset
+     *
+     * @param sharedAssetName The name of the imported asset
      */
     public AssetItem addAssetImportedFromGlobalArea(String sharedAssetName) {
         try {
             //assetName = assetName.trim();
-            Node rulesFolder = this.node.getNode( ASSET_FOLDER_NAME );
+            Node rulesFolder = this.node.getNode(ASSET_FOLDER_NAME);
 
             Session session = rulesRepository.getSession();
             Workspace workspace = session.getWorkspace();
             PackageItem globalArea = rulesRepository.loadGlobalArea();
-            AssetItem globalAssetItem = globalArea.loadAsset( sharedAssetName );
-            if ( !hasMixin( globalAssetItem.getNode() ) ) {
+            AssetItem globalAssetItem = globalArea.loadAsset(sharedAssetName);
+            if (!hasMixin(globalAssetItem.getNode())) {
                 globalAssetItem.checkout();
-                globalAssetItem.getNode().addMixin( "mix:shareable" );
-                globalAssetItem.checkin( "add mix:shareable" );
+                globalAssetItem.getNode().addMixin("mix:shareable");
+                globalAssetItem.checkin("add mix:shareable");
             }
 
             String path = rulesFolder.getPath() + "/" + globalAssetItem.getName();
-            workspace.clone( workspace.getName(),
-                             globalAssetItem.getNode().getPath(),
-                             path,
-                             false );
+            workspace.clone(workspace.getName(),
+                    globalAssetItem.getNode().getPath(),
+                    path,
+                    false);
 
-            Node ruleNode = rulesFolder.getNode( globalAssetItem.getName() );
-            AssetItem rule = new AssetItem( this.rulesRepository,
-                                            ruleNode );
+            Node ruleNode = rulesFolder.getNode(globalAssetItem.getName());
 
-            return rule;
-        } catch ( RepositoryException e ) {
-            if ( e instanceof ItemExistsException ) {
-                throw new RulesRepositoryException( "A rule of that name already exists in that package.",
-                                                    e );
+            return new AssetItem(this.rulesRepository,
+                    ruleNode);
+        } catch (RepositoryException e) {
+            if (e instanceof ItemExistsException) {
+                throw new RulesRepositoryException("A rule of that name already exists in that package.",
+                        e);
             } else {
-                throw new RulesRepositoryException( e );
+                throw new RulesRepositoryException(e);
             }
         }
 
@@ -387,12 +353,12 @@ public class PackageItem extends VersionableItem {
     private boolean hasMixin(Node node) {
         try {
             NodeType[] nodeTypes = node.getMixinNodeTypes();
-            for ( NodeType nodeType : nodeTypes ) {
-                if ( nodeType.isNodeType( "mix:shareable" ) ) {
+            for (NodeType nodeType : nodeTypes) {
+                if (nodeType.isNodeType("mix:shareable")) {
                     return true;
                 }
             }
-        } catch ( RepositoryException e ) {
+        } catch (RepositoryException e) {
 
         }
 
@@ -405,74 +371,72 @@ public class PackageItem extends VersionableItem {
     public void remove() {
         checkIsUpdateable();
         try {
-            log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + getName() + "]" );
+            log.info("USER:" + getCurrentUserName() + " REMOVEING package [" + getName() + "]");
             this.node.remove();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( "Was not able to delete package.",
-                                                e );
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException("Was not able to delete package.",
+                    e);
         }
     }
 
     /**
      * To avoid updating dependency attribute for every asset operation like
      * adding/renaming/deleting etc, we calculate dependency path on the fly.
-     * 
+     *
      * @return String[] The dependency path.
      */
     public String[] getDependencies() {
         Map<String, String> result = new HashMap<String, String>();
         try {
             Node content = getVersionContentNode();
-            Iterator<AssetItem> assets = new AssetItemIterator( content.getNode(
-                                                                                 ASSET_FOLDER_NAME ).getNodes(),
-                                                                this.rulesRepository );
-            while ( assets.hasNext() ) {
+            Iterator<AssetItem> assets = new AssetItemIterator(content.getNode(
+                    ASSET_FOLDER_NAME).getNodes(),
+                    this.rulesRepository);
+            while (assets.hasNext()) {
                 AssetItem asset = assets.next();
 
-                result.put( asset.getName(),
-                            encodeDependencyPath(
-                                                  asset.getName(),
-                                                  isHistoricalVersion() ? Long.toString( asset.getVersionNumber() ) : "LATEST" ) );
+                result.put(asset.getName(),
+                        encodeDependencyPath(
+                                asset.getName(),
+                                isHistoricalVersion() ? Long.toString(asset.getVersionNumber()) : "LATEST"));
             }
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
 
-        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
-        for ( String existingDependency : existingDependencies ) {
-            String path = decodeDependencyPath( existingDependency )[0];
-            if ( result.containsKey( path ) ) {
-                result.put( path,
-                            existingDependency );
+        String[] existingDependencies = getStringPropertyArray(DEPENDENCIES_PROPERTY_NAME);
+        for (String existingDependency : existingDependencies) {
+            String path = decodeDependencyPath(existingDependency)[0];
+            if (result.containsKey(path)) {
+                result.put(path,
+                        existingDependency);
             }
         }
 
-        return result.values().toArray( new String[result.size()] );
+        return result.values().toArray(new String[result.size()]);
     }
 
     public void updateDependency(String dependencyPath) {
-        String[] existingDependencies = getStringPropertyArray( DEPENDENCIES_PROPERTY_NAME );
+        String[] existingDependencies = getStringPropertyArray(DEPENDENCIES_PROPERTY_NAME);
         boolean found = false;
-        for ( int i = 0; i < existingDependencies.length; i++ ) {
-            if ( decodeDependencyPath( existingDependencies[i] )[0]
-                    .equals( decodeDependencyPath( dependencyPath )[0] ) ) {
+        for (int i = 0; i < existingDependencies.length; i++) {
+            if (decodeDependencyPath(existingDependencies[i])[0]
+                    .equals(decodeDependencyPath(dependencyPath)[0])) {
                 found = true;
                 existingDependencies[i] = dependencyPath;
-                this.updateStringArrayProperty( existingDependencies,
-                                                DEPENDENCIES_PROPERTY_NAME,
-                                                false );
+                this.updateStringArrayProperty(existingDependencies,
+                        DEPENDENCIES_PROPERTY_NAME,
+                        false);
                 break;
             }
         }
-        if ( !found ) {
+        if (!found) {
             String[] newDependencies = new String[existingDependencies.length + 1];
-            for ( int i = 0; i < existingDependencies.length; i++ ) {
-                newDependencies[i] = existingDependencies[i];
-            }
+            System.arraycopy(existingDependencies, 0, newDependencies, 0, existingDependencies.length);
             newDependencies[existingDependencies.length] = dependencyPath;
-            this.updateStringArrayProperty( newDependencies,
-                                            DEPENDENCIES_PROPERTY_NAME,
-                                            false );
+            this.updateStringArrayProperty(newDependencies,
+                    DEPENDENCIES_PROPERTY_NAME,
+                    false);
         }
     }
 
@@ -482,8 +446,8 @@ public class PackageItem extends VersionableItem {
     }
 
     public static String[] decodeDependencyPath(String dependencyPath) {
-        if ( dependencyPath.indexOf( "?version=" ) >= 0 ) {
-            return dependencyPath.split( "\\?version=" );
+        if (dependencyPath.indexOf("?version=") >= 0) {
+            return dependencyPath.split("\\?version=");
         } else {
             return new String[]{dependencyPath, "LATEST"};
         }
@@ -641,11 +605,11 @@ public class PackageItem extends VersionableItem {
     public Iterator<AssetItem> getAssets() {
         try {
             Node content = getVersionContentNode();
-            return new VersionedAssetItemIterator( content.getNode( ASSET_FOLDER_NAME ).getNodes(),
-                                                   this.rulesRepository,
-                                                   this.getDependencies() );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+            return new VersionedAssetItemIterator(content.getNode(ASSET_FOLDER_NAME).getNodes(),
+                    this.rulesRepository,
+                    this.getDependencies());
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
 
     }
@@ -654,68 +618,67 @@ public class PackageItem extends VersionableItem {
      * This will query any assets stored under this package. For example, you
      * can pass in <code>"drools:format = 'drl'"</code> to get a list of only a
      * certain type of asset.
-     * 
-     * @param fieldPredicates
-     *            A predicate string (SQL style).
+     *
+     * @param fieldPredicates A predicate string (SQL style).
      * @return A list of matches.
      */
     public AssetItemIterator queryAssets(String fieldPredicates,
                                          boolean seekArchived) {
         try {
             String sql;
-            if ( isHistoricalVersion() ) {
+            if (isHistoricalVersion()) {
                 sql = "SELECT * FROM nt:frozenNode";
             } else {
                 sql = "SELECT * FROM " + AssetItem.RULE_NODE_TYPE_NAME;
             }
 
             sql += " WHERE jcr:path LIKE '" + getVersionContentNode().getPath() + "/" + ASSET_FOLDER_NAME + "[%]/%'";
-            if ( fieldPredicates.length() > 0 ) {
+            if (fieldPredicates.length() > 0) {
                 sql += " and " + fieldPredicates;
 
             }
 
-            if ( !seekArchived ) {
+            if (!seekArchived) {
                 sql += " AND " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false'";
             }
 
             sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
 
-            Query q = node.getSession().getWorkspace().getQueryManager().createQuery( sql,
-                                                                                      Query.SQL );
+            Query q = node.getSession().getWorkspace().getQueryManager().createQuery(sql,
+                    Query.SQL);
 
             long time = System.currentTimeMillis();
             QueryResult res = q.execute();
 
             NodeIterator it = res.getNodes();
             long taken = System.currentTimeMillis() - time;
-            if ( taken > 2000 ) {
-                log.debug( "QueryExec time is: " + (System.currentTimeMillis() - time) );
-                log.debug( "SQL is " + sql );
-                log.debug( it.getClass().getName() );
+            if (taken > 2000) {
+                log.debug("QueryExec time is: " + (System.currentTimeMillis() - time));
+                log.debug("SQL is " + sql);
+                log.debug(it.getClass().getName());
             }
 
             //return new AssetItemIterator(it, this.rulesRepository);
-            return new VersionedAssetItemIterator( it,
-                                                   this.rulesRepository,
-                                                   this.getDependencies() );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+            return new VersionedAssetItemIterator(it,
+                    this.rulesRepository,
+                    this.getDependencies());
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
 
     public AssetItemIterator queryAssets(String fieldPredicates) {
-        return queryAssets( fieldPredicates,
-                            false );
+        return queryAssets(fieldPredicates,
+                false);
     }
 
     public AssetItemIterator listArchivedAssets() {
-        return queryAssets( AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'",
-                            true );
+        return queryAssets(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'true'",
+                true);
     }
 
     public AssetItemIterator listAssetsByFormat(List<String> formatInList) {
-        return listAssetsByFormat( formatInList.toArray( new String[formatInList.size()] ) );
+        return listAssetsByFormat(formatInList.toArray(new String[formatInList.size()]));
     }
 
     /**
@@ -728,8 +691,8 @@ public class PackageItem extends VersionableItem {
     //    public void updateHeader(String header) {
     //        updateStringProperty( header, HEADER_PROPERTY_NAME );
     public AssetItemIterator listAssetsWithVersionsSpecifiedByDependenciesByFormat(String... assetFormats) {
-        AssetItemIterator assetItemIterator = listAssetsByFormat( assetFormats );
-        ((VersionedAssetItemIterator) assetItemIterator).setReturnAssetsWithVersionsSpecifiedByDependencies( true );
+        AssetItemIterator assetItemIterator = listAssetsByFormat(assetFormats);
+        ((VersionedAssetItemIterator) assetItemIterator).setReturnAssetsWithVersionsSpecifiedByDependencies(true);
         return assetItemIterator;
     }
 
@@ -738,34 +701,34 @@ public class PackageItem extends VersionableItem {
      */
     public AssetItemIterator listAssetsByFormat(String... formats) {
 
-        if ( formats.length == 1 ) {
-            return queryAssets( FORMAT_PROPERTY_NAME + "='" + formats[0] + "'" );
+        if (formats.length == 1) {
+            return queryAssets(FORMAT_PROPERTY_NAME + "='" + formats[0] + "'");
         } else {
-            StringBuilder predicateBuilder = new StringBuilder( " ( " );
-            for ( int i = 0; i < formats.length; i++ ) {
-                predicateBuilder.append( FORMAT_PROPERTY_NAME ).append( "='" ).append( formats[i] ).append( "'" );
-                if ( i != formats.length - 1 ) {
-                    predicateBuilder.append( " OR " );
+            StringBuilder predicateBuilder = new StringBuilder(" ( ");
+            for (int i = 0; i < formats.length; i++) {
+                predicateBuilder.append(FORMAT_PROPERTY_NAME).append("='").append(formats[i]).append("'");
+                if (i != formats.length - 1) {
+                    predicateBuilder.append(" OR ");
                 }
             }
-            predicateBuilder.append( " ) " );
-            return queryAssets( predicateBuilder.toString() );
+            predicateBuilder.append(" ) ");
+            return queryAssets(predicateBuilder.toString());
         }
     }
 
     public AssetItemIterator listAssetsNotOfFormat(String[] formats) {
-        if ( formats.length == 1 ) {
-            return queryAssets( "not drools:format='" + formats[0] + "'" );
+        if (formats.length == 1) {
+            return queryAssets("not drools:format='" + formats[0] + "'");
         } else {
-            StringBuilder predicateBuilder = new StringBuilder( "not ( " );
-            for ( int i = 0; i < formats.length; i++ ) {
-                predicateBuilder.append( "drools:format='" ).append( formats[i] ).append( "'" );
-                if ( !(i == formats.length - 1) ) {
-                    predicateBuilder.append( " OR " );
+            StringBuilder predicateBuilder = new StringBuilder("not ( ");
+            for (int i = 0; i < formats.length; i++) {
+                predicateBuilder.append("drools:format='").append(formats[i]).append("'");
+                if (!(i == formats.length - 1)) {
+                    predicateBuilder.append(" OR ");
                 }
             }
-            predicateBuilder.append( " ) " );
-            return queryAssets( predicateBuilder.toString() );
+            predicateBuilder.append(" ) ");
+            return queryAssets(predicateBuilder.toString());
         }
     }
 
@@ -776,21 +739,21 @@ public class PackageItem extends VersionableItem {
         try {
             Node content = getVersionContentNode();
             return new AssetItem(
-                                  this.rulesRepository,
-                                  content.getNode( ASSET_FOLDER_NAME ).getNode( name ) );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+                    this.rulesRepository,
+                    content.getNode(ASSET_FOLDER_NAME).getNode(name));
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
-    
+
     /**
      * Load a specific rule asset by name.
      */
     public AssetItem loadAsset(String name, long versionNumber) {
         AssetItem asset = loadAsset(name);
-        
+
         AssetHistoryIterator it = asset.getHistory();
-        while ( it.hasNext() ) {
+        while (it.hasNext()) {
             AssetItem historical = it.next();
             long version = historical.getVersionNumber();
             if (version == versionNumber) {
@@ -798,7 +761,7 @@ public class PackageItem extends VersionableItem {
             }
         }
         throw new RulesRepositoryException(
-                "Unable to load asset [" + name + "] with version[" + versionNumber + "]");  
+                "Unable to load asset [" + name + "] with version[" + versionNumber + "]");
     }
 
     /**
@@ -808,9 +771,9 @@ public class PackageItem extends VersionableItem {
         Node content;
         try {
             content = getVersionContentNode();
-            return content.getNode( ASSET_FOLDER_NAME ).hasNode( name );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+            return content.getNode(ASSET_FOLDER_NAME).hasNode(name);
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -826,9 +789,9 @@ public class PackageItem extends VersionableItem {
                     + "Last modified: " + this.getLastModified() + "\n"
                     + "Title: " + this.getTitle() + "\n"
                     + "----\n";
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
+        } catch (Exception e) {
+            log.error("Caught Exception",
+                    e);
             return "";
         }
     }
@@ -837,24 +800,24 @@ public class PackageItem extends VersionableItem {
      * @return An iterator over the nodes history.
      */
     public PackageHistoryIterator getHistory() {
-        return new PackageHistoryIterator( this.rulesRepository,
-                                           this.node );
+        return new PackageHistoryIterator(this.rulesRepository,
+                this.node);
     }
 
     @Override
     public PackageItem getPrecedingVersion() throws RulesRepositoryException {
         try {
             Node precedingVersionNode = this.getPrecedingVersionNode();
-            if ( precedingVersionNode != null ) {
-                return new PackageItem( this.rulesRepository,
-                                        precedingVersionNode );
+            if (precedingVersionNode != null) {
+                return new PackageItem(this.rulesRepository,
+                        precedingVersionNode);
             } else {
                 return null;
             }
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
+        } catch (Exception e) {
+            log.error("Caught exception",
+                    e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -862,16 +825,16 @@ public class PackageItem extends VersionableItem {
     public PackageItem getSucceedingVersion() throws RulesRepositoryException {
         try {
             Node succeedingVersionNode = this.getSucceedingVersionNode();
-            if ( succeedingVersionNode != null ) {
-                return new PackageItem( this.rulesRepository,
-                                        succeedingVersionNode );
+            if (succeedingVersionNode != null) {
+                return new PackageItem(this.rulesRepository,
+                        succeedingVersionNode);
             } else {
                 return null;
             }
-        } catch ( Exception e ) {
-            log.error( "Caught exception",
-                       e );
-            throw new RulesRepositoryException( e );
+        } catch (Exception e) {
+            log.error("Caught exception",
+                    e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -886,37 +849,34 @@ public class PackageItem extends VersionableItem {
      * <p/>
      * This will exclude any items that have the "ignoreState" set (so for
      * example, retired items, invalid items etc).
-     * 
-     * @param state
-     *            The state of assets to retrieve.
-     * @param ignoreState
-     *            The statuses to not include in the results (it will look at
-     *            the status of the latest one).
+     *
+     * @param state       The state of assets to retrieve.
+     * @param ignoreState The statuses to not include in the results (it will look at
+     *                    the status of the latest one).
      */
     public Iterator<AssetItem> getAssetsWithStatus(final StateItem state,
                                                    final StateItem ignoreState) {
         List<AssetItem> result = new LinkedList<AssetItem>();
-        for ( Iterator<AssetItem> rules = getAssets(); rules.hasNext(); ) {
-            AssetItem head = (AssetItem) rules.next();
-            if ( head.sameState( state ) ) {
-                result.add( head );
-            } else if ( head.sameState( ignoreState ) ) {
+        for (Iterator<AssetItem> rules = getAssets(); rules.hasNext(); ) {
+            AssetItem head = rules.next();
+            if (head.sameState(state)) {
+                result.add(head);
+            } else if (head.sameState(ignoreState)) {
                 //ignore this one
             } else {
                 List<AssetItem> fullHistory = new LinkedList<AssetItem>();
-                for ( Iterator<AssetItem> iter = head.getHistory(); iter.hasNext(); ) {
+                for (Iterator<AssetItem> iter = head.getHistory(); iter.hasNext(); ) {
                     AssetItem element = iter.next();
-                    if ( !(element.getVersionNumber() == 0) ) {
-                        fullHistory.add( element );
+                    if (!(element.getVersionNumber() == 0)) {
+                        fullHistory.add(element);
                     }
                 }
 
-                sortHistoryByVersionNumber( fullHistory );
+                sortHistoryByVersionNumber(fullHistory);
 
-                for ( Iterator<AssetItem> prev = fullHistory.iterator(); prev.hasNext(); ) {
-                    AssetItem prevRule = prev.next();
-                    if ( prevRule.sameState( state ) ) {
-                        result.add( prevRule );
+                for (AssetItem prevRule : fullHistory) {
+                    if (prevRule.sameState(state)) {
+                        result.add(prevRule);
                         break;
                     }
                 }
@@ -926,15 +886,15 @@ public class PackageItem extends VersionableItem {
     }
 
     void sortHistoryByVersionNumber(List<AssetItem> fullHistory) {
-        Collections.sort( fullHistory,
-                          new Comparator<AssetItem>() {
-                              public int compare(AssetItem a1,
-                                                 AssetItem a2) {
-                                  long la1 = a1.getVersionNumber();
-                                  long la2 = a2.getVersionNumber();
-                                  return la1 == la2 ? 0 : (la1 < la2 ? 1 : -1);
-                              }
-                          } );
+        Collections.sort(fullHistory,
+                new Comparator<AssetItem>() {
+                    public int compare(AssetItem a1,
+                                       AssetItem a2) {
+                        long la1 = a1.getVersionNumber();
+                        long la2 = a2.getVersionNumber();
+                        return la1 == la2 ? 0 : (la1 < la2 ? 1 : -1);
+                    }
+                });
     }
 
     /**
@@ -947,8 +907,8 @@ public class PackageItem extends VersionableItem {
      * included in the result.
      */
     public Iterator<AssetItem> getAssetsWithStatus(final StateItem state) {
-        return getAssetsWithStatus( state,
-                                    null );
+        return getAssetsWithStatus(state,
+                null);
     }
 
     /**
@@ -958,19 +918,19 @@ public class PackageItem extends VersionableItem {
      *         format property as the file extension).
      */
     public String getExternalURI() {
-        return this.getStringProperty( EXTERNAL_URI_PROPERTY_NAME );
+        return this.getStringProperty(EXTERNAL_URI_PROPERTY_NAME);
     }
 
     //    }
 
     public void updateExternalURI(String uri) {
-        updateStringProperty( uri,
-                              EXTERNAL_URI_PROPERTY_NAME );
+        updateStringProperty(uri,
+                EXTERNAL_URI_PROPERTY_NAME);
     }
 
     public void setCatRules(String map) {
-        updateStringProperty( map,
-                              CATEGORY_RULE_KEYS_PROPERTY_NAME );
+        updateStringProperty(map,
+                CATEGORY_RULE_KEYS_PROPERTY_NAME);
     }
 
     public void updateCategoryRules(String keys,
@@ -979,15 +939,15 @@ public class PackageItem extends VersionableItem {
         try {
 
             this.checkout();
-            this.updateStringProperty( keys,
-                                       CATEGORY_RULE_KEYS_PROPERTY_NAME );
-            this.updateStringProperty( values,
-                                       CATEGORY_RULE_VALUES_PROPERTY_NAME );
+            this.updateStringProperty(keys,
+                    CATEGORY_RULE_KEYS_PROPERTY_NAME);
+            this.updateStringProperty(values,
+                    CATEGORY_RULE_VALUES_PROPERTY_NAME);
 
-        } catch ( Exception e ) {
-            log.error( "Caught Exception",
-                       e );
-            throw new RulesRepositoryException( e );
+        } catch (Exception e) {
+            log.error("Caught Exception",
+                    e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -995,9 +955,9 @@ public class PackageItem extends VersionableItem {
                                                                    final String[] values) {
         HashMap<String, String> hash = new HashMap<String, String>();
 
-        for ( int i = 0; i < keys.length; i++ ) {
-            hash.put( keys[i],
-                      values[i] );
+        for (int i = 0; i < keys.length; i++) {
+            hash.put(keys[i],
+                    values[i]);
         }
         return hash;
     }
@@ -1006,49 +966,48 @@ public class PackageItem extends VersionableItem {
         //System.out.println("(convertStringToArray) Tags: " + tagName);
         List<String> list = new ArrayList<String>();
 
-        StringTokenizer tok = new StringTokenizer( tagName,
-                                                   "," );
-        while ( tok.hasMoreTokens() ) {
+        StringTokenizer tok = new StringTokenizer(tagName,
+                ",");
+        while (tok.hasMoreTokens()) {
             String currentTagName = tok.nextToken();
-            list.add( currentTagName );
+            list.add(currentTagName);
         }
 
-        return list.toArray( new String[0] );
+        return list.toArray(new String[0]);
 
     }
 
     public HashMap<String, String> getCategoryRules() {
-        return convertFromObjectGraphs( convertStringToArray( getCategoryRules( true ) ),
-                                        convertStringToArray( getCategoryRules( false ) ) );
+        return convertFromObjectGraphs(convertStringToArray(getCategoryRules(true)),
+                convertStringToArray(getCategoryRules(false)));
     }
 
     public String getCategoryRules(boolean keys) {
-        if ( keys ) {
-            return getStringProperty( CATEGORY_RULE_KEYS_PROPERTY_NAME );
+        if (keys) {
+            return getStringProperty(CATEGORY_RULE_KEYS_PROPERTY_NAME);
         }
-        return getStringProperty( CATEGORY_RULE_VALUES_PROPERTY_NAME );
+        return getStringProperty(CATEGORY_RULE_VALUES_PROPERTY_NAME);
     }
 
     /**
      * Update the checkin comment.
      */
     public void updateCheckinComment(String comment) {
-        updateStringProperty( comment,
-                              VersionableItem.CHECKIN_COMMENT );
+        updateStringProperty(comment,
+                VersionableItem.CHECKIN_COMMENT);
     }
 
     /**
      * This will change the status of this package, and all the contained
      * assets. No new versions are created of anything.
-     * 
-     * @param newState
-     *            The status tag to change it to.
+     *
+     * @param newState The status tag to change it to.
      */
     public void changeStatus(String newState) {
-        StateItem stateItem = rulesRepository.getState( newState );
-        updateState( stateItem );
-        for ( Iterator<AssetItem> iter = getAssets(); iter.hasNext(); ) {
-            iter.next().updateState( stateItem );
+        StateItem stateItem = rulesRepository.getState(newState);
+        updateState(stateItem);
+        for (Iterator<AssetItem> iter = getAssets(); iter.hasNext(); ) {
+            iter.next().updateState(stateItem);
         }
     }
 
@@ -1059,16 +1018,16 @@ public class PackageItem extends VersionableItem {
     public PackageItem updateCompiledPackage(InputStream data) {
         checkout();
         try {
-            Binary binary = this.node.getSession().getValueFactory().createBinary( data );
-            this.node.setProperty( COMPILED_PACKAGE_PROPERTY_NAME,
-                                   binary );
-            this.node.setProperty( LAST_MODIFIED_PROPERTY_NAME,
-                                   Calendar.getInstance() );
+            Binary binary = this.node.getSession().getValueFactory().createBinary(data);
+            this.node.setProperty(COMPILED_PACKAGE_PROPERTY_NAME,
+                    binary);
+            this.node.setProperty(LAST_MODIFIED_PROPERTY_NAME,
+                    Calendar.getInstance());
             return this;
-        } catch ( RepositoryException e ) {
-            log.error( "Unable to update the assets binary content",
-                       e );
-            throw new RulesRepositoryException( e );
+        } catch (RepositoryException e) {
+            log.error("Unable to update the assets binary content",
+                    e);
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -1080,8 +1039,8 @@ public class PackageItem extends VersionableItem {
 
         try {
             Node ruleNode = getVersionContentNode();
-            if ( ruleNode.hasProperty( COMPILED_PACKAGE_PROPERTY_NAME ) ) {
-                Property data = ruleNode.getProperty( COMPILED_PACKAGE_PROPERTY_NAME );
+            if (ruleNode.hasProperty(COMPILED_PACKAGE_PROPERTY_NAME)) {
+                Property data = ruleNode.getProperty(COMPILED_PACKAGE_PROPERTY_NAME);
                 InputStream in = data.getBinary().getStream();
 
                 // Create the byte array to hold the data
@@ -1090,16 +1049,16 @@ public class PackageItem extends VersionableItem {
                 // Read in the bytes
                 int offset = 0;
                 int numRead = 0;
-                while ( offset < bytes.length
-                        && (numRead = in.read( bytes,
-                                               offset,
-                                               bytes.length - offset )) >= 0 ) {
+                while (offset < bytes.length
+                        && (numRead = in.read(bytes,
+                        offset,
+                        bytes.length - offset)) >= 0) {
                     offset += numRead;
                 }
 
                 // Ensure all the bytes have been read in
-                if ( offset < bytes.length ) {
-                    throw new RulesRepositoryException( "Could not completely read binary package for " + getName() );
+                if (offset < bytes.length) {
+                    throw new RulesRepositoryException("Could not completely read binary package for " + getName());
                 }
 
                 // Close the input stream and return bytes
@@ -1108,11 +1067,11 @@ public class PackageItem extends VersionableItem {
             } else {
                 return null;
             }
-        } catch ( Exception e ) {
-            log.error( e.getMessage(),
-                       e );
-            if ( e instanceof RuntimeException ) throw (RuntimeException) e;
-            throw new RulesRepositoryException( e );
+        } catch (Exception e) {
+            log.error(e.getMessage(),
+                    e);
+            if (e instanceof RuntimeException) throw (RuntimeException) e;
+            throw new RulesRepositoryException(e);
         }
     }
 
@@ -1122,55 +1081,55 @@ public class PackageItem extends VersionableItem {
     public PackageItem createSubPackage(String subPackageName) throws RepositoryException {
 
         this.checkout();
-        log.info( "USER: {} CREATEING subpackage [{}] under [{}]",
-                  new Object[]{getCurrentUserName(), subPackageName, getName()} );
+        log.info("USER: {} CREATEING subpackage [{}] under [{}]",
+                new Object[]{getCurrentUserName(), subPackageName, getName()});
         Node subPkgsNode;
         try {
-            subPkgsNode = node.getNode( RulesRepository.RULE_PACKAGE_AREA );
-        } catch ( PathNotFoundException e ) {
-            subPkgsNode = node.addNode( RulesRepository.RULE_PACKAGE_AREA,
-                                        "nt:folder" );
+            subPkgsNode = node.getNode(RulesRepository.RULE_PACKAGE_AREA);
+        } catch (PathNotFoundException e) {
+            subPkgsNode = node.addNode(RulesRepository.RULE_PACKAGE_AREA,
+                    "nt:folder");
         }
         //        subPkgsNode.checkout();
-        String assetPath = NodeUtils.makeJSR170ComplaintName( subPackageName );
-        Node ruleSubPackageNode = subPkgsNode.addNode( assetPath,
-                                                       PackageItem.RULE_PACKAGE_TYPE_NAME );
+        String assetPath = NodeUtils.makeJSR170ComplaintName(subPackageName);
+        Node ruleSubPackageNode = subPkgsNode.addNode(assetPath,
+                PackageItem.RULE_PACKAGE_TYPE_NAME);
 
-        ruleSubPackageNode.addNode( PackageItem.ASSET_FOLDER_NAME,
-                                    "drools:versionableAssetFolder" );
+        ruleSubPackageNode.addNode(PackageItem.ASSET_FOLDER_NAME,
+                "drools:versionableAssetFolder");
 
-        ruleSubPackageNode.setProperty( PackageItem.TITLE_PROPERTY_NAME,
-                                        subPackageName );
+        ruleSubPackageNode.setProperty(PackageItem.TITLE_PROPERTY_NAME,
+                subPackageName);
 
-        ruleSubPackageNode.setProperty( AssetItem.DESCRIPTION_PROPERTY_NAME,
-                                        "" );
-        ruleSubPackageNode.setProperty( AssetItem.FORMAT_PROPERTY_NAME,
-                                        PackageItem.PACKAGE_FORMAT );
-        ruleSubPackageNode.setProperty( PackageItem.CREATOR_PROPERTY_NAME,
-                                        this.rulesRepository.getSession().getUserID() );
+        ruleSubPackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
+                "");
+        ruleSubPackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
+                PackageItem.PACKAGE_FORMAT);
+        ruleSubPackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME,
+                this.rulesRepository.getSession().getUserID());
         Calendar lastModified = Calendar.getInstance();
-        ruleSubPackageNode.setProperty( PackageItem.LAST_MODIFIED_PROPERTY_NAME,
-                                        lastModified );
-        ruleSubPackageNode.setProperty( PackageItem.CONTENT_PROPERTY_ARCHIVE_FLAG,
-                                        false );
+        ruleSubPackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME,
+                lastModified);
+        ruleSubPackageNode.setProperty(PackageItem.CONTENT_PROPERTY_ARCHIVE_FLAG,
+                false);
 
-        return new PackageItem( this.rulesRepository,
-                                ruleSubPackageNode );
+        return new PackageItem(this.rulesRepository,
+                ruleSubPackageNode);
     }
 
     /**
      * Returns a {@link PackageIterator} of its children
-     * 
+     *
      * @return a {@link PackageIterator} of its children
      */
     public PackageIterator listSubPackages() {
         try {
-            return new PackageIterator( getRulesRepository(),
-                                        node.getNode( RulesRepository.RULE_PACKAGE_AREA ).getNodes() );
-        } catch ( PathNotFoundException e ) {
+            return new PackageIterator(getRulesRepository(),
+                    node.getNode(RulesRepository.RULE_PACKAGE_AREA).getNodes());
+        } catch (PathNotFoundException e) {
             return new PackageIterator();
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
 
