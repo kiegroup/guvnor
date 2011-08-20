@@ -20,7 +20,10 @@ import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,8 +132,7 @@ public class CategoryItem extends Item {
         try {
             PropertyIterator pi = this.node.getReferences();
             while (pi.hasNext()) {
-                Property p = pi.nextProperty();
-                Node parentNode = p.getParent();
+                Node parentNode = pi.nextProperty().getParent();
 
                 if (parentNode.getProperty(
                         AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).getBoolean()) {
