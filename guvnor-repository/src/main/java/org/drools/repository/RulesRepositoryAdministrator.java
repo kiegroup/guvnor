@@ -16,14 +16,10 @@
 
 package org.drools.repository;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Workspace;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
 
 /**
  * This class is for administering the rules repo.
@@ -32,7 +28,7 @@ import org.slf4j.LoggerFactory;
 public class RulesRepositoryAdministrator {
 
     private static final Logger log = LoggerFactory.getLogger(RulesRepositoryAdministrator.class);
-    
+
     private final Session session;
 
     /**
@@ -41,19 +37,19 @@ public class RulesRepositoryAdministrator {
     public RulesRepositoryAdministrator(Session session) {
         this.session = session;
     }
-    
+
     static boolean isNamespaceRegistered(Session session) throws RepositoryException {
         Workspace ws = session.getWorkspace();
         //no need to set it up again, skip it if it has.
         String uris[] = ws.getNamespaceRegistry().getURIs();
-        for ( int i = 0; i < uris.length; i++ ) {
-            if (RulesRepository.DROOLS_URI.equals( uris[i]) ) {
+        for (String uri : uris) {
+            if (RulesRepository.DROOLS_URI.equals(uri)) {
                 return true;
             }
         }
         return false;
     }
-    
+
     /**
      * This will tell you if the repository currently connected to is initialized.
      * This includes the basic data/folders, as well as the name space registered.
@@ -61,23 +57,23 @@ public class RulesRepositoryAdministrator {
      */
     public boolean isRepositoryInitialized() {
         try {
-            return isNamespaceRegistered( session ) && 
-            session.getRootNode().hasNode( RulesRepository.RULES_REPOSITORY_NAME );
-        } catch ( RepositoryException e ) {
-            throw new RulesRepositoryException( e );
+            return isNamespaceRegistered(session) &&
+                    session.getRootNode().hasNode(RulesRepository.RULES_REPOSITORY_NAME);
+        } catch (RepositoryException e) {
+            throw new RulesRepositoryException(e);
         }
     }
-    
+
     /**
      * Clears out the entire tree below the rules repository node of the JCR repository.
      * IMPORTANT: after calling this, RepositoryConfigurator.setupRulesRepository() should
      * be called to set up the minimal data for a "blank" setup. If importing other data, however, this is probably not needed.
      */
     public void clearRulesRepository() {
-        log.debug( "Clearing repository database. UserId=" + session.getUserID() );
+        log.debug("Clearing repository database. UserId=" + session.getUserID());
         try {
-            
-            if (session.getRootNode().hasNode( RulesRepository.RULES_REPOSITORY_NAME )) {
+
+            if (session.getRootNode().hasNode(RulesRepository.RULES_REPOSITORY_NAME)) {
                 System.out.println("Clearing rules repository");
                 Node node = session.getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
                 node.remove();
@@ -85,14 +81,12 @@ public class RulesRepositoryAdministrator {
             } else {
                 System.out.println("Repo not setup, ergo not clearing it !");
             }
-        }
-        catch(PathNotFoundException e) {
-            log.error( "Unable to clear rules repository.", e );
-        }
-        catch(RepositoryException e) {
-            log.error( "Unable to clear rules repository.", e );
+        } catch (PathNotFoundException e) {
+            log.error("Unable to clear rules repository.", e);
+        } catch (RepositoryException e) {
+            log.error("Unable to clear rules repository.", e);
         }
     }
-    
-    
+
+
 }
