@@ -453,8 +453,7 @@ public class RulesRepository {
 
             while (it.hasNext()) {
                 PackageItem historical = it.next();
-                long version = historical.getVersionNumber();
-                if (version == versionNumber) {
+                if (historical.getVersionNumber() == versionNumber) {
                     return historical;
                 }
             }
@@ -479,9 +478,7 @@ public class RulesRepository {
 
     public StateItem loadState(String name) throws RulesRepositoryException {
         try {
-            Node folderNode = this.getAreaNode(STATE_AREA);
-            Node ruleStateNode = folderNode.getNode(name);
-
+            Node ruleStateNode = this.getAreaNode(STATE_AREA).getNode(name);
             return new StateItem(this,
                     ruleStateNode);
         } catch (RepositoryException e) {
@@ -566,17 +563,11 @@ public class RulesRepository {
                 save();
             }
 
-            Node pkgSnaps = snaps.getNode(nodePath);
-
-            String newName = pkgSnaps.getPath() + "/" + snapshotName;
-
-            Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
-            Node rulePackageNode = folderNode.getNode(packageName);
-
-            String source = rulePackageNode.getPath();
+            String newName = snaps.getNode(nodePath).getPath() + "/" + snapshotName;
+            Node rulePackageNode = this.getAreaNode(RULE_PACKAGE_AREA).getNode(packageName);
 
             long start = System.currentTimeMillis();
-            this.session.getWorkspace().copy(source,
+            this.session.getWorkspace().copy(rulePackageNode.getPath(),
                     newName);
             log.debug("Time taken for snap: " + (System.currentTimeMillis() - start));
 
@@ -627,9 +618,8 @@ public class RulesRepository {
                                     String newName) {
         log.debug("Creating snapshot for [" + packageName + "] called [" + snapshotName + "]");
         try {
-            Node snaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA);
 
-            Node pkgSnaps = snaps.getNode(packageName);
+            Node pkgSnaps = this.getAreaNode(PACKAGE_SNAPSHOT_AREA).getNode(packageName);
 
             Node sourceNode = pkgSnaps.getNode(snapshotName);
             if (pkgSnaps.hasNode(newName)) {
@@ -819,7 +809,7 @@ public class RulesRepository {
      * @param name        what to name the node added
      * @param description what description to use for the node
      * @param format      module format.
-     * @param the         initial workspaces that this module belongs to.
+     * @param workspace   the initial workspaces that this module belongs to.
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
