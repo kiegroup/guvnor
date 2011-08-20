@@ -840,9 +840,8 @@ public class RulesRepository {
             rulePackageNode.setProperty(PackageItem.WORKSPACE_PROPERTY_NAME,
                     workspace);
 
-            Calendar lastModified = Calendar.getInstance();
             rulePackageNode.setProperty(PackageItem.LAST_MODIFIED_PROPERTY_NAME,
-                    lastModified);
+                    Calendar.getInstance());
 
             PackageItem item = new PackageItem(this,
                     rulePackageNode);
@@ -1413,10 +1412,8 @@ public class RulesRepository {
         try {
             AssetItem item = loadAssetByUUID(uuid);
 
-            PackageItem destPkg = loadPackage(newPackage);
-
             String sourcePath = item.node.getPath();
-            String destPath = destPkg.node.getPath() + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + item.getName();
+            String destPath = loadPackage(newPackage).node.getPath() + "/" + PackageItem.ASSET_FOLDER_NAME + "/" + item.getName();
 
             this.session.move(sourcePath,
                     destPath);
@@ -1470,8 +1467,7 @@ public class RulesRepository {
     public void renameCategory(String originalPath,
                                String newName) {
         try {
-            CategoryItem cat = loadCategory(originalPath);
-            Node node = cat.getNode();
+            Node node = loadCategory(originalPath).getNode();
             String sourcePath = node.getPath();
             String destPath = node.getParent().getPath() + "/" + newName;
             this.session.move(sourcePath,
@@ -1660,14 +1656,14 @@ public class RulesRepository {
     public AssetItemIterator queryFullText(String qry,
                                            boolean seekArchived) {
         try {
-
-            String searchPath = "/jcr:root/" + RULES_REPOSITORY_NAME + "/" + RULE_PACKAGE_AREA + "//element(*, " + AssetItem.RULE_NODE_TYPE_NAME + ")";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("/jcr:root/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("//element(*, ").append(AssetItem.RULE_NODE_TYPE_NAME).append(")");
             if (seekArchived) {
-                searchPath += "[jcr:contains(., '" + qry + "')]";
+                stringBuilder.append("[jcr:contains(., '" + qry + "')]");
             } else {
-                searchPath += "[jcr:contains(., '" + qry + "') and " + AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG + " = 'false']";
+                stringBuilder.append("[jcr:contains(., '").append(qry).append("') and ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'false']");
             }
-            Query q = this.session.getWorkspace().getQueryManager().createQuery(searchPath,
+            Query q = this.session.getWorkspace().getQueryManager().createQuery(stringBuilder.toString(),
                     Query.XPATH);
             QueryResult res = q.execute();
             return new AssetItemIterator(res.getNodes(),
@@ -1786,9 +1782,9 @@ public class RulesRepository {
      */
     public StateItem[] listStates() {
         List<StateItem> states = new ArrayList<StateItem>();
-        NodeIterator it;
+
         try {
-            it = this.getAreaNode(STATE_AREA).getNodes();
+            NodeIterator it = this.getAreaNode(STATE_AREA).getNodes();
 
             while (it.hasNext()) {
                 states.add(new StateItem(this,
@@ -1808,16 +1804,14 @@ public class RulesRepository {
     public String copyPackage(String sourcePackageName,
                               String destPackageName) {
         PackageItem source = loadPackage(sourcePackageName);
-        String sourcePath;
+
 
         try {
-            sourcePath = source.getNode().getPath();
-
             String destPath = source.getNode().getParent().getPath() + "/" + destPackageName;
             if (this.getAreaNode(RULE_PACKAGE_AREA).hasNode(destPackageName)) {
                 throw new RulesRepositoryException("Destination already exists.");
             }
-            this.session.getWorkspace().copy(sourcePath,
+            this.session.getWorkspace().copy(source.getNode().getPath(),
                     destPath);
 
             PackageItem newPkg = loadPackage(destPackageName);
