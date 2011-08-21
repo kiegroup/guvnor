@@ -19,12 +19,11 @@ import java.util.zip.ZipOutputStream;
 public class AssetZipper {
 
     private final LinkedList<AssetItem> assets;
-    private final PackageItem pkg;
 
     public AssetZipper(LinkedList<AssetItem> assets,
                        PackageItem pkg) {
         this.assets = assets;
-        this.pkg = pkg;
+        //add pkg when it's really needed - zenix
     }
 
     public InputStream zipAssets() {

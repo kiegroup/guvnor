@@ -205,25 +205,48 @@ public class RepositoryPackageService
         repositoryPackageOperations.importPackages( byteArray,
                 importAsNew );
     }
-
+    
     @WebRemote
     public String createPackage(String name,
                                 String description,
+                                String format) throws RulesRepositoryException {
+        return repositoryPackageOperations.createPackage( name,
+                description,
+                format);
+    }
+    
+    @WebRemote
+    public String createPackage(String name,
+                                String description,
+                                String format,
                                 String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryPackageOperations.createPackage( name,
                 description,
+                format,
                 workspace );
     }
-
+/*
     @WebRemote
     public String createPackage(String name,
-                                String description) throws RulesRepositoryException {
+                                String description,
+                                String format) throws RulesRepositoryException {
+        serviceSecurity.checkSecurityIsAdmin();
+        return repositoryPackageOperations.createPackage( name,
+                description,
+                new String[]{} );
+    }   */
+/* 
+    @WebRemote
+    public String createPackage(String name,
+                                String description,
+                                String format,
+                                String[] workspace) throws RulesRepositoryException {
         return createPackage( name,
                 description,
                 new String[]{} );
     }
-
+   */
     @WebRemote
     public String createSubPackage(String name,
                                    String description,

@@ -16,11 +16,6 @@
 
 package org.drools.guvnor.client.widgets.tables;
 
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.PermissionsPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
-
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.TextCell;
@@ -38,6 +33,9 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.rpc.PermissionsPageRow;
+import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 /**
  * Widget with a table of Permission entries.
@@ -66,22 +64,21 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
     private Command newUserCommand;
     private Command deleteUserCommand;
     private OpenItemCommand openSelectedCommand;
-    private AsyncDataProvider<PermissionsPageRow> dataProvider;
-    
+
     // Other stuff
-    private static final int                           PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 10;
 
     protected SingleSelectionModel<PermissionsPageRow> selectionModel;
 
     interface Presenter {
     }
-    
+
     /**
      * Constructor
      */
     public PermissionsPagedTableView() {
-        super( PAGE_SIZE );
-   }
+        super(PAGE_SIZE);
+    }
 
     public SingleSelectionModel<PermissionsPageRow> getSelectionModel() {
         return this.selectionModel;
@@ -91,53 +88,53 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
     protected void addAncillaryColumns(ColumnPicker<PermissionsPageRow> columnPicker,
                                        SortableHeaderGroup<PermissionsPageRow> sortableHeaderGroup) {
 
-        Column<PermissionsPageRow, String> userNameColumn = new Column<PermissionsPageRow, String>( new TextCell() ) {
+        Column<PermissionsPageRow, String> userNameColumn = new Column<PermissionsPageRow, String>(new TextCell()) {
             public String getValue(PermissionsPageRow row) {
                 return row.getUserName();
             }
         };
-        columnPicker.addColumn( userNameColumn,
-                                new SortableHeader<PermissionsPageRow, String>(
-                                                                                sortableHeaderGroup,
-                                                                                constants.UserName1(),
-                                                                                userNameColumn ),
-                                true );
+        columnPicker.addColumn(userNameColumn,
+                new SortableHeader<PermissionsPageRow, String>(
+                        sortableHeaderGroup,
+                        constants.UserName1(),
+                        userNameColumn),
+                true);
 
-        Column<PermissionsPageRow, String> isAdminColumn = new Column<PermissionsPageRow, String>( new TextCell() ) {
+        Column<PermissionsPageRow, String> isAdminColumn = new Column<PermissionsPageRow, String>(new TextCell()) {
             public String getValue(PermissionsPageRow row) {
                 return row.isAdministrator() ? constants.Yes() : "";
             }
         };
-        columnPicker.addColumn( isAdminColumn,
-                                new SortableHeader<PermissionsPageRow, String>(
-                                                                                sortableHeaderGroup,
-                                                                                constants.Administrator(),
-                                                                                isAdminColumn ),
-                                true );
+        columnPicker.addColumn(isAdminColumn,
+                new SortableHeader<PermissionsPageRow, String>(
+                        sortableHeaderGroup,
+                        constants.Administrator(),
+                        isAdminColumn),
+                true);
 
-        Column<PermissionsPageRow, String> hasPackagePermissionsColumn = new Column<PermissionsPageRow, String>( new TextCell() ) {
+        Column<PermissionsPageRow, String> hasPackagePermissionsColumn = new Column<PermissionsPageRow, String>(new TextCell()) {
             public String getValue(PermissionsPageRow row) {
                 return row.hasPackagePermissions() ? constants.Yes() : "";
             }
         };
-        columnPicker.addColumn( hasPackagePermissionsColumn,
-                                new SortableHeader<PermissionsPageRow, String>(
-                                                                                sortableHeaderGroup,
-                                                                                constants.HasPackagePermissions(),
-                                                                                hasPackagePermissionsColumn ),
-                                true );
+        columnPicker.addColumn(hasPackagePermissionsColumn,
+                new SortableHeader<PermissionsPageRow, String>(
+                        sortableHeaderGroup,
+                        constants.HasPackagePermissions(),
+                        hasPackagePermissionsColumn),
+                true);
 
-        Column<PermissionsPageRow, String> hasCategoryPermissionsColumn = new Column<PermissionsPageRow, String>( new TextCell() ) {
+        Column<PermissionsPageRow, String> hasCategoryPermissionsColumn = new Column<PermissionsPageRow, String>(new TextCell()) {
             public String getValue(PermissionsPageRow row) {
                 return row.hasCategoryPermissions() ? constants.Yes() : "";
             }
         };
-        columnPicker.addColumn( hasCategoryPermissionsColumn,
-                                new SortableHeader<PermissionsPageRow, String>(
-                                                                                sortableHeaderGroup,
-                                                                                constants.HasCategoryPermissions(),
-                                                                                hasCategoryPermissionsColumn ),
-                                true );
+        columnPicker.addColumn(hasCategoryPermissionsColumn,
+                new SortableHeader<PermissionsPageRow, String>(
+                        sortableHeaderGroup,
+                        constants.HasCategoryPermissions(),
+                        hasCategoryPermissionsColumn),
+                true);
 
     }
 
@@ -149,42 +146,42 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
             }
         };
 
-        cellTable = new CellTable<PermissionsPageRow>( providesKey );
-        selectionModel = new SingleSelectionModel<PermissionsPageRow>( providesKey );
-        cellTable.setSelectionModel( selectionModel );
-        SelectionColumn.createAndAddSelectionColumn( cellTable );
+        cellTable = new CellTable<PermissionsPageRow>(providesKey);
+        selectionModel = new SingleSelectionModel<PermissionsPageRow>(providesKey);
+        cellTable.setSelectionModel(selectionModel);
+        SelectionColumn.createAndAddSelectionColumn(cellTable);
 
-        ColumnPicker<PermissionsPageRow> columnPicker = new ColumnPicker<PermissionsPageRow>( cellTable );
-        SortableHeaderGroup<PermissionsPageRow> sortableHeaderGroup = new SortableHeaderGroup<PermissionsPageRow>( cellTable );
+        ColumnPicker<PermissionsPageRow> columnPicker = new ColumnPicker<PermissionsPageRow>(cellTable);
+        SortableHeaderGroup<PermissionsPageRow> sortableHeaderGroup = new SortableHeaderGroup<PermissionsPageRow>(cellTable);
 
         // Add any additional columns
-        addAncillaryColumns( columnPicker,
-                             sortableHeaderGroup );
+        addAncillaryColumns(columnPicker,
+                sortableHeaderGroup);
 
         // Add "Open" button column
-        Column<PermissionsPageRow, String> openColumn = new Column<PermissionsPageRow, String>( new ButtonCell() ) {
+        Column<PermissionsPageRow, String> openColumn = new Column<PermissionsPageRow, String>(new ButtonCell()) {
             public String getValue(PermissionsPageRow row) {
                 return constants.Open();
             }
         };
-        openColumn.setFieldUpdater( new FieldUpdater<PermissionsPageRow, String>() {
+        openColumn.setFieldUpdater(new FieldUpdater<PermissionsPageRow, String>() {
             public void update(int index,
                                PermissionsPageRow row,
                                String value) {
-                openSelectedCommand.open( row.getUserName() );
+                openSelectedCommand.open(row.getUserName());
             }
-        } );
-        columnPicker.addColumn( openColumn,
-                                new TextHeader( constants.Open() ),
-                                true );
+        });
+        columnPicker.addColumn(openColumn,
+                new TextHeader(constants.Open()),
+                true);
 
-        cellTable.setWidth( "100%" );
+        cellTable.setWidth("100%");
         columnPickerButton = columnPicker.createToggleButton();
-    }    
-   
+    }
+
     @Override
     protected Widget makeWidget() {
-        return uiBinder.createAndBindUi( this );
+        return uiBinder.createAndBindUi(this);
     }
 
     @UiHandler("createNewUserButton")
@@ -200,7 +197,7 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
     @UiHandler("openSelectedUserButton")
     void openSelectedUser(ClickEvent e) {
         String userName = this.selectionModel.getSelectedObject().getUserName();
-        openSelectedCommand.open( userName );
+        openSelectedCommand.open(userName);
     }
 
     @UiHandler("refreshButton")
@@ -211,14 +208,17 @@ public class PermissionsPagedTableView extends AbstractPagedTable<PermissionsPag
     public void setNewUserCommand(Command newUserCommand) {
         this.newUserCommand = newUserCommand;
     }
+
     public void setDeleteUserCommand(Command deleteUserCommand) {
         this.deleteUserCommand = deleteUserCommand;
-    }    
+    }
+
     public void setOpenSelectedCommand(OpenItemCommand openSelectedCommand) {
         this.openSelectedCommand = openSelectedCommand;
-    }   
+    }
+
+    //Assign to member when really needed - JT
     public void setOpenSelectedCommand(AsyncDataProvider<PermissionsPageRow> dataProvider) {
-        this.dataProvider = dataProvider;
-    } 
+    }
 
 }

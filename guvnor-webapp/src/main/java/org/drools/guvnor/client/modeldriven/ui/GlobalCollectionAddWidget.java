@@ -16,12 +16,11 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.messages.Constants;
-
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.SimplePanel;
+import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 
 /**
@@ -30,7 +29,6 @@ import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
     private DirtyableFlexTable layout = new DirtyableFlexTable();
-    private Constants constants = ((Constants) GWT.create(Constants.class));
     private boolean readOnly;
 
     public GlobalCollectionAddWidget(RuleModeller mod, ActionGlobalCollectionAdd action) {
@@ -39,13 +37,14 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
 
     /**
      * Creates a new FactPatternWidget
+     *
      * @param mod
      * @param p
      * @param readOnly if the widget should be in RO mode. If this parameter
-     * is null, the readOnly attribute is calculated.
+     *                 is null, the readOnly attribute is calculated.
      */
     public GlobalCollectionAddWidget(RuleModeller modeller, ActionGlobalCollectionAdd action,
-            Boolean readOnly) {
+                                     Boolean readOnly) {
 
         super(modeller);
 
@@ -58,6 +57,7 @@ public class GlobalCollectionAddWidget extends RuleModellerWidget {
         ActionGlobalCollectionAdd gca = (ActionGlobalCollectionAdd) action;
         SimplePanel sp = new SimplePanel();
         sp.setStyleName("model-builderInner-Background"); //NON-NLS
+        Constants constants = ((Constants) GWT.create(Constants.class));
         sp.add(new SmallLabel("&nbsp;" + constants.AddXToListY(gca.factName, gca.globalName)));
 
         if (this.readOnly) {

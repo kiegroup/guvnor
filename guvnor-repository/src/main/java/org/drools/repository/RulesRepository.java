@@ -799,20 +799,43 @@ public class RulesRepository {
      */
     public PackageItem createPackage(String name,
             String description) throws RulesRepositoryException {
+        //REVISIT: As we are moving towards a generic repository, create a module that is default to drools_package format
+        //may not be correct.
         return createPackage(name,
                 description,
+                PackageItem.PACKAGE_FORMAT,
                 null);
     }
-
+    
     /**
      * Adds a package to the repository.
      * @param name what to name the node added
      * @param description what description to use for the node
+     * @param format module format. 
      * @return a PackageItem, encapsulating the created node
      * @throws RulesRepositoryException
      */
     public PackageItem createPackage(String name,
             String description,
+            String format) throws RulesRepositoryException {
+        return createPackage(name,
+                description,
+                format,
+                null);        
+    }
+    
+    /**
+     * Adds a package to the repository.
+     * @param name what to name the node added
+     * @param description what description to use for the node
+     * @param format module format. 
+     * @param the initial workspaces that this module belongs to. 
+     * @return a PackageItem, encapsulating the created node
+     * @throws RulesRepositoryException
+     */
+    public PackageItem createPackage(String name,
+            String description,
+            String format,
             String[] workspace) throws RulesRepositoryException {
         Node folderNode = this.getAreaNode(RULE_PACKAGE_AREA);
 
@@ -831,7 +854,7 @@ public class RulesRepository {
             rulePackageNode.setProperty(AssetItem.DESCRIPTION_PROPERTY_NAME,
                     description);
             rulePackageNode.setProperty(AssetItem.FORMAT_PROPERTY_NAME,
-                    PackageItem.PACKAGE_FORMAT);
+                    format);
             rulePackageNode.setProperty(PackageItem.CREATOR_PROPERTY_NAME,
                     this.session.getUserID());
             rulePackageNode.setProperty(PackageItem.WORKSPACE_PROPERTY_NAME,

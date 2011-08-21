@@ -47,7 +47,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
-    private Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+    private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
     protected RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();

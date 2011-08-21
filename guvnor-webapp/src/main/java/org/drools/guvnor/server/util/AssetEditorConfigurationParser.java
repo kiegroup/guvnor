@@ -16,31 +16,30 @@
 
 package org.drools.guvnor.server.util;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AssetEditorConfigurationParser {
-    private static final Logger            log                       = LoggerFactory.getLogger( AssetEditorConfigurationParser.class );
-    public static final String             DROOLS_ASSETEDITOR_CONFIG = "/drools-asseteditors.xml";
-    static final String                    ASSET_EDITOR              = "asseteditor";
-    static final String                    TITLE                     = "title";
-    static final String                    CLASS                     = "class";
-    static final String                    ICON                      = "icon";
-    static final String                    FORMAT                    = "format";
+    private static final Logger log = LoggerFactory.getLogger(AssetEditorConfigurationParser.class);
+    private static final String DROOLS_ASSETEDITOR_CONFIG = "/drools-asseteditors.xml";
+    static final String ASSET_EDITOR = "asseteditor";
+    static final String TITLE = "title";
+    static final String CLASS = "class";
+    static final String ICON = "icon";
+    static final String FORMAT = "format";
 
     private List<AssetEditorConfiguration> assetEditors;
 
     public List<AssetEditorConfiguration> getAssetEditors() {
-        if ( this.assetEditors == null ) {
+        if (this.assetEditors == null) {
             this.assetEditors = readConfig();
         }
         return this.assetEditors;
@@ -50,71 +49,71 @@ public class AssetEditorConfigurationParser {
         List<AssetEditorConfiguration> assetEditors = new ArrayList<AssetEditorConfiguration>();
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = getClass().getResourceAsStream( DROOLS_ASSETEDITOR_CONFIG );
-            XMLEventReader eventReader = inputFactory.createXMLEventReader( in );
+            InputStream in = getClass().getResourceAsStream(DROOLS_ASSETEDITOR_CONFIG);
+            XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
             AssetEditorConfiguration configuration = null;
 
-            while ( eventReader.hasNext() ) {
+            while (eventReader.hasNext()) {
                 XMLEvent event = eventReader.nextEvent();
 
-                if ( event.isStartElement() ) {
-                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName( event.asStartElement().getName().getLocalPart() );
-                    switch ( element ) {
-                        case ASSET_EDITOR : {
+                if (event.isStartElement()) {
+                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName(event.asStartElement().getName().getLocalPart());
+                    switch (element) {
+                        case ASSET_EDITOR: {
                             configuration = new AssetEditorConfiguration();
                             break;
                         }
-                        case FORMAT : {
+                        case FORMAT: {
                             event = eventReader.nextEvent();
-                            if ( event.isCharacters() ) {
-                                configuration.setFormat( event.asCharacters().getData() );
-                            } else if ( event.isEndElement() ) {
-                                configuration.setFormat( "" );
+                            if (event.isCharacters()) {
+                                configuration.setFormat(event.asCharacters().getData());
+                            } else if (event.isEndElement()) {
+                                configuration.setFormat("");
                             }
                             break;
                         }
-                        case TITLE : {
+                        case TITLE: {
                             event = eventReader.nextEvent();
-                            if ( event.isCharacters() ) {
-                                configuration.setTitle( event.asCharacters().getData() );
-                            } else if ( event.isEndElement() ) {
-                                configuration.setTitle( "" );
+                            if (event.isCharacters()) {
+                                configuration.setTitle(event.asCharacters().getData());
+                            } else if (event.isEndElement()) {
+                                configuration.setTitle("");
                             }
 
                             break;
                         }
-                        case ICON : {
+                        case ICON: {
                             event = eventReader.nextEvent();
-                            if ( event.isCharacters() ) {
-                                configuration.setIcon( event.asCharacters().getData() );
-                            } else if ( event.isEndElement() ) {
-                                configuration.setIcon( "" );
+                            if (event.isCharacters()) {
+                                configuration.setIcon(event.asCharacters().getData());
+                            } else if (event.isEndElement()) {
+                                configuration.setIcon("");
                             }
                             break;
                         }
-                        case CLASS : {
+                        case CLASS: {
                             event = eventReader.nextEvent();
-                            if ( event.isCharacters() ) {
-                                configuration.setEditorClass( event.asCharacters().getData() );
-                            } else if ( event.isEndElement() ) {
-                                configuration.setEditorClass( "" );
+                            if (event.isCharacters()) {
+                                configuration.setEditorClass(event.asCharacters().getData());
+                            } else if (event.isEndElement()) {
+                                configuration.setEditorClass("");
                             }
                             break;
                         }
                     }
                 }
-                if ( event.isEndElement() ) {
-                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName( event
-                            .asEndElement().getName().getLocalPart() );
-                    if ( element == AssetEditorConfigElement.ASSET_EDITOR ) {
-                        assetEditors.add( configuration );
+                if (event.isEndElement()) {
+                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName(event
+                            .asEndElement().getName().getLocalPart());
+                    if (element == AssetEditorConfigElement.ASSET_EDITOR) {
+                        assetEditors.add(configuration);
                     }
                 }
 
             }
-        } catch ( XMLStreamException e ) {
-            log.error( "Failed to parse Asset editor configuration file",
-                       e );
+        } catch (XMLStreamException e) {
+            log.error("Failed to parse Asset editor configuration file",
+                    e);
             e.printStackTrace();
         }
         return assetEditors;

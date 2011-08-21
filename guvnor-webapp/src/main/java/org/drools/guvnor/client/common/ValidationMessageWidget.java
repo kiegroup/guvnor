@@ -16,10 +16,9 @@
 
 package org.drools.guvnor.client.common;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.core.client.GWT;
-
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 
@@ -29,8 +28,7 @@ import org.drools.guvnor.client.resources.Images;
  */
 public class ValidationMessageWidget extends FormStylePopup {
 
-    private Constants     constants = ((Constants) GWT.create( Constants.class ));
-    private static Images images    = (Images) GWT.create( Images.class );
+    private static Images images = (Images) GWT.create(Images.class);
 
     /**
      * The heading is the short description in bold at the top.
@@ -38,18 +36,19 @@ public class ValidationMessageWidget extends FormStylePopup {
     public ValidationMessageWidget(String heading,
                                    String body) {
 
-        super( images.attentionNeeded(),
-               heading );
-        addAttribute( constants.Detail(),
-                      details( body ) );
+        super(images.attentionNeeded(),
+                heading);
+        Constants constants = ((Constants) GWT.create(Constants.class));
+        addAttribute(constants.Detail(),
+                details(body));
     }
 
     private Widget details(String body) {
         TextArea area = new TextArea();
-        area.setStyleName( "editable-Surface" );
-        area.setVisibleLines( 12 );
-        area.setText( body );
-        area.setWidth( "100%" );
+        area.setStyleName("editable-Surface");
+        area.setVisibleLines(12);
+        area.setText(body);
+        area.setWidth("100%");
         return area;
     }
 }

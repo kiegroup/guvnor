@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.messages.Constants;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -24,55 +22,54 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
+import org.drools.guvnor.client.messages.Constants;
 
 /**
  * Simple container for controls to manipulate a Decision Table
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Panel                       panel    = new HorizontalPanel();
-
-    private Button                      btnAddRow;
-    private Button                      btnOtherwise;
+    private Button btnOtherwise;
     private AbstractDecisionTableWidget dtable;
 
     // Resources
-    protected static final Constants    messages = GWT.create( Constants.class );
+    protected static final Constants messages = GWT.create(Constants.class);
 
     public DecisionTableControlsWidget() {
 
         // Add row button
-        btnAddRow = new Button( messages.AddRow(),
-                                       new ClickHandler() {
+        Button btnAddRow = new Button(messages.AddRow(),
+                new ClickHandler() {
 
-                                           public void onClick(ClickEvent event) {
-                                               if ( dtable != null ) {
-                                                   dtable.appendRow();
-                                               }
-                                           }
-                                       } );
-        panel.add( btnAddRow );
+                    public void onClick(ClickEvent event) {
+                        if (dtable != null) {
+                            dtable.appendRow();
+                        }
+                    }
+                });
+        Panel panel = new HorizontalPanel();
+        panel.add(btnAddRow);
 
-        btnOtherwise = new Button( "Otherwise",
-                                          new ClickHandler() {
+        btnOtherwise = new Button("Otherwise",
+                new ClickHandler() {
 
-                                              public void onClick(ClickEvent event) {
-                                                  if ( dtable != null ) {
-                                                      dtable.makeOtherwiseCell();
-                                                  }
-                                              }
-                                          } );
-        btnOtherwise.setEnabled( false );
+                    public void onClick(ClickEvent event) {
+                        if (dtable != null) {
+                            dtable.makeOtherwiseCell();
+                        }
+                    }
+                });
+        btnOtherwise.setEnabled(false);
 
-        panel.add( btnOtherwise );
+        panel.add(btnOtherwise);
 
-        initWidget( panel );
+        initWidget(panel);
 
     }
 
     /**
      * Retrieve "otherwise" button
-     * 
+     *
      * @return
      */
     Button getOtherwiseButton() {
@@ -81,7 +78,7 @@ public class DecisionTableControlsWidget extends Composite {
 
     /**
      * Inject DecisionTable to which these controls relate
-     * 
+     *
      * @param dtable
      */
     void setDecisionTableWidget(AbstractDecisionTableWidget dtable) {

@@ -193,20 +193,25 @@ public class PopulateDataTest extends GuvnorTestBase {
 
     private void createPackages(RepositoryPackageService serv) throws SerializationException {
         String uuid = serv.createPackage( "com.billasurf.manufacturing",
-                                          "Rules for manufacturing." );
+                                          "Rules for manufacturing.",
+                                          "package");
 
         PackageConfigData conf = serv.loadPackageConfig( uuid );
         conf.setHeader( "import com.billasurf.manuf.materials.*" );
         serv.savePackage( conf );
 
         serv.createPackage( "com.billasurf.manufacturing.plant",
-                            "Rules for manufacturing plants." );
+                            "Rules for manufacturing plants." ,
+                            "package");
         serv.createPackage( "com.billasurf.finance",
-                            "All financial rules." );
+                            "All financial rules." ,
+                            "package");
         serv.createPackage( "com.billasurf.hrman",
-                            "Rules for in house HR application." );
+                            "Rules for in house HR application." ,
+                            "package");
         serv.createPackage( "com.billasurf.sales",
-                            "Rules exposed as a service for pricing, and discounting." );
+                            "Rules exposed as a service for pricing, and discounting." ,
+                            "package");
 
     }
 

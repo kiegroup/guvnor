@@ -27,7 +27,7 @@ import java.util.Date;
 public class LoggingHelper {
     private final org.slf4j.Logger log;
 
-    static final MessageList messages = new MessageList();
+    private static final MessageList messages = new MessageList();
 
     public static LogEntry[] getMessages() {
         return messages.getMessages();
@@ -88,9 +88,9 @@ public class LoggingHelper {
 }
 
 class MessageList {
-    static final int MAX = 500;
-    LogEntry[] messages = new LogEntry[MAX];
-    int current = 0;
+    private static final int MAX = 500;
+    private LogEntry[] messages = new LogEntry[MAX];
+    private int current = 0;
 
     public MessageList() {
 

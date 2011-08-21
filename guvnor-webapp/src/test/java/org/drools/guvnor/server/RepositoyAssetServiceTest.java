@@ -590,7 +590,8 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                                   cat,
                                                   "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testRemoveAsset",
-                                                                 "" );
+                                                                 "",
+                                                                 "package" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testRemoveAsset",
                                           "x",
@@ -644,7 +645,8 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                                   cat,
                                                   "ya" );
         String pkgUUID = repositoryPackageService.createPackage( "testArchiveAsset",
-                                                                 "" );
+                                                                 "",
+                                                                 "package" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( "testArchiveAsset",
                                           "x",
@@ -721,7 +723,8 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                                   cat,
                                                   "ya" );
         String pkgUUID = repositoryPackageService.createPackage( packageName,
-                                                                 "" );
+                                                                 "",
+                                                                 "package" );
         @SuppressWarnings("unused")
         String uuid = impl.createNewRule( packageName,
                                           "x",
@@ -910,7 +913,8 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
-                                                "" );
+                                                "",
+                                                "package" );
         repositoryCategoryService.createCategory( "/",
                                                   "funkytest",
                                                   "" );

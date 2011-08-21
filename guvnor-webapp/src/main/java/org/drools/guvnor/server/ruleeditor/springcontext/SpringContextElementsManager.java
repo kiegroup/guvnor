@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 
 public class SpringContextElementsManager {
 
-    public static final String SPRING_CONTEXT_ELEMENTS_PROPERTIES = "/springContextElements.properties";
+    private static final String SPRING_CONTEXT_ELEMENTS_PROPERTIES = "/springContextElements.properties";
     private static SpringContextElementsManager INSTANCE;
 
     private final Map<String, String> properties = new LinkedHashMap<String, String>();
