@@ -349,8 +349,7 @@ public class SuggestionCompletionEngine
                 for ( int j = 0; j < splitTypeFields.length; j++ ) {
                     String typeField = splitTypeFields[j];
 
-                    for ( int i = 0; i < cons.length; i++ ) {
-                        FieldConstraint con = cons[i];
+                    for (FieldConstraint con : cons) {
                         if ( con instanceof SingleFieldConstraint ) {
                             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
 
@@ -391,8 +390,7 @@ public class SuggestionCompletionEngine
                 // collect all the values of the fields needed, then return it
                 // as a string...
                 for ( int i = 0; i < fieldsNeeded.length; i++ ) {
-                    for ( int j = 0; j < pat.constraintList.constraints.length; j++ ) {
-                        FieldConstraint con = pat.constraintList.constraints[j];
+                    for (FieldConstraint con : pat.constraintList.constraints) {
                         if ( con instanceof SingleFieldConstraint ) {
                             SingleFieldConstraint sfc = (SingleFieldConstraint) con;
                             if ( sfc.getFieldName().equals( fieldsNeeded[i] ) ) {
@@ -425,10 +423,9 @@ public class SuggestionCompletionEngine
 
             if ( _typeField instanceof String ) {
                 String typeField = (String) dataEnumLookupFields.get( type + "." + field );
-                for ( int i = 0; i < currentValues.length; i++ ) {
-                    FieldNature val = currentValues[i];
-                    if ( val.getField().equals( typeField ) ) {
-                        String key = type + "." + field + "[" + typeField + "=" + val.getValue() + "]";
+                for (FieldNature currentValue : currentValues) {
+                    if ( currentValue.getField().equals( typeField ) ) {
+                        String key = type + "." + field + "[" + typeField + "=" + currentValue.getValue() + "]";
                         return DropDownData.create( this.getDataEnumList( key ) );
                     }
                 }
@@ -443,10 +440,9 @@ public class SuggestionCompletionEngine
                 // collect all the values of the fields needed, then return it
                 // as a string...
                 for ( int i = 0; i < fieldsNeeded.length; i++ ) {
-                    for ( int j = 0; j < currentValues.length; j++ ) {
-                        FieldNature con = currentValues[j];
-                        if ( con.getField().equals( fieldsNeeded[i] ) ) {
-                            valuePairs[i] = fieldsNeeded[i] + "=" + con.getValue();
+                    for (FieldNature currentValue : currentValues) {
+                        if ( currentValue.getField().equals( fieldsNeeded[i] ) ) {
+                            valuePairs[i] = fieldsNeeded[i] + "=" + currentValue.getValue();
                         }
                     }
                 }
@@ -458,7 +454,6 @@ public class SuggestionCompletionEngine
 
         String[] vals = this.getDataEnumList( type + "." + field );
         return DropDownData.create( vals );
-
     }
 
     /**
@@ -522,8 +517,7 @@ public class SuggestionCompletionEngine
         if ( this.dataEnumLookupFields == null ) {
             this.dataEnumLookupFields = new HashMap<String, Object>();
             Set<String> keys = this.dataEnumLists.keySet();
-            for ( Iterator<String> iter = keys.iterator(); iter.hasNext(); ) {
-                String key = iter.next();
+            for (String key : keys) {
                 if ( key.indexOf( '[' ) != -1 ) {
                     int ix = key.indexOf( '[' );
                     String factField = key.substring( 0,
