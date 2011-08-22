@@ -374,7 +374,7 @@ public class SuggestionCompletionEngine
 
                 DropDownData data = DropDownData.create( this.dataEnumLists.get( key ) );
                 if ( data != null ) {
-                    return DropDownData.create( this.dataEnumLists.get( key ) );
+                    return data;
                 }
             } else if ( _typeFields != null ) {
                 // these enums are calculated on demand, server side...
@@ -422,6 +422,7 @@ public class SuggestionCompletionEngine
             Object _typeField = dataEnumLookupFields.get( type + "." + field );
 
             if ( _typeField instanceof String ) {
+                // TODO should do typeFields.split( "," )
                 String typeField = (String) dataEnumLookupFields.get( type + "." + field );
                 for (FieldNature currentValue : currentValues) {
                     if ( currentValue.getField().equals( typeField ) ) {
