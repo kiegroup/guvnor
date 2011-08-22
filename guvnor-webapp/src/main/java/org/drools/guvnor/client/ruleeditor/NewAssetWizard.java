@@ -31,6 +31,7 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
@@ -369,6 +370,9 @@ public class NewAssetWizard extends FormStylePopup {
             SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
                     new Command() {
                         public void execute() {
+                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
+                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
+                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(importedPackageSelector.getSelectedPackage()));
                             LoadingPopup.close();
                         }
                     } );

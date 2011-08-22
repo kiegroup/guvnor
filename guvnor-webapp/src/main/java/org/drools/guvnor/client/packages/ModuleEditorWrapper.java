@@ -60,13 +60,8 @@ public class ModuleEditorWrapper extends Composite {
         this.eventBus = eventBus;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
 
-
-        initWidget(layout);
-
-        
+        initWidget(layout);        
         setRefreshHandler();
-
-
         render();
         setWidth("100%");
     }
