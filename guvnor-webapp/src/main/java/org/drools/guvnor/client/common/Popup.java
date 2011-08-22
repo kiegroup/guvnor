@@ -19,6 +19,9 @@ import java.util.Iterator;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -102,6 +105,21 @@ public abstract class Popup extends PopupPanel {
         content.setWidth( "100%" );
         verticalPanel.add( content );
         add( verticalPanel );
+
+        FocusPanel focusPanel = new FocusPanel(verticalPanel);
+
+        focusPanel.addKeyDownHandler(new KeyDownHandler() {
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    hide();
+                }
+            }
+        });
+
+        focusPanel.setStyleName("");
+        focusPanel.setFocus(true);
+        focusPanel.setWidth("100%");
+        add(focusPanel);
 
         super.show();
 
