@@ -23,6 +23,12 @@ public class TasksNavigationItemBuilderTest {
         ).thenReturn(
                 tasksHeaderView
         );
+        TasksTreeView tasksTreeView = mock(TasksTreeView.class);
+        when(
+                navigationViewFactory.getTasksTreeView()
+        ).thenReturn(
+                tasksTreeView
+        );
         PlaceController placeController = mock(PlaceController.class);
         builder = new TasksNavigationItemBuilder(navigationViewFactory, placeController);
     }
