@@ -479,8 +479,8 @@ public class FactPatternWidget extends RuleModellerWidget {
             if ( !this.readOnly ) {
                 inner.setWidget( row,
                                  4 + col,
-                                 createaAddConnectiveImageButton( modeller,
-                                                                  constraint ) );
+                                 createAddConnectiveImageButton(modeller,
+                                         constraint) );
             }
 
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
@@ -493,8 +493,8 @@ public class FactPatternWidget extends RuleModellerWidget {
         }
     }
 
-    private Image createaAddConnectiveImageButton(final RuleModeller modeller,
-                                                  final SingleFieldConstraint constraint) {
+    private Image createAddConnectiveImageButton(final RuleModeller modeller,
+            final SingleFieldConstraint constraint) {
         Image addConnective = new ImageButton( images.addConnective() );
         addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
