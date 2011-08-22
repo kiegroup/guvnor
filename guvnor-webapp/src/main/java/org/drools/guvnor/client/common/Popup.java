@@ -30,6 +30,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -106,6 +107,18 @@ public abstract class Popup extends PopupPanel {
         verticalPanel.add( content );
         add( verticalPanel );
 
+        add(createKeyListeningFocusPanel(verticalPanel));
+
+        super.show();
+
+        focusFirstWidget(content);
+
+        if ( !fixedLocation ) {
+            center();
+        }
+    }
+
+    private FocusPanel createKeyListeningFocusPanel(VerticalPanel verticalPanel) {
         FocusPanel focusPanel = new FocusPanel(verticalPanel);
 
         focusPanel.addKeyDownHandler(new KeyDownHandler() {
@@ -119,15 +132,7 @@ public abstract class Popup extends PopupPanel {
         focusPanel.setStyleName("");
         focusPanel.setFocus(true);
         focusPanel.setWidth("100%");
-        add(focusPanel);
-
-        super.show();
-
-        focusFirstWidget( content );
-
-        if ( !fixedLocation ) {
-            center();
-        }
+        return focusPanel;
     }
 
     private void focusFirstWidget(Widget content) {
