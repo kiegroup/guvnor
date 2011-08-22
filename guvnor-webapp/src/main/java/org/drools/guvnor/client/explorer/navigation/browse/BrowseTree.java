@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -32,6 +33,7 @@ public class BrowseTree implements Presenter {
 
     private final BrowseTreeView view;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
     private final Map<IsTreeItem, String> categories = new HashMap<IsTreeItem, String>();
     private final List<IsTreeItem> states = new ArrayList<IsTreeItem>();
     private IsTreeItem incomingInboxTreeItem;
@@ -42,13 +44,14 @@ public class BrowseTree implements Presenter {
     private IsTreeItem root;
     private IsTreeItem categoriesRootItem;
 
-    public BrowseTree(ClientFactory clientFactory) {
+    public BrowseTree(ClientFactory clientFactory, EventBus eventBus) {
         this.view = clientFactory.getNavigationViewFactory().getBrowseTreeView();
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.view.setPresenter( this );
 
         if ( canShowMenu() ) {
-            this.view.showMenu(  );
+            this.view.setNewAssetMenu((new RulesNewMenu( clientFactory, eventBus )).asWidget());
         }
         root = this.view.addRootTreeItem();
         addInbox();

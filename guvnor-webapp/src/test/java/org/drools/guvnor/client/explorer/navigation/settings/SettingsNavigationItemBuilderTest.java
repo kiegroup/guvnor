@@ -39,6 +39,12 @@ public class SettingsNavigationItemBuilderTest {
         ).thenReturn(
                 settingsHeaderView
         );
+        SettingsTreeView settingsTreeView = mock(SettingsTreeView.class);
+        when(
+                navigationViewFactory.getSettingsTreeView()
+        ).thenReturn(
+                settingsTreeView
+        );
         PlaceController placeController = mock(PlaceController.class);
         builder = new SettingsNavigationItemBuilder(navigationViewFactory, placeController);
     }

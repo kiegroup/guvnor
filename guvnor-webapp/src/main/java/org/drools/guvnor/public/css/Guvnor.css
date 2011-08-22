@@ -270,6 +270,10 @@ select {
     background: #ccc;
 }
 
+.bottom-panel {
+    background: #ccc;
+}
+
 .category-explorer-Tree {
     width: 100%;
 }

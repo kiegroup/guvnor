@@ -574,6 +574,7 @@ public class RepositoryAssetOperations {
         asset.setDateCreated(item.getCreatedDate().getTime());
         asset.setCheckinComment(item.getCheckinComment());
         asset.setVersionNumber(item.getVersionNumber());
+        asset.setFormat(item.getFormat());
 
         asset.setMetaData(populateMetaData(item));
         ContentHandler handler = ContentManager.getHandler(asset.getFormat());

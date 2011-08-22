@@ -29,11 +29,12 @@ import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
+import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
@@ -162,7 +163,7 @@ public class RuleViewer extends GuvnorEditor {
         setWidth( "100%" );
 
         initActionToolBar();
-
+        setRefreshHandler();
         LoadingPopup.close();
     }
 
@@ -462,8 +463,7 @@ public class RuleViewer extends GuvnorEditor {
                             return;
                         }
 
-                        flushSuggestionCompletionCache();
-
+                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                         if ( editor instanceof DirtyableComposite ) {
                             ((DirtyableComposite) editor).resetDirty();
                         }
@@ -488,12 +488,15 @@ public class RuleViewer extends GuvnorEditor {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache() {
+    public void flushSuggestionCompletionCache(final String packageName) {
         if ( AssetFormats.isPackageDependency( this.asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.getMetaData().getPackageName(),
+            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
                     new Command() {
                         public void execute() {
+                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
+                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
+                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
                             LoadingPopup.close();
                         }
                     } );
@@ -557,6 +560,8 @@ public class RuleViewer extends GuvnorEditor {
                         name,
                         new GenericCallback<String>() {
                             public void onSuccess(String data) {
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
+                                flushSuggestionCompletionCache(sel.getSelectedPackage());
                                 completedCopying( newName.getText(),
                                         sel.getSelectedPackage(),
                                         data );
@@ -599,6 +604,7 @@ public class RuleViewer extends GuvnorEditor {
                         new GenericCallback<java.lang.String>() {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
+                                eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                                 closeAndReopen( data );
                                 pop.hide();
                             }
@@ -628,6 +634,10 @@ public class RuleViewer extends GuvnorEditor {
                     new GenericCallback<Void>() {
                         public void onSuccess(Void data) {
                             Window.alert( constants.Promoted() );
+
+                            flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
+                            flushSuggestionCompletionCache("globalArea");
+                            eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
                             closeAndReopen( asset.getUuid() );
                         }
 
@@ -651,5 +661,19 @@ public class RuleViewer extends GuvnorEditor {
         Window.alert( constants.CreatedANewItemSuccess( name,
                 pkg ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
+    }    
+    
+    private void setRefreshHandler() {
+        eventBus.addHandler(RefreshSuggestionCompletionEngineEvent.TYPE,
+                new RefreshSuggestionCompletionEngineEvent.Handler() {
+                    public void onRefreshModule(
+                            RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
+                        String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
+                        if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
+                            closeAndReopen(asset.getUuid());                                
+                        }
+                    
+                    }
+                });
     }
 }

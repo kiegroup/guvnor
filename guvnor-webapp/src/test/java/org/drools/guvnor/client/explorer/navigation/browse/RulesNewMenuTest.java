@@ -6,6 +6,8 @@ import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gwt.event.shared.EventBus;
+
 import static org.mockito.Mockito.*;
 
 public class RulesNewMenuTest {
@@ -14,11 +16,13 @@ public class RulesNewMenuTest {
     private RulesNewMenuView view;
     private RulesNewMenuView.Presenter presenter;
     private ClientFactory clientFactory;
-
+    protected EventBus eventBus;
+    
     @Before
     public void setUp() throws Exception {
         view = mock( RulesNewMenuView.class );
         clientFactory = mock( ClientFactory.class );
+        eventBus = mock( EventBus.class );
         NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
         when(
                 clientFactory.getNavigationViewFactory()
@@ -30,7 +34,7 @@ public class RulesNewMenuTest {
         ).thenReturn(
                 view
         );
-        presenter = new RulesNewMenu( clientFactory );
+        presenter = new RulesNewMenu( clientFactory, eventBus);
     }
 
     @Test
@@ -41,6 +45,6 @@ public class RulesNewMenuTest {
     @Test
     public void testOpenNewEditorBusinessRuleGuidedEditor() throws Exception {
         presenter.onOpenWizard( AssetFormats.BUSINESS_RULE, true );
-        verify( view ).launchWizard( AssetFormats.BUSINESS_RULE, true, clientFactory );
+        verify( view ).launchWizard( AssetFormats.BUSINESS_RULE, true, clientFactory, eventBus );
     }
 }

@@ -19,6 +19,9 @@ import java.util.Iterator;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -27,6 +30,7 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Focusable;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -103,13 +107,32 @@ public abstract class Popup extends PopupPanel {
         verticalPanel.add( content );
         add( verticalPanel );
 
+        add(createKeyListeningFocusPanel(verticalPanel));
+
         super.show();
 
-        focusFirstWidget( content );
+        focusFirstWidget(content);
 
         if ( !fixedLocation ) {
             center();
         }
+    }
+
+    private FocusPanel createKeyListeningFocusPanel(VerticalPanel verticalPanel) {
+        FocusPanel focusPanel = new FocusPanel(verticalPanel);
+
+        focusPanel.addKeyDownHandler(new KeyDownHandler() {
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    hide();
+                }
+            }
+        });
+
+        focusPanel.setStyleName("");
+        focusPanel.setFocus(true);
+        focusPanel.setWidth("100%");
+        return focusPanel;
     }
 
     private void focusFirstWidget(Widget content) {
