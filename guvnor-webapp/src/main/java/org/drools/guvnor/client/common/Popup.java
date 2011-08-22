@@ -17,6 +17,9 @@ package org.drools.guvnor.client.common;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -25,22 +28,23 @@ import com.google.gwt.event.dom.client.MouseUpEvent;
 import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class Popup extends PopupPanel {
 
-    private boolean dragged       = false;
-    private int     dragStartX;
-    private int     dragStartY;
+    private boolean dragged = false;
+    private int dragStartX;
+    private int dragStartY;
 
     private Command afterShowEvent;
     private boolean fixedLocation = false;
 
     public Popup() {
-        setGlassEnabled( true );
-        setWidth( 430 + "px" );
+        setGlassEnabled(true);
+        setWidth(430 + "px");
     }
 
     public void setAfterShow(Command afterShowEvent) {
@@ -50,68 +54,83 @@ public abstract class Popup extends PopupPanel {
     @Override
     public void show() {
 
-        if ( afterShowEvent != null ) {
+        if (afterShowEvent != null) {
             afterShowEvent.execute();
         }
 
         VerticalPanel verticalPanel = new VerticalPanel();
-        verticalPanel.setHorizontalAlignment( VerticalPanel.ALIGN_RIGHT );
+        verticalPanel.setHorizontalAlignment(VerticalPanel.ALIGN_RIGHT);
 
-        final PopupTitleBar titleBar = new PopupTitleBar( getTitle() );
+        final PopupTitleBar titleBar = new PopupTitleBar(getTitle());
 
-        titleBar.closeButton.addClickHandler( new ClickHandler() {
+        titleBar.closeButton.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 hide();
             }
-        } );
-        titleBar.addMouseDownHandler( new MouseDownHandler() {
+        });
+        titleBar.addMouseDownHandler(new MouseDownHandler() {
 
             public void onMouseDown(MouseDownEvent event) {
                 dragged = true;
-                dragStartX = event.getRelativeX( getElement() );
-                dragStartY = event.getRelativeY( getElement() );
-                DOM.setCapture( titleBar.getElement() );
+                dragStartX = event.getRelativeX(getElement());
+                dragStartY = event.getRelativeY(getElement());
+                DOM.setCapture(titleBar.getElement());
             }
-        } );
-        titleBar.addMouseMoveHandler( new MouseMoveHandler() {
+        });
+        titleBar.addMouseMoveHandler(new MouseMoveHandler() {
 
             public void onMouseMove(MouseMoveEvent event) {
-                if ( dragged ) {
-                    setPopupPosition( event.getClientX() - dragStartX,
-                                      event.getClientY() - dragStartY );
+                if (dragged) {
+                    setPopupPosition(event.getClientX() - dragStartX,
+                            event.getClientY() - dragStartY);
                 }
             }
-        } );
-        titleBar.addMouseUpHandler( new MouseUpHandler() {
+        });
+        titleBar.addMouseUpHandler(new MouseUpHandler() {
 
             public void onMouseUp(MouseUpEvent event) {
                 dragged = false;
-                DOM.releaseCapture( titleBar.getElement() );
+                DOM.releaseCapture(titleBar.getElement());
             }
-        } );
+        });
 
-        verticalPanel.add( titleBar );
+        verticalPanel.add(titleBar);
 
         Widget content = getContent();
 
-        content.setWidth( "100%" );
-        verticalPanel.add( content );
-        add( verticalPanel );
+        content.setWidth("100%");
+        verticalPanel.add(content);
+        verticalPanel.setWidth("100%");
+
+        FocusPanel focusPanel = new FocusPanel(verticalPanel);
+
+        focusPanel.addKeyDownHandler(new KeyDownHandler() {
+            public void onKeyDown(KeyDownEvent event) {
+                if (event.getNativeKeyCode() == KeyCodes.KEY_ESCAPE) {
+                    hide();
+                }
+            }
+        });
+
+        focusPanel.setStyleName("");
+        focusPanel.setFocus(true);
+        focusPanel.setWidth("100%");
+        add(focusPanel);
 
         super.show();
 
-        if ( !fixedLocation ) {
+        if (!fixedLocation) {
             center();
         }
     }
 
     @Override
     public void setPopupPosition(int left,
-                                 int top) {
-        super.setPopupPosition( left,
-                                top );
+            int top) {
+        super.setPopupPosition(left,
+                top);
 
-        if ( left != 0 && top != 0 ) {
+        if (left != 0 && top != 0) {
             fixedLocation = true;
         }
     }
