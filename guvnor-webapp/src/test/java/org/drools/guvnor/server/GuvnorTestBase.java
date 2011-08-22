@@ -140,7 +140,7 @@ public abstract class GuvnorTestBase {
         return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
     }
 
-    protected RepositoryCategoryService getRepositoryCategoryService() {
+    public RepositoryCategoryService getRepositoryCategoryService() {
         return (RepositoryCategoryService) Component.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
     }
 
