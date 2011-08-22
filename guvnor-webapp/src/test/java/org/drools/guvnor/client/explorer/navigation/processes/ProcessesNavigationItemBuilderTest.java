@@ -38,6 +38,12 @@ public class ProcessesNavigationItemBuilderTest {
         ).thenReturn(
                 processesHeaderView
         );
+        ProcessesTreeView processesTreeView = mock(ProcessesTreeView.class);
+        when(
+                navigationViewFactory.getProcessesTreeView()
+        ).thenReturn(
+                processesTreeView
+        );
         PlaceController placeController = mock(PlaceController.class);
         builder = new ProcessesNavigationItemBuilder(navigationViewFactory, placeController);
     }
