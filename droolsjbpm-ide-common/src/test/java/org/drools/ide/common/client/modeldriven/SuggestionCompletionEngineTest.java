@@ -780,8 +780,8 @@ public class SuggestionCompletionEngineTest {
                                         null,
                                         "blah" );
         result = sce.getEnums( "Fact",
-                               vals,
-                               "value" ).fixedList;
+                "value", vals
+        ).fixedList;
         assertNotNull( result );
         assertEquals( 2,
                       result.length );
@@ -791,8 +791,8 @@ public class SuggestionCompletionEngineTest {
                       result[1] );
 
         assertNull( sce.getEnums( "Nothing",
-                                  vals,
-                                  "value" ) );
+                "value", vals
+        ) );
 
     }
 
@@ -940,8 +940,8 @@ public class SuggestionCompletionEngineTest {
                                         "f2val",
                                         "blah" );
         dd = sce.getEnums( "Fact",
-                           vals,
-                           "value" );
+                "value", vals
+        );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
@@ -1020,8 +1020,8 @@ public class SuggestionCompletionEngineTest {
                                         "f2val",
                                         "blah" );
         dd = sce.getEnums( "Fact",
-                           vals,
-                           "value" );
+                "value", vals
+        );
         assertNull( dd.fixedList );
         assertNotNull( dd.queryExpression );
         assertNotNull( dd.valuePairs );
