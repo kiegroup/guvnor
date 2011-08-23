@@ -453,7 +453,9 @@ public class ServiceImplementation
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SuggestionCompletionEngine loadSuggestionCompletionEngine(String packageName) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
+        //No need to check role based permission here. Package auto completion suggestion should be available to everybody. 
+        //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
+        //serviceSecurity.checkSecurityIsPackageReadOnly( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
             PackageItem packageItem = getRulesRepository().loadPackage( packageName );
