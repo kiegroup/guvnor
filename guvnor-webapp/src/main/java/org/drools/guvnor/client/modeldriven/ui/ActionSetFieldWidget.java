@@ -251,8 +251,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
 
         DropDownData enums = completions.getEnums( type,
-                                                   this.model.fieldValues,
-                                                   val.field );
+                val.field, this.model.fieldValues
+        );
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,
                                                                      this.getModeller(),

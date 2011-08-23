@@ -125,7 +125,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
             panel.add( datePicker );
         } else {
-            String[] enums = sce.getDataEnumList( key );
+            String[] enums = sce.getDataEnumList( key ); // TODO use sce.getEnums(key);
             if ( enums != null ) {
                 //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
                 //The distinction here controls whether the EXPECTED value is handled as a true

@@ -221,8 +221,8 @@ public class CallMethodWidget extends DirtyableComposite {
         }
 
         DropDownData enums = suggestionCompletionEngine.getEnums( type,
-                                                                  this.mCall.getCallFieldValues(),
-                                                                  val.field );
+                val.field, this.mCall.getCallFieldValues()
+        );
         return new MethodParameterCallValueEditor( val,
                                                    enums,
                                                    executionTrace,

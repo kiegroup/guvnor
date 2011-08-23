@@ -33,6 +33,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -123,7 +124,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             panel.add( datePicker );
         } else {
-            String[] enums = sce.getDataEnumList( key );
+            String[] enums = sce.getDataEnumList( key ); // TODO use sce.getEnums(key);
             if ( enums != null ) {
                 field.setNature( FieldData.TYPE_ENUM );
                 panel.add( new EnumDropDown( field.getValue(),
