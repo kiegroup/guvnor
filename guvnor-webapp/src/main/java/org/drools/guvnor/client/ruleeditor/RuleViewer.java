@@ -481,7 +481,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                           return;
                                                                       }
 
-                                                                      flushSuggestionCompletionCache();
+                                                                      flushSuggestionCompletionCache(asset.metaData.packageName);
 
                                                                       if ( editor instanceof DirtyableComposite ) {
                                                                           ((DirtyableComposite) editor).resetDirty();
@@ -507,10 +507,10 @@ public class RuleViewer extends GuvnorEditor {
      * suggestion completions. The user will still need to reload the asset
      * editor though.
      */
-    public void flushSuggestionCompletionCache() {
+    public void flushSuggestionCompletionCache(String packageName) {
         if ( AssetFormats.isPackageDependency( this.asset.metaData.format ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( this.asset.metaData.packageName,
+            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
                                                                     new Command() {
                                                                         public void execute() {
                                                                             LoadingPopup.close();
@@ -576,6 +576,7 @@ public class RuleViewer extends GuvnorEditor {
                                                                  name,
                                                                  new GenericCallback<String>() {
                                                                      public void onSuccess(String data) {
+                                                                         flushSuggestionCompletionCache(sel.getSelectedPackage());
                                                                          completedCopying( newName.getText(),
                                                                                            sel.getSelectedPackage(),
                                                                                            data );
@@ -647,6 +648,8 @@ public class RuleViewer extends GuvnorEditor {
                                                                             new GenericCallback<Void>() {
                                                                                 public void onSuccess(Void data) {
                                                                                     Window.alert( constants.Promoted() );
+                                                                                    flushSuggestionCompletionCache(asset.metaData.packageName);
+                                                                                    flushSuggestionCompletionCache("globalArea");
                                                                                     closeAndReopen(asset.uuid);
                                                                                 }
 
