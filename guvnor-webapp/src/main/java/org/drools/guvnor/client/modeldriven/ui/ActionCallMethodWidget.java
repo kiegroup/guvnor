@@ -256,8 +256,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         }
 
         DropDownData enums = completions.getEnums( type,
-                                                   this.model.fieldValues,
-                                                   val.field );
+                val.field, this.model.fieldValues
+        );
 
         return new MethodParameterValueEditor( val,
                                                enums,
