@@ -31,7 +31,6 @@ import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.MetaDataWidget.FieldBinding;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.security.Capabilities;
 import org.drools.guvnor.client.security.CapabilitiesManager;
@@ -226,9 +225,13 @@ public class MetaDataWidgetNew extends Composite {
 
         //Do not show version feed for asset due to GUVNOR-1308
         if (!(artifact instanceof RuleAsset)) {
-            addAttribute(constants.VersionFeed(), new HTML("<a href='"
-                    + getVersionFeed(artifact) + "' target='_blank'><img src='"
-                    + new Image(images.feed()).getUrl() + "'/></a>"));
+            Image image = new Image(images.feed());
+            image.addClickHandler(new ClickHandler() {
+                           public void onClick(ClickEvent arg0) {
+                               Window.open(getVersionFeed(artifact), "_blank", null);                               
+                           }               
+                       });
+            addAttribute(constants.VersionFeed(), image); 
         }
 
         addAttribute(constants.CurrentVersionNumber(), getVersionNumberLabel());

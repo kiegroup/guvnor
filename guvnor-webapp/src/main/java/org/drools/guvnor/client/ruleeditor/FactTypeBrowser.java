@@ -26,6 +26,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -59,8 +60,9 @@ public class FactTypeBrowser extends Composite {
         if ( sce.getFactTypes() != null ) {
             for ( String type : sce.getFactTypes() ) {
                 TreeItem it = new TreeItem();
-                it.setHTML( "<img src='" + new Image( images.classImage() ).getUrl() + "'/><small>"
-                        + type + "</small>" );
+                it.setHTML( AbstractImagePrototype.create( images.classImage() ).getHTML() + "<small>"
+                        + type + "</small>" );               
+
                 it.setUserObject( type + "( )" );
                 tree.addItem( it );
 
@@ -68,7 +70,7 @@ public class FactTypeBrowser extends Composite {
                 if ( fields != null ) {
                     for ( String field : fields ) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML( "<img src='" + new Image( images.field() ).getUrl() + "'/><small>"
+                        fi.setHTML( AbstractImagePrototype.create( images.field() ).getHTML() + "<small>"
                                 + field + "</small>" );
                         fi.setUserObject( field );
                         it.addItem( fi );

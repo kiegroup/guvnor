@@ -50,6 +50,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -98,9 +99,8 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( "<img src='"
-                                               + new Image( images.information() ).getUrl()
-                                               + "'/>&nbsp;"
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.greenTick()).getHTML() 
+                                               + "&nbsp;"
                                                + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 

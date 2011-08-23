@@ -68,7 +68,8 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.setWidth( 200 + "px" );
             pop.setTitle( constants.ValidationResultsDotDot() );
             HorizontalPanel h = new HorizontalPanel();
-            h.add( new SmallLabel( "<img src='" + new Image( images.greenTick() ).getUrl() + "'/><i>"
+            h.add(new Image(images.greenTick()));
+            h.add( new SmallLabel("<i>"
                     + constants.ItemValidatedSuccessfully() + "</i>" ) );
             pop.addRow( h );
             pop.show();

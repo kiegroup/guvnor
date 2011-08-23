@@ -43,6 +43,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
@@ -458,11 +459,9 @@ public class PackageBuilderWidget extends Composite {
      */
     private void showSuccessfulBuild(Panel buildResults) {
         buildResults.clear();
-        VerticalPanel vert = new VerticalPanel();
-
-        vert.add( new HTML( "<img src='"
-                            + images.greenTick().getURL()
-                            + "'/><i>"
+        VerticalPanel vert = new VerticalPanel();        
+   
+        vert.add( new HTML( AbstractImagePrototype.create(images.greenTick()).getHTML() + "<i>"
                             + constants.PackageBuiltSuccessfully()
                             + " "
                             + conf.lastModified
