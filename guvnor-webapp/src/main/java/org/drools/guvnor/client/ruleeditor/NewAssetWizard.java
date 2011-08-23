@@ -26,6 +26,7 @@ import org.drools.guvnor.client.common.GlobalAreaAssetSelector;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rulelist.OpenItemCommand;
@@ -311,9 +312,39 @@ public class NewAssetWizard extends FormStylePopup {
         LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
         RepositoryServiceFactory.getService().createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
                                                                      importedPackageSelector.getSelectedPackage(),
-                                                                     createGenericCallbackForOk() );
+                                                                     createGenericCallbackForImportOk() );
     }
-
+    private GenericCallback<String> createGenericCallbackForImportOk() {
+        GenericCallback<String> cb = new GenericCallback<String>() {
+            public void onSuccess( String uuid ) {
+                if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
+                    LoadingPopup.close();
+                    Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+                } else {
+                    flushSuggestionCompletionCache();
+                    openEditor( uuid );
+                    hide();
+                }
+            }
+        };
+        return cb;
+    }
+    /**
+     * In some cases we will want to flush the package dependency stuff for
+     * suggestion completions. The user will still need to reload the asset
+     * editor though.
+     */
+    public void flushSuggestionCompletionCache() {
+        if ( AssetFormats.isPackageDependency( format ) ) {
+            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+            SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
+                    new Command() {
+                        public void execute() {
+                            LoadingPopup.close();
+                        }
+                    } );
+        }
+    }
     private GenericCallback<String> createGenericCallbackForOk() {
         GenericCallback<String> cb = new GenericCallback<String>() {
             public void onSuccess(String uuid) {
