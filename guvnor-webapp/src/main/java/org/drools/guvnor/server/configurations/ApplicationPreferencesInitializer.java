@@ -27,6 +27,10 @@ public class ApplicationPreferencesInitializer {
         setProperty(preferences, ApplicationPreferences.DATE_FORMAT);
         setProperty(preferences, ApplicationPreferences.DEFAULT_LANGUAGE);
         setProperty(preferences, ApplicationPreferences.DEFAULT_COUNTRY);
+        
+        setProperty(preferences, ApplicationPreferences.DESIGNER_URL);
+        setProperty(preferences, ApplicationPreferences.DESIGNER_PROFILE);
+        setProperty(preferences, ApplicationPreferences.DESIGNER_CONTEXT);
 
         setProperty(preferences, KeyStoreHelper.PROP_SIGN);
         setProperty(preferences, KeyStoreHelper.PROP_PVT_KS_URL);
