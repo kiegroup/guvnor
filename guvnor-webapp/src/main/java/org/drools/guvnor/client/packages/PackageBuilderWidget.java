@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
@@ -443,9 +444,8 @@ public class PackageBuilderWidget extends Composite {
         buildResults.clear();
         VerticalPanel vert = new VerticalPanel();
 
-        vert.add(new HTML("<img src='"
-                + images.greenTick().getURL()
-                + "'/><i>"
+        vert.add(new HTML(AbstractImagePrototype.create(images.greenTick()).getHTML()
+                + "<i>"
                 + constants.PackageBuiltSuccessfully()
                 + " "
                 + conf.getLastModified()

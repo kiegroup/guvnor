@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
@@ -53,7 +54,8 @@ public class FactTypeBrowser extends Composite {
         if (sce.getFactTypes() != null) {
             for (String type : sce.getFactTypes()) {
                 TreeItem it = new TreeItem();
-                it.setHTML("<img src='" + new Image(images.classImage()).getUrl() + "'/><small>"
+                it.setHTML(AbstractImagePrototype.create(images.classImage()).getHTML() 
+                        + "<small>"
                         + type + "</small>");
                 it.setUserObject(type + "( )");
                 tree.addItem(it);
@@ -62,7 +64,8 @@ public class FactTypeBrowser extends Composite {
                 if (fields != null) {
                     for (String field : fields) {
                         TreeItem fi = new TreeItem();
-                        fi.setHTML("<img src='" + new Image(images.field()).getUrl() + "'/><small>"
+                        fi.setHTML(AbstractImagePrototype.create(images.field()).getHTML() 
+                                + "<small>"
                                 + field + "</small>");
                         fi.setUserObject(field);
                         it.addItem(fi);
