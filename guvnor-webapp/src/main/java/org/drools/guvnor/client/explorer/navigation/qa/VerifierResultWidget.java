@@ -28,6 +28,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -90,7 +91,7 @@ public class VerifierResultWidget extends Composite {
 
         String summary = constants.analysisResultSummary(messageType, lines.length );
 
-        String topicHtml = "<img src='" + icon.getURL() + "' /> &nbsp; " + summary;
+        String topicHtml = AbstractImagePrototype.create(icon).getHTML() + "&nbsp; " + summary;
 
         linesItem = new VerifierMessageLinesItem( topicHtml,
                                                   lines );

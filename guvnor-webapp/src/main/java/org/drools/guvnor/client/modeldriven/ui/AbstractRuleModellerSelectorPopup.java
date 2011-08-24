@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.drools.guvnor.client.modeldriven.ui;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.Popup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
@@ -35,7 +37,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 /**
  * Base class for Pop-ups used by RuleModeller
  */
-public abstract class AbstractRuleModellerSelectorPopup extends FormStylePopup {
+public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected static final Constants     constants              = GWT.create( Constants.class );
 

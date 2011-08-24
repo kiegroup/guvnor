@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -53,7 +54,7 @@ public class StatusChangePopup extends FormStylePopup {
         this.uuid = uuid;
         this.isPackage = isPackage;
 
-        super.addRow( new HTML( "<img src='" + images.statusSmall().getURL() + "'/><b>" + constants.ChangeStatus() + "</b>" ) );
+        super.addRow( new HTML( AbstractImagePrototype.create(images.statusSmall()).getHTML() + "<b>" + constants.ChangeStatus() + "</b>" ) );
 
         HorizontalPanel horiz = new HorizontalPanel();
         final ListBox box = new ListBox();

@@ -338,9 +338,9 @@
     </dependency>
     <!-- This is needed by CXF to work with JBoss AS -->
     <dependency>
-        <groupId>org.apache.geronimo.specs</groupId>
-        <artifactId>geronimo-annotation_1.0_spec</artifactId>
-        <version>1.1.1</version>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-annotation_1.0_spec</artifactId>
+      <version>1.1.1</version>
     </dependency>  
     <dependency>
       <groupId>org.apache.cxf</groupId>
