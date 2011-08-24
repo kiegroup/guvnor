@@ -43,8 +43,7 @@ public abstract class Popup extends PopupPanel {
     private boolean fixedLocation = false;
 
     public Popup() {
-        setGlassEnabled(true);
-        setWidth(430 + "px");
+        setGlassEnabled( true );
     }
 
     public void setAfterShow(Command afterShowEvent) {
