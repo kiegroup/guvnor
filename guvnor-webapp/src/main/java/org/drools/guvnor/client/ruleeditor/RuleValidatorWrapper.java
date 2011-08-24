@@ -26,6 +26,7 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -68,8 +69,7 @@ public class RuleValidatorWrapper extends DirtyableComposite
             pop.setWidth( 200 + "px" );
             pop.setTitle( constants.ValidationResultsDotDot() );
             HorizontalPanel h = new HorizontalPanel();
-            h.add(new Image(images.greenTick()));
-            h.add( new SmallLabel("<i>"
+            h.add( new SmallLabel(AbstractImagePrototype.create( images.greenTick() ).getHTML() + "<i>"
                     + constants.ItemValidatedSuccessfully() + "</i>" ) );
             pop.addRow( h );
             pop.show();

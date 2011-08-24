@@ -99,7 +99,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.greenTick()).getHTML() 
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.information()).getHTML() 
                                                + "&nbsp;"
                                                + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
