@@ -24,7 +24,9 @@ package org.drools.guvnor.client.explorer.navigation.qa;
  * To change this template use File | Settings | File Templates.
  */
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
@@ -125,8 +127,10 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
 
             panel.add( datePicker );
         } else {
-            String[] enums = sce.getDataEnumList( key );
-            if ( enums != null ) {
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            // TODO fill currentValueMap with values of other VerifyFields (if any)
+            DropDownData dropDownData = sce.getEnums(factType, field.getFieldName(), currentValueMap);
+            if ( dropDownData != null ) {
                 //GUVNOR-1324: Java enums are of type TYPE_COMPARABLE whereas Guvnor enums are not.
                 //The distinction here controls whether the EXPECTED value is handled as a true
                 //Java enum or a literal with a selection list (i.e. Guvnor enum)
@@ -144,7 +148,7 @@ public class VerifyFieldConstraintEditor extends DirtyableComposite {
                                                      callback.valueChanged( newValue );
                                                  }
                                              },
-                                             DropDownData.create( enums ) ) );
+                                             dropDownData ) );
 
             } else {
                 if ( field.getExpected() != null && field.getExpected().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {

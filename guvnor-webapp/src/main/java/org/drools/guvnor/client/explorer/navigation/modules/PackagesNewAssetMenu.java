@@ -45,47 +45,47 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     }
 
     public void onNewSpringContext() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory, eventBus );
     }
 
     public void onNewWorkingSet() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKING_SET, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKING_SET, clientFactory, eventBus);
     }
 
     public void onNewRule() {
-        view.openNewAssetWizardWithCategories( null, clientFactory );
+        view.openNewAssetWizardWithCategories( null, clientFactory, eventBus );
     }
 
     public void onNewRuleTemplate() {
-        view.openNewAssetWizardWithCategories( AssetFormats.RULE_TEMPLATE, clientFactory );
+        view.openNewAssetWizardWithCategories( AssetFormats.RULE_TEMPLATE, clientFactory, eventBus );
     }
 
     public void onNewPojoModel() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.MODEL, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.MODEL, clientFactory, eventBus );
     }
 
     public void onNewDeclarativeModel() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.DRL_MODEL, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.DRL_MODEL, clientFactory, eventBus );
     }
 
     public void onNewBPELPackage() {
-        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory );
+        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory, eventBus );
     }
 
     public void onNewFunction() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION, clientFactory, eventBus );
     }
 
     public void onNewDSL() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.DSL, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.DSL, clientFactory, eventBus );
     }
 
     public void onNewRuleFlow() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory, eventBus );
     }
 
     public void onNewBPMN2Process() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.BPMN2_PROCESS, clientFactory, eventBus );
     }
     
     public void onNewFormDefinition() {
@@ -93,19 +93,19 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     }
 
     public void onNewWorkitemDefinition() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.WORKITEM_DEFINITION, clientFactory, eventBus );
     }
 
     public void onNewEnumeration() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.ENUMERATION, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.ENUMERATION, clientFactory, eventBus );
     }
 
     public void onNewTestScenario() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.TEST_SCENARIO, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.TEST_SCENARIO, clientFactory, eventBus );
     }
 
     public void onNewFile() {
-        view.openNewAssetWizardWithoutCategories( "*", clientFactory );
+        view.openNewAssetWizardWithoutCategories( "*", clientFactory, eventBus );
     }
 
     public void onRebuildAllPackages() {

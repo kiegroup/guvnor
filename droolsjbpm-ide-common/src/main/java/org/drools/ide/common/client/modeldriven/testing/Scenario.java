@@ -16,6 +16,7 @@
 
 package org.drools.ide.common.client.modeldriven.testing;
 
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -119,45 +120,53 @@ public class Scenario
     /**
      * Remove fixtures between this ExecutionTrace and the previous one.
      */
-    public void removeExecutionTrace(ExecutionTrace et) {
+    public void removeExecutionTrace(ExecutionTrace executionTrace) {
+        removeExpected(executionTrace);
+        removeGiven(executionTrace);
+    }
 
+    private void removeExpected(ExecutionTrace executionTrace) {
         boolean remove = false;
         for ( Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
             Fixture fixture = iterator.next();
 
-            if ( fixture.equals( et ) ) {
+            if ( fixture.equals( executionTrace ) ) {
                 remove = true;
                 continue;
-            } else if ( remove && (fixture instanceof ExecutionTrace || (fixture instanceof FactData)) ) {
+            } else if ( remove && fixture instanceof ExecutionTrace ) {
                 break;
             }
 
-            if ( remove ) {
+            if ( remove && fixture instanceof Expectation) {
                 iterator.remove();
                 globals.remove( fixture );
+            }
+        }
+    }
+
+    private void removeGiven(ExecutionTrace executionTrace) {
+
+        Collections.reverse( getFixtures() );
+
+        boolean remove= false;
+        Iterator<Fixture> iterator = getFixtures().iterator();
+        while (iterator.hasNext()) {
+            Fixture fixture = iterator.next();
+
+            // Catch the first or next ExecutionTrace.
+            if (fixture.equals(executionTrace)) {
+                remove = true;
+            } else if (remove && fixture instanceof ExecutionTrace) {
+                break;
+            }
+
+            if (remove && !(fixture instanceof Expectation)) {
+                iterator.remove();
+                globals.remove(fixture);
             }
         }
 
         Collections.reverse( getFixtures() );
-
-        remove = false;
-        for ( Iterator<Fixture> iterator = getFixtures().iterator(); iterator.hasNext(); ) {
-            Fixture fixture = iterator.next();
-
-            // Catch the first or next ExecutionTrace.
-            if ( fixture.equals( et ) ) {
-                remove = true;
-            } else if ( remove && (fixture instanceof ExecutionTrace || (fixture instanceof VerifyFact)) ) {
-                break;
-            }
-
-            if ( remove ) {
-                iterator.remove();
-                globals.remove( fixture );
-            }
-        }
-
-        Collections.reverse( fixtures );
     }
 
     /**

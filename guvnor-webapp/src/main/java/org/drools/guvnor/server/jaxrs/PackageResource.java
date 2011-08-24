@@ -490,6 +490,10 @@ public class PackageResource extends Resource {
             }
 
             AssetItem ai = repository.loadPackage(packageName).addAsset(entry.getTitle(), entry.getSummary(), initialCategory, format);
+            
+            //The categories are not saved by addAsset(). Need to force it here.
+            repository.getSession().save();
+            
             return ToAssetEntryAbdera(ai, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.

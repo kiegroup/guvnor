@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AcceptTabItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -59,7 +60,8 @@ public class ModuleEditorWrapper extends Composite {
         this.eventBus = eventBus;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
 
-        initWidget(layout);
+        initWidget(layout);        
+        setRefreshHandler();
         render();
         setWidth("100%");
     }
@@ -128,6 +130,20 @@ public class ModuleEditorWrapper extends Composite {
                         LoadingPopup.close();
                         packageConfigData = data;
                         render();
+                    }
+                });
+    }
+    
+    private void setRefreshHandler() {
+        eventBus.addHandler(RefreshModuleEditorEvent.TYPE,
+                new RefreshModuleEditorEvent.Handler() {
+                    public void onRefreshModule(
+                            RefreshModuleEditorEvent refreshModuleEditorEvent) {
+                        String moduleUUID = refreshModuleEditorEvent.getUuid();
+                        if(moduleUUID!=null && moduleUUID.equals(packageConfigData.getUuid())) {
+                            refresh();                                
+                        }
+                    
                     }
                 });
     }

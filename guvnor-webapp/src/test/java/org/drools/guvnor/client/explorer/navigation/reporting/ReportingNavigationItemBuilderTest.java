@@ -22,6 +22,12 @@ public class ReportingNavigationItemBuilderTest {
         ).thenReturn(
                 reportingHeaderView
         );
+        ReportingTreeView reportingTreeView = mock(ReportingTreeView.class);
+        when(
+                navigationViewFactory.getReportingTreeView()
+        ).thenReturn(
+                reportingTreeView
+        );
         PlaceController placeController = mock(PlaceController.class);
         builder = new ReportingNavigationItemBuilder(navigationViewFactory, placeController);
     }
