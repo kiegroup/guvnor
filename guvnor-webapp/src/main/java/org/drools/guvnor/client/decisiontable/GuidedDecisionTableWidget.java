@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
@@ -80,9 +81,8 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( "<img src='"
-                + new Image( images.information() ).getUrl()
-                + "'/>&nbsp;"
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.information()).getHTML()
+                + "&nbsp;"
                 + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
