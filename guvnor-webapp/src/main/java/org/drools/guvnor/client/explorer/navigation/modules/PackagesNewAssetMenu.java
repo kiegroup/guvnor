@@ -89,7 +89,7 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     }
     
     public void onNewFormDefinition() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory, eventBus );
     }
 
     public void onNewWorkitemDefinition() {

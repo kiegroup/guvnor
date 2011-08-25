@@ -59,7 +59,7 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
     }
 
     public void onNewFormDefinition() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory );
+        view.openNewAssetWizardWithoutCategories( AssetFormats.FORM_DEFINITION, clientFactory, eventBus );
     }
 
     public void onNewFile() {
