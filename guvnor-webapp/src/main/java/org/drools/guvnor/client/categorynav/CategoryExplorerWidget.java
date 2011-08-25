@@ -32,10 +32,10 @@ import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.AbsolutePanel;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
@@ -126,7 +126,7 @@ public class CategoryExplorerWidget extends Composite
                                                              navTreeWidget.removeItems();
 
                                                              TreeItem root = new TreeItem();
-                                                             root.setHTML( "<img src='" + new Image( images.desc() ).getUrl() + "'/>" );
+                                                             root.setHTML( AbstractImagePrototype.create(images.desc()).getHTML() );
                                                              navTreeWidget.addItem( root );
 
                                                              if ( categories.length == 0 ) {
@@ -136,7 +136,7 @@ public class CategoryExplorerWidget extends Composite
                                                              }
                                                              for ( int i = 0; i < categories.length; i++ ) {
                                                                  TreeItem it = new TreeItem();
-                                                                 it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( categories[i] ) );
+                                                                 it.setHTML( AbstractImagePrototype.create(images.categorySmall()).getHTML() + h( categories[i] ) );
                                                                  it.setUserObject( categories[i] );
                                                                  it.addItem( new PendingItem() );
                                                                  root.addItem( it );
@@ -192,7 +192,7 @@ public class CategoryExplorerWidget extends Composite
                                                      }
                                                      for ( int i = 0; i < list.length; i++ ) {
                                                          TreeItem it = new TreeItem();
-                                                         it.setHTML( "<img src='" + new Image( images.categorySmall() ).getUrl() + "'/>" + h( list[i] ) );
+                                                         it.setHTML( AbstractImagePrototype.create(images.categorySmall()).getHTML() + h( list[i] ) );
                                                          it.setUserObject( list[i] );
                                                          it.addItem( new PendingItem() );
 

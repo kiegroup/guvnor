@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
@@ -25,9 +26,11 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
 
     private BrowseTree browseTree;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
-    public BrowseTreeBuilder( ClientFactory clientFactory ) {
+    public BrowseTreeBuilder( ClientFactory clientFactory, EventBus eventBus ) {
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -54,7 +57,7 @@ public class BrowseTreeBuilder extends NavigationItemBuilder {
 
     public void createNewBrowseTree() {
         browseTree = new BrowseTree(
-                clientFactory
+                clientFactory, eventBus
         );
     }
 }

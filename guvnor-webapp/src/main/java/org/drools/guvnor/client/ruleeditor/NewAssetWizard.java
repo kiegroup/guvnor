@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
@@ -29,7 +30,10 @@ import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 
@@ -60,6 +64,7 @@ public class NewAssetWizard extends FormStylePopup {
     private final NewAssetFormStyleLayout newAssetLayout = new NewAssetFormStyleLayout();
     private final ImportAssetFormStyleLayout importAssetLayout = new ImportAssetFormStyleLayout();
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
 
     private static String getTitle( String format ) {
@@ -89,11 +94,13 @@ public class NewAssetWizard extends FormStylePopup {
      */
     public NewAssetWizard( boolean showCategories,
                            String format,
-                           ClientFactory clientFactory) {
+                           ClientFactory clientFactory,
+                           EventBus eventBus) {
         super( images.newWiz(),
                 getTitle( format ) );
         this.format = format;
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
 
         RadioButton newPackage = new RadioButton( "layoutgroup",
                 constants.CreateNewAsset() ); // NON-NLS
@@ -319,7 +326,7 @@ public class NewAssetWizard extends FormStylePopup {
         LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
         RepositoryServiceFactory.getService().createNewImportedRule( globalAreaAssetSelector.getSelectedAsset(),
                 importedPackageSelector.getSelectedPackage(),
-                createGenericCallbackForOk() );
+                createGenericCallbackForImportOk() );
     }
 
     private GenericCallback<String> createGenericCallbackForOk() {
@@ -329,6 +336,7 @@ public class NewAssetWizard extends FormStylePopup {
                     LoadingPopup.close();
                     Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
                 } else {
+                    eventBus.fireEvent( new RefreshModuleEditorEvent( packageSelector.getSelectedPackageUUID() ) );
                     openEditor( uuid );
                     hide();
                 }
@@ -336,7 +344,41 @@ public class NewAssetWizard extends FormStylePopup {
         };
         return cb;
     }
-
+    private GenericCallback<String> createGenericCallbackForImportOk() {
+        GenericCallback<String> cb = new GenericCallback<String>() {
+            public void onSuccess( String uuid ) {
+                if ( uuid.startsWith( "DUPLICATE" ) ) { // NON-NLS
+                    LoadingPopup.close();
+                    Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+                } else {
+                    eventBus.fireEvent( new RefreshModuleEditorEvent( importedPackageSelector.getSelectedPackageUUID() ) );
+                    flushSuggestionCompletionCache();
+                    openEditor( uuid );
+                    hide();
+                }
+            }
+        };
+        return cb;
+    }
+    /**
+     * In some cases we will want to flush the package dependency stuff for
+     * suggestion completions. The user will still need to reload the asset
+     * editor though.
+     */
+    public void flushSuggestionCompletionCache() {
+        if ( AssetFormats.isPackageDependency( format ) ) {
+            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+            SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
+                    new Command() {
+                        public void execute() {
+                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
+                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
+                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(importedPackageSelector.getSelectedPackage()));
+                            LoadingPopup.close();
+                        }
+                    } );
+        }
+    }
     private String getFormat() {
         if ( format != null ) {
             return format;

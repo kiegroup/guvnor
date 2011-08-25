@@ -255,16 +255,16 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         wiz.show();
     }
 
-    public void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory ) {
-        openWizard( format, false, clientFactory );
+    public void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory, EventBus eventBus  ) {
+        openWizard( format, false, clientFactory, eventBus);
     }
 
-    public void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory ) {
-        openWizard( format, true, clientFactory );
+    public void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory, EventBus eventBus ) {
+        openWizard( format, true, clientFactory, eventBus );
     }
 
-    private void openWizard( String format, boolean showCategories, ClientFactory clientFactory ) {
-        NewAssetWizard pop = new NewAssetWizard( showCategories, format, clientFactory );
+    private void openWizard( String format, boolean showCategories, ClientFactory clientFactory, EventBus eventBus  ) {
+        NewAssetWizard pop = new NewAssetWizard( showCategories, format, clientFactory, eventBus );
 
         pop.show();
     }

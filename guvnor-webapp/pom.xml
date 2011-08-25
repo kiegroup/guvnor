@@ -160,6 +160,33 @@
               <draftCompile>false</draftCompile>
             </configuration>
           </plugin>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <inherited>false</inherited>
+            <executions>
+              <execution>
+                <id>soa_overlay</id>
+                <phase>process-resources</phase>
+                <configuration>
+                  <tasks>
+                    <replace dir="${basedir}/src/main/java/org/drools/guvnor/client/messages/" >
+                      <include name="*.properties" />
+                      <replacefilter token=" Guvnor" value=" BRMS" />
+                    </replace>      
+                    <replace file="${basedir}/src/main/java/org/drools/guvnor/client/resources/Images.java" >
+                      <replacefilter token="header_logo.gif" value="hdrlogo_brms.gif" />
+                    </replace>      
+                    <replace dir="${basedir}/src/main/java/org/drools/guvnor/public" includes="Guvnor.jsp *.html">
+                      <replacefilter token="JBoss Guvnor" value="JBoss BRMS" />
+                    </replace>      
+                  </tasks>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -311,9 +338,9 @@
     </dependency>
     <!-- This is needed by CXF to work with JBoss AS -->
     <dependency>
-        <groupId>org.apache.geronimo.specs</groupId>
-        <artifactId>geronimo-annotation_1.0_spec</artifactId>
-        <version>1.1.1</version>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-annotation_1.0_spec</artifactId>
+      <version>1.1.1</version>
     </dependency>  
     <dependency>
       <groupId>org.apache.cxf</groupId>

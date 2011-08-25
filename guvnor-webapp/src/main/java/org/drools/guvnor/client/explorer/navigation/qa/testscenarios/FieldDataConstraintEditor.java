@@ -16,7 +16,9 @@
 
 package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
@@ -33,6 +35,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;
 import org.drools.ide.common.client.modeldriven.testing.FactData;
 import org.drools.ide.common.client.modeldriven.testing.FieldData;
@@ -123,8 +126,12 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
 
             panel.add( datePicker );
         } else {
-            String[] enums = sce.getDataEnumList( key );
-            if ( enums != null ) {
+            Map<String, String> currentValueMap = new HashMap<String, String>();
+            for (FieldData otherFieldData : givenFact.getFieldData()) {
+                currentValueMap.put(otherFieldData.getName(), otherFieldData.getValue());
+            }
+            DropDownData dropDownData = sce.getEnums(factType, field.getName(), currentValueMap);
+            if ( dropDownData != null ) {
                 field.setNature( FieldData.TYPE_ENUM );
                 panel.add( new EnumDropDown( field.getValue(),
                                              new DropDownValueChanged() {
@@ -133,7 +140,7 @@ public class FieldDataConstraintEditor extends DirtyableComposite {
                                                      callback.valueChanged( newValue );
                                                  }
                                              },
-                                             DropDownData.create( enums ) ) );
+                                             dropDownData ) );
 
             } else {
                 if ( field.getValue() != null && field.getValue().length() > 0 && field.getNature() == FieldData.TYPE_UNDEFINED ) {

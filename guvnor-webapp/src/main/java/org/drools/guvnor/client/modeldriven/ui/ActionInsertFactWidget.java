@@ -149,8 +149,8 @@ public class ActionInsertFactWidget extends RuleModellerWidget {
     private Widget valueEditor(final ActionFieldValue val) {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         DropDownData enums = completions.getEnums( this.factType,
-                                                   this.model.fieldValues,
-                                                   val.field );
+                val.field, this.model.fieldValues
+        );
 
         ActionValueEditor actionValueEditor = new ActionValueEditor( val,
                                                                      enums,

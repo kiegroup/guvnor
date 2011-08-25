@@ -42,9 +42,9 @@ public interface SOAServicesNewAssetMenuView extends IsWidget {
     void setPresenter( Presenter presenter );
     void openNewServiceWizard( ClientFactory clientFactory, EventBus eventBus );
 
-    void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory );
+    void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory, EventBus eventBus );
 
-    void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory );
+    void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory, EventBus eventBus );
 
     void showLoadingPopUpRebuildingPackageBinaries();
 

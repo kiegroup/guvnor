@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -92,11 +93,12 @@ public class RulesNewMenuViewImpl extends MenuBar implements RulesNewMenuView {
         addItem( new MenuItem( constants.CreateNew(), createNewMenu ) );
     }
 
-    public void launchWizard( String format, boolean showCategories, ClientFactory clientFactory ) {
+    public void launchWizard( String format, boolean showCategories, ClientFactory clientFactory, EventBus eventBus ) {
         new NewAssetWizard(
                 showCategories,
                 format,
-                clientFactory ).show();
+                clientFactory,
+                eventBus).show();
     }
 
     public void setPresenter( Presenter presenter ) {

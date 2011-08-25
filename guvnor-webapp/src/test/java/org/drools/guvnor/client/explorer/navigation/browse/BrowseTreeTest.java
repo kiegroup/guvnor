@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.FindPlace;
@@ -108,14 +110,14 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         setUpCapabilities( Capability.SHOW_CREATE_NEW_ASSET );
 
-        presenter = new BrowseTree( clientFactory );
+        presenter = new BrowseTree( clientFactory, eventBus );
 
-        verify( view ).showMenu();
+        verify( view ).setNewAssetMenu(any(Widget.class));
     }
 
     @Test
     public void testShowRulesMenuNoCapability() throws Exception {
-        verify( view, never() ).showMenu();
+        verify( view, never() ).setNewAssetMenu(any(Widget.class));
     }
 
     @Test

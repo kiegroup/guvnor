@@ -68,9 +68,9 @@ public interface PackagesNewAssetMenuView extends IsWidget {
 
     void openNewPackageWizard( ClientFactory clientFactory, EventBus eventBus );
 
-    void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory );
+    void openNewAssetWizardWithoutCategories( String format, ClientFactory clientFactory, EventBus eventBus );
 
-    void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory );
+    void openNewAssetWizardWithCategories( String format, ClientFactory clientFactory, EventBus eventBus );
 
     void confirmRebuild();
 
