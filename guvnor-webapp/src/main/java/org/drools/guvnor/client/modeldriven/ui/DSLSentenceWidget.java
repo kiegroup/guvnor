@@ -392,7 +392,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     String realValue = vs[0];
                     String display = vs[1];
                     if ( value.equals( realValue ) ) {
-                        selected = i;
+                        selected = i + 1;
                     }
                     list.addItem( display,
                                   realValue );
