@@ -20,9 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
-import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.Popup;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -45,8 +43,6 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
 
     protected int                        MIN_WIDTH              = 500;
     protected int                        MIN_HEIGHT             = 200;
-
-    protected boolean                    bOnlyShowDSLConditions = ApplicationPreferences.getBooleanPref( "rule-modeller-onlyShowDSLStatements" );
 
     protected RuleModel                  model;
     protected RuleModeller               ruleModeller;

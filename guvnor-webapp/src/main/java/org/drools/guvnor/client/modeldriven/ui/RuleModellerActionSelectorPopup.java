@@ -37,11 +37,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -121,20 +118,6 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
             }
         } );
 
-        CheckBox chkOnlyDisplayDSLConditions = new CheckBox();
-        chkOnlyDisplayDSLConditions.setText( constants.OnlyDisplayDSLActions() );
-        chkOnlyDisplayDSLConditions.setValue( bOnlyShowDSLConditions );
-        chkOnlyDisplayDSLConditions.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-
-            public void onValueChange(ValueChangeEvent<Boolean> event) {
-                bOnlyShowDSLConditions = event.getValue();
-                choicesPanel.setWidget( makeChoicesListBox() );
-            }
-
-        } );
-
-        layoutPanel.addRow( chkOnlyDisplayDSLConditions );
-
         layoutPanel.addRow( hp );
 
         this.setAfterShow( new Command() {
@@ -161,16 +144,14 @@ public class RuleModellerActionSelectorPopup extends AbstractRuleModellerSelecto
         } );
 
         addDSLSentences();
-        if ( !bOnlyShowDSLConditions ) {
-            addUpdateNotModify();
-            addGlobals();
-            addRetractions();
-            addModifies();
-            addInsertions();
-            addLogicalInsertions();
-            addGlobalCollections();
-            addFreeFormDRL();
-        }
+        addUpdateNotModify();
+        addGlobals();
+        addRetractions();
+        addModifies();
+        addInsertions();
+        addLogicalInsertions();
+        addGlobalCollections();
+        addFreeFormDRL();
 
         return choices;
     }
