@@ -110,7 +110,7 @@ public class EnumDropDown extends ListBox
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
         clear();
-        addItem( constants.Choose() );
+//        addItem( constants.Choose() );
         boolean selected = false;
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
@@ -129,7 +129,8 @@ public class EnumDropDown extends ListBox
                 val = v;
             }
             if ( currentValue != null && currentValue.equals( val ) ) {
-                setSelectedIndex( i + 1 );
+                setSelectedIndex( i );
+//                setSelectedIndex( i + 1 );
                 selected = true;
             }
         }
