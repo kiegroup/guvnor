@@ -38,88 +38,59 @@ import com.google.gwt.user.client.ui.PopupPanel;
 
 public class EnumDropDownLabel extends Composite {
 
-    private Constants          constants = ((Constants) GWT.create( Constants.class ));
-    protected Panel            panel     = new HorizontalPanel();
+    protected Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
-    // The value is not always same as the text
-    private final Label        textWidget;
+    protected final Label                textWidget;
+    protected final EnumDropDown         enumDropDown;
+    protected final Button               okButton;
+    protected final Panel                panel     = new HorizontalPanel();
+    protected final PopupPanel           popup;
 
-    private final EnumDropDown enumDropDown;
+    protected Command                    onValueChangeCommand;
 
-    private final Button       okButton  = new Button( constants.OK() );
-
-    private Command            onValueChangeCommand;
+    protected FactPattern                pattern;
+    protected String                     fieldName;
+    protected SuggestionCompletionEngine sce;
+    protected BaseSingleFieldConstraint  constraint;
+    protected boolean                    enabled;
 
     public EnumDropDownLabel(FactPattern pattern,
                              String fieldName,
                              SuggestionCompletionEngine sce,
                              BaseSingleFieldConstraint constraint,
                              boolean enabled) {
-        this.textWidget = getTextLabel( enabled );
-        this.enumDropDown = getEnumDropDown( constraint,
-                                             sce,
-                                             pattern,
-                                             fieldName );
-        this.enumDropDown.setEnabled( enabled );
+        this.pattern = pattern;
+        this.fieldName = fieldName;
+        this.constraint = constraint;
+        this.sce = sce;
+        this.enabled = enabled;
+
+        enumDropDown = createEnumDropDown();
+        okButton = new Button( constants.OK() );
+        textWidget = createTextLabel();
         panel.add( textWidget );
+
+        updateTextWidget();
+        updateModel();
+
+        popup = createPopup();
 
         initWidget( panel );
 
     }
 
-    private Label getTextLabel(boolean enabled) {
-        Label label = new Label();
-        label.setStyleName( "form-field" );
-        if ( enabled ) {
-            label.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    showPopup();
-
-                }
-            } );
-        }
-
-        if ( label.getText() == null && "".equals( label.getText() ) ) {
-            label.setText( constants.Value() );
-        }
-
-        return label;
-    }
-
     private void showPopup() {
-        final PopupPanel popup = new PopupPanel();
-        popup.setGlassEnabled( true );
-        HorizontalPanel horizontalPanel = new HorizontalPanel();
-
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
 
-        okButton.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                executeOnValueChangeCommand();
-                panel.clear();
-                panel.add( textWidget );
-                popup.hide();
-
-            }
-        } );
-
-        horizontalPanel.add( enumDropDown );
-        horizontalPanel.add( okButton );
-
-        popup.add( horizontalPanel );
+        //Lazy initialisation of drop-down data as it's content could depend on another drop-down
+        enumDropDown.setDropDownData( constraint.getValue(),
+                                      getDropDownData() );
 
         popup.show();
-
     }
 
-    private EnumDropDown getEnumDropDown(final BaseSingleFieldConstraint constraint,
-                                         SuggestionCompletionEngine sce,
-                                         FactPattern pattern,
-                                         String fieldName) {
-
+    private DropDownData getDropDownData() {
         String valueType;
         if ( constraint instanceof SingleFieldConstraintEBLeftSide ) {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) constraint;
@@ -139,17 +110,21 @@ public class EnumDropDownLabel extends Composite {
             dropDownData = sce.getEnums( pattern,
                                          fieldName );
         }
+        return dropDownData;
+    }
+
+    private EnumDropDown createEnumDropDown() {
 
         final EnumDropDown box = new EnumDropDown( constraint.getValue(),
                                                    new DropDownValueChanged() {
                                                        public void valueChanged(String newText,
                                                                                 String newValue) {
-                                                           textWidget.setText( newText );
                                                            constraint.setValue( newValue );
+                                                           textWidget.setText( newText );
                                                            okButton.click();
                                                        }
                                                    },
-                                                   dropDownData );
+                                                   getDropDownData() );
 
         if ( box.getItemCount() > 6 ) {
             box.setVisibleItemCount( 6 );
@@ -157,7 +132,44 @@ public class EnumDropDownLabel extends Composite {
             box.setVisibleItemCount( box.getItemCount() );
         }
 
+        box.setEnabled( enabled );
+
         return box;
+    }
+
+    private Label createTextLabel() {
+        Label label = new Label();
+        label.setStyleName( "form-field" );
+        if ( enabled ) {
+            label.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    showPopup();
+                }
+            } );
+        }
+        return label;
+    }
+
+    private PopupPanel createPopup() {
+        final PopupPanel popup = new PopupPanel();
+        popup.setGlassEnabled( true );
+
+        okButton.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                executeOnValueChangeCommand();
+                panel.clear();
+                panel.add( textWidget );
+                popup.hide();
+            }
+        } );
+
+        HorizontalPanel horizontalPanel = new HorizontalPanel();
+        horizontalPanel.add( enumDropDown );
+        horizontalPanel.add( okButton );
+        popup.add( horizontalPanel );
+        return popup;
     }
 
     private void executeOnValueChangeCommand() {
@@ -168,6 +180,33 @@ public class EnumDropDownLabel extends Composite {
 
     public void setOnValueChangeCommand(Command onValueChangeCommand) {
         this.onValueChangeCommand = onValueChangeCommand;
+    }
+
+    public void refreshDropDownData() {
+        this.enumDropDown.setDropDownData( constraint.getValue(),
+                                           getDropDownData() );
+
+        //Copy selections in UI to data-model again, as updating the drop-downs
+        //can lead to some selected values being cleared when dependent drop-downs
+        //are used.
+        updateTextWidget();
+        updateModel();
+    }
+
+    //Lookup display text from drop-down selection
+    private void updateTextWidget() {
+        int index = enumDropDown.getSelectedIndex();
+        if ( index >= 0 ) {
+            textWidget.setText( enumDropDown.getItemText( index ) );
+        }
+    }
+
+    //Lookup model value from drop-down selection
+    private void updateModel() {
+        int index = enumDropDown.getSelectedIndex();
+        if ( index >= 0 ) {
+            constraint.setValue( enumDropDown.getValue( index ) );
+        }
     }
 
 }

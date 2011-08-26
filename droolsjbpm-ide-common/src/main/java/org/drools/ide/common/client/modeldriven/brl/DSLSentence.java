@@ -17,7 +17,9 @@
 package org.drools.ide.common.client.modeldriven.brl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This represents a DSL sentence.
@@ -27,11 +29,13 @@ public class DSLSentence
     IPattern,
     IAction {
 
-    private String       sentence;
+    public static final String ENUM_TAG    = "ENUM";
+    public static final String DATE_TAG    = "DATE";
+    public static final String BOOLEAN_TAG = "BOOLEAN";
 
-    private String       definition;
-
-    private List<String> values;
+    private String             sentence;
+    private String             definition;
+    private List<String>       values;
 
     /**
      * This will strip off any residual "{" stuff...
@@ -112,9 +116,6 @@ public class DSLSentence
     }
 
     public String getDefinition() {
-        //Legacy DSLSentence did not separate DSL definition from values, which led to complications
-        //when a user wanted to set the value of a DSL parameter to text including the special escaping
-        //used to differentiate value, from data-type, from restriction
         if ( definition == null ) {
             parseSentence();
         }
@@ -126,20 +127,52 @@ public class DSLSentence
     }
 
     public List<String> getValues() {
-        //Legacy DSLSentence did not separate DSL definition from values, which led to complications
-        //when a user wanted to set the value of a DSL parameter to text including the special escaping
-        //used to differentiate value, from data-type, from restriction
         if ( this.values == null ) {
             parseDefinition();
         }
         return values;
     }
 
-    public void setValues(List<String> values) {
-        this.values = values;
+    public Map<String, String> getEnumFieldValueMap() {
+        if ( this.values == null ) {
+            parseDefinition();
+        }
+        Map<String, String> fieldValueMap = new HashMap<String, String>();
+        if ( getValues().isEmpty() ) {
+            return fieldValueMap;
+        }
+
+        int variableStart = definition.indexOf( "{" );
+        int iVariable = 0;
+        while ( variableStart >= 0 ) {
+            int variableEnd = getIndexForEndOfVariable( definition,
+                                                        variableStart );
+            String variable = definition.substring( variableStart + 1,
+                                                    variableEnd );
+
+            //Extract field name for enumerations
+            if ( variable.contains( ENUM_TAG ) ) {
+                int lastIndex = variable.lastIndexOf( ":" );
+                String factAndField = variable.substring( lastIndex + 1,
+                                                          variable.length() );
+                int dotIndex = factAndField.indexOf( "." );
+                String field = factAndField.substring( dotIndex + 1,
+                                                       factAndField.length() );
+                fieldValueMap.put( field,
+                                   values.get( iVariable ) );
+            }
+            iVariable++;
+            variableStart = definition.indexOf( "{",
+                                                variableEnd );
+        }
+
+        return fieldValueMap;
     }
 
-    //Build the Definition and Values from a legacy Sentence
+    //Build the Definition and Values from a legacy Sentence. Legacy DSLSentence did not 
+    //separate DSL definition from values, which led to complications when a user wanted 
+    //to set the value of a DSL parameter to text including the special escaping used 
+    //to differentiate value, from data-type, from restriction
     private void parseSentence() {
         if ( sentence == null ) {
             return;
@@ -160,7 +193,7 @@ public class DSLSentence
         }
     }
 
-    //Build the Values from the Definition
+    //Build the Values from the Definition.
     private void parseDefinition() {
         values = new ArrayList<String>();
         if ( getDefinition() == null ) {
