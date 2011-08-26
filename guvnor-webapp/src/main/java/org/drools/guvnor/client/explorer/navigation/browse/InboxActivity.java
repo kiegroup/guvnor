@@ -21,32 +21,41 @@ public class InboxActivity extends Activity {
 
     @Override
     public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
-        if ( ExplorerNodeConfig.INCOMING_ID.equals( place.getInboxName() ) ) {
+        if ( ExplorerNodeConfig.INCOMING_ID.equals( place.getInboxType() ) ) {
             openInboxIncomingPagedTable(
                     tabbedPanel,
-                    place.getInboxName() );
-        } else {
+                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxIncomingName(),
+                    place.getInboxType() );
+        } else if ( ExplorerNodeConfig.RECENT_EDITED_ID.equals( place.getInboxType() ) ) {
             openInboxPagedTable(
                     tabbedPanel,
-                    place.getInboxName() );
+                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentEditedName(),
+                    place.getInboxType() );
+        } else if ( ExplorerNodeConfig.RECENT_VIEWED_ID.equals( place.getInboxType() ) ) {
+            openInboxPagedTable(
+                    tabbedPanel,
+                    clientFactory.getNavigationViewFactory().getBrowseTreeView().getInboxRecentViewedName(),
+                    place.getInboxType() );
         }
     }
 
     private void openInboxIncomingPagedTable(AcceptTabItem tabbedPanel,
-                                             String title) {
+                                             String title,
+                                             String type) {
         tabbedPanel.addTab(
                 title,
                 new InboxIncomingPagedTable(
-                        title,
+                        type,
                         clientFactory ) );
     }
 
     private void openInboxPagedTable(AcceptTabItem tabbedPanel,
-                                     String title) {
+                                     String title,
+                                     String type) {
         tabbedPanel.addTab(
                 title,
                 new InboxPagedTable(
-                        title,
+                        type,
                         clientFactory ) );
     }
 }
