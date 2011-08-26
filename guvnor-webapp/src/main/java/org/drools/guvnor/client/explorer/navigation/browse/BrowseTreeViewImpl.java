@@ -35,7 +35,6 @@ import java.util.Collection;
 
 public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
-
     private static Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
     private TreeItem root;
@@ -98,7 +97,27 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     }
 
     public IsTreeItem addInboxIncomingTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.IncomingChanges() ) );
+        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxIncomingName() ) );
+    }
+
+    public IsTreeItem addInboxRecentEditedTreeItem() {
+        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxRecentEditedName() ) );
+    }
+
+    public IsTreeItem addInboxRecentViewedTreeItem() {
+        return inbox.addItem( Util.getHeader( images.categorySmall(), getInboxRecentViewedName() ) );
+    }
+    
+    public String getInboxIncomingName() {
+        return constants.IncomingChanges();
+    }
+
+    public String getInboxRecentEditedName() {
+        return constants.RecentlyEdited();
+    }
+
+    public String getInboxRecentViewedName() {
+        return constants.RecentlyOpened();
     }
 
     public Collection<IsTreeItem> getChildren(IsTreeItem openedItem) {
@@ -111,15 +130,7 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
 
         return children;
     }
-
-    public IsTreeItem addInboxRecentEditedTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.RecentlyOpened() ) );
-    }
-
-    public IsTreeItem addInboxRecentViewedTreeItem() {
-        return inbox.addItem( Util.getHeader( images.categorySmall(), constants.RecentlyEdited() ) );
-    }
-
+    
     public IsTreeItem addFind() {
         return root.addItem( Util.getHeader( images.find(), constants.Find() ) );
     }
@@ -152,5 +163,5 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     public void removeCategories(IsTreeItem treeItem) {
         treeItem.asTreeItem().removeItems();
     }
-
+    
 }

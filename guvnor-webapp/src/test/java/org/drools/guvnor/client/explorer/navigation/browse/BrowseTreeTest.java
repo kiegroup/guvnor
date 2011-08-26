@@ -56,7 +56,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.INCOMING_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.INCOMING_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test
@@ -65,7 +65,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.RECENT_EDITED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.RECENT_EDITED_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test
@@ -74,7 +74,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.RECENT_VIEWED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.RECENT_VIEWED_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test

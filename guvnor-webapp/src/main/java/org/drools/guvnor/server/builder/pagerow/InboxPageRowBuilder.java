@@ -68,6 +68,7 @@ public class InboxPageRowBuilder
         } else {
             InboxPageRow tr = new InboxPageRow();
             tr.setUuid( inboxEntry.assetUUID );
+            tr.setFormat( AssetFormats.BUSINESS_RULE );
             tr.setNote( inboxEntry.note );
             tr.setName( inboxEntry.note );
             tr.setTimestamp( new Date( inboxEntry.timestamp ) );

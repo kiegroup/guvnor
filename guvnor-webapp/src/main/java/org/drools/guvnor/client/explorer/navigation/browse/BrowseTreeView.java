@@ -36,11 +36,17 @@ public interface BrowseTreeView extends IsWidget {
 
     IsTreeItem addInboxIncomingTreeItem();
 
-    Collection<IsTreeItem> getChildren(IsTreeItem openedItem);
-
     IsTreeItem addInboxRecentEditedTreeItem();
 
     IsTreeItem addInboxRecentViewedTreeItem();
+
+    String getInboxIncomingName();
+
+    String getInboxRecentEditedName();
+
+    String getInboxRecentViewedName();
+    
+    Collection<IsTreeItem> getChildren(IsTreeItem openedItem);
 
     IsTreeItem addFind();
 
