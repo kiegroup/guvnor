@@ -165,7 +165,8 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         for ( Widget widg : lineWidgets ) {
             addWidget( widg );
         }
-        updateSentence();
+
+        updateEnumDropDowns();
     }
 
     private int getIndexForEndOfVariable(String dsl,
@@ -392,10 +393,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 public void valueChanged(String newText,
                                          String newValue) {
 
-                    //Copy selections in UI to data-model, used to drive dependent drop-downs
-                    updateSentence();
                     makeDirty();
-
                     selectedValue = newValue;
 
                     //When the value changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.
@@ -403,11 +401,6 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                     //children of the one whose value changes. However in reality DSLSentences only contain
                     //a couple of drop-downs so it's quicker to simply update them all.
                     updateEnumDropDowns();
-
-                    //Copy selections in UI to data-model again, as updating the drop-downs
-                    //can lead to some selected values being cleared when dependent drop-downs
-                    //are used.
-                    updateSentence();
                 }
             };
 
@@ -524,10 +517,22 @@ public class DSLSentenceWidget extends RuleModellerWidget {
         return this.readOnly;
     }
 
-    //Update the drop-down data in *ALL* DSLDropDowns in the DSLSentenceWidget
+    //When a value in a drop-down changes we need to reset the content of *ALL* DSLSentenceWidget drop-downs.
+    //An improvement would be to determine the chain of dependent drop-downs and only update children of the
+    //one whose value changes. However in reality DSLSentences only contain a couple of drop-downs so it's 
+    //quicker to simply update them all.
     private void updateEnumDropDowns() {
+
+        //Copy selections in UI to data-model, used to drive dependent drop-downs
+        updateSentence();
+
         for ( DSLDropDown dd : dropDownWidgets ) {
             dd.refreshDropDownData();
+
+            //Copy selections in UI to data-model again, as updating the drop-downs
+            //can lead to some selected values being cleared when dependent drop-downs
+            //are used.
+            updateSentence();
         }
     }
 
