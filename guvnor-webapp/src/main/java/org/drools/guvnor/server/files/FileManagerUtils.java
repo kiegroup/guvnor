@@ -369,7 +369,11 @@ public class FileManagerUtils {
         /* Return the name of the new package to the caller */
         return packageName;
     }
-
+    
+    public boolean isPackageExist(String packageName) {
+        return this.repository.containsPackage(packageName);
+    }
+    
     /**
      * This will return the last time the package was built.
      */
