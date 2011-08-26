@@ -130,8 +130,14 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                             if (packageName == null) {
                                 processExportRepositoryDownload(res);
                             } else {
-                                processExportPackageFromRepositoryDownload(res,
+                                if(getFileManager().isPackageExist(packageName)) {
+                                    processExportPackageFromRepositoryDownload(res,
                                         packageName);
+                                } else {
+                                    res.setContentType("text/plain");
+                                    res.setStatus(500);
+                                    res.getWriter().write("Package [" + packageName + "] does not exist");
+                                }
                             }
 
                         } catch (Exception e) {
