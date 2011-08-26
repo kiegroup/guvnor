@@ -64,8 +64,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class ConstraintValueEditor extends DirtyableComposite {
 
-    private Constants                        constants = ((Constants) GWT.create( Constants.class ));
-    private static Images                    images    = GWT.create( Images.class );
+    private Constants                        constants        = ((Constants) GWT.create( Constants.class ));
+    private static Images                    images           = GWT.create( Images.class );
 
     private final FactPattern                pattern;
     private String                           fieldName;
@@ -80,6 +80,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
     private boolean                          readOnly;
     private Command                          onValueChangeCommand;
     private boolean                          isDropDownDataEnum;
+    private Widget                           constraintWidget = null;
 
     public ConstraintValueEditor(FactPattern pattern,
                                  String fieldName,
@@ -120,7 +121,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     private void refreshEditor() {
         panel.clear();
-        Widget constraintWidget = null;
+        constraintWidget = null;
 
         //Expressions' fieldName and hence fieldType can change without creating a new ConstraintValueEditor. 
         //SingleFieldConstraints and their ConnectiveConstraints cannot have the fieldName or fieldType changed 
@@ -176,6 +177,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                     break;
             }
         }
+
         panel.add( constraintWidget );
     }
 
@@ -664,7 +666,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
                 }
             }
         }
-        
+
         //Dates can be compared to bound events if using a CEP operator
         if ( (this.fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) && sce.isFactTypeAnEvent( boundFieldType )) ) {
             if ( this.constraint instanceof HasOperator ) {
@@ -683,6 +685,20 @@ public class ConstraintValueEditor extends DirtyableComposite {
         }
 
         return false;
+    }
+
+    /**
+     * Refresh the displayed drop-down
+     */
+    public void refreshDropDownData() {
+        if ( this.dropDownData == null ) {
+            return;
+        }
+        if ( !(this.constraintWidget instanceof EnumDropDownLabel) ) {
+            return;
+        }
+        EnumDropDownLabel eddl = (EnumDropDownLabel) this.constraintWidget;
+        eddl.refreshDropDownData();
     }
 
 }
