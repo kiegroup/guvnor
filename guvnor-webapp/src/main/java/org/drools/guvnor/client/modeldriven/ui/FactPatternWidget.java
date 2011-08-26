@@ -63,16 +63,18 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class FactPatternWidget extends RuleModellerWidget {
 
-    private Constants          constants = ((Constants) GWT.create( Constants.class ));
-    private static Images      images    = GWT.create( Images.class );
+    private Constants                         constants              = ((Constants) GWT.create( Constants.class ));
+    private static Images                     images                 = GWT.create( Images.class );
 
-    private FactPattern        pattern;
-    private DirtyableFlexTable layout    = new DirtyableFlexTable();
-    private Connectives        connectives;
-    private PopupCreator       popupCreator;
-    private boolean            bindable;
-    private boolean            isAll0WithLabel;
-    private boolean            readOnly;
+    private FactPattern                       pattern;
+    private DirtyableFlexTable                layout                 = new DirtyableFlexTable();
+    private Connectives                       connectives;
+    private PopupCreator                      popupCreator;
+    private boolean                           bindable;
+    private boolean                           isAll0WithLabel;
+    private boolean                           readOnly;
+
+    private final List<ConstraintValueEditor> constraintValueEditors = new ArrayList<ConstraintValueEditor>();
 
     public FactPatternWidget(RuleModeller mod,
                              IPattern p,
@@ -138,7 +140,9 @@ public class FactPatternWidget extends RuleModellerWidget {
             this.readOnly = readOnly;
         }
 
-        this.connectives = new Connectives(mod, pattern, this.readOnly);
+        this.connectives = new Connectives( mod,
+                                            pattern,
+                                            this.readOnly );
 
         layout.setWidget( 0,
                           0,
@@ -170,6 +174,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         if ( bindable ) {
             layout.addStyleName( "modeller-fact-pattern-Widget" );
         }
+
         initWidget( layout );
 
     }
@@ -477,8 +482,8 @@ public class FactPatternWidget extends RuleModellerWidget {
             if ( !this.readOnly ) {
                 inner.setWidget( row,
                                  4 + col,
-                                 createAddConnectiveImageButton(modeller,
-                                         constraint) );
+                                 createAddConnectiveImageButton( modeller,
+                                                                 constraint ) );
             }
 
         } else if ( constraint.getConstraintValueType() == SingleFieldConstraint.TYPE_PREDICATE ) {
@@ -492,7 +497,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     }
 
     private Image createAddConnectiveImageButton(final RuleModeller modeller,
-            final SingleFieldConstraint constraint) {
+                                                 final SingleFieldConstraint constraint) {
         Image addConnective = new ImageButton( images.addConnective() );
         addConnective.setTitle( constants.AddMoreOptionsToThisFieldsValues() );
         addConnective.addClickHandler( new ClickHandler() {
@@ -669,8 +674,13 @@ public class FactPatternWidget extends RuleModellerWidget {
         constraintValueEditor.setOnValueChangeCommand( new Command() {
             public void execute() {
                 setModified( true );
+                refreshConstraintValueEditorsDropDownData();
             }
         } );
+
+        //Keep a reference to the value editors so they can be refreshed for dependent enums
+        constraintValueEditors.add( constraintValueEditor );
+
         return constraintValueEditor;
     }
 
@@ -792,4 +802,11 @@ public class FactPatternWidget extends RuleModellerWidget {
     public boolean isReadOnly() {
         return this.readOnly;
     }
+
+    private void refreshConstraintValueEditorsDropDownData() {
+        for ( ConstraintValueEditor cve : constraintValueEditors ) {
+            cve.refreshDropDownData();
+        }
+    }
+
 }
