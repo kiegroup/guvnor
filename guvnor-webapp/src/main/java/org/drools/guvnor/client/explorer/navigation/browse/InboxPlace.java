@@ -5,14 +5,14 @@ import com.google.gwt.place.shared.PlaceTokenizer;
 
 public class InboxPlace extends Place {
 
-    private final String inboxName;
+    private final String inboxType;
 
-    public InboxPlace(String inboxName) {
-        this.inboxName = inboxName;
+    public InboxPlace(String inboxType) {
+        this.inboxType = inboxType;
     }
 
-    public String getInboxName() {
-        return inboxName;
+    public String getInboxType() {
+        return inboxType;
     }
 
     @Override
@@ -22,14 +22,14 @@ public class InboxPlace extends Place {
 
         InboxPlace that = (InboxPlace) o;
 
-        if ( inboxName != null ? !inboxName.equals( that.inboxName ) : that.inboxName != null ) return false;
+        if ( inboxType != null ? !inboxType.equals( that.inboxType ) : that.inboxType != null ) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return inboxName != null ? inboxName.hashCode() : 0;
+        return inboxType != null ? inboxType.hashCode() : 0;
     }
 
     public static class Tokenizer implements PlaceTokenizer<InboxPlace> {
@@ -39,7 +39,7 @@ public class InboxPlace extends Place {
         }
 
         public String getToken(InboxPlace place) {
-            return place.getInboxName();
+            return place.getInboxType();
         }
     }
 }
