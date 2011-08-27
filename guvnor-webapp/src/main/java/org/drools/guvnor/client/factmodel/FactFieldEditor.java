@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.List;
+
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
@@ -49,14 +51,17 @@ public class FactFieldEditor extends Composite {
     Image                                 deleteFieldIcon;
 
     private FieldMetaModel                field;
+    private List<FieldMetaModel> fields;
     private final ModelNameHelper         modelNameHelper;
 
     private Command                       deleteCommand;
 
     public FactFieldEditor(final FieldMetaModel field,
+                           final List<FieldMetaModel> fields,
                            final ModelNameHelper modelNameHelper) {
 
         this.field = field;
+        this.fields = fields;
         this.modelNameHelper = modelNameHelper;
 
         initWidget( uiBinder.createAndBindUi( this ) );
@@ -73,6 +78,7 @@ public class FactFieldEditor extends Composite {
     @UiHandler("editFieldIcon")
     void editFieldIconClick(ClickEvent event) {
         final FieldEditorPopup popup = new FieldEditorPopup( field,
+                                                             fields,
                                                              modelNameHelper );
         popup.setOkCommand( new Command() {
             public void execute() {
@@ -91,8 +97,11 @@ public class FactFieldEditor extends Composite {
 
     private void setTypeText(String typeName) {
         String easierTypeNameForMostPeopleWhoAreNotProgrammers = modelNameHelper.getTypeDescriptions().get( typeName );
-
-        fieldType.setText( easierTypeNameForMostPeopleWhoAreNotProgrammers );
+        if(easierTypeNameForMostPeopleWhoAreNotProgrammers==null) {
+            fieldType.setText( typeName );
+        } else {
+            fieldType.setText( easierTypeNameForMostPeopleWhoAreNotProgrammers );
+        }
     }
 
     public void setDeleteCommand(Command deleteCommand) {

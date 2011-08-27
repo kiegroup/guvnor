@@ -544,6 +544,10 @@ public interface Constants
 
     String NameTakenForModel(String name);
 
+    String InvalidModelName(String name);
+
+    String InvalidDataTypeName(String dataType);
+
     String ModelNameChangeWarning();
 
     String ChangeFactName();

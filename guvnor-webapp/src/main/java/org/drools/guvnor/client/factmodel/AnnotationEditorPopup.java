@@ -24,6 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -37,14 +38,17 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class AnnotationEditorPopup {
 
-    private static Constants                constants = ((Constants) GWT.create( Constants.class ));
+    private static Constants                constants  = ((Constants) GWT.create( Constants.class ));
+
+    // A valid Annotation name
+    private static final RegExp             VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d]*$" );
 
     private final AnnotationMetaModel       annotation;
     private final List<AnnotationMetaModel> annotations;
 
-    private final TextBox                   txtName   = new TextBox();
-    private final TextBox                   txtKey    = new TextBox();
-    private final TextBox                   txtValue  = new TextBox();
+    private final TextBox                   txtName    = new TextBox();
+    private final TextBox                   txtKey     = new TextBox();
+    private final TextBox                   txtValue   = new TextBox();
 
     private Command                         okCommand;
 
@@ -106,12 +110,16 @@ public class AnnotationEditorPopup {
         btnOK.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( doesTheNameExist() ) {
-                    Window.alert( constants.NameTakenForModel( txtName.getText() ) );
+                String name = txtName.getText();
+                if ( !isNameValid( name ) ) {
+                    Window.alert( constants.InvalidModelName( name ) );
                     return;
                 }
-
-                if ( annotationAlreadyHasAName() && annotationNameHasChanged() ) {
+                if ( doesTheNameExist( name ) ) {
+                    Window.alert( constants.NameTakenForModel( name ) );
+                    return;
+                }
+                if ( annotationAlreadyHasAName() && annotationNameHasChanged( name ) ) {
                     if ( isTheUserSureHeWantsToChangeTheName() ) {
                         setNameAndClose();
                     }
@@ -120,14 +128,19 @@ public class AnnotationEditorPopup {
                 }
             }
 
+            private boolean isNameValid(String name) {
+                if ( name == null || "".equals( name ) ) {
+                    return false;
+                }
+                return VALID_NAME.test( name );
+            }
+
             private boolean annotationAlreadyHasAName() {
                 return annotation.name != null && annotation.name.length() > 0;
             }
 
-            private boolean annotationNameHasChanged() {
-                String oldName = annotation.name;
-                String newName = txtName.getText();
-                return !newName.equals( oldName );
+            private boolean annotationNameHasChanged(String name) {
+                return !name.equals( annotation.name );
             }
 
             private void setNameAndClose() {
@@ -155,10 +168,10 @@ public class AnnotationEditorPopup {
                 return Window.confirm( constants.ModelNameChangeWarning() );
             }
 
-            private boolean doesTheNameExist() {
+            private boolean doesTheNameExist(String name) {
                 for ( AnnotationMetaModel a : annotations ) {
                     if ( a != annotation ) {
-                        if ( a.name.equals( txtName.getText() ) ) {
+                        if ( a.name.equals( name ) ) {
                             return true;
                         }
                     }
