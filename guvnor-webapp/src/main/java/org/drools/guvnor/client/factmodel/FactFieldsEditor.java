@@ -80,7 +80,8 @@ public class FactFieldsEditor extends Composite {
 
     @UiHandler("addFieldIcon")
     void addNewFieldClick(ClickEvent event) {
-        final FieldEditorPopup popup = new FieldEditorPopup( modelNameHelper );
+        final FieldEditorPopup popup = new FieldEditorPopup( fields,
+                                                             modelNameHelper );
 
         popup.setOkCommand( new Command() {
 
@@ -132,15 +133,16 @@ public class FactFieldsEditor extends Composite {
         }
     }
 
-    private void addFieldRow(final FieldMetaModel fieldMetaModel) {
-        final FactFieldEditor editor = new FactFieldEditor( fieldMetaModel,
+    private void addFieldRow(final FieldMetaModel field) {
+        final FactFieldEditor editor = new FactFieldEditor( field,
+                                                            fields,
                                                             modelNameHelper );
 
         editor.setDeleteCommand( new Command() {
             public void execute() {
-                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheField0( fieldMetaModel.name ) ) ) {
+                if ( Window.confirm( constants.AreYouSureYouWantToRemoveTheField0( field.name ) ) ) {
                     fieldsPanel.remove( editor );
-                    fields.remove( fieldMetaModel );
+                    fields.remove( field );
                 }
             }
         } );
