@@ -304,6 +304,11 @@
       <artifactId>seam-transaction</artifactId>
       <version>3.1.0.Beta2</version>
     </dependency>
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 -->
+      <groupId>org.jboss.seam.international</groupId>
+      <artifactId>seam-international</artifactId>
+      <version>3.1.0.Beta2</version>
+    </dependency>
     <dependency>
       <groupId>org.jboss.seam.servlet</groupId>
       <artifactId>seam-servlet</artifactId>
