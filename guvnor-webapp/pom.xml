@@ -275,51 +275,44 @@
     <!-- Seam 3 (goodies in weld) -->
     <dependency>
       <groupId>org.jboss.seam.solder</groupId>
-      <artifactId>seam-solder-api</artifactId>
-      <version>3.0.0.Final</version>
+      <artifactId>seam-solder</artifactId>
+      <version>3.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.solder</groupId>
-      <artifactId>seam-solder-impl</artifactId>
-      <version>3.0.0.Final</version>
+      <artifactId>seam-solder-logging</artifactId>
+      <version>3.1.0.Beta2</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.config</groupId>
       <artifactId>seam-config-xml</artifactId>
-      <version>3.0.1-SNAPSHOT</version>
+      <version>3.1.0.Beta2</version>
     </dependency>
+    <!--<dependency>&lt;!&ndash; WORKAROUND because seam-solder doesn't have a transitive dependency on this &ndash;&gt;-->
+      <!--<groupId>org.jboss.logging</groupId>-->
+      <!--<artifactId>jboss-logging</artifactId>-->
+      <!--<version>3.0.0.Beta5</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.jboss.seam.security</groupId>
-      <artifactId>seam-security-api</artifactId>
-      <version>3.0.0.Final</version>
+      <artifactId>seam-security</artifactId>
+      <version>3.1.0.Beta2</version>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.seam.security</groupId>
-      <artifactId>seam-security-impl</artifactId>
-      <version>3.0.0.Final</version>
-      <!--<scope>runtime</scope>--><!-- TODO remove usage of PasswordCredential and make this scope runtime -->
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 -->
+      <groupId>org.jboss.seam.transaction</groupId>
+      <artifactId>seam-transaction</artifactId>
+      <version>3.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.servlet</groupId>
-      <artifactId>seam-servlet-api</artifactId>
-      <version>3.0.0.Final</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.seam.servlet</groupId>
-      <artifactId>seam-servlet-impl</artifactId>
-      <version>3.0.0.Final</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency><!-- Transitive dependency of seam-remoting Workaround for https://issues.jboss.org/browse/SEAM-44 -->
-      <groupId>org.jboss.seam.conversation</groupId>
-      <artifactId>seam-conversation-spi</artifactId>
-      <version>3.0.0-SNAPSHOT</version>
+      <artifactId>seam-servlet</artifactId>
+      <version>3.1.0.Beta2</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.remoting</groupId>
       <artifactId>seam-remoting</artifactId>
-      <version>3.0.0.Final</version>
+      <version>3.1.0.Beta2</version>
     </dependency>
     <!-- Arquillian (testing for weld) -->
     <!--<dependency>-->
