@@ -84,70 +84,80 @@ public class StandaloneEditorManager {
                     validFacts = new HashSet<String>();
                     validFacts.addAll(Arrays.asList(parameters.getValidFactTypes()));
                 }
+                
+                Command afterWorkingSetsAreAppliedCommand = new Command() {
 
-                WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().getPackageName(), validFacts, new Command() {
+                                      public void execute() {
+                                          LoadingPopup.close();
 
-                    public void execute() {
-                        LoadingPopup.close();
+                                          //Configure RuleModeller
+                                          RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
+                                          ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
+                                          ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
+                                          ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
 
-                        //Configure RuleModeller
-                        RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
-                        ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
-                        ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
-                        ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
+                                          //Create the editor
+                                          MultiViewEditorMenuBarCreator editorMenuBarCreator;
+                                          if (parameters.isTemporalAssets()) {
+                                              editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
+                                                  //"Done" buton command
 
-                        //Create the editor
-                        MultiViewEditorMenuBarCreator editorMenuBarCreator;
-                        if (parameters.isTemporalAssets()) {
-                            editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
-                                //"Done" buton command
+                                                  public void execute() {
+                                                      afterSaveAndClose();
+                                                  }
+                                              }, new Command() {
+                                                  //"Done" buton command
 
-                                public void execute() {
-                                    afterSaveAndClose();
-                                }
-                            }, new Command() {
-                                //"Cancel button command
+                                                  public void execute() {
+                                                      afterCancelButtonCallbackFunction();
+                                                  }
+                                              }
+                                              );
+                                          } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
+                                              editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
+                                                  // "Close" button command
+                                                  public void execute() {
+                                                      afterCloseButtonCallbackFunction();
+                                                  }
+                                              });
+                                          } else {
+                                              editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
+                                                  //"Cancel" button command
 
-                                public void execute() {
-                                    afterCancelButtonCallbackFunction();
-                                }
-                            }
-                            );
-                        } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
-                            editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
-                                // "Close" button command
-                                public void execute() {
-                                    afterCloseButtonCallbackFunction();
-                                }
-                            });
-                        } else {
-                            editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
-                                //"Cancel" button command
+                                                  public void execute() {
+                                                      afterCancelButtonCallbackFunction();
+                                                  }
+                                              });
+                                          }
 
-                                public void execute() {
-                                    afterCancelButtonCallbackFunction();
-                                }
-                            });
-                        }
+                                          editor = new MultiViewEditor(
+                                                  parameters.getAssetsToBeEdited(),
+                                                  clientFactory,
+                                                  eventBus,
+                                                  new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
+                                                  editorMenuBarCreator);
 
-                        editor = new MultiViewEditor(
-                                parameters.getAssetsToBeEdited(),
-                                clientFactory,
-                                eventBus,
-                                new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
-                                editorMenuBarCreator);
+                                          editor.setCloseCommand(new Command() {
 
-                        editor.setCloseCommand(new Command() {
+                                              public void execute() {
+                                                  afterSaveAndClose();
+                                              }
+                                          });
 
-                            public void execute() {
-                                afterSaveAndClose();
-                            }
-                        });
-
-                        //Add the editor to main panel
-                        mainPanel.add(editor);
-                    }
-                });
+                                          //Add the editor to main panel
+                                          mainPanel.add(editor);
+                                      }
+                                  };
+                
+                //If any Working-Set UUID was provided, use it instead "valid facts"
+                if (parameters.getActiveWorkingSets() != null && parameters.getActiveWorkingSets().length >0){
+                    WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), parameters.getActiveWorkingSets(), afterWorkingSetsAreAppliedCommand);
+                }else{
+                    //use a temporal working-set
+                    WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().getPackageName(), validFacts, afterWorkingSetsAreAppliedCommand);
+                }
+                
+                
             }
         });
 
