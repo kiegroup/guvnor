@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 
 public interface BrowseTreeView extends IsWidget {
 
@@ -55,8 +54,6 @@ public interface BrowseTreeView extends IsWidget {
     IsTreeItem addRootCategoryTreeItem();
 
     IsTreeItem addTreeItem(IsTreeItem rootTreeItem, String one);
-
-    void setNewAssetMenu(Widget newAssetMenu);
 
     void setPresenter(Presenter presenter);
 
