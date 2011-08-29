@@ -97,7 +97,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     }
 
-    @Deprecated
+    @Deprecated ///TODO seam3upgrade
     public static RepositoryPackageService getPackageService() {
         throw new IllegalStateException("Use @Inject RepositoryPackageService packageService instead of this hack.");
 //        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();

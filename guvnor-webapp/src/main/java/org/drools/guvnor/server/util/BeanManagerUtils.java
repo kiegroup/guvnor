@@ -27,6 +27,7 @@ import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 
 /**
  * Don't use this class. You're hurting CDI (Weld and Seam) if you do.
+ * TODO seam3upgrade
  * <p/>
  * Based on
  * https://github.com/seam/faces/blob/develop/impl/src/main/java/org/jboss/seam/faces/util/BeanManagerUtils.java
