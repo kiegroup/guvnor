@@ -88,12 +88,6 @@ public class BrowseTreeTestBase {
         ).thenReturn(
                 view
         );
-        RulesNewMenuView rulesNewMenuView = mock( RulesNewMenuView.class );
-        when(
-                navigationViewFactory.getRulesNewMenuView()
-        ).thenReturn(
-                rulesNewMenuView
-        );
 
         presenter = new BrowseTree( clientFactory, eventBus);
     }
