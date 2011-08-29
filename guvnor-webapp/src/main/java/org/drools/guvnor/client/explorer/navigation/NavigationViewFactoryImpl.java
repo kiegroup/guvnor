@@ -32,8 +32,6 @@ import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuView;
-import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuViewImpl;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemViewImpl;
@@ -211,10 +209,6 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     public ModuleTreeItemView getModuleTreeItemView() {
         return new ModuleTreeItemViewImpl();
-    }
-
-    public RulesNewMenuView getRulesNewMenuView() {
-        return new RulesNewMenuViewImpl();
     }
 
     public MultiAssetView getMultiAssetView() {

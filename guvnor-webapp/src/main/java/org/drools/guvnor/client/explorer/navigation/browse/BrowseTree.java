@@ -50,9 +50,9 @@ public class BrowseTree implements Presenter {
         this.eventBus = eventBus;
         this.view.setPresenter( this );
 
-        if ( canShowMenu() ) {
+/*        if ( canShowMenu() ) {
             this.view.setNewAssetMenu((new RulesNewMenu( clientFactory, eventBus )).asWidget());
-        }
+        }*/
         root = this.view.addRootTreeItem();
         addInbox();
         findRootTreeItem = this.view.addFind();
@@ -70,10 +70,6 @@ public class BrowseTree implements Presenter {
 
     private boolean canShowStates() {
         return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_KNOWLEDGE_BASES_VIEW );
-    }
-
-    private boolean canShowMenu() {
-        return UserCapabilities.INSTANCE.hasCapability( Capability.SHOW_CREATE_NEW_ASSET );
     }
 
     private void addRootCategory() {
