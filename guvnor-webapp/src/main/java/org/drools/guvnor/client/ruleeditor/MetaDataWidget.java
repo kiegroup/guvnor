@@ -118,9 +118,6 @@ public class MetaDataWidget extends Composite {
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
                     readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
-            addAttribute( constants.FormatMetaData(),
-                    new SmallLabel( "<b>"
-                            + artifact.getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
                     packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
@@ -137,7 +134,9 @@ public class MetaDataWidget extends Composite {
                     },
                             constants.DisableTip() ) );
         }
-
+        
+        addAttribute( constants.FormatMetaData(),
+                readOnlyText(artifact.getFormat()));
         addAttribute( "UUID:",
                 readOnlyText( uuid ) );
 
