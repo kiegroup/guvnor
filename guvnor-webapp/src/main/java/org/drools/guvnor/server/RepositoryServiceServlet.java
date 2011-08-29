@@ -98,14 +98,15 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         if (beanManagerLocator.isBeanManagerAvailable()) {
             return (RepositoryPackageService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
         }
-        //this is only for out of container hosted mode in GWT
-        synchronized (RepositoryServiceServlet.class) {
-            RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
-            repositoryPackageService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-
-            handleTestListenerInit();
-            return repositoryPackageService;
-        }
+        throw new IllegalStateException("BeanManagerLocator didn't work.");
+        //this is only for out of container hosted mode in GWT - TODO seam 3 upgrade will delete this hack
+//        synchronized (RepositoryServiceServlet.class) {
+//            RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
+//            repositoryPackageService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
+//
+//            handleTestListenerInit();
+//            return repositoryPackageService;
+//        }
     }
 
     public static RepositoryCategoryService getCategoryService() {
