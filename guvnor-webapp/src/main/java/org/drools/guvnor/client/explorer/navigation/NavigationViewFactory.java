@@ -23,7 +23,6 @@ import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
-import org.drools.guvnor.client.explorer.navigation.browse.RulesNewMenuView;
 import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
@@ -76,8 +75,6 @@ public interface NavigationViewFactory {
     GlobalAreaTreeItemView getGlobalAreaTreeItemView();
 
     ModuleTreeItemView getModuleTreeItemView();
-
-    RulesNewMenuView getRulesNewMenuView();
 
     MultiAssetView getMultiAssetView();
 

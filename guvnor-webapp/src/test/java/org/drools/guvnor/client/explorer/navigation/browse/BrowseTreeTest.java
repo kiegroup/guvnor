@@ -106,21 +106,6 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
     }
 
     @Test
-    public void testShowRulesMenuHasCapability() throws Exception {
-
-        setUpCapabilities( Capability.SHOW_CREATE_NEW_ASSET );
-
-        presenter = new BrowseTree( clientFactory, eventBus );
-
-        verify( view ).setNewAssetMenu(any(Widget.class));
-    }
-
-    @Test
-    public void testShowRulesMenuNoCapability() throws Exception {
-        verify( view, never() ).setNewAssetMenu(any(Widget.class));
-    }
-
-    @Test
     public void testCategorySelection() throws Exception {
         categoryServiceAsyncMock.addCategorySelection( "/", "categoryName1", "categoryName2", "categoryName3" );
 

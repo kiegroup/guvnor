@@ -55,9 +55,6 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
     DockLayoutPanel layout;
 
     @UiField
-    SimplePanel menuContainer;
-
-    @UiField
     Tree tree;
 
     public BrowseTreeViewImpl(ClientFactory clientFactory) {
@@ -148,10 +145,6 @@ public class BrowseTreeViewImpl extends Composite implements BrowseTreeView {
         return parent.asTreeItem().addItem( name );
     }
 
-    public void setNewAssetMenu(Widget modulesNewAssetMenu) {
-        menuContainer.setWidget( modulesNewAssetMenu );
-    }
-    
     public void removeStates() {
         states.removeItems();
     }

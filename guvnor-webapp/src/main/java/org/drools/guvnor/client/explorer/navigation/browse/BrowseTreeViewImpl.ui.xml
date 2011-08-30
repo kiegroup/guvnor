@@ -19,9 +19,6 @@
              xmlns:gwt='urn:import:com.google.gwt.user.client.ui'>
 
   <gwt:DockLayoutPanel ui:field="layout">
-    <gwt:north size="25">
-      <gwt:SimplePanel ui:field="menuContainer"/>
-    </gwt:north>
     <gwt:center>
       <gwt:ScrollPanel>
         <gwt:Tree ui:field="tree" styleName="guvnor-Tree" animationEnabled="true"/>

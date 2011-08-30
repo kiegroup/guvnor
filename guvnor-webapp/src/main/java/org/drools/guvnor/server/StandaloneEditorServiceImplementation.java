@@ -73,6 +73,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             boolean hideAttributesInEditor = isHideAttributesInEditor(sessionParameters);
             String clientName = getClientName(sessionParameters);
             String[] validFactTypes = getValidFactTypes(sessionParameters);
+            String[] activeWorkingSets = getActiveWorkingSets(sessionParameters);
             StandaloneEditorInvocationParameters invocationParameters = new StandaloneEditorInvocationParameters();
             this.loadRuleAssetsFromSessionParameters(sessionParameters,
                     invocationParameters);
@@ -81,6 +82,8 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             invocationParameters.setHideAttributes(hideAttributesInEditor);
             invocationParameters.setValidFactTypes(validFactTypes);
             invocationParameters.setClientName(clientName);
+            invocationParameters.setActiveWorkingSets(activeWorkingSets);
+            
             return invocationParameters;
         } finally {
             //clear session parameters
@@ -91,6 +94,10 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
 
     private String[] getValidFactTypes(Map<String, Object> sessionParameters) {
         return (String[]) sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName());
+    }
+    
+    private String[] getActiveWorkingSets(Map<String, Object> sessionParameters) {
+        return (String[]) sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ACTIVE_WORKING_SET_UUIDS_PARAMETER_NAME.getParameterName());
     }
 
     private String getClientName(Map<String, Object> sessionParameters) {

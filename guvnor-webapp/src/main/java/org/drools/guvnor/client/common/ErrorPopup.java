@@ -31,8 +31,6 @@ public class ErrorPopup extends Popup {
 
     private static Images images = (Images) GWT.create( Images.class );
     private Constants constants = ((Constants) GWT.create( Constants.class ));
-
-    public static ErrorPopup instance = new ErrorPopup();
     private VerticalPanel body = new VerticalPanel();
 
     private ErrorPopup() {
@@ -42,8 +40,6 @@ public class ErrorPopup extends Popup {
         setModal( true );
 
         body.setWidth( "100%" );
-
-        show();
     }
 
     @Override
@@ -53,6 +49,8 @@ public class ErrorPopup extends Popup {
 
     private void addMessage(String message,
                             String longMessage) {
+        
+        body.clear();
         if ( message != null && message.contains( "ItemExistsException" ) ) { //NON-NLS
             longMessage = message;
             message = constants.SorryAnItemOfThatNameAlreadyExistsInTheRepositoryPleaseChooseAnother();
@@ -89,14 +87,16 @@ public class ErrorPopup extends Popup {
 
         detailPanel.setWidth( "100%" );
         body.add( detailPanel );
+        show();
     }
 
     /**
      * Convenience method to popup the message.
      */
     public static void showMessage(String message) {
-        instance.addMessage( message,
-                null );
+        ErrorPopup instance = new ErrorPopup();
+        instance.addMessage( message, 
+                             null );
 
         LoadingPopup.close();
     }
@@ -105,8 +105,9 @@ public class ErrorPopup extends Popup {
      * For showing a more detailed report.
      */
     public static void showMessage(DetailedSerializationException exception) {
+        ErrorPopup instance = new ErrorPopup();
         instance.addMessage( exception.getMessage(),
-                exception.getLongDescription() );
+                             exception.getLongDescription() );
 
         LoadingPopup.close();
     }
