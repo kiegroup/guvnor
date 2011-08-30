@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;

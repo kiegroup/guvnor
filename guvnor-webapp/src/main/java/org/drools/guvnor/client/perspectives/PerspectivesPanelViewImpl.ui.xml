@@ -16,7 +16,7 @@
   <ui:with field='guvnorResources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
   <ui:with field='images' type='org.drools.guvnor.client.resources.Images'/>
   <ui:with field='titlePanelHeight'
-           type='org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl.TitlePanelHeight'/>
+           type='org.drools.guvnor.client.perspectives.PerspectivesPanelViewImpl.TitlePanelHeight'/>
 
   <gwt:DockLayoutPanel unit='EM'>
     <gwt:north size='{titlePanelHeight.getHeight}'>

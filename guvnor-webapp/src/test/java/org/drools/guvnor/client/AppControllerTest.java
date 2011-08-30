@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.MultiActivityManager;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.util.TabbedPanel;
 import org.junit.Before;

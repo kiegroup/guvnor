@@ -14,11 +14,14 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
+import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
+import org.drools.guvnor.client.perspectives.soa.SOAPerspective;
 import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
