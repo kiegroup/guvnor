@@ -16,7 +16,7 @@ public class MultiAssetActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         MultiAssetView view = clientFactory.getNavigationViewFactory().getMultiAssetView();
 
 
@@ -26,7 +26,7 @@ public class MultiAssetActivity extends Activity {
                 eventBus );
 //        addRows( view );
 
-        tabbedPanel.addTab( getTitle(), view );
+        tabbedPanel.add( getTitle(), view );
     }
 
     private String getTitle() {

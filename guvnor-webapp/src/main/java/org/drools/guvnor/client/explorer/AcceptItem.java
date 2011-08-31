@@ -17,7 +17,7 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
-public interface AcceptTabItem {
+public interface AcceptItem {
 
-    void addTab(String title, IsWidget widget);
+    void add(String title, IsWidget widget);
 }

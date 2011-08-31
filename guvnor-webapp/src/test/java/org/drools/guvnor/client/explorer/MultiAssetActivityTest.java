@@ -50,7 +50,7 @@ public class MultiAssetActivityTest {
     @Test
     public void testStart() throws Exception {
 
-        AcceptTabItem acceptTabItem = mock( AcceptTabItem.class );
+        AcceptItem acceptTabItem = mock( AcceptItem.class );
         EventBus eventBus = mock( EventBus.class );       
         startActivity( acceptTabItem, eventBus );
 
@@ -59,10 +59,10 @@ public class MultiAssetActivityTest {
                 clientFactory,
                 eventBus);
 
-        verify( acceptTabItem ).addTab( "[ firstName, secondName, thirdName ]", view );
+        verify( acceptTabItem ).add( "[ firstName, secondName, thirdName ]", view );
     }
 
-    private void startActivity(AcceptTabItem acceptTabItem, EventBus eventBus) {
+    private void startActivity(AcceptItem acceptTabItem, EventBus eventBus) {
         activity.start( acceptTabItem, eventBus );
     }
 

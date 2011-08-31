@@ -19,7 +19,7 @@ package org.drools.guvnor.client.widgets.assetviewer;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -51,12 +51,12 @@ public class AssetViewerActivity extends Activity
     }
 
     @Override
-    public void start(final AcceptTabItem acceptTabItem,
+    public void start(final AcceptItem acceptTabItem,
                        EventBus eventBus) {
 
         view.showLoadingPackageInformationMessage();
         // title is not used.
-        acceptTabItem.addTab(null, view);
+        acceptTabItem.add(null, view);
         clientFactory.getPackageService().loadPackageConfig( uuid,
                                                              new GenericCallback<PackageConfigData>() {
                                                                  public void onSuccess(PackageConfigData conf) {

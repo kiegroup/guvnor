@@ -3,7 +3,7 @@ package org.drools.guvnor.client.explorer.navigation.browse;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PushClient;
@@ -28,7 +28,7 @@ public class CategoryActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel,
+    public void start(AcceptItem tabbedPanel,
                       EventBus eventBus) {
         final CategoryPagedTable table = new CategoryPagedTable( categoryPath,
                 GWT.getModuleBaseURL()
@@ -53,7 +53,7 @@ public class CategoryActivity extends Activity {
         } );
 
 
-        tabbedPanel.addTab(
+        tabbedPanel.add(
                 constants.CategoryColon() + subStringCategoryName( categoryPath ),
                 table );
     }

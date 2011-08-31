@@ -32,8 +32,8 @@ public class FindActivity extends Activity {
     }
 
     @Override
-    public void start( AcceptTabItem tabbedPanel, EventBus eventBus ) {
-        tabbedPanel.addTab(
+    public void start( AcceptItem tabbedPanel, EventBus eventBus ) {
+        tabbedPanel.add(
                 constants.Find(),
                 new QueryWidget( clientFactory )
         );

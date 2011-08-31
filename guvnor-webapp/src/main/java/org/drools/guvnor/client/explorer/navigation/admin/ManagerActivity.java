@@ -15,7 +15,7 @@ import org.drools.guvnor.client.admin.StateManager;
 import org.drools.guvnor.client.admin.WorkspaceManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
@@ -35,28 +35,28 @@ public class ManagerActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         openAdministrationSelection(tabbedPanel, id);
     }
 
-    public void openAdministrationSelection(AcceptTabItem tabbedPanel, int id) {
+    public void openAdministrationSelection(AcceptItem tabbedPanel, int id) {
 
         switch (id) {
             case 0:
-                tabbedPanel.addTab(constants.CategoryManager(),
+                tabbedPanel.add(constants.CategoryManager(),
                         new CategoryManager());
                 break;
             case 1:
-                tabbedPanel.addTab(constants.ArchivedManager(),
+                tabbedPanel.add(constants.ArchivedManager(),
                         new ArchivedAssetManager(clientFactory));
                 break;
 
             case 2:
-                tabbedPanel.addTab(constants.StateManager(),
+                tabbedPanel.add(constants.StateManager(),
                         new StateManager());
                 break;
             case 3:
-                tabbedPanel.addTab(constants.ImportExport(),
+                tabbedPanel.add(constants.ImportExport(),
                         new BackupManager());
                 break;
 
@@ -65,11 +65,11 @@ public class ManagerActivity extends Activity {
                 RepositoryServiceAsync repositoryService = RepositoryServiceFactory.getService();
                 new EventLogPresenter(repositoryService,
                         eventLogView);
-                tabbedPanel.addTab(constants.EventLog(),
+                tabbedPanel.add(constants.EventLog(),
                         eventLogView);
                 break;
             case 5:
-                tabbedPanel.addTab(constants.UserPermissionMappings(),
+                tabbedPanel.add(constants.UserPermissionMappings(),
                         new PermissionViewer());
                 break;
             case 6:
@@ -93,15 +93,15 @@ public class ManagerActivity extends Activity {
                 break;
 
             case 7:
-                tabbedPanel.addTab(constants.RulesVerificationManager(),
+                tabbedPanel.add(constants.RulesVerificationManager(),
                         new RuleVerifierManager());
                 break;
             case 8:
-                tabbedPanel.addTab(constants.RepositoryConfig(),
+                tabbedPanel.add(constants.RepositoryConfig(),
                         new RepoConfigManager());
                 break;
             case 9:
-                tabbedPanel.addTab(constants.Workspaces(),
+                tabbedPanel.add(constants.Workspaces(),
                         new WorkspaceManager());
                 break;
         }

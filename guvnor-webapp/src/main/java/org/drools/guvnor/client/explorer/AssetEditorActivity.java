@@ -44,7 +44,7 @@ public class AssetEditorActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         this.eventBus = eventBus;
         final boolean[] loading = {true};
 
@@ -63,7 +63,7 @@ public class AssetEditorActivity extends Activity {
                 loading );
     }
 
-    private void loadRuleAsset(final AcceptTabItem tabbedPanel,
+    private void loadRuleAsset(final AcceptItem tabbedPanel,
                                final String uuid,
                                final boolean[] loading) {
         clientFactory.getAssetService().loadRuleAsset( uuid,
@@ -72,7 +72,7 @@ public class AssetEditorActivity extends Activity {
                         loading ) );
     }
 
-    private GenericCallback<RuleAsset> createGenericCallback(final AcceptTabItem tabbedPanel,
+    private GenericCallback<RuleAsset> createGenericCallback(final AcceptItem tabbedPanel,
                                                              final boolean[] loading) {
         return new GenericCallback<RuleAsset>() {
             public void onSuccess(final RuleAsset ruleAsset) {
@@ -87,7 +87,7 @@ public class AssetEditorActivity extends Activity {
                     public void execute() {
                         loading[0] = false;
 
-                        tabbedPanel.addTab(
+                        tabbedPanel.add(
                                 ruleAsset.getName(),
                                 new RuleViewerWrapper(
                                         clientFactory,
