@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tomcat-users>
+<!--
+  By default, no user is included in the "manager" role required to operate the "/manager" web application.
+  This file changes that.
+-->
+
+  <role rolename="manager"/>
+  <user username="tomcat" password="tomcat" roles="manager"/>
+
+</tomcat-users>

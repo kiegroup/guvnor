@@ -15,6 +15,12 @@
   <name>Guvnor web application</name>
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
+  <properties>
+    <managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>
+    <managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>
+    <managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home>
+  </properties>
+
   <build>
 <!-- TODO seam3Upgrade REMOVE ME! -->
 <testSourceDirectory>src/test/prototype-test</testSourceDirectory>
@@ -84,12 +90,23 @@
               <goal>run</goal>
             </goals>
           </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <inherited>false</inherited>
-        <executions>
+          <execution>
+            <id>download-and-unzip-managed-tomcat6</id>
+            <phase>generate-test-resources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${managed-appserver.download.dir}"/>
+                <get
+                    src="http://archive.apache.org/dist/tomcat/tomcat-6/v${managed-appserver.tomcat6.version}/bin/apache-tomcat-${managed-appserver.tomcat6.version}.zip"
+                    dest="${managed-appserver.download.dir}" verbose="true" skipexisting="true"/>
+                <unzip src="${managed-appserver.download.dir}/apache-tomcat-${managed-appserver.tomcat6.version}.zip"
+                       dest="${project.build.directory}"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
           <execution>
             <id>clean gwtutil classes</id>
             <phase>prepare-package</phase>
@@ -99,11 +116,40 @@
                   dir="${project.build.directory}/classes/org/drools/guvnor/gwtutil" />
               </tasks>
             </configuration>
-          <goals>
-            <goal>run</goal>
-          </goals>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-tomcat6-conf</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${managed-appserver.tomcat6.home}/conf</outputDirectory>
+              <overwrite>true</overwrite>
+              <resources>
+                <resource>
+                  <directory>${basedir}/src/test/conf/tomcat6</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <environmentVariables><!-- For managed tomcat -->
+            <CATALINA_HOME>${managed-appserver.tomcat6.home}</CATALINA_HOME>
+          </environmentVariables>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -265,12 +311,12 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
-      <version>1.1.2.Final</version>
+      <version>1.1.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-      <version>1.1.2.Final</version>
+      <version>1.1.3-SNAPSHOT</version>
     </dependency>
     <!-- Seam 3 (goodies in weld) -->
     <dependency>
@@ -356,28 +402,34 @@
       <!--<version>1.0.0.CR1</version>-->
       <!--<scope>test</scope>-->
     <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-tomcat-embedded-6</artifactId>-->
+      <!--<version>1.0.0.CR1</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
-      <artifactId>arquillian-tomcat-embedded-6</artifactId>
-      <version>1.0.0.CR1</version>
+      <artifactId>arquillian-tomcat-managed-6</artifactId>
+      <version>1.0.0.Final-SNAPSHOT</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>catalina</artifactId>
-      <version>6.0.29</version>
+      <version>${managed-appserver.tomcat6.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
        <groupId>org.apache.tomcat</groupId>
        <artifactId>coyote</artifactId>
-       <version>6.0.29</version>
+       <version>${managed-appserver.tomcat6.version}</version>
        <scope>test</scope>
     </dependency>
     <dependency>
        <groupId>org.apache.tomcat</groupId>
        <artifactId>jasper</artifactId>
-       <version>6.0.29</version>
+       <version>${managed-appserver.tomcat6.version}</version>
        <scope>test</scope>
     </dependency>
 
