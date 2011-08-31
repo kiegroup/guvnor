@@ -21,12 +21,15 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
+
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -81,7 +84,8 @@ public class ModuleEditorWrapper extends Composite {
                         refresh();
                     }
                 } );   */
-        AbstractModuleEditor moduleEditor = clientFactory.getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
+        PerspectiveFactory factory = GWT.create( PerspectiveFactory.class );
+        AbstractModuleEditor moduleEditor = factory.getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
             public void execute() {
                 refresh();
             }

@@ -30,6 +30,7 @@ import org.drools.guvnor.client.explorer.navigation.modules.Folder;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageView;
 import org.drools.guvnor.client.explorer.navigation.modules.PackageHierarchicalView;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -79,7 +80,8 @@ public class ExplorerNodeConfig {
     public static void fillModuleItemStructure( TreeItem moduleTreeItem ) {
         //If two or more asset editors (that are associated with different formats) have same titles,
         //we group them together and display them as one node on the package tree.
-        AssetEditorFactory factory = GWT.create( AssetEditorFactory.class );
+        PerspectiveFactory factory = GWT.create( PerspectiveFactory.class );
+        //AssetEditorFactory factory = GWT.create( AssetEditorFactory.class );
         String[] registeredFormats = factory.getRegisteredAssetEditorFormats();
 
         //Use list to preserve the order of asset editors defined in configuration.
