@@ -54,14 +54,14 @@ public class MultiActivityManagerChangePlaceTest extends MultiActivityManagerTes
     }
 
     private void verifyGoToNewPlace(Place place, String tabTitle) {
-        ArgumentCaptor<AcceptTabItem> acceptTabItemArgumentCaptor = ArgumentCaptor.forClass(AcceptTabItem.class);
+        ArgumentCaptor<AcceptItem> acceptTabItemArgumentCaptor = ArgumentCaptor.forClass(AcceptItem.class);
         IsWidget tabContentWidget = mock(IsWidget.class);
 
         Activity activity = goTo(place);
 
         verify(activity).start(acceptTabItemArgumentCaptor.capture(), any(ResettableEventBus.class));
 
-        acceptTabItemArgumentCaptor.getValue().addTab(tabTitle, tabContentWidget);
+        acceptTabItemArgumentCaptor.getValue().add(tabTitle, tabContentWidget);
         verify(tabbedPanel).addTab(tabTitle, tabContentWidget, place);
     }
 

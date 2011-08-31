@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.SnapshotView;
@@ -33,7 +33,7 @@ public class SnapshotActivity extends Activity {
     }
 
     @Override
-    public void start(final AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(final AcceptItem tabbedPanel, EventBus eventBus) {
         clientFactory.getPackageService().loadSnapshotInfo(
                 moduleName,
                 snapshotName,
@@ -44,14 +44,14 @@ public class SnapshotActivity extends Activity {
                 } );
     }
 
-    private void showTab(final AcceptTabItem tabbedPanel, final SnapshotInfo snapshotInfo) {
+    private void showTab(final AcceptItem tabbedPanel, final SnapshotInfo snapshotInfo) {
 
         LoadingPopup.showMessage( constants.LoadingSnapshot() );
 
         RepositoryServiceFactory.getPackageService().loadPackageConfig( snapshotInfo.getUuid(),
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess(PackageConfigData conf) {
-                        tabbedPanel.addTab( constants.SnapshotLabel( snapshotInfo.getName() ),
+                        tabbedPanel.add( constants.SnapshotLabel( snapshotInfo.getName() ),
                                 new SnapshotView(
                                         clientFactory,
                                         eventBus,

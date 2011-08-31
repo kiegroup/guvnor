@@ -4,7 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.util.Activity;
@@ -25,8 +25,8 @@ public class SnapshotAssetListActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
-        tabbedPanel.addTab(
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
+        tabbedPanel.add(
                 constants.SnapshotItems(),
                 getPanel() );
     }

@@ -16,11 +16,11 @@
 package org.drools.guvnor.client.util;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 
 public abstract class Activity {
 
-    public abstract void start( AcceptTabItem tabbedPanel, EventBus eventBus );
+    public abstract void start( AcceptItem tabbedPanel, EventBus eventBus );
 
     public boolean mayStop() {
         return true;

@@ -41,7 +41,7 @@ public class ModuleEditorActivity extends Activity {
     }
 
     @Override
-    public void start( final AcceptTabItem acceptTabItem, final EventBus eventBus ) {
+    public void start( final AcceptItem acceptTabItem, final EventBus eventBus ) {
 
         view.showLoadingPackageInformationMessage();
 
@@ -49,7 +49,7 @@ public class ModuleEditorActivity extends Activity {
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess( PackageConfigData packageConfigData ) {
                         RulePackageSelector.currentlySelectedPackage = packageConfigData.getUuid();
-                        acceptTabItem.addTab(
+                        acceptTabItem.add(
                                 packageConfigData.name,
                                 new ModuleEditorWrapper( packageConfigData, clientFactory, eventBus ) );
 

@@ -23,7 +23,7 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.*;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
@@ -93,8 +93,8 @@ public class ModuleEditorWrapper extends Composite {
 
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
                 clientFactory);
-        assetViewerActivity.start(new AcceptTabItem() {
-                    public void addTab(String tabTitle, IsWidget widget) {
+        assetViewerActivity.start(new AcceptItem() {
+                    public void add(String tabTitle, IsWidget widget) {
                         ScrollPanel pnl = new ScrollPanel();
                         pnl.setWidth("100%");
                         pnl.add(widget);

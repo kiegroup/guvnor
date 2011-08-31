@@ -75,7 +75,7 @@ public class MultiActivityManagerCloseTabsTest extends MultiActivityManagerTestB
 
         setUpMayStop(activity, true);
 
-        verify(activity).start(any(AcceptTabItem.class), resettableEventBusArgumentCaptor.capture());
+        verify(activity).start(any(AcceptItem.class), resettableEventBusArgumentCaptor.capture());
 
         resettableEventBusArgumentCaptor.getValue().addHandler(ClosePlaceEvent.TYPE, handler);
 

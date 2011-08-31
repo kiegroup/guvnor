@@ -17,15 +17,11 @@
 package org.drools.guvnor.client.packages;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.logical.shared.SelectionEvent;
-import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
@@ -36,13 +32,12 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.Tree;
-import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -50,11 +45,9 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.RulePackageSelector;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
-import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
@@ -62,6 +55,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
 
 /**
@@ -101,7 +95,18 @@ public class SnapshotView extends Composite {
                 header());
 
         vert.add(head);
-        vert.add(infoPanel());
+        
+        AssetViewerActivity assetViewerActivity = new AssetViewerActivity(parentConf.uuid,
+                clientFactory);
+        assetViewerActivity.start(new AcceptItem() {
+                    public void add(String tabTitle, IsWidget widget) {
+                        ScrollPanel pnl = new ScrollPanel();
+                        pnl.setWidth("100%");
+                        pnl.add(widget);
+                        vert.add(pnl);
+                    }
+                }, null);
+        
         vert.setWidth("100%");
         initWidget(vert);
 
@@ -386,46 +391,6 @@ public class SnapshotView extends Composite {
                 copy.show();
             }
         };
-    }
-
-    private Widget infoPanel() {
-        return packageTree();
-    }
-
-    protected Widget packageTree() {
-        Map<TreeItem, String> itemWidgets = new HashMap<TreeItem, String>();
-        Tree root = new Tree();
-        root.setAnimationEnabled(true);
-
-        TreeItem pkg = ExplorerNodeConfig.getPackageItemStructure(parentConf.getName());
-        itemWidgets.put(pkg, snapInfo.getUuid());
-        pkg.setUserObject(snapInfo);
-        root.addItem(pkg);
-
-        ScrollPanel packagesTreeItemPanel = new ScrollPanel(root);
-        root.addSelectionHandler(new SelectionHandler<TreeItem>() {
-            public void onSelection(SelectionEvent<TreeItem> event) {
-                Object uo = event.getSelectedItem().getUserObject();
-                if (uo instanceof Object[]) {
-                    Object o = ((Object[]) uo)[0];
-                    showAssetList(new String[]{(String) o});
-                } else if (uo instanceof SnapshotInfo) {
-                    SnapshotInfo s = (SnapshotInfo) uo;
-                    clientFactory.getPlaceController().goTo(new ModuleEditorPlace(s.getUuid()));
-                }
-            }
-        });
-
-        return packagesTreeItemPanel;
-    }
-
-    protected void showAssetList(final String[] assetTypes) {
-        clientFactory.getPlaceController().goTo(
-                new SnapshotAssetListPlace(
-                        snapInfo.getName(),
-                        snapInfo.getUuid(),
-                        assetTypes));
-
     }
 
     public static void showNewSnapshot(final Command refreshCmd) {

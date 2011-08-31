@@ -93,8 +93,8 @@ public class MultiActivityManager implements
         activeActivities.put(newPlace, new Pair(activity, resettableEventBus));
 
         activity.start(
-                new AcceptTabItem() {
-                    public void addTab(String tabTitle, IsWidget widget) {
+                new AcceptItem() {
+                    public void add(String tabTitle, IsWidget widget) {
                         tabbedPanel.addTab(
                                 tabTitle,
                                 widget,
