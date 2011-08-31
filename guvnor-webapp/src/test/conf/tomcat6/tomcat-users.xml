@@ -6,6 +6,7 @@
 -->
 
   <role rolename="manager"/>
-  <user username="tomcat" password="tomcat" roles="manager"/>
+  <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
+  <user username="admin" password="admin" roles="manager"/>
 
 </tomcat-users>
