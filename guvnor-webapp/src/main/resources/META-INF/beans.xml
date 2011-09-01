@@ -9,6 +9,7 @@
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
 
   <weld:scan>
+    <weld:exclude name="org.jboss.seam.security.permission.RuleBasedPermissionResolver"/>
     <!-- TODO remove me when GUVNOR-1196 is fixed -->
     <weld:exclude name="org.drools.guvnor.gwtutil.**"/>
     <weld:exclude name="org.drools.guvnor.client.**"/>
