@@ -17,10 +17,9 @@
 package org.drools.guvnor.server;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.drools.guvnor.server.security.*;
-import org.drools.guvnor.server.util.BeanManagerUtils;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 /**
@@ -28,97 +27,62 @@ import org.jboss.seam.security.Identity;
  */
 @ApplicationScoped
 public class ServiceSecurity {
+    
+    @Inject
+    private Identity identity;
 
     protected void checkSecurityIsAdmin() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new AdminType(),
-                    RoleType.ADMIN.getName());
-        }
+        identity.checkPermission(new AdminType(),
+                RoleType.ADMIN.getName());
     }
 
     protected boolean isSecurityIsAnalystReadWithTargetObject(final Object target) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission(target,
-                    RoleType.ANALYST_READ.getName());
-        }
-        return true;
+        return identity.hasPermission(target,
+                RoleType.ANALYST_READ.getName());
     }
 
     protected void checkPermissionAnalystReadWithCategoryPathType(final String categoryPath) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new CategoryPathType(categoryPath),
-                    RoleType.ANALYST_READ.getName());
-
-        }
+        identity.checkPermission(new CategoryPathType(categoryPath),
+                RoleType.ANALYST_READ.getName());
     }
 
     protected boolean hasPermissionAnalystReadWithCategoryPathType(final String categoryPath) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission(new CategoryPathType(categoryPath),
-                    RoleType.ANALYST_READ.getName());
-
-        }
-        return true;
+        return identity.hasPermission(new CategoryPathType(categoryPath),
+                RoleType.ANALYST_READ.getName());
     }
 
     protected void checkSecurityIsPackageAdminWithPackageName(String packageName) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(packageName),
-                    RoleType.PACKAGE_ADMIN.getName());
-        }
+        identity.checkPermission(new PackageNameType(packageName),
+                RoleType.PACKAGE_ADMIN.getName());
     }
 
     protected void checkSecurityIsPackageAdminWithAdminType() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new AdminType(), RoleType.PACKAGE_ADMIN.getName());
-        }
+        identity.checkPermission(new AdminType(), RoleType.PACKAGE_ADMIN.getName());
     }
 
     protected void checkSecurityIsPackageAdminWithPackageUuid(String uuid) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageUUIDType(uuid),
-                    RoleType.PACKAGE_ADMIN.getName());
-        }
+        identity.checkPermission(new PackageUUIDType(uuid),
+                RoleType.PACKAGE_ADMIN.getName());
     }
 
     protected void checkSecurityIsPackageDeveloperWithPackageUuid(String uuid) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageUUIDType(uuid),
-                    RoleType.PACKAGE_DEVELOPER.getName());
-        }
+        identity.checkPermission(new PackageUUIDType(uuid),
+                RoleType.PACKAGE_DEVELOPER.getName());
     }
 
     protected void checkSecurityIsPackageDeveloperWithPackageName(String packageName) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(packageName),
-                    RoleType.PACKAGE_DEVELOPER.getName());
-        }
+        identity.checkPermission(new PackageNameType(packageName),
+                RoleType.PACKAGE_DEVELOPER.getName());
     }
 
     protected void checkSecurityIsPackageReadOnlyWithPackageName(String packageName) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(packageName),
-                    RoleType.PACKAGE_READONLY.getName());
-        }
+        identity.checkPermission(new PackageNameType(packageName),
+                RoleType.PACKAGE_READONLY.getName());
     }
 
     protected void checkSecurityPackageReadOnlyWithPackageUuid(final String uuid) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageUUIDType(uuid),
-                    RoleType.PACKAGE_READONLY.getName());
-        }
+        identity.checkPermission(new PackageUUIDType(uuid),
+                RoleType.PACKAGE_READONLY.getName());
     }
-
 
 }
