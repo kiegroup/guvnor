@@ -115,7 +115,8 @@ public class ServiceImplementation
 
     private static final LoggingHelper        log                         = LoggingHelper.getLogger( ServiceImplementation.class );
 
-    private final ServiceSecurity             serviceSecurity             = new ServiceSecurity();
+    @Inject
+    private ServiceSecurity serviceSecurity;
 
     private final RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
     private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();

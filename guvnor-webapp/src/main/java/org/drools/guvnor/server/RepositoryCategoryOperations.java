@@ -26,6 +26,8 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.util.ArrayList;
@@ -36,7 +38,9 @@ public class RepositoryCategoryOperations {
     private RulesRepository repository;
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryCategoryOperations.class);
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
+
+    @Inject
+    private ServiceSecurity serviceSecurity;
 
     public void setRulesRepository(RulesRepository repository) {
         this.repository = repository;

@@ -39,7 +39,9 @@ public class RepositoryCategoryService
 
     private static final long            serialVersionUID             = 12365;
 
-    private final ServiceSecurity              serviceSecurity              = new ServiceSecurity();
+    @Inject
+    private ServiceSecurity serviceSecurity;
+
     private final RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
 
     @PostConstruct

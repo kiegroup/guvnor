@@ -63,7 +63,8 @@ public class RepositoryPackageService
 
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
+    @Inject
+    private ServiceSecurity serviceSecurity;
 
     private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
     private final RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();

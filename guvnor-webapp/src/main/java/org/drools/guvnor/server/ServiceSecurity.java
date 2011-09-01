@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.guvnor.server.security.*;
 import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
@@ -24,6 +26,7 @@ import org.jboss.seam.security.Identity;
 /**
  * Handles security checks.
  */
+@ApplicationScoped
 public class ServiceSecurity {
 
     protected void checkSecurityIsAdmin() {
