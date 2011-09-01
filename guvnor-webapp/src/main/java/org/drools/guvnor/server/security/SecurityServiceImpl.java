@@ -16,15 +16,10 @@
 
 package org.drools.guvnor.server.security;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.security.auth.login.LoginException;
+import javax.enterprise.context.ApplicationScoped;
 
-import org.drools.core.util.DateUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.SecurityService;
@@ -40,6 +35,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This implements security related services.
  */
+@ApplicationScoped
 public class SecurityServiceImpl
     implements
     SecurityService {
@@ -124,7 +120,6 @@ public class SecurityServiceImpl
     }
 
     public List<Capability> getUserCapabilities() {
-
         BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
         if (beanManagerLocator.isBeanManagerAvailable()) {
             if ( BeanManagerUtils.getContextualInstance(Identity.class).hasRole( RoleType.ADMIN.getName(), null, null ) ) {
@@ -141,13 +136,13 @@ public class SecurityServiceImpl
                 throw new AuthorizationException( "This user has no permissions setup." );
             }
 
-            if ( invalidSecuritySerilizationSetup() ) {
+            if ( invalidSecuritySerializationSetup() ) {
                 BeanManagerUtils.getContextualInstance(Identity.class).logout();
                 throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
             }
             return new CapabilityCalculator().calcCapabilities( permissions );
         } else {
-            if ( invalidSecuritySerilizationSetup() ) {
+            if ( invalidSecuritySerializationSetup() ) {
                 throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
             }
             return CapabilityCalculator.grantAllCapabilities();
@@ -164,9 +159,9 @@ public class SecurityServiceImpl
         return (RoleBasedPermissionResolver) BeanManagerUtils.getInstance("org.jboss.seam.security.roleBasedPermissionResolver");
     }
 
-    private boolean invalidSecuritySerilizationSetup() {
-        String ssecurity = System.getProperty( "drools.serialization.sign" );
-        if ( ssecurity != null && ssecurity.equalsIgnoreCase( "true" ) ) {
+    private boolean invalidSecuritySerializationSetup() {
+        String serializationSign = System.getProperty( "drools.serialization.sign" );
+        if ( serializationSign != null && serializationSign.equalsIgnoreCase( "true" ) ) {
             for ( String nextProp : serializationProperties ) {
                 String nextPropVal = System.getProperty( nextProp );
                 if ( nextPropVal == null || nextPropVal.trim().equals( "" ) ) {
@@ -176,4 +171,5 @@ public class SecurityServiceImpl
         }
         return false;
     }
+
 }
