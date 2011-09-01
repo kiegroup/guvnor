@@ -33,31 +33,11 @@ import javax.inject.Inject;
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet
         implements ConfigurationService {
-    
-    @Inject
-    private RulesRepository repository;
 
     public Map<String, String> loadPreferences() {
         Map<String, String> preferences = ApplicationPreferencesLoader.load();
         ApplicationPreferencesInitializer.setSystemProperties(preferences);
         return preferences;
     }
-
-//    protected RulesRepository getRepository() {
-//        BeanManager beanManager = (BeanManager) getServletContext()
-//                .getAttribute("org.jboss.weld.environment.servlet.javax.enterprise.inject.spi.BeanManager");
-//        return (RulesRepository) beanManager.getBeans("repository").iterator().next();
-//        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-//        if (beanManagerLocator.isBeanManagerAvailable()) {
-//            return (RulesRepository) BeanManagerUtils.getInstance("repository");
-//        } else {
-//            try {
-//                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-//            } catch (Exception e) {
-//                throw new IllegalStateException("Unable to get repo to run tests", e);
-//            }
-//
-//        }
-//    }
 
 }
