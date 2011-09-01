@@ -957,7 +957,7 @@ public class ServiceImplementation
      * @throws SerializationException
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public boolean doesAssetExistInPackage(String assetName,
                                            String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
