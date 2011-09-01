@@ -19,12 +19,13 @@ package org.drools.guvnor.server.security;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
@@ -36,9 +37,7 @@ import org.slf4j.LoggerFactory;
  * This implements security related services.
  */
 @ApplicationScoped
-public class SecurityServiceImpl
-    implements
-    SecurityService {
+public class SecurityServiceImpl implements SecurityService {
 
     public static final String GUEST_LOGIN = "guest";
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
@@ -50,6 +49,18 @@ public class SecurityServiceImpl
             KeyStoreHelper.PROP_PUB_KS_URL,
             KeyStoreHelper.PROP_PUB_KS_PWD
     };
+
+    @Inject @Named("roleBasedPermissionManager")
+    private RoleBasedPermissionManager roleBasedPermissionManager;
+
+    @Inject @Named("org.jboss.seam.security.roleBasedPermissionResolver")
+    private RoleBasedPermissionResolver roleBasedPermissionResolver;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private Credentials credentials;
 
     public boolean login(String userName,
                          String password) {
@@ -72,11 +83,9 @@ public class SecurityServiceImpl
                 }
             }
 
-            Credentials credentials = BeanManagerUtils.getContextualInstance(Credentials.class);
             credentials.setUsername(userName);
             credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
 
-            Identity identity = BeanManagerUtils.getContextualInstance(Identity.class);
             identity.login();
             if ( !identity.isLoggedIn() ) {
                 log.error( "Unable to login.");
@@ -88,18 +97,11 @@ public class SecurityServiceImpl
     }
 
     public UserSecurityContext getCurrentUser() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            if ( !BeanManagerUtils.getContextualInstance(Identity.class).isLoggedIn() ) {
-                //check to see if we can autologin
-                return new UserSecurityContext( checkAutoLogin() );
-            }
-            return new UserSecurityContext( BeanManagerUtils.getContextualInstance(Credentials.class).getUsername() );
-        } else {
-            //            HashSet<String> disabled = new HashSet<String>();
-            //return new UserSecurityContext(null);
-            return new UserSecurityContext( "SINGLE USER MODE (DEBUG) USE ONLY" );
+        if ( !identity.isLoggedIn() ) {
+            //check to see if we can autologin
+            return new UserSecurityContext( checkAutoLogin() );
         }
+        return new UserSecurityContext( credentials.getUsername() );
     }
 
     /**
@@ -108,8 +110,6 @@ public class SecurityServiceImpl
      * Basically means security is bypassed.
      */
     private String checkAutoLogin() {
-        Identity identity = BeanManagerUtils.getContextualInstance(Identity.class);
-        Credentials credentials = BeanManagerUtils.getContextualInstance(Credentials.class);
         credentials.setUsername(GUEST_LOGIN);
         identity.login();
         if ( identity.isLoggedIn() ) {
@@ -120,43 +120,25 @@ public class SecurityServiceImpl
     }
 
     public List<Capability> getUserCapabilities() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            if ( BeanManagerUtils.getContextualInstance(Identity.class).hasRole( RoleType.ADMIN.getName(), null, null ) ) {
-                return CapabilityCalculator.grantAllCapabilities();
-            }
-
-            if ( !createRoleBasedPermissionResolver().isEnableRoleBasedAuthorization() ) {
-                return CapabilityCalculator.grantAllCapabilities();
-            }
-            
-            List<RoleBasedPermission> permissions = createRoleBasedPermissionManager().getRoleBasedPermission();
-            if ( permissions.size() == 0 ) {
-                BeanManagerUtils.getContextualInstance(Identity.class).logout();
-                throw new AuthorizationException( "This user has no permissions setup." );
-            }
-
-            if ( invalidSecuritySerializationSetup() ) {
-                BeanManagerUtils.getContextualInstance(Identity.class).logout();
-                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
-            }
-            return new CapabilityCalculator().calcCapabilities( permissions );
-        } else {
-            if ( invalidSecuritySerializationSetup() ) {
-                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
-            }
+        if ( identity.hasRole( RoleType.ADMIN.getName(), null, null ) ) {
             return CapabilityCalculator.grantAllCapabilities();
         }
-    }
 
-    private RoleBasedPermissionManager createRoleBasedPermissionManager() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        return (RoleBasedPermissionManager) BeanManagerUtils.getInstance("roleBasedPermissionManager");
-    }
+        if ( !roleBasedPermissionResolver.isEnableRoleBasedAuthorization() ) {
+            return CapabilityCalculator.grantAllCapabilities();
+        }
+        
+        List<RoleBasedPermission> permissions = roleBasedPermissionManager.getRoleBasedPermission();
+        if ( permissions.size() == 0 ) {
+            identity.logout();
+            throw new AuthorizationException( "This user has no permissions setup." );
+        }
 
-    private RoleBasedPermissionResolver createRoleBasedPermissionResolver() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        return (RoleBasedPermissionResolver) BeanManagerUtils.getInstance("org.jboss.seam.security.roleBasedPermissionResolver");
+        if ( invalidSecuritySerializationSetup() ) {
+            identity.logout();
+            throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
+        }
+        return new CapabilityCalculator().calcCapabilities( permissions );
     }
 
     private boolean invalidSecuritySerializationSetup() {
