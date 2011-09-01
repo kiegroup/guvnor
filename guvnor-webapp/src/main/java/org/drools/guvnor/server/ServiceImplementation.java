@@ -129,7 +129,7 @@ public class ServiceImplementation
     }
 
     /* This is called in hosted mode when creating "by hand" */
-    public void setRulesRepository(RulesRepository repository) {
+    public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
         this.repository = repository;
         create();
     }
