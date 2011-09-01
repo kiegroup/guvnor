@@ -19,6 +19,7 @@ package org.drools.guvnor.client.rpc;
 import java.util.List;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 /**
 *
@@ -37,6 +38,7 @@ public interface RepositoryServiceAsync {
     public void loadRuleListForState(java.lang.String p0, int p1, int p2, java.lang.String p3, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadTableConfig(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableConfig> cb);
     public void createNewRule(java.lang.String p0, java.lang.String p1, java.lang.String p2, java.lang.String p3, java.lang.String p4, AsyncCallback<java.lang.String> cb);
+    public void doesAssetExistInPackage(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.Boolean> cb);
     public void createNewImportedRule(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
     public void deleteUncheckedRule(java.lang.String p0, AsyncCallback cb);
     public void clearRulesRepository(AsyncCallback cb);

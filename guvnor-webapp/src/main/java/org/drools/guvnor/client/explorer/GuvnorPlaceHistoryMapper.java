@@ -1,7 +1,5 @@
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.place.shared.WithTokenizers;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
@@ -11,6 +9,10 @@ import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
+import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+
+import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.place.shared.WithTokenizers;
 
 @WithTokenizers(
         {
@@ -26,7 +28,8 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
                 CategoryPlace.Tokenizer.class,
                 StatePlace.Tokenizer.class,
                 InboxPlace.Tokenizer.class,
-                MultiAssetPlace.Tokenizer.class
+                MultiAssetPlace.Tokenizer.class,
+                NewAssetWizardContext.Tokenizer.class
         }
 )
 public interface GuvnorPlaceHistoryMapper extends PlaceHistoryMapper {

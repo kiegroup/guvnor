@@ -583,7 +583,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                 p3,
                 p4 );
     }
-
+    
     public java.lang.String createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return getService().createNewImportedRule( p0,
@@ -772,6 +772,12 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.util.Map loadWorkitemDefinitionElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return getService().loadWorkitemDefinitionElementData();
+    }
+    
+    public boolean doesAssetExistInPackage(java.lang.String p0,
+                                           java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getService().doesAssetExistInPackage( p0,
+                                                     p1 );
     }
 
 }

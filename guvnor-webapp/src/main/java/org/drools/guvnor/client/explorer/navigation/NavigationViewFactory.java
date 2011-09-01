@@ -19,6 +19,7 @@ package org.drools.guvnor.client.explorer.navigation;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
@@ -41,6 +42,7 @@ import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 
 public interface NavigationViewFactory {
 
@@ -95,4 +97,7 @@ public interface NavigationViewFactory {
     TasksHeaderView getTasksHeaderView();
 
     TasksTreeView getTasksTreeView();
+    
+    WizardActivityView getWizardView();
+
 }
