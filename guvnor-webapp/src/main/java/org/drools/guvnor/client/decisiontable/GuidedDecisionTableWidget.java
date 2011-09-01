@@ -20,8 +20,10 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
@@ -64,7 +66,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     public GuidedDecisionTableWidget( RuleAsset asset,
                                       RuleViewer viewer,
-                                      ClientFactory clientFactory ) {
+                                      ClientFactory clientFactory,
+                                      EventBus eventBus) {
         this( asset );
     }
 
@@ -78,9 +81,8 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( "<img src='"
-                + new Image( images.information() ).getUrl()
-                + "'/>&nbsp;"
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.information()).getHTML()
+                + "&nbsp;"
                 + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 

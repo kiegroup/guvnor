@@ -21,6 +21,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
@@ -30,8 +31,8 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.ClosePlaceEvent;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
@@ -54,14 +55,17 @@ public class MetaDataWidget extends Composite {
     private FormStyleLayout currentSection;
     private String currentSectionName;
     private final ClientFactory clientFactory;
+    private final EventBus eventBus;
 
     public MetaDataWidget(ClientFactory clientFactory,
+                          EventBus eventBus,
                           final Artifact artifact,
                           boolean readOnly,
                           final String uuid) {
         super();
 
         this.clientFactory = clientFactory;
+        this.eventBus = eventBus;
         this.uuid = uuid;
         this.artifact = artifact;
         this.readOnly = readOnly;
@@ -114,9 +118,6 @@ public class MetaDataWidget extends Composite {
         if ( artifact instanceof RuleAsset ) {
             addAttribute( constants.CreatedByMetaData(),
                     readOnlyText( ((RuleAsset) artifact).getMetaData().getCreator() ) );
-            addAttribute( constants.FormatMetaData(),
-                    new SmallLabel( "<b>"
-                            + ((RuleAsset) artifact).getMetaData().getFormat() + "</b>" ) );
 
             addAttribute( constants.PackageMetaData(),
                     packageEditor( ((RuleAsset) artifact).getMetaData().getPackageName() ) );
@@ -133,7 +134,9 @@ public class MetaDataWidget extends Composite {
                     },
                             constants.DisableTip() ) );
         }
-
+        
+        addAttribute( constants.FormatMetaData(),
+                readOnlyText(artifact.getFormat()));
         addAttribute( "UUID:",
                 readOnlyText( uuid ) );
 
@@ -214,6 +217,7 @@ public class MetaDataWidget extends Composite {
 
         if ( !readOnly ) {
             addRow( new VersionBrowser( clientFactory,
+                    eventBus,
                     this.uuid,
                     !(artifact instanceof RuleAsset) ) );
         }
@@ -304,7 +308,7 @@ public class MetaDataWidget extends Composite {
     }
 
     private void closeAndReopen(String newAssetUUID) {
-        clientFactory.getEventBus().fireEvent( new ClosePlaceEvent( new AssetEditorPlace( uuid ) ) );
+        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( uuid ) ) );
         clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
     }
 

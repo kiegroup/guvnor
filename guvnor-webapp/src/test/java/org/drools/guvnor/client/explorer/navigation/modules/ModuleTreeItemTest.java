@@ -23,9 +23,9 @@ import static org.mockito.Mockito.when;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -78,9 +78,9 @@ public class ModuleTreeItemTest {
 
         verify( view ).setRootItem( treeItem );
 
-        ArgumentCaptor<AssetViewerPlace> assetViewerPlaceArgumentCaptor = ArgumentCaptor.forClass( AssetViewerPlace.class );
-        verify( view ).setRootUserObject( assetViewerPlaceArgumentCaptor.capture() );
-        AssetViewerPlace assetViewerPlace = assetViewerPlaceArgumentCaptor.getValue();
+        ArgumentCaptor<ModuleEditorPlace> moduleEditorPlaceArgumentCaptor = ArgumentCaptor.forClass( ModuleEditorPlace.class );
+        verify( view ).setRootUserObject( moduleEditorPlaceArgumentCaptor.capture() );
+        ModuleEditorPlace assetViewerPlace = moduleEditorPlaceArgumentCaptor.getValue();
 
         assertEquals( "mockUuid", assetViewerPlace.getUuid() );
     }

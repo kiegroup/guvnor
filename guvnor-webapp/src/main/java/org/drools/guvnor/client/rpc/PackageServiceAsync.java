@@ -25,7 +25,7 @@ public interface PackageServiceAsync {
     public void listPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
     public void listArchivedPackages(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData[]> cb);
     public void loadGlobalPackage(AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData> cb);
-    public void createPackage(java.lang.String p0, java.lang.String p1, AsyncCallback<java.lang.String> cb);
+    public void createPackage(java.lang.String p0, java.lang.String p1, String p2, AsyncCallback<java.lang.String> cb);
     public void createSubPackage(java.lang.String p0, java.lang.String p1, java.lang.String p2, AsyncCallback<java.lang.String> cb);
     public void loadPackageConfig(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.PackageConfigData> cb);
     public void validatePackageConfiguration(org.drools.guvnor.client.rpc.PackageConfigData p0, AsyncCallback<org.drools.guvnor.client.rpc.ValidatedResponse> cb);

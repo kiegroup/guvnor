@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.explorer.navigation.browse;
 
 import com.google.gwt.user.client.ui.IsTreeItem;
+import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.FindPlace;
@@ -54,7 +56,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.INCOMING_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.INCOMING_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test
@@ -63,7 +65,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.RECENT_EDITED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.RECENT_EDITED_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test
@@ -72,7 +74,7 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
 
         ArgumentCaptor<InboxPlace> inboxPlaceArgumentCaptor = ArgumentCaptor.forClass( InboxPlace.class );
         verify( placeController ).goTo( inboxPlaceArgumentCaptor.capture() );
-        assertEquals( ExplorerNodeConfig.RECENT_VIEWED_ID, inboxPlaceArgumentCaptor.getValue().getInboxName() );
+        assertEquals( ExplorerNodeConfig.RECENT_VIEWED_ID, inboxPlaceArgumentCaptor.getValue().getInboxType() );
     }
 
     @Test
@@ -101,21 +103,6 @@ public class BrowseTreeTest extends BrowseTreeTestBase {
         verify( view ).addFind();
         verify( view, never() ).addRootStateTreeItem();
         verify( view ).addRootCategoryTreeItem();
-    }
-
-    @Test
-    public void testShowRulesMenuHasCapability() throws Exception {
-
-        setUpCapabilities( Capability.SHOW_CREATE_NEW_ASSET );
-
-        presenter = new BrowseTree( clientFactory );
-
-        verify( view ).showMenu();
-    }
-
-    @Test
-    public void testShowRulesMenuNoCapability() throws Exception {
-        verify( view, never() ).showMenu();
     }
 
     @Test

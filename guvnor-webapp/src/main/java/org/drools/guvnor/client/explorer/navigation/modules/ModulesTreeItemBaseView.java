@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer.navigation.modules;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -25,6 +26,7 @@ public interface ModulesTreeItemBaseView
 
     interface Presenter {
         void onModuleSelected(Object userObject);
+        SafeHtml getModuleTreeRootNodeHeader();
     }
 
     void setPresenter(Presenter presenter);

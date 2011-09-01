@@ -49,6 +49,7 @@ public class BrowseTreeTestBase {
     protected PlaceController placeController;
     protected ClientFactory clientFactory;
     protected NavigationViewFactory navigationViewFactory;
+    protected EventBus eventBus;
 
     @Before
     public void setUp() throws Exception {
@@ -58,6 +59,7 @@ public class BrowseTreeTestBase {
     }
 
     protected void setUpPresenter() {
+        eventBus = mock( EventBus.class );
         navigationViewFactory = mock( NavigationViewFactory.class );
         clientFactory = mock( ClientFactory.class );
         when(
@@ -86,14 +88,8 @@ public class BrowseTreeTestBase {
         ).thenReturn(
                 view
         );
-        RulesNewMenuView rulesNewMenuView = mock( RulesNewMenuView.class );
-        when(
-                navigationViewFactory.getRulesNewMenuView()
-        ).thenReturn(
-                rulesNewMenuView
-        );
 
-        presenter = new BrowseTree( clientFactory );
+        presenter = new BrowseTree( clientFactory, eventBus);
     }
 
     private void setUpServices() {

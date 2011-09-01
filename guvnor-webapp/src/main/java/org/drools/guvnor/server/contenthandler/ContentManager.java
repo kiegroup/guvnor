@@ -32,7 +32,7 @@ import java.util.Properties;
 public class ContentManager {
 
     private static final Logger log = LoggerFactory.getLogger(ContentManager.class);
-    public static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
+    private static final String CONTENT_CONFIG_PROPERTIES = "/contenthandler.properties";
     private static ContentManager INSTANCE;
 
     /**

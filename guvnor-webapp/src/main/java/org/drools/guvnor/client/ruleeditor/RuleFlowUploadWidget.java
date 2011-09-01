@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.ruleeditor;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.HTML;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -30,16 +31,18 @@ import org.drools.guvnor.client.rpc.RuleAsset;
  */
 public class RuleFlowUploadWidget extends AssetAttachmentFileWidget {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private static Images images = GWT.create(Images.class);
 
-    public RuleFlowUploadWidget( RuleAsset asset,
-                                 RuleViewer viewer,
-                                 ClientFactory clientFactory ) {
-        super( asset,
+    public RuleFlowUploadWidget(RuleAsset asset,
+                                RuleViewer viewer,
+                                ClientFactory clientFactory,
+                                EventBus eventBus) {
+        super(asset,
                 viewer,
-                clientFactory );
-        super.addDescription( new HTML( "<small><i>" + constants.RuleFlowUploadTip() + "</i></small>" ) ); //NON-NLS
+                clientFactory,
+                eventBus);
+        Constants constants = GWT.create(Constants.class);
+        super.addDescription(new HTML("<small><i>" + constants.RuleFlowUploadTip() + "</i></small>")); //NON-NLS
     }
 
     public ImageResource getIcon() {

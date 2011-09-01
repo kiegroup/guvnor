@@ -16,18 +16,6 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.common.ClickableLabel;
-import org.drools.guvnor.client.common.DirtyableFlexTable;
-import org.drools.guvnor.client.common.DirtyableHorizontalPane;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.FactPattern;
-import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -39,73 +27,78 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
 
 public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
-    protected Constants                constants = ((Constants) GWT.create( Constants.class ));
-    private static Images              images    = GWT.create( Images.class );
+    protected Constants constants = ((Constants) GWT.create(Constants.class));
+    private static Images images = GWT.create(Images.class);
 
     protected FromCompositeFactPattern pattern;
-    protected DirtyableFlexTable       layout;
-    protected boolean                  readOnly;
-
-    private FactPatternWidget          factPatternWidget;
-    private ExpressionBuilder          expressionBuilder;
+    protected DirtyableFlexTable layout;
+    protected boolean readOnly;
 
     public FromCompositeFactPatternWidget(RuleModeller modeller, FromCompositeFactPattern pattern) {
-        this( modeller, pattern, null );
+        this(modeller, pattern, null);
     }
 
     public FromCompositeFactPatternWidget(RuleModeller modeller, FromCompositeFactPattern pattern, Boolean readOnly) {
-        super( modeller );
+        super(modeller);
         this.pattern = pattern;
 
         //if readOnly is null, the readOnly attribute is calculated.
-        if ( readOnly == null ) {
+        if (readOnly == null) {
             this.calculateReadOnly();
         } else {
             this.readOnly = readOnly;
         }
 
         this.layout = new DirtyableFlexTable();
-        if ( this.readOnly ) {
-            this.layout.addStyleName( "editor-disabled-widget" );
+        if (this.readOnly) {
+            this.layout.addStyleName("editor-disabled-widget");
         }
-        this.layout.addStyleName( "model-builderInner-Background" );
+        this.layout.addStyleName("model-builderInner-Background");
 
         doLayout();
-        initWidget( layout );
+        initWidget(layout);
     }
 
     protected void doLayout() {
 
         int row = 0;
-        if ( pattern.getFactPattern() != null ) {
+        if (pattern.getFactPattern() != null) {
             FactPattern fact = pattern.getFactPattern();
-            if ( fact != null ) {
-                this.layout.setWidget( row++, 0, createFactPatternWidget( fact ) );
+            if (fact != null) {
+                this.layout.setWidget(row++, 0, createFactPatternWidget(fact));
             }
         }
 
-        this.layout.setWidget( row++, 0, getCompositeLabel() );
+        this.layout.setWidget(row++, 0, getCompositeLabel());
 
     }
 
     private Widget createFactPatternWidget(FactPattern fact) {
-        if ( this.readOnly ) {
+        FactPatternWidget factPatternWidget;
+        if (this.readOnly) {
             //creates a new read-only FactPatternWidget
-            this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, false, true );
+            factPatternWidget = new FactPatternWidget(this.getModeller(), fact, false, true);
             //this.layout.setWidget( 0, 0, factPatternWidget );
-            return this.factPatternWidget;
+            return factPatternWidget;
         } else {
-            this.factPatternWidget = new FactPatternWidget( this.getModeller(), fact, true, false );
-            this.factPatternWidget.addOnModifiedCommand( new Command() {
+            factPatternWidget = new FactPatternWidget(this.getModeller(), fact, true, false);
+            factPatternWidget.addOnModifiedCommand(new Command() {
                 public void execute() {
-                    setModified( true );
+                    setModified(true);
                 }
-            } );
+            });
             //this.layout.setWidget( 0, 0, addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() ) );
-            return addRemoveButton( factPatternWidget, createClickHandlerForAddRemoveButton() );
+            return addRemoveButton(factPatternWidget, createClickHandlerForAddRemoveButton());
         }
     }
 
@@ -113,9 +106,9 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         return new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( Window.confirm( constants.RemoveThisEntireConditionQ() ) ) {
-                    setModified( true );
-                    pattern.setFactPattern( null );
+                if (Window.confirm(constants.RemoveThisEntireConditionQ())) {
+                    setModified(true);
+                    pattern.setFactPattern(null);
                     getModeller().refreshWidget();
                 }
 
@@ -129,29 +122,29 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
 
             public void onClick(ClickEvent event) {
                 Widget w = (Widget) event.getSource();
-                showFactTypeSelector( w );
+                showFactTypeSelector(w);
 
             }
         };
-        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName( "from" ) + "</div>";
+        String lbl = "<div class='form-field'>" + HumanReadable.getCEDisplayName("from") + "</div>";
 
         DirtyableFlexTable panel = new DirtyableFlexTable();
 
         int r = 0;
 
-        if ( pattern.getFactPattern() == null ) {
-            panel.setWidget( r, 0, new ClickableLabel( "<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", click, !this.readOnly ) );
+        if (pattern.getFactPattern() == null) {
+            panel.setWidget(r, 0, new ClickableLabel("<br> <font color='red'>" + constants.clickToAddPatterns() + "</font>", click, !this.readOnly));
             r++;
         }
 
-        panel.setWidget( r, 0, new HTML( lbl ) );
-        this.expressionBuilder = new ExpressionBuilder( this.getModeller(), this.pattern.getExpression(), this.readOnly );
-        this.expressionBuilder.addOnModifiedCommand( new Command() {
+        panel.setWidget(r, 0, new HTML(lbl));
+        ExpressionBuilder expressionBuilder = new ExpressionBuilder(this.getModeller(), this.pattern.getExpression(), this.readOnly);
+        expressionBuilder.addOnModifiedCommand(new Command() {
             public void execute() {
-                setModified( true );
+                setModified(true);
             }
-        } );
-        panel.setWidget( r, 1, this.expressionBuilder );
+        });
+        panel.setWidget(r, 1, expressionBuilder);
 
         return panel;
     }
@@ -164,25 +157,25 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
         final ListBox box = new ListBox();
         String[] facts = completions.getFactTypes();
 
-        box.addItem( constants.Choose() );
+        box.addItem(constants.Choose());
 
-        for ( int i = 0; i < facts.length; i++ ) {
-            box.addItem( facts[i] );
+        for (int i = 0; i < facts.length; i++) {
+            box.addItem(facts[i]);
         }
-        box.setSelectedIndex( 0 );
+        box.setSelectedIndex(0);
 
         final FormStylePopup popup = new FormStylePopup();
-        popup.setTitle( constants.NewFactPattern() );
-        popup.addAttribute( constants.chooseFactType(), box );
-        box.addChangeHandler( new ChangeHandler() {
+        popup.setTitle(constants.NewFactPattern());
+        popup.addAttribute(constants.chooseFactType(), box);
+        box.addChangeHandler(new ChangeHandler() {
 
             public void onChange(ChangeEvent event) {
-                pattern.setFactPattern( new FactPattern( box.getItemText( box.getSelectedIndex() ) ) );
-                setModified( true );
+                pattern.setFactPattern(new FactPattern(box.getItemText(box.getSelectedIndex())));
+                setModified(true);
                 getModeller().refreshWidget();
                 popup.hide();
             }
-        } );
+        });
 
         popup.show();
     }
@@ -190,16 +183,16 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     protected Widget addRemoveButton(Widget w, ClickHandler listener) {
         DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
 
-        final Image remove = new ImageButton( images.deleteItemSmall() );
-        remove.setTitle( constants.RemoveThisBlockOfData() );
-        remove.addClickHandler( listener );
+        final Image remove = new ImageButton(images.deleteItemSmall());
+        remove.setTitle(constants.RemoveThisBlockOfData());
+        remove.addClickHandler(listener);
 
-        horiz.setWidth( "100%" );
-        w.setWidth( "100%" );
+        horiz.setWidth("100%");
+        w.setWidth("100%");
 
-        horiz.add( w );
-        if ( !this.readOnly ) {
-            horiz.add( remove );
+        horiz.add(w);
+        if (!this.readOnly) {
+            horiz.add(remove);
         }
         return horiz;
     }
@@ -209,8 +202,8 @@ public class FromCompositeFactPatternWidget extends RuleModellerWidget {
     }
 
     protected void calculateReadOnly() {
-        if ( this.pattern.factPattern != null ) {
-            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType( this.pattern.factPattern.getFactType() );
+        if (this.pattern.factPattern != null) {
+            this.readOnly = !this.getModeller().getSuggestionCompletions().containsFactType(this.pattern.factPattern.getFactType());
         }
     }
 

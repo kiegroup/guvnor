@@ -30,6 +30,7 @@ public class StandaloneEditorInvocationParameters implements Serializable {
     
     private RuleAsset[] assetsToBeEdited;
     private String[] validFactTypes;
+    private String[] activeWorkingSets;
     
     private boolean temporalAssets;
     
@@ -96,6 +97,14 @@ public class StandaloneEditorInvocationParameters implements Serializable {
 
     public static long getSerialversionuid() {
         return serialVersionUID;
+    }
+
+    public String[] getActiveWorkingSets() {
+        return activeWorkingSets;
+    }
+
+    public void setActiveWorkingSets(String[] activeWorkingSets) {
+        this.activeWorkingSets = activeWorkingSets;
     }
     
 }

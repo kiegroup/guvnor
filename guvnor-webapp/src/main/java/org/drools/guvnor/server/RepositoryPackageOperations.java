@@ -234,18 +234,31 @@ public class RepositoryPackageOperations {
                 importAsNew );
     }
 
+    protected String createPackage(String name, String description,
+            String format) throws RulesRepositoryException {
+
+        log.info("USER: " + getCurrentUserName() + " CREATING package [" + name
+                + "]");
+        PackageItem item = getRulesRepository().createPackage(name,
+                description, format);
+
+        return item.getUUID();
+    }
+    
     protected String createPackage(String name,
                                    String description,
+                                   String format,
                                    String[] workspace) throws RulesRepositoryException {
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
         PackageItem item = getRulesRepository().createPackage( name,
                 description,
+                format,
                 workspace );
 
         return item.getUUID();
     }
-
+    
     protected String createSubPackage(String name,
                                       String description,
                                       String parentNode) throws SerializationException {
@@ -293,6 +306,9 @@ public class RepositoryPackageOperations {
         item.updateDescription( data.getDescription() );
         item.archiveItem( data.isArchived() );
         item.updateBinaryUpToDate( false );
+        if(!data.getFormat().equals("")) {
+            item.updateFormat(data.getFormat());
+        }
         RuleBaseCache.getInstance().remove( data.getUuid() );
         item.checkin( data.getDescription() );
 

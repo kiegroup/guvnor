@@ -21,7 +21,7 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import java.util.List;
 
 public class PageResponseBuilder<T extends AbstractPageRow> {
-    final PageResponse<T> pageResponse = new PageResponse<T>();
+    private final PageResponse<T> pageResponse = new PageResponse<T>();
 
     public PageResponseBuilder<T> withStartRowIndex(int startRowIndex) {
         pageResponse.setStartRowIndex(startRowIndex);

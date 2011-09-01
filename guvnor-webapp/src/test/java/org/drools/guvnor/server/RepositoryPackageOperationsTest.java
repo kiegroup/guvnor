@@ -149,13 +149,16 @@ public class RepositoryPackageOperationsTest {
         when( packageItem.getUUID() ).thenReturn( "uuid" );
         when( this.rulesRepository.createPackage( "name",
                                                   "description",
+                                                  "package",
                                                   new String[]{"workspace"} ) ).thenReturn( packageItem );
         assertEquals( this.repositoryPackageOperations.createPackage( "name",
                                                                       "description",
+                                                                      "package",
                                                                       new String[]{"workspace"} ),
                       "uuid" );
         verify( this.rulesRepository ).createPackage( "name",
                                                       "description",
+                                                      "package",
                                                       new String[]{"workspace"} );
 
     }

@@ -16,12 +16,6 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import java.util.Date;
-
-import org.drools.guvnor.client.common.ImageButton;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.Images;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
@@ -30,83 +24,87 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.TextBox;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+
+import java.util.Date;
 
 public class DatePickerTextBox extends DatePicker {
-    private Constants     constants = GWT.create( Constants.class );
-    private static Images images    = GWT.create( Images.class );
-
-    private ImageButton   select    = new ImageButton( images.edit() );
+    private Constants constants = GWT.create(Constants.class);
+    private static Images images = GWT.create(Images.class);
 
     public DatePickerTextBox(String selectedDate) {
-        this( selectedDate,
-              defaultFormat );
+        this(selectedDate,
+                defaultFormat);
     }
 
     public DatePickerTextBox(String selectedDate,
                              String visualFormat) {
-        solveVisualFormat( visualFormat );
+        solveVisualFormat(visualFormat);
 
-        visualFormatFormatter = DateTimeFormat.getFormat( this.visualFormat );
+        visualFormatFormatter = DateTimeFormat.getFormat(this.visualFormat);
 
-        datePickerPopUp = new DatePickerPopUp( new ClickHandler() {
-                                                   public void onClick(ClickEvent event) {
-                                                       try {
-                                                           Date date = fillDate();
-
-                                                           textWidget.setText( visualFormatFormatter.format( date ) );
-
-                                                           valueChanged();
-                                                           makeDirty();
-                                                           datePickerPopUp.hide();
-                                                       } catch ( Exception e ) {
-                                                           Window.alert( constants.InvalidDateFormatMessage() );
-                                                       }
-                                                   }
-                                               },
-                                               visualFormatFormatter );
-
-        select.addClickHandler( new ClickHandler() {
+        datePickerPopUp = new DatePickerPopUp(new ClickHandler() {
             public void onClick(ClickEvent event) {
-                datePickerPopUp.setPopupPosition( textWidget.getAbsoluteLeft(),
-                                                  textWidget.getAbsoluteTop() + 20 );
+                try {
+                    Date date = fillDate();
 
-                if ( textWidget.getText() != null && "".equals( textWidget.getText() ) ) {
-                    textWidget.setText( visualFormatFormatter.format( new Date() ) );
+                    textWidget.setText(visualFormatFormatter.format(date));
+
+                    valueChanged();
+                    makeDirty();
+                    datePickerPopUp.hide();
+                } catch (Exception e) {
+                    Window.alert(constants.InvalidDateFormatMessage());
+                }
+            }
+        },
+                visualFormatFormatter);
+
+        ImageButton select = new ImageButton(images.edit());
+        select.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                datePickerPopUp.setPopupPosition(textWidget.getAbsoluteLeft(),
+                        textWidget.getAbsoluteTop() + 20);
+
+                if (textWidget.getText() != null && "".equals(textWidget.getText())) {
+                    textWidget.setText(visualFormatFormatter.format(new Date()));
                 }
 
-                datePickerPopUp.setDropdowns( visualFormatFormatter,
-                                              textWidget.getText() );
+                datePickerPopUp.setDropdowns(visualFormatFormatter,
+                        textWidget.getText());
                 datePickerPopUp.show();
             }
-        } );
+        });
 
-        if ( selectedDate != null && !selectedDate.equals( "" ) ) {
-            textWidget.setText( selectedDate );
+        if (selectedDate != null && !selectedDate.equals("")) {
+            textWidget.setText(selectedDate);
 
             // Check if there is a valid date set. If not, set this date.
             try {
-                visualFormatFormatter.parse( selectedDate );
-            } catch ( Exception e ) {
+                visualFormatFormatter.parse(selectedDate);
+            } catch (Exception e) {
                 selectedDate = null;
             }
         }
 
-        textWidget.addBlurHandler( new BlurHandler() {
+        textWidget.addBlurHandler(new BlurHandler() {
             public void onBlur(BlurEvent event) {
                 TextBox box = (TextBox) event.getSource();
-                textWidget.setText( box.getText() );
+                textWidget.setText(box.getText());
                 valueChanged();
                 makeDirty();
                 datePickerPopUp.hide();
             }
-        } );
+        });
 
-        panel.add( textWidget );
-        panel.add( select );
-        initWidget( panel );
+        panel.add(textWidget);
+        panel.add(select);
+        initWidget(panel);
     }
 
     public void clear() {
-        textWidget.setText( "" );
+        textWidget.setText("");
     }
 }

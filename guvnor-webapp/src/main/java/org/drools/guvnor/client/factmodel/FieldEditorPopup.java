@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.factmodel;
 
+import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -25,7 +26,9 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -33,22 +36,33 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class FieldEditorPopup {
 
-    private static Constants      constants = ((Constants) GWT.create( Constants.class ));
+    private static Constants           constants      = ((Constants) GWT.create( Constants.class ));
 
-    private final FieldMetaModel  field;
+    // A valid Fact, Field or Annotation name
+    private static final RegExp        VALID_NAME     = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );
 
-    private final ModelNameHelper modelNameHelper;
+    // A valid (fully qualified) data-type name
+    private static final RegExp        VALID_DATATYPE = RegExp.compile( "^([a-zA-Z][a-zA-Z\\d_$]*\\.)*[a-zA-Z][a-zA-Z\\d_$]*$" );
 
-    private Command               okCommand;
+    private final FieldMetaModel       field;
+    private final List<FieldMetaModel> fields;
 
-    public FieldEditorPopup(ModelNameHelper modelNameHelper) {
+    private final ModelNameHelper      modelNameHelper;
+
+    private Command                    okCommand;
+
+    public FieldEditorPopup(List<FieldMetaModel> fields,
+                            ModelNameHelper modelNameHelper) {
         this( new FieldMetaModel(),
+              fields,
               modelNameHelper );
     }
 
     public FieldEditorPopup(FieldMetaModel field,
+                            List<FieldMetaModel> fields,
                             ModelNameHelper modelNameHelper) {
         this.field = field;
+        this.fields = fields;
         this.modelNameHelper = modelNameHelper;
     }
 
@@ -99,6 +113,49 @@ public class FieldEditorPopup {
 
             public void onClick(ClickEvent event) {
 
+                String dataType = fieldType.getText();
+                if ( !isDataTypeValid( dataType ) ) {
+                    Window.alert( constants.InvalidDataTypeName( dataType ) );
+                    return;
+                }
+
+                String name = fieldName.getText();
+                if ( !isNameValid( name ) ) {
+                    Window.alert( constants.InvalidModelName( name ) );
+                    return;
+                }
+                if ( doesTheNameExist( name ) ) {
+                    Window.alert( constants.NameTakenForModel( name ) );
+                    return;
+                }
+                if ( factModelAlreadyHasAName( name ) ) {
+                    if ( isTheUserSureHeWantsToChangeTheName() ) {
+                        setNameAndClose();
+                    }
+                } else {
+                    setNameAndClose();
+                }
+            }
+
+            private boolean isDataTypeValid(String dataType) {
+                if ( dataType == null || "".equals( dataType ) ) {
+                    return false;
+                }
+                return VALID_DATATYPE.test( dataType );
+            }
+
+            private boolean isNameValid(String name) {
+                if ( name == null || "".equals( name ) ) {
+                    return false;
+                }
+                return VALID_NAME.test( name );
+            }
+
+            private boolean factModelAlreadyHasAName(String name) {
+                return field.name != null && !field.name.equals( name );
+            }
+
+            private void setNameAndClose() {
                 field.name = fieldName.getText();
                 field.type = fieldType.getText();
 
@@ -106,6 +163,25 @@ public class FieldEditorPopup {
 
                 pop.hide();
             }
+
+            private boolean isTheUserSureHeWantsToChangeTheName() {
+                return Window.confirm( constants.ModelNameChangeWarning() );
+            }
+
+            private boolean doesTheNameExist(String name) {
+                //The name may not have changed
+                if ( field.name != null && field.name.equals( name ) ) {
+                    return false;
+                }
+                //Check for field name is unique amongst other fields on the fact
+                for ( FieldMetaModel f : fields ) {
+                    if ( f.name.equals( name ) ) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
         } );
         pop.addAttribute( "",
                           ok );

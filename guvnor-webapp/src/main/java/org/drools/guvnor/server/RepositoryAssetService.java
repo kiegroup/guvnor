@@ -123,7 +123,7 @@ public class RepositoryAssetService
                                           RuleAsset asset) throws SerializationException {
         PackageItem packageItem = item.getPackage();
 
-        ContentHandler handler = ContentManager.getHandler(asset.getMetaData().getFormat());
+        ContentHandler handler = ContentManager.getHandler(asset.getFormat());
         handler.retrieveAssetContent(asset,
                 item);
 

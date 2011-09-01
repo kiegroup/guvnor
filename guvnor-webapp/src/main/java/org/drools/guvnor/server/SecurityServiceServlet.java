@@ -17,9 +17,9 @@
 package org.drools.guvnor.server;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.AuthorizationException;
@@ -35,7 +35,7 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements
         SecurityService {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SecurityServiceServlet.class);
-    final SecurityService service = new SecurityServiceImpl();
+    private final SecurityService service = new SecurityServiceImpl();
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {

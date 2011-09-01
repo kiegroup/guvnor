@@ -241,9 +241,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
 
     public java.lang.String createPackage(java.lang.String p0,
-                                          java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
+                                          java.lang.String p1,
+                                          java.lang.String p2) throws com.google.gwt.user.client.rpc.SerializationException {
         return packageService.createPackage( p0,
-                p1 );
+                p1, p2);
     }
 
     public java.lang.String createSubPackage(java.lang.String p0,

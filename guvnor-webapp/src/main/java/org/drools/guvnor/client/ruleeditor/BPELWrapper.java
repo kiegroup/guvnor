@@ -19,6 +19,7 @@ package org.drools.guvnor.client.ruleeditor;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -33,11 +34,10 @@ public class BPELWrapper extends Composite
         implements
         EditorWidget {
 
-    private Constants constants = GWT.create( Constants.class );
-
-    public BPELWrapper( RuleAsset asset,
-                        RuleViewer viewer,
-                        ClientFactory clientFactory ) {
+    public BPELWrapper(RuleAsset asset,
+                       RuleViewer viewer,
+                       ClientFactory clientFactory,
+                       EventBus eventBus) {
 
         final String uuid = asset.getUuid();
         final String fileName = asset.getName();
@@ -48,29 +48,31 @@ public class BPELWrapper extends Composite
         AssetAttachmentFileWidget uploadWidget = new DefaultContentUploadEditor(
                 asset,
                 viewer,
-                clientFactory );
+                clientFactory,
+                eventBus);
 
         VerticalPanel panel = new VerticalPanel();
-        panel.add( uploadWidget );
+        panel.add(uploadWidget);
 
         Button viewSource = new Button();
-        viewSource.setText( constants.OpenEditorInNewWindow() );
+        Constants constants = GWT.create(Constants.class);
+        viewSource.setText(constants.OpenEditorInNewWindow());
 
         final String url = "bpeleditor/BPELEditor.html?uuid=" + uuid + "&fileName=" + fileName + "&dirName=" + dirName
                 + "&servletName=" + servletName + "&isNew=" + isNew;
-        viewSource.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent arg0 ) {
-                Window.open( url,
+        viewSource.addClickHandler(new ClickHandler() {
+            public void onClick(ClickEvent arg0) {
+                Window.open(url,
                         "_" + fileName,
-                        null );
+                        null);
             }
-        } );
+        });
 
-        panel.add( viewSource );
+        panel.add(viewSource);
 
-        initWidget( panel );
+        initWidget(panel);
 
-        this.setStyleName( getOverallStyleName() );
+        this.setStyleName(getOverallStyleName());
     }
 
     public String getOverallStyleName() {

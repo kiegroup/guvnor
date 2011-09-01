@@ -21,7 +21,6 @@
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
 
   <gwt:VerticalPanel width="100%">
-    <guvnor:PrettyFormLayout ui:field="prettyForm" />
     <gwt:VerticalPanel ui:field="assetGroupsContainer" width="100%"/>
   </gwt:VerticalPanel>
 

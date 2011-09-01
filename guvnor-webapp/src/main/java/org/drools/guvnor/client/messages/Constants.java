@@ -74,7 +74,7 @@ public interface Constants
     String pleaseChooseABoundFactForThisColumn();
 
     String setterLabel(String actionDisplayName,
-                       String descFact);
+            String descFact);
 
     String statusIs(String status);
 
@@ -111,7 +111,7 @@ public interface Constants
     String AssetNameMustNotBeEmpty();
 
     String CreatedANewItemSuccess(String itemName,
-                                  String packageName);
+            String packageName);
 
     String CheckInChanges();
 
@@ -543,6 +543,10 @@ public interface Constants
     String ChangeName();
 
     String NameTakenForModel(String name);
+
+    String InvalidModelName(String name);
+
+    String InvalidDataTypeName(String dataType);
 
     String ModelNameChangeWarning();
 
@@ -2316,8 +2320,6 @@ public interface Constants
 
     String PleaseSelectAPerspective();
 
-    String FailedToLoadPerspectiveUnknownId0(String perspectiveId);
-
     String FailedToLoadPerspective();
 
     String NameCanNotBeEmpty();
@@ -2381,5 +2383,34 @@ public interface Constants
     String FlatView();
     
     String HierarchicalView();
+    
+    String AttributeForModuleEditor();
 
+    String RunTimePerspective();
+    
+    String SOAPerspective();
+    
+    String Tasks();
+
+    String PersonalTasks();
+
+    String GroupTasks();
+
+    String ReportTemplates();
+
+    String AddFromConditionColon();
+
+    String Reporting();
+
+    String Settings();
+
+    String Preferences();
+
+    String System();
+
+    String Processes();
+
+    String ExecutionHistory();
+
+    String ProcessOverview();
 }

@@ -3,7 +3,7 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -23,17 +23,17 @@ public class VerifierActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         openVerifierView( tabbedPanel );
     }
 
-    public void openVerifierView(final AcceptTabItem tabbedPanel) {
+    public void openVerifierView(final AcceptItem tabbedPanel) {
 
         clientFactory.getPackageService().loadPackageConfig(
                 moduleUuid,
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess(PackageConfigData packageConfigData) {
-                        tabbedPanel.addTab(
+                        tabbedPanel.add(
                                 constants.AnalysisForPackage( packageConfigData.getName() ),
                                 new VerifierScreen(
                                         packageConfigData.getUuid(),

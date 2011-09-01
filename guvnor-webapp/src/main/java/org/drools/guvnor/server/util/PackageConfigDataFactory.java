@@ -45,6 +45,7 @@ public class PackageConfigDataFactory {
         data.setState(item.getStateDescription());
         data.setSnapshot(item.isSnapshot());
         data.setVersionNumber(item.getVersionNumber());
+        data.setFormat(item.getFormat());
         return data;
     }
 

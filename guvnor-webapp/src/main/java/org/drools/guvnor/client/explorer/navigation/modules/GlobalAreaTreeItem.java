@@ -26,7 +26,8 @@ public class GlobalAreaTreeItem extends ModulesTreeItemBase {
     public GlobalAreaTreeItem( ClientFactory clientFactory ) {
         super(
                 clientFactory,
-                clientFactory.getNavigationViewFactory().getGlobalAreaTreeItemView() );
+                clientFactory.getNavigationViewFactory().getGlobalAreaTreeItemView(),
+                null);
     }
 
     @Override

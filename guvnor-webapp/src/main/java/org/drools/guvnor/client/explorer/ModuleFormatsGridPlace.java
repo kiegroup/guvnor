@@ -39,7 +39,7 @@ public class ModuleFormatsGridPlace extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel,
+    public void start(AcceptItem tabbedPanel,
                       EventBus eventBus) {
         RulePackageSelector.currentlySelectedPackage = moduleFormatsGridPlace.getPackageConfigData().getName();
 
@@ -53,7 +53,7 @@ public class ModuleFormatsGridPlace extends Activity {
                 moduleFormatsGridPlace.getTitle() );
     }
 
-    private void openPackageViewAssets(AcceptTabItem tabbedPanel,
+    private void openPackageViewAssets(AcceptItem tabbedPanel,
                                        final String packageUuid,
                                        final String packageName,
                                        String key,
@@ -72,7 +72,7 @@ public class ModuleFormatsGridPlace extends Activity {
                 formatIsRegistered,
                 feedUrl,
                 clientFactory );
-        tabbedPanel.addTab( itemName
+        tabbedPanel.add( itemName
                 + " ["
                 + packageName
                 + "]",

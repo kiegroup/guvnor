@@ -241,6 +241,10 @@ public class FileManagerUtils {
         }
     }
 
+    public boolean isPackageExist(String packageName) {
+        return this.repository.containsPackage(packageName);
+    }
+    
     public void exportRulesRepository(OutputStream out) {
         this.repository.exportRulesRepositoryToStream( out );
     }

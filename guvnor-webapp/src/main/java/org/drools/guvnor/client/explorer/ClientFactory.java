@@ -20,26 +20,21 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
+import com.google.gwt.user.client.Command;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationPanelFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.packages.AbstractModuleEditor;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 
 public interface ClientFactory {
 
-    AuthorPerspectiveView getAuthorPerspectiveView(NavigationPanelFactory navigationPanelFactory);
-
-    RuntimePerspectiveView getRuntimePerspectiveView(NavigationPanelFactory navigationPanelFactory);
-
     PlaceController getPlaceController();
 
-    EventBus getEventBus();
-
     PerspectivesPanelView getPerspectivesPanelView();
-
-    IFramePerspectiveView getIFramePerspectiveView();
 
     NavigationViewFactory getNavigationViewFactory();
 
@@ -66,5 +61,7 @@ public interface ClientFactory {
     AssetServiceAsync getAssetService();
 
     ActivityMapper getActivityMapper();
+    
+    AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand);
 
 }

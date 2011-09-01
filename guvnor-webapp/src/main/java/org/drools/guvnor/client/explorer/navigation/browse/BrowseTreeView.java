@@ -16,16 +16,13 @@
 
 package org.drools.guvnor.client.explorer.navigation.browse;
 
+import java.util.Collection;
+
 import com.google.gwt.user.client.ui.IsTreeItem;
 import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.TabType;
-
-import java.util.Collection;
-import java.util.List;
-
 
 public interface BrowseTreeView extends IsWidget {
+
     interface Presenter {
 
         void onTreeItemSelection(IsTreeItem selectedItem, String title);
@@ -38,11 +35,17 @@ public interface BrowseTreeView extends IsWidget {
 
     IsTreeItem addInboxIncomingTreeItem();
 
-    Collection<IsTreeItem> getChildren(IsTreeItem openedItem);
-
     IsTreeItem addInboxRecentEditedTreeItem();
 
     IsTreeItem addInboxRecentViewedTreeItem();
+
+    String getInboxIncomingName();
+
+    String getInboxRecentEditedName();
+
+    String getInboxRecentViewedName();
+    
+    Collection<IsTreeItem> getChildren(IsTreeItem openedItem);
 
     IsTreeItem addFind();
 
@@ -51,8 +54,6 @@ public interface BrowseTreeView extends IsWidget {
     IsTreeItem addRootCategoryTreeItem();
 
     IsTreeItem addTreeItem(IsTreeItem rootTreeItem, String one);
-
-    void showMenu();
 
     void setPresenter(Presenter presenter);
 

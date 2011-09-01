@@ -3,7 +3,7 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -23,18 +23,18 @@ public class TestScenarioListActivity extends Activity {
     }
 
     @Override
-    public void start(AcceptTabItem tabbedPanel, EventBus eventBus) {
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
         openTestScenario( tabbedPanel );
     }
 
-    public void openTestScenario(final AcceptTabItem tabbedPanel) {
+    public void openTestScenario(final AcceptItem tabbedPanel) {
 
         clientFactory.getPackageService().loadPackageConfig(
                 moduleUuid,
                 new GenericCallback<PackageConfigData>() {
                     public void onSuccess(PackageConfigData packageConfigData) {
 
-                        tabbedPanel.addTab(
+                        tabbedPanel.add(
                                 constants.ScenariosForPackage( packageConfigData.getName() ),
                                 new ScenarioPackageScreen(
                                         packageConfigData.getUuid(),

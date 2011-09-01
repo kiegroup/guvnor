@@ -21,6 +21,8 @@ import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.google.gwt.event.shared.EventBus;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
@@ -32,11 +34,13 @@ public class BrowseTreeBuilderTest {
     private BrowseHeaderView stackItemHeaderView;
     private BrowseTreeView browseTreeView;
     private ClientFactory clientFactory;
-
+    private EventBus eventBus;
+    
     @Before
     public void setUp() throws Exception {
         clientFactory = mock( ClientFactory.class );
-        builder = new BrowseTreeBuilder( clientFactory );
+        clientFactory = mock( ClientFactory.class );
+        builder = new BrowseTreeBuilder( clientFactory, eventBus);
         NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
         stackItemHeaderView = setUpHeaderView( navigationViewFactory );
         browseTreeView = setUpContentView( navigationViewFactory );

@@ -16,34 +16,27 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.FormStylePopup;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.client.rpc.WorkingSetConfigData;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
-import org.drools.guvnor.client.packages.WorkingSetManager;
-
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
+import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.client.rpc.WorkingSetConfigData;
 
 
 public class WorkingSetSelectorPopup {
     private final RuleModeller modeller;
     private final RuleAsset asset;
-    private Button save;
     private FormStylePopup pop;
-    private Constants constants = ((Constants) GWT.create(Constants.class));
     private ListBox availableFacts = new ListBox(true);
     private ListBox selectedFacts = new ListBox(true);
 
@@ -52,28 +45,29 @@ public class WorkingSetSelectorPopup {
         this.asset = a;
 
         pop = new FormStylePopup();
+        Constants constants = ((Constants) GWT.create(Constants.class));
         pop.setTitle(constants.SelectWorkingSets());
         Grid g = buildDoubleList(null);
 
         RepositoryServiceFactory.getAssetService().listAssets(asset.getMetaData().getPackageUUID(),
-                new String[] { AssetFormats.WORKING_SET }, 0, -1, "workingsetList",
+                new String[]{AssetFormats.WORKING_SET}, 0, -1, "workingsetList",
                 new GenericCallback<TableDataResult>() {
 
                     public void onSuccess(TableDataResult result) {
 
                         for (int i = 0; i < result.data.length; i++) {
                             if (WorkingSetManager.getInstance().isWorkingSetActive(
-                                            asset.getMetaData().getPackageName(),
-                                            result.data[i].id)) {
+                                    asset.getMetaData().getPackageName(),
+                                    result.data[i].id)) {
                                 selectedFacts.addItem(result.data[i].getDisplayName(), result.data[i].id);
                             } else {
-                                availableFacts.addItem(result.data[i].getDisplayName(),    result.data[i].id);
+                                availableFacts.addItem(result.data[i].getDisplayName(), result.data[i].id);
                             }
                         }
                     }
                 });
 
-        save = new Button(constants.SaveAndClose());
+        Button save = new Button(constants.SaveAndClose());
         save.addClickHandler(new ClickHandler() {
             public void onClick(ClickEvent event) {
                 String[] wsUUIDs = new String[selectedFacts.getItemCount()];
@@ -82,13 +76,13 @@ public class WorkingSetSelectorPopup {
                 }
 
                 WorkingSetManager.getInstance().applyWorkingSets(asset.getMetaData().getPackageName(), wsUUIDs, new Command() {
-                        public void execute() {
-                            LoadingPopup.close();
-                            pop.hide();
-                            modeller.refreshWidget();
-                            modeller.verifyRule(null, true);
-                        }
-                    });
+                    public void execute() {
+                        LoadingPopup.close();
+                        pop.hide();
+                        modeller.refreshWidget();
+                        modeller.verifyRule(null, true);
+                    }
+                });
             }
 
         });
@@ -100,7 +94,7 @@ public class WorkingSetSelectorPopup {
     public void show() {
         pop.show();
     }
-    
+
     private Grid buildDoubleList(WorkingSetConfigData wsData) {
         Grid grid = new Grid(2, 3);
 
@@ -133,7 +127,7 @@ public class WorkingSetSelectorPopup {
         grid.getColumnFormatter().setWidth(0, "45%");
         return grid;
     }
-    
+
     private void moveSelected(final ListBox from, final ListBox to) {
         int selected;
         while ((selected = from.getSelectedIndex()) != -1) {

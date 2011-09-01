@@ -17,7 +17,8 @@ public class Artifact
     public String  checkinComment;
     public long    versionNumber;
     public boolean readonly = false;
-
+    public String   format = "";
+    
     public String getUuid() {
         return uuid;
     }
@@ -105,6 +106,15 @@ public class Artifact
 
     public Artifact setReadonly(boolean isreadonly) {
         this.readonly = isreadonly;
+        return this;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public Artifact setFormat(String format) {
+        this.format = format;
         return this;
     }
 

@@ -35,7 +35,6 @@ public class MetaData
     public String   packageUUID          = "";
     public String[] categories           = new String[0];
 
-    public String   format               = "";
     public String   type                 = "";
     public String   creator              = "";
     public String   externalSource       = "";
@@ -133,15 +132,6 @@ public class MetaData
 
     public String[] getCategories() {
         return categories;
-    }
-
-    public MetaData setFormat(String format) {
-        this.format = format;
-        return this;
-    }
-
-    public String getFormat() {
-        return format;
     }
 
     public MetaData setType(String type) {

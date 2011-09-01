@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ import org.drools.ide.common.client.modeldriven.DropDownData;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.ui.ListBox;
 
 /**
@@ -41,13 +41,10 @@ public class EnumDropDown extends ListBox
 
     private static final Constants constants = GWT.create( Constants.class );
 
-    private DropDownValueChanged   valueChanged;
-
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
 
-        this.valueChanged = valueChanged;
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 valueChanged.valueChanged( getItemText( getSelectedIndex() ),
@@ -55,9 +52,16 @@ public class EnumDropDown extends ListBox
             }
         } );
 
+        setDropDownData( currentValue,
+                         dropData );
+    }
+
+    public void setDropDownData(final String currentValue,
+                                final DropDownData dropData) {
+
         //if we have to do it lazy, we will hit up the server when the widget gets focus
-        if ( dropData.fixedList == null && dropData.queryExpression != null ) {
-            DeferredCommand.addCommand( new Command() {
+        if ( dropData != null && dropData.fixedList == null && dropData.queryExpression != null ) {
+            Scheduler.get().scheduleDeferred( new Command() {
                 public void execute() {
                     LoadingPopup.showMessage( constants.RefreshingList() );
                     RepositoryServiceFactory.getService().loadDropDownExpression( dropData.valuePairs,
@@ -87,23 +91,27 @@ public class EnumDropDown extends ListBox
         } else {
             //otherwise its just a normal one...
             fillDropDown( currentValue,
-                          dropData.fixedList );
+                          dropData );
         }
 
-        if ( currentValue == null || "".equals( currentValue ) ) {
-            int ix = getSelectedIndex();
-            if ( ix > -1 ) {
-                valueChanged.valueChanged( getItemText( ix ),
-                                           getValue( ix ) );
-            }
+    }
+
+    private void fillDropDown(final String currentValue,
+                              final DropDownData dropData) {
+        if ( dropData == null ) {
+            fillDropDown( currentValue,
+                          new String[0] );
+        } else {
+            fillDropDown( currentValue,
+                          dropData.fixedList );
         }
     }
 
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
-        boolean selected = false;
-
         clear();
+//        addItem( constants.Choose() );
+        boolean selected = false;
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
             String v = enumeratedValues[i];
@@ -117,25 +125,18 @@ public class EnumDropDown extends ListBox
                 addItem( display,
                          realValue );
             } else {
-                addItem( v,
-                         v );
+                addItem( v );
                 val = v;
             }
             if ( currentValue != null && currentValue.equals( val ) ) {
                 setSelectedIndex( i );
+//                setSelectedIndex( i + 1 );
                 selected = true;
-                valueChanged.valueChanged( getItemText( getSelectedIndex() ),
-                                           getValue( getSelectedIndex() ) );
             }
         }
 
-        if ( currentValue != null && !"".equals( currentValue ) && !selected ) {
-            //need to add this value
-            addItem( currentValue,
-                     currentValue );
-            valueChanged.valueChanged( currentValue,
-                                       currentValue );
-            setSelectedIndex( enumeratedValues.length );
+        if ( !selected ) {
+            setSelectedIndex( 0 );
         }
     }
 }

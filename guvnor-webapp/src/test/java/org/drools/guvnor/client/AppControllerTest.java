@@ -22,7 +22,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.MultiActivityManager;
-import org.drools.guvnor.client.explorer.PerspectivesPanelView;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
 import org.drools.guvnor.client.util.TabbedPanel;
 import org.junit.Before;
@@ -77,13 +77,8 @@ public class AppControllerTest {
         );
 
         eventBus = mock( EventBus.class );
-        when(
-                clientFactory.getEventBus()
-        ).thenReturn(
-                eventBus
-        );
 
-        new AppController( clientFactory );
+        new AppController( clientFactory, eventBus );
     }
 
     @Test

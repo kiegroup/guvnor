@@ -27,6 +27,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
@@ -36,8 +37,11 @@ import com.google.gwt.user.client.ui.TextBox;
 
 public class FactEditorPopup {
 
-    private static Constants          constants  = ((Constants) GWT.create( Constants.class ));
+    private static Constants          constants     = ((Constants) GWT.create( Constants.class ));
 
+    // A valid Fact, Field or Annotation name
+    private static final RegExp VALID_NAME = RegExp.compile( "^[a-zA-Z][a-zA-Z\\d_$]*$" );
+    
     private final FactMetaModel       factModel;
     private final List<FactMetaModel> factModels;
     private final ModelNameHelper     modelNameHelper;
@@ -122,18 +126,29 @@ public class FactEditorPopup {
         nameButton.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                if ( doesTheNameExist() ) {
-                    Window.alert( constants.NameTakenForModel( name.getText() ) );
+                String factName = name.getText();
+                if ( !isNameValid( factName ) ) {
+                    Window.alert( constants.InvalidModelName( factName ) );
                     return;
                 }
-
-                if ( factModelAlreadyHasAName( name.getText() ) ) {
+                if ( doesTheNameExist( factName ) ) {
+                    Window.alert( constants.NameTakenForModel( factName ) );
+                    return;
+                }
+                if ( factModelAlreadyHasAName( factName ) ) {
                     if ( isTheUserSureHeWantsToChangeTheName() ) {
                         setNameAndClose();
                     }
                 } else {
                     setNameAndClose();
                 }
+            }
+
+            private boolean isNameValid(String name) {
+                if ( name == null || "".equals( name ) ) {
+                    return false;
+                }
+                return VALID_NAME.test( name );
             }
 
             private boolean factModelAlreadyHasAName(String name) {
@@ -157,15 +172,12 @@ public class FactEditorPopup {
                 return Window.confirm( constants.ModelNameChangeWarning() );
             }
 
-            private boolean doesTheNameExist() {
-                if ( factModel.getName() == null ) {
-                    return false;
-                }
+            private boolean doesTheNameExist(String name) {
                 //The name may not have changed
-                if ( factModel.getName().equals( name.getText() ) ) {
+                if ( factModel.getName() != null && factModel.getName().equals( name ) ) {
                     return false;
                 }
-                return !modelNameHelper.isUniqueName( name.getText() );
+                return !modelNameHelper.isUniqueName( name );
             }
         } );
 

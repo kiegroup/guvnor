@@ -17,7 +17,6 @@
 package org.drools.guvnor.server.configurations;
 
 import org.drools.core.util.DateUtils;
-import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.repository.utils.IOUtils;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.prefs.Preferences;
 
 public class ApplicationPreferencesLoader {
 
@@ -41,9 +39,7 @@ public class ApplicationPreferencesLoader {
             in = ApplicationPreferencesLoader.class.getResourceAsStream("/preferences.properties");
             properties.load(in);
 
-            Map<String, String> preferences = readPreferences(properties);
-
-            return preferences;
+            return readPreferences(properties);
         } catch (IOException e) {
             log.info("Couldn't find preferences.properties - using defaults");
             return new HashMap<String, String>();

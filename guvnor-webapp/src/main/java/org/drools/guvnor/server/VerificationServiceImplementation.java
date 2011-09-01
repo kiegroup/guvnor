@@ -48,7 +48,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
-    private Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+    private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
 
     protected RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
@@ -118,7 +118,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private AssetItem getAssetItem(RuleAsset asset) throws SerializationException {
         AssetItem assetItem = getAssetService().getRulesRepository().loadAssetByUUID(asset.uuid);
-        ContentHandler contentHandler = ContentManager.getHandler(asset.metaData.format);
+        ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
         contentHandler.storeAssetContent(asset, assetItem);
         return assetItem;
     }

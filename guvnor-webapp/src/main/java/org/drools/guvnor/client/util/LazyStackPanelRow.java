@@ -24,20 +24,18 @@ import com.google.gwt.user.client.ui.Widget;
 public class LazyStackPanelRow extends VerticalPanel {
 
     private final AbstractLazyStackPanelHeader header;
-    private LoadContentCommand                 contentLoad;
-    private Widget                             contentWidget      = null;
-    private SimplePanel                        contentPanel       = new SimplePanel();
+    private LoadContentCommand contentLoad;
+    private Widget contentWidget = null;
+    private SimplePanel contentPanel = new SimplePanel();
 
-    private ContentAnimation                   contentAnimation;
+    private static final int ANIMATION_DURATION = 350;
 
-    private static final int                   ANIMATION_DURATION = 350;
-
-    private boolean                            expanded;
+    private boolean expanded;
 
     public LazyStackPanelRow(AbstractLazyStackPanelHeader titleWidget,
                              LoadContentCommand contentLoad,
                              boolean expanded) {
-        this.setWidth( "100%" );
+        this.setWidth("100%");
         this.expanded = expanded;
         this.header = titleWidget;
         this.contentLoad = contentLoad;
@@ -46,16 +44,16 @@ public class LazyStackPanelRow extends VerticalPanel {
 
     public LazyStackPanelRow(AbstractLazyStackPanelHeader titleWidget,
                              LoadContentCommand contentLoad) {
-        this( titleWidget,
-              contentLoad,
-              false );
+        this(titleWidget,
+                contentLoad,
+                false);
     }
 
     private void init() {
         clear();
-        add( header );
-        if ( contentWidget != null ) {
-            contentWidget.setVisible( expanded );
+        add(header);
+        if (contentWidget != null) {
+            contentWidget.setVisible(expanded);
         }
     }
 
@@ -70,18 +68,18 @@ public class LazyStackPanelRow extends VerticalPanel {
     public void expand() {
         expanded = true;
 
-        if ( contentWidget == null ) {
+        if (contentWidget == null) {
             contentWidget = contentLoad.load();
-            contentPanel.add( contentWidget );
+            contentPanel.add(contentWidget);
         }
-        contentPanel.setVisible( true );
-        doAnimation( true );
+        contentPanel.setVisible(true);
+        doAnimation(true);
     }
 
     public void compress() {
         expanded = false;
-        contentPanel.setVisible( true );
-        doAnimation( false );
+        contentPanel.setVisible(true);
+        doAnimation(false);
     }
 
     public boolean isExpanded() {
@@ -89,18 +87,18 @@ public class LazyStackPanelRow extends VerticalPanel {
     }
 
     private void doAnimation(boolean isExpanding) {
-        if ( contentPanel.getWidget() != null ) {
-            contentAnimation = new ContentAnimation( contentPanel );
-            contentAnimation.setExpanding( isExpanding );
-            contentAnimation.run( ANIMATION_DURATION );
+        if (contentPanel.getWidget() != null) {
+            ContentAnimation contentAnimation = new ContentAnimation(contentPanel);
+            contentAnimation.setExpanding(isExpanding);
+            contentAnimation.run(ANIMATION_DURATION);
         }
     }
 
     private static class ContentAnimation extends Animation {
 
-        private boolean     isExpanding;
+        private boolean isExpanding;
         private SimplePanel content;
-        private int         height;
+        private int height;
 
         ContentAnimation(SimplePanel content) {
             this.content = content;
@@ -113,27 +111,29 @@ public class LazyStackPanelRow extends VerticalPanel {
 
         @Override
         protected void onUpdate(double progress) {
-            if ( !isExpanding ) {
+            if (!isExpanding) {
                 progress = 1.0 - progress;
             }
             int h = (int) (this.height * progress);
-            content.setHeight( h + "px" );
+            content.setHeight(h + "px");
         }
 
         @Override
         protected void onStart() {
-            content.getElement().getStyle().setOverflow( Overflow.HIDDEN );
+            content.getElement().getStyle().setOverflow(Overflow.HIDDEN);
             super.onStart();
         }
 
         @Override
         protected void onComplete() {
             super.onComplete();
-            content.setVisible( isExpanding );
-            content.getElement().getStyle().setOverflow( Overflow.VISIBLE );
-            content.setHeight( "100%" );
+            content.setVisible(isExpanding);
+            content.getElement().getStyle().setOverflow(Overflow.VISIBLE);
+            content.setHeight("100%");
         }
 
-    };
+    }
+
+    ;
 
 }
