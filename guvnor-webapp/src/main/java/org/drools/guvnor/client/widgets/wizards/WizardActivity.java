@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.widgets.wizards;
 
-import org.drools.guvnor.client.explorer.AcceptTabItem;
+import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.util.Activity;
 
@@ -40,14 +40,14 @@ public class WizardActivity extends Activity
     public WizardActivity(WizardPlace< ? > place,
                           ClientFactory clientFactory,
                           EventBus eventBus) {
-        
+
         //The generic view
         view = clientFactory.getNavigationViewFactory().getWizardView();
-        
+
         //The specific "page factory" for a particular Wizard
         wizard = clientFactory.getWizardFactory().getWizard( place.getContext() );
         view.setPresenter( this );
-        
+
         //Wire-up the events
         eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
                              this );
@@ -70,7 +70,7 @@ public class WizardActivity extends Activity
     }
 
     @Override
-    public void start(AcceptTabItem acceptTabItem,
+    public void start(AcceptItem acceptTabItem,
                       EventBus eventBus) {
         view.setTitle( wizard.getTitle() );
         view.setPreferredHeight( wizard.getPreferredHeight() );
