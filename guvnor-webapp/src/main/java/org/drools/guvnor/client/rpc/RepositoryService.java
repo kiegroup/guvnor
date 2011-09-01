@@ -76,6 +76,17 @@ public interface RepositoryService
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException;
+    
+    /**
+     * Check whether an asset exists in a package
+     * 
+     * @param assetName
+     * @param packageName
+     * @return True if the asset already exists in the package
+     * @throws SerializationException
+     */
+    public boolean doesAssetExistInPackage(String assetName,
+                                           String packageName) throws SerializationException;
 
     /**
      * Creates a new rule which is imported from global area. Return the UUID of

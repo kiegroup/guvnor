@@ -2413,4 +2413,9 @@ public interface Constants
     String ExecutionHistory();
 
     String ProcessOverview();
+    
+    String UseWizardToBuildAsset();
+    
+    String Finish();
+    
 }

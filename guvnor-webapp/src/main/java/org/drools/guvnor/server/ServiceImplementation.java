@@ -947,5 +947,31 @@ public class ServiceImplementation
     public List<PushResponse> subscribe() {
         return Backchannel.getInstance().subscribe();
     }
+    
+    /**
+     * Check whether an asset exists in a package
+     * 
+     * @param assetName
+     * @param packageName
+     * @return True if the asset already exists in the package
+     * @throws SerializationException
+     */
+    @WebRemote
+    @Restrict("#{identity.loggedIn}")
+    public boolean doesAssetExistInPackage(String assetName,
+                                           String packageName) throws SerializationException {
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
+
+        try {
+
+            PackageItem pkg = getRulesRepository().loadPackage( packageName );
+            return pkg.containsAsset( assetName );
+
+        } catch ( RulesRepositoryException e ) {
+            log.error( "An error occurred checking if asset [" + assetName + "] exists in package [" + packageName + "]: ",
+                       e );
+            throw new SerializationException( e.getMessage() );
+        }
+    }
 
 }

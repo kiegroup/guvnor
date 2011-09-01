@@ -341,4 +341,7 @@ public interface Images
     @Source("images/hierarchicalView.gif")
     ImageResource hierarchicalView();
 
+    @Source("images/tick.png")
+    ImageResource tick();
+
 }
