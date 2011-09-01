@@ -22,13 +22,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesInitializer;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesLoader;
-import org.drools.guvnor.server.util.BeanManagerUtils;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.repository.RulesRepository;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
 
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet
