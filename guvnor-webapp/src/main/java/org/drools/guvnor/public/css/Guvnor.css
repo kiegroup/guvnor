@@ -637,3 +637,46 @@ input,.constraint-value-Editor {
 .icon-bar-item:hover {
     background-color: rgb(180,180,180);
 }
+
+.wizard-side-bar {
+    width: 200px;
+    height: 100%;
+    border-right: 1px solid rgb(200,200,200);
+    padding-right: 5px;
+    margin-left: 2px;
+}
+
+.wizard-side-bar-spacer {
+    width: 5px;
+}
+    
+.wizard-button-bar {
+    width: 100%;
+    background-color: rgb(220,220,220);
+    border-top: 1px solid rgb(200,200,200);
+    border-bottom: 1px solid rgb(200,200,200);
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.wizard-page-title-container {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    width: 100%;
+}
+
+.wizard-page-title-container:HOVER {
+    background-color: #cdcdcd;
+}
+
+.wizard-page-title-image-container {
+    width: 16px;
+    margin-right: 5px;
+}
+
+.wizard-page-title-label-container {
+    width: 170px;
+}

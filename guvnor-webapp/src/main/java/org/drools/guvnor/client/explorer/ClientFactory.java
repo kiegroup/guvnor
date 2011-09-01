@@ -16,19 +16,25 @@
 
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.rpc.AssetServiceAsync;
+import org.drools.guvnor.client.rpc.CategoryServiceAsync;
+import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
+import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.util.ActivityMapper;
+import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
+import org.drools.guvnor.client.widgets.wizards.WizardFactory;
+
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.user.client.Command;
-
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
-import org.drools.guvnor.client.packages.AbstractModuleEditor;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.util.ActivityMapper;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 
 public interface ClientFactory {
 
@@ -63,5 +69,7 @@ public interface ClientFactory {
     ActivityMapper getActivityMapper();
     
     AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand);
-
+    
+    WizardFactory getWizardFactory();
+    
 }

@@ -16,11 +16,14 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
-import org.drools.guvnor.client.explorer.navigation.browse.*;
+import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;
+import org.drools.guvnor.client.explorer.navigation.browse.CategoryPlace;
+import org.drools.guvnor.client.explorer.navigation.browse.InboxActivity;
+import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
+import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
+import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
@@ -33,6 +36,11 @@ import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
+import org.drools.guvnor.client.widgets.wizards.WizardActivity;
+import org.drools.guvnor.client.widgets.wizards.WizardPlace;
+
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
 
 public class GuvnorActivityMapper
         implements
@@ -99,6 +107,11 @@ public class GuvnorActivityMapper
             return new MultiAssetActivity(
                     (MultiAssetPlace) place,
                     clientFactory );
+        } else if ( place instanceof WizardPlace ) {
+            return new WizardActivity(
+                    (WizardPlace<?>) place,
+                    clientFactory, 
+                    eventBus );
         } else {
             return null;
         }

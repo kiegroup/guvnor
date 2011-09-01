@@ -72,29 +72,35 @@ import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.util.Util;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
 
-public class NavigationViewFactoryImpl implements NavigationViewFactory {
+public class NavigationViewFactoryImpl
+    implements
+    NavigationViewFactory {
 
-    private static Constants constants = GWT.create(Constants.class);
-    private static Images images = GWT.create(Images.class);
+    private static Constants                constants = GWT.create( Constants.class );
+    private static Images                   images    = GWT.create( Images.class );
 
-    private final ClientFactory clientFactory;
-    private final EventBus eventBus;
+    private final ClientFactory             clientFactory;
+    private final EventBus                  eventBus;
 
-    private NavigationPanelView navigationPanelView;
-    private ModulesTreeViewImpl modulesTreeView;
-    private BrowseTreeViewImpl browseTreeView;
-    private ModulesTreeItemViewImpl modulesTreeItemView;
-    private PackagesNewAssetMenuViewImpl modulesNewAssetMenuView;
+    private NavigationPanelView             navigationPanelView;
+    private ModulesTreeViewImpl             modulesTreeView;
+    private BrowseTreeViewImpl              browseTreeView;
+    private ModulesTreeItemViewImpl         modulesTreeItemView;
+    private PackagesNewAssetMenuViewImpl    modulesNewAssetMenuView;
     private SOAServicesNewAssetMenuViewImpl servicesNewAssetMenuView;
+    private WizardActivityView              wizardView;
 
-    public NavigationViewFactoryImpl(ClientFactory clientFactory, EventBus eventBus) {
+    public NavigationViewFactoryImpl(ClientFactory clientFactory,
+                                     EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
     }
 
     public NavigationPanelView getNavigationPanelView() {
-        if (navigationPanelView == null) {
+        if ( navigationPanelView == null ) {
             navigationPanelView = new NavigationPanelViewImpl();
         }
         return navigationPanelView;
@@ -105,26 +111,26 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     }
 
     public BrowseTreeView getBrowseTreeView() {
-        if (browseTreeView == null) {
-            browseTreeView = new BrowseTreeViewImpl(clientFactory);
+        if ( browseTreeView == null ) {
+            browseTreeView = new BrowseTreeViewImpl( clientFactory );
         }
         return browseTreeView;
     }
 
     public AdminTreeView getAdminTreeView() {
-        return null;  //TODO: Generated code -Rikkola-
+        return null; //TODO: Generated code -Rikkola-
     }
 
     public DeploymentTreeView getDeploymentTreeView() {
-        return null;  //TODO: Generated code -Rikkola-
+        return null; //TODO: Generated code -Rikkola-
     }
 
     public QATreeView getQATreeView() {
-        return null;  //TODO: Generated code -Rikkola-
+        return null; //TODO: Generated code -Rikkola-
     }
 
     public ModulesTreeView getModulesTreeView() {
-        if (modulesTreeView == null) {
+        if ( modulesTreeView == null ) {
             modulesTreeView = new ModulesTreeViewImpl();
         }
         return modulesTreeView;
@@ -142,10 +148,10 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     public IsWidget getModulesHeaderView(String perspectiveType) {
         String title;
         ImageResource image;
-        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
+        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
             title = "Services";
             image = images.packages();
-        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
+        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
             title = constants.KnowledgeBases();
             image = images.packages();
         } else {
@@ -155,9 +161,9 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
         }
 
         StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader(view);
-        header.setName(title);
-        header.setImageResource(image);
+        StackItemHeader header = new StackItemHeader( view );
+        header.setName( title );
+        header.setImageResource( image );
         return view;
     }
 
@@ -165,10 +171,10 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {
         String title;
         ImageResource image;
-        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
+        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
             title = "Services";
             image = images.packages();
-        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
+        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
             title = constants.Packages();
             image = images.chartOrganisation();
         } else {
@@ -177,11 +183,12 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
             image = images.chartOrganisation();
         }
 
-        return Util.getHeader(image, title);
+        return Util.getHeader( image,
+                               title );
     }
 
     public ModulesTreeItemView getModulesTreeItemView() {
-        if (modulesTreeItemView == null) {
+        if ( modulesTreeItemView == null ) {
             modulesTreeItemView = new ModulesTreeItemViewImpl();
         }
         return modulesTreeItemView;
@@ -189,7 +196,7 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     //TODO: auto generate from configuration - JLIU
     public PackagesNewAssetMenuView getPackagesNewAssetMenuView() {
-        if (modulesNewAssetMenuView == null) {
+        if ( modulesNewAssetMenuView == null ) {
             modulesNewAssetMenuView = new PackagesNewAssetMenuViewImpl();
         }
         return modulesNewAssetMenuView;
@@ -197,7 +204,7 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     //TODO: auto generate from configuration - JLIU
     public SOAServicesNewAssetMenuView getServicesNewAssetMenuView() {
-        if (servicesNewAssetMenuView == null) {
+        if ( servicesNewAssetMenuView == null ) {
             servicesNewAssetMenuView = new SOAServicesNewAssetMenuViewImpl();
         }
         return servicesNewAssetMenuView;
@@ -217,13 +224,16 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
 
     //TODO: get from configuration instead of hard coding. - JLIU
     public Widget getModulesNewAssetMenu(String perspectiveType) {
-        if (SOAPerspective.SOA_PERSPECTIVE.equals(perspectiveType)) {
-            return (new SOAServicesNewAssetMenu(clientFactory, eventBus)).asWidget();
-        } else if (AuthorPerspective.AUTHOR_PERSPECTIVE.equals(perspectiveType)) {
-            return (new PackagesNewAssetMenu(clientFactory, eventBus)).asWidget();
+        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
+            return (new SOAServicesNewAssetMenu( clientFactory,
+                                                 eventBus )).asWidget();
+        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
+            return (new PackagesNewAssetMenu( clientFactory,
+                                              eventBus )).asWidget();
         } else {
             //Default
-            return (new PackagesNewAssetMenu(clientFactory, eventBus)).asWidget();
+            return (new PackagesNewAssetMenu( clientFactory,
+                                              eventBus )).asWidget();
         }
     }
 
@@ -258,4 +268,9 @@ public class NavigationViewFactoryImpl implements NavigationViewFactory {
     public TasksTreeView getTasksTreeView() {
         return new TasksTreeViewImpl();
     }
+
+    public WizardActivityView getWizardView() {
+        return new WizardActivityViewImpl( eventBus );
+    }
+
 }
