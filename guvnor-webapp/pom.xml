@@ -17,6 +17,7 @@
 
   <properties>
     <managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>
+    <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
     <managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>
     <managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home>
   </properties>
@@ -142,14 +143,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <environmentVariables><!-- For managed tomcat -->
-            <CATALINA_HOME>${managed-appserver.tomcat6.home}</CATALINA_HOME>
-          </environmentVariables>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
