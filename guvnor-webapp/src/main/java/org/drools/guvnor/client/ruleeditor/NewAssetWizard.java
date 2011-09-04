@@ -237,24 +237,23 @@ public class NewAssetWizard extends FormStylePopup {
             newAssetLayout.setAttributeVisibility( useWizardRowIndex,
                                                    false );
 
-            //TODO Removed until the Wizard has been completed
-            //            this.formatChooser.addChangeHandler( new ChangeHandler() {
-            //
-            //                public void onChange(ChangeEvent event) {
-            //                    boolean isVisible = false;
-            //                    int selectedIndex = formatChooser.getSelectedIndex();
-            //                    if ( selectedIndex >= 0 ) {
-            //                        String value = formatChooser.getValue( selectedIndex );
-            //                        isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
-            //                    }
-            //                    newAssetLayout.setAttributeVisibility( useWizardRowIndex,
-            //                                                           isVisible );
-            //                    if ( chkUseWizard != null ) {
-            //                        chkUseWizard.setValue( false );
-            //                    }
-            //                }
-            //
-            //            } );
+            this.formatChooser.addChangeHandler( new ChangeHandler() {
+
+                public void onChange(ChangeEvent event) {
+                    boolean isVisible = false;
+                    int selectedIndex = formatChooser.getSelectedIndex();
+                    if ( selectedIndex >= 0 ) {
+                        String value = formatChooser.getValue( selectedIndex );
+                        isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
+                    }
+                    newAssetLayout.setAttributeVisibility( useWizardRowIndex,
+                                                                       isVisible );
+                    if ( chkUseWizard != null ) {
+                        chkUseWizard.setValue( false );
+                    }
+                }
+
+            } );
 
         } else if ( "*".equals( format ) ) { //NON-NLS
             final TextBox fmt = new TextBox();
@@ -393,11 +392,11 @@ public class NewAssetWizard extends FormStylePopup {
 
             public void execute() {
                 NewAssetWizardContext config = new NewAssetWizardContext( assetName,
-                                                                        packageName,
-                                                                        packageUUID,
-                                                                        description,
-                                                                        initialCategory,
-                                                                        format );
+                                                                          packageName,
+                                                                          packageUUID,
+                                                                          description,
+                                                                          initialCategory,
+                                                                          format );
                 clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( config ) );
             }
         };

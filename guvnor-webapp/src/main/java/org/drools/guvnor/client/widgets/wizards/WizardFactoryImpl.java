@@ -42,7 +42,7 @@ public class WizardFactoryImpl
         if ( context instanceof NewAssetWizardContext ) {
             NewAssetWizardContext newAssetContext = (NewAssetWizardContext) context;
             if ( newAssetContext.getFormat().equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
-                return new NewGuidedDecisionTableWizard( clientFactory, eventBus );
+                return new NewGuidedDecisionTableWizard( clientFactory, eventBus, newAssetContext );
             }
         }
         return null;

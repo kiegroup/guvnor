@@ -2418,4 +2418,12 @@ public interface Constants
     
     String Finish();
     
+    String DecisionTableWizardSummary();
+    
+    String DecisionTableWizardFactPatterns();
+    
+    String DecisionTableWizardFactPatternConstraints();
+    
+    String DecisionTableWizardActions();
+
 }
