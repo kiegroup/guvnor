@@ -1376,4 +1376,52 @@ public class GuidedDTDRLPersistenceTest {
 
     }
 
+    @Test
+    public void testDefaultValue() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "$c" );
+        p1.setFactType( "CheeseLover" );
+
+        ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        c.setFactField( "favouriteCheese" );
+        c.setDefaultValue( "cheddar" );
+        c.setOperator( "==" );
+        p1.getConditions().add( c );
+        dt.getConditionPatterns().add( p1 );
+
+        //With provided value
+        String[][] data = new String[][]{
+                new String[]{"1", "desc", "edam"},
+        };
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+
+        String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+
+        assertFalse( drl.indexOf( "$c : CheeseLover( favouriteCheese == \"edam\" )" ) == -1 );
+
+        //Without provided value #1
+        data = new String[][]{
+               new String[]{"1", "desc", null},
+        };
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+
+        drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+
+        assertTrue( drl.indexOf( "$c : CheeseLover( favouriteCheese == \"cheddar\" )" ) == -1 );
+
+        //Without provided value #2
+        data = new String[][]{
+               new String[]{"1", "desc", ""},
+        };
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+
+        drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
+
+        assertTrue( drl.indexOf( "$c : CheeseLover( favouriteCheese == \"cheddar\" )" ) == -1 );
+
+    }
+    
 }

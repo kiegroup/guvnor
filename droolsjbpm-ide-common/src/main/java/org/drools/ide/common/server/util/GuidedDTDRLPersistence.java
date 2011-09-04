@@ -229,10 +229,6 @@ public class GuidedDTDRLPersistence {
                 //Otherwise values are automatically valid as they're constructed from the other rules
                 if ( !isOtherwise ) {
                     isValid = validCell( cell );
-                    if ( !isValid ) {
-                        cell = c.getDefaultValue();
-                        isValid = validCell( cell );
-                    }
                 }
 
                 //Empty cells are valid if operator is "== null" or "!= null"
