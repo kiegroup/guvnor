@@ -34,10 +34,11 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 @RunWith(Arquillian.class)
-public class WebappPrototypeArqTest {
+public abstract class AbstractWebappPrototypeArqTest {
 
     @Deployment
     public static WebArchive createDeployment() {
+        // TODO FIXME do not hardcode the version number
         return ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
                 .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
                 .as(WebArchive.class);
@@ -59,19 +60,5 @@ public class WebappPrototypeArqTest {
 //        return webArchive;
 //        // TODO use loadMetadataFromPom instead
 //    }
-
-
-    @Inject
-    private RulesRepository repository;
-
-    @Test
-    public void theRepoIsNotNull() {
-        assertNotNull(repository);
-    }
-
-    @Test
-    public void theRepoIsNotNull2() {
-        assertNotNull(repository);
-    }
 
 }
