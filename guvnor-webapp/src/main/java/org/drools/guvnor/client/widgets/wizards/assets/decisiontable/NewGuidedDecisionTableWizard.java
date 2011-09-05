@@ -111,12 +111,11 @@ public class NewGuidedDecisionTableWizard
                 vp.add( new Label( title ) );
                 vp.add( new Label( "Page = " + pageNumber ) );
                 CheckBox chkIsComplete = new CheckBox( "Is page complete?" );
-                final WizardPage page = this;
                 chkIsComplete.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
 
                     public void onValueChange(ValueChangeEvent<Boolean> event) {
                         isComplete = event.getValue();
-                        WizardPageStatusChangeEvent statusChangeEvent = new WizardPageStatusChangeEvent( page );
+                        WizardPageStatusChangeEvent statusChangeEvent = new WizardPageStatusChangeEvent( NewGuidedDecisionTableWizardPage.this );
                         eventBus.fireEvent( statusChangeEvent );
                     }
 
