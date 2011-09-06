@@ -28,15 +28,19 @@ public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
     private final EventBus eventBus;
+    private final ClientFactory clientFactory;
 
     public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
         this.eventBus = eventBus;
+        this.clientFactory = clientFactory;
         this.view = clientFactory.getPerspectivesPanelView();
         this.view.setPresenter(this);
         setPerspective(new AuthorPerspective());
-        view.addAuthorPerspective();
-        view.addRunTimePerspective();
-        view.addSOAPerspective();
+        String[] registeredPerspectiveTypes = clientFactory.getPerspectiveFactory().getRegisteredPerspectiveTypes();
+        for(String perspectiveType : registeredPerspectiveTypes) {
+            //TODO: Get perspective title from PerspectiveFactory
+            view.addPerspective(perspectiveType, perspectiveType);
+        }
     }
 
     private void setPerspective(Perspective perspective) {
@@ -50,19 +54,11 @@ public class PerspectivesPanel implements Presenter {
     public void setUserName(String userName) {
         view.setUserName(userName);
     }
-
-    public void onChangePerspectiveToAuthor() {
-        setPerspective(new AuthorPerspective());
+    
+    public void onChangePerspective(String perspectiveType) {
+        setPerspective(clientFactory.getPerspectiveFactory().getPerspective(perspectiveType));        
     }
-
-    public void onChangePerspectiveToRunTime() {
-        setPerspective(new RunTimePerspective());
-    }
-
-    public void onChangePerspectiveToSOA() {
-        setPerspective(new SOAPerspective());
-    }
-
+    
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
     }

@@ -25,14 +25,11 @@ import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
@@ -68,7 +65,8 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
     private Command                              deleteSelectedAssetCommand;
 
     // Other stuff
-    private static final int                     PAGE_SIZE = 10;
+    private static final int                     PAGE_SIZE = 10;    
+    private final ClientFactory clientFactory;
 
     public AdminArchivedPagedTable(Command restoreSelectedAssetCommand,
                                    Command deleteSelectedAssetCommand,
@@ -77,6 +75,7 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
                 clientFactory);
         this.restoreSelectedAssetCommand = restoreSelectedAssetCommand;
         this.deleteSelectedAssetCommand = deleteSelectedAssetCommand;
+        this.clientFactory = clientFactory;
         setDataProvider( new AsyncDataProvider<AdminArchivedPageRow>() {
             protected void onRangeChanged(HasData<AdminArchivedPageRow> display) {
                 PageRequest request = new PageRequest( pager.getPageStart(),
@@ -102,8 +101,8 @@ public class AdminArchivedPagedTable extends AbstractAssetPagedTable<AdminArchiv
         Column<AdminArchivedPageRow, RuleFormatImageResource> formatColumn = new Column<AdminArchivedPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(AdminArchivedPageRow row) {
-        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
-                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
+                return new RuleFormatImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

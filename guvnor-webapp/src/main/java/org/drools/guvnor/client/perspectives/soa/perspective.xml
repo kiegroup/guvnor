@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <perspective>
+  <!--  name>soaservice</name>
+  <class>org.drools.guvnor.client.perspectives.soa.SOAPerspective</class>
+  <title>constants.AuthorPerspective()</title-->
+  
   <NavigationPanelHeader>
     <icon>images.chartOrganisation()</icon>
     <title>constants.Services()</title>
   </NavigationPanelHeader>
-
 
   <ModuleTreeHeader>
     <icon>images.chartOrganisation()</icon>
@@ -19,83 +22,8 @@
     <moduleeditor>
       <class>org.drools.guvnor.client.packages.SOAServiceEditor</class>
       <format>soaservice</format>
+      <asseteditorformats>properties,xml,,</asseteditorformats>
     </moduleeditor>
   </moduleeditors>
 
-  <asseteditors>
-    <!-- If two or more asset editors (that are associated with different 
-      formats) have same titles, they will be grouped together and displayed as 
-      one node on the package tree. -->
-
-    <!-- bpel editor group -->
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class>
-      <format>rf</format>
-      <icon>images.ruleflowSmall()</icon>
-      <title>constants.RuleFlows()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor
-      </class>
-      <format>bpmn</format>
-      <icon>images.ruleflowSmall()</icon>
-      <title>constants.RuleFlows()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor
-      </class>
-      <format>bpmn2</format>
-      <icon>images.ruleflowSmall()</icon>
-      <title>constants.RuleFlows()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.BPELWrapper</class>
-      <format>bpel.jar</format>
-      <icon>images.ruleflowSmall()</icon>
-      <title>constants.RuleFlows()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class>
-      <format>rf</format>
-      <icon>images.ruleflowSmall()</icon>
-      <title>constants.RuleFlows()</title>
-    </asseteditor>
-    <!-- end of bpel editor group -->
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget
-      </class>
-      <format>properties</format>
-      <icon>images.newFile()</icon>
-      <title>constants.XMLProperties()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.XmlFileWidget</class>
-      <format>xml</format>
-      <icon>images.newFile()</icon>
-      <title>constants.XMLProperties()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.PropertiesWidget
-      </class>
-      <format></format>
-      <icon>images.newFile()</icon>
-      <title>constants.OtherAssetsDocumentation()</title>
-    </asseteditor>
-
-    <asseteditor>
-      <class>org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor
-      </class>
-      <format>springContext</format>
-      <icon>images.enumeration()</icon>
-      <title>constants.SpringContext()</title>
-    </asseteditor>
-
-  </asseteditors>
 </perspective>  

@@ -25,7 +25,6 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Widget;
 
 public interface AssetEditorFactory {
-    public String[] getRegisteredAssetEditorFormats();
     /**
      * This will return the asset editor icon image.
      */

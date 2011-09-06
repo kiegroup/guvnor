@@ -21,7 +21,6 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.IsTreeItem;
-import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
@@ -30,6 +29,7 @@ import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseView.Presenter;
 import org.drools.guvnor.client.packages.RefreshModuleListEvent;
 import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
@@ -91,13 +91,13 @@ public class ModulesTreeItemTest {
                                                                             moduleTreeItemView
                 );
 
-        AssetEditorFactory assetEditorFactory = mock( AssetEditorFactory.class );
+        PerspectiveFactory perspectiveFactory = mock( PerspectiveFactory.class );
         when(
-                clientFactory.getAssetEditorFactory() ).thenReturn(
-                                                                    assetEditorFactory
+                clientFactory.getPerspectiveFactory() ).thenReturn(
+                        perspectiveFactory
                 );
         when(
-                assetEditorFactory.getRegisteredAssetEditorFormats() ).thenReturn(
+                perspectiveFactory.getRegisteredAssetEditorFormats("package") ).thenReturn(
                                                                                    new String[0]
                 );
 

@@ -17,12 +17,12 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -39,11 +39,13 @@ import java.util.Date;
 public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> implements IsInboxPagedTable {
 
     private static final int PAGE_SIZE = 10;
+    private final ClientFactory clientFactory;
 
     public InboxPagedTable( final String inboxName,
                             ClientFactory clientFactory ) {
         super( PAGE_SIZE,
                 clientFactory);
+        this.clientFactory = clientFactory;
 
         setDataProvider( new AsyncDataProvider<InboxPageRow>() {
             protected void onRangeChanged( HasData<InboxPageRow> display ) {
@@ -71,8 +73,8 @@ public class InboxPagedTable extends AbstractAssetPagedTable<InboxPageRow> imple
         Column<InboxPageRow, RuleFormatImageResource> formatColumn = new Column<InboxPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue( InboxPageRow row ) {
-                AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
-                return new RuleFormatImageResource( row.getFormat(), assetEditorFactory.getAssetEditorIcon( row.getFormat() ) );
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
+                return new RuleFormatImageResource( row.getFormat(), factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,

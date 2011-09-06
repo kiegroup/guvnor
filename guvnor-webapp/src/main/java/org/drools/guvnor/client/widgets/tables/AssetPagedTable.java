@@ -17,12 +17,12 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
+
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -41,7 +41,8 @@ import java.util.List;
 public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 
     private static final int PAGE_SIZE = 10;
-
+    private ClientFactory clientFactory;
+    
     public AssetPagedTable( String packageUuid,
                             List<String> formatInList,
                             Boolean formatIsRegistered,
@@ -61,6 +62,8 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
         super( PAGE_SIZE,
                 feedURL,
                 clientFactory );
+        this.clientFactory = clientFactory;
+        
         setDataProvider( new AsyncDataProvider<AssetPageRow>() {
             protected void onRangeChanged( HasData<AssetPageRow> display ) {
                 AssetPageRequest request = new AssetPageRequest( packageUuid,
@@ -89,9 +92,9 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
         Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue( AssetPageRow row ) {
-                AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
                 return new RuleFormatImageResource( row.getFormat(),
-                        assetEditorFactory.getAssetEditorIcon( row.getFormat() ) );
+                        factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,

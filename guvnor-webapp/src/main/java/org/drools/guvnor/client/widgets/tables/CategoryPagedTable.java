@@ -28,7 +28,6 @@ import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -42,7 +41,7 @@ import com.google.gwt.view.client.HasData;
 public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow> {
 
     private static final int PAGE_SIZE = 10;
-
+    private final ClientFactory clientFactory;
     /**
      * Constructor
      * 
@@ -55,6 +54,8 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
         super( PAGE_SIZE,
                feedURL,
                 clientFactory);
+        this.clientFactory = clientFactory;
+        
         setDataProvider( new AsyncDataProvider<CategoryPageRow>() {
             protected void onRangeChanged(HasData<CategoryPageRow> display) {
                 CategoryPageRequest request = new CategoryPageRequest();
@@ -81,8 +82,8 @@ public class CategoryPagedTable extends AbstractAssetPagedTable<CategoryPageRow>
         Column<CategoryPageRow, RuleFormatImageResource> formatColumn = new Column<CategoryPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(CategoryPageRow row) {
-        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
-                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
+                return new RuleFormatImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

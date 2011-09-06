@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <perspective>
-  <!--  name>author</name>
+  <name>author</name>
   <class>org.drools.guvnor.client.perspectives.author.AuthorPerspective</class>
-  <title>constants.AuthorPerspective()</title-->
-
+  <title>constants.AuthorPerspective()</title>
+  
   <NavigationPanelHeader>
     <icon>images.chartOrganisation()</icon>
     <title>constants.Services()</title>
@@ -23,7 +23,12 @@
     <moduleeditor>
       <class>org.drools.guvnor.client.packages.PackageEditor</class>
       <format>package</format>
-      <asseteditorformats>brl,dslr,xls,gdst,template,drl,function,dsl,jar,model.drl,rf,bpmn,bpmn2,bpel.jar,rf,enumeration,scenario,properties,xml,,workingset,springContext,wid</asseteditorformats>
+      <asseteditorformats>brl,dslr,xls</asseteditorformats>
+    </moduleeditor>
+    <moduleeditor>
+      <class>org.drools.guvnor.client.packages.SOAServiceEditor</class>
+      <format>soaservice</format>
+      <asseteditorformats>brl</asseteditorformats>
     </moduleeditor>
   </moduleeditors>
 

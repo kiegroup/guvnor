@@ -27,40 +27,50 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssetEditorConfigurationParser {
+public class PerspectiveConfigurationParser {
     private static final Logger log = LoggerFactory.getLogger(AssetEditorConfigurationParser.class);
-    private static final String ASSETEDITOR_CONFIG = "/asseteditors.xml";
-    static final String ASSET_EDITOR = "asseteditor";
+    private static final String PERSPECTIVE_CONFIG = "/perspective.xml";
+    static final String MODULE_EDITOR = "moduleeditor";
+    static final String MODULE_EDITORS = "moduleeditors";
     static final String TITLE = "title";
     static final String CLASS = "class";
     static final String ICON = "icon";
     static final String FORMAT = "format";
+    
+    private InputStream in;
 
-    private List<AssetEditorConfiguration> assetEditors;
-
-    public List<AssetEditorConfiguration> getAssetEditors() {
-        if (this.assetEditors == null) {
-            this.assetEditors = readConfig();
+    private List<ModuleEditorConfiguration> moduleEditors;
+    
+    public PerspectiveConfigurationParser() {
+        this.in = getClass().getResourceAsStream(PERSPECTIVE_CONFIG);       
+    }
+    
+    public PerspectiveConfigurationParser(InputStream in) {
+        this.in = in;
+    }
+    
+    public List<ModuleEditorConfiguration> getModuleEditors() {
+        if (this.moduleEditors == null) {
+            this.moduleEditors = readConfig(in);
         }
-        return this.assetEditors;
+        return this.moduleEditors;
     }
 
-    private List<AssetEditorConfiguration> readConfig() {
-        List<AssetEditorConfiguration> assetEditors = new ArrayList<AssetEditorConfiguration>();
+    private List<ModuleEditorConfiguration> readConfig(InputStream in ) {
+        List<ModuleEditorConfiguration> moduleEditors = new ArrayList<ModuleEditorConfiguration>();
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = getClass().getResourceAsStream(ASSETEDITOR_CONFIG);
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
-            AssetEditorConfiguration configuration = null;
+            ModuleEditorConfiguration configuration = null;
 
             while (eventReader.hasNext()) {
                 XMLEvent event = eventReader.nextEvent();
 
                 if (event.isStartElement()) {
-                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName(event.asStartElement().getName().getLocalPart());
+                    final PerspectiveConfigurationElement element = PerspectiveConfigurationElement.forName(event.asStartElement().getName().getLocalPart());
                     switch (element) {
-                        case ASSET_EDITOR: {
-                            configuration = new AssetEditorConfiguration();
+                        case MODULE_EDITOR: {
+                            configuration = new ModuleEditorConfiguration();
                             break;
                         }
                         case FORMAT: {
@@ -72,25 +82,6 @@ public class AssetEditorConfigurationParser {
                             }
                             break;
                         }
-                        case TITLE: {
-                            event = eventReader.nextEvent();
-                            if (event.isCharacters()) {
-                                configuration.setTitle(event.asCharacters().getData());
-                            } else if (event.isEndElement()) {
-                                configuration.setTitle("");
-                            }
-
-                            break;
-                        }
-                        case ICON: {
-                            event = eventReader.nextEvent();
-                            if (event.isCharacters()) {
-                                configuration.setIcon(event.asCharacters().getData());
-                            } else if (event.isEndElement()) {
-                                configuration.setIcon("");
-                            }
-                            break;
-                        }
                         case CLASS: {
                             event = eventReader.nextEvent();
                             if (event.isCharacters()) {
@@ -99,14 +90,24 @@ public class AssetEditorConfigurationParser {
                                 configuration.setEditorClass("");
                             }
                             break;
+                        } 
+                        case ASSETEDITORFORMATS: {
+                            event = eventReader.nextEvent();
+                            if (event.isCharacters()) {
+                                configuration.setAssetEditorFormats(event.asCharacters().getData());
+                            } else if (event.isEndElement()) {
+                                configuration.setAssetEditorFormats("");
+                            }
+
+                            break;
                         }
                     }
                 }
                 if (event.isEndElement()) {
-                    final AssetEditorConfigElement element = AssetEditorConfigElement.forName(event
+                    final PerspectiveConfigurationElement element = PerspectiveConfigurationElement.forName(event
                             .asEndElement().getName().getLocalPart());
-                    if (element == AssetEditorConfigElement.ASSET_EDITOR) {
-                        assetEditors.add(configuration);
+                    if (element == PerspectiveConfigurationElement.MODULE_EDITOR) {
+                        moduleEditors.add(configuration);
                     }
                 }
 
@@ -116,11 +117,11 @@ public class AssetEditorConfigurationParser {
                     e);
             e.printStackTrace();
         }
-        return assetEditors;
+        return moduleEditors;
     }
 
     public static void main(String[] agrs) {
-        AssetEditorConfigurationParser a = new AssetEditorConfigurationParser();
-        a.readConfig();
+        PerspectiveConfigurationParser a = new PerspectiveConfigurationParser();
+        //a.readConfig();
     }
 }
