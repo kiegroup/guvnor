@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.client.widgets.wizards;
 
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.IsWidget;
 
 /**
  * A page for a Wizard
  */
-public interface WizardPage {
+public interface WizardPage extends IsWidget {
 
     /**
      * Page title
@@ -30,17 +30,20 @@ public interface WizardPage {
     String getTitle();
 
     /**
-     * Widget containing the page
-     * 
-     * @return
-     */
-    Widget getContent();
-
-    /**
      * Is the page completed
      * 
      * @return
      */
     boolean isComplete();
+    
+    /**
+     * Initialise the page
+     */
+    void initialise();
+    
+    /**
+     * Prepare the page before it is displayed
+     */
+    void prepareView();
 
 }

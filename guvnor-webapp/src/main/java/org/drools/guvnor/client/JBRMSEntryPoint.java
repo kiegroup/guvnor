@@ -16,6 +16,20 @@
 
 package org.drools.guvnor.client;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.configurations.ConfigurationsLoader;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ClientFactoryImpl;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.GuvnorResources;
+import org.drools.guvnor.client.resources.OperatorsResource;
+import org.drools.guvnor.client.resources.RoundedCornersResource;
+import org.drools.guvnor.client.resources.WizardCellListResources;
+import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.UserSecurityContext;
+import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
+
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -27,17 +41,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.configurations.ConfigurationsLoader;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ClientFactoryImpl;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.GuvnorResources;
-import org.drools.guvnor.client.resources.OperatorsResource;
-import org.drools.guvnor.client.resources.RoundedCornersResource;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
 
 /**
  * This is the main launching/entry point for the JBRMS web console. It
@@ -64,6 +67,8 @@ public class JBRMSEntryPoint
         GuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
+        WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
+        WizardResources.INSTANCE.style().ensureInjected();
     }
 
     /**

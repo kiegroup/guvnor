@@ -23,11 +23,13 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import org.drools.guvnor.client.explorer.perspectives.AuthorPerspective;
-import org.drools.guvnor.client.explorer.perspectives.ChangePerspectiveEvent;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanel;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
-import org.drools.guvnor.client.explorer.perspectives.RunTimePerspective;
+
+import org.drools.guvnor.client.perspectives.ChangePerspectiveEvent;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
+import org.drools.guvnor.client.perspectives.PerspectivesPanel;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
+import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -53,6 +55,34 @@ public class PerspectivesPanelTest {
                 view
         );
 
+        PerspectiveFactory perspectiveFactory = mock(PerspectiveFactory.class);
+        when(
+                clientFactory.getPerspectiveFactory()
+        ).thenReturn(
+                perspectiveFactory
+        );
+        
+        when(
+                perspectiveFactory.getPerspective("author")
+        ).thenReturn(
+                new AuthorPerspective()
+                
+        );
+        
+        when(
+                perspectiveFactory.getPerspective("runtime")
+        ).thenReturn(
+                new RunTimePerspective()
+                
+        );        
+        
+        when(
+                perspectiveFactory.getRegisteredPerspectiveTypes()
+        ).thenReturn(
+                new String[]{"author", "runtime"}
+                
+        );
+        
         perspectivesPanel = new PerspectivesPanel(clientFactory, eventBus);
         presenter = getPresenter();
     }
@@ -73,13 +103,13 @@ public class PerspectivesPanelTest {
 
     @Test
     public void testPerspectiveListIsLoaded() throws Exception {
-        verify(view).addAuthorPerspective();
-        verify(view).addRunTimePerspective();
+       verify(view).addPerspective("author", "author");
+       verify(view).addPerspective("runtime", "runtime");
     }
 
     @Test
     public void testChangePerspectiveToAuthor() throws Exception {
-        presenter.onChangePerspectiveToAuthor();
+        presenter.onChangePerspective("author");
 
         // Once because of the default and once more because of the selection
         verifyPerspectiveChangedToAuthor(2);
@@ -88,7 +118,7 @@ public class PerspectivesPanelTest {
     @Test
     public void testChangePerspectiveToRunTime() throws Exception {
 
-        presenter.onChangePerspectiveToRunTime();
+        presenter.onChangePerspective("runtime");
 
         assertTrue(eventBus.getLatestEvent() instanceof ChangePerspectiveEvent);
         assertTrue(((ChangePerspectiveEvent) eventBus.getLatestEvent()).getPerspective() instanceof RunTimePerspective);

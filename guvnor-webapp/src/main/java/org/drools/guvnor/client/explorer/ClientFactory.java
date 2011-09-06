@@ -18,14 +18,10 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.packages.AbstractModuleEditor;
-import org.drools.guvnor.client.rpc.AssetServiceAsync;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.PackageServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
@@ -59,7 +55,9 @@ public interface ClientFactory {
     PackageServiceAsync getPackageService();
 
     AssetEditorFactory getAssetEditorFactory();
-
+    
+    PerspectiveFactory getPerspectiveFactory();
+    
     RepositoryServiceAsync getRepositoryService();
 
     CategoryServiceAsync getCategoryService();

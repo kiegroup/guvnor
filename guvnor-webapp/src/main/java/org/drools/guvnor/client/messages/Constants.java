@@ -2422,4 +2422,23 @@ public interface Constants
     
     String Finish();
     
+    String Binding();
+    
+    String DecisionTableWizardSummary();
+    
+    String DecisionTableWizardFactPatterns();
+    
+    String DecisionTableWizardFactPatternConstraints();
+    
+    String DecisionTableWizardActions();
+
+    String DecisionTableWizardNoAvailablePatterns();
+
+    String DecisionTableWizardNoChosenPatterns();
+
+    String DecisionTableWizardAvailableTypes();
+
+    String DecisionTableWizardChosenTypes();
+
+    String DecisionTableWizardDuplicateBindings();
 }

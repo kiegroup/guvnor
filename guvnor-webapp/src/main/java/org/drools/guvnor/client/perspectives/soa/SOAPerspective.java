@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives.soa;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,24 +24,19 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeBuilder;
-import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeBuilder;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeBuilder;
-import org.drools.guvnor.client.explorer.navigation.qa.QATreeBuilder;
+import org.drools.guvnor.client.perspectives.Perspective;
 
-public class AuthorPerspective extends Perspective {
-    public final static String AUTHOR_PERSPECTIVE = "AuthorPerspective";
-    
+public class SOAPerspective extends Perspective {
+    public final static String SOA_PERSPECTIVE = "SoaPerspective";
+
     public Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus) {
 
         Collection<NavigationItemBuilder> navigationItemBuilders = new ArrayList<NavigationItemBuilder>();
 
         navigationItemBuilders.add(new BrowseTreeBuilder(clientFactory, eventBus));
 
-        navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, AUTHOR_PERSPECTIVE));
-
-        navigationItemBuilders.add(new QATreeBuilder(clientFactory));
-
-        navigationItemBuilders.add(new DeploymentTreeBuilder(clientFactory));
+        navigationItemBuilders.add(new ModulesTreeBuilder(clientFactory, eventBus, SOA_PERSPECTIVE));
 
         navigationItemBuilders.add(new AdminTreeBuilder(clientFactory));
 

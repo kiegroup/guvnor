@@ -53,6 +53,7 @@ import org.jbpm.workflow.core.node.Split;
 import org.jbpm.workflow.core.node.StartNode;
 
 import com.google.gwt.user.client.rpc.SerializationException;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 /**
  * A servlet opening an API into the Guvnor services.
@@ -87,8 +88,7 @@ public class GuvnorAPIServlet extends HttpServlet {
                         content = asset.getContent().toString();
                     }
                     try {
-                        // TODO fix for non-localhost <---- Can someone please describe what is problem so it can be fixed? 
-                        content = deserialize( "http://localhost:8080/designer/bpmn2_0deserialization",
+                        content = deserialize( getDesignerURL()+"/bpmn2_0deserialization",
                                                content );
                     } catch ( IOException e ) {
                         log.error( e.getMessage(),
@@ -212,7 +212,7 @@ public class GuvnorAPIServlet extends HttpServlet {
 
     public static Map<String, String[]> extract(String json) throws Exception {
         Map<String, String[]> result = null;
-        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization",
+        String xml = BPMN2ProcessHandler.serialize( getDesignerURL()+"/bpmn2_0serialization",
                                                     json );
         Reader isr = new StringReader( xml );
         SemanticModules semanticModules = new SemanticModules();
@@ -248,7 +248,7 @@ public class GuvnorAPIServlet extends HttpServlet {
 
     public static String inject(String json,
                                 Map<String, String> constraints) throws Exception {
-        String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/bpmn2_0serialization",
+        String xml = BPMN2ProcessHandler.serialize( getDesignerURL()+"/bpmn2_0serialization",
                                                     json );
         Reader isr = new StringReader( xml );
         SemanticModules semanticModules = new SemanticModules();
@@ -282,7 +282,7 @@ public class GuvnorAPIServlet extends HttpServlet {
             }
             String newXml = XmlBPMNProcessDumper.INSTANCE.dump( process );
             System.out.println( newXml );
-            return deserialize( "http://localhost:8080/designer/bpmn2_0deserialization",
+            return deserialize( getDesignerURL()+"/bpmn2_0deserialization",
                                 newXml );
         }
     }
@@ -295,4 +295,7 @@ public class GuvnorAPIServlet extends HttpServlet {
         return cl;
     }
 
+    private static String getDesignerURL(){
+        return System.getProperty(ApplicationPreferences.DESIGNER_URL)+"/"+System.getProperty(ApplicationPreferences.DESIGNER_CONTEXT);
+    } 
 }

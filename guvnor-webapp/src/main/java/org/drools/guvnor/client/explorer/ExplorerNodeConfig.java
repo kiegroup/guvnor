@@ -16,12 +16,8 @@
 
 package org.drools.guvnor.client.explorer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.configurations.Capability;
@@ -67,59 +63,6 @@ public class ExplorerNodeConfig {
 
     // Package snapshot
     public static final String PACKAGE_SNAPSHOTS = "packageSnapshots";
-
-    public static TreeItem getPackageItemStructure( String moduleName ) {
-        TreeItem moduleTreeItem = new TreeItem( Util.getHeader( images.packages(),
-                moduleName ) );
-        fillModuleItemStructure( moduleTreeItem );
-
-        return moduleTreeItem;
-    }
-
-    public static void fillModuleItemStructure( TreeItem moduleTreeItem ) {
-        //If two or more asset editors (that are associated with different formats) have same titles,
-        //we group them together and display them as one node on the package tree.
-        AssetEditorFactory factory = GWT.create( AssetEditorFactory.class );
-        String[] registeredFormats = factory.getRegisteredAssetEditorFormats();
-
-        //Use list to preserve the order of asset editors defined in configuration.
-        List<List<String>> formatListGroupedByTitles = new ArrayList<List<String>>();
-        for (String format : registeredFormats) {
-            boolean found = false;
-            for (List<String> formatListWithSameTile : formatListGroupedByTitles) {
-                for (String addedFormat : formatListWithSameTile) {
-                    //If two formats has same tile, group them together
-                    if ( factory.getAssetEditorTitle( addedFormat ).equals( factory.getAssetEditorTitle( format ) ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( found ) {
-                    formatListWithSameTile.add( format );
-                    break;
-                }
-            }
-            if ( !found ) {
-                List<String> formatListWithSameTile = new ArrayList<String>();
-                formatListWithSameTile.add( format );
-                formatListGroupedByTitles.add( formatListWithSameTile );
-            }
-        }
-
-        for (List<String> formatList : formatListGroupedByTitles) {
-            TreeItem item = new TreeItem( Util.getHeader(
-                    factory.getAssetEditorIcon( formatList.get( 0 ) ),
-                    factory.getAssetEditorTitle( formatList.get( 0 ) ) ) );
-            if ( formatList.size() == 1 && "".equals( formatList.get( 0 ) ) ) {
-                item.setUserObject( new String[0] );
-            } else {
-                String[] formats = new String[formatList.size()];
-                formats = formatList.toArray( formats );
-                item.setUserObject( formats );
-            }
-            moduleTreeItem.addItem( item );
-        }
-    }
 
     public static void setupDeploymentTree( Tree tree, Map<TreeItem, String> itemWidgets ) {
         TreeItem root = tree.addItem( Util.getHeader( images.chartOrganisation(), constants.PackageSnapshots() ) );

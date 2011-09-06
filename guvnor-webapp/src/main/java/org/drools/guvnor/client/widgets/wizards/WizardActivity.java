@@ -58,9 +58,13 @@ public class WizardActivity extends Activity
     public void onStatusChange(WizardPageStatusChangeEvent event) {
         WizardPage page = event.getSource();
         int index = wizard.getPages().indexOf( page );
-        view.setPageCompletionState( index,
-                                     page.isComplete() );
-        view.setCompletionStatus( wizard.isComplete() );
+
+        //The event might not have been raised by a page belonging to this Wizard instance
+        if ( index >= 0 ) {
+            view.setPageCompletionState( index,
+                                         page.isComplete() );
+            view.setCompletionStatus( wizard.isComplete() );
+        }
     }
 
     public void onPageSelected(WizardPageSelectedEvent event) {

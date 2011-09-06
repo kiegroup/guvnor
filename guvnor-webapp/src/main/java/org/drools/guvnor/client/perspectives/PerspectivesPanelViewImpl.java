@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -99,21 +99,9 @@ public class PerspectivesPanelViewImpl extends Composite
         this.userName.setInnerText(userName);
     }
 
-    public void addAuthorPerspective() {
-        perspectives.addItem(constants.AuthorPerspective(),
-                constants.AuthorPerspective());
+    public void addPerspective(String item, String value) {
+        perspectives.addItem(item, value);
     }
-
-    public void addRunTimePerspective() {
-        perspectives.addItem(constants.RunTimePerspective(),
-                constants.RunTimePerspective());
-    }
-
-    public void addSOAPerspective() {
-        perspectives.addItem(constants.SOAPerspective(),
-                constants.SOAPerspective());
-    }
-
     public TabbedPanel getTabbedPanel() {
         return explorerCenterPanel;
     }
@@ -124,13 +112,7 @@ public class PerspectivesPanelViewImpl extends Composite
 
     @UiHandler("perspectives")
     public void handleChange(ChangeEvent event) {
-        if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.AuthorPerspective())) {
-            presenter.onChangePerspectiveToAuthor();
-        } else if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.RunTimePerspective())) {
-            presenter.onChangePerspectiveToRunTime();
-        } else if (perspectives.getValue(perspectives.getSelectedIndex()).equals(constants.SOAPerspective())) {
-            presenter.onChangePerspectiveToSOA();
-        }
+        presenter.onChangePerspective(perspectives.getValue(perspectives.getSelectedIndex()));
     }
 
     public static class TitlePanelHeight {

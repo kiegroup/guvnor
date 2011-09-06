@@ -324,7 +324,7 @@ public class ActionInsertColumn extends FormStylePopup {
         pop.addAttribute( constants.FactType(),
                           types );
         final TextBox binding = new TextBox();
-        pop.addAttribute( constants.name(),
+        pop.addAttribute( constants.Binding(),
                           binding );
 
         Button ok = new Button( constants.OK() );

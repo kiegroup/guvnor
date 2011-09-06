@@ -14,31 +14,15 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.drools.guvnor.client.util.TabbedPanel;
+import java.util.Collection;
 
-public interface PerspectivesPanelView extends IsWidget {
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilder;
 
-    interface Presenter {
+public abstract class Perspective {
 
-        void onChangePerspectiveToAuthor();
-
-        void onChangePerspectiveToRunTime();
-        
-        void onChangePerspectiveToSOA();
-    }
-
-    void setPresenter(Presenter presenter);
-
-    void setUserName(String userName);
-
-    void addAuthorPerspective();
-
-    void addRunTimePerspective();
-    
-    void addSOAPerspective();
-    
-    TabbedPanel getTabbedPanel();
+    public abstract Collection<NavigationItemBuilder> getBuilders(ClientFactory clientFactory, EventBus eventBus);
 }

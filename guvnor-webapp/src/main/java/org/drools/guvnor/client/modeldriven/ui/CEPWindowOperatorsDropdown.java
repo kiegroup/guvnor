@@ -22,7 +22,6 @@ import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.resources.OperatorsCss;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.shared.SharedConstants;
 
@@ -52,26 +51,31 @@ public class CEPWindowOperatorsDropdown extends Composite
     private static final OperatorsResource resources                        = GWT.create( OperatorsResource.class );
     private static final OperatorsCss      css                              = resources.operatorsCss();
 
-    private List<String>                   operators;
+    private List<String>                   operators                        = SuggestionCompletionEngine.getCEPWindowOperators();
     private ListBox                        box;
-    private HorizontalPanel                container                        = new HorizontalPanel();
+    private HorizontalPanel                parametersContainer              = new HorizontalPanel();
+    private HorizontalPanel                windowContainer                  = new HorizontalPanel();
 
     protected HasCEPWindow                 hcw;
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPWindowOperatorParameterDRLBuilder";
 
-    public CEPWindowOperatorsDropdown(List<String> operators,
-                                      HasCEPWindow hcw) {
+    public CEPWindowOperatorsDropdown() {
+        windowContainer.setStylePrimaryName( css.container() );
+        initWidget( windowContainer );
+    }
+
+    public CEPWindowOperatorsDropdown(HasCEPWindow hcw) {
+        this();
+        setCEPWindow( hcw );
+    }
+
+    public void setCEPWindow(HasCEPWindow hcw) {
         this.hcw = hcw;
-        this.operators = operators;
-
-        HorizontalPanel hp = new HorizontalPanel();
-        hp.setStylePrimaryName( css.container() );
-        hp.add( getDropDown() );
-        hp.add( getOperatorExtension() );
-
-        initWidget( hp );
+        windowContainer.clear();
+        windowContainer.add( getDropDown() );
+        windowContainer.add( getOperatorExtension() );
     }
 
     /**
@@ -95,13 +99,13 @@ public class CEPWindowOperatorsDropdown extends Composite
 
     //Additional widget for CEP Window operator parameter
     private Widget getOperatorExtension() {
-        container.setStylePrimaryName( css.container() );
-        return container;
+        parametersContainer.setStylePrimaryName( css.container() );
+        return parametersContainer;
     }
 
     //Hide\display the additional CEP widget is appropriate
     private void operatorChanged(OperatorSelection selection) {
-        container.clear();
+        parametersContainer.clear();
         String operator = selection.getValue();
 
         if ( SuggestionCompletionEngine.isCEPWindowOperatorTime( operator ) ) {
@@ -113,7 +117,7 @@ public class CEPWindowOperatorsDropdown extends Composite
                                                                                 1 );
             initialiseTextBox( txt );
         } else {
-            container.setVisible( false );
+            parametersContainer.setVisible( false );
             hcw.getWindow().clearParameters();
         }
     }
@@ -132,8 +136,8 @@ public class CEPWindowOperatorsDropdown extends Composite
                                           value );
         }
         txt.setText( value );
-        container.add( txt );
-        container.setVisible( true );
+        parametersContainer.add( txt );
+        parametersContainer.setVisible( true );
         hcw.getWindow().setParameter( SharedConstants.OPERATOR_PARAMETER_GENERATOR,
                                       CEP_OPERATOR_PARAMETER_GENERATOR );
 

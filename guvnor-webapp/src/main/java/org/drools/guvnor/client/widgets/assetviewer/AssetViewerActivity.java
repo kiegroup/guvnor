@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An Activity to view a Package's assets
+ * An Activity to view a Module's assets
  */
 public class AssetViewerActivity extends Activity
         implements
@@ -79,7 +79,7 @@ public class AssetViewerActivity extends Activity
     private void fillModuleItemStructure() {
         //If two or more asset editors (that are associated with different formats) have same titles,
         //we group them together and display them as one node on the package tree.
-        String[] registeredFormats = clientFactory.getAssetEditorFactory().getRegisteredAssetEditorFormats();
+        String[] registeredFormats = clientFactory.getPerspectiveFactory().getRegisteredAssetEditorFormats(packageConfigData.getFormat());
 
         //Use list to preserve the order of asset editors defined in configuration.
         List<FormatList> formatListGroupedByTitles = new ArrayList<FormatList>();

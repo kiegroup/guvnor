@@ -18,18 +18,17 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
+import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -38,22 +37,42 @@ import com.google.gwt.user.client.ui.Widget;
 public class NewGuidedDecisionTableWizard
         extends AbstractNewAssetWizard {
 
-    private List<WizardPage> pages = new ArrayList<WizardPage>();
+    private SuggestionCompletionEngine sce;
 
-    public NewGuidedDecisionTableWizard(ClientFactory clientFactory,
-                                        EventBus eventBus) {
+    private List<WizardPage>           pages  = new ArrayList<WizardPage>();
+
+    private GuidedDecisionTable52      dtable = new GuidedDecisionTable52();
+
+    public NewGuidedDecisionTableWizard(final ClientFactory clientFactory,
+                                        final EventBus eventBus,
+                                        final NewAssetWizardContext context) {
         super( clientFactory,
-               eventBus );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Page 1 - Some things",
-                                                         1 ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Page 2 - Other things",
-                                                         2 ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Page 3 - More",
-                                                         3 ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Page 4 - Even more",
-                                                         4 ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Page 5 - Last",
-                                                         5 ) );
+               eventBus,
+               context );
+        pages.add( new SummaryPage( context,
+                                    dtable,
+                                    eventBus ) );
+        pages.add( new FactPatternsPage( context,
+                                         dtable,
+                                         eventBus ) );
+        pages.add( new FactPatternConstraintsPage( context,
+                                                   dtable,
+                                                   eventBus ) );
+
+        SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
+                                                                 new Command() {
+
+                                                                     public void execute() {
+                                                                         LoadingPopup.close();
+                                                                         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( context.getPackageName() );
+                                                                         for ( WizardPage page : pages ) {
+                                                                             AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
+                                                                             dtp.setSuggestionCompletionEngine( sce );
+                                                                             dtp.initialise();
+                                                                         }
+                                                                     }
+
+                                                                 } );
     }
 
     public String getTitle() {
@@ -65,7 +84,10 @@ public class NewGuidedDecisionTableWizard
     }
 
     public Widget getPageWidget(int pageNumber) {
-        return this.pages.get( pageNumber ).getContent();
+        AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) this.pages.get( pageNumber );
+        Widget w = dtp.asWidget();
+        dtp.prepareView();
+        return w;
     }
 
     public int getPreferredHeight() {
@@ -83,78 +105,6 @@ public class NewGuidedDecisionTableWizard
             }
         }
         return true;
-    }
-
-    private class NewGuidedDecisionTableWizardPage
-        implements
-        WizardPage {
-
-        private String  title;
-        private int     pageNumber;
-        private boolean isComplete;
-        private Widget  content;
-
-        NewGuidedDecisionTableWizardPage(String title,
-                                         int pageNumber) {
-            this.title = title;
-            this.pageNumber = pageNumber;
-        }
-
-        public String getTitle() {
-            return this.title;
-        }
-
-        public Widget getContent() {
-            if ( content == null ) {
-                SimplePanel p = new SimplePanel();
-                VerticalPanel vp = new VerticalPanel();
-                vp.add( new Label( title ) );
-                vp.add( new Label( "Page = " + pageNumber ) );
-                CheckBox chkIsComplete = new CheckBox( "Is page complete?" );
-                chkIsComplete.addValueChangeHandler( new ValueChangeHandler<Boolean>() {
-
-                    public void onValueChange(ValueChangeEvent<Boolean> event) {
-                        isComplete = event.getValue();
-                        WizardPageStatusChangeEvent statusChangeEvent = new WizardPageStatusChangeEvent( NewGuidedDecisionTableWizardPage.this );
-                        eventBus.fireEvent( statusChangeEvent );
-                    }
-
-                } );
-                vp.add( chkIsComplete );
-                p.getElement().getStyle().setBackgroundColor( "#f0f0f0" );
-                p.setWidget( vp );
-                content = p;
-            }
-            return content;
-        }
-
-        public boolean isComplete() {
-            return this.isComplete;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 0;
-            hash = hash + 31 * title.hashCode();
-            hash = hash + 31 * pageNumber;
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if ( this == obj ) {
-                return true;
-            }
-            if ( !(obj instanceof NewGuidedDecisionTableWizardPage) ) {
-                return false;
-            }
-            NewGuidedDecisionTableWizardPage that = (NewGuidedDecisionTableWizardPage) obj;
-            if ( title != null ? !title.equals( that.title ) : that.title != null ) return false;
-            if ( pageNumber != that.pageNumber ) return false;
-            if ( isComplete != that.isComplete ) return false;
-            return true;
-        }
-
     }
 
 }

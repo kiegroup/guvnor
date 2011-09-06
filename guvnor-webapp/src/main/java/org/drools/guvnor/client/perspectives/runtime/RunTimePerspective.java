@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives.runtime;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,6 +26,7 @@ import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigatio
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksNavigationItemBuilder;
+import org.drools.guvnor.client.perspectives.Perspective;
 
 public class RunTimePerspective extends Perspective {
 

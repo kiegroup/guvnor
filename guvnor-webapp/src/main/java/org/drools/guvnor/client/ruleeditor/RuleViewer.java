@@ -38,6 +38,7 @@ import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
@@ -137,8 +138,7 @@ public class RuleViewer extends GuvnorEditor {
         this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;
 
         //editor = EditorLauncher.getEditorViewer( asset, this );
-        AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
-        editor = assetEditorFactory.getAssetEditor( asset,
+        editor = clientFactory.getAssetEditorFactory().getAssetEditor( asset,
                 this,
                 clientFactory,
                 eventBus);
@@ -165,7 +165,7 @@ public class RuleViewer extends GuvnorEditor {
             } else {
                 // normal dimensions inside guvnor
                 editor.setWidth( "1000px" );
-                editor.setHeight( "680px" );
+                editor.setHeight( "500px" );
             }
         }
 

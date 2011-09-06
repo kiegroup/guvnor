@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AssetEditorConfigurationParser {
     private static final Logger log = LoggerFactory.getLogger(AssetEditorConfigurationParser.class);
-    private static final String DROOLS_ASSETEDITOR_CONFIG = "/drools-asseteditors.xml";
+    private static final String ASSETEDITOR_CONFIG = "/asseteditors.xml";
     static final String ASSET_EDITOR = "asseteditor";
     static final String TITLE = "title";
     static final String CLASS = "class";
@@ -49,7 +49,7 @@ public class AssetEditorConfigurationParser {
         List<AssetEditorConfiguration> assetEditors = new ArrayList<AssetEditorConfiguration>();
         try {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-            InputStream in = getClass().getResourceAsStream(DROOLS_ASSETEDITOR_CONFIG);
+            InputStream in = getClass().getResourceAsStream(ASSETEDITOR_CONFIG);
             XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
             AssetEditorConfiguration configuration = null;
 
