@@ -22,12 +22,16 @@ import javax.inject.Inject;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 //import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 //import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 //import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,9 +43,16 @@ public abstract class AbstractWebappPrototypeArqTest {
     @Deployment
     public static WebArchive createDeployment() {
         // TODO FIXME do not hardcode the version number
-        return ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
+        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
                 .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
-                .as(WebArchive.class);
+                .as(WebArchive.class)
+                .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
+                .addAsLibraries(
+                        DependencyResolvers.use(MavenDependencyResolver.class)
+                                .includeDependenciesFromPom("pom.xml")
+                                .resolveAsFiles(new ScopeFilter("test")));
+        // System.out.println(webArchive.toString(Formatters.VERBOSE));
+        return webArchive;
     }
 
 //    @Deployment

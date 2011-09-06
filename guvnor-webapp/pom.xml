@@ -392,12 +392,12 @@
       <!--<version>1.0.0.CR2</version>-->
       <!--<scope>test</scope>-->
     <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.jboss.shrinkwrap.resolver</groupId>-->
-      <!--<artifactId>shrinkwrap-resolver-impl-maven</artifactId>-->
-      <!--<version>1.0.0-beta-5</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>1.0.0-beta-5</version>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
@@ -433,24 +433,6 @@
       <artifactId>arquillian-tomcat-managed-6</artifactId>
       <version>1.0.0.Final-SNAPSHOT</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat</groupId>
-      <artifactId>catalina</artifactId>
-      <version>${managed-appserver.tomcat6.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-       <groupId>org.apache.tomcat</groupId>
-       <artifactId>coyote</artifactId>
-       <version>${managed-appserver.tomcat6.version}</version>
-       <scope>test</scope>
-    </dependency>
-    <dependency>
-       <groupId>org.apache.tomcat</groupId>
-       <artifactId>jasper</artifactId>
-       <version>${managed-appserver.tomcat6.version}</version>
-       <scope>test</scope>
     </dependency>
 
     <dependency>

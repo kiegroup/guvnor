@@ -23,17 +23,20 @@ import javax.inject.Inject;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ArchivePath;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.formatter.Formatters;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static org.junit.Assert.*;
-
-//import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
-//import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
-//import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 
 @RunWith(Arquillian.class)
 public class SingleWebappPrototypeArqTest {
@@ -41,9 +44,16 @@ public class SingleWebappPrototypeArqTest {
     @Deployment
     public static WebArchive createDeployment() {
         // TODO FIXME do not hardcode the version number
-        return ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
+        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
                 .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
-                .as(WebArchive.class);
+                .as(WebArchive.class)
+                .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
+                .addAsLibraries(
+                        DependencyResolvers.use(MavenDependencyResolver.class)
+                                .includeDependenciesFromPom("pom.xml")
+                                .resolveAsFiles(new ScopeFilter("test")));
+        // System.out.println(webArchive.toString(Formatters.VERBOSE));
+        return webArchive;
     }
 
     @Inject
@@ -57,6 +67,7 @@ public class SingleWebappPrototypeArqTest {
 
     @Test
     public void singleRepoIsNotNull2() {
+        assertNotNull(Mock.class.getPackage());
         assertNotNull(repository);
     }
 
