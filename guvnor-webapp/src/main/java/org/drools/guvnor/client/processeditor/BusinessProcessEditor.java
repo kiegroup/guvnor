@@ -30,6 +30,7 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 /**
  * The Business Process Editor, wrapping the Process Editor
@@ -63,7 +64,7 @@ public class BusinessProcessEditor extends DirtyableComposite
              name = "/designer/editor";
          } **/
 
-        name = "/designer/editor/?uuid=" + modelUUID + "&profile=jbpm";
+        name = "/"+ApplicationPreferences.getDesignerContext()+"/editor/?uuid=" + modelUUID + "&profile="+ApplicationPreferences.getDesignerProfile();
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain",
                                          Document.get().getDomain() );

@@ -27,6 +27,10 @@ public class ApplicationPreferences {
     public static final String DATE_FORMAT = "drools.dateformat";
     public static final String DEFAULT_LANGUAGE = "drools.defaultlanguage";
     public static final String DEFAULT_COUNTRY = "drools.defaultcountry";
+    
+    public static final String DESIGNER_URL = "designer.url";
+    public static final String DESIGNER_CONTEXT = "designer.context";
+    public static final String DESIGNER_PROFILE = "designer.profile";
 
     public static ApplicationPreferences instance;
     private Map<String, String> preferences;
@@ -65,6 +69,18 @@ public class ApplicationPreferences {
 
     public static boolean showVisualRuleFlow() {
         return getBooleanPref("visual-ruleflow");
+    }
+    
+    public static String getDesignerURL() {
+        return getStringPref(DESIGNER_URL);
+    }
+    
+    public static String getDesignerContext() {
+        return getStringPref(DESIGNER_CONTEXT);
+    }
+    
+    public static String getDesignerProfile() {
+        return getStringPref(DESIGNER_PROFILE);
     }
     
 }
