@@ -88,15 +88,15 @@ public class MandatoryFieldConstraintTest {
         ruleToVerify += "       System.out.println(\"Rule fired\");\n";
         ruleToVerify += "end\n";
         fail++;
-//        
-//        //OK
-//        ruleToVerify += "rule \"rule4\"\n";
-//        ruleToVerify += "   when\n";
-//        ruleToVerify += "       Object() from collect(Person(age == 20))\n";
-//        ruleToVerify += "   then\n";
-//        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
-//        ruleToVerify += "end\n";
-//        
+        
+        //OK
+        ruleToVerify += "rule \"rule4\"\n";
+        ruleToVerify += "   when\n";
+        ruleToVerify += "       Object() from collect(Person(age == 20))\n";
+        ruleToVerify += "   then\n";
+        ruleToVerify += "       System.out.println(\"Rule fired\");\n";
+        ruleToVerify += "end\n";
+        
         //FAIL: binding is not a restriction
         ruleToVerify += "rule \"rule5\"\n";
         ruleToVerify += "   when\n";
