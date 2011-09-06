@@ -28,7 +28,6 @@ import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.Connectives;
 import org.drools.guvnor.client.modeldriven.ui.factPattern.PopupCreator;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -519,9 +518,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             Label lbl = new Label( constants.OverCEPWindow() );
             lbl.setStyleName( "paddedLabel" );
             hp.add( lbl );
-            List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
-            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( operators,
-                                                                             c );
+            CEPWindowOperatorsDropdown cwo = new CEPWindowOperatorsDropdown( c );
 
             cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 

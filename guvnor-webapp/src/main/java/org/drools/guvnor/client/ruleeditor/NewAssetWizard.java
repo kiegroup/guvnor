@@ -237,23 +237,24 @@ public class NewAssetWizard extends FormStylePopup {
             newAssetLayout.setAttributeVisibility( useWizardRowIndex,
                                                    false );
 
-            this.formatChooser.addChangeHandler( new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    boolean isVisible = false;
-                    int selectedIndex = formatChooser.getSelectedIndex();
-                    if ( selectedIndex >= 0 ) {
-                        String value = formatChooser.getValue( selectedIndex );
-                        isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
-                    }
-                    newAssetLayout.setAttributeVisibility( useWizardRowIndex,
-                                                                       isVisible );
-                    if ( chkUseWizard != null ) {
-                        chkUseWizard.setValue( false );
-                    }
-                }
-
-            } );
+            //TODO Once the Guided Decision table Wizard is complete
+//            this.formatChooser.addChangeHandler( new ChangeHandler() {
+//
+//                public void onChange(ChangeEvent event) {
+//                    boolean isVisible = false;
+//                    int selectedIndex = formatChooser.getSelectedIndex();
+//                    if ( selectedIndex >= 0 ) {
+//                        String value = formatChooser.getValue( selectedIndex );
+//                        isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
+//                    }
+//                    newAssetLayout.setAttributeVisibility( useWizardRowIndex,
+//                                                                       isVisible );
+//                    if ( chkUseWizard != null ) {
+//                        chkUseWizard.setValue( false );
+//                    }
+//                }
+//
+//            } );
 
         } else if ( "*".equals( format ) ) { //NON-NLS
             final TextBox fmt = new TextBox();

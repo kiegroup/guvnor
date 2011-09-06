@@ -15,9 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
@@ -26,7 +24,6 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -43,9 +40,9 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected SimplePanel                content   = new SimplePanel();
 
     protected GuidedDecisionTable52      dtable;
-    protected SuggestionCompletionEngine sce;
     protected EventBus                   eventBus;
     protected NewAssetWizardContext      context;
+    protected SuggestionCompletionEngine sce;
 
     public AbstractGuidedDecisionTableWizardPage(NewAssetWizardContext context,
                                                  GuidedDecisionTable52 dtable,
@@ -55,25 +52,12 @@ public abstract class AbstractGuidedDecisionTableWizardPage
         this.eventBus = eventBus;
     }
 
-    public Widget getContent() {
-        if ( this.sce == null ) {
-            SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
-                                                                 new Command() {
-
-                                                                     public void execute() {
-                                                                         LoadingPopup.close();
-                                                                         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( context.getPackageName() );
-                                                                         populateContent();
-                                                                     }
-
-                                                                 } );
-        }
+    public Widget asWidget() {
         return content;
     }
 
-    /**
-     * Populate content Widget once SuggestionCompletionEngine has been loaded
-     */
-    public abstract void populateContent();
-
+    public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
+        this.sce = sce;
+    }
+    
 }

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,37 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards;
+
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+
+import java.util.List;
+
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * A page for a Wizard
+ * View and Presenter definitions for the Fact Patterns page
  */
-public interface WizardPage extends IsWidget {
+public interface FactPatternConstraintsPageView
+        extends
+        IsWidget {
+
+    interface Presenter {
+        
+    }
 
     /**
-     * Page title
+     * Set the Presenter for the View to callback to
      * 
-     * @return
+     * @param presenter
      */
-    String getTitle();
-
-    /**
-     * Is the page completed
-     * 
-     * @return
-     */
-    boolean isComplete();
+    void setPresenter(Presenter presenter);
     
-    /**
-     * Initialise the page
-     */
-    void initialise();
+    void setAvailablePatterns(List<Pattern52> patterns);
     
-    /**
-     * Prepare the page before it is displayed
-     */
-    void prepareView();
-
 }

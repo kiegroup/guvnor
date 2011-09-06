@@ -18,13 +18,17 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -32,6 +36,8 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NewGuidedDecisionTableWizard
         extends AbstractNewAssetWizard {
+
+    private SuggestionCompletionEngine sce;
 
     private List<WizardPage>           pages  = new ArrayList<WizardPage>();
 
@@ -43,16 +49,30 @@ public class NewGuidedDecisionTableWizard
         super( clientFactory,
                eventBus,
                context );
-        pages.add( new SummaryPage( context ) );
+        pages.add( new SummaryPage( context,
+                                    dtable,
+                                    eventBus ) );
         pages.add( new FactPatternsPage( context,
                                          dtable,
                                          eventBus ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Add pattern constraints",
-                                                         3,
-                                                         eventBus ) );
-        pages.add( new NewGuidedDecisionTableWizardPage( "Add actions",
-                                                         4,
-                                                         eventBus ) );
+        pages.add( new FactPatternConstraintsPage( context,
+                                                   dtable,
+                                                   eventBus ) );
+
+        SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
+                                                                 new Command() {
+
+                                                                     public void execute() {
+                                                                         LoadingPopup.close();
+                                                                         sce = SuggestionCompletionCache.getInstance().getEngineFromCache( context.getPackageName() );
+                                                                         for ( WizardPage page : pages ) {
+                                                                             AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) page;
+                                                                             dtp.setSuggestionCompletionEngine( sce );
+                                                                             dtp.initialise();
+                                                                         }
+                                                                     }
+
+                                                                 } );
     }
 
     public String getTitle() {
@@ -64,7 +84,10 @@ public class NewGuidedDecisionTableWizard
     }
 
     public Widget getPageWidget(int pageNumber) {
-        return this.pages.get( pageNumber ).getContent();
+        AbstractGuidedDecisionTableWizardPage dtp = (AbstractGuidedDecisionTableWizardPage) this.pages.get( pageNumber );
+        Widget w = dtp.asWidget();
+        dtp.prepareView();
+        return w;
     }
 
     public int getPreferredHeight() {

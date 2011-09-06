@@ -127,7 +127,7 @@ public class WizardActivityViewImpl extends Popup
         this.pageNumber = pageNumber;
         for ( int i = 0; i < this.pageTitleWidgets.size(); i++ ) {
             WizardPageTitle wpt = this.pageTitleWidgets.get( i );
-            wpt.setCurrentPage( i == pageNumber );
+            wpt.setPageSelected( i == pageNumber );
         }
         btnNext.setEnabled( pageNumber < pageNumberTotal );
         btnPrevious.setEnabled( pageNumber > 0 );

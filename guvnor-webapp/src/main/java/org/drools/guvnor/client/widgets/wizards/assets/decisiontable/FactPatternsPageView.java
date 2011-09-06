@@ -31,6 +31,12 @@ public interface FactPatternsPageView
 
     interface Presenter {
         
+        boolean isPatternEvent(Pattern52 pattern);
+        
+        void stateChanged();
+        
+        void setChosenPatterns(List<Pattern52> patterns);
+        
     }
 
     /**

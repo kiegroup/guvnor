@@ -17,10 +17,11 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -29,14 +30,18 @@ import com.google.gwt.user.client.ui.Widget;
  * A summary page for the guided Decision Table Wizard
  */
 public class SummaryPage
-    implements
-    WizardPage {
+        extends AbstractGuidedDecisionTableWizardPage {
 
     private static Constants constants = GWT.create( Constants.class );
 
     private SimplePanel      content   = new SimplePanel();
 
-    public SummaryPage(NewAssetWizardContext context) {
+    public SummaryPage(NewAssetWizardContext context,
+                       GuidedDecisionTable52 dtable,
+                       EventBus eventBus) {
+        super( context,
+               dtable,
+               eventBus );
         this.content.add( new SummaryPageWidget( context ) );
     }
 
@@ -44,12 +49,20 @@ public class SummaryPage
         return constants.DecisionTableWizardSummary();
     }
 
-    public Widget getContent() {
+    public Widget asWidget() {
         return content;
     }
 
     public boolean isComplete() {
         return true;
+    }
+
+    public void initialise() {
+        //Nothing required
+    }
+
+    public void prepareView() {
+        //Nothing required
     }
 
     private class SummaryPageWidget extends SimplePanel {
