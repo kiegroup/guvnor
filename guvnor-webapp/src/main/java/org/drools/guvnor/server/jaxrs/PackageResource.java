@@ -388,13 +388,26 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
+    public Feed getAssetsAsAtom(
+            @PathParam("packageName") String packageName,
+            @QueryParam("format") List<String> formats) {
         try {
             Factory factory = Abdera.getNewFactory();
             Feed feed = factory.getAbdera().newFeed();
             PackageItem p = repository.loadPackage(packageName);
             feed.setTitle(p.getTitle() + "-asset-feed");
-            Iterator<AssetItem> iter = p.getAssets();
+            
+            Iterator<AssetItem> iter = null;
+            
+            if (formats.isEmpty()){
+                //no format specified? Return all assets
+                iter = p.getAssets();
+            }else{
+                //if the format is specified, return only the assets of
+                //the specified formats.
+                iter = p.listAssetsByFormat(formats);
+            }
+            
             while (iter.hasNext())
                 feed.addEntry(ToAssetEntryAbdera(iter.next(), uriInfo));
             return feed;
@@ -406,11 +419,24 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Asset> getAssetsAsJAXB(@PathParam("packageName") String packageName) {
+    public Collection<Asset> getAssetsAsJAXB(
+            @PathParam("packageName") String packageName,
+            @QueryParam("format") List<String> formats) {
         try {
             List<Asset> ret = new ArrayList<Asset>();
             PackageItem p = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = p.getAssets();
+            
+            Iterator<AssetItem> iter = null;
+            
+            if (formats.isEmpty()){
+                //no format specified? Return all assets
+                iter = p.getAssets();
+            }else{
+                //if the format is specified, return only the assets of
+                //the specified formats.
+                iter = p.listAssetsByFormat(formats);
+            }
+            
             while (iter.hasNext()) {
                 ret.add(ToAsset(iter.next(), uriInfo));
             }

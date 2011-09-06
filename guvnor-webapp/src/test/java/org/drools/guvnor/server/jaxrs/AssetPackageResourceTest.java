@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.jaxrs;
 
+import java.util.Iterator;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
@@ -42,7 +43,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.apache.abdera.model.Feed;
 import org.apache.abdera.protocol.Response.ResponseType;
 import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
@@ -50,6 +54,7 @@ import org.apache.abdera.protocol.client.RequestOptions;
 
 
 public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
+    private static int totalAssets;
     private Abdera abdera = new Abdera();
     private static RestTestingBase restTestingBase;
 
@@ -93,6 +98,12 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         rule.updateFormat( AssetFormats.DRL );
         rule.updateContent( "rule 'foo' when Goo1() then end" );
         rule.checkin( "version 1" );
+        
+        AssetItem rule4 = pkg.addAsset( "rule4",
+                                       "" );
+        rule4.updateFormat( AssetFormats.DRL );
+        rule4.updateContent( "rule 'foo 2' when Goo1() then end" );
+        rule4.checkin( "version 1" );
 
         AssetItem rule2 = pkg.addAsset( "rule2",
                                         "" );
@@ -125,7 +136,14 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         rule3.updateContent( "declare Album2\n genre2: String \n end" );
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );            
+        pkg.checkin( "version3" );    
+        
+        //Count all the assets
+        Iterator<AssetItem> assets = pkg.getAssets();
+        while (assets.hasNext()) {
+            totalAssets++;
+            assets.next();
+        }
     }
     
     @AfterClass
@@ -135,14 +153,22 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
 
     @Test
     public void testGetAssetsAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        connection.connect();
-        assertEquals (200, connection.getResponseCode());
-        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        AbderaClient client = new AbderaClient(abdera);
+        
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+        
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets",options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve assets-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        //Get the entry element
+        Document<Feed> document = resp.getDocument();
+        
+        assertEquals(totalAssets, document.getRoot().getEntries().size());
+        
     }
 
     @Test
@@ -167,6 +193,108 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
         //logger.log(LogLevel, GetContent(connection));
+    }
+    
+    @Test
+    public void testGetDRLAssetsAsAtom() throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+        
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+        
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl", options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        //Get the entry element
+        Document<Feed> document = resp.getDocument();
+        
+        //Check number of results
+        assertEquals(2, document.getRoot().getEntries().size());
+        
+        //Check assets names
+        List<String> assetNames = new ArrayList<String>();
+        for (Entry entry : document.getRoot().getEntries()) {
+            assetNames.add(entry.getTitle());
+        }
+        
+        assertTrue(assetNames.contains("rule1"));
+        assertTrue(assetNames.contains("rule4"));
+    }
+    
+    @Test
+    public void testGetDRLAssetsAsJSON() throws Exception {
+        
+        //Use abdera for connection only
+        AbderaClient client = new AbderaClient(abdera);
+        
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_JSON);
+        
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl",options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        BufferedReader reader = new BufferedReader(resp.getReader());
+        reader.close();
+        //TODO: check response content!
+        
+    }
+    
+    
+    @Test
+    public void testGetDRLAndDSLAssetsAsAtom() throws Exception {
+        AbderaClient client = new AbderaClient(abdera);
+        
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_ATOM_XML);
+        
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl&format=dsl", options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        //Get the entry element
+        Document<Feed> document = resp.getDocument();
+        
+        //Check number of results
+        assertEquals(3, document.getRoot().getEntries().size());
+        
+        //Check assets names
+        List<String> assetNames = new ArrayList<String>();
+        for (Entry entry : document.getRoot().getEntries()) {
+            assetNames.add(entry.getTitle());
+        }
+        
+        assertTrue(assetNames.contains("rule1"));
+        assertTrue(assetNames.contains("rule4"));
+        assertTrue(assetNames.contains("myDSL"));
+    }
+    
+    @Test
+    public void testGetDRLAndDSLAssetsAsJSON() throws Exception {
+        
+        //Use abdera for connection only
+        AbderaClient client = new AbderaClient(abdera);
+        
+        RequestOptions options = client.getDefaultRequestOptions();
+        options.setAccept(MediaType.APPLICATION_JSON);
+        
+        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl&format=dsl",options);
+        
+        if (resp.getType() != ResponseType.SUCCESS){
+            fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
+        }
+        
+        BufferedReader reader = new BufferedReader(resp.getReader());
+        reader.close();
+        //TODO: check response content!
+        
     }
 
     @Test
