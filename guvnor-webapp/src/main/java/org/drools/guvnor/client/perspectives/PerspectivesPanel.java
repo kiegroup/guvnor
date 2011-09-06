@@ -14,26 +14,33 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.perspectives;
+package org.drools.guvnor.client.perspectives;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
+import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
+import org.drools.guvnor.client.perspectives.soa.SOAPerspective;
 import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
 
     private final PerspectivesPanelView view;
     private final EventBus eventBus;
+    private final ClientFactory clientFactory;
 
     public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
         this.eventBus = eventBus;
+        this.clientFactory = clientFactory;
         this.view = clientFactory.getPerspectivesPanelView();
         this.view.setPresenter(this);
         setPerspective(new AuthorPerspective());
-        view.addAuthorPerspective();
-        view.addRunTimePerspective();
-        view.addSOAPerspective();
+        String[] registeredPerspectiveTypes = clientFactory.getPerspectiveFactory().getRegisteredPerspectiveTypes();
+        for(String perspectiveType : registeredPerspectiveTypes) {
+            //TODO: Get perspective title from PerspectiveFactory
+            view.addPerspective(perspectiveType, perspectiveType);
+        }
     }
 
     private void setPerspective(Perspective perspective) {
@@ -47,19 +54,11 @@ public class PerspectivesPanel implements Presenter {
     public void setUserName(String userName) {
         view.setUserName(userName);
     }
-
-    public void onChangePerspectiveToAuthor() {
-        setPerspective(new AuthorPerspective());
+    
+    public void onChangePerspective(String perspectiveType) {
+        setPerspective(clientFactory.getPerspectiveFactory().getPerspective(perspectiveType));        
     }
-
-    public void onChangePerspectiveToRunTime() {
-        setPerspective(new RunTimePerspective());
-    }
-
-    public void onChangePerspectiveToSOA() {
-        setPerspective(new SOAPerspective());
-    }
-
+    
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
     }

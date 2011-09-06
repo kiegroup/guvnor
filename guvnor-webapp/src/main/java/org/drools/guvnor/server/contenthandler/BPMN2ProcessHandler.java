@@ -40,6 +40,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 public class BPMN2ProcessHandler extends ContentHandler
     implements
@@ -118,7 +119,9 @@ public class BPMN2ProcessHandler extends ContentHandler
             }
             if ( content.getJson() != null ) {
                 try {
-                    String xml = serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
+                    String designerURL = System.getProperty(ApplicationPreferences.DESIGNER_URL)+"/"+System.getProperty(ApplicationPreferences.DESIGNER_CONTEXT);
+                    designerURL += "/uuidRepository?profile="+System.getProperty(ApplicationPreferences.DESIGNER_PROFILE)+"&action=toXML&pp=";
+                    String xml = serialize( designerURL +
                                                     URLEncoder.encode( content.getPreprocessingdata(),
                                                                        "UTF-8" ),
                                             content.getJson() );
@@ -223,7 +226,9 @@ public class BPMN2ProcessHandler extends ContentHandler
         } else if ( content.getJson() != null && content.getJson().length() > 0 ) {
             // convert the json to xml
             try {
-                String xml = BPMN2ProcessHandler.serialize( "http://localhost:8080/designer/uuidRepository?profile=jbpm&action=toXML&pp=" +
+                String designerURL = System.getProperty(ApplicationPreferences.DESIGNER_URL)+"/"+System.getProperty(ApplicationPreferences.DESIGNER_CONTEXT);
+                designerURL += "/uuidRepository?profile="+System.getProperty(ApplicationPreferences.DESIGNER_PROFILE)+"&action=toXML&pp=";
+                String xml = BPMN2ProcessHandler.serialize( designerURL +
                                                                     URLEncoder.encode( content.getPreprocessingdata(),
                                                                                        "UTF-8" ),
                                                             content.getJson() );

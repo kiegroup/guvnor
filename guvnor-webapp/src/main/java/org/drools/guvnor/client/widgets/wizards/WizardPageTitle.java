@@ -22,7 +22,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -87,10 +86,10 @@ public class WizardPageTitle extends Composite {
      * control the setting of the "current page" and de-selecting other previous
      * "current pages".
      * 
-     * @param isCurrent
+     * @param isSelected
      */
-    public void setCurrentPage(boolean isCurrent) {
-        lblTitle.getElement().getStyle().setFontWeight( isCurrent ? FontWeight.BOLD : FontWeight.NORMAL );
+    public void setPageSelected(boolean isSelected) {
+        lblTitle.getElement().getStyle().setFontWeight( isSelected ? FontWeight.BOLD : FontWeight.NORMAL );
     }
 
 }

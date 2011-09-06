@@ -22,18 +22,16 @@ import java.util.List;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.TitledTextCell.TitledText;
 
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -45,8 +43,9 @@ import com.google.gwt.view.client.HasData;
  */
 public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
 
-    private static final int PAGE_SIZE = 10;
-
+    private static final int PAGE_SIZE = 10;    
+    private final ClientFactory clientFactory;
+    
     public QueryPagedTable(final List<MetaDataQuery> metadata,
                            final Date createdAfter,
                            final Date createdBefore,
@@ -56,6 +55,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
                 clientFactory);
+        this.clientFactory = clientFactory;
+
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryMetadataPageRequest request = new QueryMetadataPageRequest();
@@ -85,6 +86,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
                 clientFactory);
+        this.clientFactory = clientFactory;
+
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryPageRequest request = new QueryPageRequest();
@@ -118,6 +121,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
                 clientFactory);
+        this.clientFactory = clientFactory;
+
         setDataProvider( new AsyncDataProvider<QueryPageRow>() {
             protected void onRangeChanged(HasData<QueryPageRow> display) {
                 QueryPageRequest request = new QueryPageRequest();
@@ -146,8 +151,8 @@ public class QueryPagedTable extends AbstractAssetPagedTable<QueryPageRow> {
         Column<QueryPageRow, RuleFormatImageResource> formatColumn = new Column<QueryPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(QueryPageRow row) {
-        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
-                return new RuleFormatImageResource(row.getFormat(), assetEditorFactory.getAssetEditorIcon(row.getFormat()));
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
+                return new RuleFormatImageResource(row.getFormat(), factory.getAssetEditorIcon(row.getFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,

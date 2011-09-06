@@ -19,11 +19,12 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelView;
-import org.drools.guvnor.client.explorer.perspectives.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.packages.AbstractModuleEditor;
 import org.drools.guvnor.client.packages.PackageEditor;
 import org.drools.guvnor.client.packages.SOAServiceEditor;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.perspectives.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
@@ -50,10 +51,12 @@ public class ClientFactoryImpl
     private final PlaceController     placeController;
     private PerspectivesPanelView     perspectivesPanelView;
     private NavigationViewFactoryImpl navigationViewFactory;
-    private AssetEditorFactory        assetEditorFactory;
-    private PlaceHistoryHandler       placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
-    private final EventBus            eventBus;
+
+    private AssetEditorFactory assetEditorFactory;
+    private PerspectiveFactory perspectiveFactory;
+    private PlaceHistoryHandler placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
+    private final EventBus eventBus;
     private WizardFactory             wizardFactory;
 
     public ClientFactoryImpl(EventBus eventBus) {
@@ -128,6 +131,13 @@ public class ClientFactoryImpl
         return assetEditorFactory;
     }
 
+    public PerspectiveFactory getPerspectiveFactory() {
+        if (perspectiveFactory == null) {
+            perspectiveFactory = GWT.create(PerspectiveFactory.class);
+        }
+        return perspectiveFactory;
+    }
+    
     public RepositoryServiceAsync getRepositoryService() {
         return RepositoryServiceFactory.getService();
     }

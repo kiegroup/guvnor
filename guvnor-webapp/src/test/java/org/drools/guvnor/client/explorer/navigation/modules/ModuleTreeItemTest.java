@@ -25,6 +25,7 @@ import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -49,9 +50,10 @@ public class ModuleTreeItemTest {
         ).thenReturn(
                 assetEditorFactory
         );
-
+        
+        PerspectiveFactory perspectiveFactory = mock( PerspectiveFactory.class );
         when(
-                assetEditorFactory.getRegisteredAssetEditorFormats()
+                perspectiveFactory.getRegisteredAssetEditorFormats("package")
         ).thenReturn(
                 new String[0]
         );

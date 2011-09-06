@@ -9,6 +9,7 @@ import org.drools.guvnor.client.explorer.navigation.processes.ProcessesNavigatio
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsNavigationItemBuilder;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksNavigationItemBuilder;
+import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

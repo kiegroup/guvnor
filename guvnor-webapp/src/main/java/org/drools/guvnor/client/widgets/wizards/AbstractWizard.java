@@ -22,17 +22,20 @@ import com.google.gwt.event.shared.EventBus;
 /**
  * A generic Wizard
  */
-public abstract class AbstractWizard
+public abstract class AbstractWizard<T extends WizardContext>
     implements
     Wizard {
 
+    protected final T             context;
     protected final ClientFactory clientFactory;
     protected final EventBus      eventBus;
 
     public AbstractWizard(ClientFactory clientFactory,
-                          EventBus eventBus) {
+                          EventBus eventBus,
+                          T context) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
+        this.context = context;
     }
 
 }

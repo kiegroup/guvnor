@@ -30,12 +30,14 @@ import com.google.gwt.user.client.Command;
  * A Wizard representing new assets
  */
 public abstract class AbstractNewAssetWizard
-        extends AbstractWizard {
+        extends AbstractWizard<NewAssetWizardContext> {
 
     public AbstractNewAssetWizard(ClientFactory clientFactory,
-                                  EventBus eventBus) {
+                                  EventBus eventBus,
+                                  NewAssetWizardContext context) {
         super( clientFactory,
-               eventBus );
+               eventBus,
+               context );
     }
 
     protected Command makeSaveCommand(final NewAssetWizardContext context) {

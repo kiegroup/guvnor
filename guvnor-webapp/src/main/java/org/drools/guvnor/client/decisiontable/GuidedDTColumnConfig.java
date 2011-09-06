@@ -557,7 +557,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
                         ""));
             }
         });
-        pop.addAttribute(constants.name(),
+        pop.addAttribute(constants.Binding(),
                 binding);
 
         //Patterns can be negated, i.e. "not Pattern(...)"
@@ -613,23 +613,21 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     //Widget for CEP 'windows'
     private Widget createCEPWindowWidget(final HasCEPWindow c) {
         HorizontalPanel hp = new HorizontalPanel();
-        Label lbl = new Label(constants.OverCEPWindow());
-        lbl.setStyleName("paddedLabel");
-        hp.add(lbl);
-        List<String> operators = SuggestionCompletionEngine.getCEPWindowOperators();
-        cwo = new CEPWindowOperatorsDropdown(operators,
-                c);
+        Label lbl = new Label( constants.OverCEPWindow() );
+        lbl.setStyleName( "paddedLabel" );
+        hp.add( lbl );
 
-        cwo.addValueChangeHandler(new ValueChangeHandler<OperatorSelection>() {
+        cwo = new CEPWindowOperatorsDropdown( c );
+        cwo.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                c.getWindow().setOperator(selected);
+                c.getWindow().setOperator( selected );
             }
-        });
+        } );
 
-        hp.add(cwo);
+        hp.add( cwo );
         return hp;
     }
 

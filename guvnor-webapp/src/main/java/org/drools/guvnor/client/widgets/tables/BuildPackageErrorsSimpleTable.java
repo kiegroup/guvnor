@@ -23,8 +23,6 @@ import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
-import org.drools.guvnor.client.ruleeditor.EditorLauncher;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -123,8 +121,8 @@ public class BuildPackageErrorsSimpleTable extends AbstractSimpleTable<BuilderRe
         Column<BuilderResultLine, RuleFormatImageResource> formatColumn = new Column<BuilderResultLine, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
             public RuleFormatImageResource getValue(BuilderResultLine row) {
-        		AssetEditorFactory assetEditorFactory = GWT.create(AssetEditorFactory.class);
-                return new RuleFormatImageResource(row.getAssetFormat(), assetEditorFactory.getAssetEditorIcon(row.getAssetFormat()));
+                AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
+                return new RuleFormatImageResource(row.getAssetFormat(), factory.getAssetEditorIcon(row.getAssetFormat()));
             }
         };
         columnPicker.addColumn( formatColumn,
