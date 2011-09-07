@@ -120,7 +120,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         categoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
-        packageService.createPackage("testCategoryPackage",
+        repositoryPackageService.createPackage("testCategoryPackage",
                 "testCategoryPackageDescription",
                 "package");
 
@@ -169,7 +169,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         categoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
-        packageService.createPackage("testCategoryPackage",
+        repositoryPackageService.createPackage("testCategoryPackage",
                 "testCategoryPackageDescription",
                 "package");
 

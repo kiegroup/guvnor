@@ -288,14 +288,12 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
-        RepositoryPackageService repoServiceImpl = getRepositoryPackageService();
-
         repo.createPackage( "testScenariosURL",
                             "" );
-        repoServiceImpl.createPackageSnapshot( "testScenariosURL",
-                                    "SNAP1",
-                                    false,
-                                    "" );
+        repositoryPackageService.createPackageSnapshot("testScenariosURL",
+                "SNAP1",
+                false,
+                "");
 
         Base64 enc = new Base64();
         String userpassword = "test" + ":" + "password";

@@ -121,7 +121,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
 
-            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testLoadRuleAssetPackageReadonlyPack1";
             @SuppressWarnings("unused")
@@ -630,7 +629,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageUuid = repositoryPackageService.createPackage( "testCheckinWithPackageReadonlyPack",
                                                                      "desc",
@@ -697,7 +695,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testCheckinPackageDeveloperPack1";
         @SuppressWarnings("unused")
@@ -765,7 +762,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
 
-            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
             @SuppressWarnings("unused")
@@ -1255,7 +1251,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testListPackagesPackageAdminAndAnalyst() throws Exception {
         try {
-            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
             String package2Name = "testListPackagesPackageAdminAndAnalystPack2";

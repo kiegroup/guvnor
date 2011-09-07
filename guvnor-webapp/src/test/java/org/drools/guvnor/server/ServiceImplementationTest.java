@@ -240,7 +240,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // ServiceImpl impl = new ServiceImpl(new
         // RulesRepository(SessionHelper.getSession()));
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         serviceImplementation.getRulesRepository().loadDefaultPackage();
         serviceImplementation.getRulesRepository().createPackage( "another",
@@ -478,7 +477,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         try {
             RepositoryStartupService.registerCheckinListener();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
             List<InboxEntry> inbox = ib.loadRecentEdited();
 
@@ -587,7 +585,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Deprecated
     public void testListByFormat() throws Exception {
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String cat = "testListByFormat";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -711,7 +708,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Deprecated
     public void testQuickFind() throws Exception {
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String cat = "testQuickFind";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -767,7 +763,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Deprecated
     public void testSearchText() throws Exception {
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -829,7 +824,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testStatus() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = serviceImplementation.createState( "testStatus1" );
         assertNotNull(uuid);
 
@@ -1024,7 +1018,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testRuleNameList() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         // create our package
@@ -1068,7 +1061,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
     @Test
     public void testBinaryUpToDate() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         // create our package
@@ -1127,7 +1119,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testListFactTypesAvailableInPackage() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testAvailableTypes",
@@ -1164,7 +1155,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testGuidedDTExecute() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
         repositoryCategoryService.createCategory("/",
@@ -1420,7 +1410,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         String cat = "testCategory";
@@ -1483,7 +1472,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleListForStateFullResults() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         String cat = "testCategory";
@@ -1661,7 +1649,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testImportSampleRepository() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         repositoryPackageService.installSampleRepository();
         PackageConfigData[] cfgs = repositoryPackageService.listPackages();
         assertEquals( 2,
@@ -1678,7 +1665,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         QueryPageRequest request;
         PageResponse<QueryPageRow> response;
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         //Import sample, do a sanity check, make sure sample is installed correctly
         repositoryPackageService.installSampleRepository();
         PackageConfigData[] cfgs = repositoryPackageService.listPackages();

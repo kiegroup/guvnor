@@ -150,8 +150,6 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
-        RepositoryPackageService repoPackageService = getRepositoryPackageService();
-
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
         FileManagerUtils uploadHelper = getFileManagerUtils();
@@ -166,10 +164,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( before < uploadHelper.getLastModified( pkg.getName(),
                                                            "LATEST" ) );
 
-        repoPackageService.createPackageSnapshot( pkg.getName(),
-                                    "SNAPPY 1",
-                                    false,
-                                    "" );
+        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+                "SNAPPY 1",
+                false,
+                "");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String fileName = uploadHelper.loadBinaryPackage( pkg.getName(),
@@ -217,10 +215,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "import java.util.List" ) > -1 );
 
         Thread.sleep( 100 );
-        repoPackageService.createPackageSnapshot( pkg.getName(),
-                                    "SNAPX",
-                                    false,
-                                    "" );
+        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+                "SNAPX",
+                false,
+                "");
 
         long lastMod = uploadHelper.getLastModified( pkg.getName(),
                                                      "SNAPPY 1" );
@@ -228,10 +226,10 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         Thread.sleep( 100 );
 
-        repoPackageService.createPackageSnapshot( pkg.getName(),
-                                    "SNAPX",
-                                    true,
-                                    "yeah" );
+        repositoryPackageService.createPackageSnapshot(pkg.getName(),
+                "SNAPX",
+                true,
+                "yeah");
 
         long lastMod2 = uploadHelper.getLastModified( pkg.getName(),
                                                       "SNAPX" );

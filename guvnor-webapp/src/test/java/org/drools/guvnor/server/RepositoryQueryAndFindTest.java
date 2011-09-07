@@ -45,7 +45,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -103,7 +102,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextFullResults() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -152,7 +150,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -211,7 +208,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetFullResults() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -503,7 +499,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetCaseInsensitiveFullResults() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -554,7 +549,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -614,7 +608,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextCaseInsensitiveFullResults() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
@@ -662,7 +655,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",

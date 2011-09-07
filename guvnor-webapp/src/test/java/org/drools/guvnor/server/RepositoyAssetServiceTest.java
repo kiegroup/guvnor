@@ -574,7 +574,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testRemoveAsset() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testRemoveAsset";
         repositoryCategoryService.createCategory( "/",
@@ -628,7 +627,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAsset() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testArchiveAsset";
         repositoryCategoryService.createCategory( "/",
@@ -704,7 +702,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testArchiveAssetWhenParentPackageArchived";
         String cat = packageName;
@@ -896,7 +893,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
                                                 "",
@@ -940,7 +936,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAssetBRXMLAndCopy() throws Exception {
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 

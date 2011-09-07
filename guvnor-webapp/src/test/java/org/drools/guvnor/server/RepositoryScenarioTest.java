@@ -43,7 +43,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     public void testRunScenario() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",
@@ -157,7 +156,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenarioWithGeneratedBeans() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
                                               "" );
@@ -216,7 +214,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
                                               "" );
@@ -329,7 +326,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenarioWithJar() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
         PackageItem pkg = repo.createPackage( "testRunScenarioWithJar",
@@ -403,7 +399,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
         PackageItem pkg = repo.createPackage( "testRunScenarioWithJarThatHasSourceFiles",
@@ -469,7 +464,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunPackageScenarios() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulk",
                                               "" );

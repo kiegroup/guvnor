@@ -65,7 +65,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         createPermissions();
 
         PackageItem pkg = rulesRepository.loadPackage("com.billasurf.manufacturing.plant");
-        packageService.buildPackage( pkg.getUUID(),
+        repositoryPackageService.buildPackage( pkg.getUUID(),
                                                true );
     }
 
@@ -136,15 +136,15 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createPackageSnapshots() {
-        packageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
                 "TEST",
                 false,
                 "The testing region.");
-        packageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION",
                 false,
                 "The testing region.");
-        packageService.createPackageSnapshot("com.billasurf.manufacturing",
+        repositoryPackageService.createPackageSnapshot("com.billasurf.manufacturing",
                 "PRODUCTION ROLLBACK",
                 false,
                 "The testing region.");
@@ -184,24 +184,24 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createPackages() throws SerializationException {
-        String uuid = packageService.createPackage( "com.billasurf.manufacturing",
+        String uuid = repositoryPackageService.createPackage( "com.billasurf.manufacturing",
                                           "Rules for manufacturing.",
                                           "package");
 
-        PackageConfigData conf = packageService.loadPackageConfig( uuid );
+        PackageConfigData conf = repositoryPackageService.loadPackageConfig( uuid );
         conf.setHeader("import com.billasurf.manuf.materials.*");
-        packageService.savePackage( conf );
+        repositoryPackageService.savePackage( conf );
 
-        packageService.createPackage("com.billasurf.manufacturing.plant",
+        repositoryPackageService.createPackage("com.billasurf.manufacturing.plant",
                 "Rules for manufacturing plants.",
                 "package");
-        packageService.createPackage("com.billasurf.finance",
+        repositoryPackageService.createPackage("com.billasurf.finance",
                 "All financial rules.",
                 "package");
-        packageService.createPackage("com.billasurf.hrman",
+        repositoryPackageService.createPackage("com.billasurf.hrman",
                 "Rules for in house HR application.",
                 "package");
-        packageService.createPackage("com.billasurf.sales",
+        repositoryPackageService.createPackage("com.billasurf.sales",
                 "Rules exposed as a service for pricing, and discounting.",
                 "package");
 

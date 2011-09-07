@@ -68,7 +68,7 @@ public abstract class GuvnorTestBase {
     protected RepositoryAssetService repositoryAssetService;
 
     @Inject
-    protected RepositoryPackageService packageService;
+    protected RepositoryPackageService repositoryPackageService;
 
     @Inject
     protected RepositoryCategoryService categoryService;
@@ -122,12 +122,6 @@ public abstract class GuvnorTestBase {
     // TODO seam3upgrade
     @Deprecated
     public ServiceImplementation getServiceImplementation() {
-        throw new UnsupportedOperationException("Use injection instead");
-    }
-
-    // TODO seam3upgrade
-    @Deprecated
-    protected RepositoryPackageService getRepositoryPackageService() {
         throw new UnsupportedOperationException("Use injection instead");
     }
 
