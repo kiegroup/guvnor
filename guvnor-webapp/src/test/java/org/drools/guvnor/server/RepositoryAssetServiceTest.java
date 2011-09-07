@@ -55,10 +55,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class RepositoryAssetServiceTest extends GuvnorTestBase {
+
     @Test
     public void testCreateLinkedAssetItem() throws Exception {
         @SuppressWarnings("unused")
-        PackageItem testCreateNewRuleAsLinkPackage1 = serviceImplementation.getRulesRepository().createPackage( "testCreateNewRuleAsLinkPackage1",
+        PackageItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createPackage( "testCreateNewRuleAsLinkPackage1",
                                                                                                "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRuleAsLinkCat1",
@@ -76,7 +77,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertNotNull( uuid );
         assertFalse( "".equals( uuid ) );
 
-        AssetItem dtItem = serviceImplementation.getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem dtItem = rulesRepository.loadAssetByUUID( uuid );
         assertEquals( dtItem.getDescription(),
                       "an initial desc" );
 
@@ -88,7 +89,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertTrue( uuidLink.equals( uuid ) );
 
         //now verify the linked asset.
-        AssetItem itemLink = serviceImplementation.getRulesRepository().loadAssetByUUID( uuidLink );
+        AssetItem itemLink = rulesRepository.loadAssetByUUID( uuidLink );
         assertEquals( itemLink.getName(),
                       "testCreateLinkedAssetItemRule" );
         assertEquals( itemLink.getDescription(),
@@ -105,7 +106,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertTrue( itemLink.getCategorySummary().contains( "testCreateNewRuleAsLinkCat1" ) );
 
         //now verify the original asset.
-        AssetItem referredItem = serviceImplementation.getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem referredItem = rulesRepository.loadAssetByUUID( uuid );
         assertEquals( referredItem.getName(),
                       "testCreateLinkedAssetItemRule" );
         assertEquals( referredItem.getDescription(),
@@ -119,7 +120,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertTrue( referredItem.getCategorySummary().contains( "testCreateNewRuleAsLinkCat1" ) );
 
         //now verify AssetItemIterator works by calling search
-        AssetItemIterator it = serviceImplementation.getRulesRepository().findAssetsByName( "testCreateLinkedAssetItemRule%",
+        AssetItemIterator it = rulesRepository.findAssetsByName( "testCreateLinkedAssetItemRule%",
                                                                            true );
         //NOTE, getSize() may return -1
         /*       assertEquals( 1,
@@ -145,7 +146,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     public void testLinkedAssetItemHistoryRelated() throws Exception {
 
         @SuppressWarnings("unused")
-        PackageItem testCreateNewRuleAsLinkPackage1 = serviceImplementation.getRulesRepository().createPackage( "testLinkedAssetItemHistoryRelatedPack",
+        PackageItem testCreateNewRuleAsLinkPackage1 = rulesRepository.createPackage( "testLinkedAssetItemHistoryRelatedPack",
                                                                                                "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLinkedAssetItemHistoryRelatedCat",
@@ -243,7 +244,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testLoadRuleAsset() throws Exception {
-        serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAsset",
+        rulesRepository.createPackage( "testLoadRuleAsset",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadRuleAsset",
@@ -295,8 +296,8 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( "testLoadRuleAsset",
                       asset.getMetaData().getCategories()[0] );
 
-        AssetItem rule = serviceImplementation.getRulesRepository().loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
-        serviceImplementation.getRulesRepository().createState("whee");
+        AssetItem rule = rulesRepository.loadPackage( "testLoadRuleAsset" ).loadAsset( "testLoadRuleAsset" );
+        rulesRepository.createState("whee");
         rule.updateState("whee");
         rule.checkin("changed state");
         asset = repositoryAssetService.loadRuleAsset( uuid );
@@ -326,7 +327,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListAssets() throws Exception {
-        PackageItem pacakgeItem = serviceImplementation.getRulesRepository().createPackage( "testListAssetsPackage",
+        PackageItem pacakgeItem = rulesRepository.createPackage( "testListAssetsPackage",
                                                                            "desc" );
         repositoryCategoryService.createCategory("",
                 "testListAssetsCat",
@@ -388,7 +389,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadArchivedAssets() throws Exception {
-        serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
+        rulesRepository.createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsCat",
@@ -456,7 +457,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListUnregisteredAssetFormats() throws Exception {
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testListUnregisteredAssetFormats",
+        PackageItem pkg = rulesRepository.createPackage( "testListUnregisteredAssetFormats",
                                                                    "" );
         AssetItem as = pkg.addAsset( "whee",
                                      "" );
@@ -481,7 +482,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
         long startTime = System.currentTimeMillis();
-        serviceImplementation.getRulesRepository().createPackage( "testLoadAssetHistory",
+        rulesRepository.createPackage( "testLoadAssetHistory",
                                                  "desc" );
         long nowTime1 = System.currentTimeMillis();
         System.out.println( "CreatePackage: " + (nowTime1 - startTime) );
@@ -741,7 +742,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
         assertEquals( -1,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
-        PackageItem packageItem = serviceImplementation.getRulesRepository().loadPackage( packageName );
+        PackageItem packageItem = rulesRepository.loadPackage( packageName );
         packageItem.archiveItem( true );
 
         TableDataResult td2 = repositoryAssetService.loadArchivedAssets( 0,
@@ -779,7 +780,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAssetWithError() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBuildAssetWithError",
@@ -812,7 +813,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAsset() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBuildAsset",
@@ -925,7 +926,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAssetBRXMLAndCopy() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBuildAssetBRL",
@@ -1016,7 +1017,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testAssetSource() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testAssetSource",
@@ -1077,7 +1078,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAssetWithPackageConfigError() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.createPackage( "testBuildAssetWithPackageConfigError",
                                               "" );
@@ -1124,7 +1125,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
+        rulesRepository.createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsCat",
@@ -1176,7 +1177,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testLoadArchivedAssetsFullResults() throws Exception {
 
-        serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
+        rulesRepository.createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadArchivedAssetsCat",
