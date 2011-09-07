@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
+import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -58,6 +59,11 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
         this.sce = sce;
+    }
+    
+    public void stateChanged() {
+        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        eventBus.fireEvent( event );
     }
     
 }

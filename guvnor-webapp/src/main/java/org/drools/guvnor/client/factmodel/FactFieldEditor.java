@@ -51,7 +51,7 @@ public class FactFieldEditor extends Composite {
     Image                                 deleteFieldIcon;
 
     private FieldMetaModel                field;
-    private List<FieldMetaModel> fields;
+    private List<FieldMetaModel>          fields;
     private final ModelNameHelper         modelNameHelper;
 
     private Command                       deleteCommand;
@@ -96,12 +96,7 @@ public class FactFieldEditor extends Composite {
     }
 
     private void setTypeText(String typeName) {
-        String easierTypeNameForMostPeopleWhoAreNotProgrammers = modelNameHelper.getTypeDescriptions().get( typeName );
-        if(easierTypeNameForMostPeopleWhoAreNotProgrammers==null) {
-            fieldType.setText( typeName );
-        } else {
-            fieldType.setText( easierTypeNameForMostPeopleWhoAreNotProgrammers );
-        }
+        fieldType.setText( modelNameHelper.getUserFriendlyTypeName( typeName ) );
     }
 
     public void setDeleteCommand(Command deleteCommand) {

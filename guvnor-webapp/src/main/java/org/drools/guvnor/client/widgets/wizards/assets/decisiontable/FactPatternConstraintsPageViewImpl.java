@@ -16,30 +16,34 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.resources.WizardCellListResources;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * The generic Wizard view implementation
@@ -48,46 +52,47 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     implements
     FactPatternConstraintsPageView {
 
-    private Presenter           presenter;
+    private Presenter                    presenter;
 
-    private TextCell            cellText                = new TextCell();
-    private Cell<Pattern52>     cellPattern             = new AbstractCell<Pattern52>() {
+    private List<DecoratedPattern>       availablePatterns;
+    private DecoratedPattern             availablePatternsSelection;
+    private CellList<DecoratedPattern>   availablePatternsWidget = new CellList<DecoratedPattern>( new DecoratedPatternCell(),
+                                                                                                   WizardCellListResources.INSTANCE );
 
-                                                            @Override
-                                                            public void render(Context context,
-                                                                               Pattern52 value,
-                                                                               SafeHtmlBuilder sb) {
-                                                                sb.append( SafeHtmlUtils.fromString( value.getBoundName() + " : " + value.getFactType() ) );
-                                                            }
+    private Set<AvailableField>          availableFieldsSelections;
+    private CellList<AvailableField>     availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
+                                                                                                 WizardCellListResources.INSTANCE );
 
-                                                        };
+    private List<DecoratedCondition>     chosenConditions;
+    private DecoratedCondition           chosenConditionsSelection;
+    private Set<DecoratedCondition>      chosenConditionsSelections;
+    private CellList<DecoratedCondition> chosenConditionsWidget  = new CellList<DecoratedCondition>( new DecoratedConditionCell(),
+                                                                                                     WizardCellListResources.INSTANCE );
 
-    private List<Pattern52>     availablePatterns;
-    private Set<Pattern52>      availablePatternsSelections;
-    private CellList<Pattern52> availablePatternsWidget = new CellList<Pattern52>( cellPattern );
+    private static final Constants       constants               = GWT.create( Constants.class );
 
-    private List<String>        availableFields;
-    private Set<String>         availableFieldsSelections;
-    private CellList<String>    availableFieldsWidget   = new CellList<String>( cellText );
-
-    private List<String>        chosenFields;
-    private Set<String>         chosenFieldsSelections;
-    private CellList<String>    chosenFieldsWidget      = new CellList<String>( cellText );
+    private static final Images          images                  = GWT.create( Images.class );
 
     @UiField
-    protected ScrollPanel       availablePatternsContainer;
+    protected ScrollPanel                availablePatternsContainer;
 
     @UiField
-    protected ScrollPanel       availableFieldsContainer;
+    protected ScrollPanel                availableFieldsContainer;
 
     @UiField
-    protected ScrollPanel       chosenFieldsContainer;
+    protected ScrollPanel                chosenConditionsContainer;
 
     @UiField
-    protected Button            btnAdd;
+    protected PushButton                 btnAdd;
 
     @UiField
-    protected Button            btnRemove;
+    protected PushButton                 btnRemove;
+
+    @UiField(provided = true)
+    PushButton                           btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+
+    @UiField(provided = true)
+    PushButton                           btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -101,20 +106,22 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
+        initialiseShufflers();
     }
 
     private void initialiseAvailablePatterns() {
         availablePatternsContainer.add( availablePatternsWidget );
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        availablePatternsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailablePatterns() ) );
 
-        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
+        final SingleSelectionModel<DecoratedPattern> selectionModel = new SingleSelectionModel<DecoratedPattern>();
         availablePatternsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                availablePatternsSelections = selectionModel.getSelectedSet();
-                btnAdd.setEnabled( availablePatternsSelections.size() > 0 );
+                availablePatternsSelection = selectionModel.getSelectedObject();
+                presenter.patternSelected( availablePatternsSelection.getPattern() );
             }
 
         } );
@@ -123,33 +130,116 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseAvailableFields() {
         availableFieldsContainer.add( availableFieldsWidget );
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        availableFieldsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailableFields() ) );
 
-        final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
+        final MultiSelectionModel<AvailableField> selectionModel = new MultiSelectionModel<AvailableField>();
         availableFieldsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
                 availableFieldsSelections = selectionModel.getSelectedSet();
+                btnAdd.setEnabled( availableFieldsSelections.size() > 0 );
             }
 
         } );
     }
 
     private void initialiseChosenFields() {
-        chosenFieldsContainer.add( chosenFieldsWidget );
-        chosenFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        chosenConditionsContainer.add( chosenConditionsWidget );
+        chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        chosenConditionsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenFields() ) );
 
-        final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-        chosenFieldsWidget.setSelectionModel( selectionModel );
+        final MultiSelectionModel<DecoratedCondition> selectionModel = new MultiSelectionModel<DecoratedCondition>();
+        chosenConditionsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenFieldsSelections = selectionModel.getSelectedSet();
+                chosenConditionsSelections = new HashSet<DecoratedCondition>();
+                Set<DecoratedCondition> selections = selectionModel.getSelectedSet();
+                for ( DecoratedCondition cw : selections ) {
+                    chosenConditionsSelections.add( cw );
+                }
+                chosenConditionsSelected( chosenConditionsSelections );
+            }
+
+            private void chosenConditionsSelected(Set<DecoratedCondition> cws) {
+                btnRemove.setEnabled( true );
+                if ( cws.size() == 1 ) {
+                    chosenConditionsSelection = cws.iterator().next();
+                    //TODO
+                    //                    txtBinding.setEnabled( true );
+                    //                    txtBinding.setText( chosenPatternSelection.getPattern().getBoundName() );
+                    //                    txtEntryPoint.setEnabled( true );
+                    //                    txtEntryPoint.setText( chosenPatternSelection.getPattern().getEntryPointName() );
+                    //                    if ( presenter.isPatternEvent( chosenPatternSelection.getPattern() ) ) {
+                    //                        ddCEPWindow.setCEPWindow( chosenPatternSelection.getPattern() );
+                    //                        cepWindowContainer.setVisible( true );
+                    //                    } else {
+                    //                        cepWindowContainer.setVisible( false );
+                    //                    }
+                    enableMoveUpButton();
+                    enableMoveDownButton();
+                } else {
+                    chosenConditionsSelection = null;
+                    //TODO
+                    //                    txtBinding.setEnabled( false );
+                    //                    txtBinding.setText( "" );
+                    //                    txtEntryPoint.setEnabled( false );
+                    //                    txtEntryPoint.setText( "" );
+                    //                    cepWindowContainer.setVisible( false );
+                    btnMoveUp.setEnabled( false );
+                    btnMoveDown.setEnabled( false );
+                }
             }
 
         } );
+    }
+
+    private void initialiseShufflers() {
+        btnMoveUp.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                int index = chosenConditions.indexOf( chosenConditionsSelection );
+                DecoratedCondition cw = chosenConditions.remove( index );
+                chosenConditions.add( index - 1,
+                                      cw );
+                setDecoratedChosenConditions( chosenConditions );
+                availablePatternsSelection.setConditions( unwrapConditions() );
+            }
+
+        } );
+        btnMoveDown.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                int index = chosenConditions.indexOf( chosenConditionsSelection );
+                DecoratedCondition cw = chosenConditions.remove( index );
+                chosenConditions.add( index + 1,
+                                      cw );
+                setDecoratedChosenConditions( chosenConditions );
+                availablePatternsSelection.setConditions( unwrapConditions() );
+            }
+
+        } );
+    }
+
+    private void enableMoveUpButton() {
+        if ( chosenConditions == null || chosenConditionsSelection == null ) {
+            btnMoveUp.setEnabled( false );
+            return;
+        }
+        int index = chosenConditions.indexOf( chosenConditionsSelection );
+        btnMoveUp.setEnabled( index > 0 );
+    }
+
+    private void enableMoveDownButton() {
+        if ( chosenConditions == null || chosenConditionsSelection == null ) {
+            btnMoveDown.setEnabled( false );
+            return;
+        }
+        int index = chosenConditions.indexOf( chosenConditionsSelection );
+        btnMoveDown.setEnabled( index < chosenConditions.size() - 1 );
     }
 
     public void setPresenter(Presenter presenter) {
@@ -157,19 +247,108 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     public void setAvailablePatterns(List<Pattern52> patterns) {
-        availablePatterns = patterns;
-        availablePatternsWidget.setRowCount( patterns.size(),
+        availablePatterns = wrapPatterns( patterns );
+        availablePatternsWidget.setRowCount( availablePatterns.size(),
                                              true );
-        availablePatternsWidget.setRowData( patterns );
-        availablePatternsWidget.setEmptyListWidget( new Label( "No patterns defined" ) );
+        availablePatternsWidget.setRowData( availablePatterns );
+
+        if ( availablePatternsSelection != null ) {
+
+            //If the currently selected pattern is no longer available clear selections
+            if ( !availablePatterns.contains( availablePatternsSelection ) ) {
+                setAvailableFields( new ArrayList<AvailableField>() );
+                availablePatternsSelection = null;
+                setChosenConditions( new ArrayList<ConditionCol52>() );
+                chosenConditionsSelection = null;
+            }
+        } else {
+
+            //If no available pattern is selected clear fields
+            setAvailableFields( new ArrayList<AvailableField>() );
+            setChosenConditions( new ArrayList<ConditionCol52>() );
+        }
+    }
+
+    private List<DecoratedPattern> wrapPatterns(List<Pattern52> patterns) {
+        List<DecoratedPattern> pws = new ArrayList<DecoratedPattern>();
+        for ( Pattern52 p : patterns ) {
+            pws.add( new DecoratedPattern( p ) );
+        }
+        return pws;
+    }
+
+    public void setAvailableFields(List<AvailableField> fields) {
+        availableFieldsWidget.setRowCount( fields.size(),
+                                           true );
+        availableFieldsWidget.setRowData( fields );
+    }
+
+    public void setChosenConditions(List<ConditionCol52> conditions) {
+        setDecoratedChosenConditions( wrapConditions( conditions ) );
+        presenter.stateChanged();
+    }
+
+    private void setDecoratedChosenConditions(List<DecoratedCondition> conditions) {
+        chosenConditions = conditions;
+        chosenConditionsWidget.setRowCount( conditions.size(),
+                                            true );
+        chosenConditionsWidget.setRowData( conditions );
+        enableMoveUpButton();
+        enableMoveDownButton();
+    }
+
+    private List<DecoratedCondition> wrapConditions(List<ConditionCol52> conditions) {
+        List<DecoratedCondition> cws = new ArrayList<DecoratedCondition>();
+        for ( ConditionCol52 c : conditions ) {
+            cws.add( new DecoratedCondition( c ) );
+        }
+        return cws;
+    }
+
+    private List<ConditionCol52> unwrapConditions() {
+        List<ConditionCol52> conditions = new ArrayList<ConditionCol52>();
+        for ( DecoratedCondition cw : chosenConditions ) {
+            conditions.add( cw.getCondition() );
+        }
+        return conditions;
+    }
+
+    public boolean isComplete() {
+        //Have patterns been defined?
+        if ( availablePatterns == null || availablePatterns.size() == 0 ) {
+            return false;
+        }
+        return !Validator.validateDecoratedPatterns( availablePatterns );
     }
 
     @UiHandler(value = "btnAdd")
     public void btnAddClick(ClickEvent event) {
+        for ( AvailableField f : availableFieldsSelections ) {
+            ConditionCol52 c = new ConditionCol52();
+            c.setFactField( f.getName() );
+            c.setFieldType( f.getType() );
+            chosenConditions.add( new DecoratedCondition( c ) );
+        }
+        setDecoratedChosenConditions( chosenConditions );
+        availablePatternsSelection.setConditions( unwrapConditions() );
+        presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick(ClickEvent event) {
+        for ( DecoratedCondition cw : chosenConditionsSelections ) {
+            chosenConditions.remove( cw );
+        }
+        setDecoratedChosenConditions( chosenConditions );
+        availablePatternsSelection.setConditions( unwrapConditions() );
+        presenter.stateChanged();
+
+        //TODO
+        //        txtBinding.setText( "" );
+        //        txtBinding.setEnabled( false );
+        //        txtEntryPoint.setText( "" );
+        //        txtEntryPoint.setEnabled( false );
+        btnRemove.setEnabled( false );
     }
 
 }

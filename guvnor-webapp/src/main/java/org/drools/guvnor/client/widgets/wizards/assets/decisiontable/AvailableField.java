@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-.cellListWidget {
-    width: 250px;
-    overflow: hidden;
-}
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-.cellListEvenItem {
-    margin: 2px;
-    padding: 1px;
-    cursor: pointer;
-    zoom: 1;
-}
+/**
+ * 
+ */
+class AvailableField {
 
-.cellListOddItem {
-    margin: 2px;
-    padding: 1px;
-    cursor: pointer;
-    zoom: 1;
-}
+    private String name;
 
-.cellListKeyboardSelectedItem {
-    background: #ffc; 
-}
+    private String type;
 
-.cellListSelectedItem {
-    background-color: rgb(200,200,200);
+    AvailableField(String name,
+                          String type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    String getName() {
+        return name;
+    }
+
+    String getType() {
+        return type;
+    }
+
 }

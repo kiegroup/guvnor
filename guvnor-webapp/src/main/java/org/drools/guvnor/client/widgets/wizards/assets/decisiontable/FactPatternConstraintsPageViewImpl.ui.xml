@@ -25,13 +25,32 @@
 
   <gwt:VerticalPanel ui:field="container">
     <gwt:HorizontalPanel>
-      <gwt:ScrollPanel ui:field="availablePatternsContainer" height="400px" width="200px" />
-      <gwt:ScrollPanel ui:field="availableFieldsContainer" height="400px" width="200px" />
-      <gwt:VerticalPanel ui:field="buttonBar">
-        <gwt:Button ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:Button>
-        <gwt:Button ui:field="btnRemove">&lt;&lt;</gwt:Button>
+      <gwt:VerticalPanel>
+        <gwt:SimplePanel>
+          <gwt:Label text="{i18n.DecisionTableWizardChosenTypes}" styleName="{res.style.wizardDTableHeader}"/>
+        </gwt:SimplePanel>
+        <gwt:ScrollPanel ui:field="availablePatternsContainer" styleName="{res.style.wizardDTableList}" height="300px" width="180px"/>
       </gwt:VerticalPanel>
-      <gwt:ScrollPanel ui:field="chosenFieldsContainer" height="400px" width="200px" />
+      <gwt:VerticalPanel>
+        <gwt:SimplePanel>
+          <gwt:Label text="{i18n.DecisionTableWizardAvailableFields}" styleName="{res.style.wizardDTableHeader}"/>
+        </gwt:SimplePanel>
+        <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.style.wizardDTableList}" height="300px" width="180px"/>
+      </gwt:VerticalPanel>
+      <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.style.wizardDTableButtons}">
+        <gwt:PushButton ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:PushButton>
+        <gwt:PushButton ui:field="btnRemove" enabled="false">&lt;&lt;</gwt:PushButton>
+      </gwt:VerticalPanel>
+      <gwt:VerticalPanel>
+        <gwt:SimplePanel>
+          <gwt:Label text="{i18n.DecisionTableWizardChosenConditions}" styleName="{res.style.wizardDTableHeader}"/>
+        </gwt:SimplePanel>
+        <gwt:ScrollPanel ui:field="chosenConditionsContainer" styleName="{res.style.wizardDTableList}" height="300px" width="180px"/>
+      </gwt:VerticalPanel>
+      <gwt:VerticalPanel styleName="{res.style.wizardDTableButtons}">
+        <gwt:PushButton ui:field="btnMoveUp" enabled="false" />
+        <gwt:PushButton ui:field="btnMoveDown" enabled="false" />
+      </gwt:VerticalPanel>
     </gwt:HorizontalPanel>
   </gwt:VerticalPanel>
 

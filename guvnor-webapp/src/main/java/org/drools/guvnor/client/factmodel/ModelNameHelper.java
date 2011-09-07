@@ -29,17 +29,25 @@ public class ModelNameHelper {
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
                                                              private static final long serialVersionUID = 510l;
                                                              {
+                                                                 //Existing Declarative models don't use FQN's
                                                                  put( "Integer",
                                                                       constants.WholeNumberInteger() );
                                                                  put( "Boolean",
                                                                       constants.TrueOrFalse() );
+                                                                 put( "String",
+                                                                      constants.Text() );
                                                                  put( "java.util.Date",
                                                                       constants.Date() );
                                                                  put( "java.math.BigDecimal",
                                                                       constants.DecimalNumber() );
-                                                                 put( "String",
-                                                                      constants.Text() );
 
+                                                                 //Decision Table Wizard uses FQN's
+                                                                 put( "java.lang.Integer",
+                                                                      constants.WholeNumberInteger() );
+                                                                 put( "java.lang.Boolean",
+                                                                      constants.TrueOrFalse() );
+                                                                 put( "java.lang.String",
+                                                                      constants.Text() );
                                                              }
                                                          };
 
@@ -67,4 +75,14 @@ public class ModelNameHelper {
         getTypeDescriptions().put( newName,
                                    newName );
     }
+
+    public String getUserFriendlyTypeName(String systemTypeName) {
+        String userFriendlyName = getTypeDescriptions().get( systemTypeName );
+        if ( userFriendlyName == null ) {
+            return systemTypeName;
+        } else {
+            return userFriendlyName;
+        }
+    }
+
 }

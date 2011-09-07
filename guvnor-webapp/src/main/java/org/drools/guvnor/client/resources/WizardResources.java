@@ -47,7 +47,7 @@ public interface WizardResources
 
         String wizardDTableMessage();
 
-        String wizardDTableDuplicatePattern();
+        String wizardDTableValidationError();
 
         String wizardSidebar();
 

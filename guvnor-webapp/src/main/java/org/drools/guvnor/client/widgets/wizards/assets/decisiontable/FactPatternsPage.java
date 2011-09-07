@@ -53,6 +53,7 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
             return;
         }
         view.setPresenter( this );
+        view.setDecisionTable( dtable );
 
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
@@ -62,39 +63,17 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
         content.setWidget( view );
     }
-    
+
     public void prepareView() {
         // Nothing needs to be done when the page is viewed; it is setup in initialise
     }
 
     public boolean isComplete() {
-        if ( dtable.getConditionPatterns().size() == 0 ) {
-            return false;
-        }
-        Set<String> bindings = new HashSet<String>();
-        for ( Pattern52 pattern : dtable.getConditionPatterns() ) {
-            String binding = pattern.getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                if ( bindings.contains( binding ) ) {
-                    return false;
-                }
-                bindings.add( binding );
-            }
-        }
-        return true;
+        return view.isComplete();
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {
         return sce.isFactTypeAnEvent( pattern.getFactType() );
-    }
-
-    public void stateChanged() {
-        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        eventBus.fireEvent( event );
-    }
-
-    public void setChosenPatterns(List<Pattern52> patterns) {
-        dtable.setConditionPatterns( patterns );
     }
 
 }

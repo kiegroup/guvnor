@@ -15,8 +15,14 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -27,7 +33,9 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     implements
     FactPatternConstraintsPageView.Presenter {
 
-    private FactPatternConstraintsPageView view = new FactPatternConstraintsPageViewImpl();
+    private final ModelNameHelper          modelNameHelper = new ModelNameHelper();
+
+    private FactPatternConstraintsPageView view            = new FactPatternConstraintsPageViewImpl();
 
     public FactPatternConstraintsPage(NewAssetWizardContext context,
                                       GuidedDecisionTable52 dtable,
@@ -48,14 +56,34 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         view.setPresenter( this );
         content.setWidget( view );
     }
-    
+
     public void prepareView() {
         view.setAvailablePatterns( dtable.getConditionPatterns() );
     }
 
     public boolean isComplete() {
-        //TODO Check each pattern has at least one constraint
-        return true;
+        return view.isComplete();
+    }
+
+    public void patternSelected(Pattern52 pattern) {
+        String type = pattern.getFactType();
+        String[] fs = sce.getFieldCompletions( type );
+        List<AvailableField> fields = new ArrayList<AvailableField>();
+        for ( String f : fs ) {
+            String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldClassName( type,
+                                                                                               f ) );
+            AvailableField field = new AvailableField( f,
+                                                       fieldType );
+            fields.add( field );
+        }
+        view.setAvailableFields( fields );
+        view.setChosenConditions( pattern.getConditions() );
+    }
+
+    public void setChosenConditions(Pattern52 pattern,
+                                    List<ConditionCol52> conditions) {
+        pattern.getConditions().clear();
+        pattern.getConditions().addAll( conditions );
     }
 
 }

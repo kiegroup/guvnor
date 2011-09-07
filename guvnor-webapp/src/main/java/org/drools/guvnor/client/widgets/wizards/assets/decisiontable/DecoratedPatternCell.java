@@ -16,8 +16,6 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.resources.WizardResources;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.FactPatternCell.Pattern52Wrapper;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -26,9 +24,10 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
- * A cell to display Fact Patterns
+ * A cell to display a Fact Pattern, wrapped to be able to change its appearance
+ * when the Pattern binding is duplicated with another Pattern
  */
-public class FactPatternCell extends AbstractCell<Pattern52Wrapper> {
+class DecoratedPatternCell extends AbstractCell<DecoratedPattern> {
 
     interface FactPatternCellTemplate
         extends
@@ -43,49 +42,26 @@ public class FactPatternCell extends AbstractCell<Pattern52Wrapper> {
 
     @Override
     public void render(Context context,
-                       Pattern52Wrapper value,
+                       DecoratedPattern value,
                        SafeHtmlBuilder sb) {
-        String binding = value.pattern.getBoundName();
+        String binding = value.getBoundName();
         StringBuilder b = new StringBuilder();
         if ( binding == null || "".equals( binding ) ) {
-            b.append( value.pattern.getFactType() );
+            b.append( value.getFactType() );
         } else {
-            b.append( value.pattern.getBoundName() );
+            b.append( value.getBoundName() );
             b.append( " : " );
-            b.append( value.pattern.getFactType() );
+            b.append( value.getFactType() );
         }
-        sb.append( TEMPLATE.text( getCssStyleName(value),
+        sb.append( TEMPLATE.text( getCssStyleName( value ),
                                   b.toString() ) );
     }
 
-    private String getCssStyleName(Pattern52Wrapper pw) {
-        if(pw.isDuplicateBinding) {
-            return WizardResources.INSTANCE.style().wizardDTableDuplicatePattern();
+    private String getCssStyleName(DecoratedPattern pw) {
+        if ( pw.isDuplicateBinding() ) {
+            return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }
         return "";
-    }
-
-    public static class Pattern52Wrapper {
-        
-        private Pattern52 pattern;
-        private boolean   isDuplicateBinding;
-
-        public Pattern52Wrapper(Pattern52 pattern) {
-            this.pattern=pattern;
-        }
-        
-        public boolean isDuplicateBinding() {
-            return isDuplicateBinding;
-        }
-
-        public void setDuplicateBinding(boolean isDuplicateBinding) {
-            this.isDuplicateBinding = isDuplicateBinding;
-        }
-
-        public Pattern52 getPattern() {
-            return pattern;
-        }
-
     }
 
 }
