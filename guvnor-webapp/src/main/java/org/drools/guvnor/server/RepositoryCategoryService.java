@@ -42,22 +42,8 @@ public class RepositoryCategoryService
     @Inject
     private ServiceSecurity serviceSecurity;
 
-    private final RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
-
-    @PostConstruct
-    public void create() {
-        repositoryCategoryOperations.setRulesRepository( getRulesRepository() );
-    }
-
-    /* This is called in hosted mode when creating "by hand" */
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-        create();
-    }
-
-    public RulesRepository getRulesRepository() {
-        return repository;
-    }
+    @Inject
+    private RepositoryCategoryOperations repositoryCategoryOperations;
 
     @WebRemote
     @LoggedIn

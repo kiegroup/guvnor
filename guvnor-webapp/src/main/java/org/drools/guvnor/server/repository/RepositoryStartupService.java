@@ -174,7 +174,6 @@ public class RepositoryStartupService {
         sessionForSetup.logout();
         MailboxService.getInstance().stop();
         mailmanSession.logout();
-
     }
 
     public void setHomeDirectory(String home) {
@@ -195,7 +194,6 @@ public class RepositoryStartupService {
      * @return
      */
     public Session newSession(String userName) {
-
         try {
             return configurator.login(userName);
         } catch (LoginException e) {
@@ -212,7 +210,6 @@ public class RepositoryStartupService {
      * @return
      */
     public Session newSession(String userName, String password) {
-
         try {
             return configurator.login(userName, password);
         } catch (LoginException e) {
