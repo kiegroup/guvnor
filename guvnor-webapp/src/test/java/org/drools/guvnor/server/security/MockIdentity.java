@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.enterprise.inject.Alternative;
 import javax.security.auth.login.LoginException;
 
 import org.jboss.seam.security.IdentityImpl;
@@ -32,6 +33,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 // TODO seam3upgrade
+@Alternative 
 public class MockIdentity extends IdentityImpl {
 
     private static final long serialVersionUID = 3159602570340648366L;
@@ -70,8 +72,7 @@ public class MockIdentity extends IdentityImpl {
         return true;
     }
 
-    @Override
-     public void logout() {
+    public void logout() {
         this.loggoutCalled = true;
     }
 
