@@ -117,20 +117,15 @@ public class ServiceImplementation
     @Inject
     private ServiceSecurity serviceSecurity;
 
-    private final RepositoryAssetOperations   repositoryAssetOperations   = new RepositoryAssetOperations();
-    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
+    @Inject
+    private RepositoryAssetOperations   repositoryAssetOperations;
 
-    /* This is called also by Seam AND Hosted mode */
-    @PostConstruct
-    public void create() {
-        repositoryAssetOperations.setRulesRepository( getRulesRepository() );
-        repositoryPackageOperations.setRulesRepository( getRulesRepository() );
-    }
+    @Inject
+    private RepositoryPackageOperations repositoryPackageOperations;
 
-    /* This is called in hosted mode when creating "by hand" */
+    // TODO seam3upgrade
     public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
         this.rulesRepository = repository;
-        create();
     }
 
     public RulesRepository getRulesRepository() {
@@ -140,19 +135,19 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String[] listWorkspaces() {
-        return getRulesRepository().listWorkspaces();
+        return rulesRepository.listWorkspaces();
     }
 
     @WebRemote
     @LoggedIn
     public void createWorkspace(String workspace) {
-        getRulesRepository().createWorkspace( workspace );
+        rulesRepository.createWorkspace( workspace );
     }
 
     @WebRemote
     @LoggedIn
     public void removeWorkspace(String workspace) {
-        getRulesRepository().removeWorkspace( workspace );
+        rulesRepository.removeWorkspace( workspace );
     }
 
     /**
@@ -164,12 +159,12 @@ public class ServiceImplementation
                                 String[] selectedModules,
                                 String[] unselectedModules) {
         for ( String moduleName : selectedModules ) {
-            PackageItem module = getRulesRepository().loadPackage( moduleName );
+            PackageItem module = rulesRepository.loadPackage( moduleName );
             module.addWorkspace( workspace );
             module.checkin( "Add workspace" );
         }
         for ( String moduleName : unselectedModules ) {
-            PackageItem module = getRulesRepository().loadPackage( moduleName );
+            PackageItem module = rulesRepository.loadPackage( moduleName );
             module.removeWorkspace( workspace );
             module.checkin( "Remove workspace" );
         }
@@ -193,7 +188,7 @@ public class ServiceImplementation
 
         try {
 
-            PackageItem pkg = getRulesRepository().loadPackage( initialPackage );
+            PackageItem pkg = rulesRepository.loadPackage( initialPackage );
             AssetItem asset = pkg.addAsset( ruleName,
                                             description,
                                             initialCategory,
@@ -202,7 +197,7 @@ public class ServiceImplementation
             new AssetTemplateCreator().applyPreBuiltTemplates( ruleName,
                                                                format,
                                                                asset );
-            getRulesRepository().save();
+            rulesRepository.save();
 
             push( "categoryChange",
                   initialCategory );
@@ -231,12 +226,12 @@ public class ServiceImplementation
                                         String initialPackage) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( initialPackage );
 
-        log.info( "USER:" + getRulesRepository().getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
+        log.info( "USER:" + rulesRepository.getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 
         try {
-            PackageItem packageItem = getRulesRepository().loadPackage( initialPackage );
+            PackageItem packageItem = rulesRepository.loadPackage( initialPackage );
             AssetItem asset = packageItem.addAssetImportedFromGlobalArea( sharedAssetName );
-            getRulesRepository().save();
+            rulesRepository.save();
 
             return asset.getUUID();
         } catch ( RulesRepositoryException e ) {
@@ -256,14 +251,14 @@ public class ServiceImplementation
     public void deleteUncheckedRule(String uuid) {
         serviceSecurity.checkSecurityIsPackageAdminWithAdminType();
 
-        AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem asset = rulesRepository.loadAssetByUUID( uuid );
 
         PackageItem packageItem = asset.getPackage();
         packageItem.updateBinaryUpToDate( false );
 
         asset.remove();
 
-        getRulesRepository().save();
+        rulesRepository.save();
         push( "packageChange",
               packageItem.getName() );
     }
@@ -281,7 +276,7 @@ public class ServiceImplementation
         // TODO: May need to use a filter that acts on both package based and
         // category based.
         RepositoryFilter filter = new AssetItemFilter();
-        AssetItemPageResult result = getRulesRepository().findAssetsByState( stateName,
+        AssetItemPageResult result = rulesRepository.findAssetsByState( stateName,
                                                                              false,
                                                                              skip,
                                                                              numRows,
@@ -337,7 +332,7 @@ public class ServiceImplementation
         dates[1] = new DateQuery( AssetItem.LAST_MODIFIED_PROPERTY_NAME,
                                   DateUtil.isoDate( modifiedAfter ),
                                   DateUtil.isoDate( modifiedBefore ) );
-        AssetItemIterator it = getRulesRepository().query( q,
+        AssetItemIterator it = rulesRepository.query( q,
                                                            seekArchived,
                                                            dates );
         // Add Filter to check Permission
@@ -381,8 +376,8 @@ public class ServiceImplementation
         log.info( "USER:" + getCurrentUserName() + " CREATING state: [" + name + "]" );
         try {
             name = HtmlCleaner.cleanHTML( name );
-            String uuid = getRulesRepository().createState( name ).getNode().getUUID();
-            getRulesRepository().save();
+            String uuid = rulesRepository.createState( name ).getNode().getUUID();
+            rulesRepository.save();
             return uuid;
         } catch ( RepositoryException e ) {
             throw new SerializationException( "Unable to create the status." );
@@ -395,8 +390,8 @@ public class ServiceImplementation
         log.info( "USER:" + getCurrentUserName() + " REMOVING state: [" + name + "]" );
 
         try {
-            getRulesRepository().loadState( name ).remove();
-            getRulesRepository().save();
+            rulesRepository.loadState( name ).remove();
+            rulesRepository.save();
 
         } catch ( RulesRepositoryException e ) {
             throw new DetailedSerializationException( "Unable to remove status. It is probably still used (even by archived items).",
@@ -409,7 +404,7 @@ public class ServiceImplementation
     public void renameState(String oldName,
                             String newName) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " RENAMING state: [" + oldName + "] to [" + newName + "]" );
-        getRulesRepository().renameState( oldName,
+        rulesRepository.renameState( oldName,
                                           newName );
 
     }
@@ -417,7 +412,7 @@ public class ServiceImplementation
     @WebRemote
     @LoggedIn
     public String[] listStates() throws SerializationException {
-        StateItem[] states = getRulesRepository().listStates();
+        StateItem[] states = rulesRepository.listStates();
         String[] result = new String[states.length];
         for ( int i = 0; i < states.length; i++ ) {
             result[i] = states[i].getName();
@@ -429,7 +424,7 @@ public class ServiceImplementation
     public void clearRulesRepository() {
         serviceSecurity.checkSecurityIsAdmin();
 
-        RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( getRulesRepository().getSession() );
+        RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator( rulesRepository.getSession() );
         admin.clearRulesRepository();
     }
 
@@ -440,7 +435,7 @@ public class ServiceImplementation
         //serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         SuggestionCompletionEngine suggestionCompletionEngine = null;
         try {
-            PackageItem packageItem = getRulesRepository().loadPackage( packageName );
+            PackageItem packageItem = rulesRepository.loadPackage( packageName );
             suggestionCompletionEngine = new SuggestionCompletionEngineLoaderInitializer().loadFor( packageItem );
         } catch ( RulesRepositoryException e ) {
             log.error( "An error occurred loadSuggestionCompletionEngine: " + e.getMessage() );
@@ -559,7 +554,7 @@ public class ServiceImplementation
     @LoggedIn
     public Map<String, List<String>> listUserPermissions() {
         serviceSecurity.checkSecurityIsAdmin();
-        return new PermissionManager( getRulesRepository() ).listUsers();
+        return new PermissionManager( rulesRepository ).listUsers();
     }
 
     @LoggedIn
@@ -574,7 +569,7 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsAdmin();
 
         long start = System.currentTimeMillis();
-        Map<String, List<String>> permissions = new PermissionManager( getRulesRepository() ).listUsers();
+        Map<String, List<String>> permissions = new PermissionManager( rulesRepository ).listUsers();
 
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
@@ -599,7 +594,7 @@ public class ServiceImplementation
     public Map<String, List<String>> retrieveUserPermissions(String userName) {
         serviceSecurity.checkSecurityIsAdmin();
 
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        PermissionManager pm = new PermissionManager( rulesRepository );
         return pm.retrieveUserPermissions( userName );
     }
 
@@ -608,12 +603,12 @@ public class ServiceImplementation
                                       Map<String, List<String>> perms) {
         serviceSecurity.checkSecurityIsAdmin();
 
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        PermissionManager pm = new PermissionManager( rulesRepository );
 
         log.info( "Updating user permissions for userName [" + userName + "] to [" + perms + "]" );
         pm.updateUserPermissions( userName,
                                   perms );
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     @Deprecated
@@ -637,17 +632,17 @@ public class ServiceImplementation
     @LoggedIn
     public void deleteUser(String userName) {
         log.info( "Removing user permissions for user name [" + userName + "]" );
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        PermissionManager pm = new PermissionManager( rulesRepository );
         pm.removeUserPermissions( userName );
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     @LoggedIn
     public void createUser(String userName) {
         log.info( "Creating user permissions, user name [" + userName + "]" );
-        PermissionManager pm = new PermissionManager( getRulesRepository() );
+        PermissionManager pm = new PermissionManager( rulesRepository );
         pm.createUser( userName );
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     /**
@@ -656,7 +651,7 @@ public class ServiceImplementation
     @LoggedIn
     public TableDataResult loadInbox(String inboxName) throws DetailedSerializationException {
         try {
-            UserInbox ib = new UserInbox( getRulesRepository() );
+            UserInbox ib = new UserInbox( rulesRepository );
             if ( inboxName.equals( ExplorerNodeConfig.RECENT_VIEWED_ID ) ) {
                 return UserInbox.toTable( ib.loadRecentOpened(),
                                           false );
@@ -689,7 +684,7 @@ public class ServiceImplementation
 
         try {
 
-            List<InboxEntry> entries = new UserInbox( getRulesRepository() ).loadEntries( inboxName );
+            List<InboxEntry> entries = new UserInbox( rulesRepository ).loadEntries( inboxName );
 
             log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
@@ -790,7 +785,7 @@ public class ServiceImplementation
         }
 
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().queryFullText( request.getSearchText(),
+        AssetItemIterator iterator = rulesRepository.queryFullText( request.getSearchText(),
                                                                          request.isSearchArchived() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
@@ -828,7 +823,7 @@ public class ServiceImplementation
         DateQuery[] dates = createDateQueryForRepository( request );
 
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().query( queryMap,
+        AssetItemIterator iterator = rulesRepository.query( queryMap,
                                                                  request.isSearchArchived(),
                                                                  dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
@@ -890,7 +885,7 @@ public class ServiceImplementation
         // TODO: May need to use a filter for both package and categories
         // NOTE: Filtering is handled in repository.findAssetsByState()
         int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByState( request.getStateName(),
+        AssetItemPageResult result = rulesRepository.findAssetsByState( request.getStateName(),
                                                                              false,
                                                                              request.getStartRowIndex(),
                                                                              numRowsToReturn,
@@ -940,7 +935,7 @@ public class ServiceImplementation
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 
     public List<PushResponse> subscribe() {
@@ -963,7 +958,7 @@ public class ServiceImplementation
 
         try {
 
-            PackageItem pkg = getRulesRepository().loadPackage( packageName );
+            PackageItem pkg = rulesRepository.loadPackage( packageName );
             return pkg.containsAsset( assetName );
 
         } catch ( RulesRepositoryException e ) {
