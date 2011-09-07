@@ -54,7 +54,7 @@ import org.drools.repository.RulesRepositoryException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class RepositoyAssetServiceTest extends GuvnorTestBase {
+public class RepositoryAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testCreateLinkedAssetItem() throws Exception {
         @SuppressWarnings("unused")
