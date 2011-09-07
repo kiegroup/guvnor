@@ -185,7 +185,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         response = repositoryAssetService.quickFindAsset( request );
 
         assertNotNull( response );
@@ -244,7 +244,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         response = repositoryAssetService.quickFindAsset( request );
 
         assertNotNull( response );
@@ -398,7 +398,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          null,
                                                          0,
                                                          PAGE_SIZE );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );
 
@@ -456,7 +456,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          null,
                                                          0,
                                                          null );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );
 
@@ -492,7 +492,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          null,
                                                          0,
                                                          null );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         PageResponse<AssetPageRow> response;
         response = repositoryAssetService.findAssetPage( request );
 
@@ -537,7 +537,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         response = repositoryAssetService.quickFindAsset( request );
 
         assertNotNull( response );
@@ -588,7 +588,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         response = repositoryAssetService.quickFindAsset( request );
 
         assertNotNull( response );

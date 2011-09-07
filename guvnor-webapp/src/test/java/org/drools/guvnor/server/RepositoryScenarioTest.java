@@ -137,7 +137,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
                                                 "sc",
                                                 pkg.getName(),
                                                 AssetFormats.TEST_SCENARIO );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( scenarioId );
         assertNotNull( asset.getContent() );
         assertTrue( asset.getContent() instanceof Scenario );

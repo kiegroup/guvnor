@@ -29,7 +29,6 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -40,7 +39,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
-//import org.jboss.arquillian.api.Deployment;
 
 @RunWith(Arquillian.class)
 public abstract class GuvnorTestBase {
@@ -67,7 +65,7 @@ public abstract class GuvnorTestBase {
     protected ServiceImplementation serviceImplementation;
 
     @Inject
-    protected RepositoryAssetService assetService;
+    protected RepositoryAssetService repositoryAssetService;
 
     @Inject
     protected RepositoryPackageService packageService;
@@ -124,25 +122,19 @@ public abstract class GuvnorTestBase {
     // TODO seam3upgrade
     @Deprecated
     public ServiceImplementation getServiceImplementation() {
-        return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
-    }
-
-    // TODO seam3upgrade
-    @Deprecated
-    protected RepositoryAssetService getRepositoryAssetService() {
-        return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
+        throw new UnsupportedOperationException("Use injection instead");
     }
 
     // TODO seam3upgrade
     @Deprecated
     protected RepositoryPackageService getRepositoryPackageService() {
-        return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
+        throw new UnsupportedOperationException("Use injection instead");
     }
 
     // TODO seam3upgrade
     @Deprecated
     public RepositoryCategoryService getRepositoryCategoryService() {
-        return (RepositoryCategoryService) Component.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
+        throw new UnsupportedOperationException("Use injection instead");
     }
 
     protected void setUpFileManagerUtils() {

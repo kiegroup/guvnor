@@ -109,7 +109,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                        "snapshotDiffTesting",
                                                        "testSnapshotDiff",
                                                        AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         // Create a snapshot called FIRST for the package
@@ -331,7 +330,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                           cat,
                                           "sourcePackage",
                                           AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( destPkgId,
                                                                  new String[]{"drl"},
                                                                  0,
@@ -590,7 +589,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         String uuid = repositoryPackageService.createPackage( "testCreateArchivedPackage",
                                                               "this is a new package",
                                                               "package" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         PackageItem item = serviceImplementation.getRulesRepository().loadPackage( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
@@ -851,7 +850,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
@@ -978,7 +977,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
@@ -1282,7 +1281,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         RuleModel model2 = new RuleModel();
         assertNull( model2.name );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
         asset.setContent( (PortableObject) model2 );
 

@@ -52,7 +52,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetAnalyst() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetAnalystPack1",
                                                      "desc" );
@@ -120,7 +120,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testLoadRuleAssetPackageReadonlyPack1";
@@ -195,7 +195,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategory() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPack1",
                                                      "desc" );
@@ -249,7 +249,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                                                                "desc" );
@@ -310,7 +310,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
                                                                                "desc" );
@@ -384,7 +384,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                                "desc" );
@@ -454,7 +454,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
 
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                                                                                "desc" );
@@ -521,7 +521,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                                                                                "desc" );
@@ -629,7 +629,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageUuid = repositoryPackageService.createPackage( "testCheckinWithPackageReadonlyPack",
@@ -696,7 +696,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testCheckinPackageDeveloperPack1";
@@ -764,7 +764,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
-            RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
+
             RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";

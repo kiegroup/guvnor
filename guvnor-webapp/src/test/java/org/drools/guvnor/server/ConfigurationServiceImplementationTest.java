@@ -32,13 +32,7 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
     @Before
     public void setUpGuvnorTestBase() {
-        createConfigurationService();
-    }
-
-    private void createConfigurationService() {
-        ConfigurationServiceImplementation configurationServiceImplementation = spy(new ConfigurationServiceImplementation());
-        when(configurationServiceImplementation.getRepository()).thenReturn(rulesRepository);
-        configurationService = configurationServiceImplementation;
+        configurationService = new ConfigurationServiceImplementation();
     }
 
     @Test
@@ -48,4 +42,5 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
         assertNotNull(preferences);
     }
+
 }

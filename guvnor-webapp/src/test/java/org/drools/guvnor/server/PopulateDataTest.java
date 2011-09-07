@@ -30,7 +30,6 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerUtils;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.repository.AssetItem;
@@ -158,14 +157,14 @@ public class PopulateDataTest extends GuvnorTestBase {
                                           "Manufacturing/Boards",
                                           "com.billasurf.manufacturing",
                                           AssetFormats.BUSINESS_RULE );
-        assetService.changeState(uuid,
+        repositoryAssetService.changeState(uuid,
                 "Pending");
         uuid = serviceImplementation.createNewRule( "Premium_Colour_Combinations",
                                    "This defines XXX.",
                                    "Manufacturing/Boards",
                                    "com.billasurf.manufacturing",
                                    AssetFormats.BUSINESS_RULE );
-        assetService.changeState(uuid,
+        repositoryAssetService.changeState(uuid,
                 "Approved");
         uuid = serviceImplementation.createNewRule( "Fibreglass supplier selection",
                                    "This defines XXX.",

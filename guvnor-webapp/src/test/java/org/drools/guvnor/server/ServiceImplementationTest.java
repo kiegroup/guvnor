@@ -102,14 +102,13 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             MailboxService service = MailboxService.getInstance();
             service.init( serviceImplementation.getRulesRepository() );
 
-            RepositoryAssetService assetServiceImpl = getRepositoryAssetService();
             assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
             //this should trigger the fact that the first user edited something
             AssetItem as = serviceImplementation.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
                                                                                     "" );
             as.checkin( "" );
-            RuleAsset ras = assetServiceImpl.loadRuleAsset( as.getUUID() );
+            RuleAsset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
 
             TableDataResult res = serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
             boolean found = false;
@@ -177,7 +176,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             }
             assertTrue( found );
 
-            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
             //now lets open it with first user, and check that it disappears from the incoming...
             repositoryAssetService.loadRuleAsset( as.getUUID() );
             found = false;
@@ -359,7 +358,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             //assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
         }
 
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset assetWrapper = repositoryAssetService.loadRuleAsset( uuid );
         assertEquals( assetWrapper.getDescription(),
                       "an initial desc" );
@@ -438,7 +437,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                             "testTrackRecentOpenedChanged",
                                             "testTrackRecentOpenedChanged",
                                             "drl" );
-            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
             RuleAsset ass = repositoryAssetService.loadRuleAsset( id );
 
             repositoryAssetService.checkinVersion( ass );
@@ -500,7 +499,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                               "testCheckinCategory",
                                               RulesRepository.DEFAULT_PACKAGE,
                                               AssetFormats.DRL );
-            RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
             RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
 
             assertNotNull( asset.getLastModified() );
@@ -619,7 +618,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                            cat,
                                            "testListByFormat",
                                            "testListByFormat" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pkgUUID,
                                                                  arr( "testListByFormat" ),
                                                                  0,
@@ -725,7 +724,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                           cat,
                                           "testQuickFind",
                                           AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.quickFindAsset("testQuickFindmyRule",
                 false,
                 0,
@@ -782,7 +781,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                           cat,
                                           "testTextSearch",
                                           AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.queryFullText( "testTextRule1",
                                                                     false,
                                                                     0,
@@ -868,7 +867,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                "testStatus",
                                                AssetFormats.DRL );
         serviceImplementation.createState("testState");
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( ruleUUID );
         assertEquals(StateItem.DRAFT_STATE_NAME,
                 asset.getState());
@@ -942,7 +941,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testDiscussion() throws Exception {
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testDiscussionFeature",
@@ -1101,7 +1100,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertTrue( pkg.getNode().getProperty( "drools:binaryUpToDate" ).getBoolean() );
         assertTrue( pkg.isBinaryUpToDate() );
         assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( rule1.getUUID() );
         repositoryAssetService.checkinVersion( asset );
 
@@ -1211,7 +1210,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                          "decisiontables",
                                          pkg.getName(),
                                          AssetFormats.DECISION_TABLE_GUIDED );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset ass = repositoryAssetService.loadRuleAsset( uid );
         ass.setContent( dt );
         repositoryAssetService.checkinVersion( ass );
@@ -1423,7 +1422,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         String cat = "testCategory";
         String status = "testStatus";
         String uuid;
@@ -1486,7 +1485,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         String cat = "testCategory";
         String status = "testStatus";
         String uuid;
@@ -1558,7 +1557,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testLoadInboxCategory",
                                    "testLoadInboxPackage",
                                    AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         uuid = serviceImplementation.createNewRule( "rule2",
@@ -1619,7 +1618,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                    "testLoadInboxCategory",
                                    "testLoadInboxPackage",
                                    AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         uuid = serviceImplementation.createNewRule( "rule2",
@@ -1691,7 +1690,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                         false,
                                         0,
                                         20 );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         response = repositoryAssetService.quickFindAsset( request );
         assertEquals( 1,
                       response.getPageRowList().size() );

@@ -144,7 +144,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLinkedAssetItemHistoryRelated() throws Exception {
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         @SuppressWarnings("unused")
         PackageItem testCreateNewRuleAsLinkPackage1 = serviceImplementation.getRulesRepository().createPackage( "testLinkedAssetItemHistoryRelatedPack",
@@ -271,7 +271,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
         TableDataRow row = res.data[0];
         String uuid = row.id;
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset );
 
@@ -365,7 +365,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                 "testListAssetsCat",
                 "testListAssetsPackage",
                 AssetFormats.BUSINESS_RULE);
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pacakgeItem.getUUID(),
                                                                  new String[]{AssetFormats.BUSINESS_RULE},
                                                                  0,
@@ -404,7 +404,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
                                            AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset(uuid1);
 
         String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssets2",
@@ -472,7 +472,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                            "" );
         as.updateFormat( "something_silly" );
         as.checkin( "" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pkg.getUUID(),
                                                                  new String[0],
                                                                  0,
@@ -504,7 +504,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                           AssetFormats.DRL );
         long nowTime3 = System.currentTimeMillis();
         System.out.println( "CreateNewRule: " + (nowTime3 - nowTime2) );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         repositoryAssetService.checkinVersion( asset ); // 1
         long nowTime4 = System.currentTimeMillis();
@@ -557,7 +557,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                           "templates",
                                           RulesRepository.DEFAULT_PACKAGE,
                                           AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         String uuid2 = repositoryAssetService.copyAsset( uuid,
                                                          RulesRepository.DEFAULT_PACKAGE,
                                                          "testCopyAsset2" );
@@ -606,7 +606,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            cat,
                                            "testRemoveAsset",
                                            "testRemoveAsset" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pkgUUID,
                                                                  arr( "testRemoveAsset" ),
                                                                  0,
@@ -660,7 +660,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            cat,
                                            "testArchiveAsset",
                                            "testArchiveAsset" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pkgUUID,
                                                                  arr( "testArchiveAsset" ),
                                                                  0,
@@ -737,7 +737,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            cat,
                                            packageName,
                                            packageName );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( pkgUUID,
                                                                  arr( packageName ),
                                                                  0,
@@ -812,7 +812,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         asset.updateContent( "rule 'MyGoodRule' \n when Personx() then System.err.println(42); \n end" );
         asset.checkin( "" );
         repo.save();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         BuilderResult result = repositoryAssetService.validateAsset( rule );
@@ -845,7 +845,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         asset.updateContent( "rule 'MyGoodRule' \n when Person() then System.err.println(42); \n end" );
         asset.checkin( "" );
         repo.save();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         // check its all OK
@@ -910,7 +910,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                             "funkytest",
                                             "testBuildAssetMultipleFunctionsCallingEachOther",
                                             AssetFormats.FUNCTION );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset t1 = repositoryAssetService.loadRuleAsset(uuidt1);
         RuleContentText t1Content = new RuleContentText();
         t1Content.content = "function void t1(){\n";
@@ -964,7 +964,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                           "brl",
                                           "testBuildAssetBRL",
                                           AssetFormats.BUSINESS_RULE );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset rule = repositoryAssetService.loadRuleAsset( uuid );
 
         RuleModel m = (RuleModel) rule.getContent();
@@ -1044,7 +1044,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         asset.updateContent( "rule 'n' \n when Foo() then bar(); \n end" );
         asset.checkin( "" );
         repo.save();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
         String drl = repositoryAssetService.buildAssetSource( rule );
         assertEquals( "rule 'n' \n when Foo() then bar(); \n end",
@@ -1112,7 +1112,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
         asset.updateContent( "rule 'MyGoodRule' \n when \n then \n end" );
         asset.checkin( "" );
         repo.save();
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset rule = repositoryAssetService.loadRuleAsset( asset.getUUID() );
 
         // check its all OK
@@ -1153,7 +1153,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
                                            AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset(uuid1);
 
         String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssets2",
@@ -1206,7 +1206,7 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
                                            "testLoadArchivedAssetsCat",
                                            "testLoadArchivedAssetsPackage",
                                            AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset(uuid1);
 
         String uuid2 = serviceImplementation.createNewRule("testLoadArchivedAssets2",
