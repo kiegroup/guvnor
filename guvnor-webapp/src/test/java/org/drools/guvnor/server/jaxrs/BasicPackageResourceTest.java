@@ -62,9 +62,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
                    launchServer(CXFJAXRSServer.class, true));
 
         
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
+        ServiceImplementation serviceImplementation = restTestingBase.getServiceImplementation();
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
 
         //Package version 2	

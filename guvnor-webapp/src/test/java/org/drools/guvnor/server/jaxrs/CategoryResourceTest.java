@@ -65,9 +65,9 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         
         
         //create a new package
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
+        ServiceImplementation serviceImplementation = restTestingBase.getServiceImplementation();
         
-        PackageItem pkg = impl.getRulesRepository().createPackage( "categoriesPackage1",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
         //Create rule1 with 'category 1'
         AssetItem rule = pkg.addAsset( "rule1",

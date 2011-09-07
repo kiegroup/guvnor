@@ -61,15 +61,15 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue("server did not launch correctly",
                    launchServer(CXFJAXRSServer.class, true));
 
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
+        ServiceImplementation serviceImplementation = restTestingBase.getServiceImplementation();
         
 
-        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
-        cat.addCategory( "AssetPackageResourceTestCategory",
-                         "yeah" );
+        CategoryItem cat = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        cat.addCategory("AssetPackageResourceTestCategory",
+                "yeah");
         
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
 
         //Package version 2	
