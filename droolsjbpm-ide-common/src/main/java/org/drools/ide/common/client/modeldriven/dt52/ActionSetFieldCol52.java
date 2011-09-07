@@ -88,42 +88,4 @@ public class ActionSetFieldCol52 extends ActionCol52 {
         return update;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ActionSetFieldCol52)) {
-            return false;
-        }
-        ActionSetFieldCol52 that = (ActionSetFieldCol52) obj;
-        return nullOrEqual(this.boundName, that.boundName)
-                && nullOrEqual(this.factField, that.factField)
-                && nullOrEqual(this.type, that.type)
-                && nullOrEqual(this.valueList, that.valueList)
-                && this.update == that.update && super.equals(obj);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + (boundName == null ? 0 : boundName.hashCode());
-        hash = hash * 31 + (factField == null ? 0 : factField.hashCode());
-        hash = hash * 31 + (type == null ? 0 : type.hashCode());
-        hash = hash * 31 + (valueList == null ? 0 : valueList.hashCode());
-        hash = hash * 31 + (update ? 1 : 0);
-        hash = hash * 31 + super.hashCode();
-        return hash;
-    }
-
-    private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-        if (thisAttr == null && thatAttr == null) {
-            return true;
-        }
-        if (thisAttr == null && thatAttr != null) {
-            return false;
-        }
-        return thisAttr.equals(thatAttr);
-    }
-
 }

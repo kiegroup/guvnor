@@ -30,36 +30,4 @@ public class ActionCol52 extends DTColumnConfig52 {
         return header;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if ( obj == null ) {
-            return false;
-        }
-        if ( !(obj instanceof ActionCol52) ) {
-            return false;
-        }
-        ActionCol52 that = (ActionCol52) obj;
-        return nullOrEqual( this.header,
-                            that.header ) && super.equals( obj );
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + (header == null ? 0 : header.hashCode());
-        hash = hash * 31 + super.hashCode();
-        return hash;
-    }
-
-    private boolean nullOrEqual(Object thisAttr,
-                                Object thatAttr) {
-        if ( thisAttr == null && thatAttr == null ) {
-            return true;
-        }
-        if ( thisAttr == null && thatAttr != null ) {
-            return false;
-        }
-        return thisAttr.equals( thatAttr );
-    }
-
 }
