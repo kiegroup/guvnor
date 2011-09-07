@@ -113,7 +113,7 @@ public class PackageResource extends Resource {
          */
         try {
             String packageName = RepositoryServlet.getFileManager().importClassicDRL(is, null);
-            return ToPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
+            return toPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -142,7 +142,7 @@ public class PackageResource extends Resource {
     public Entry createPackageFromAtom(Entry entry) {
         try {
             PackageItem packageItem = repository.createPackage(entry.getTitle(), entry.getSummary());
-            return ToPackageEntryAbdera(packageItem, uriInfo);
+            return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
@@ -168,7 +168,7 @@ public class PackageResource extends Resource {
     public Entry getPackageAsEntry(@PathParam("packageName") String packageName) {
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
-            return ToPackageEntryAbdera(packageItem, uriInfo);
+            return toPackageEntryAbdera(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
@@ -282,7 +282,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry getHistoricalPackageAsEntry(@PathParam("packageName") String packageName,
                                              @PathParam("versionNumber") long versionNumber) throws SerializationException {
-        return ToPackageEntryAbdera(repository.loadPackage(packageName, versionNumber), uriInfo);
+        return toPackageEntryAbdera(repository.loadPackage(packageName, versionNumber), uriInfo);
     }
 
     @GET

@@ -116,7 +116,7 @@ public class Translator {
         return ret;
     }
 
-    public static Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
+    public static Entry toPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if (p.isHistoricalVersion()) {
             base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
