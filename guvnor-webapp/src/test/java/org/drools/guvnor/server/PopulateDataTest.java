@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.server.files.FileManagerUtils;
+import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -97,7 +97,7 @@ public class PopulateDataTest extends GuvnorTestBase {
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
 
-        FileManagerUtils fm = new FileManagerUtils();
+        FileManagerService fm = new FileManagerService();
         fm.setRepository(repo);
 
         fm.attachFileToAsset( uuid,

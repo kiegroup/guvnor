@@ -20,7 +20,7 @@ import java.io.File;
 import javax.inject.Inject;
 
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.guvnor.server.files.FileManagerUtils;
+import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.files.WebDAVImpl;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.MockIdentity;
@@ -136,8 +136,8 @@ public abstract class GuvnorTestBase {
                                           getFileManagerUtils() );
     }
 
-    protected FileManagerUtils getFileManagerUtils() {
-        FileManagerUtils fileManager = new FileManagerUtils();
+    protected FileManagerService getFileManagerUtils() {
+        FileManagerService fileManager = new FileManagerService();
         fileManager.setRepository( getRulesRepository() );
         return fileManager;
     }

@@ -36,21 +36,18 @@ import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Snapshot;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.RepositoryPackageService;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.files.FileManagerUtils;
+import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class FileManagerUtilsTest extends GuvnorTestBase {
+public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testAttachFile() throws Exception {
 
-        FileManagerUtils uploadHelper = getFileManagerUtils();
+        FileManagerService uploadHelper = getFileManagerUtils();
 
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
@@ -92,7 +89,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         assertTrue( pkg.isBinaryUpToDate() );
         assertEquals( "",
                       DroolsHeader.getDroolsHeader( pkg ) );
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
 
         fm.attachFileToAsset( asset.getUUID(),
                               this.getClass().getResourceAsStream( "/billasurf.jar" ),
@@ -120,7 +117,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testGetFilebyUUID() throws Exception {
-        FileManagerUtils uploadHelper = getFileManagerUtils();
+        FileManagerService uploadHelper = getFileManagerUtils();
 
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
@@ -152,7 +149,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
-        FileManagerUtils uploadHelper = getFileManagerUtils();
+        FileManagerService uploadHelper = getFileManagerUtils();
 
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet",
                                               "" );
@@ -244,7 +241,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testImportArchivedPackage() throws Exception {
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
 
         // Import package
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
@@ -252,14 +249,14 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
         // Archive it
         pkg.archiveItem( true );
 
-        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
         assertTrue( pkg.isArchived() );
 
@@ -268,7 +265,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in2,
                              null );
 
-        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
@@ -276,13 +273,13 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testClassicDRLImport() throws Exception {
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -319,7 +316,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
 
         // it should not overwrite this.
@@ -334,14 +331,14 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         // now we will import a change, check that it appears. a change to the
         // "ola" rule
-        AssetItem assetOriginal = rulesRepository.loadPackage( "testClassicDRLImport" ).loadAsset( "ola" );
+        AssetItem assetOriginal = rulesRepository.loadPackage("testClassicDRLImport").loadAsset( "ola" );
         long ver = assetOriginal.getVersionNumber();
 
         drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when CHANGED\n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
         fm.importClassicDRL( in,
                              null );
-        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage("testClassicDRLImport");
         AssetItem asset = pkg.loadAsset( "ola" );
 
         assertTrue( asset.getContent().indexOf( "CHANGED" ) > 0 );
@@ -352,7 +349,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testDRLImportWithoutPackageName() throws Exception {
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
         String drl = "import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
 
@@ -368,7 +365,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              "testDRLImportWithoutPackageName" );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testDRLImportWithoutPackageName" );
+        PackageItem pkg = rulesRepository.loadPackage("testDRLImportWithoutPackageName");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -403,7 +400,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testDRLImportOverrideExistingPackageName() throws Exception {
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
         String drl = "package thisIsNeverUsed \n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
 
@@ -411,7 +408,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              "testDRLImportOverrideExistingPackageName" );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testDRLImportOverrideExistingPackageName" );
+        PackageItem pkg = rulesRepository.loadPackage("testDRLImportOverrideExistingPackageName");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -446,13 +443,13 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
     @Test
     public void testClassicDRLImportWithDSL() throws Exception {
-        FileManagerUtils fm = getFileManagerUtils();
+        FileManagerService fm = getFileManagerUtils();
         String drl = "package testClassicDRLImportDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImportDSL" );
+        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImportDSL");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -506,7 +503,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         int maxIteration = 1; //pick a large number to do a stress test
         while ( iterations < maxIteration ) {
             iterations++;
-            FileManagerUtils fm = getFileManagerUtils();
+            FileManagerService fm = getFileManagerUtils();
 
             if ( iterations % 50 == 0 ) {
                 updatePackage( "testHeadOOME" );

@@ -77,7 +77,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                                     repoConfig);
                         } else {
                             response.setContentType("text/html");
-                            FormData uploadItem = FileManagerUtils.getFormData(request);
+                            FormData uploadItem = FileManagerService.getFormData(request);
 
                             String packageImport = request.getParameter("packageImport");
 

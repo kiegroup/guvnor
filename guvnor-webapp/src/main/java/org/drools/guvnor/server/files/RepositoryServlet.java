@@ -26,7 +26,6 @@ import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,15 +40,15 @@ public class RepositoryServlet extends HttpServlet {
     private static final long serialVersionUID = 510l;
     static final Logger log = LoggerFactory.getLogger(RepositoryServlet.class);
 
-    public static FileManagerUtils getFileManager() {
+    public static FileManagerService getFileManager() {
         BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
         if (beanManagerLocator.isBeanManagerAvailable()) {
-            return (FileManagerUtils) BeanManagerUtils.getInstance("fileManager");
+            return (FileManagerService) BeanManagerUtils.getInstance("fileManager");
         } else {
             //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
             //THIS IS ALL THAT IS NEEDED FOR THE SERVLETS.
             log.debug("WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!");
-            FileManagerUtils manager = new FileManagerUtils();
+            FileManagerService manager = new FileManagerService();
             try {
                 manager.setRepository(new RulesRepository(TestEnvironmentSessionHelper.getSession(false)));
                 return manager;

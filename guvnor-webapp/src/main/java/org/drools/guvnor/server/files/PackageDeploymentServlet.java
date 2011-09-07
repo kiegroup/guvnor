@@ -63,7 +63,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         PackageDeploymentURIHelper helper = null;
         try {
             helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerUtils fm = getFileManager();
+            FileManagerService fm = getFileManager();
             return fm.getLastModified(helper.getPackageName(),
                     helper.getVersion());
         } catch (UnsupportedEncodingException e) {
@@ -78,7 +78,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         if (request.getMethod().equals("HEAD")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(RFC822DATEFORMAT, HEADER_LOCALE);
             PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerUtils fm = getFileManager();
+            FileManagerService fm = getFileManager();
             long mod = fm.getLastModified(helper.getPackageName(),
                     helper.getVersion());
             response.addHeader("lastModified",
@@ -100,7 +100,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
             IOException {
         response.setContentType("text/html");
         String packageName = request.getParameter("packageName");
-        FormData data = FileManagerUtils.getFormData(request);
+        FormData data = FileManagerService.getFormData(request);
 
         try {
             getFileManager().importClassicDRL(data.getFile().getInputStream(),
@@ -142,7 +142,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                 log.info("PackageIsSource: " + helper.isSource());
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                FileManagerUtils fm = getFileManager();
+                FileManagerService fm = getFileManager();
                 String fileName = null;
                 if (helper.isSource()) {
                     if (helper.isAsset()) {

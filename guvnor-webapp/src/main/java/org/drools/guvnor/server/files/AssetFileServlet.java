@@ -42,7 +42,7 @@ public class AssetFileServlet extends RepositoryServlet {
                                                        IOException {
 
         response.setContentType( "text/html" );
-        FormData uploadItem = FileManagerUtils.getFormData( request );
+        FormData uploadItem = FileManagerService.getFormData(request);
 
         if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
             //attaching to an asset.
@@ -87,7 +87,7 @@ public class AssetFileServlet extends RepositoryServlet {
 
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
 
-        FileManagerUtils manager = getFileManager();
+        FileManagerService manager = getFileManager();
 
         // If the file it doesn't exist.
         if ( "".equals( uploadItem.getFile().getName() ) ) {

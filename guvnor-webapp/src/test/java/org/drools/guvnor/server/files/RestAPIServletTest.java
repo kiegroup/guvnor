@@ -28,14 +28,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
 import org.junit.Before;
 import org.junit.Test;
@@ -288,7 +286,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         midentity.setAllowLogin( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        FileManagerUtils manager = new FileManagerUtils();
+        FileManagerService manager = new FileManagerService();
         manager.setRepository( repo );
         Contexts.getSessionContext().set( "fileManager",
                                           manager );

@@ -108,7 +108,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createPackageFromDRLAndReturnAsEntry(InputStream is, @Context UriInfo uriInfo) {
         /*
-         * Passes the DRL to the FileManagerUtils and has it import the asset as
+         * Passes the DRL to the FileManagerService and has it import the asset as
          * a package
          */
         try {
@@ -124,7 +124,7 @@ public class PackageResource extends Resource {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Package createPackageFromDRLAndReturnAsJaxB(InputStream is) {
         /*
-         * Passes the DRL to the FileManagerUtils and has it import the asset as
+         * Passes the DRL to the FileManagerService and has it import the asset as
          * a package
          */
         try {

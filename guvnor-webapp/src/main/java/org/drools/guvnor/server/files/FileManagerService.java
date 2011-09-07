@@ -68,7 +68,7 @@ import org.jboss.seam.security.Identity;
  */
 @Named("fileManager")
 @ApplicationScoped
-public class FileManagerUtils {
+public class FileManagerService {
 
     @Inject
     private RulesRepository repository;

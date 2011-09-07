@@ -24,20 +24,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.context.SessionScoped;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
-import org.jboss.weld.context.SessionContext;
 import org.junit.Test;
 
 public class FeedServletTest extends GuvnorTestBase {
@@ -61,7 +56,7 @@ public class FeedServletTest extends GuvnorTestBase {
         midentity.setCheckPermission( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        FileManagerUtils manager = new FileManagerUtils();
+        FileManagerService manager = new FileManagerService();
         manager.setRepository( repo );
         Contexts.getSessionContext().set( "fileManager",
                                           manager );
@@ -180,7 +175,7 @@ public class FeedServletTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
 
-        FileManagerUtils manager = new FileManagerUtils();
+        FileManagerService manager = new FileManagerService();
         manager.setRepository( repo );
         Contexts.getSessionContext().set( "fileManager",
                                           manager );
@@ -267,7 +262,7 @@ public class FeedServletTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
 
-        FileManagerUtils manager = new FileManagerUtils();
+        FileManagerService manager = new FileManagerService();
         manager.setRepository( repo );
         Contexts.getSessionContext().set( "fileManager",
                                           manager );
