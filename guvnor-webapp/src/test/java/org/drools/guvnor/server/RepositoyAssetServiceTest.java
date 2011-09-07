@@ -57,7 +57,6 @@ import org.junit.Test;
 public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testCreateLinkedAssetItem() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         @SuppressWarnings("unused")
         PackageItem testCreateNewRuleAsLinkPackage1 = serviceImplementation.getRulesRepository().createPackage( "testCreateNewRuleAsLinkPackage1",
                                                                                                "desc" );
@@ -145,7 +144,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testLinkedAssetItemHistoryRelated() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         @SuppressWarnings("unused")
         PackageItem testCreateNewRuleAsLinkPackage1 = serviceImplementation.getRulesRepository().createPackage( "testLinkedAssetItemHistoryRelatedPack",
                                                                                                "desc" );
@@ -245,7 +243,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testLoadRuleAsset() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAsset",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -329,7 +326,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListAssets() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         PackageItem pacakgeItem = serviceImplementation.getRulesRepository().createPackage( "testListAssetsPackage",
                                                                            "desc" );
         repositoryCategoryService.createCategory("",
@@ -392,7 +388,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadArchivedAssets() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -485,7 +480,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testLoadAssetHistoryAndRestore() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         long startTime = System.currentTimeMillis();
         serviceImplementation.getRulesRepository().createPackage( "testLoadAssetHistory",
                                                  "desc" );
@@ -548,7 +542,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testCopyAsset() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryCategoryService.createCategory( "/",
                                                   "templates",
                                                   "ya" );
@@ -574,7 +567,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testRemoveAsset() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testRemoveAsset";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -627,7 +619,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAsset() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testArchiveAsset";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -702,7 +693,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testArchiveAssetWhenParentPackageArchived";
         String cat = packageName;
         repositoryCategoryService.createCategory( "/",
@@ -893,7 +883,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testBuildAssetMultipleFunctionsCallingEachOther() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryPackageService.createPackage( "testBuildAssetMultipleFunctionsCallingEachOther",
                                                 "",
                                                 "package" );
@@ -936,7 +925,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBuildAssetBRXMLAndCopy() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         // create our package
@@ -1136,7 +1124,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -1189,7 +1176,6 @@ public class RepositoyAssetServiceTest extends GuvnorTestBase {
     @Test
     public void testLoadArchivedAssetsFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testLoadArchivedAssetsPackage",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",

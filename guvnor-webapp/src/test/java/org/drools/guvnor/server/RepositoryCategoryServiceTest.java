@@ -32,13 +32,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     @Test
     public void testRemoveCategory() throws Exception {
 
-        String[] children = categoryService.loadChildCategories( "/" );
-        categoryService.createCategory("/",
+        String[] children = repositoryCategoryService.loadChildCategories( "/" );
+        repositoryCategoryService.createCategory("/",
                 "testRemoveCategory",
                 "foo");
 
-        categoryService.removeCategory("testRemoveCategory");
-        String[] _children = categoryService.loadChildCategories( "/" );
+        repositoryCategoryService.removeCategory("testRemoveCategory");
+        String[] _children = repositoryCategoryService.loadChildCategories( "/" );
         assertEquals( children.length,
                       _children.length );
 
@@ -46,7 +46,6 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testAddCategories() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         rulesRepository.createPackage("testAddCategoriesPackage",
                 "desc");
         repositoryCategoryService.createCategory( "",
@@ -84,27 +83,27 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     @Test
     public void testCategory() throws Exception {
 
-        String[] originalCats = categoryService.loadChildCategories( "/" );
+        String[] originalCats = repositoryCategoryService.loadChildCategories( "/" );
 
-        Boolean result = categoryService.createCategory( "/",
+        Boolean result = repositoryCategoryService.createCategory( "/",
                                                                    "TopLevel1",
                                                                    "a description" );
         assertTrue(result.booleanValue());
 
-        result = categoryService.createCategory( "/",
+        result = repositoryCategoryService.createCategory( "/",
                                                            "TopLevel2",
                                                            "a description" );
         assertTrue(result.booleanValue());
 
-        String[] cats = categoryService.loadChildCategories( "/" );
+        String[] cats = repositoryCategoryService.loadChildCategories( "/" );
         assertTrue( cats.length == originalCats.length + 2 );
 
-        result = categoryService.createCategory( "",
+        result = repositoryCategoryService.createCategory( "",
                                                            "Top3",
                                                            "description" );
         assertTrue( result.booleanValue() );
 
-        result = categoryService.createCategory( null,
+        result = repositoryCategoryService.createCategory( null,
                                                            "Top4",
                                                            "description" );
         assertTrue( result.booleanValue() );
@@ -117,7 +116,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         final int PAGE_SIZE = 2;
 
         String cat = "testCategory";
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
         repositoryPackageService.createPackage("testCategoryPackage",
@@ -144,7 +143,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                                0,
                                                                PAGE_SIZE );
         PageResponse<CategoryPageRow> response;
-        response = categoryService.loadRuleListForCategories( request );
+        response = repositoryCategoryService.loadRuleListForCategories( request );
 
         assertNotNull(response);
         assertNotNull( response.getPageRowList() );
@@ -153,7 +152,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         assertFalse(response.isLastPage());
 
         request.setStartRowIndex(PAGE_SIZE);
-        response = categoryService.loadRuleListForCategories( request );
+        response = repositoryCategoryService.loadRuleListForCategories( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -166,7 +165,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     public void testLoadRuleListForCategoryFullResults() throws Exception {
 
         String cat = "testCategory";
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
         repositoryPackageService.createPackage("testCategoryPackage",
@@ -193,7 +192,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                                0,
                                                                null );
         PageResponse<CategoryPageRow> response;
-        response = categoryService.loadRuleListForCategories( request );
+        response = repositoryCategoryService.loadRuleListForCategories( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );

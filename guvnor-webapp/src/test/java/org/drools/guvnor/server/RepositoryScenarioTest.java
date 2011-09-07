@@ -42,7 +42,6 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenario() throws Exception {
         RulesRepository repo = serviceImplementation.getRulesRepository();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         System.out.println( "create package" );
         PackageItem pkg = repo.createPackage( "testScenarioRun",

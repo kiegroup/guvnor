@@ -315,7 +315,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testCreateNewRule",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -338,7 +337,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testCreateNewRuleContainsApostrophe",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -369,7 +367,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testRuleTableLoad() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         TableConfig conf = serviceImplementation.loadTableConfig( ExplorerNodeConfig.RULE_LIST_TABLE_ID );
         assertNotNull(conf.headers);
         assertNotNull( conf.headerTypes );
@@ -422,7 +419,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testTrackRecentOpenedChanged() throws Exception {
         try {
             RepositoryStartupService.registerCheckinListener();
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
             ib.clearAll();
             serviceImplementation.getRulesRepository().createPackage("testTrackRecentOpenedChanged",
@@ -476,7 +472,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testCheckin() throws Exception {
         try {
             RepositoryStartupService.registerCheckinListener();
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
             List<InboxEntry> inbox = ib.loadRecentEdited();
 
@@ -584,7 +579,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testListByFormat() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testListByFormat";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -707,7 +701,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testQuickFind() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testQuickFind";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -762,7 +755,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testSearchText() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -1155,7 +1147,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testGuidedDTExecute() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RulesRepository repo = serviceImplementation.getRulesRepository();
         repositoryCategoryService.createCategory("/",
                 "decisiontables",
@@ -1410,7 +1401,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         String cat = "testCategory";
         String status = "testStatus";
@@ -1472,7 +1462,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleListForStateFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         String cat = "testCategory";
         String status = "testStatus";
@@ -1527,7 +1516,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
         ib.clearAll();
 
@@ -1587,7 +1575,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadInboxFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
 
         ib.clearAll();

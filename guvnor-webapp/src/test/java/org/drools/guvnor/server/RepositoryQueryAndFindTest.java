@@ -45,7 +45,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -102,7 +101,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -150,7 +148,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -208,7 +205,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -362,7 +358,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testFindAssetPagePackage",
                                                                            "testFindAssetPagePackageDescription" );
         repositoryCategoryService.createCategory("",
@@ -420,7 +415,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
     @Test
     public void testFindAssetPageFullResults() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testFindAssetPagePackage",
                                                                            "testFindAssetPagePackageDescription" );
         repositoryCategoryService.createCategory("",
@@ -499,7 +493,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetCaseInsensitiveFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -549,7 +542,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -608,7 +600,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextCaseInsensitiveFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -655,7 +646,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
         repositoryCategoryService.createCategory( "/",
                                                   cat,

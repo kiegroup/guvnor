@@ -53,7 +53,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetAnalyst() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetAnalystPack1",
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
@@ -121,7 +120,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testLoadRuleAssetPackageReadonlyPack1";
             @SuppressWarnings("unused")
             String package1Uuid = repositoryPackageService.createPackage( package1Name,
@@ -195,7 +193,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategory() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPack1",
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
@@ -249,7 +246,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                                                                "desc" );
             String packageName = packageItem.getName();
@@ -310,7 +306,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
                                                                                "desc" );
             @SuppressWarnings("unused")
@@ -384,7 +379,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                                "desc" );
             @SuppressWarnings("unused")
@@ -454,7 +448,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
 
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                                                                                "desc" );
             @SuppressWarnings("unused")
@@ -521,7 +514,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                                                                                "desc" );
             String packageUuid = packageItem.getUUID();
@@ -582,7 +574,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         serviceImplementation.getRulesRepository().createPackage( "testSecurityCreateNewRule",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
@@ -629,7 +620,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageUuid = repositoryPackageService.createPackage( "testCheckinWithPackageReadonlyPack",
                                                                      "desc",
                                                                      "package" );
@@ -695,7 +685,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String packageName = "testCheckinPackageDeveloperPack1";
         @SuppressWarnings("unused")
         String packageUuid = repositoryPackageService.createPackage( packageName,
@@ -762,7 +751,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
 
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package3Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack3";
             @SuppressWarnings("unused")
             String package3Uuid = repositoryPackageService.createPackage( package3Name,
@@ -832,7 +820,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule7Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData7";
             String rule8Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData8";
 
@@ -928,7 +915,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule5Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData5";
             String rule6Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData6";
 
@@ -1020,7 +1006,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule9Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData9";
             String rule10Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData10";
 
@@ -1112,7 +1097,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testTableDisplayHandler() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule11Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData11";
             String rule12Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData12";
 
@@ -1251,7 +1235,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testListPackagesPackageAdminAndAnalyst() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
             String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
             String category1Name = "testListPackagesPackageAdminAndAnalystCat1";
@@ -1327,7 +1310,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadChildCategories() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testLoadChildCategoriesPack1";
             String category1Name = "testLoadChildCategoriesCat1";
             String category2Name = "testLoadChildCategoriesCat2";
@@ -1394,7 +1376,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testloadRuleListForCategoriesPackageReadonlyPack1";
             String category1Name = "testloadRuleListForCategoriesPackageReadonlyCat1";
 
@@ -1478,7 +1459,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
         try {
-            RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack1";
             String category1Name = "testloadRuleListForCategoriesPackageReadonlyPositiveCat1";
 

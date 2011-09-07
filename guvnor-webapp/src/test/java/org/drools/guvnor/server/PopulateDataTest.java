@@ -213,53 +213,53 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createCategories() {
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 "HR",
                 "");
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 "Sales",
                 "");
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 "Manufacturing",
                 "");
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 "Finance",
                 "");
 
-        categoryService.createCategory("HR",
+        repositoryCategoryService.createCategory("HR",
                 "Leave",
                 "");
-        categoryService.createCategory("HR",
+        repositoryCategoryService.createCategory("HR",
                 "Training",
                 "");
-        categoryService.createCategory("Sales",
+        repositoryCategoryService.createCategory("Sales",
                 "Promotions",
                 "");
-        categoryService.createCategory("Sales",
+        repositoryCategoryService.createCategory("Sales",
                 "Old promotions",
                 "");
-        categoryService.createCategory("Sales",
+        repositoryCategoryService.createCategory("Sales",
                 "Boogie boards",
                 "");
-        categoryService.createCategory("Sales",
+        repositoryCategoryService.createCategory("Sales",
                 "Surf boards",
                 "");
-        categoryService.createCategory("Sales",
+        repositoryCategoryService.createCategory("Sales",
                 "Surf wear",
                 "");
-        categoryService.createCategory("Manufacturing",
+        repositoryCategoryService.createCategory("Manufacturing",
                 "Surf wear",
                 "");
-        categoryService.createCategory("Manufacturing",
+        repositoryCategoryService.createCategory("Manufacturing",
                 "Boards",
                 "");
-        categoryService.createCategory("Finance",
+        repositoryCategoryService.createCategory("Finance",
                 "Employees",
                 "");
-        categoryService.createCategory("Finance",
+        repositoryCategoryService.createCategory("Finance",
                 "Payables",
                 "");
-        categoryService.createCategory("Finance",
+        repositoryCategoryService.createCategory("Finance",
                 "Receivables",
                 "");
     }

@@ -72,7 +72,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotDiff() throws Exception {
         // Lets make a package and a rule into tit.
-        categoryService.createCategory("/",
+        repositoryCategoryService.createCategory("/",
                 "snapshotDiffTesting",
                 "y");
         String packageUuid = repositoryPackageService.createPackage( "testSnapshotDiff",
@@ -307,7 +307,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testMovePackage() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String[] cats = repositoryCategoryService.loadChildCategories( "/" );
         if ( cats.length == 0 ) {
             repositoryCategoryService.createCategory( "/",
@@ -362,7 +361,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testSnapshot() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryCategoryService.createCategory( "/",
                                                   "snapshotTesting",
                                                   "y" );
@@ -535,7 +533,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testExportPackage() throws Exception {
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         int n = repositoryPackageService.listPackages().length;
         repositoryCategoryService.createCategory( "/",
                                                   "testExportPackageCat1",
@@ -804,7 +801,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",
@@ -930,7 +926,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotDiffFullResults() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",

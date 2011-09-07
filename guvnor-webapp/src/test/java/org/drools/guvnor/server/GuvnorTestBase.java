@@ -71,7 +71,7 @@ public abstract class GuvnorTestBase {
     protected RepositoryPackageService repositoryPackageService;
 
     @Inject
-    protected RepositoryCategoryService categoryService;
+    protected RepositoryCategoryService repositoryCategoryService;
 
     // ************************************************************************
     // Lifecycle methods
