@@ -66,34 +66,14 @@ public class TestEnvironmentSessionHelper {
                 }
                 repository = config.getJCRRepository();
 
-                //-->Workaround for lock problems
-                int retries = 3;
-                Session testSession = null;
-                while (retries > 0) {
-                    try {
-                        testSession = repository.login(new SimpleCredentials("alan_parsons",
-                                "password".toCharArray()));
+                Session testSession;
+                try {
+                    testSession = repository.login(new SimpleCredentials("alan_parsons",
+                            "password".toCharArray()));
 
-                        retries = 0;
-                    } catch (RepositoryException re) {
-                        System.err.println("Failed to get the repository session: Retrying... ");
-                        re.printStackTrace();
-
-                        System.err.println("Attemptng to shutdown repository... ");
-                        shutdown();
-                        repository = config.getJCRRepository();
-
-                        retries--;
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException ie) {
-                        }
-                    }
+                } catch (RepositoryException e) {
+                    throw new IllegalStateException("Failed to get the repository session.", e);
                 }
-                if (testSession == null) {
-                    throw new IllegalStateException("Unable to get Repository Session. Refer to previous messages for details.");
-                }
-                //<--
 
                 RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(testSession);
                 if (erase && admin.isRepositoryInitialized()) {
