@@ -139,29 +139,8 @@ public class RestAPIServlet extends RepositoryServlet {
                 });
     }
 
-    /**
-     * Get a repository instance.
-     * This will use the Seam identity component, or it will just
-     * return a repo for test puposes if seam is not active.
-     */
-    static RulesRepository getRepository() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return (RulesRepository) BeanManagerUtils.getInstance("repository");
-        } else {
-            try {
-                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get repo to run tests",
-                        e);
-            }
-
-        }
-
-    }
-
     RestAPI getAPI() {
-        return new RestAPI(getRepository());
+        return new RestAPI(rulesRepository);
     }
 
 }

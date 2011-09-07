@@ -34,9 +34,12 @@ import net.sf.webdav.ITransaction;
 import org.apache.commons.io.IOUtils;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.util.BeanManagerUtils;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
+import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.junit.Test;
 
 public class WebDAVImplTest extends GuvnorTestBase {

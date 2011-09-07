@@ -25,6 +25,7 @@ import javax.jcr.*;
  * This class is for administering the rules repo.
  * Any "sensitive" actions can happen in here.
  */
+// TODO seam3upgrade
 public class RulesRepositoryAdministrator {
 
     private static final Logger log = LoggerFactory.getLogger(RulesRepositoryAdministrator.class);

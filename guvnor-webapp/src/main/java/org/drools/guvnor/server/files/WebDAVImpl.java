@@ -24,6 +24,7 @@ import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.WebDavPackageNameType;
 import org.drools.guvnor.server.util.BeanManagerUtils;
+import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
@@ -35,6 +36,7 @@ import java.io.*;
 import java.security.Principal;
 import java.util.*;
 
+// TODO seam3upgrade
 public class WebDAVImpl
         implements
         IWebdavStore {
@@ -67,8 +69,29 @@ public class WebDAVImpl
         return tlRepo.get();
     }
 
+    /**
+     * Get a repository instance.
+     * This will use the Seam identity component, or it will just
+     * return a repo for test puposes if seam is not active.
+     */
+    // TODO seam3upgrade
+    static RulesRepository getRepository() {
+        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
+        if (beanManagerLocator.isBeanManagerAvailable()) {
+            return (RulesRepository) BeanManagerUtils.getInstance("repository");
+        } else {
+            try {
+                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
+            } catch (Exception e) {
+                throw new IllegalStateException("Unable to get repo to run tests",
+                        e);
+            }
+
+        }
+    }
+
     public ITransaction begin(final Principal principal) {
-        tlRepo.set(RestAPIServlet.getRepository());
+        tlRepo.set(getRepository());
 
         return new ITransaction() {
             public Principal getPrincipal() {

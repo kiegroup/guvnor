@@ -26,6 +26,7 @@ import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,6 +40,9 @@ public class RepositoryServlet extends HttpServlet {
 
     private static final long serialVersionUID = 510l;
     static final Logger log = LoggerFactory.getLogger(RepositoryServlet.class);
+
+    @Inject
+    protected RulesRepository rulesRepository;
 
     @Deprecated
     public static FileManagerService getFileManager() { // TODO seam3upgrade
