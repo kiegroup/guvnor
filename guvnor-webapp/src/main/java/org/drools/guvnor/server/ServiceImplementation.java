@@ -61,7 +61,6 @@ import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
 import org.drools.guvnor.server.ruleeditor.workitem.WorkitemDefinitionElementsManager;
-import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.selector.SelectorManager;
@@ -108,12 +107,12 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
-    @Inject
-    private RulesRepository                   repository;
-
     private static final long                 serialVersionUID            = 510l;
 
     private static final LoggingHelper        log                         = LoggingHelper.getLogger( ServiceImplementation.class );
+
+    @Inject
+    private RulesRepository rulesRepository;
 
     @Inject
     private ServiceSecurity serviceSecurity;
@@ -130,12 +129,12 @@ public class ServiceImplementation
 
     /* This is called in hosted mode when creating "by hand" */
     public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
-        this.repository = repository;
+        this.rulesRepository = repository;
         create();
     }
 
     public RulesRepository getRulesRepository() {
-        return repository;
+        return rulesRepository;
     }
 
     @WebRemote
