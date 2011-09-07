@@ -99,18 +99,7 @@ public abstract class GuvnorTestBase {
 
     @After
     public void tearDownGuvnorTestBase() {
-        rulesRepository = null;
-        Contexts.removeFromAllContexts( "fileManager" );
-        if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
-        if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
-        if ( Contexts.getSessionContext() != null ) Contexts.getSessionContext().flush();
-        if ( Contexts.isApplicationContextActive() && Contexts.getBusinessProcessContext() != null ) Contexts.getBusinessProcessContext().flush();
-        if ( Contexts.getConversationContext() != null ) Contexts.getConversationContext().flush();
-
-        if ( Contexts.isApplicationContextActive() ) {
-            Lifecycle.endApplication();
-        }
-
+        // TODO seam3upgrade
         MailboxService.getInstance().stop();
         TestEnvironmentSessionHelper.shutdown();
     }
@@ -129,17 +118,6 @@ public abstract class GuvnorTestBase {
     @Deprecated
     public RepositoryCategoryService getRepositoryCategoryService() {
         throw new UnsupportedOperationException("Use injection instead");
-    }
-
-    protected void setUpFileManagerUtils() {
-        Contexts.getSessionContext().set( "fileManager",
-                                          getFileManagerUtils() );
-    }
-
-    protected FileManagerService getFileManagerUtils() {
-        FileManagerService fileManager = new FileManagerService();
-        fileManager.setRepository( getRulesRepository() );
-        return fileManager;
     }
 
     @Deprecated // TODO seam3upgrade should probably be injected now

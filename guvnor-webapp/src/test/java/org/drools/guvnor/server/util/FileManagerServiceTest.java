@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.apache.commons.fileupload.FileItem;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.Snapshot;
@@ -44,24 +46,23 @@ import org.junit.Test;
 
 public class FileManagerServiceTest extends GuvnorTestBase {
 
+    @Inject
+    private FileManagerService fileManagerService;
+
     @Test
     public void testAttachFile() throws Exception {
 
-        FileManagerService uploadHelper = getFileManagerUtils();
-
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile",
+        AssetItem item = rulesRepository.loadDefaultPackage().addAsset( "testUploadFile",
                                                              "description" );
-        item.updateFormat( "drl" );
+        item.updateFormat("drl");
         FormData upload = new FormData();
 
         upload.setFile( new MockFile() );
-        upload.setUuid( item.getUUID() );
+        upload.setUuid(item.getUUID());
 
-        uploadHelper.attachFile( upload );
+        fileManagerService.attachFile(upload);
 
-        AssetItem item2 = repo.loadDefaultPackage().loadAsset( "testUploadFile" );
+        AssetItem item2 = rulesRepository.loadDefaultPackage().loadAsset( "testUploadFile" );
         byte[] data = item2.getBinaryContentAsBytes();
 
         assertNotNull( data );
@@ -89,11 +90,10 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         assertTrue( pkg.isBinaryUpToDate() );
         assertEquals( "",
                       DroolsHeader.getDroolsHeader( pkg ) );
-        FileManagerService fm = getFileManagerUtils();
 
-        fm.attachFileToAsset( asset.getUUID(),
-                              this.getClass().getResourceAsStream( "/billasurf.jar" ),
-                              "billasurf.jar" );
+        fileManagerService.attachFileToAsset(asset.getUUID(),
+                this.getClass().getResourceAsStream("/billasurf.jar"),
+                "billasurf.jar");
 
         pkg = repo.loadPackage( "testAttachModelImports" );
 
@@ -106,9 +106,9 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                                                   pkg );
         pkg.checkin( "" );
 
-        fm.attachFileToAsset( asset.getUUID(),
-                              this.getClass().getResourceAsStream( "/billasurf.jar" ),
-                              "billasurf.jar" );
+        fileManagerService.attachFileToAsset(asset.getUUID(),
+                this.getClass().getResourceAsStream("/billasurf.jar"),
+                "billasurf.jar");
         pkg = repo.loadPackage( "testAttachModelImports" );
         assertEquals( "goo wee\nimport com.billasurf.Board\nimport com.billasurf.Person\n",
                       DroolsHeader.getDroolsHeader( pkg ) );
@@ -117,22 +117,21 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testGetFilebyUUID() throws Exception {
-        FileManagerService uploadHelper = getFileManagerUtils();
 
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
-        item.updateFormat( "drl" );
+        item.updateFormat("drl");
         FormData upload = new FormData();
 
         upload.setFile( new MockFile() );
-        upload.setUuid( item.getUUID() );
-        uploadHelper.attachFile( upload );
+        upload.setUuid(item.getUUID());
+        fileManagerService.attachFile( upload );
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        String filename = uploadHelper.loadFileAttachmentByUUID( item.getUUID(),
+        String filename = fileManagerService.loadFileAttachmentByUUID( item.getUUID(),
                                                                  out );
 
         assertNotNull( out.toByteArray() );
@@ -149,8 +148,6 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
-        FileManagerService uploadHelper = getFileManagerUtils();
-
         PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
@@ -158,7 +155,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         pkg.updateCompiledPackage( new ByteArrayInputStream( "foo".getBytes() ) );
         pkg.checkin( "" );
 
-        assertTrue( before < uploadHelper.getLastModified( pkg.getName(),
+        assertTrue( before < fileManagerService.getLastModified( pkg.getName(),
                                                            "LATEST" ) );
 
         repositoryPackageService.createPackageSnapshot(pkg.getName(),
@@ -167,7 +164,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                 "");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String fileName = uploadHelper.loadBinaryPackage( pkg.getName(),
+        String fileName = fileManagerService.loadBinaryPackage( pkg.getName(),
                                                           Snapshot.LATEST_SNAPSHOT,
                                                           true,
                                                           out );
@@ -179,7 +176,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                       new String( file ) );
 
         out = new ByteArrayOutputStream();
-        String drlName = uploadHelper.loadSourcePackage( pkg.getName(),
+        String drlName = fileManagerService.loadSourcePackage( pkg.getName(),
                                                          Snapshot.LATEST_SNAPSHOT,
                                                          true,
                                                          out );
@@ -190,7 +187,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         assertTrue( drl.indexOf( "import java.util.List" ) > -1 );
 
         out = new ByteArrayOutputStream();
-        fileName = uploadHelper.loadBinaryPackage( pkg.getName(),
+        fileName = fileManagerService.loadBinaryPackage( pkg.getName(),
                                                    "SNAPPY 1",
                                                    false,
                                                    out );
@@ -202,7 +199,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                       new String( file ) );
 
         out = new ByteArrayOutputStream();
-        fileName = uploadHelper.loadSourcePackage( pkg.getName(),
+        fileName = fileManagerService.loadSourcePackage( pkg.getName(),
                                                    "SNAPPY 1",
                                                    false,
                                                    out );
@@ -217,7 +214,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                 false,
                 "");
 
-        long lastMod = uploadHelper.getLastModified( pkg.getName(),
+        long lastMod = fileManagerService.getLastModified( pkg.getName(),
                                                      "SNAPPY 1" );
         assertTrue( pkg.getLastModified().getTimeInMillis() < lastMod );
 
@@ -228,7 +225,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
                 true,
                 "yeah");
 
-        long lastMod2 = uploadHelper.getLastModified( pkg.getName(),
+        long lastMod2 = fileManagerService.getLastModified( pkg.getName(),
                                                       "SNAPX" );
         assertTrue( lastMod < lastMod2 );
 
@@ -241,13 +238,11 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testImportArchivedPackage() throws Exception {
-        FileManagerService fm = getFileManagerUtils();
-
         // Import package
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             null );
+        fileManagerService.importClassicDRL(in,
+                null);
 
         PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
@@ -262,8 +257,8 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         // Import it again
         InputStream in2 = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in2,
-                             null );
+        fileManagerService.importClassicDRL(in2,
+                null);
 
         pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
@@ -273,11 +268,10 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testClassicDRLImport() throws Exception {
-        FileManagerService fm = getFileManagerUtils();
         String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             null );
+        fileManagerService.importClassicDRL(in,
+                null);
 
         PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
@@ -313,8 +307,8 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         // now lets import an existing thing
         drl = "package testClassicDRLImport\n import should not see \n rule 'ola2' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             null );
+        fileManagerService.importClassicDRL(in,
+                null);
 
         pkg = rulesRepository.loadPackage("testClassicDRLImport");
         assertNotNull( pkg );
@@ -336,8 +330,8 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
         drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when CHANGED\n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             null );
+        fileManagerService.importClassicDRL(in,
+                null);
         pkg = rulesRepository.loadPackage("testClassicDRLImport");
         AssetItem asset = pkg.loadAsset( "ola" );
 
@@ -349,21 +343,20 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testDRLImportWithoutPackageName() throws Exception {
-        FileManagerService fm = getFileManagerUtils();
         String drl = "import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
 
         try {
-            fm.importClassicDRL( in,
-                                 null );
+            fileManagerService.importClassicDRL(in,
+                    null);
         } catch ( IllegalArgumentException e ) {
             assertEquals( "Missing package name.",
                           e.getMessage() );
         }
 
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             "testDRLImportWithoutPackageName" );
+        fileManagerService.importClassicDRL(in,
+                "testDRLImportWithoutPackageName");
 
         PackageItem pkg = rulesRepository.loadPackage("testDRLImportWithoutPackageName");
         assertNotNull( pkg );
@@ -400,13 +393,12 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testDRLImportOverrideExistingPackageName() throws Exception {
-        FileManagerService fm = getFileManagerUtils();
         String drl = "package thisIsNeverUsed \n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
 
         in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             "testDRLImportOverrideExistingPackageName" );
+        fileManagerService.importClassicDRL(in,
+                "testDRLImportOverrideExistingPackageName");
 
         PackageItem pkg = rulesRepository.loadPackage("testDRLImportOverrideExistingPackageName");
         assertNotNull( pkg );
@@ -443,11 +435,10 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testClassicDRLImportWithDSL() throws Exception {
-        FileManagerService fm = getFileManagerUtils();
         String drl = "package testClassicDRLImportDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
-        fm.importClassicDRL( in,
-                             null );
+        fileManagerService.importClassicDRL(in,
+                null);
 
         PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImportDSL");
         assertNotNull( pkg );
@@ -503,15 +494,14 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         int maxIteration = 1; //pick a large number to do a stress test
         while ( iterations < maxIteration ) {
             iterations++;
-            FileManagerService fm = getFileManagerUtils();
 
             if ( iterations % 50 == 0 ) {
                 updatePackage( "testHeadOOME" );
             }
 
             //fm.setRepository( new RulesRepository(TestEnvironmentSessionHelper.getSession()));
-            fm.getLastModified( "testHeadOOME",
-                                "LATEST" );
+            fileManagerService.getLastModified("testHeadOOME",
+                    "LATEST");
             //rulesRepository.logout();
             System.err.println( "Number " + iterations + " free mem : " + Runtime.getRuntime().freeMemory() );
         }

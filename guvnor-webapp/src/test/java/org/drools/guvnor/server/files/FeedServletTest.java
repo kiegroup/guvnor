@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
@@ -56,10 +57,6 @@ public class FeedServletTest extends GuvnorTestBase {
         midentity.setCheckPermission( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        FileManagerService manager = new FileManagerService();
-        manager.setRepository( repo );
-        Contexts.getSessionContext().set( "fileManager",
-                                          manager );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -175,11 +172,6 @@ public class FeedServletTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
 
-        FileManagerService manager = new FileManagerService();
-        manager.setRepository( repo );
-        Contexts.getSessionContext().set( "fileManager",
-                                          manager );
-
         //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
@@ -261,11 +253,6 @@ public class FeedServletTest extends GuvnorTestBase {
         midentity.setCheckPermission( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-
-        FileManagerService manager = new FileManagerService();
-        manager.setRepository( repo );
-        Contexts.getSessionContext().set( "fileManager",
-                                          manager );
 
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
         repositoryAssetService.setRulesRepository( repo );

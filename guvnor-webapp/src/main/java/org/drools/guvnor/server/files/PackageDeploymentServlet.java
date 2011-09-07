@@ -57,14 +57,16 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     @Inject
     private RulesRepository rulesRepository;
 
+    @Inject
+    private FileManagerService fileManagerService;
+
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
         PackageDeploymentURIHelper helper = null;
         try {
             helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerService fm = getFileManager();
-            return fm.getLastModified(helper.getPackageName(),
+            return fileManagerService.getLastModified(helper.getPackageName(),
                     helper.getVersion());
         } catch (UnsupportedEncodingException e) {
             return super.getLastModified(request);
@@ -78,8 +80,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         if (request.getMethod().equals("HEAD")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(RFC822DATEFORMAT, HEADER_LOCALE);
             PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerService fm = getFileManager();
-            long mod = fm.getLastModified(helper.getPackageName(),
+            long mod = fileManagerService.getLastModified(helper.getPackageName(),
                     helper.getVersion());
             response.addHeader("lastModified",
                     "" + mod);
@@ -103,7 +104,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         FormData data = FileManagerService.getFormData(request);
 
         try {
-            getFileManager().importClassicDRL(data.getFile().getInputStream(),
+            fileManagerService.importClassicDRL(data.getFile().getInputStream(),
                     packageName);
             response.getWriter().write("OK");
         } catch (IllegalArgumentException e) {
@@ -142,17 +143,16 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                 log.info("PackageIsSource: " + helper.isSource());
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                FileManagerService fm = getFileManager();
                 String fileName = null;
                 if (helper.isSource()) {
                     if (helper.isAsset()) {
-                        fileName = fm.loadSourceAsset(helper.getPackageName(),
+                        fileName = fileManagerService.loadSourceAsset(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 helper.getAssetName(),
                                 out);
                     } else {
-                        fileName = fm.loadSourcePackage(helper.getPackageName(),
+                        fileName = fileManagerService.loadSourcePackage(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 out);
@@ -177,7 +177,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                     AssetItem asset = pkg.loadAsset(helper.getAssetName());
 
-                    fileName = getFileManager().loadFileAttachmentByUUID(asset.getUUID(),
+                    fileName = fileManagerService.loadFileAttachmentByUUID(asset.getUUID(),
                             out);
                 } else {
                     if (req.getRequestURI().endsWith("SCENARIOS")) {
@@ -254,7 +254,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         out.write(asset.getBinaryContentAsBytes());
 
                     } else {
-                        fileName = fm.loadBinaryPackage(helper.getPackageName(),
+                        fileName = fileManagerService.loadBinaryPackage(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 out);

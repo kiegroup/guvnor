@@ -40,11 +40,6 @@ import org.junit.Test;
 
 public class RestAPIServletTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpFileManagerUtils();
-    }
-
     @Test
     public void testGet() throws Exception {
 
@@ -286,10 +281,6 @@ public class RestAPIServletTest extends GuvnorTestBase {
         midentity.setAllowLogin( true );
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
-        FileManagerService manager = new FileManagerService();
-        manager.setRepository( repo );
-        Contexts.getSessionContext().set( "fileManager",
-                                          manager );
         Contexts.getSessionContext().set( "repository",
                                           repo );
 

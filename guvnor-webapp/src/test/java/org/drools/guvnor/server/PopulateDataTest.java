@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.files.FileManagerService;
@@ -50,6 +52,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * (for surfing, boarding etc).
  */
 public class PopulateDataTest extends GuvnorTestBase {
+
+    @Inject
+    private FileManagerService fileManagerService;
 
     @Test
     public void testPopulate() throws Exception {
@@ -97,12 +102,9 @@ public class PopulateDataTest extends GuvnorTestBase {
         InputStream file = this.getClass().getResourceAsStream( "/billasurf.jar" );
         assertNotNull(file);
 
-        FileManagerService fm = new FileManagerService();
-        fm.setRepository(repo);
-
-        fm.attachFileToAsset( uuid,
-                              file,
-                              "billasurf.jar" );
+        fileManagerService.attachFileToAsset(uuid,
+                file,
+                "billasurf.jar");
 
         AssetItem item = repo.loadAssetByUUID( uuid );
         assertNotNull(item.getBinaryContentAsBytes());

@@ -37,11 +37,6 @@ import org.junit.Test;
 
 public class PackageDeploymentServletTest extends GuvnorTestBase {
 
-    @Before
-    public void setup() {
-        setUpFileManagerUtils();
-    }
-
     /*
         @Test
         public void testLoadingRules() throws Exception {

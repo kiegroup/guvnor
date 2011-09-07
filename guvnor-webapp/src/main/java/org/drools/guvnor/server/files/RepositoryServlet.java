@@ -40,7 +40,8 @@ public class RepositoryServlet extends HttpServlet {
     private static final long serialVersionUID = 510l;
     static final Logger log = LoggerFactory.getLogger(RepositoryServlet.class);
 
-    public static FileManagerService getFileManager() {
+    @Deprecated
+    public static FileManagerService getFileManager() { // TODO seam3upgrade
         BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
         if (beanManagerLocator.isBeanManagerAvailable()) {
             return (FileManagerService) BeanManagerUtils.getInstance("fileManager");
