@@ -46,8 +46,7 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testPackageFeed() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPackageFeed",
                                               "" );
@@ -162,8 +161,7 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testCategoryFeed() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testCategoryFeed",
                                               "" );
@@ -253,8 +251,7 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testDiscussionFeed() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testDiscussionFeed",
                                               "" );

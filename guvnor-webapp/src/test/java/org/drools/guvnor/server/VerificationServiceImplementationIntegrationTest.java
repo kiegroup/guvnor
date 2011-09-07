@@ -32,12 +32,11 @@ import org.junit.Test;
 
 public class VerificationServiceImplementationIntegrationTest extends GuvnorTestBase {
 
-    private ServiceImplementation serviceImplementation;
+    // TODO seam3upgrade this should probably be injected and managed
     private VerificationService   verificationService;
 
     @Before
     public void setUp() {
-        serviceImplementation = getServiceImplementation();
         verificationService = new VerificationServiceImplementation();
     }
 

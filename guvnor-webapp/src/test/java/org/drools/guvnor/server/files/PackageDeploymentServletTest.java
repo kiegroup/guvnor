@@ -286,8 +286,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Test
     public void testScenariosAndChangeSet() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         RepositoryPackageService repoServiceImpl = getRepositoryPackageService();
 
@@ -347,8 +346,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Test
     public void testPNG() throws Exception {
         
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPNGPackage",
                                               "" );

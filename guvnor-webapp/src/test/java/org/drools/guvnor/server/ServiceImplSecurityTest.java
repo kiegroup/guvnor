@@ -52,10 +52,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetAnalyst() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            impl.getRulesRepository().createPackage( "testLoadRuleAssetAnalystPack1",
+            serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetAnalystPack1",
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetAnalystCat1",
@@ -64,12 +63,12 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       "testLoadRuleAssetAnalystCat2",
                                                       "this is a cat" );
 
-            String uuid1 = impl.createNewRule( "testLoadRuleAssetAnalystRule1",
+            String uuid1 = serviceImplementation.createNewRule( "testLoadRuleAssetAnalystRule1",
                                                "description",
                                                "testLoadRuleAssetAnalystCat1",
                                                "testLoadRuleAssetAnalystPack1",
                                                AssetFormats.DRL );
-            String uuid2 = impl.createNewRule( "testLoadRuleAssetAnalystRule2",
+            String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetAnalystRule2",
                                                "description",
                                                "testLoadRuleAssetAnalystCat2",
                                                "testLoadRuleAssetAnalystPack1",
@@ -88,7 +87,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -121,7 +120,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetPackageReadonly() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -134,16 +132,16 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       "testLoadRuleAssetPackageReadonlyCat1",
                                                       "this is a cat" );
 
-            String uuid1 = impl.createNewRule( "testLoadRuleAssetPackageReadonlyRule1",
+            String uuid1 = serviceImplementation.createNewRule( "testLoadRuleAssetPackageReadonlyRule1",
                                                "description",
                                                "testLoadRuleAssetPackageReadonlyCat1",
                                                "testLoadRuleAssetPackageReadonlyPack1",
                                                AssetFormats.DRL );
 
-            impl.getRulesRepository().createPackage( "testLoadRuleAssetPackageReadonlyPack2",
-                                                     "desc" );
+            serviceImplementation.getRulesRepository().createPackage("testLoadRuleAssetPackageReadonlyPack2",
+                    "desc");
 
-            String uuid2 = impl.createNewRule( "testLoadRuleAssetPackageReadonlyRule2",
+            String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetPackageReadonlyRule2",
                                                "description",
                                                "testLoadRuleAssetPackageReadonlyCat1",
                                                "testLoadRuleAssetPackageReadonlyPack2",
@@ -162,7 +160,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -197,16 +195,15 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategory() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPack1",
+            serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPack1",
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetNoCategoryCat1",
                                                       "this is a cat" );
 
-            String uuid = impl.createNewRule( "testLoadRuleAssetNoCategoryRule1",
+            String uuid = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryRule1",
                                               "description",
                                               null,
                                               "testLoadRuleAssetNoCategoryPack1",
@@ -225,7 +222,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
@@ -252,10 +249,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryPackageAdmin() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
+            PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                                                                "desc" );
             String packageName = packageItem.getName();
             @SuppressWarnings("unused")
@@ -264,7 +260,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       "testLoadRuleAssetNoCategoryPackageAdminCat1",
                                                       "this is a cat" );
 
-            String uuid = impl.createNewRule( "testLoadRuleAssetNoCategoryPackageAdminRule1",
+            String uuid = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryPackageAdminRule1",
                                               "description",
                                               null,
                                               "testLoadRuleAssetNoCategoryPackageAdminPack1",
@@ -283,7 +279,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -314,26 +310,25 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryAnalystNegative() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
+            PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPack1",
                                                                                "desc" );
             @SuppressWarnings("unused")
             String packageUuid = packageItem.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      "testLoadRuleAssetNoCategoryAnalystCat1",
-                                                      "this is a cat" );
+            repositoryCategoryService.createCategory("",
+                    "testLoadRuleAssetNoCategoryAnalystCat1",
+                    "this is a cat");
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetNoCategoryAnalystCat2",
                                                       "this is a cat" );
 
-            String uuid1 = impl.createNewRule( "testLoadRuleAssetNoCategoryAnalystRule1",
+            String uuid1 = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryAnalystRule1",
                                                "description",
                                                null,
                                                "testLoadRuleAssetNoCategoryAnalystPack1",
                                                AssetFormats.DRL );
-            String uuid2 = impl.createNewRule( "testLoadRuleAssetNoCategoryAnalystRule2",
+            String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryAnalystRule2",
                                                "description",
                                                "testLoadRuleAssetNoCategoryAnalystCat2",
                                                "testLoadRuleAssetNoCategoryAnalystPack1",
@@ -352,7 +347,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -389,27 +384,26 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetNoCategoryAnalystPositive() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
+            PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                                                "desc" );
             @SuppressWarnings("unused")
             String packageUuid = packageItem.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      "testLoadRuleAssetNoCategoryAnalystPositiveCat1",
-                                                      "this is a cat" );
+            repositoryCategoryService.createCategory("",
+                    "testLoadRuleAssetNoCategoryAnalystPositiveCat1",
+                    "this is a cat");
             repositoryCategoryService.createCategory( "",
                                                       "testLoadRuleAssetNoCategoryAnalystPositiveCat2",
                                                       "this is a cat" );
 
-            String uuid1 = impl.createNewRule( "testLoadRuleAssetNoCategoryAnalystPositiveRule1",
+            String uuid1 = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryAnalystPositiveRule1",
                                                "description",
                                                null,
                                                "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                                AssetFormats.DRL );
             @SuppressWarnings("unused")
-            String uuid2 = impl.createNewRule( "testLoadRuleAssetNoCategoryAnalystPositiveRule2",
+            String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetNoCategoryAnalystPositiveRule2",
                                                "description",
                                                "testLoadRuleAssetNoCategoryAnalystPositiveCat2",
                                                "testLoadRuleAssetNoCategoryAnalystPositivePack1",
@@ -428,7 +422,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -460,22 +454,21 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             String category1 = "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryCat";
 
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
+            PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                                                                                "desc" );
             @SuppressWarnings("unused")
             String packageUuid = packageItem.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category1,
-                                                      "this is a cat" );
+            repositoryCategoryService.createCategory("",
+                    category1,
+                    "this is a cat");
 
-            String uuid = impl.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory",
-                                              "description",
-                                              category1,
-                                              "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
-                                              AssetFormats.DRL );
+            String uuid = serviceImplementation.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategory",
+                    "description",
+                    category1,
+                    "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -490,7 +483,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -528,21 +521,20 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixed() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-            PackageItem packageItem = impl.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
+            PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                                                                                "desc" );
             String packageUuid = packageItem.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedCat",
-                                                      "this is a cat" );
+            repositoryCategoryService.createCategory("",
+                    "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedCat",
+                    "this is a cat");
 
-            String uuid = impl.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
-                                              "description",
-                                              null,
-                                              "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
-                                              AssetFormats.DRL );
+            String uuid = serviceImplementation.createNewRule("testLoadRuleAssetWithRoleBasedAuthrozation",
+                    "description",
+                    null,
+                    "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -557,7 +549,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -591,9 +583,8 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        impl.getRulesRepository().createPackage( "testSecurityCreateNewRule",
+        serviceImplementation.getRulesRepository().createPackage( "testSecurityCreateNewRule",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testSecurityCreateNewRule",
@@ -606,11 +597,11 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         mi.create();
 
         try {
-            impl.createNewRule( "testCreateNewRuleName22",
-                                "an initial desc",
-                                "testSecurityCreateNewRule",
-                                "testSecurityCreateNewRule",
-                                AssetFormats.DSL_TEMPLATE_RULE );
+            serviceImplementation.createNewRule("testCreateNewRuleName22",
+                    "an initial desc",
+                    "testSecurityCreateNewRule",
+                    "testSecurityCreateNewRule",
+                    AssetFormats.DSL_TEMPLATE_RULE);
             fail( "not allowed" );
         } catch ( AuthorizationException e ) {
             assertNotNull( e.getMessage() );
@@ -627,18 +618,17 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             }
 
         } );
-        impl.createNewRule( "testCreateNewRuleName22",
-                            "an initial desc",
-                            "testSecurityCreateNewRule",
-                            "testSecurityCreateNewRule",
-                            AssetFormats.DSL_TEMPLATE_RULE );
+        serviceImplementation.createNewRule("testCreateNewRuleName22",
+                "an initial desc",
+                "testSecurityCreateNewRule",
+                "testSecurityCreateNewRule",
+                AssetFormats.DSL_TEMPLATE_RULE);
 
         Lifecycle.endApplication();
     }
 
     @Test
     public void testCheckinWithPackageReadonly() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -651,7 +641,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "testCheckinWithPackageReadonlyCat",
                                                   "deeper",
                                                   "description" );
-        String uuid = impl.createNewRule( "testChecking",
+        String uuid = serviceImplementation.createNewRule( "testChecking",
                                           "this is a description",
                                           "testCheckinWithPackageReadonlyCat",
                                           "testCheckinWithPackageReadonlyPack",
@@ -677,7 +667,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                          impl );
+                                          serviceImplementation );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
                                            RoleType.PACKAGE_READONLY.getName(),
@@ -706,7 +696,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testCheckinPackageDeveloper() throws Exception {
         //try {
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -721,7 +710,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "testCheckinPackageDeveloperCat1",
                                                   "deeper",
                                                   "description" );
-        String uuid = impl.createNewRule( "testCheckinPackageDeveloperRule1",
+        String uuid = serviceImplementation.createNewRule( "testCheckinPackageDeveloperRule1",
                                           "this is a description",
                                           "testCheckinPackageDeveloperCat1",
                                           "testCheckinPackageDeveloperPack1",
@@ -747,7 +736,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                           midentity );
         Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                          impl );
+                                          serviceImplementation );
         List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
         pbps.add( new RoleBasedPermission( "jervis",
                                            RoleType.PACKAGE_DEVELOPER.getName(),
@@ -775,7 +764,6 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyFilter() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryAssetService assetRepositoryService = getRepositoryAssetService();
             RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
@@ -788,17 +776,17 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
                                                       "this is a cat" );
             @SuppressWarnings("unused")
-            String uuid3 = impl.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
+            String uuid3 = serviceImplementation.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
                                                "ReadonlyFilterDescription",
                                                "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
                                                package3Name,
                                                AssetFormats.DRL );
 
             String package4Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack4";
-            impl.getRulesRepository().createPackage( package4Name,
-                                                     "desc" );
+            serviceImplementation.getRulesRepository().createPackage(package4Name,
+                    "desc");
             @SuppressWarnings("unused")
-            String uuid2 = impl.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
+            String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetWithRoleBasedAuthrozation",
                                                "ReadonlyFilterDescription",
                                                "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat3",
                                                package4Name,
@@ -817,7 +805,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -848,38 +836,37 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule7Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData7";
             String rule8Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData8";
 
             String package7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack7";
             String category7Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat7";
-            PackageItem packageItem7 = impl.getRulesRepository().createPackage( package7Name,
+            PackageItem packageItem7 = serviceImplementation.getRulesRepository().createPackage( package7Name,
                                                                                 "desc" );
             @SuppressWarnings("unused")
             String packageItem7UUID = packageItem7.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category7Name,
-                                                      "this is a rabbit" );
+            repositoryCategoryService.createCategory("",
+                    category7Name,
+                    "this is a rabbit");
             @SuppressWarnings("unused")
-            String uuid7 = impl.createNewRule( rule7Name,
-                                               "MetaDataFilterDescription7",
-                                               category7Name,
-                                               package7Name,
-                                               AssetFormats.DRL );
+            String uuid7 = serviceImplementation.createNewRule(rule7Name,
+                    "MetaDataFilterDescription7",
+                    category7Name,
+                    package7Name,
+                    AssetFormats.DRL);
 
             String package8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack8";
             String category8Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat8";
-            PackageItem packageItem8 = impl.getRulesRepository().createPackage( package8Name,
+            PackageItem packageItem8 = serviceImplementation.getRulesRepository().createPackage( package8Name,
                                                                                 "desc" );
             @SuppressWarnings("unused")
             String packageItem8UUID = packageItem8.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category8Name,
-                                                      "this is a mouse" );
+            repositoryCategoryService.createCategory("",
+                    category8Name,
+                    "this is a mouse");
             @SuppressWarnings("unused")
-            String uuid8 = impl.createNewRule( rule8Name,
+            String uuid8 = serviceImplementation.createNewRule( rule8Name,
                                                "MetaDataFilterDescription8",
                                                category8Name,
                                                package8Name,
@@ -887,23 +874,23 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
+            Lifecycle.beginApplication(application);
             Lifecycle.beginCall();
             MockIdentity midentity = new MockIdentity();
             RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
             resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
+            midentity.addPermissionResolver(resolver);
 
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleType.PACKAGE_READONLY.getName(),
-                                               package7Name,
-                                               null ) );
+            pbps.add(new RoleBasedPermission("jervis",
+                    RoleType.PACKAGE_READONLY.getName(),
+                    package7Name,
+                    null));
             pbps.add( new RoleBasedPermission( "jervis",
                                                RoleType.ANALYST.getName(),
                                                null,
@@ -914,20 +901,20 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                category8Name ) );
 
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
+            Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                    store);
 
             // Put permission list in session.
             RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
             testManager.create();
-            Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                              testManager );
+            Contexts.getSessionContext().set("roleBasedPermissionManager",
+                    testManager);
 
             MetaDataQuery[] qr = new MetaDataQuery[1];
             qr[0] = new MetaDataQuery();
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "MetaDataFilterDescription%";
-            TableDataResult result = impl.queryMetaData( qr,
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
                                                          null,
                                                          null,
                                                          null,
@@ -945,38 +932,37 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter2() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule5Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData5";
             String rule6Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData6";
 
             String package5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack5";
             String category5Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat5";
-            PackageItem packageItem5 = impl.getRulesRepository().createPackage( package5Name,
+            PackageItem packageItem5 = serviceImplementation.getRulesRepository().createPackage( package5Name,
                                                                                 "desc" );
             @SuppressWarnings("unused")
             String packageItem5UUID = packageItem5.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category5Name,
-                                                      "this is a cat" );
+            repositoryCategoryService.createCategory("",
+                    category5Name,
+                    "this is a cat");
             @SuppressWarnings("unused")
-            String uuid7 = impl.createNewRule( rule5Name,
-                                               "MetaDataFilter2Description5",
-                                               category5Name,
-                                               package5Name,
-                                               AssetFormats.DRL );
+            String uuid7 = serviceImplementation.createNewRule(rule5Name,
+                    "MetaDataFilter2Description5",
+                    category5Name,
+                    package5Name,
+                    AssetFormats.DRL);
 
             String package6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack6";
             String category6Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat6";
-            PackageItem packageItem6 = impl.getRulesRepository().createPackage( package6Name,
+            PackageItem packageItem6 = serviceImplementation.getRulesRepository().createPackage( package6Name,
                                                                                 "desc" );
             @SuppressWarnings("unused")
             String packageItem6UUID = packageItem6.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category6Name,
-                                                      "this is a dog" );
+            repositoryCategoryService.createCategory("",
+                    category6Name,
+                    "this is a dog");
             @SuppressWarnings("unused")
-            String uuid6 = impl.createNewRule( rule6Name,
+            String uuid6 = serviceImplementation.createNewRule( rule6Name,
                                                "MetaDataFilter2Description6",
                                                category6Name,
                                                package6Name,
@@ -984,31 +970,31 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
+            Lifecycle.beginApplication(application);
             Lifecycle.beginCall();
             MockIdentity midentity = new MockIdentity();
             RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
             resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
+            midentity.addPermissionResolver(resolver);
 
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleType.PACKAGE_READONLY.getName(),
-                                               package5Name,
-                                               null ) );
+            pbps.add(new RoleBasedPermission("jervis",
+                    RoleType.PACKAGE_READONLY.getName(),
+                    package5Name,
+                    null));
             pbps.add( new RoleBasedPermission( "jervis",
                                                RoleType.PACKAGE_READONLY.getName(),
                                                package6Name,
                                                null ) );
 
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
+            Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                    store);
 
             // Put permission list in session.
             RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
@@ -1020,7 +1006,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             qr[0] = new MetaDataQuery();
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "MetaDataFilter2Description%";
-            TableDataResult result = impl.queryMetaData( qr,
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
                                                          null,
                                                          null,
                                                          null,
@@ -1038,38 +1024,37 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyMetaDataFilter3() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule9Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData9";
             String rule10Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData10";
 
             String package9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack9";
             String category9Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat9";
-            PackageItem packageItem9 = impl.getRulesRepository().createPackage( package9Name,
+            PackageItem packageItem9 = serviceImplementation.getRulesRepository().createPackage( package9Name,
                                                                                 "desc" );
             @SuppressWarnings("unused")
             String packageItem9UUID = packageItem9.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category9Name,
-                                                      "this is a pigeon" );
+            repositoryCategoryService.createCategory("",
+                    category9Name,
+                    "this is a pigeon");
             @SuppressWarnings("unused")
-            String uuid9 = impl.createNewRule( rule9Name,
-                                               "MetaDataFilter3Description9",
-                                               category9Name,
-                                               package9Name,
-                                               AssetFormats.DRL );
+            String uuid9 = serviceImplementation.createNewRule(rule9Name,
+                    "MetaDataFilter3Description9",
+                    category9Name,
+                    package9Name,
+                    AssetFormats.DRL);
 
             String package10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack10";
             String category10Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat10";
-            PackageItem packageItem10 = impl.getRulesRepository().createPackage( package10Name,
+            PackageItem packageItem10 = serviceImplementation.getRulesRepository().createPackage( package10Name,
                                                                                  "desc" );
             @SuppressWarnings("unused")
             String packageItem10UUID = packageItem10.getUUID();
-            repositoryCategoryService.createCategory( "",
-                                                      category10Name,
-                                                      "this is a sparrow" );
+            repositoryCategoryService.createCategory("",
+                    category10Name,
+                    "this is a sparrow");
             @SuppressWarnings("unused")
-            String uuid10 = impl.createNewRule( rule10Name,
+            String uuid10 = serviceImplementation.createNewRule( rule10Name,
                                                 "MetaDataFilter3Description10",
                                                 category10Name,
                                                 package10Name,
@@ -1077,31 +1062,31 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
-            Lifecycle.beginApplication( application );
+            Lifecycle.beginApplication(application);
             Lifecycle.beginCall();
             MockIdentity midentity = new MockIdentity();
             RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
             resolver.setEnableRoleBasedAuthorization( true );
-            midentity.addPermissionResolver( resolver );
+            midentity.addPermissionResolver(resolver);
 
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-            pbps.add( new RoleBasedPermission( "jervis",
-                                               RoleType.ANALYST.getName(),
-                                               null,
-                                               category9Name ) );
+            pbps.add(new RoleBasedPermission("jervis",
+                    RoleType.ANALYST.getName(),
+                    null,
+                    category9Name));
             pbps.add( new RoleBasedPermission( "jervis",
                                                RoleType.ANALYST.getName(),
                                                null,
                                                category10Name ) );
 
             MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-            Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                              store );
+            Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
+                    store);
 
             // Put permission list in session.
             RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
@@ -1113,7 +1098,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             qr[0] = new MetaDataQuery();
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "MetaDataFilter3Description%";
-            TableDataResult result = impl.queryMetaData( qr,
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
                                                          null,
                                                          null,
                                                          null,
@@ -1131,14 +1116,13 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testTableDisplayHandler() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String rule11Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData11";
             String rule12Name = "testLoadRuleAssetWithRoleBasedAuthrozationForMetaData12";
 
             String package11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack11";
             String category11Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat11";
-            PackageItem packageItem11 = impl.getRulesRepository().createPackage( package11Name,
+            PackageItem packageItem11 = serviceImplementation.getRulesRepository().createPackage( package11Name,
                                                                                  "desc" );
             @SuppressWarnings("unused")
             String packageItem11UUID = packageItem11.getUUID();
@@ -1146,7 +1130,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       category11Name,
                                                       "this is a dock" );
             @SuppressWarnings("unused")
-            String uuid11 = impl.createNewRule( rule11Name,
+            String uuid11 = serviceImplementation.createNewRule( rule11Name,
                                                 "DisplayHandlerDescription11",
                                                 category11Name,
                                                 package11Name,
@@ -1154,7 +1138,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
             String package12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyPack12";
             String category12Name = "testLoadRuleAssetWithRoleBasedAuthrozationPackageReadonlyCat12";
-            PackageItem packageItem12 = impl.getRulesRepository().createPackage( package12Name,
+            PackageItem packageItem12 = serviceImplementation.getRulesRepository().createPackage( package12Name,
                                                                                  "desc" );
             @SuppressWarnings("unused")
             String packageItem12UUID = packageItem12.getUUID();
@@ -1162,7 +1146,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       category12Name,
                                                       "this is a sparrow" );
             @SuppressWarnings("unused")
-            String uuid12 = impl.createNewRule( rule12Name,
+            String uuid12 = serviceImplementation.createNewRule( rule12Name,
                                                 "DisplayHandlerDescription12",
                                                 category12Name,
                                                 package12Name,
@@ -1180,7 +1164,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -1207,7 +1191,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
             qr[0].valueList = "DisplayHandlerDescription%";
 
-            TableDataResult result = impl.queryMetaData( qr,
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
                                                          null,
                                                          null,
                                                          null,
@@ -1218,7 +1202,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             assertEquals( 1,
                           result.data.length );
 
-            result = impl.queryMetaData( qr,
+            result = serviceImplementation.queryMetaData( qr,
                                          null,
                                          null,
                                          null,
@@ -1229,7 +1213,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             assertEquals( 1,
                           result.data.length );
 
-            result = impl.queryMetaData( qr,
+            result = serviceImplementation.queryMetaData( qr,
                                          null,
                                          null,
                                          null,
@@ -1240,7 +1224,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             assertEquals( 2,
                           result.data.length );
 
-            result = impl.queryMetaData( qr,
+            result = serviceImplementation.queryMetaData( qr,
                                          null,
                                          null,
                                          null,
@@ -1251,7 +1235,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             assertEquals( 2,
                           result.data.length );
 
-            result = impl.queryMetaData( qr,
+            result = serviceImplementation.queryMetaData( qr,
                                          null,
                                          null,
                                          null,
@@ -1271,38 +1255,37 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testListPackagesPackageAdminAndAnalyst() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testListPackagesPackageAdminAndAnalystPack1";
             String package2Name = "testListPackagesPackageAdminAndAnalystPack2";
             String category1Name = "testListPackagesPackageAdminAndAnalystCat1";
             @SuppressWarnings("unused")
-            String package1UUID = (impl.getRulesRepository().createPackage( package1Name,
+            String package1UUID = (serviceImplementation.getRulesRepository().createPackage( package1Name,
                                                                             "desc" )).getUUID();
-            impl.getRulesRepository().createPackage( package2Name,
-                                                     "desc" );
-            repositoryCategoryService.createCategory( "",
-                                                      category1Name,
-                                                      "this is a cat" );
+            serviceImplementation.getRulesRepository().createPackage(package2Name,
+                    "desc");
+            repositoryCategoryService.createCategory("",
+                    category1Name,
+                    "this is a cat");
 
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule1",
-                                "description",
-                                null,
-                                package1Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testListPackagesPackageAdminAndAnalystRule1",
+                    "description",
+                    null,
+                    package1Name,
+                    AssetFormats.DRL);
 
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule2",
-                                "description",
-                                category1Name,
-                                package2Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testListPackagesPackageAdminAndAnalystRule2",
+                    "description",
+                    category1Name,
+                    package2Name,
+                    AssetFormats.DRL);
 
-            impl.createNewRule( "testListPackagesPackageAdminAndAnalystRule3",
-                                "description",
-                                null,
-                                package2Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testListPackagesPackageAdminAndAnalystRule3",
+                    "description",
+                    null,
+                    package2Name,
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -1317,7 +1300,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -1349,13 +1332,12 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testLoadChildCategories() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testLoadChildCategoriesPack1";
             String category1Name = "testLoadChildCategoriesCat1";
             String category2Name = "testLoadChildCategoriesCat2";
 
-            impl.getRulesRepository().createPackage( package1Name,
+            serviceImplementation.getRulesRepository().createPackage( package1Name,
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
                                                       category1Name,
@@ -1364,17 +1346,17 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                       category2Name,
                                                       "this is a cat" );
 
-            impl.createNewRule( "testLoadChildCategoriesRule1",
-                                "description",
-                                category1Name,
-                                package1Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testLoadChildCategoriesRule1",
+                    "description",
+                    category1Name,
+                    package1Name,
+                    AssetFormats.DRL);
 
-            impl.createNewRule( "testLoadChildCategoriesRule2",
-                                "description",
-                                category2Name,
-                                package1Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testLoadChildCategoriesRule2",
+                    "description",
+                    category2Name,
+                    package1Name,
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -1389,7 +1371,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -1417,42 +1399,41 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testloadRuleListForCategoriesPackageReadonly() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testloadRuleListForCategoriesPackageReadonlyPack1";
             String category1Name = "testloadRuleListForCategoriesPackageReadonlyCat1";
 
-            impl.getRulesRepository().createPackage( package1Name,
+            serviceImplementation.getRulesRepository().createPackage( package1Name,
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
                                                       category1Name,
                                                       "this is a cat" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyRule1",
-                                "description",
-                                category1Name,
-                                package1Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyRule1",
+                    "description",
+                    category1Name,
+                    package1Name,
+                    AssetFormats.DRL);
 
             String package2Name = "testloadRuleListForCategoriesPackageReadonlyPack2";
-            impl.getRulesRepository().createPackage( package2Name,
+            serviceImplementation.getRulesRepository().createPackage( package2Name,
                                                      "desc" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyRule2",
-                                "description",
-                                category1Name,
-                                package2Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyRule2",
+                    "description",
+                    category1Name,
+                    package2Name,
+                    AssetFormats.DRL);
 
             String package3Name = "testloadRuleListForCategoriesPackageReadonlyPack3";
-            impl.getRulesRepository().createPackage( package3Name,
+            serviceImplementation.getRulesRepository().createPackage( package3Name,
                                                      "desc" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyRule3",
-                                "description",
-                                category1Name,
-                                package3Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyRule3",
+                    "description",
+                    category1Name,
+                    package3Name,
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -1467,7 +1448,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",
@@ -1502,42 +1483,41 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
     @Test
     public void testloadRuleListForCategoriesPackageReadonlyPositive() throws Exception {
         try {
-            ServiceImplementation impl = getServiceImplementation();
             RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
             String package1Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack1";
             String category1Name = "testloadRuleListForCategoriesPackageReadonlyPositiveCat1";
 
-            impl.getRulesRepository().createPackage( package1Name,
+            serviceImplementation.getRulesRepository().createPackage( package1Name,
                                                      "desc" );
             repositoryCategoryService.createCategory( "",
                                                       category1Name,
                                                       "this is a cat" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyPositiveRule1",
-                                "description",
-                                category1Name,
-                                package1Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyPositiveRule1",
+                    "description",
+                    category1Name,
+                    package1Name,
+                    AssetFormats.DRL);
 
             String package2Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack2";
-            impl.getRulesRepository().createPackage( package2Name,
+            serviceImplementation.getRulesRepository().createPackage( package2Name,
                                                      "desc" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyPositiveRule2",
-                                "description",
-                                category1Name,
-                                package2Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyPositiveRule2",
+                    "description",
+                    category1Name,
+                    package2Name,
+                    AssetFormats.DRL);
 
             String package3Name = "testloadRuleListForCategoriesPackageReadonlyPositivePack3";
-            impl.getRulesRepository().createPackage( package3Name,
+            serviceImplementation.getRulesRepository().createPackage( package3Name,
                                                      "desc" );
 
-            impl.createNewRule( "testloadRuleListForCategoriesPackageReadonlyPositiveRule3",
-                                "description",
-                                category1Name,
-                                package3Name,
-                                AssetFormats.DRL );
+            serviceImplementation.createNewRule("testloadRuleListForCategoriesPackageReadonlyPositiveRule3",
+                    "description",
+                    category1Name,
+                    package3Name,
+                    AssetFormats.DRL);
 
             // Mock up SEAM contexts
             Map<String, Object> application = new HashMap<String, Object>();
@@ -1552,7 +1532,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
                                               midentity );
             Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                              impl );
+                                              serviceImplementation );
 
             List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
             pbps.add( new RoleBasedPermission( "jervis",

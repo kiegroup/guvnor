@@ -23,8 +23,6 @@
   </properties>
 
   <build>
-<!-- TODO seam3Upgrade REMOVE ME! -->
-<testSourceDirectory>src/test/prototype-test</testSourceDirectory>
     <plugins>
       <plugin>
         <!--use -Dgwt.compiler.skip=true to skip GWT compiler-->

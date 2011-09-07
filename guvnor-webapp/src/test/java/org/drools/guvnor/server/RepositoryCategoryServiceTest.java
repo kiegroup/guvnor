@@ -32,14 +32,13 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     @Test
     public void testRemoveCategory() throws Exception {
 
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        String[] children = repositoryCategoryService.loadChildCategories( "/" );
-        repositoryCategoryService.createCategory( "/",
-                                                  "testRemoveCategory",
-                                                  "foo" );
+        String[] children = categoryService.loadChildCategories( "/" );
+        categoryService.createCategory("/",
+                "testRemoveCategory",
+                "foo");
 
-        repositoryCategoryService.removeCategory( "testRemoveCategory" );
-        String[] _children = repositoryCategoryService.loadChildCategories( "/" );
+        categoryService.removeCategory("testRemoveCategory");
+        String[] _children = categoryService.loadChildCategories( "/" );
         assertEquals( children.length,
                       _children.length );
 
@@ -47,10 +46,9 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testAddCategories() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        impl.getRulesRepository().createPackage( "testAddCategoriesPackage",
-                                                 "desc" );
+        rulesRepository.createPackage("testAddCategoriesPackage",
+                "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testAddCategoriesCat1",
                                                   "this is a cat" );
@@ -58,26 +56,26 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                                   "testAddCategoriesCat2",
                                                   "this is a cat" );
 
-        String uuid = impl.createNewRule( "testCreateNewRuleName",
+        String uuid = serviceImplementation.createNewRule( "testCreateNewRuleName",
                                           "an initial desc",
                                           "testAddCategoriesCat1",
                                           "testAddCategoriesPackage",
                                           AssetFormats.DSL_TEMPLATE_RULE );
 
-        AssetItem dtItem = impl.getRulesRepository().loadAssetByUUID( uuid );
-        dtItem.addCategory( "testAddCategoriesCat1" );
-        impl.getRulesRepository().save();
+        AssetItem dtItem = rulesRepository.loadAssetByUUID(uuid);
+        dtItem.addCategory("testAddCategoriesCat1");
+        rulesRepository.save();
 
-        AssetItem dtItem1 = impl.getRulesRepository().loadAssetByUUID( uuid );
-        assertEquals( 1,
-                      dtItem1.getCategories().size() );
-        assertTrue( dtItem1.getCategorySummary().contains( "testAddCategoriesCat1" ) );
+        AssetItem dtItem1 = rulesRepository.loadAssetByUUID(uuid);
+        assertEquals(1,
+                dtItem1.getCategories().size());
+        assertTrue(dtItem1.getCategorySummary().contains("testAddCategoriesCat1"));
 
-        AssetItem dtItem2 = impl.getRulesRepository().loadAssetByUUID( uuid );
-        dtItem2.addCategory( "testAddCategoriesCat2" );
-        impl.getRulesRepository().save();
+        AssetItem dtItem2 = rulesRepository.loadAssetByUUID(uuid);
+        dtItem2.addCategory("testAddCategoriesCat2");
+        rulesRepository.save();
 
-        AssetItem dtItem3 = impl.getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem dtItem3 = rulesRepository.loadAssetByUUID(uuid);
         assertEquals( 2,
                       dtItem3.getCategories().size() );
         assertTrue( dtItem3.getCategorySummary().contains( "testAddCategoriesCat2" ) );
@@ -85,30 +83,28 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testCategory() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
-        String[] originalCats = repositoryCategoryService.loadChildCategories( "/" );
+        String[] originalCats = categoryService.loadChildCategories( "/" );
 
-        Boolean result = repositoryCategoryService.createCategory( "/",
+        Boolean result = categoryService.createCategory( "/",
                                                                    "TopLevel1",
                                                                    "a description" );
-        assertTrue( result.booleanValue() );
+        assertTrue(result.booleanValue());
 
-        result = repositoryCategoryService.createCategory( "/",
+        result = categoryService.createCategory( "/",
                                                            "TopLevel2",
                                                            "a description" );
-        assertTrue( result.booleanValue() );
+        assertTrue(result.booleanValue());
 
-        String[] cats = repositoryCategoryService.loadChildCategories( "/" );
+        String[] cats = categoryService.loadChildCategories( "/" );
         assertTrue( cats.length == originalCats.length + 2 );
 
-        result = repositoryCategoryService.createCategory( "",
+        result = categoryService.createCategory( "",
                                                            "Top3",
                                                            "description" );
         assertTrue( result.booleanValue() );
 
-        result = repositoryCategoryService.createCategory( null,
+        result = categoryService.createCategory( null,
                                                            "Top4",
                                                            "description" );
         assertTrue( result.booleanValue() );
@@ -120,47 +116,44 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testCategory";
-        repositoryCategoryService.createCategory( "/",
-                                                  cat,
-                                                  "testCategoryDescription" );
-        repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription" ,
-                                                "package");
+        categoryService.createCategory("/",
+                cat,
+                "testCategoryDescription");
+        packageService.createPackage("testCategoryPackage",
+                "testCategoryPackageDescription",
+                "package");
 
-        impl.createNewRule( "testTextRule1",
-                            "testCategoryRule1",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
-        impl.createNewRule( "testTextRule2",
-                            "testCategoryRule2",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
-        impl.createNewRule( "testTextRule3",
-                            "testCategoryRule3",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "testCategoryRule1",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
+        serviceImplementation.createNewRule("testTextRule2",
+                "testCategoryRule2",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
+        serviceImplementation.createNewRule("testTextRule3",
+                "testCategoryRule3",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
 
         CategoryPageRequest request = new CategoryPageRequest( cat,
                                                                0,
                                                                PAGE_SIZE );
         PageResponse<CategoryPageRow> response;
-        response = repositoryCategoryService.loadRuleListForCategories( request );
+        response = categoryService.loadRuleListForCategories( request );
 
-        assertNotNull( response );
+        assertNotNull(response);
         assertNotNull( response.getPageRowList() );
-        assertTrue( response.getStartRowIndex() == 0 );
+        assertTrue(response.getStartRowIndex() == 0);
         assertTrue( response.getPageRowList().size() == PAGE_SIZE );
-        assertFalse( response.isLastPage() );
+        assertFalse(response.isLastPage());
 
-        request.setStartRowIndex( PAGE_SIZE );
-        response = repositoryCategoryService.loadRuleListForCategories( request );
+        request.setStartRowIndex(PAGE_SIZE);
+        response = categoryService.loadRuleListForCategories( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -172,38 +165,35 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     @Test
     public void testLoadRuleListForCategoryFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testCategory";
-        repositoryCategoryService.createCategory( "/",
-                                                  cat,
-                                                  "testCategoryDescription" );
-        repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription",
-                                                "package" );
+        categoryService.createCategory("/",
+                cat,
+                "testCategoryDescription");
+        packageService.createPackage("testCategoryPackage",
+                "testCategoryPackageDescription",
+                "package");
 
-        impl.createNewRule( "testTextRule1",
-                            "testCategoryRule1",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
-        impl.createNewRule( "testTextRule2",
-                            "testCategoryRule2",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
-        impl.createNewRule( "testTextRule3",
-                            "testCategoryRule3",
-                            cat,
-                            "testCategoryPackage",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "testCategoryRule1",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
+        serviceImplementation.createNewRule("testTextRule2",
+                "testCategoryRule2",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
+        serviceImplementation.createNewRule("testTextRule3",
+                "testCategoryRule3",
+                cat,
+                "testCategoryPackage",
+                AssetFormats.DRL);
 
         CategoryPageRequest request = new CategoryPageRequest( cat,
                                                                0,
                                                                null );
         PageResponse<CategoryPageRow> response;
-        response = repositoryCategoryService.loadRuleListForCategories( request );
+        response = categoryService.loadRuleListForCategories( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );

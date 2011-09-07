@@ -31,8 +31,7 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
     private RoleBasedPermissionStore getStore() throws Exception {
         RoleBasedPermissionStore store = new RoleBasedPermissionStore();
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         
         store.repository = repo;
         

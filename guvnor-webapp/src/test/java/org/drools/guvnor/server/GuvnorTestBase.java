@@ -15,8 +15,7 @@
  */
 package org.drools.guvnor.server;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -28,11 +27,16 @@ import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
+import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.contexts.Lifecycle;
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
+import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -41,8 +45,35 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public abstract class GuvnorTestBase {
 
+    @Deployment
+    public static WebArchive createDeployment() {
+        // TODO FIXME do not hardcode the version number
+        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
+                .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
+                .as(WebArchive.class)
+                .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
+                .addAsLibraries(
+                        DependencyResolvers.use(MavenDependencyResolver.class)
+                                .includeDependenciesFromPom("pom.xml")
+                                .resolveAsFiles(new ScopeFilter("test")));
+        // System.out.println(webArchive.toString(Formatters.VERBOSE));
+        return webArchive;
+    }
+
     @Inject
-    private RulesRepository repository;
+    protected RulesRepository rulesRepository;
+
+    @Inject
+    protected ServiceImplementation serviceImplementation;
+
+    @Inject
+    protected RepositoryAssetService assetService;
+
+    @Inject
+    protected RepositoryPackageService packageService;
+
+    @Inject
+    protected RepositoryCategoryService categoryService;
 
     // ************************************************************************
     // Lifecycle methods
@@ -51,34 +82,7 @@ public abstract class GuvnorTestBase {
     @Before
     public void setUpGuvnorTestBase() {
         System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
-        setUpSeam();
-        setUpRepository();
         setUpMockIdentity();
-    }
-
-    protected void setUpSeam() {
-    }
-
-    protected void setUpRepository() {
-        ServiceImplementation serviceImplementation = new ServiceImplementation();
-        serviceImplementation.setRulesRepository( getRulesRepository() );
-
-        RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
-        repositoryAssetService.setRulesRepository( getRulesRepository() );
-
-        RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
-        repositoryPackageService.setRulesRepository( getRulesRepository() );
-
-        RepositoryCategoryService repositoryCategoryService = new RepositoryCategoryService();
-        repositoryCategoryService.setRulesRepository( getRulesRepository() );
-
-    }
-
-    private RulesRepository getRulesRepository() {
-        if ( repository == null ) {
-            repository = new RulesRepository( TestEnvironmentSessionHelper.getSession( true ) );
-        }
-        return repository;
     }
 
     protected void setUpMockIdentity() {
@@ -97,7 +101,7 @@ public abstract class GuvnorTestBase {
 
     @After
     public void tearDownGuvnorTestBase() {
-        repository = null;
+        rulesRepository = null;
         Contexts.removeFromAllContexts( "fileManager" );
         if ( Contexts.getApplicationContext() != null ) Contexts.getApplicationContext().flush();
         if ( Contexts.getEventContext() != null ) Contexts.getEventContext().flush();
@@ -117,18 +121,26 @@ public abstract class GuvnorTestBase {
     // Helper methods
     // ************************************************************************
 
+    // TODO seam3upgrade
+    @Deprecated
     public ServiceImplementation getServiceImplementation() {
         return (ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" );
     }
 
+    // TODO seam3upgrade
+    @Deprecated
     protected RepositoryAssetService getRepositoryAssetService() {
         return (RepositoryAssetService) Component.getInstance( "org.drools.guvnor.client.rpc.AssetService" );
     }
 
+    // TODO seam3upgrade
+    @Deprecated
     protected RepositoryPackageService getRepositoryPackageService() {
         return (RepositoryPackageService) Component.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
     }
 
+    // TODO seam3upgrade
+    @Deprecated
     public RepositoryCategoryService getRepositoryCategoryService() {
         return (RepositoryCategoryService) Component.getInstance( "org.drools.guvnor.client.rpc.CategoryService" );
     }
@@ -144,8 +156,9 @@ public abstract class GuvnorTestBase {
         return fileManager;
     }
 
+    @Deprecated // TODO seam3upgrade should probably be injected now
     public WebDAVImpl getWebDAVImpl() throws Exception {
-        return new WebDAVImpl( getRulesRepository() );
+        return new WebDAVImpl(rulesRepository);
     }
 
 }

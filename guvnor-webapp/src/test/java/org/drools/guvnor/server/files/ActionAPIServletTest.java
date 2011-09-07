@@ -45,8 +45,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         repo.createPackage( dynamicPackage,
                             "test-action package for testing" );
@@ -78,8 +77,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     public void testSnapshotCreation() throws Exception {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         repo.createPackage( dynamicPackage,
                             "test-snapshot package for testing" );

@@ -45,7 +45,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -56,41 +55,41 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule1",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule2",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule2",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule3",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule3",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
                                                          false,
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
-        assertNotNull( response );
+        assertNotNull(response);
         assertNotNull( response.getPageRowList() );
-        assertEquals( 0,
-                      response.getStartRowIndex() );
+        assertEquals(0,
+                response.getStartRowIndex());
         assertEquals( PAGE_SIZE,
                       response.getPageRowList().size() );
-        assertFalse( response.isLastPage() );
+        assertFalse(response.isLastPage());
 
-        request.setStartRowIndex( PAGE_SIZE );
-        response = impl.queryFullText( request );
+        request.setStartRowIndex(PAGE_SIZE);
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -104,7 +103,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -115,30 +113,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule1",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule2",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule2",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule3",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule3",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
                                                          false,
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -154,7 +152,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -165,23 +162,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule1",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule2",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule2",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule3",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule3",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
                                                          false,
@@ -200,7 +197,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -214,7 +211,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -225,23 +221,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule1",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule1",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule2",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule2",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "testTextRule3",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule3",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
                                                          false,
@@ -265,8 +261,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testMetaDataSearch",
                                                                    "" );
 
         AssetItem[] assets = new AssetItem[3];
@@ -298,18 +293,18 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                                          PAGE_SIZE );
 
         PageResponse<QueryPageRow> response;
-        response = impl.queryMetaData( request );
+        response = serviceImplementation.queryMetaData( request );
 
         assertNotNull( response );
-        assertNotNull( response.getPageRowList() );
-        assertEquals( 0,
-                      response.getStartRowIndex() );
-        assertEquals( PAGE_SIZE,
-                      response.getPageRowList().size() );
-        assertFalse( response.isLastPage() );
+        assertNotNull(response.getPageRowList());
+        assertEquals(0,
+                response.getStartRowIndex());
+        assertEquals(PAGE_SIZE,
+                response.getPageRowList().size());
+        assertFalse(response.isLastPage());
 
-        request.setStartRowIndex( PAGE_SIZE );
-        response = impl.queryMetaData( request );
+        request.setStartRowIndex(PAGE_SIZE);
+        response = serviceImplementation.queryMetaData( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -323,8 +318,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryMetaDataFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testMetaDataSearch",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testMetaDataSearch",
                                                                    "" );
 
         AssetItem[] assets = new AssetItem[3];
@@ -356,7 +350,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                                          null );
 
         PageResponse<QueryPageRow> response;
-        response = impl.queryMetaData( request );
+        response = serviceImplementation.queryMetaData( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -372,31 +366,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPagePackage",
+        PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testFindAssetPagePackage",
                                                                            "testFindAssetPagePackageDescription" );
-        repositoryCategoryService.createCategory( "",
-                                                  "testFindAssetPageCategory",
-                                                  "testFindAssetPageCategoryDescription" );
+        repositoryCategoryService.createCategory("",
+                "testFindAssetPageCategory",
+                "testFindAssetPageCategoryDescription");
 
-        impl.createNewRule( "testFindAssetPageAsset1",
-                            "testFindAssetPageAsset1Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset1",
+                "testFindAssetPageAsset1Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
-        impl.createNewRule( "testFindAssetPageAsset2",
-                            "testFindAssetPageAsset2Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset2",
+                "testFindAssetPageAsset2Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
-        impl.createNewRule( "testFindAssetPageAsset3",
-                            "testFindAssetPageAsset3Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset3",
+                "testFindAssetPageAsset3Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
         List<String> formats = new ArrayList<String>();
         formats.add( AssetFormats.BUSINESS_RULE );
@@ -431,31 +424,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
     @Test
     public void testFindAssetPageFullResults() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPagePackage",
+        PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testFindAssetPagePackage",
                                                                            "testFindAssetPagePackageDescription" );
-        repositoryCategoryService.createCategory( "",
-                                                  "testFindAssetPageCategory",
-                                                  "testFindAssetPageCategoryDescription" );
+        repositoryCategoryService.createCategory("",
+                "testFindAssetPageCategory",
+                "testFindAssetPageCategoryDescription");
 
-        impl.createNewRule( "testFindAssetPageAsset1",
-                            "testFindAssetPageAsset1Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset1",
+                "testFindAssetPageAsset1Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
-        impl.createNewRule( "testFindAssetPageAsset2",
-                            "testFindAssetPageAsset2Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset2",
+                "testFindAssetPageAsset2Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
-        impl.createNewRule( "testFindAssetPageAsset3",
-                            "testFindAssetPageAsset3Description",
-                            "testFindAssetPageCategory",
-                            "testFindAssetPagePackage",
-                            AssetFormats.BUSINESS_RULE );
+        serviceImplementation.createNewRule("testFindAssetPageAsset3",
+                "testFindAssetPageAsset3Description",
+                "testFindAssetPageCategory",
+                "testFindAssetPagePackage",
+                AssetFormats.BUSINESS_RULE);
 
         List<String> formats = new ArrayList<String>();
         formats.add( AssetFormats.BUSINESS_RULE );
@@ -479,8 +471,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
     @Test
     public void testFindAssetPageUnregisteredAssetFormats() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        PackageItem packageItem = impl.getRulesRepository().createPackage( "testFindAssetPageUnregisteredAssetFormats",
+        PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testFindAssetPageUnregisteredAssetFormats",
                                                                            "testFindAssetPageUnregisteredAssetFormatsDescription" );
         AssetItem as;
 
@@ -512,7 +503,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetCaseInsensitiveFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -523,23 +513,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "TESTTEXTRULE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("TESTTEXTRULE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "tEsTtExTrUlE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("tEsTtExTrUlE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
                                                          false,
@@ -564,7 +554,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -575,23 +564,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "TESTTEXTRULE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("TESTTEXTRULE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "tEsTtExTrUlE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("tEsTtExTrUlE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
                                                          false,
@@ -611,7 +600,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         assertFalse( response.isLastPage() );
 
         request.setStartRowIndex( PAGE_SIZE );
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -625,7 +614,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextCaseInsensitiveFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -636,23 +624,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "TESTTEXTRULE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("TESTTEXTRULE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "tEsTtExTrUlE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("tEsTtExTrUlE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
                                                          false,
@@ -660,7 +648,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          null );
         PageResponse<QueryPageRow> response;
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );
@@ -674,7 +662,6 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         String cat = "testTextSearch";
@@ -685,23 +672,23 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                 "for testing search.",
                                                 "package" );
 
-        impl.createNewRule( "testTextRule",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("testTextRule",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "TESTTEXTRULE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("TESTTEXTRULE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
-        impl.createNewRule( "tEsTtExTrUlE",
-                            "desc",
-                            cat,
-                            "testTextSearch",
-                            AssetFormats.DRL );
+        serviceImplementation.createNewRule("tEsTtExTrUlE",
+                "desc",
+                cat,
+                "testTextSearch",
+                AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
                                                          false,
@@ -709,18 +696,18 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
                                                          0,
                                                          PAGE_SIZE );
         PageResponse<QueryPageRow> response;
-        response = impl.queryFullText( request );
+        response = serviceImplementation.queryFullText( request );
 
-        assertNotNull( response );
+        assertNotNull(response);
         assertNotNull( response.getPageRowList() );
-        assertEquals( 0,
-                      response.getStartRowIndex() );
+        assertEquals(0,
+                response.getStartRowIndex());
         assertEquals( PAGE_SIZE,
                       response.getPageRowList().size() );
-        assertFalse( response.isLastPage() );
+        assertFalse(response.isLastPage());
 
-        request.setStartRowIndex( PAGE_SIZE );
-        response = impl.queryFullText( request );
+        request.setStartRowIndex(PAGE_SIZE);
+        response = serviceImplementation.queryFullText( request );
 
         assertNotNull( response );
         assertNotNull( response.getPageRowList() );

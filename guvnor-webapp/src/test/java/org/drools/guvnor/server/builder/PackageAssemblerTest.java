@@ -62,7 +62,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     @Test
     public void testPackageConfigWithErrors() throws Exception {
         //test the config, no rule assets yet
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testBuilderPackageConfig",
                 "x");
         DroolsHeader.updateDroolsHeader("import java.util.List",
@@ -157,7 +156,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testLoadConfProperties() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testLoadConfProperties",
@@ -201,7 +199,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testPackageWithRuleflow() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem packageItem = repo.createPackage("testPackageWithRuleFlow",
@@ -267,7 +264,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     @Test
     public void testWithNoDeclaredTypes() throws Exception {
 
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypes1",
@@ -286,7 +282,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypes2",
@@ -324,7 +319,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageAttributes() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testSimplePackageAttributes",
@@ -371,7 +365,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
@@ -426,7 +419,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageBuildNoErrors() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testSimplePackageBuildNoErrors",
@@ -495,7 +487,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testIgnoreArchivedItems() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testIgnoreArchivedItems",
@@ -544,7 +535,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
      */
     @Test
     public void testErrorsInRuleAsset() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //first, setup the package correctly:
@@ -586,7 +576,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     @Test
     @Ignore("Temporally ignored -Rikkola-")
     public void testEventingExample() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage("testEventingExample",
@@ -622,7 +611,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
      */
     @Test
     public void testRuleAndDSLAndFunction() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //first, setup the package correctly:
@@ -690,7 +678,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSkipDisabledPackageStuff() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //first, setup the package correctly:
@@ -721,7 +708,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testXLSDecisionTable() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //first, setup the package correctly:
@@ -780,7 +766,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testBRXMLWithDSLMixedIn() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //create our package
@@ -858,7 +843,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testCustomSelector() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = serviceImplementation.getRulesRepository();
 
         //create our package

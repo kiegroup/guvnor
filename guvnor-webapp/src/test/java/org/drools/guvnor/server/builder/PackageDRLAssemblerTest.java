@@ -33,7 +33,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSimplePackageWithDeclaredTypes2",
                 "");
@@ -64,7 +63,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
                 "");
@@ -117,9 +115,8 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testGetHistoryPackageSource() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage("testGetHistoryPackageSource",
+        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testGetHistoryPackageSource",
                 "");
 
         //Package version 2
@@ -175,7 +172,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.checkin("version3");
 
         //Verify the latest version
-        PackageItem item = impl.getRulesRepository().loadPackage("testGetHistoryPackageSource");
+        PackageItem item = serviceImplementation.getRulesRepository().loadPackage("testGetHistoryPackageSource");
         PackageDRLAssembler asm = new PackageDRLAssembler(item);
         String drl = asm.getDRL();
 
@@ -192,7 +189,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         //assertEquals(12, item.getCompiledPackageBytes().length);
 
         //Verify version 2
-        PackageItem item2 = impl.getRulesRepository().loadPackage("testGetHistoryPackageSource",
+        PackageItem item2 = serviceImplementation.getRulesRepository().loadPackage("testGetHistoryPackageSource",
                 2);
         PackageDRLAssembler asm2 = new PackageDRLAssembler(item2);
         String drl2 = asm2.getDRL();
@@ -211,7 +208,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSource() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         //first, setup the package correctly:
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSource",
@@ -278,8 +274,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSourceUsingSpecifiedDependencies() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-
         //first, setup the package correctly:
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSourceUsingSpecifiedDependencies",
                 "");
@@ -365,7 +359,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSourceForHistoricalPackage() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSourceForHistoricalPackage",
                 "");
 
@@ -474,7 +467,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSkipDisabledAssets() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         //first, setup the package correctly:
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSkipDisabledAssets",
@@ -519,8 +511,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSkipDisabledImports() throws Exception {
-
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         //first, setup the package correctly:
         PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testXLSDecisionTableIgnoreImports",

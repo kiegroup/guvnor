@@ -41,8 +41,7 @@ import static org.junit.Assert.*;
 public class RepositoryScenarioTest extends GuvnorTestBase {
     @Test
     public void testRunScenario() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
@@ -54,16 +53,16 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
-        rule1.checkin( "" );
+        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.checkin("");
         repo.save();
 
         Scenario sc = new Scenario();
         FactData person = new FactData();
         person.setName( "p" );
-        person.setType( "Person" );
-        person.getFieldData().add( new FieldData( "age",
-                                                  "40" ) );
+        person.setType("Person");
+        person.getFieldData().add(new FieldData("age",
+                "40"));
         person.getFieldData().add( new FieldData( "name",
                                                   "michael" ) );
 
@@ -76,9 +75,9 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         VerifyFact vf = new VerifyFact();
         vf.setName( "p" );
-        vf.getFieldValues().add( new VerifyField( "name",
-                                                  "michael",
-                                                  "==" ) );
+        vf.getFieldValues().add(new VerifyField("name",
+                "michael",
+                "=="));
         vf.getFieldValues().add( new VerifyField( "age",
                                                   "42",
                                                   "==" ) );
@@ -86,54 +85,54 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
         FactData cheese = new FactData();
         cheese.setName( "cheese" );
-        cheese.setType( "Cheese" );
-        cheese.getFieldData().add( new FieldData( "price",
-                                                  "42" ) );
+        cheese.setType("Cheese");
+        cheese.getFieldData().add(new FieldData("price",
+                "42"));
         sc.getGlobals().add( cheese );
 
         ScenarioRunResult res = repositoryPackageService.runScenario( pkg.getName(),
                                                                       sc ).result;
         assertNull( res.getErrors() );
-        assertNotNull( res.getScenario() );
-        assertTrue( vf.wasSuccessful() );
+        assertNotNull(res.getScenario());
+        assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
         assertNull( res.getErrors() );
-        assertNotNull( res.getScenario() );
-        assertTrue( vf.wasSuccessful() );
+        assertNotNull(res.getScenario());
+        assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
         RuleBaseCache.getInstance().clearCache();
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
         assertNull( res.getErrors() );
-        assertNotNull( res.getScenario() );
-        assertTrue( vf.wasSuccessful() );
+        assertNotNull(res.getScenario());
+        assertTrue(vf.wasSuccessful());
         assertTrue( vr.wasSuccessful() );
 
         //BuilderResult[] results = impl.buildPackage(pkg.getUUID(), null, true);
         //assertNull(results);
 
         rule1.updateContent( "Junk" );
-        rule1.checkin( "" );
+        rule1.checkin("");
 
         RuleBaseCache.getInstance().clearCache();
-        pkg.updateBinaryUpToDate( false );
+        pkg.updateBinaryUpToDate(false);
         repo.save();
         res = repositoryPackageService.runScenario( pkg.getName(),
                                                     sc ).result;
         assertNotNull( res.getErrors() );
-        assertNull( res.getScenario() );
+        assertNull(res.getScenario());
 
-        assertTrue( res.getErrors().size() > 0 );
+        assertTrue(res.getErrors().size() > 0);
 
-        repositoryCategoryService.createCategory( "/",
-                                                  "sc",
-                                                  "" );
+        repositoryCategoryService.createCategory("/",
+                "sc",
+                "");
 
-        String scenarioId = impl.createNewRule( "sc1",
+        String scenarioId = serviceImplementation.createNewRule( "sc1",
                                                 "s",
                                                 "sc",
                                                 pkg.getName(),
@@ -157,8 +156,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithGeneratedBeans() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunWithGeneratedBeans",
@@ -217,8 +215,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunPackageScenariosWithDeclaredFacts() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulkWithDeclaredFacts",
@@ -331,8 +328,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithJar() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
@@ -406,8 +402,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunScenarioWithJarThatHasSourceFiles() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         // create our package
@@ -473,8 +468,7 @@ public class RepositoryScenarioTest extends GuvnorTestBase {
 
     @Test
     public void testRunPackageScenarios() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
         RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
         PackageItem pkg = repo.createPackage( "testScenarioRunBulk",

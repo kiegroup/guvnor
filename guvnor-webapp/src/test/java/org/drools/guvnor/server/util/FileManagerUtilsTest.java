@@ -52,8 +52,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         FileManagerUtils uploadHelper = getFileManagerUtils();
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         AssetItem item = repo.loadDefaultPackage().addAsset( "testUploadFile",
                                                              "description" );
@@ -78,8 +77,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     @Test
     public void testAttachModel() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testAttachModelImports",
                                               "heh" );
@@ -124,8 +122,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     public void testGetFilebyUUID() throws Exception {
         FileManagerUtils uploadHelper = getFileManagerUtils();
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
@@ -151,8 +148,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         RepositoryPackageService repoPackageService = getRepositoryPackageService();
 
@@ -497,8 +493,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     //purpose of this test is to detect memory leak?)
     public void testHeadOOME() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testHeadOOME",
                                               "" );
@@ -530,8 +525,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.loadPackage( nm );
         pkg.updateDescription( System.currentTimeMillis() + "" );

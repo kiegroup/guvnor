@@ -50,8 +50,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
     @Test
     public void testGet() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testGetRestServlet",
                                               "" );
@@ -151,8 +150,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
     @Test
     public void testPost() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPostRestServlet",
                                               "" );
@@ -221,8 +219,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
     @Test
     public void testPut() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testPutRestServlet",
                                               "" );
@@ -277,8 +274,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
     @Test
     public void testDelete() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         PackageItem pkg = repo.createPackage( "testDeleteRestServlet",
                                               "" );

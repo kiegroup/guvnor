@@ -834,8 +834,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
     @Test
     public void testThreadLocal() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        final RulesRepository repo = impl.getRulesRepository();
+        final RulesRepository repo = serviceImplementation.getRulesRepository();
 
         Thread t = new Thread( new Runnable() {
             public void run() {

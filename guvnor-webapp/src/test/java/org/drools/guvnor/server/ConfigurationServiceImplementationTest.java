@@ -29,14 +29,9 @@ import static org.mockito.Mockito.*;
 public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
     private ConfigurationService configurationService;
-    private RulesRepository rulesRepository;
 
     @Before
     public void setUpGuvnorTestBase() {
-        setUpSeam();
-        setUpRepository();
-        ServiceImplementation impl = getServiceImplementation();
-        rulesRepository = spy(impl.getRulesRepository());
         createConfigurationService();
     }
 

@@ -33,8 +33,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
     @Test
     public void testMailbox() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );
@@ -121,8 +120,7 @@ public class MailboxServiceTest extends GuvnorTestBase {
     @Test
     public void testOneToMany() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
         MailboxService service = MailboxService.getInstance();
         service.init( repo );
