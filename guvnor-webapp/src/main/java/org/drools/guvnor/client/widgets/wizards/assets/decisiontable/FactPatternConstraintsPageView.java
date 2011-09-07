@@ -24,7 +24,7 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * View and Presenter definitions for the Fact Patterns page
+ * View and Presenter definitions for the Fact Pattern Constraints page
  */
 public interface FactPatternConstraintsPageView
         extends
@@ -54,6 +54,4 @@ public interface FactPatternConstraintsPageView
 
     void setChosenConditions(List<ConditionCol52> conditions);
     
-    boolean isComplete();
-
 }

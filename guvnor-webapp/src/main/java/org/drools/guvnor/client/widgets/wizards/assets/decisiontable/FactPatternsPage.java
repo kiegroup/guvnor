@@ -16,11 +16,8 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -36,12 +33,15 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
     private FactPatternsPageView view = new FactPatternsPageViewImpl();
 
+    private Validator            validator;
+
     public FactPatternsPage(NewAssetWizardContext context,
                             GuidedDecisionTable52 dtable,
                             EventBus eventBus) {
         super( context,
                dtable,
                eventBus );
+        validator = new Validator( dtable.getConditionPatterns() );
     }
 
     public String getTitle() {
@@ -59,7 +59,7 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         view.setAvailableFactTypes( availableTypes );
 
         List<Pattern52> chosenTypes = dtable.getConditionPatterns();
-        view.setChosenFactTypes( chosenTypes );
+        view.setChosenPatterns( chosenTypes );
 
         content.setWidget( view );
     }
@@ -69,7 +69,16 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public boolean isComplete() {
-        return view.isComplete();
+
+        //Have patterns been defined?
+        if ( dtable.getConditionPatterns() == null || dtable.getConditionPatterns().size() == 0 ) {
+            return false;
+        }
+
+        //Are the patterns valid?
+        boolean isValid = validator.arePatternBindingsUnique();
+        view.setHasDuplicatePatternBindings( !isValid );
+        return isValid;
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {

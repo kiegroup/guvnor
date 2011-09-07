@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -24,10 +24,9 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
- * A cell to display a Fact Pattern, wrapped to be able to change its appearance
- * when the Pattern binding is duplicated with another Pattern
+ * A cell to display Conditions
  */
-class DecoratedPatternCell extends AbstractCell<DecoratedPattern> {
+class ConditionCell extends AbstractCell<ConditionCol52> {
 
     interface FactPatternCellTemplate
         extends
@@ -42,25 +41,18 @@ class DecoratedPatternCell extends AbstractCell<DecoratedPattern> {
 
     @Override
     public void render(Context context,
-                       DecoratedPattern value,
+                       ConditionCol52 value,
                        SafeHtmlBuilder sb) {
-        String binding = value.getBoundName();
         StringBuilder b = new StringBuilder();
-        if ( binding == null || "".equals( binding ) ) {
-            b.append( value.getFactType() );
-        } else {
-            b.append( value.getBoundName() );
-            b.append( " : " );
-            b.append( value.getFactType() );
-        }
+        b.append( value.getFactField() );
+        b.append( " : " );
+        b.append( value.getFieldType() );
         sb.append( TEMPLATE.text( getCssStyleName( value ),
                                   b.toString() ) );
     }
 
-    private String getCssStyleName(DecoratedPattern pw) {
-        if ( pw.isDuplicateBinding() ) {
-            return WizardResources.INSTANCE.style().wizardDTableValidationError();
-        }
+    private String getCssStyleName(ConditionCol52 c) {
+        //TODO Use Validator to check if condition is valid
         return "";
     }
 

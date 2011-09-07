@@ -22,7 +22,7 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
- * A cell to display an available Field
+ * A cell to display a available Fields
  */
 class AvailableFieldCell extends AbstractCell<AvailableField> {
 

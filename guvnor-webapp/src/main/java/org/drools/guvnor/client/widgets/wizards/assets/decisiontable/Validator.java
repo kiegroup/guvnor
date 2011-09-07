@@ -20,40 +20,69 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
 /**
- * 
+ * Guided Decision Table validator
  */
 public class Validator {
 
-    public static boolean validateDecoratedPatterns(List<DecoratedPattern> patterns) {
-        boolean duplicateBindings = false;
+    private List<Pattern52> patterns;
+
+    Validator() {
+        this.patterns = new ArrayList<Pattern52>();
+    }
+
+    Validator(List<Pattern52> patterns) {
+        this.patterns = patterns;
+    }
+
+    void setPatterns(List<Pattern52> patterns) {
+        this.patterns = patterns;
+    }
+
+    public boolean arePatternBindingsUnique() {
+
+        boolean hasUniqueBindings = true;
 
         //Store Patterns by their binding
-        Map<String, List<DecoratedPattern>> bindings = new HashMap<String, List<DecoratedPattern>>();
-        for ( DecoratedPattern pw : patterns ) {
-            pw.setDuplicateBinding( false );
-            String binding = pw.getPattern().getBoundName();
+        Map<String, List<Pattern52>> bindings = new HashMap<String, List<Pattern52>>();
+        for ( Pattern52 p : patterns ) {
+            String binding = p.getBoundName();
             if ( binding != null && !binding.equals( "" ) ) {
-                List<DecoratedPattern> pws = bindings.get( binding );
-                if ( pws == null ) {
-                    pws = new ArrayList<DecoratedPattern>();
+                List<Pattern52> ps = bindings.get( binding );
+                if ( ps == null ) {
+                    ps = new ArrayList<Pattern52>();
                     bindings.put( binding,
-                                  pws );
+                                  ps );
                 }
-                pws.add( pw );
+                ps.add( p );
             }
         }
 
         //Check if any bindings have multiple Patterns
-        for ( List<DecoratedPattern> pws : bindings.values() ) {
+        for ( List<Pattern52> pws : bindings.values() ) {
             if ( pws.size() > 1 ) {
-                duplicateBindings = true;
-                for ( DecoratedPattern pw : pws ) {
-                    pw.setDuplicateBinding( true );
+                hasUniqueBindings = false;
+                break;
+            }
+        }
+        return hasUniqueBindings;
+    }
+
+    public boolean isPatternBindingUnique(Pattern52 pattern) {
+        String binding = pattern.getBoundName();
+        if ( binding == null || binding.equals( "" ) ) {
+            return true;
+        }
+        for ( Pattern52 p : patterns ) {
+            if ( p != pattern ) {
+                if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
+                    return false;
                 }
             }
         }
-        return duplicateBindings;
+        return true;
     }
 
 }

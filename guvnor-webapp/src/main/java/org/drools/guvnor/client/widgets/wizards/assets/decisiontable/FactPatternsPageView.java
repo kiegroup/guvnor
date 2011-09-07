@@ -35,7 +35,7 @@ public interface FactPatternsPageView
         boolean isPatternEvent(Pattern52 pattern);
 
         void stateChanged();
-
+        
     }
 
     /**
@@ -49,8 +49,8 @@ public interface FactPatternsPageView
 
     void setAvailableFactTypes(List<String> types);
 
-    void setChosenFactTypes(List<Pattern52> types);
+    void setChosenPatterns(List<Pattern52> types);
     
-    boolean isComplete();
+    void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings);
 
 }

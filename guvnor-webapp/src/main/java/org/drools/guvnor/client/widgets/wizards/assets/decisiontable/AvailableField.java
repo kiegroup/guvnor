@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 /**
- * 
+ * A Pattern Field available for selection
  */
 class AvailableField {
 

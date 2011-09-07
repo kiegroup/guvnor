@@ -15,6 +15,9 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import java.util.List;
+
+import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -28,15 +31,22 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 class PatternCell extends AbstractCell<Pattern52> {
 
+    private Validator validator;
+
     interface FactPatternCellTemplate
         extends
         SafeHtmlTemplates {
 
-        @Template("<div>{0}</div>")
-        SafeHtml text(String message);
+        @Template("<div class=\"{0}\" >{1}</div>")
+        SafeHtml text(String cssStyleName,
+                      String message);
     }
 
     private static final FactPatternCellTemplate TEMPLATE = GWT.create( FactPatternCellTemplate.class );
+
+    PatternCell(Validator validator) {
+        this.validator = validator;
+    }
 
     @Override
     public void render(Context context,
@@ -51,7 +61,15 @@ class PatternCell extends AbstractCell<Pattern52> {
             b.append( " : " );
             b.append( value.getFactType() );
         }
-        sb.append( TEMPLATE.text( b.toString() ) );
+        sb.append( TEMPLATE.text( getCssStyleName( value ),
+                                  b.toString() ) );
+    }
+
+    private String getCssStyleName(Pattern52 p) {
+        if ( !validator.isPatternBindingUnique( p ) ) {
+            return WizardResources.INSTANCE.style().wizardDTableValidationError();
+        }
+        return "";
     }
 
 }

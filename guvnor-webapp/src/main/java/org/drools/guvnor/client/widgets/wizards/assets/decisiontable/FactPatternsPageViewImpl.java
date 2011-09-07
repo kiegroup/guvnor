@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -52,62 +51,64 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
 /**
- * The generic Wizard view implementation
+ * An implementation of the Fact Patterns page
  */
 public class FactPatternsPageViewImpl extends Composite
     implements
     FactPatternsPageView {
 
-    private Presenter                  presenter;
+    private Presenter              presenter;
 
-    private GuidedDecisionTable52      dtable;
+    private GuidedDecisionTable52  dtable;
 
-    private Set<String>                availableTypesSelections;
-    private CellList<String>           availableTypesWidget = new CellList<String>( new TextCell(),
-                                                                                    WizardCellListResources.INSTANCE );
+    private Validator              validator            = new Validator();
 
-    private List<DecoratedPattern>     chosenPatterns;
-    private DecoratedPattern           chosenPatternSelection;
-    private Set<DecoratedPattern>      chosenPatternSelections;
-    private CellList<DecoratedPattern> chosenPatternWidget  = new CellList<DecoratedPattern>( new DecoratedPatternCell(),
-                                                                                              WizardCellListResources.INSTANCE );
+    private Set<String>            availableTypesSelections;
+    private CellList<String>       availableTypesWidget = new CellList<String>( new TextCell(),
+                                                                                WizardCellListResources.INSTANCE );
 
-    private static final Constants     constants            = GWT.create( Constants.class );
+    private List<Pattern52>        chosenPatterns;
+    private Pattern52              chosenPatternSelection;
+    private Set<Pattern52>         chosenPatternSelections;
+    private CellList<Pattern52>    chosenPatternWidget  = new CellList<Pattern52>( new PatternCell( validator ),
+                                                                                   WizardCellListResources.INSTANCE );
 
-    private static final Images        images               = GWT.create( Images.class );
+    private static final Constants constants            = GWT.create( Constants.class );
 
-    @UiField
-    ScrollPanel                        availableTypesContainer;
-
-    @UiField
-    ScrollPanel                        chosenPatternsContainer;
+    private static final Images    images               = GWT.create( Images.class );
 
     @UiField
-    PushButton                         btnAdd;
+    ScrollPanel                    availableTypesContainer;
 
     @UiField
-    PushButton                         btnRemove;
+    ScrollPanel                    chosenPatternsContainer;
 
     @UiField
-    TextBox                            txtBinding;
+    PushButton                     btnAdd;
 
     @UiField
-    TextBox                            txtEntryPoint;
+    PushButton                     btnRemove;
 
     @UiField
-    CEPWindowOperatorsDropdown         ddCEPWindow;
+    TextBox                        txtBinding;
 
     @UiField
-    HorizontalPanel                    cepWindowContainer;
+    TextBox                        txtEntryPoint;
 
     @UiField
-    HorizontalPanel                    messages;
+    CEPWindowOperatorsDropdown     ddCEPWindow;
+
+    @UiField
+    HorizontalPanel                cepWindowContainer;
+
+    @UiField
+    HorizontalPanel                messages;
 
     @UiField(provided = true)
-    PushButton                         btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                     btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                         btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                     btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends
@@ -149,32 +150,32 @@ public class FactPatternsPageViewImpl extends Composite
         chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenPatternWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenPatterns() ) );
 
-        final MultiSelectionModel<DecoratedPattern> selectionModel = new MultiSelectionModel<DecoratedPattern>();
+        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
         chosenPatternWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenPatternSelections = new HashSet<DecoratedPattern>();
-                Set<DecoratedPattern> selections = selectionModel.getSelectedSet();
-                for ( DecoratedPattern pw : selections ) {
-                    chosenPatternSelections.add( pw );
+                chosenPatternSelections = new HashSet<Pattern52>();
+                Set<Pattern52> selections = selectionModel.getSelectedSet();
+                for ( Pattern52 p : selections ) {
+                    chosenPatternSelections.add( p );
                 }
                 chosenTypesSelected( chosenPatternSelections );
             }
 
-            private void chosenTypesSelected(Set<DecoratedPattern> pws) {
+            private void chosenTypesSelected(Set<Pattern52> ps) {
                 btnRemove.setEnabled( true );
-                if ( pws.size() == 1 ) {
-                    chosenPatternSelection = pws.iterator().next();
+                if ( ps.size() == 1 ) {
+                    chosenPatternSelection = ps.iterator().next();
                     txtBinding.setEnabled( true );
-                    txtBinding.setText( chosenPatternSelection.getPattern().getBoundName() );
+                    txtBinding.setText( chosenPatternSelection.getBoundName() );
                     txtEntryPoint.setEnabled( true );
-                    txtEntryPoint.setText( chosenPatternSelection.getPattern().getEntryPointName() );
+                    txtEntryPoint.setText( chosenPatternSelection.getEntryPointName() );
                     enableMoveUpButton();
                     enableMoveDownButton();
-                    if ( presenter.isPatternEvent( chosenPatternSelection.getPattern() ) ) {
-                        ddCEPWindow.setCEPWindow( chosenPatternSelection.getPattern() );
+                    if ( presenter.isPatternEvent( chosenPatternSelection ) ) {
+                        ddCEPWindow.setCEPWindow( chosenPatternSelection );
                         cepWindowContainer.setVisible( true );
                     } else {
                         cepWindowContainer.setVisible( false );
@@ -217,7 +218,7 @@ public class FactPatternsPageViewImpl extends Composite
 
             public void onValueChange(ValueChangeEvent<String> event) {
                 String binding = txtBinding.getText();
-                chosenPatternSelection.getPattern().setBoundName( binding );
+                chosenPatternSelection.setBoundName( binding );
                 chosenPatternWidget.redraw();
                 presenter.stateChanged();
             }
@@ -232,7 +233,7 @@ public class FactPatternsPageViewImpl extends Composite
                 if ( chosenPatternSelection == null ) {
                     return;
                 }
-                chosenPatternSelection.getPattern().setEntryPointName( event.getValue() );
+                chosenPatternSelection.setEntryPointName( event.getValue() );
             }
 
         } );
@@ -247,7 +248,7 @@ public class FactPatternsPageViewImpl extends Composite
                 }
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                chosenPatternSelection.getPattern().getWindow().setOperator( selected );
+                chosenPatternSelection.getWindow().setOperator( selected );
             }
 
         } );
@@ -258,11 +259,11 @@ public class FactPatternsPageViewImpl extends Composite
 
             public void onClick(ClickEvent event) {
                 int index = chosenPatterns.indexOf( chosenPatternSelection );
-                DecoratedPattern pw = chosenPatterns.remove( index );
+                Pattern52 p = chosenPatterns.remove( index );
                 chosenPatterns.add( index - 1,
-                                    pw );
-                setDecoratedChosenPatterns( chosenPatterns );
-                dtable.setConditionPatterns( unwrapPatterns() );
+                                    p );
+                setChosenPatterns( chosenPatterns );
+                dtable.setConditionPatterns( chosenPatterns );
             }
 
         } );
@@ -270,27 +271,14 @@ public class FactPatternsPageViewImpl extends Composite
 
             public void onClick(ClickEvent event) {
                 int index = chosenPatterns.indexOf( chosenPatternSelection );
-                DecoratedPattern pw = chosenPatterns.remove( index );
+                Pattern52 p = chosenPatterns.remove( index );
                 chosenPatterns.add( index + 1,
-                                    pw );
-                setDecoratedChosenPatterns( chosenPatterns );
-                dtable.setConditionPatterns( unwrapPatterns() );
+                                    p );
+                setChosenPatterns( chosenPatterns );
+                dtable.setConditionPatterns( chosenPatterns );
             }
 
         } );
-    }
-
-    public boolean isComplete() {
-
-        //Have patterns been defined?
-        if ( chosenPatterns == null || chosenPatterns.size() == 0 ) {
-            return false;
-        }
-
-        //Are the patterns valid?
-        boolean hasValidationErrors = Validator.validateDecoratedPatterns( chosenPatterns );
-        messages.setVisible( hasValidationErrors );
-        return !hasValidationErrors;
     }
 
     public void setDecisionTable(GuidedDecisionTable52 dtable) {
@@ -303,38 +291,23 @@ public class FactPatternsPageViewImpl extends Composite
         availableTypesWidget.setRowData( types );
     }
 
-    public void setChosenFactTypes(List<Pattern52> types) {
-        setDecoratedChosenPatterns( wrapPatterns( types ) );
-        presenter.stateChanged();
-    }
-
-    private void setDecoratedChosenPatterns(List<DecoratedPattern> types) {
+    public void setChosenPatterns(List<Pattern52> types) {
         chosenPatterns = types;
+        validator.setPatterns( chosenPatterns );
         chosenPatternWidget.setRowCount( types.size(),
                                          true );
         chosenPatternWidget.setRowData( types );
         enableMoveUpButton();
         enableMoveDownButton();
+        presenter.stateChanged();
     }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-    private List<DecoratedPattern> wrapPatterns(List<Pattern52> patterns) {
-        List<DecoratedPattern> pws = new ArrayList<DecoratedPattern>();
-        for ( Pattern52 p : patterns ) {
-            pws.add( new DecoratedPattern( p ) );
-        }
-        return pws;
-    }
-
-    private List<Pattern52> unwrapPatterns() {
-        List<Pattern52> patterns = new ArrayList<Pattern52>();
-        for ( DecoratedPattern pw : chosenPatterns ) {
-            patterns.add( pw.getPattern() );
-        }
-        return patterns;
+    public void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings) {
+        messages.setVisible( hasDuplicatePatternBindings );
     }
 
     @UiHandler(value = "btnAdd")
@@ -342,20 +315,20 @@ public class FactPatternsPageViewImpl extends Composite
         for ( String type : availableTypesSelections ) {
             Pattern52 pattern = new Pattern52();
             pattern.setFactType( type );
-            chosenPatterns.add( new DecoratedPattern( pattern ) );
+            chosenPatterns.add( pattern );
         }
-        setDecoratedChosenPatterns( chosenPatterns );
-        dtable.setConditionPatterns( unwrapPatterns() );
+        setChosenPatterns( chosenPatterns );
+        dtable.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick(ClickEvent event) {
-        for ( DecoratedPattern pw : chosenPatternSelections ) {
-            chosenPatterns.remove( pw );
+        for ( Pattern52 p : chosenPatternSelections ) {
+            chosenPatterns.remove( p );
         }
-        setDecoratedChosenPatterns( chosenPatterns );
-        dtable.setConditionPatterns( unwrapPatterns() );
+        setChosenPatterns( chosenPatterns );
+        dtable.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
 
         txtBinding.setText( "" );

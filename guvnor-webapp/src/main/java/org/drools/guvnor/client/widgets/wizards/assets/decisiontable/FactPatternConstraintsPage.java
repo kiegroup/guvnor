@@ -37,12 +37,15 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     private FactPatternConstraintsPageView view            = new FactPatternConstraintsPageViewImpl();
 
+    private Validator                      validator;
+
     public FactPatternConstraintsPage(NewAssetWizardContext context,
                                       GuidedDecisionTable52 dtable,
                                       EventBus eventBus) {
         super( context,
                dtable,
                eventBus );
+        validator = new Validator( dtable.getConditionPatterns() );
     }
 
     public String getTitle() {
@@ -62,8 +65,18 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public boolean isComplete() {
-        return view.isComplete();
+
+        //Have patterns been defined?
+        if ( dtable.getConditionPatterns() == null || dtable.getConditionPatterns().size() == 0 ) {
+            return false;
+        }
+
+        //Are the patterns valid?
+        boolean isValid = validator.arePatternBindingsUnique();
+        return isValid;
     }
+    
+    
 
     public void patternSelected(Pattern52 pattern) {
         String type = pattern.getFactType();

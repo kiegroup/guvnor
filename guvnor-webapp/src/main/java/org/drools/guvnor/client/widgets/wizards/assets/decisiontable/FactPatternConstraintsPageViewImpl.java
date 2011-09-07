@@ -46,53 +46,55 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
- * The generic Wizard view implementation
+ * An implementation of the Fact Patterns Constraints page
  */
 public class FactPatternConstraintsPageViewImpl extends Composite
     implements
     FactPatternConstraintsPageView {
 
-    private Presenter                    presenter;
+    private Presenter                presenter;
 
-    private List<DecoratedPattern>       availablePatterns;
-    private DecoratedPattern             availablePatternsSelection;
-    private CellList<DecoratedPattern>   availablePatternsWidget = new CellList<DecoratedPattern>( new DecoratedPatternCell(),
-                                                                                                   WizardCellListResources.INSTANCE );
+    private Validator                validator               = new Validator();
 
-    private Set<AvailableField>          availableFieldsSelections;
-    private CellList<AvailableField>     availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
-                                                                                                 WizardCellListResources.INSTANCE );
+    private List<Pattern52>          availablePatterns;
+    private Pattern52                availablePatternsSelection;
+    private CellList<Pattern52>      availablePatternsWidget = new CellList<Pattern52>( new PatternCell( validator ),
+                                                                                        WizardCellListResources.INSTANCE );
 
-    private List<DecoratedCondition>     chosenConditions;
-    private DecoratedCondition           chosenConditionsSelection;
-    private Set<DecoratedCondition>      chosenConditionsSelections;
-    private CellList<DecoratedCondition> chosenConditionsWidget  = new CellList<DecoratedCondition>( new DecoratedConditionCell(),
-                                                                                                     WizardCellListResources.INSTANCE );
+    private Set<AvailableField>      availableFieldsSelections;
+    private CellList<AvailableField> availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
+                                                                                             WizardCellListResources.INSTANCE );
 
-    private static final Constants       constants               = GWT.create( Constants.class );
+    private List<ConditionCol52>     chosenConditions;
+    private ConditionCol52           chosenConditionsSelection;
+    private Set<ConditionCol52>      chosenConditionsSelections;
+    private CellList<ConditionCol52> chosenConditionsWidget  = new CellList<ConditionCol52>( new ConditionCell(),
+                                                                                             WizardCellListResources.INSTANCE );
 
-    private static final Images          images                  = GWT.create( Images.class );
+    private static final Constants   constants               = GWT.create( Constants.class );
 
-    @UiField
-    protected ScrollPanel                availablePatternsContainer;
-
-    @UiField
-    protected ScrollPanel                availableFieldsContainer;
+    private static final Images      images                  = GWT.create( Images.class );
 
     @UiField
-    protected ScrollPanel                chosenConditionsContainer;
+    protected ScrollPanel            availablePatternsContainer;
 
     @UiField
-    protected PushButton                 btnAdd;
+    protected ScrollPanel            availableFieldsContainer;
 
     @UiField
-    protected PushButton                 btnRemove;
+    protected ScrollPanel            chosenConditionsContainer;
+
+    @UiField
+    protected PushButton             btnAdd;
+
+    @UiField
+    protected PushButton             btnRemove;
 
     @UiField(provided = true)
-    PushButton                           btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                       btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                           btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                       btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -114,14 +116,14 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailablePatterns() ) );
 
-        final SingleSelectionModel<DecoratedPattern> selectionModel = new SingleSelectionModel<DecoratedPattern>();
+        final SingleSelectionModel<Pattern52> selectionModel = new SingleSelectionModel<Pattern52>();
         availablePatternsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
                 availablePatternsSelection = selectionModel.getSelectedObject();
-                presenter.patternSelected( availablePatternsSelection.getPattern() );
+                presenter.patternSelected( availablePatternsSelection );
             }
 
         } );
@@ -150,21 +152,21 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         chosenConditionsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenFields() ) );
 
-        final MultiSelectionModel<DecoratedCondition> selectionModel = new MultiSelectionModel<DecoratedCondition>();
+        final MultiSelectionModel<ConditionCol52> selectionModel = new MultiSelectionModel<ConditionCol52>();
         chosenConditionsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenConditionsSelections = new HashSet<DecoratedCondition>();
-                Set<DecoratedCondition> selections = selectionModel.getSelectedSet();
-                for ( DecoratedCondition cw : selections ) {
-                    chosenConditionsSelections.add( cw );
+                chosenConditionsSelections = new HashSet<ConditionCol52>();
+                Set<ConditionCol52> selections = selectionModel.getSelectedSet();
+                for ( ConditionCol52 c : selections ) {
+                    chosenConditionsSelections.add( c );
                 }
                 chosenConditionsSelected( chosenConditionsSelections );
             }
 
-            private void chosenConditionsSelected(Set<DecoratedCondition> cws) {
+            private void chosenConditionsSelected(Set<ConditionCol52> cws) {
                 btnRemove.setEnabled( true );
                 if ( cws.size() == 1 ) {
                     chosenConditionsSelection = cws.iterator().next();
@@ -202,11 +204,11 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
             public void onClick(ClickEvent event) {
                 int index = chosenConditions.indexOf( chosenConditionsSelection );
-                DecoratedCondition cw = chosenConditions.remove( index );
+                ConditionCol52 c = chosenConditions.remove( index );
                 chosenConditions.add( index - 1,
-                                      cw );
-                setDecoratedChosenConditions( chosenConditions );
-                availablePatternsSelection.setConditions( unwrapConditions() );
+                                      c );
+                setChosenConditions( chosenConditions );
+                availablePatternsSelection.setConditions( chosenConditions );
             }
 
         } );
@@ -214,11 +216,11 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
             public void onClick(ClickEvent event) {
                 int index = chosenConditions.indexOf( chosenConditionsSelection );
-                DecoratedCondition cw = chosenConditions.remove( index );
+                ConditionCol52 c = chosenConditions.remove( index );
                 chosenConditions.add( index + 1,
-                                      cw );
-                setDecoratedChosenConditions( chosenConditions );
-                availablePatternsSelection.setConditions( unwrapConditions() );
+                                      c );
+                setChosenConditions( chosenConditions );
+                availablePatternsSelection.setConditions( chosenConditions );
             }
 
         } );
@@ -247,7 +249,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     public void setAvailablePatterns(List<Pattern52> patterns) {
-        availablePatterns = wrapPatterns( patterns );
+        availablePatterns = patterns;
+        validator.setPatterns( availablePatterns );
         availablePatternsWidget.setRowCount( availablePatterns.size(),
                                              true );
         availablePatternsWidget.setRowData( availablePatterns );
@@ -269,14 +272,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         }
     }
 
-    private List<DecoratedPattern> wrapPatterns(List<Pattern52> patterns) {
-        List<DecoratedPattern> pws = new ArrayList<DecoratedPattern>();
-        for ( Pattern52 p : patterns ) {
-            pws.add( new DecoratedPattern( p ) );
-        }
-        return pws;
-    }
-
     public void setAvailableFields(List<AvailableField> fields) {
         availableFieldsWidget.setRowCount( fields.size(),
                                            true );
@@ -284,41 +279,13 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     public void setChosenConditions(List<ConditionCol52> conditions) {
-        setDecoratedChosenConditions( wrapConditions( conditions ) );
-        presenter.stateChanged();
-    }
-
-    private void setDecoratedChosenConditions(List<DecoratedCondition> conditions) {
         chosenConditions = conditions;
         chosenConditionsWidget.setRowCount( conditions.size(),
                                             true );
         chosenConditionsWidget.setRowData( conditions );
         enableMoveUpButton();
         enableMoveDownButton();
-    }
-
-    private List<DecoratedCondition> wrapConditions(List<ConditionCol52> conditions) {
-        List<DecoratedCondition> cws = new ArrayList<DecoratedCondition>();
-        for ( ConditionCol52 c : conditions ) {
-            cws.add( new DecoratedCondition( c ) );
-        }
-        return cws;
-    }
-
-    private List<ConditionCol52> unwrapConditions() {
-        List<ConditionCol52> conditions = new ArrayList<ConditionCol52>();
-        for ( DecoratedCondition cw : chosenConditions ) {
-            conditions.add( cw.getCondition() );
-        }
-        return conditions;
-    }
-
-    public boolean isComplete() {
-        //Have patterns been defined?
-        if ( availablePatterns == null || availablePatterns.size() == 0 ) {
-            return false;
-        }
-        return !Validator.validateDecoratedPatterns( availablePatterns );
+        presenter.stateChanged();
     }
 
     @UiHandler(value = "btnAdd")
@@ -327,20 +294,20 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             ConditionCol52 c = new ConditionCol52();
             c.setFactField( f.getName() );
             c.setFieldType( f.getType() );
-            chosenConditions.add( new DecoratedCondition( c ) );
+            chosenConditions.add( c );
         }
-        setDecoratedChosenConditions( chosenConditions );
-        availablePatternsSelection.setConditions( unwrapConditions() );
+        setChosenConditions( chosenConditions );
+        availablePatternsSelection.setConditions( chosenConditions );
         presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick(ClickEvent event) {
-        for ( DecoratedCondition cw : chosenConditionsSelections ) {
-            chosenConditions.remove( cw );
+        for ( ConditionCol52 c : chosenConditionsSelections ) {
+            chosenConditions.remove( c );
         }
-        setDecoratedChosenConditions( chosenConditions );
-        availablePatternsSelection.setConditions( unwrapConditions() );
+        setChosenConditions( chosenConditions );
+        availablePatternsSelection.setConditions( chosenConditions );
         presenter.stateChanged();
 
         //TODO
