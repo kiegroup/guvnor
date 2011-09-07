@@ -37,7 +37,6 @@ import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
-import org.jboss.seam.contexts.Lifecycle;
 import org.jboss.weld.context.SessionContext;
 import org.junit.Test;
 

@@ -29,8 +29,10 @@ import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +53,9 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private static final String RFC822DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z";
     private static final Locale HEADER_LOCALE = Locale.US;
+
+    @Inject
+    private RulesRepository rulesRepository;
 
 
     @Override
@@ -154,7 +159,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     }
                 } else if (helper.isDocumentation()) {
 
-                    PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
 
                     GuvnorDroolsDocsBuilder builder;
                     try {
@@ -169,7 +174,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     builder.writePDF(out);
 
                 } else if (helper.isPng()) {
-                    PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                     AssetItem asset = pkg.loadAsset(helper.getAssetName());
 
                     fileName = getFileManager().loadFileAttachmentByUUID(asset.getUUID(),
@@ -193,7 +198,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         xml += "</change-set>";
                         out.write(xml.getBytes());
                     } else if (req.getRequestURI().endsWith("MODEL")) {
-                        PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                         AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
                         BufferedInputStream inputFile = null;
                         byte[] data = new byte[1000];
@@ -244,7 +249,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         String assetName = uri.substring(lastIndexOfSlash + 1);
                         fileName = assetName + ".xml";
 
-                        PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                         AssetItem asset = pkg.loadAsset(assetName);
                         out.write(asset.getBinaryContentAsBytes());
 

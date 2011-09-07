@@ -24,6 +24,7 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -66,7 +67,7 @@ import org.jboss.seam.security.Identity;
  * This assists the file manager servlets.
  */
 @Named("fileManager")
-@RequestScoped
+@ApplicationScoped
 public class FileManagerUtils {
 
     @Inject
@@ -82,9 +83,9 @@ public class FileManagerUtils {
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
 
-        attachFileToAsset( uuid,
-                           fileData,
-                           fileName );
+        attachFileToAsset(uuid,
+                fileData,
+                fileName);
         uploadItem.getFile().getInputStream().close();
 
     }
@@ -113,10 +114,6 @@ public class FileManagerUtils {
             ((ICanHasAttachment) handler).onAttachmentAdded( item );
         }
 
-    }
-
-    public RulesRepository getRepository() {
-        return this.repository;
     }
 
     public void setRepository(RulesRepository repository) {
@@ -421,8 +418,4 @@ public class FileManagerUtils {
 
     }
 
-    @PreDestroy
-    public void close() {
-        repository.logout();
-    }
 }

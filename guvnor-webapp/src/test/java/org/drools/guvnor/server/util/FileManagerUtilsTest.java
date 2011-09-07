@@ -252,14 +252,14 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
         // Archive it
         pkg.archiveItem( true );
 
-        pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
         assertTrue( pkg.isArchived() );
 
@@ -268,7 +268,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in2,
                              null );
 
-        pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
@@ -282,7 +282,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -319,7 +319,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         assertNotNull( pkg );
 
         // it should not overwrite this.
@@ -334,14 +334,14 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
 
         // now we will import a change, check that it appears. a change to the
         // "ola" rule
-        AssetItem assetOriginal = fm.getRepository().loadPackage( "testClassicDRLImport" ).loadAsset( "ola" );
+        AssetItem assetOriginal = rulesRepository.loadPackage( "testClassicDRLImport" ).loadAsset( "ola" );
         long ver = assetOriginal.getVersionNumber();
 
         drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when CHANGED\n then \n end \n rule 'hola' \n when \n then \n end";
         in = new ByteArrayInputStream( drl.getBytes() );
         fm.importClassicDRL( in,
                              null );
-        pkg = fm.getRepository().loadPackage( "testClassicDRLImport" );
+        pkg = rulesRepository.loadPackage( "testClassicDRLImport" );
         AssetItem asset = pkg.loadAsset( "ola" );
 
         assertTrue( asset.getContent().indexOf( "CHANGED" ) > 0 );
@@ -368,7 +368,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              "testDRLImportWithoutPackageName" );
 
-        PackageItem pkg = fm.getRepository().loadPackage( "testDRLImportWithoutPackageName" );
+        PackageItem pkg = rulesRepository.loadPackage( "testDRLImportWithoutPackageName" );
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -411,7 +411,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              "testDRLImportOverrideExistingPackageName" );
 
-        PackageItem pkg = fm.getRepository().loadPackage( "testDRLImportOverrideExistingPackageName" );
+        PackageItem pkg = rulesRepository.loadPackage( "testDRLImportOverrideExistingPackageName" );
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -452,7 +452,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
         fm.importClassicDRL( in,
                              null );
 
-        PackageItem pkg = fm.getRepository().loadPackage( "testClassicDRLImportDSL" );
+        PackageItem pkg = rulesRepository.loadPackage( "testClassicDRLImportDSL" );
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
@@ -515,7 +515,7 @@ public class FileManagerUtilsTest extends GuvnorTestBase {
             //fm.setRepository( new RulesRepository(TestEnvironmentSessionHelper.getSession()));
             fm.getLastModified( "testHeadOOME",
                                 "LATEST" );
-            //fm.getRepository().logout();
+            //rulesRepository.logout();
             System.err.println( "Number " + iterations + " free mem : " + Runtime.getRuntime().freeMemory() );
         }
     }
