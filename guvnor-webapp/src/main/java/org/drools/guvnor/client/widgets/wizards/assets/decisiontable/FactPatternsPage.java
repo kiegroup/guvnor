@@ -16,11 +16,8 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -36,12 +33,15 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
     private FactPatternsPageView view = new FactPatternsPageViewImpl();
 
+    private Validator            validator;
+
     public FactPatternsPage(NewAssetWizardContext context,
                             GuidedDecisionTable52 dtable,
                             EventBus eventBus) {
         super( context,
                dtable,
                eventBus );
+        validator = new Validator( dtable.getConditionPatterns() );
     }
 
     public String getTitle() {
@@ -53,48 +53,36 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
             return;
         }
         view.setPresenter( this );
+        view.setDecisionTable( dtable );
 
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
 
         List<Pattern52> chosenTypes = dtable.getConditionPatterns();
-        view.setChosenFactTypes( chosenTypes );
+        view.setChosenPatterns( chosenTypes );
 
         content.setWidget( view );
     }
-    
+
     public void prepareView() {
         // Nothing needs to be done when the page is viewed; it is setup in initialise
     }
 
     public boolean isComplete() {
-        if ( dtable.getConditionPatterns().size() == 0 ) {
+
+        //Have patterns been defined?
+        if ( dtable.getConditionPatterns() == null || dtable.getConditionPatterns().size() == 0 ) {
             return false;
         }
-        Set<String> bindings = new HashSet<String>();
-        for ( Pattern52 pattern : dtable.getConditionPatterns() ) {
-            String binding = pattern.getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                if ( bindings.contains( binding ) ) {
-                    return false;
-                }
-                bindings.add( binding );
-            }
-        }
-        return true;
+
+        //Are the patterns valid?
+        boolean isValid = validator.arePatternBindingsUnique();
+        view.setHasDuplicatePatternBindings( !isValid );
+        return isValid;
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {
         return sce.isFactTypeAnEvent( pattern.getFactType() );
-    }
-
-    public void stateChanged() {
-        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
-        eventBus.fireEvent( event );
-    }
-
-    public void setChosenPatterns(List<Pattern52> patterns) {
-        dtable.setConditionPatterns( patterns );
     }
 
 }

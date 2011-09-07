@@ -16,11 +16,8 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.messages.Constants;
@@ -28,10 +25,9 @@ import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.FactPatternCell.Pattern52Wrapper;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
-import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -55,63 +51,64 @@ import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
 /**
- * The generic Wizard view implementation
+ * An implementation of the Fact Patterns page
  */
 public class FactPatternsPageViewImpl extends Composite
     implements
     FactPatternsPageView {
 
-    private Presenter                  presenter;
+    private Presenter              presenter;
 
-    private TextCell                   cellText             = new TextCell();
-    private Cell<Pattern52Wrapper>     cellPattern          = new FactPatternCell();
+    private GuidedDecisionTable52  dtable;
 
-    private Set<String>                availableTypesSelections;
-    private CellList<String>           availableTypesWidget = new CellList<String>( cellText,
-                                                                                    WizardCellListResources.INSTANCE );
+    private Validator              validator            = new Validator();
 
-    private List<Pattern52Wrapper>     chosenTypes;
-    private Pattern52Wrapper           chosenTypeSelection;
-    private Set<Pattern52Wrapper>      chosenTypeSelections;
-    private CellList<Pattern52Wrapper> chosenTypesWidget    = new CellList<Pattern52Wrapper>( cellPattern,
-                                                                                              WizardCellListResources.INSTANCE );
+    private Set<String>            availableTypesSelections;
+    private CellList<String>       availableTypesWidget = new CellList<String>( new TextCell(),
+                                                                                WizardCellListResources.INSTANCE );
 
-    private static final Constants     constants            = GWT.create( Constants.class );
+    private List<Pattern52>        chosenPatterns;
+    private Pattern52              chosenPatternSelection;
+    private Set<Pattern52>         chosenPatternSelections;
+    private CellList<Pattern52>    chosenPatternWidget  = new CellList<Pattern52>( new PatternCell( validator ),
+                                                                                   WizardCellListResources.INSTANCE );
 
-    private static final Images        images               = GWT.create( Images.class );
+    private static final Constants constants            = GWT.create( Constants.class );
 
-    @UiField
-    ScrollPanel                        availableTypesContainer;
+    private static final Images    images               = GWT.create( Images.class );
 
     @UiField
-    ScrollPanel                        chosenTypesContainer;
+    ScrollPanel                    availableTypesContainer;
 
     @UiField
-    PushButton                         btnAdd;
+    ScrollPanel                    chosenPatternsContainer;
 
     @UiField
-    PushButton                         btnRemove;
+    PushButton                     btnAdd;
 
     @UiField
-    TextBox                            txtBinding;
+    PushButton                     btnRemove;
 
     @UiField
-    TextBox                            txtEntryPoint;
+    TextBox                        txtBinding;
 
     @UiField
-    CEPWindowOperatorsDropdown         ddCEPWindow;
+    TextBox                        txtEntryPoint;
 
     @UiField
-    HorizontalPanel                    cepWindowContainer;
+    CEPWindowOperatorsDropdown     ddCEPWindow;
 
     @UiField
-    HorizontalPanel                    messages;
+    HorizontalPanel                cepWindowContainer;
+
+    @UiField
+    HorizontalPanel                messages;
 
     @UiField(provided = true)
-    PushButton                         btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                     btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                         btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                     btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends
@@ -123,7 +120,7 @@ public class FactPatternsPageViewImpl extends Composite
     public FactPatternsPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailableTypes();
-        initialiseChosenTypes();
+        initialiseChosenPatterns();
         initialiseBinding();
         initialiseEntryPoint();
         initialiseCEPWindow();
@@ -148,43 +145,43 @@ public class FactPatternsPageViewImpl extends Composite
         } );
     }
 
-    private void initialiseChosenTypes() {
-        chosenTypesContainer.add( chosenTypesWidget );
-        chosenTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenTypesWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenPatterns() ) );
+    private void initialiseChosenPatterns() {
+        chosenPatternsContainer.add( chosenPatternWidget );
+        chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        chosenPatternWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenPatterns() ) );
 
-        final MultiSelectionModel<Pattern52Wrapper> selectionModel = new MultiSelectionModel<Pattern52Wrapper>();
-        chosenTypesWidget.setSelectionModel( selectionModel );
+        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
+        chosenPatternWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenTypeSelections = new HashSet<Pattern52Wrapper>();
-                Set<Pattern52Wrapper> selections = selectionModel.getSelectedSet();
-                for ( Pattern52Wrapper pw : selections ) {
-                    chosenTypeSelections.add( pw );
+                chosenPatternSelections = new HashSet<Pattern52>();
+                Set<Pattern52> selections = selectionModel.getSelectedSet();
+                for ( Pattern52 p : selections ) {
+                    chosenPatternSelections.add( p );
                 }
-                chosenTypesSelected( chosenTypeSelections );
+                chosenTypesSelected( chosenPatternSelections );
             }
 
-            private void chosenTypesSelected(Set<Pattern52Wrapper> pws) {
+            private void chosenTypesSelected(Set<Pattern52> ps) {
                 btnRemove.setEnabled( true );
-                if ( pws.size() == 1 ) {
-                    chosenTypeSelection = pws.iterator().next();
+                if ( ps.size() == 1 ) {
+                    chosenPatternSelection = ps.iterator().next();
                     txtBinding.setEnabled( true );
-                    txtBinding.setText( chosenTypeSelection.getPattern().getBoundName() );
+                    txtBinding.setText( chosenPatternSelection.getBoundName() );
                     txtEntryPoint.setEnabled( true );
-                    txtEntryPoint.setText( chosenTypeSelection.getPattern().getEntryPointName() );
+                    txtEntryPoint.setText( chosenPatternSelection.getEntryPointName() );
                     enableMoveUpButton();
                     enableMoveDownButton();
-                    if ( presenter.isPatternEvent( chosenTypeSelection.getPattern() ) ) {
-                        ddCEPWindow.setCEPWindow( chosenTypeSelection.getPattern() );
+                    if ( presenter.isPatternEvent( chosenPatternSelection ) ) {
+                        ddCEPWindow.setCEPWindow( chosenPatternSelection );
                         cepWindowContainer.setVisible( true );
                     } else {
                         cepWindowContainer.setVisible( false );
                     }
                 } else {
-                    chosenTypeSelection = null;
+                    chosenPatternSelection = null;
                     txtBinding.setEnabled( false );
                     txtBinding.setText( "" );
                     txtEntryPoint.setEnabled( false );
@@ -199,21 +196,21 @@ public class FactPatternsPageViewImpl extends Composite
     }
 
     private void enableMoveUpButton() {
-        if ( chosenTypes == null || chosenTypeSelection == null ) {
+        if ( chosenPatterns == null || chosenPatternSelection == null ) {
             btnMoveUp.setEnabled( false );
             return;
         }
-        int index = chosenTypes.indexOf( chosenTypeSelection );
+        int index = chosenPatterns.indexOf( chosenPatternSelection );
         btnMoveUp.setEnabled( index > 0 );
     }
 
     private void enableMoveDownButton() {
-        if ( chosenTypes == null || chosenTypeSelection == null ) {
+        if ( chosenPatterns == null || chosenPatternSelection == null ) {
             btnMoveDown.setEnabled( false );
             return;
         }
-        int index = chosenTypes.indexOf( chosenTypeSelection );
-        btnMoveDown.setEnabled( index < chosenTypes.size() - 1 );
+        int index = chosenPatterns.indexOf( chosenPatternSelection );
+        btnMoveDown.setEnabled( index < chosenPatterns.size() - 1 );
     }
 
     private void initialiseBinding() {
@@ -221,9 +218,9 @@ public class FactPatternsPageViewImpl extends Composite
 
             public void onValueChange(ValueChangeEvent<String> event) {
                 String binding = txtBinding.getText();
-                chosenTypeSelection.getPattern().setBoundName( binding );
-                chosenTypesWidget.redraw();
-                stateChanged();
+                chosenPatternSelection.setBoundName( binding );
+                chosenPatternWidget.redraw();
+                presenter.stateChanged();
             }
 
         } );
@@ -233,10 +230,10 @@ public class FactPatternsPageViewImpl extends Composite
         txtEntryPoint.addValueChangeHandler( new ValueChangeHandler<String>() {
 
             public void onValueChange(ValueChangeEvent<String> event) {
-                if ( chosenTypeSelection == null ) {
+                if ( chosenPatternSelection == null ) {
                     return;
                 }
-                chosenTypeSelection.getPattern().setEntryPointName( event.getValue() );
+                chosenPatternSelection.setEntryPointName( event.getValue() );
             }
 
         } );
@@ -246,12 +243,12 @@ public class FactPatternsPageViewImpl extends Composite
         ddCEPWindow.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                if ( chosenTypeSelection == null ) {
+                if ( chosenPatternSelection == null ) {
                     return;
                 }
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                chosenTypeSelection.getPattern().getWindow().setOperator( selected );
+                chosenPatternSelection.getWindow().setOperator( selected );
             }
 
         } );
@@ -261,59 +258,31 @@ public class FactPatternsPageViewImpl extends Composite
         btnMoveUp.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                int index = chosenTypes.indexOf( chosenTypeSelection );
-                Pattern52Wrapper pw = chosenTypes.remove( index );
-                chosenTypes.add( index - 1,
-                                 pw );
-                setChosenFactTypeWrappers( chosenTypes );
-                presenter.setChosenPatterns( unwrapPatterns() );
+                int index = chosenPatterns.indexOf( chosenPatternSelection );
+                Pattern52 p = chosenPatterns.remove( index );
+                chosenPatterns.add( index - 1,
+                                    p );
+                setChosenPatterns( chosenPatterns );
+                dtable.setConditionPatterns( chosenPatterns );
             }
 
         } );
         btnMoveDown.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                int index = chosenTypes.indexOf( chosenTypeSelection );
-                Pattern52Wrapper pw = chosenTypes.remove( index );
-                chosenTypes.add( index + 1,
-                                 pw );
-                setChosenFactTypeWrappers( chosenTypes );
-                presenter.setChosenPatterns( unwrapPatterns() );
+                int index = chosenPatterns.indexOf( chosenPatternSelection );
+                Pattern52 p = chosenPatterns.remove( index );
+                chosenPatterns.add( index + 1,
+                                    p );
+                setChosenPatterns( chosenPatterns );
+                dtable.setConditionPatterns( chosenPatterns );
             }
 
         } );
     }
 
-    private void stateChanged() {
-        presenter.stateChanged();
-        boolean duplicateBindings = false;
-
-        //Store Patterns by their binding
-        Map<String, List<Pattern52Wrapper>> bindings = new HashMap<String, List<Pattern52Wrapper>>();
-        for ( Pattern52Wrapper pw : chosenTypes ) {
-            pw.setDuplicateBinding( false );
-            String binding = pw.getPattern().getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                List<Pattern52Wrapper> pws = bindings.get( binding );
-                if ( pws == null ) {
-                    pws = new ArrayList<Pattern52Wrapper>();
-                    bindings.put( binding,
-                                  pws );
-                }
-                pws.add( pw );
-            }
-        }
-
-        //Check if any bindings have multiple Patterns
-        for ( List<Pattern52Wrapper> pws : bindings.values() ) {
-            if ( pws.size() > 1 ) {
-                duplicateBindings = true;
-                for ( Pattern52Wrapper pw : pws ) {
-                    pw.setDuplicateBinding( true );
-                }
-            }
-        }
-        messages.setVisible( duplicateBindings );
+    public void setDecisionTable(GuidedDecisionTable52 dtable) {
+        this.dtable = dtable;
     }
 
     public void setAvailableFactTypes(List<String> types) {
@@ -322,38 +291,23 @@ public class FactPatternsPageViewImpl extends Composite
         availableTypesWidget.setRowData( types );
     }
 
-    public void setChosenFactTypes(List<Pattern52> types) {
-        setChosenFactTypeWrappers( wrapPatterns( types ) );
-        stateChanged();
-    }
-
-    private void setChosenFactTypeWrappers(List<Pattern52Wrapper> types) {
-        chosenTypes = types;
-        chosenTypesWidget.setRowCount( types.size(),
-                                       true );
-        chosenTypesWidget.setRowData( types );
+    public void setChosenPatterns(List<Pattern52> types) {
+        chosenPatterns = types;
+        validator.setPatterns( chosenPatterns );
+        chosenPatternWidget.setRowCount( types.size(),
+                                         true );
+        chosenPatternWidget.setRowData( types );
         enableMoveUpButton();
         enableMoveDownButton();
+        presenter.stateChanged();
     }
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
-    private List<Pattern52Wrapper> wrapPatterns(List<Pattern52> patterns) {
-        List<Pattern52Wrapper> pws = new ArrayList<Pattern52Wrapper>();
-        for ( Pattern52 p : patterns ) {
-            pws.add( new Pattern52Wrapper( p ) );
-        }
-        return pws;
-    }
-
-    private List<Pattern52> unwrapPatterns() {
-        List<Pattern52> patterns = new ArrayList<Pattern52>();
-        for ( Pattern52Wrapper pw : chosenTypes ) {
-            patterns.add( pw.getPattern() );
-        }
-        return patterns;
+    public void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings) {
+        messages.setVisible( hasDuplicatePatternBindings );
     }
 
     @UiHandler(value = "btnAdd")
@@ -361,21 +315,21 @@ public class FactPatternsPageViewImpl extends Composite
         for ( String type : availableTypesSelections ) {
             Pattern52 pattern = new Pattern52();
             pattern.setFactType( type );
-            chosenTypes.add( new Pattern52Wrapper( pattern ) );
+            chosenPatterns.add( pattern );
         }
-        setChosenFactTypeWrappers( chosenTypes );
-        presenter.setChosenPatterns( unwrapPatterns() );
-        stateChanged();
+        setChosenPatterns( chosenPatterns );
+        dtable.setConditionPatterns( chosenPatterns );
+        presenter.stateChanged();
     }
 
     @UiHandler(value = "btnRemove")
     public void btnRemoveClick(ClickEvent event) {
-        for ( Pattern52Wrapper pw : chosenTypeSelections ) {
-            chosenTypes.remove( pw );
+        for ( Pattern52 p : chosenPatternSelections ) {
+            chosenPatterns.remove( p );
         }
-        setChosenFactTypeWrappers( chosenTypes );
-        presenter.setChosenPatterns( unwrapPatterns() );
-        stateChanged();
+        setChosenPatterns( chosenPatterns );
+        dtable.setConditionPatterns( chosenPatterns );
+        presenter.stateChanged();
 
         txtBinding.setText( "" );
         txtBinding.setEnabled( false );

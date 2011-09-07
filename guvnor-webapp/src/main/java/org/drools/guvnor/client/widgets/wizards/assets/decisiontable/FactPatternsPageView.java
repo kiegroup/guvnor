@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -30,12 +31,10 @@ public interface FactPatternsPageView
         IsWidget {
 
     interface Presenter {
-        
+
         boolean isPatternEvent(Pattern52 pattern);
-        
+
         void stateChanged();
-        
-        void setChosenPatterns(List<Pattern52> patterns);
         
     }
 
@@ -46,8 +45,12 @@ public interface FactPatternsPageView
      */
     void setPresenter(Presenter presenter);
 
+    void setDecisionTable(GuidedDecisionTable52 dtable);
+
     void setAvailableFactTypes(List<String> types);
 
-    void setChosenFactTypes(List<Pattern52> types);
+    void setChosenPatterns(List<Pattern52> types);
     
+    void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings);
+
 }

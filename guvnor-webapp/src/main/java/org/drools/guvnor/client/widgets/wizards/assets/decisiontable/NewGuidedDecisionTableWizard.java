@@ -76,7 +76,7 @@ public class NewGuidedDecisionTableWizard
     }
 
     public String getTitle() {
-        return "An example wizard serving no purpose";
+        return "Guided Decision Table Wizard";
     }
 
     public List<WizardPage> getPages() {

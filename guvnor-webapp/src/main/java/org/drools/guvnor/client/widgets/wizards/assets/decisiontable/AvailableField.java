@@ -13,23 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.ide.common.client.modeldriven.dt52;
-
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 /**
- * This is a rule metadata - eg @foo(bar) etc.
+ * A Pattern Field available for selection
  */
-public class MetadataCol52 extends DTColumnConfig52 {
+class AvailableField {
 
-    private String metadata;
+    private String name;
 
-    public String getMetadata() {
-        return metadata;
+    private String type;
+
+    AvailableField(String name,
+                          String type) {
+        this.name = name;
+        this.type = type;
     }
 
-    public void setMetadata(String metadata) {
-        this.metadata = metadata;
+    String getName() {
+        return name;
+    }
+
+    String getType() {
+        return type;
     }
 
 }

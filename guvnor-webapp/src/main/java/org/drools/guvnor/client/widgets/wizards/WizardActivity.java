@@ -56,15 +56,22 @@ public class WizardActivity extends Activity
     }
 
     public void onStatusChange(WizardPageStatusChangeEvent event) {
-        WizardPage page = event.getSource();
-        int index = wizard.getPages().indexOf( page );
 
         //The event might not have been raised by a page belonging to this Wizard instance
-        if ( index >= 0 ) {
-            view.setPageCompletionState( index,
-                                         page.isComplete() );
-            view.setCompletionStatus( wizard.isComplete() );
+        WizardPage page = event.getSource();
+        if ( !wizard.getPages().contains( page ) ) {
+            return;
         }
+
+        //Update the status of each belonging to this Wizard
+        for ( WizardPage wp : wizard.getPages() ) {
+            int index = wizard.getPages().indexOf( wp );
+            view.setPageCompletionState( index,
+                                         wp.isComplete() );
+        }
+
+        //Update the status of this Wizard
+        view.setCompletionStatus( wizard.isComplete() );
     }
 
     public void onPageSelected(WizardPageSelectedEvent event) {

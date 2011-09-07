@@ -875,6 +875,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Check operator is supported
+        if ( cc.getOperator() == null ) {
+            return false;
+        }
         if ( cc.getOperator().equals( "==" ) ) {
             return true;
         }

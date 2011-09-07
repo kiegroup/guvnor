@@ -18,19 +18,27 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.List;
 
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * View and Presenter definitions for the Fact Patterns page
+ * View and Presenter definitions for the Fact Pattern Constraints page
  */
 public interface FactPatternConstraintsPageView
         extends
         IsWidget {
 
     interface Presenter {
+
+        void patternSelected(Pattern52 pattern);
+
+        void setChosenConditions(Pattern52 pattern,
+                                 List<ConditionCol52> conditions);
         
+        void stateChanged();
+
     }
 
     /**
@@ -39,7 +47,11 @@ public interface FactPatternConstraintsPageView
      * @param presenter
      */
     void setPresenter(Presenter presenter);
-    
+
     void setAvailablePatterns(List<Pattern52> patterns);
+
+    void setAvailableFields(List<AvailableField> fields);
+
+    void setChosenConditions(List<ConditionCol52> conditions);
     
 }

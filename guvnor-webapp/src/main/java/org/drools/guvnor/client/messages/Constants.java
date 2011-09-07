@@ -2441,4 +2441,13 @@ public interface Constants
     String DecisionTableWizardChosenTypes();
 
     String DecisionTableWizardDuplicateBindings();
+    
+    String DecisionTableWizardAvailableFields();
+    
+    String DecisionTableWizardChosenConditions();
+    
+    String DecisionTableWizardNoAvailableFields();
+    
+    String DecisionTableWizardNoChosenFields();
+    
 }

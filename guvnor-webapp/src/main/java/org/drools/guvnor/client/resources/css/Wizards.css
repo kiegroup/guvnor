@@ -23,8 +23,6 @@
     border-width: 1px;
     margin: 0px 10px 10px 10px;
     padding: 5px;
-    height: 300px;
-    width: 250px;
 }
 
 .wizardDTableHeader {
@@ -48,7 +46,7 @@
 
 .wizardDTableButtons td {
     margin-bottom: 10px;
-    width: 64px;
+    width: 48px;
     height: 32px;
     text-align: center;
 }
@@ -70,7 +68,7 @@
     margin-left: 10px;
 }
 
-.wizardDTableDuplicatePattern {
+.wizardDTableValidationError {
     font-weight: bolder;
     color: red;
 }

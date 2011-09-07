@@ -81,6 +81,10 @@ public class Pattern52
         return this.conditions;
     }
 
+    public void setConditions(List<ConditionCol52> conditions) {
+        this.conditions = conditions;
+    }
+
     public void setWindow(CEPWindow window) {
         this.window = window;
     }
