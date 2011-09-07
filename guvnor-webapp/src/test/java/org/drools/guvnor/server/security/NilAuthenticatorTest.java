@@ -18,6 +18,7 @@ package org.drools.guvnor.server.security;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jboss.seam.security.Authenticator;
 import org.junit.Test;
 
 public class NilAuthenticatorTest {
@@ -25,8 +26,8 @@ public class NilAuthenticatorTest {
     @Test
     public void testAdmin() {
         NilAuthenticator ni = new NilAuthenticator();
-
-        assertTrue(ni.authenticate());
+        ni.authenticate();
+        assertTrue(ni.getStatus() == Authenticator.AuthenticationStatus.SUCCESS);
     }
 
 }

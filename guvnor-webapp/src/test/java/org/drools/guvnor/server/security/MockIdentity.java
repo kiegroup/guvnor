@@ -25,12 +25,14 @@ import java.util.Set;
 
 import javax.security.auth.login.LoginException;
 
+import org.jboss.seam.security.IdentityImpl;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.permission.PermissionResolver;
 
-public class MockIdentity extends Identity {
+// TODO seam3upgrade
+public class MockIdentity extends IdentityImpl {
 
     private static final long serialVersionUID = 3159602570340648366L;
     private boolean hasRole;
@@ -41,7 +43,6 @@ public class MockIdentity extends Identity {
     boolean allowLogin = true;
     boolean checkPermission = false;
 
-    @Override
     public boolean addRole(String r) {
         roles.add(r);
         return true;
@@ -90,33 +91,25 @@ public class MockIdentity extends Identity {
         resolvers.add(r);
     }
 
-    /**
-     * Push this mock as the identity to Seam.
-     */
-    public void inject() {
-        Contexts.getSessionContext().set("org.jboss.seam.security.identity",
-                this);
-    }
+//    public Credentials getCredentials() {
+//        return new Credentials() {
+//
+//            private static final long serialVersionUID = -6746530728283388952L;
+//
+//            public String getUsername()
+//               {
+//                  return "mockedUser";
+//               }
+//        };
+//    }
 
-    public Credentials getCredentials() {
-        return new Credentials() {
-
-            private static final long serialVersionUID = -6746530728283388952L;
-
-            public String getUsername()
-               {
-                  return "mockedUser";
-               }
-        };
-    }
-
-    public void authenticate() throws LoginException {
-        if(allowLogin) {
-            return;
-        }
-
-        throw new LoginException();
-    }
+//    public void authenticate() throws LoginException {
+//        if(allowLogin) {
+//            return;
+//        }
+//
+//        throw new LoginException();
+//    }
 
     public void setAllowLogin (boolean allowLogin) {
         this.allowLogin = allowLogin;

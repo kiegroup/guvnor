@@ -50,13 +50,14 @@ public class FeedServletTest extends GuvnorTestBase {
         asset.updateFormat( "drl" );
         asset.checkin( "" );
 
-        //Mock up SEAM contexts
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( false );
-        midentity.setCheckPermission( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        //Mock up SEAM contexts
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( false );
+//        midentity.setCheckPermission( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -74,8 +75,9 @@ public class FeedServletTest extends GuvnorTestBase {
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
 
-        //try again with valid user and password
-        midentity.setAllowLogin( true );
+        // TODO seam3upgrade
+//        //try again with valid user and password
+//        midentity.setAllowLogin( true );
 
         headers = new HashMap<String, String>() {
             {
@@ -145,8 +147,6 @@ public class FeedServletTest extends GuvnorTestBase {
         r = res.extractContent();
         assertNotNull( r );
         assertTrue( r.indexOf( "asset1" ) > -1 );
-
-        Lifecycle.endApplication();
     }
 
     @Test
@@ -164,13 +164,14 @@ public class FeedServletTest extends GuvnorTestBase {
         asset.updateCategoryList( new String[]{"testCategoryFeedCat"} );
         asset.checkin( "" );
 
-        //Mock up SEAM contexts
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( true );
-        midentity.setCheckPermission( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        //Mock up SEAM contexts
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( true );
+//        midentity.setCheckPermission( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
@@ -223,15 +224,14 @@ public class FeedServletTest extends GuvnorTestBase {
         assertTrue( r.indexOf( "asset1" ) > -1 );
         assertTrue( r.indexOf( "http://foo.bar" ) > -1 );
 
-        midentity.setAllowLogin( false );
+        // TODO seam3upgrade
+//        midentity.setAllowLogin( false );
         fs = new FeedServlet();
         res = new MockHTTPResponse();
         fs.doGet( req,
                   res );
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
-
-        Lifecycle.endApplication();
     }
 
     @Test
@@ -246,13 +246,14 @@ public class FeedServletTest extends GuvnorTestBase {
         asset.updateFormat( "drl" );
         asset.checkin( "" );
 
-        //Mock up SEAM contexts
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( false );
-        midentity.setCheckPermission( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        //Mock up SEAM contexts
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( false );
+//        midentity.setCheckPermission( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
         repositoryAssetService.setRulesRepository( repo );
@@ -284,7 +285,8 @@ public class FeedServletTest extends GuvnorTestBase {
             }
         };
 
-        midentity.setAllowLogin( true );
+        // TODO seam3upgrade
+//        midentity.setAllowLogin( true );
         req = new MockHTTPRequest( "/org.foo/feed/discussion",
                                    headers,
                                    new HashMap<String, String>() {
@@ -305,8 +307,6 @@ public class FeedServletTest extends GuvnorTestBase {
         assertTrue( r.indexOf( "This is a comment" ) > -1 );
         assertTrue( r.indexOf( "This is another comment" ) > r.indexOf( "This is a comment" ) );
         System.err.println( r );
-
-        Lifecycle.endApplication();
     }
 
 }

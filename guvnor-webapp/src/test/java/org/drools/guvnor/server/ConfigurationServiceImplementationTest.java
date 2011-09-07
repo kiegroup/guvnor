@@ -31,13 +31,12 @@ public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
     private ConfigurationService configurationService;
 
     @Before
-    public void setUpGuvnorTestBase() {
+    public void setUpConfigurationService() {
         configurationService = new ConfigurationServiceImplementation();
     }
 
     @Test
     public void testLoadApplicationPreferences() throws Exception {
-        setUpMockIdentity();
         Map<String, String> preferences = configurationService.loadPreferences();
 
         assertNotNull(preferences);

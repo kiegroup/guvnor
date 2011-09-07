@@ -38,6 +38,7 @@ import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
@@ -77,25 +78,24 @@ public abstract class GuvnorTestBase {
     // Lifecycle methods
     // ************************************************************************
 
-    @Before
-    public void setUpGuvnorTestBase() {
+    @BeforeClass
+    public static void setUpGuvnorTestBase() {
         System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
-        setUpMockIdentity();
     }
 
-    protected void setUpMockIdentity() {
-        MockIdentity mockIdentity = new MockIdentity();
-        mockIdentity.setIsLoggedIn( true );
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( false );
-        mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
-        setUpMockIdentity( mockIdentity );
-    }
-
-    public void setUpMockIdentity(MockIdentity mockIdentity) {
-        mockIdentity.inject();
-        mockIdentity.create();
-    }
+//    protected void setUpMockIdentity() {
+//        MockIdentity mockIdentity = new MockIdentity();
+//        mockIdentity.setIsLoggedIn( true );
+//        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
+//        resolver.setEnableRoleBasedAuthorization( false );
+//        mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
+//        setUpMockIdentity( mockIdentity );
+//    }
+//
+//    public void setUpMockIdentity(MockIdentity mockIdentity) {
+//        mockIdentity.inject();
+//        mockIdentity.create();
+//    }
 
     @After
     public void tearDownGuvnorTestBase() {

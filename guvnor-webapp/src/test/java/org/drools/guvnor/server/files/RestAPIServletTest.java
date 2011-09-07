@@ -34,7 +34,6 @@ import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.contexts.Lifecycle;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,11 +52,12 @@ public class RestAPIServletTest extends GuvnorTestBase {
         ass.updateContent( "some content" );
         ass.checkin( "hey ho" );
 
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( false );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( false );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         RestAPIServlet serv = new RestAPIServlet();
         assertNotNull( serv.getAPI() );
@@ -97,7 +97,8 @@ public class RestAPIServletTest extends GuvnorTestBase {
         assertTrue( res.headers.containsKey( "WWW-Authenticate" ) );
 
         //finally, making it work
-        midentity.setAllowLogin( true );
+        // TODO seam3upgrade
+//        midentity.setAllowLogin( true );
 
         headers = new HashMap<String, String>() {
             {
@@ -137,7 +138,6 @@ public class RestAPIServletTest extends GuvnorTestBase {
         assertFalse( "some content".equals( data ) );
         assertNotNull( data );
 
-        Lifecycle.endApplication();
     }
 
     @Test
@@ -148,11 +148,12 @@ public class RestAPIServletTest extends GuvnorTestBase {
         PackageItem pkg = repo.createPackage( "testPostRestServlet",
                                               "" );
 
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -203,30 +204,24 @@ public class RestAPIServletTest extends GuvnorTestBase {
         String out = new String( ass2.getBinaryContentAsBytes() );
         assertEquals( "more content",
                       out );
-
-        repo.logout();
-
-        Lifecycle.endApplication();
     }
 
     @Test
     public void testPut() throws Exception {
-
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testPutRestServlet",
+        PackageItem pkg = rulesRepository.createPackage( "testPutRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "abc" );
-        ass.updateFormat( "drl" );
+        ass.updateFormat("drl");
         ass.checkin( "" );
         long ver = ass.getVersionNumber();
 
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        // TODO seam3upgrade
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -251,38 +246,30 @@ public class RestAPIServletTest extends GuvnorTestBase {
                       res.extractContent() );
 
         ass = pkg.loadAsset( "asset1" );
-        pkg.getNode().refresh( false );
+        pkg.getNode().refresh(false);
         assertEquals( "some new content",
                       ass.getContent() );
-        assertEquals( ver + 1,
-                      ass.getVersionNumber() );
-        assertEquals( "hey ho",
-                      ass.getCheckinComment() );
-
-        repo.logout();
-
-        Lifecycle.endApplication();
+        assertEquals(ver + 1,
+                ass.getVersionNumber());
+        assertEquals("hey ho",
+                ass.getCheckinComment());
     }
 
     @Test
     public void testDelete() throws Exception {
-
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testDeleteRestServlet",
+        PackageItem pkg = rulesRepository.createPackage( "testDeleteRestServlet",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "abc" );
-        ass.updateFormat( "drl" );
+        ass.updateFormat("drl");
         ass.checkin( "" );
 
-        MockIdentity midentity = new MockIdentity();
-        midentity.setIsLoggedIn( false );
-        midentity.setAllowLogin( true );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-        Contexts.getSessionContext().set( "repository",
-                                          repo );
+        // TODO seam3upgrade
+//        MockIdentity midentity = new MockIdentity();
+//        midentity.setIsLoggedIn( false );
+//        midentity.setAllowLogin( true );
+//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
+//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -304,12 +291,8 @@ public class RestAPIServletTest extends GuvnorTestBase {
         assertEquals( "OK",
                       res.extractContent() );
 
-        pkg = repo.loadPackage( "testDeleteRestServlet" );
+        pkg = rulesRepository.loadPackage( "testDeleteRestServlet" );
         assertFalse( pkg.listAssetsByFormat( new String[]{"drl"} ).hasNext() );
-
-        repo.logout();
-
-        Lifecycle.endApplication();
     }
 
 }
