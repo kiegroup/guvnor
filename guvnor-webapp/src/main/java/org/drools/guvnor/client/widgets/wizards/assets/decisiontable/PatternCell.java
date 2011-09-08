@@ -15,8 +15,6 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import java.util.List;
-
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 

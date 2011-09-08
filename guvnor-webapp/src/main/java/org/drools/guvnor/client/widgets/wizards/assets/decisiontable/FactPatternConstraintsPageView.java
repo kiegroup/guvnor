@@ -36,7 +36,10 @@ public interface FactPatternConstraintsPageView
 
         void setChosenConditions(Pattern52 pattern,
                                  List<ConditionCol52> conditions);
-        
+
+        String[] getOperatorCompletions(Pattern52 selectedPattern,
+                                        ConditionCol52 selectedCondition);
+
         void stateChanged();
 
     }
@@ -53,5 +56,7 @@ public interface FactPatternConstraintsPageView
     void setAvailableFields(List<AvailableField> fields);
 
     void setChosenConditions(List<ConditionCol52> conditions);
-    
+
+    void setHasIncompleteConditionDefinitions(boolean hasIncompleteConditionDefinitions);
+
 }

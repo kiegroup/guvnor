@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+
 /**
  * A Pattern Field available for selection
  */
@@ -24,10 +26,20 @@ class AvailableField {
 
     private String type;
 
+    private int    calculationType = BaseSingleFieldConstraint.TYPE_LITERAL;
+
     AvailableField(String name,
-                          String type) {
+                   int calculationType) {
+        this.name = name;
+        this.calculationType = calculationType;
+    }
+
+    AvailableField(String name,
+                   String type,
+                   int calculationType) {
         this.name = name;
         this.type = type;
+        this.calculationType = calculationType;
     }
 
     String getName() {
@@ -36,6 +48,10 @@ class AvailableField {
 
     String getType() {
         return type;
+    }
+
+    int getCalculationType() {
+        return this.calculationType;
     }
 
 }

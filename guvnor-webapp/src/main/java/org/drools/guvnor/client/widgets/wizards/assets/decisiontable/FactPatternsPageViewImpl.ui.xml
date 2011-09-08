@@ -26,7 +26,7 @@
   <gwt:VerticalPanel ui:field="container" width="100%">
 	<gwt:HorizontalPanel ui:field="messages" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
-        <gwt:Image resource="{images.error}"/>
+        <gwt:Image resource="{images.warningLarge}"/>
         <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}"/>
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
@@ -52,18 +52,20 @@
         <gwt:PushButton ui:field="btnMoveDown" enabled="false" />
       </gwt:VerticalPanel>
     </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel>
-      <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}"/>
-      <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
-    </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel>
-    	<gwt:Label text="{i18n.DTLabelFromEntryPoint}" styleName="{res.style.wizardDTableFields}"/>
+    <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
+      <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
+        <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}"/>
+        <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+      </gwt:HorizontalPanel>
+      <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+      	<gwt:Label text="{i18n.DTLabelFromEntryPoint}" styleName="{res.style.wizardDTableFields}"/>
     	<gwt:TextBox ui:field="txtEntryPoint" enabled="false" styleName="{res.style.wizardDTableFields}"/>
-    </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel ui:field="cepWindowContainer" visible="false">
+      </gwt:HorizontalPanel>
+      <gwt:HorizontalPanel ui:field="cepWindowContainer" styleName="{res.style.wizardDTableFieldContainerValid}" visible="false">
     	<gwt:Label text="{i18n.DTLabelOverCEPWindow}" styleName="{res.style.wizardDTableFields}"/>
         <guvnor:CEPWindowOperatorsDropdown ui:field="ddCEPWindow" styleName="{res.style.wizardDTableFields}"/>
-    </gwt:HorizontalPanel>
+      </gwt:HorizontalPanel>
+    </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 
 </ui:UiBinder>

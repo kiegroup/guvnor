@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
@@ -42,8 +44,13 @@ class AvailableFieldCell extends AbstractCell<AvailableField> {
                        SafeHtmlBuilder sb) {
         StringBuilder b = new StringBuilder();
         b.append( value.getName() );
-        b.append( " : " );
-        b.append( value.getType() );
+        if ( value.getCalculationType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
+            b.append( " : " );
+            b.append( value.getType() );
+        } else if ( value.getCalculationType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
+            b.append( " : " );
+            b.append( value.getType() );
+        }
         sb.append( TEMPLATE.text( b.toString() ) );
     }
 

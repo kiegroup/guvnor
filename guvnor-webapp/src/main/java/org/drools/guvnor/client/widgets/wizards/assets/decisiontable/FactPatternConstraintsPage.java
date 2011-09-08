@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -71,25 +72,43 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
             return false;
         }
 
-        //Are the patterns valid?
-        boolean isValid = validator.arePatternBindingsUnique();
+        //Have all patterns conditions been defined?
+        boolean isValid = true;
+        for ( Pattern52 p : dtable.getConditionPatterns() ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( !validator.isConditionValid( c ) ) {
+                    isValid = false;
+                    break;
+                }
+
+            }
+        }
+
+        view.setHasIncompleteConditionDefinitions( !isValid );
         return isValid;
     }
-    
-    
 
     public void patternSelected(Pattern52 pattern) {
         String type = pattern.getFactType();
-        String[] fs = sce.getFieldCompletions( type );
-        List<AvailableField> fields = new ArrayList<AvailableField>();
-        for ( String f : fs ) {
+
+        //Add Fact fields
+        String[] fieldNames = sce.getFieldCompletions( type );
+        List<AvailableField> availableFields = new ArrayList<AvailableField>();
+        for ( String fieldName : fieldNames ) {
             String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldClassName( type,
-                                                                                               f ) );
-            AvailableField field = new AvailableField( f,
-                                                       fieldType );
-            fields.add( field );
+                                                                                               fieldName ) );
+            AvailableField field = new AvailableField( fieldName,
+                                                       fieldType,
+                                                       BaseSingleFieldConstraint.TYPE_LITERAL );
+            availableFields.add( field );
         }
-        view.setAvailableFields( fields );
+
+        //Add predicates
+        AvailableField field = new AvailableField( constants.DecisionTableWizardPredicate(),
+                                                   BaseSingleFieldConstraint.TYPE_PREDICATE );
+        availableFields.add( field );
+
+        view.setAvailableFields( availableFields );
         view.setChosenConditions( pattern.getConditions() );
     }
 
@@ -97,6 +116,13 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
                                     List<ConditionCol52> conditions) {
         pattern.getConditions().clear();
         pattern.getConditions().addAll( conditions );
+    }
+
+    public String[] getOperatorCompletions(Pattern52 selectedPattern,
+                                           ConditionCol52 selectedCondition) {
+        String[] ops = sce.getOperatorCompletions( selectedPattern.getFactType(),
+                                                   selectedCondition.getFactField() );
+        return ops;
     }
 
 }

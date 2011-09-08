@@ -26,6 +26,15 @@
     zoom: 1;
 }
 
+.cellListEmptyItem {
+    margin: 2px;
+    padding: 1px;
+    cursor: pointer;
+    color: rgb(150, 150, 150);
+    font-style: italic;
+    zoom: 1;
+}
+
 .cellListOddItem {
     margin: 2px;
     padding: 1px;
