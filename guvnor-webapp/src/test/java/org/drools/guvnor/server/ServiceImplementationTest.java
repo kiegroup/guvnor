@@ -186,7 +186,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             }
             assertFalse( found );
         } finally {
-            RepositoryStartupService.removeListeners();
+            // TODO seam3upgrade
+//            RepositoryStartupService.removeListeners();
         }
 
     }
@@ -464,7 +465,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             assertEquals( 0,
                           ib.loadRecentEdited().size() );
         } finally {
-            RepositoryStartupService.removeListeners();
+            // TODO seam3upgrade
+//            RepositoryStartupService.removeListeners();
         }
     }
 
@@ -571,7 +573,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             assertTrue( result.startsWith( "ERR" ) );
             System.err.println( result.substring( 5 ) );
         } finally {
-            RepositoryStartupService.removeListeners();
+            // TODO seam3upgrade
+//            RepositoryStartupService.removeListeners();
         }
 
     }

@@ -34,6 +34,7 @@ import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.servlet.ServletContextEvent;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -167,11 +168,11 @@ public class RepositoryStartupService {
         sessionForSetup.logout();
         MailboxService.getInstance().stop();
         mailmanRulesRepository.logout();
-    }
 
-    public static void removeListeners() {
+        log.info( "Removing listeners...." );
         StorageEventManager.removeListeners();
-        log.info("Listeners removed...");
+        log.info( "Shutting down repository..." );
+        configurator.shutdown();
     }
 
     public void setHomeDirectory(String home) {

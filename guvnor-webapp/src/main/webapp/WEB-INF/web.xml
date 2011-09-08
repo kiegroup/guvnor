@@ -206,11 +206,6 @@
     <session-timeout>180</session-timeout>
   </session-config>
 
-  <!-- Listeners -->
-  <listener>
-    <listener-class>org.drools.guvnor.server.repository.RepositoryShutdownService</listener-class>
-  </listener>
-
   <resource-env-ref><!-- Needed to make weld/arquillian work on tomcat6, jetty6 and jetty7 -->
     <resource-env-ref-name>BeanManager</resource-env-ref-name>
     <resource-env-ref-type>
