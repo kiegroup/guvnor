@@ -49,34 +49,29 @@ public class RepositoryAssetService
         implements
         AssetService {
 
-    @Inject
-    private RulesRepository repository;
-
-    @Inject
-    private Identity identity;
-
     private static final long serialVersionUID = 90111;
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetService.class);
 
     @Inject
+    private RulesRepository rulesRepository;
+
+    @Inject
+    private RepositoryAssetOperations repositoryAssetOperations;
+
+    @Inject
     private ServiceSecurity serviceSecurity;
 
-    private final RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+    @Inject
+    private Identity identity;
 
-    @PostConstruct
-    public void create() {
-        repositoryAssetOperations.setRulesRepository(getRulesRepository());
-    }
-
-    /* This is called in hosted mode when creating "by hand" */
+    // TODO seam3upgrade
     public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-        create();
+        this.rulesRepository = repository;
     }
 
     public RulesRepository getRulesRepository() {
-        return repository;
+        return rulesRepository;
     }
 
     /**
@@ -96,7 +91,7 @@ public class RepositoryAssetService
 
         long time = System.currentTimeMillis();
 
-        AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
         RuleAsset asset = new RuleAssetPopulator().populateFrom(item);
 
         asset.setMetaData(repositoryAssetOperations.populateMetaData(item));
@@ -208,8 +203,8 @@ public class RepositoryAssetService
     @WebRemote
     @LoggedIn
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {
-        //VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-        VersionableItem assetItem = getRulesRepository().loadItemByUUID(uuid);
+        //VersionableItem assetItem = rulesRepository.loadAssetByUUID( uuid );
+        VersionableItem assetItem = rulesRepository.loadItemByUUID(uuid);
 
         //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory(assetItem);
@@ -222,7 +217,7 @@ public class RepositoryAssetService
     @LoggedIn
     public TableDataResult loadAssetHistory(String packageUUID,
                                             String assetName) throws SerializationException {
-        PackageItem pi = getRulesRepository().loadPackageByUUID(packageUUID);
+        PackageItem pi = rulesRepository.loadPackageByUUID(packageUUID);
         AssetItem assetItem = pi.loadAsset(assetName);
         serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(assetItem.getPackage().getUUID());
 
@@ -261,7 +256,7 @@ public class RepositoryAssetService
                                                      int skip,
                                                      int numRows,
                                                      String tableConfig) throws SerializationException {
-        PackageItem pkg = getRulesRepository().loadPackage(packageName);
+        PackageItem pkg = rulesRepository.loadPackage(packageName);
         return listAssets(pkg.getUUID(),
                 formats,
                 skip,
@@ -299,7 +294,7 @@ public class RepositoryAssetService
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
 
         log.info("USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]");
-        return getRulesRepository().copyAsset(assetUUID,
+        return rulesRepository.copyAsset(assetUUID,
                 newPackage,
                 newName);
     }
@@ -312,7 +307,7 @@ public class RepositoryAssetService
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
-        getRulesRepository().moveRuleItemPackage(newPackage,
+        rulesRepository.moveRuleItemPackage(newPackage,
                 uuid,
                 comment);
     }
@@ -327,7 +322,7 @@ public class RepositoryAssetService
         }
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
-        getRulesRepository().moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
+        rulesRepository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
     }
@@ -343,7 +338,7 @@ public class RepositoryAssetService
     @LoggedIn
     public String renameAsset(String uuid,
                               String newName) {
-        AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
 
         return repositoryAssetOperations.renameAsset(uuid,
@@ -383,11 +378,11 @@ public class RepositoryAssetService
     @LoggedIn
     public void removeAsset(String uuid) {
         try {
-            AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
             serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
 
             item.remove();
-            getRulesRepository().save();
+            rulesRepository.save();
         } catch (RulesRepositoryException e) {
             log.error("Unable to remove asset.",
                     e);
@@ -523,7 +518,7 @@ public class RepositoryAssetService
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
         try {
-            AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
 
             serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
 
@@ -578,7 +573,7 @@ public class RepositoryAssetService
 
     @LoggedIn
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
-        return new Discussion().fromString(getRulesRepository().loadAssetByUUID(assetId).getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
+        return new Discussion().fromString(rulesRepository.loadAssetByUUID(assetId).getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
     }
 
     /**
@@ -593,7 +588,7 @@ public class RepositoryAssetService
     @LoggedIn
     public void changeState(String uuid,
                             String newState) {
-        AssetItem asset = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
 
         // Verify if the user has permission to access the asset through
         // package based permission.
@@ -642,7 +637,7 @@ public class RepositoryAssetService
         addToDiscussionForAsset(asset.getUUID(),
                 oldState + " -> " + newState);
 
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     @WebRemote
@@ -652,11 +647,11 @@ public class RepositoryAssetService
 
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(uuid);
 
-        PackageItem pkg = getRulesRepository().loadPackageByUUID(uuid);
+        PackageItem pkg = rulesRepository.loadPackageByUUID(uuid);
         log.info("USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]");
         pkg.changeStatus(newState);
 
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     /*
@@ -682,7 +677,7 @@ public class RepositoryAssetService
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 
 }

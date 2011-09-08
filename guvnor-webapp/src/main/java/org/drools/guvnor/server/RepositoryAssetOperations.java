@@ -41,7 +41,6 @@ import javax.inject.Named;
 
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
-import org.jboss.seam.security.Identity;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -52,9 +51,10 @@ import java.util.*;
 @Named("org.drools.guvnor.server.RepositoryAssetOperations")
 public class RepositoryAssetOperations {
 
-    private RulesRepository repository;
-
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetOperations.class);
+
+    @Inject
+    private RulesRepository rulesRepository;
 
     @Inject
     private Credentials credentials;
@@ -72,17 +72,14 @@ public class RepositoryAssetOperations {
         }
     }
 
+    // TODO seam3upgrade
     public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-    }
-
-    public RulesRepository getRulesRepository() {
-        return repository;
+        this.rulesRepository = repository;
     }
 
     public String renameAsset(String uuid,
                               String newName) {
-        return getRulesRepository().renameAsset(uuid,
+        return rulesRepository.renameAsset(uuid,
                 newName);
     }
 
@@ -90,7 +87,7 @@ public class RepositoryAssetOperations {
         try {
             ContentHandler handler = ContentManager
                     .getHandler(asset.getFormat());
-            AssetItem item = getRulesRepository().loadAssetByUUID(asset.uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(asset.uuid);
 
             handler.storeAssetContent(asset,
                     item);
@@ -118,7 +115,7 @@ public class RepositoryAssetOperations {
     }
 
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-        AssetItem repoAsset = getRulesRepository().loadAssetByUUID(asset.getUuid());
+        AssetItem repoAsset = rulesRepository.loadAssetByUUID(asset.getUuid());
         if (isAssetUpdatedInRepository(asset,
                 repoAsset)) {
             return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
@@ -165,12 +162,12 @@ public class RepositoryAssetOperations {
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
-        AssetItem old = getRulesRepository().loadAssetByUUID(versionUUID);
-        AssetItem head = getRulesRepository().loadAssetByUUID(assetUUID);
+        AssetItem old = rulesRepository.loadAssetByUUID(versionUUID);
+        AssetItem head = rulesRepository.loadAssetByUUID(assetUUID);
 
         log.info("USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber());
 
-        getRulesRepository().restoreHistoricalAsset(old,
+        rulesRepository.restoreHistoricalAsset(old,
                 head,
                 comment);
     }
@@ -243,7 +240,7 @@ public class RepositoryAssetOperations {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         RepositoryFilter filter = new AssetItemFilter();
 
-        AssetItemIterator it = getRulesRepository().findArchivedAssets();
+        AssetItemIterator it = rulesRepository.findArchivedAssets();
         it.skip(skip);
         int count = 0;
         while (it.hasNext()) {
@@ -290,7 +287,7 @@ public class RepositoryAssetOperations {
     protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) {
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().findArchivedAssets();
+        AssetItemIterator iterator = rulesRepository.findArchivedAssets();
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
@@ -328,7 +325,7 @@ public class RepositoryAssetOperations {
                                          int numRows,
                                          String tableConfig) {
         long start = System.currentTimeMillis();
-        PackageItem pkg = getRulesRepository().loadPackageByUUID(packageUuid);
+        PackageItem pkg = rulesRepository.loadPackageByUUID(packageUuid);
         AssetItemIterator it;
         if (formats.length > 0) {
             it = pkg.listAssetsByFormat(formats);
@@ -368,7 +365,7 @@ public class RepositoryAssetOperations {
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findAssetsByName(search,
+        AssetItemIterator it = rulesRepository.findAssetsByName(search,
                 searchArchived);
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
@@ -405,7 +402,7 @@ public class RepositoryAssetOperations {
         List<AssetItem> resultList = new ArrayList<AssetItem>();
         RepositoryFilter filter = new PackageFilter();
 
-        AssetItemIterator assetItemIterator = getRulesRepository().queryFullText(text,
+        AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
         while (assetItemIterator.hasNext()) {
             AssetItem assetItem = assetItemIterator.next();
@@ -431,10 +428,10 @@ public class RepositoryAssetOperations {
         if (handler.isRuleAsset()) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            PackageItem packageItem = getRulesRepository().loadPackage(asset.getMetaData().getPackageName());
+            PackageItem packageItem = rulesRepository.loadPackage(asset.getMetaData().getPackageName());
             builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(packageItem));
             if (asset.getMetaData().isBinary()) {
-                AssetItem item = getRulesRepository().loadAssetByUUID(
+                AssetItem item = rulesRepository.loadAssetByUUID(
                         asset.getUuid());
 
                 handler.storeAssetContent(asset,
@@ -462,7 +459,7 @@ public class RepositoryAssetOperations {
                 + request.getPackageUuid() + ")");
         long start = System.currentTimeMillis();
 
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID(request.getPackageUuid());
+        PackageItem packageItem = rulesRepository.loadPackageByUUID(request.getPackageUuid());
 
         AssetItemIterator iterator;
         if (request.getFormatInList() != null) {
@@ -511,7 +508,7 @@ public class RepositoryAssetOperations {
 
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().findAssetsByName(search,
+        AssetItemIterator iterator = rulesRepository.findAssetsByName(search,
                 request.isSearchArchived(),
                 request.isCaseSensitive());
         log.debug("Search time: " + (System.currentTimeMillis() - start));
@@ -641,7 +638,7 @@ public class RepositoryAssetOperations {
     }
 
     protected void clearAllDiscussionsForAsset(final String assetId) {
-        RulesRepository repo = getRulesRepository();
+        RulesRepository repo = rulesRepository;
         AssetItem asset = repo.loadAssetByUUID(assetId);
         asset.updateStringProperty("",
                 "discussion");
@@ -653,7 +650,7 @@ public class RepositoryAssetOperations {
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                              String comment) {
-        RulesRepository repository = getRulesRepository();
+        RulesRepository repository = rulesRepository;
         AssetItem asset = repository.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
@@ -679,6 +676,6 @@ public class RepositoryAssetOperations {
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 }

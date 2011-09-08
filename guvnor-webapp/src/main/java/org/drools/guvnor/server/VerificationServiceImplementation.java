@@ -32,6 +32,7 @@ import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
 import org.drools.guvnor.server.verification.VerifierConfigurationFactory;
 import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
@@ -41,6 +42,7 @@ import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import java.util.Set;
+import javax.inject.Inject;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
@@ -49,20 +51,21 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
-
-    protected RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
-    }
+    
+    @Inject
+    private RulesRepository rulesRepository;
+    
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
 
     @WebRemote
     @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         hasPackageDeveloperPermission(packageUUID);
 
-
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
-                getAssetService().getRulesRepository().loadPackageByUUID(packageUUID)
+                rulesRepository.loadPackageByUUID(packageUUID)
         ).verify();
 
         defaultVerifier.flushKnowledgeSession();
@@ -98,7 +101,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         if (activeWorkingSets == null) {
             return new RuleAsset[0];
         } else {
-            return getAssetService().loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
+            return repositoryAssetService.loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
         }
     }
 
@@ -117,7 +120,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
 
     private AssetItem getAssetItem(RuleAsset asset) throws SerializationException {
-        AssetItem assetItem = getAssetService().getRulesRepository().loadAssetByUUID(asset.uuid);
+        AssetItem assetItem = rulesRepository.loadAssetByUUID(asset.uuid);
         ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
         contentHandler.storeAssetContent(asset, assetItem);
         return assetItem;
