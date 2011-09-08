@@ -21,25 +21,39 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.modeldriven.HumanReadable;
+import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
+import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
+import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -52,49 +66,91 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     implements
     FactPatternConstraintsPageView {
 
-    private Presenter                presenter;
+    private Presenter                    presenter;
 
-    private Validator                validator               = new Validator();
+    private Validator                    validator               = new Validator();
 
-    private List<Pattern52>          availablePatterns;
-    private Pattern52                availablePatternsSelection;
-    private CellList<Pattern52>      availablePatternsWidget = new CellList<Pattern52>( new PatternCell( validator ),
-                                                                                        WizardCellListResources.INSTANCE );
+    private List<Pattern52>              availablePatterns;
+    private Pattern52                    availablePatternsSelection;
+    private CellList<Pattern52>          availablePatternsWidget = new CellList<Pattern52>( new PatternCell( validator ),
+                                                                                            WizardCellListResources.INSTANCE );
 
-    private Set<AvailableField>      availableFieldsSelections;
-    private CellList<AvailableField> availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
-                                                                                             WizardCellListResources.INSTANCE );
+    private Set<AvailableField>          availableFieldsSelections;
+    private CellList<AvailableField>     availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
+                                                                                                 WizardCellListResources.INSTANCE );
 
-    private List<ConditionCol52>     chosenConditions;
-    private ConditionCol52           chosenConditionsSelection;
-    private Set<ConditionCol52>      chosenConditionsSelections;
-    private CellList<ConditionCol52> chosenConditionsWidget  = new CellList<ConditionCol52>( new ConditionCell(),
-                                                                                             WizardCellListResources.INSTANCE );
+    private List<ConditionCol52>         chosenConditions;
+    private ConditionCol52               chosenConditionsSelection;
+    private Set<ConditionCol52>          chosenConditionsSelections;
+    private CellList<ConditionCol52>     chosenConditionsWidget  = new CellList<ConditionCol52>( new ConditionCell( validator ),
+                                                                                                 WizardCellListResources.INSTANCE );
 
-    private static final Constants   constants               = GWT.create( Constants.class );
+    private static final Constants       constants               = GWT.create( Constants.class );
 
-    private static final Images      images                  = GWT.create( Images.class );
-
-    @UiField
-    protected ScrollPanel            availablePatternsContainer;
+    private static final Images          images                  = GWT.create( Images.class );
 
     @UiField
-    protected ScrollPanel            availableFieldsContainer;
+    protected ScrollPanel                availablePatternsContainer;
 
     @UiField
-    protected ScrollPanel            chosenConditionsContainer;
+    protected ScrollPanel                availableFieldsContainer;
 
     @UiField
-    protected PushButton             btnAdd;
+    protected ScrollPanel                chosenConditionsContainer;
 
     @UiField
-    protected PushButton             btnRemove;
+    protected PushButton                 btnAdd;
+
+    @UiField
+    protected PushButton                 btnRemove;
+
+    @UiField
+    VerticalPanel                        conditionDefinition;
+
+    @UiField
+    HorizontalPanel                      calculationType;
+
+    @UiField
+    RadioButton                          optLiteral;
+
+    @UiField
+    RadioButton                          optFormula;
+
+    @UiField
+    RadioButton                          optPredicate;
+
+    @UiField
+    TextBox                              txtColumnHeader;
+
+    @UiField
+    HorizontalPanel                      columnHeaderContainer;
+
+    @UiField
+    TextBox                              txtPredicateExpression;
+
+    @UiField
+    HorizontalPanel                      predicateExpressionContainer;
+
+    @UiField
+    HorizontalPanel                      operatorContainer;
+
+    @UiField
+    SimplePanel                          ddOperatorContainer;
+
+    @UiField
+    TextBox                              txtValueList;
+
+    @UiField
+    TextBox                              txtDefaultValue;
+
+    @UiField
+    HorizontalPanel                      messages;
 
     @UiField(provided = true)
-    PushButton                       btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                           btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                       btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                           btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -108,13 +164,21 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         initialiseAvailablePatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
+        initialiseCalculationTypes();
+        initialiseColumnHeader();
+        initialisePredicateExpression();
+        initialiseDefaultValue();
+        initialiseValueList();
         initialiseShufflers();
     }
 
     private void initialiseAvailablePatterns() {
         availablePatternsContainer.add( availablePatternsWidget );
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availablePatternsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailablePatterns() ) );
+
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
+        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
+        availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
         final SingleSelectionModel<Pattern52> selectionModel = new SingleSelectionModel<Pattern52>();
         availablePatternsWidget.setSelectionModel( selectionModel );
@@ -132,7 +196,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseAvailableFields() {
         availableFieldsContainer.add( availableFieldsWidget );
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableFieldsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailableFields() ) );
+
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableFields() );
+        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
+        availableFieldsWidget.setEmptyListWidget( lstEmpty );
 
         final MultiSelectionModel<AvailableField> selectionModel = new MultiSelectionModel<AvailableField>();
         availableFieldsWidget.setSelectionModel( selectionModel );
@@ -150,7 +217,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseChosenFields() {
         chosenConditionsContainer.add( chosenConditionsWidget );
         chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenConditionsWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenFields() ) );
+
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenFields() );
+        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
+        chosenConditionsWidget.setEmptyListWidget( lstEmpty );
 
         final MultiSelectionModel<ConditionCol52> selectionModel = new MultiSelectionModel<ConditionCol52>();
         chosenConditionsWidget.setSelectionModel( selectionModel );
@@ -170,33 +240,190 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 btnRemove.setEnabled( true );
                 if ( cws.size() == 1 ) {
                     chosenConditionsSelection = cws.iterator().next();
-                    //TODO
-                    //                    txtBinding.setEnabled( true );
-                    //                    txtBinding.setText( chosenPatternSelection.getPattern().getBoundName() );
-                    //                    txtEntryPoint.setEnabled( true );
-                    //                    txtEntryPoint.setText( chosenPatternSelection.getPattern().getEntryPointName() );
-                    //                    if ( presenter.isPatternEvent( chosenPatternSelection.getPattern() ) ) {
-                    //                        ddCEPWindow.setCEPWindow( chosenPatternSelection.getPattern() );
-                    //                        cepWindowContainer.setVisible( true );
-                    //                    } else {
-                    //                        cepWindowContainer.setVisible( false );
-                    //                    }
+                    conditionDefinition.setVisible( true );
+                    validateConditionHeader();
+                    validateConditionOperator();
+                    populateConditionDefinition();
+
+                    switch ( chosenConditionsSelection.getConstraintValueType() ) {
+                        case BaseSingleFieldConstraint.TYPE_LITERAL :
+                            optLiteral.setValue( true );
+                            displayCalculationTypes( false );
+                            break;
+                        case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                            optFormula.setValue( true );
+                            displayCalculationTypes( false );
+                            break;
+                        case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                            optPredicate.setValue( true );
+                            displayCalculationTypes( true );
+                    }
+
                     enableMoveUpButton();
                     enableMoveDownButton();
                 } else {
                     chosenConditionsSelection = null;
-                    //TODO
-                    //                    txtBinding.setEnabled( false );
-                    //                    txtBinding.setText( "" );
-                    //                    txtEntryPoint.setEnabled( false );
-                    //                    txtEntryPoint.setText( "" );
-                    //                    cepWindowContainer.setVisible( false );
+                    conditionDefinition.setVisible( false );
+                    optLiteral.setEnabled( false );
+                    optFormula.setEnabled( false );
+                    optPredicate.setEnabled( false );
+                    txtColumnHeader.setEnabled( false );
+                    txtValueList.setEnabled( false );
+                    txtDefaultValue.setEnabled( false );
                     btnMoveUp.setEnabled( false );
                     btnMoveDown.setEnabled( false );
                 }
             }
 
+            private void displayCalculationTypes(boolean isPredicate) {
+                calculationType.setVisible( !isPredicate );
+                optLiteral.setEnabled( !isPredicate );
+                optLiteral.setVisible( !isPredicate );
+                optFormula.setEnabled( !isPredicate );
+                optFormula.setVisible( !isPredicate );
+                operatorContainer.setVisible( !isPredicate );
+                txtValueList.setEnabled( true );
+                txtColumnHeader.setEnabled( true );
+                txtDefaultValue.setEnabled( true );
+                optPredicate.setEnabled( isPredicate );
+                optPredicate.setVisible( isPredicate );
+                txtPredicateExpression.setEnabled( isPredicate );
+                predicateExpressionContainer.setVisible( isPredicate );
+            }
+
+            private void populateConditionDefinition() {
+                txtColumnHeader.setText( chosenConditionsSelection.getHeader() );
+                txtDefaultValue.setText( chosenConditionsSelection.getDefaultValue() );
+                txtValueList.setText( chosenConditionsSelection.getValueList() );
+
+                if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+                    txtPredicateExpression.setText( chosenConditionsSelection.getFactField() );
+                }
+
+                String[] ops = presenter.getOperatorCompletions( availablePatternsSelection,
+                                                                 chosenConditionsSelection );
+                CEPOperatorsDropdown ddOperator = new CEPOperatorsDropdown( ops,
+                                                                            chosenConditionsSelection );
+                ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+
+                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                        chosenConditionsSelection.setOperator( event.getValue().getValue() );
+                        
+                        //Redraw applicable widgets displaying the header. Header is 
+                        //mandatory, inform state change so model is re-validated
+                        chosenConditionsWidget.redraw();
+                        validateConditionOperator();
+                        presenter.stateChanged();
+                    }
+
+                } );
+
+                if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
+                    ddOperator.addItem( HumanReadable.getOperatorDisplayName( "in" ),
+                                        "in" );
+                }
+
+                ddOperatorContainer.setWidget( ddOperator );
+            }
+
         } );
+    }
+
+    private void validateConditionHeader() {
+        if ( validator.isConditionHeaderValid( chosenConditionsSelection ) ) {
+            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
+        } else {
+            columnHeaderContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
+        }
+    }
+    
+    private void validateConditionOperator() {
+        if ( validator.isConditionOperatorValid( chosenConditionsSelection ) ) {
+            operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
+        } else {
+            operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
+        }
+    }
+
+    private void initialiseCalculationTypes() {
+        optLiteral.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+                chosenConditionsWidget.redraw();
+            }
+        } );
+
+        optFormula.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+                chosenConditionsWidget.redraw();
+            }
+        } );
+        optPredicate.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                chosenConditionsSelection.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+                chosenConditionsWidget.redraw();
+            }
+        } );
+
+    }
+
+    private void initialiseColumnHeader() {
+        txtColumnHeader.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String header = txtColumnHeader.getText();
+                chosenConditionsSelection.setHeader( header );
+
+                //Redraw applicable widgets displaying the header. Header is 
+                //mandatory, inform state change so model is re-validated
+                chosenConditionsWidget.redraw();
+                validateConditionHeader();
+                presenter.stateChanged();
+            }
+
+        } );
+    }
+
+    private void initialisePredicateExpression() {
+        txtPredicateExpression.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String expression = txtPredicateExpression.getText();
+                chosenConditionsSelection.setFactField( expression );
+
+                //Redraw list widget that shows Predicate expressions. PredicateExpression 
+                //is optional, no need to advise of state change
+                chosenConditionsWidget.redraw();
+
+            }
+
+        } );
+    }
+
+    private void initialiseDefaultValue() {
+        txtDefaultValue.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String defaultValue = txtDefaultValue.getText();
+                chosenConditionsSelection.setDefaultValue( defaultValue );
+                //DefaultValue is optional, no need to advise of state change
+            }
+
+        } );
+    }
+
+    private void initialiseValueList() {
+        txtValueList.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String valueList = txtValueList.getText();
+                chosenConditionsSelection.setValueList( valueList );
+                //ValueList is optional, no need to advise of state change
+            }
+
+        } );
+
     }
 
     private void initialiseShufflers() {
@@ -248,6 +475,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
+    public void setHasIncompleteConditionDefinitions(boolean hasIncompleteConditionDefinitions) {
+        messages.setVisible( hasIncompleteConditionDefinitions );
+    }
+
     public void setAvailablePatterns(List<Pattern52> patterns) {
         availablePatterns = patterns;
         validator.setPatterns( availablePatterns );
@@ -263,6 +494,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 availablePatternsSelection = null;
                 setChosenConditions( new ArrayList<ConditionCol52>() );
                 chosenConditionsSelection = null;
+                conditionDefinition.setVisible( false );
+                messages.setVisible( false );
             }
         } else {
 
@@ -294,6 +527,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             ConditionCol52 c = new ConditionCol52();
             c.setFactField( f.getName() );
             c.setFieldType( f.getType() );
+            c.setConstraintValueType( f.getCalculationType() );
             chosenConditions.add( c );
         }
         setChosenConditions( chosenConditions );
@@ -306,16 +540,22 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         for ( ConditionCol52 c : chosenConditionsSelections ) {
             chosenConditions.remove( c );
         }
+        chosenConditionsSelections.clear();
         setChosenConditions( chosenConditions );
         availablePatternsSelection.setConditions( chosenConditions );
         presenter.stateChanged();
 
-        //TODO
-        //        txtBinding.setText( "" );
-        //        txtBinding.setEnabled( false );
-        //        txtEntryPoint.setText( "" );
-        //        txtEntryPoint.setEnabled( false );
+        txtColumnHeader.setText( "" );
+        txtValueList.setText( "" );
+        txtDefaultValue.setText( "" );
+        conditionDefinition.setVisible( false );
         btnRemove.setEnabled( false );
+    }
+    
+    @UiFactory 
+    InfoPopup makePredicatePopup() {
+        return new InfoPopup(constants.Predicates(),
+                             constants.PredicatesInfo());
     }
 
 }

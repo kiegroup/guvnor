@@ -60,6 +60,9 @@ public interface WizardResources
         String wizardPageTitleImageContainer();
 
         String wizardPageTitleLabelContainer();
+        
+        String wizardDTableFieldContainerValid();
 
+        String wizardDTableFieldContainerInvalid();
     }
 }

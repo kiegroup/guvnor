@@ -43,6 +43,8 @@ public interface WizardCellListResources
         String cellListSelectedItem();
 
         String cellListWidget();
+        
+        String cellListEmptyItem();
 
     }
 

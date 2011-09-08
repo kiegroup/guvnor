@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -28,6 +30,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 class ConditionCell extends AbstractCell<ConditionCol52> {
 
+    private Validator validator;
+
     interface FactPatternCellTemplate
         extends
         SafeHtmlTemplates {
@@ -39,20 +43,67 @@ class ConditionCell extends AbstractCell<ConditionCol52> {
 
     private static final FactPatternCellTemplate TEMPLATE = GWT.create( FactPatternCellTemplate.class );
 
+    ConditionCell(Validator validator) {
+        this.validator = validator;
+    }
+
     @Override
     public void render(Context context,
                        ConditionCol52 value,
                        SafeHtmlBuilder sb) {
         StringBuilder b = new StringBuilder();
-        b.append( value.getFactField() );
-        b.append( " : " );
-        b.append( value.getFieldType() );
+
+        switch ( value.getConstraintValueType() ) {
+            case BaseSingleFieldConstraint.TYPE_LITERAL :
+                makeLiteral( b,
+                             value );
+                break;
+            case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                makeFormula( b,
+                             value );
+                break;
+            case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                makePredicate( b,
+                               value );
+        }
         sb.append( TEMPLATE.text( getCssStyleName( value ),
                                   b.toString() ) );
     }
 
+    private void makeLiteral(StringBuilder sb,
+                             ConditionCol52 condition) {
+        appendHeader( sb,
+                      condition );
+        sb.append( condition.getFactField() );
+    }
+
+    private void makeFormula(StringBuilder sb,
+                             ConditionCol52 condition) {
+        appendHeader( sb,
+                      condition );
+        sb.append( condition.getFactField() );
+    }
+
+    private void makePredicate(StringBuilder sb,
+                               ConditionCol52 condition) {
+        appendHeader( sb,
+                      condition );
+        sb.append( condition.getFactField() );
+    }
+
+    private void appendHeader(StringBuilder sb,
+                              ConditionCol52 condition) {
+        if ( validator.isConditionHeaderValid( condition ) ) {
+            sb.append( "[" );
+            sb.append( condition.getHeader() );
+            sb.append( "] " );
+        }
+    }
+
     private String getCssStyleName(ConditionCol52 c) {
-        //TODO Use Validator to check if condition is valid
+        if ( !validator.isConditionValid( c ) ) {
+            return WizardResources.INSTANCE.style().wizardDTableValidationError();
+        }
         return "";
     }
 

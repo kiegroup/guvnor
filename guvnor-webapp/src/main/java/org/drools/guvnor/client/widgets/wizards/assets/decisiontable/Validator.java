@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 /**
@@ -81,6 +83,27 @@ public class Validator {
                     return false;
                 }
             }
+        }
+        return true;
+    }
+
+    public boolean isConditionValid(ConditionCol52 c) {
+        return isConditionHeaderValid( c ) && isConditionOperatorValid( c );
+    }
+
+    public boolean isConditionHeaderValid(ConditionCol52 c) {
+        if ( c.getHeader() == null || c.getHeader().equals( "" ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isConditionOperatorValid(ConditionCol52 c) {
+        if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+            return true;
+        }
+        if ( c.getOperator() == null || c.getOperator().equals( "" ) ) {
+            return false;
         }
         return true;
     }

@@ -71,9 +71,9 @@ public class CEPOperatorsDropdown extends Composite
 
     //Parameter value defining the server-side class used to generate DRL for CEP operator parameters (key is in droolsjbpm-ide-common)
     private static final String            CEP_OPERATOR_PARAMETER_GENERATOR = "org.drools.ide.common.server.util.CEPOperatorParameterDRLBuilder";
-
+    
     public CEPOperatorsDropdown(String[] operators,
-                                  HasParameterizedOperator hop) {
+                                HasParameterizedOperator hop) {
         this.operators = operators;
         this.hop = hop;
 

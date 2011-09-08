@@ -347,4 +347,7 @@ public interface Images
     @Source("images/tick.png")
     ImageResource tick();
 
+    @Source("images/mandatory.png")
+    ImageResource mandatory();
+
 }

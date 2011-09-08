@@ -28,6 +28,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,6 +45,9 @@ public class WizardActivityViewImpl extends Popup
 
     @UiField
     protected SimplePanel                sideBarContainer;
+
+    @UiField
+    ScrollPanel                          bodyContainer;
 
     @UiField
     protected SimplePanel                body;
@@ -140,12 +144,12 @@ public class WizardActivityViewImpl extends Popup
     }
 
     public void setPreferredHeight(int height) {
-        body.setHeight( height + "px" );
+        bodyContainer.setHeight( height + "px" );
         sideBarContainer.setHeight( height + "px" );
     }
 
     public void setPreferredWidth(int width) {
-        body.setWidth( width + "px" );
+        bodyContainer.setWidth( width + "px" );
     }
 
     public void setPageCompletionState(int pageIndex,

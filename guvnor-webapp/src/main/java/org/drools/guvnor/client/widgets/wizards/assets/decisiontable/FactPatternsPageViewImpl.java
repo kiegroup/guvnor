@@ -25,6 +25,7 @@ import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
+import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -46,6 +47,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
@@ -90,7 +92,13 @@ public class FactPatternsPageViewImpl extends Composite
     PushButton                     btnRemove;
 
     @UiField
+    VerticalPanel                  patternDefinition;
+
+    @UiField
     TextBox                        txtBinding;
+
+    @UiField
+    HorizontalPanel                bindingContainer;
 
     @UiField
     TextBox                        txtEntryPoint;
@@ -130,7 +138,10 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseAvailableTypes() {
         availableTypesContainer.add( availableTypesWidget );
         availableTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        availableTypesWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoAvailablePatterns() ) );
+
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
+        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
+        availableTypesWidget.setEmptyListWidget( lstEmpty );
 
         final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
         availableTypesWidget.setSelectionModel( selectionModel );
@@ -148,7 +159,10 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseChosenPatterns() {
         chosenPatternsContainer.add( chosenPatternWidget );
         chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
-        chosenPatternWidget.setEmptyListWidget( new Label( constants.DecisionTableWizardNoChosenPatterns() ) );
+
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenPatterns() );
+        lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
+        chosenPatternWidget.setEmptyListWidget( lstEmpty );
 
         final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
         chosenPatternWidget.setSelectionModel( selectionModel );
@@ -168,8 +182,11 @@ public class FactPatternsPageViewImpl extends Composite
                 btnRemove.setEnabled( true );
                 if ( ps.size() == 1 ) {
                     chosenPatternSelection = ps.iterator().next();
+                    patternDefinition.setVisible( true );
+                    validateBinding();
                     txtBinding.setEnabled( true );
                     txtBinding.setText( chosenPatternSelection.getBoundName() );
+
                     txtEntryPoint.setEnabled( true );
                     txtEntryPoint.setText( chosenPatternSelection.getEntryPointName() );
                     enableMoveUpButton();
@@ -182,6 +199,7 @@ public class FactPatternsPageViewImpl extends Composite
                     }
                 } else {
                     chosenPatternSelection = null;
+                    patternDefinition.setVisible( false );
                     txtBinding.setEnabled( false );
                     txtBinding.setText( "" );
                     txtEntryPoint.setEnabled( false );
@@ -193,6 +211,14 @@ public class FactPatternsPageViewImpl extends Composite
             }
 
         } );
+    }
+
+    private void validateBinding() {
+        if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
+            bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
+        } else {
+            bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
+        }
     }
 
     private void enableMoveUpButton() {
@@ -220,6 +246,7 @@ public class FactPatternsPageViewImpl extends Composite
                 String binding = txtBinding.getText();
                 chosenPatternSelection.setBoundName( binding );
                 chosenPatternWidget.redraw();
+                validateBinding();
                 presenter.stateChanged();
             }
 
@@ -327,6 +354,7 @@ public class FactPatternsPageViewImpl extends Composite
         for ( Pattern52 p : chosenPatternSelections ) {
             chosenPatterns.remove( p );
         }
+        chosenPatternSelections.clear();
         setChosenPatterns( chosenPatterns );
         dtable.setConditionPatterns( chosenPatterns );
         presenter.stateChanged();
@@ -336,6 +364,7 @@ public class FactPatternsPageViewImpl extends Composite
         txtEntryPoint.setText( "" );
         txtEntryPoint.setEnabled( false );
         btnRemove.setEnabled( false );
+        patternDefinition.setVisible( false );
     }
 
 }

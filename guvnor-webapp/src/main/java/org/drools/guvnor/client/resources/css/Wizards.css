@@ -52,9 +52,8 @@
 }
 
 .wizardDTableFields {
-    margin-top: 5px;
-    margin-top: 5px;
-    margin-right: 5px;    
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 .wizardDTableMessageContainer {
@@ -66,6 +65,7 @@
  
 .wizardDTableMessage {
     margin-left: 10px;
+    margin-top: 6px;
 }
 
 .wizardDTableValidationError {
@@ -114,4 +114,15 @@
 
 .wizardPageTitleLabelContainer {
     width: 170px;
+}
+
+.wizardDTableFieldContainerValid {
+    padding: 2px;
+    margin-bottom: 3px;
+}
+
+.wizardDTableFieldContainerInvalid {
+    padding: 2px;
+    margin-bottom: 3px;
+    background-color: #990000;    
 }
