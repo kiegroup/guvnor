@@ -18,7 +18,6 @@ package org.drools.guvnor.server.repository;
 
 import org.drools.repository.RulesRepository;
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -26,7 +25,6 @@ import javax.inject.Named;
 import javax.enterprise.inject.Produces;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
-import org.jboss.seam.security.Identity;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
@@ -35,7 +33,7 @@ import org.jboss.seam.security.Identity;
 public class RulesRepositoryManager {
 
     @Inject
-    RepositoryStartupService repositoryConfiguration;
+    RepositoryStartupService repositoryStartupService;
 
     @Inject
     private Credentials credentials;
@@ -56,7 +54,7 @@ public class RulesRepositoryManager {
         if (userName == null) {
             userName = DEFAULT_USER;
         }
-        repository = new RulesRepository(repositoryConfiguration.newSession(userName));
+        repository = new RulesRepository(repositoryStartupService.newSession(userName));
     }
 
     @Produces @Named("repository") // TODO shouldn't this be @RequestScoped?

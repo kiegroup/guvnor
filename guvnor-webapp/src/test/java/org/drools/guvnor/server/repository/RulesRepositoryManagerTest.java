@@ -22,11 +22,9 @@ import static org.junit.Assert.assertFalse;
 
 import javax.jcr.Repository;
 
-import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepositoryConfigurator;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RulesRepositoryManagerTest {
@@ -39,7 +37,7 @@ public class RulesRepositoryManagerTest {
                                "org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator" );
         Repository repo = config.getRepositoryInstance();
         config.repository = repo;
-        dec.repositoryConfiguration = config;
+        dec.repositoryStartupService = config;
 
         dec.create();
 

@@ -44,7 +44,6 @@ import java.util.Properties;
  * This startup class manages the JCR repository, sets it up if necessary.
  */
 @ApplicationScoped
-//@Startup
 @Named("repositoryConfiguration")
 public class RepositoryStartupService {
 
