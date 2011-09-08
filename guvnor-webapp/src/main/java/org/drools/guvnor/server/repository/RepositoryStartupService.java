@@ -101,7 +101,6 @@ public class RepositoryStartupService {
      * Listen for changes to the repository - for inbox purposes
      */
     public static void registerCheckinListener() {
-        System.out.println("Registering check-in listener");
         StorageEventManager.registerCheckinEvent(new CheckinEvent() {
             public void afterCheckin(AssetItem item) {
                 UserInbox.recordUserEditEvent(item);  //to register that she edited...
@@ -109,13 +108,12 @@ public class RepositoryStartupService {
                 MailboxService.getInstance().wakeUp();
             }
         });
-        System.out.println("Check-in listener up");
+        log.info("CheckinListener registered");
     }
 
     public static void removeListeners() {
-        System.out.println("Removing all listeners...");
         StorageEventManager.removeListeners();
-        System.out.println("Listeners removed...");
+        log.info("Listeners removed...");
     }
 
     /**
