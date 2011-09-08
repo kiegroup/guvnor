@@ -171,8 +171,8 @@ public class PerspectiveFactoryGenerator extends Generator {
     private void generateGetRegisteredPerspectiveTypesMethod( SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors ) {
         sourceWriter.println( "public String[] getRegisteredPerspectiveTypes() {" );
         sourceWriter.indent();
-        //sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\", \"soaservice\"};" );
-        sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\"};" );
+        sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\", \"soaservice\"};" );
+        //sourceWriter.println( "String[] formats = new String[] {\"author\", \"runtime\"};" );
         
         sourceWriter.println( "return formats;" );
         sourceWriter.outdent();
