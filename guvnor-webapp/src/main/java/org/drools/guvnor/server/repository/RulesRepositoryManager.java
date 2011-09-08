@@ -24,13 +24,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.enterprise.inject.Produces;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 
 /**
- * This enhances the BRMS repository for lifecycle management.
+ * Request scoped bean that produces the RulesRepository
  */
-@RequestScoped // TODO Shouldn't this be @ApplicationScoped?
+@RequestScoped
 public class RulesRepositoryManager {
+
+    private static final String DEFAULT_USERNAME = "guest";
 
     @Inject
     RepositoryStartupService repositoryStartupService;
@@ -38,28 +39,23 @@ public class RulesRepositoryManager {
     @Inject
     private Credentials credentials;
 
-    private RulesRepository repository;
+    // Not @Inject: here it is created and outjected
+    private RulesRepository rulesRepository;
 
     @PostConstruct
-    public void create() {
-        //Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
-        //with limited privileges. In Guvnor, access control is done in a higher level. 
-        String DEFAULT_USER = "guest";
-        //String READ_ONLY_USER = "anonymous";
-        String userName = DEFAULT_USER;
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            userName = credentials.getUsername();
+    public void createRulesRepository() {
+        String username = credentials.getUsername();
+        if (username == null) {
+            // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
+            // with limited privileges. In Guvnor, access control is done in a higher level.
+            username = DEFAULT_USERNAME;
         }
-        if (userName == null) {
-            userName = DEFAULT_USER;
-        }
-        repository = new RulesRepository(repositoryStartupService.newSession(userName));
+        rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));
     }
 
-    @Produces @Named("repository") // TODO shouldn't this be @RequestScoped?
-    public RulesRepository getRepository() {
-        return repository;
+    @Produces @Named("repository")
+    public RulesRepository getRulesRepository() {
+        return rulesRepository;
     }
 
 }
