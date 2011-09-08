@@ -48,6 +48,7 @@ import java.util.Properties;
 public class RepositoryStartupService {
 
     private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
+
     private static final String ADMIN = "admin";
     private static final String ADMIN_USER_PROPERTY = "org.drools.repository.admin.username";
     private static final String ADMIN_PASSWORD_PROPERTY = "org.drools.repository.admin.password";
@@ -61,7 +62,7 @@ public class RepositoryStartupService {
 
     Repository repository;
     private Session sessionForSetup;
-    private RulesRepository mailmanSession;
+    private RulesRepository mailmanRulesRepository;
 
     public Repository getRepositoryInstance() {
         try {
@@ -97,47 +98,6 @@ public class RepositoryStartupService {
         registerCheckinListener();
     }
 
-    /**
-     * Listen for changes to the repository - for inbox purposes
-     */
-    public static void registerCheckinListener() {
-        StorageEventManager.registerCheckinEvent(new CheckinEvent() {
-            public void afterCheckin(AssetItem item) {
-                UserInbox.recordUserEditEvent(item);  //to register that she edited...
-                MailboxService.getInstance().recordItemUpdated(item);   //for outgoing...
-                MailboxService.getInstance().wakeUp();
-            }
-        });
-        log.info("CheckinListener registered");
-    }
-
-    public static void removeListeners() {
-        StorageEventManager.removeListeners();
-        log.info("Listeners removed...");
-    }
-
-    /**
-     * Start up the mailbox, flush out any messages that were left
-     */
-    private void startMailboxService() {
-        String username = MAILMAN;
-        if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
-            username = properties.get(MAILMAN_USER_PROPERTY);
-        }
-        String password = "password";
-        if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
-            password = properties.get(MAILMAN_PASSWORD_PROPERTY);
-            if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
-                password = decode(password);
-            }
-        } else {
-            log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
-        }
-        mailmanSession = new RulesRepository(newSession(username, password));
-        MailboxService.getInstance().init(mailmanSession);
-        MailboxService.getInstance().wakeUp();
-    }
-
     void create(Session sessionForSetup) {
 
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
@@ -166,11 +126,52 @@ public class RepositoryStartupService {
         }
     }
 
+    /**
+     * Start up the mailbox, flush out any messages that were left
+     */
+    private void startMailboxService() {
+        String username = MAILMAN;
+        if (properties.containsKey(MAILMAN_USER_PROPERTY)) {
+            username = properties.get(MAILMAN_USER_PROPERTY);
+        }
+        String password = "password";
+        if (properties.containsKey(MAILMAN_PASSWORD_PROPERTY)) {
+            password = properties.get(MAILMAN_PASSWORD_PROPERTY);
+            if ("true".equalsIgnoreCase(properties.get(SECURE_PASSWORDS_PROPERTY))) {
+                password = decode(password);
+            }
+        } else {
+            log.debug("Could not find property " + MAILMAN_PASSWORD_PROPERTY + " for user " + MAILMAN);
+        }
+        mailmanRulesRepository = new RulesRepository(newSession(username, password));
+        MailboxService.getInstance().init(mailmanRulesRepository);
+        MailboxService.getInstance().wakeUp();
+    }
+
+    /**
+     * Listen for changes to the repository - for inbox purposes
+     */
+    public static void registerCheckinListener() {
+        StorageEventManager.registerCheckinEvent(new CheckinEvent() {
+            public void afterCheckin(AssetItem item) {
+                UserInbox.recordUserEditEvent(item);  //to register that she edited...
+                MailboxService.getInstance().recordItemUpdated(item);   //for outgoing...
+                MailboxService.getInstance().wakeUp();
+            }
+        });
+        log.info("CheckinListener registered");
+    }
+
     @PreDestroy
     public void close() {
         sessionForSetup.logout();
         MailboxService.getInstance().stop();
-        mailmanSession.logout();
+        mailmanRulesRepository.logout();
+    }
+
+    public static void removeListeners() {
+        StorageEventManager.removeListeners();
+        log.info("Listeners removed...");
     }
 
     public void setHomeDirectory(String home) {
@@ -200,7 +201,6 @@ public class RepositoryStartupService {
         }
     }
 
-
     /**
      * This will create a new Session, based on the current user.
      *
@@ -215,7 +215,6 @@ public class RepositoryStartupService {
             throw new RulesRepositoryException(e);
         }
     }
-
 
     private static String decode(String secret) {
         String decodedPassword = secret;
