@@ -85,4 +85,9 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         return sce.isFactTypeAnEvent( pattern.getFactType() );
     }
 
+    public void signalRemovalOfPattern(Pattern52 pattern) {
+        PatternRemovedEvent event = new PatternRemovedEvent( pattern );
+        eventBus.fireEvent( event );
+    }
+
 }

@@ -2453,4 +2453,14 @@ public interface Constants
     String DecisionTableWizardPredicateExpression();
 
     String MandatoryField();
+    
+    String DecisionTableWizardActionSetFields();
+    
+    String DecisionTableWizardChosenFields();
+    
+    String DecisionTableWizardActionInsertFacts();
+    
+    String DecisionTableWizardNoAvailableBoundPatterns();
+    
+    String DecisionTableWizardIncompleteActions();
 }

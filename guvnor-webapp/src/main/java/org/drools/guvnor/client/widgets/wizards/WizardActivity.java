@@ -96,4 +96,8 @@ public class WizardActivity extends Activity
         view.setBodyWidget( w );
     }
 
+    public void complete() {
+        wizard.complete();
+    }
+
 }

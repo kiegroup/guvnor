@@ -38,7 +38,6 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
@@ -59,64 +58,67 @@ public class FactPatternsPageViewImpl extends Composite
     implements
     FactPatternsPageView {
 
-    private Presenter              presenter;
+    private Presenter                    presenter;
 
-    private GuidedDecisionTable52  dtable;
+    private GuidedDecisionTable52        dtable;
 
-    private Validator              validator            = new Validator();
+    private Validator                    validator            = new Validator();
 
-    private Set<String>            availableTypesSelections;
-    private CellList<String>       availableTypesWidget = new CellList<String>( new TextCell(),
-                                                                                WizardCellListResources.INSTANCE );
+    private TextCell                     cellText             = new TextCell();
+    private PatternCell                  cellPattern          = new PatternCell( validator );
 
-    private List<Pattern52>        chosenPatterns;
-    private Pattern52              chosenPatternSelection;
-    private Set<Pattern52>         chosenPatternSelections;
-    private CellList<Pattern52>    chosenPatternWidget  = new CellList<Pattern52>( new PatternCell( validator ),
-                                                                                   WizardCellListResources.INSTANCE );
+    private Set<String>                  availableTypesSelections;
+    private MinimumWidthCellList<String>    availableTypesWidget = new MinimumWidthCellList<String>( cellText,
+                                                                                               WizardCellListResources.INSTANCE );
 
-    private static final Constants constants            = GWT.create( Constants.class );
+    private List<Pattern52>              chosenPatterns;
+    private Pattern52                    chosenPatternSelection;
+    private Set<Pattern52>               chosenPatternSelections;
+    private MinimumWidthCellList<Pattern52> chosenPatternWidget  = new MinimumWidthCellList<Pattern52>( cellPattern,
+                                                                                                  WizardCellListResources.INSTANCE );
 
-    private static final Images    images               = GWT.create( Images.class );
+    private static final Constants       constants            = GWT.create( Constants.class );
 
-    @UiField
-    ScrollPanel                    availableTypesContainer;
-
-    @UiField
-    ScrollPanel                    chosenPatternsContainer;
+    private static final Images          images               = GWT.create( Images.class );
 
     @UiField
-    PushButton                     btnAdd;
+    ScrollPanel                          availableTypesContainer;
 
     @UiField
-    PushButton                     btnRemove;
+    ScrollPanel                          chosenPatternsContainer;
 
     @UiField
-    VerticalPanel                  patternDefinition;
+    PushButton                           btnAdd;
 
     @UiField
-    TextBox                        txtBinding;
+    PushButton                           btnRemove;
 
     @UiField
-    HorizontalPanel                bindingContainer;
+    VerticalPanel                        patternDefinition;
 
     @UiField
-    TextBox                        txtEntryPoint;
+    TextBox                              txtBinding;
 
     @UiField
-    CEPWindowOperatorsDropdown     ddCEPWindow;
+    HorizontalPanel                      bindingContainer;
 
     @UiField
-    HorizontalPanel                cepWindowContainer;
+    TextBox                              txtEntryPoint;
 
     @UiField
-    HorizontalPanel                messages;
+    CEPWindowOperatorsDropdown           ddCEPWindow;
+
+    @UiField
+    HorizontalPanel                      cepWindowContainer;
+
+    @UiField
+    HorizontalPanel                      messages;
 
     @UiField(provided = true)
-    PushButton                     btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                           btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                     btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                           btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends
@@ -138,6 +140,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseAvailableTypes() {
         availableTypesContainer.add( availableTypesWidget );
         availableTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        availableTypesWidget.setMinimumWidth( 275 );
 
         Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -159,6 +162,7 @@ public class FactPatternsPageViewImpl extends Composite
     private void initialiseChosenPatterns() {
         chosenPatternsContainer.add( chosenPatternWidget );
         chosenPatternWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        chosenPatternWidget.setMinimumWidth( 275 );
 
         Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenPatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -353,7 +357,11 @@ public class FactPatternsPageViewImpl extends Composite
     public void btnRemoveClick(ClickEvent event) {
         for ( Pattern52 p : chosenPatternSelections ) {
             chosenPatterns.remove( p );
+
+            //Raise an Event so ActionSetFieldPage can synchronise Patterns
+            presenter.signalRemovalOfPattern( p );
         }
+
         chosenPatternSelections.clear();
         setChosenPatterns( chosenPatterns );
         dtable.setConditionPatterns( chosenPatterns );

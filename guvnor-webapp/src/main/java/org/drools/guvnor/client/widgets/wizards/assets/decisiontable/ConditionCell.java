@@ -32,7 +32,7 @@ class ConditionCell extends AbstractCell<ConditionCol52> {
 
     private Validator validator;
 
-    interface FactPatternCellTemplate
+    interface ConditionCellTemplate
         extends
         SafeHtmlTemplates {
 
@@ -41,7 +41,7 @@ class ConditionCell extends AbstractCell<ConditionCol52> {
                       String message);
     }
 
-    private static final FactPatternCellTemplate TEMPLATE = GWT.create( FactPatternCellTemplate.class );
+    private static final ConditionCellTemplate TEMPLATE = GWT.create( ConditionCellTemplate.class );
 
     ConditionCell(Validator validator) {
         this.validator = validator;

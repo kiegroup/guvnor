@@ -58,6 +58,9 @@ public class NewGuidedDecisionTableWizard
         pages.add( new FactPatternConstraintsPage( context,
                                                    dtable,
                                                    eventBus ) );
+        pages.add( new ActionSetFieldsPage( context,
+                                            dtable,
+                                            eventBus ) );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
                                                                  new Command() {
@@ -105,6 +108,16 @@ public class NewGuidedDecisionTableWizard
             }
         }
         return true;
+    }
+
+    public void complete() {
+        for ( WizardPage page : this.pages ) {
+            AbstractGuidedDecisionTableWizardPage gep = (AbstractGuidedDecisionTableWizardPage) page;
+            gep.makeResult( dtable );
+        }
+        
+        //TODO Save, update asset and open editor
+        System.out.println( "Spoon!" );
     }
 
 }

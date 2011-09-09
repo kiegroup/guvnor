@@ -28,7 +28,7 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * A page for the guided Decision Table Wizard to define Fact Patterns
+ * A page for the guided Decision Table Wizard to define Fact Pattern Constraints
  */
 public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizardPage
     implements

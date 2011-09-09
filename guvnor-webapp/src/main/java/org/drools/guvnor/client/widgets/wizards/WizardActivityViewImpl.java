@@ -106,6 +106,11 @@ public class WizardActivityViewImpl extends Popup
         this.hide();
     }
 
+    @UiHandler(value = "btnFinish")
+    public void btnFinishClick(ClickEvent event) {
+        presenter.complete();
+    }
+
     @UiHandler(value = "btnNext")
     public void btnNextClick(ClickEvent event) {
         if ( pageNumber == pageNumberTotal ) {

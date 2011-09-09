@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -103,6 +104,17 @@ public class Validator {
             return true;
         }
         if ( c.getOperator() == null || c.getOperator().equals( "" ) ) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isActionValid(ActionCol52 c) {
+        return isActionHeaderValid( c );
+    }
+
+    public boolean isActionHeaderValid(ActionCol52 a) {
+        if ( a.getHeader() == null || a.getHeader().equals( "" ) ) {
             return false;
         }
         return true;

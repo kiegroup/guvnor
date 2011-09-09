@@ -36,6 +36,11 @@ public interface WizardActivityView
          * @param pageNumber
          */
         void pageSelected(int pageNumber);
+        
+        /**
+         * The Wizard has been finished
+         */
+        void complete();
 
     }
 
