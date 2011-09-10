@@ -1225,7 +1225,6 @@ public class RulesRepositoryTest extends RepositoryTestCase {
     }
 
     @Test
-    @Ignore("This test is broken. Suspect changes for new Workspaces and versionable packages could have broken.")
     public void testImportExportWithShareableNodes() throws Exception {
         RulesRepository repo = getRepo();
         AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");
@@ -1252,7 +1251,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         repo.importRulesRepositoryFromStream(new ByteArrayInputStream(
                 repository_backup));
         assertTrue(repo.containsPackage("testImportExportShareableNodesPackage"));
-        assertTrue(repo.loadPackage("testImportExportShareableNodesPackage").containsAsset("testImportExportShareableNodeOriginal"));
+        assertTrue(repo.loadPackage("testImportExportShareableNodesPackage").containsAsset("testImportExportShareableNodeShared"));
     }
 
     //In this test case we expect an ItemExistException from the second thread,

@@ -1303,7 +1303,7 @@ public class RulesRepository {
             new RulesRepositoryAdministrator( this.session ).clearRulesRepository();
             this.session.getWorkspace().importXML( "/",
                                                    instream,
-                                                   ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW );
+                                                   ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW );
             session.save();
             MigrateDroolsPackage mig = new MigrateDroolsPackage();
             if ( mig.needsMigration( this ) ) {
