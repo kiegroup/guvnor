@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
@@ -48,7 +47,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     private static final long serialVersionUID = 495822L;
 
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryServiceServlet.class );
-    private static boolean testListenerInit = false;
 
     @Inject
     private ServiceImplementation serviceImplementation;
@@ -72,16 +70,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         synchronized (RepositoryServiceServlet.class) {
             ServiceImplementation serviceImplementation = new ServiceImplementation();
             serviceImplementation.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-            handleTestListenerInit();
             return serviceImplementation;
-        }
-    }
-
-    private static void handleTestListenerInit() { // TODO seam3upgrade
-        if ( !testListenerInit ) {
-            MailboxService.getInstance().init( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-            RepositoryStartupService.registerCheckinListener();
-            testListenerInit = true;
         }
     }
 
@@ -96,7 +85,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
             RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
             repositoryAssetService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
 
-            handleTestListenerInit();
             return repositoryAssetService;
         }
 

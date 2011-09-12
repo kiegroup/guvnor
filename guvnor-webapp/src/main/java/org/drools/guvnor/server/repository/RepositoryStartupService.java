@@ -48,7 +48,7 @@ import java.util.Properties;
 @Named("repositoryConfiguration")
 public class RepositoryStartupService {
 
-    private static final Logger log = LoggerFactory.getLogger(RepositoryStartupService.class);
+    private transient final Logger log = LoggerFactory.getLogger(getClass());
 
     private static final String ADMIN = "admin";
     private static final String ADMIN_USER_PROPERTY = "org.drools.repository.admin.username";
@@ -147,12 +147,14 @@ public class RepositoryStartupService {
         mailmanRulesRepository = new RulesRepository(newSession(username, password));
         MailboxService.getInstance().init(mailmanRulesRepository);
         MailboxService.getInstance().wakeUp();
+        registerCheckinListener();
     }
 
     /**
      * Listen for changes to the repository - for inbox purposes
      */
-    public static void registerCheckinListener() {
+    // TODO seam3upgrade Maybe this was only done during testing?
+    public void registerCheckinListener() {
         StorageEventManager.registerCheckinEvent(new CheckinEvent() {
             public void afterCheckin(AssetItem item) {
                 UserInbox.recordUserEditEvent(item);  //to register that she edited...
@@ -217,7 +219,7 @@ public class RepositoryStartupService {
         }
     }
 
-    private static String decode(String secret) {
+    private String decode(String secret) {
         String decodedPassword = secret;
         try {
             byte[] kbytes = "jaas is the way".getBytes();

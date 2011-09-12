@@ -62,7 +62,6 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
@@ -96,7 +95,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testInboxEvents() throws Exception {
 
         try {
-            RepositoryStartupService.registerCheckinListener();
+            // TODO seam3upgrade
+//            RepositoryStartupService.registerCheckinListener();
 
             //Init MailboxService
             MailboxService service = MailboxService.getInstance();
@@ -419,7 +419,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testTrackRecentOpenedChanged() throws Exception {
         try {
-            RepositoryStartupService.registerCheckinListener();
+            // TODO seam3upgrade
+//            RepositoryStartupService.registerCheckinListener();
             UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
             ib.clearAll();
             serviceImplementation.getRulesRepository().createPackage("testTrackRecentOpenedChanged",
@@ -473,7 +474,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testCheckin() throws Exception {
         try {
-            RepositoryStartupService.registerCheckinListener();
+            // TODO seam3upgrade
+//            RepositoryStartupService.registerCheckinListener();
             UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
             List<InboxEntry> inbox = ib.loadRecentEdited();
 
