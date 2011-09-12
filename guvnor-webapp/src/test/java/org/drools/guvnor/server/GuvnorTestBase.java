@@ -55,7 +55,7 @@ public abstract class GuvnorTestBase {
                         DependencyResolvers.use(MavenDependencyResolver.class)
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
-        // System.out.println(webArchive.toString(Formatters.VERBOSE));
+        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 
