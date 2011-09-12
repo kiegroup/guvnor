@@ -20,6 +20,7 @@ import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.server.factconstraints.Constraint;
 import org.drools.ide.common.server.factconstraints.predefined.IntegerConstraint;
 import org.drools.ide.common.server.factconstraints.predefined.InvalidFieldConstraint;
+import org.drools.ide.common.server.factconstraints.predefined.MandatoryFieldConstraint;
 import org.drools.ide.common.server.factconstraints.predefined.MatchesConstraint;
 import org.drools.ide.common.server.factconstraints.predefined.NotMatchesConstraint;
 import org.drools.ide.common.server.factconstraints.predefined.NotNullConstraint;
@@ -47,6 +48,8 @@ public class ConstraintsFactory {
             return new MatchesConstraint();
         }else if (InvalidFieldConstraint.NAME.equals(config.getConstraintName())) {
             return new InvalidFieldConstraint();
+        }else if (MandatoryFieldConstraint.NAME.equals(config.getConstraintName())) {
+            return new MandatoryFieldConstraint();
         } else {
             throw new IllegalArgumentException("Constraint unknown: " + config.getConstraintName());
         }
