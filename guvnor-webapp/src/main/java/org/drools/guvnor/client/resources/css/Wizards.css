@@ -126,3 +126,7 @@
     margin-bottom: 3px;
     background-color: #990000;    
 }
+
+.wizardDTableSummaryContainer {
+    margin: 10px;
+}

@@ -64,5 +64,8 @@ public interface WizardResources
         String wizardDTableFieldContainerValid();
 
         String wizardDTableFieldContainerInvalid();
+        
+        String wizardDTableSummaryContainer();
+        
     }
 }

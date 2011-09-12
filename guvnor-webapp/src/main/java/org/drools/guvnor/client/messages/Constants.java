@@ -2463,4 +2463,7 @@ public interface Constants
     String DecisionTableWizardNoAvailableBoundPatterns();
     
     String DecisionTableWizardIncompleteActions();
+
+    String DecisionTableWizardSummaryNameMissing();
+
 }
