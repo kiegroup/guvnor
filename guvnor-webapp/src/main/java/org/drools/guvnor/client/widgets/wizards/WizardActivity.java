@@ -38,8 +38,7 @@ public class WizardActivity extends Activity
     private Wizard             wizard;
 
     public WizardActivity(WizardPlace< ? > place,
-                          ClientFactory clientFactory,
-                          EventBus eventBus) {
+                          ClientFactory clientFactory) {
 
         //The generic view
         view = clientFactory.getNavigationViewFactory().getWizardView();
@@ -47,12 +46,6 @@ public class WizardActivity extends Activity
         //The specific "page factory" for a particular Wizard
         wizard = clientFactory.getWizardFactory().getWizard( place.getContext() );
         view.setPresenter( this );
-
-        //Wire-up the events
-        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
-                             this );
-        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
-                             this );
     }
 
     public void onStatusChange(WizardPageStatusChangeEvent event) {
@@ -83,6 +76,14 @@ public class WizardActivity extends Activity
     @Override
     public void start(AcceptItem acceptTabItem,
                       EventBus eventBus) {
+        
+        //Wire-up the events
+        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
+                             this );
+        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
+                             this );
+        
+        //Go, Go gadget Wizard
         view.setTitle( wizard.getTitle() );
         view.setPreferredHeight( wizard.getPreferredHeight() );
         view.setPreferredWidth( wizard.getPreferredWidth() );
@@ -94,6 +95,10 @@ public class WizardActivity extends Activity
     public void pageSelected(int pageNumber) {
         Widget w = wizard.getPageWidget( pageNumber );
         view.setBodyWidget( w );
+    }
+
+    public void complete() {
+        wizard.complete();
     }
 
 }

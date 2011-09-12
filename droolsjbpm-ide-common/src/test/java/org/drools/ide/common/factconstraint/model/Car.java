@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2011 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-.cellListWidget {
-    width: 250px;
-    overflow: hidden;
-    padding: 2px;
-}
+package org.drools.ide.common.factconstraint.model;
 
-.cellListEvenItem {
-    padding: 1px;
-    margin-bottom: 1px;
-    cursor: pointer;
-    zoom: 1;
-}
+/**
+ *
+ */
+public class Car {
+    private String brand;
+    private String model;
 
-.cellListEmptyItem {
-    padding: 1px;
-    cursor: pointer;
-    color: rgb(150, 150, 150);
-    font-style: italic;
-    zoom: 1;
-}
+    public Car(String brand, String model) {
+        this.brand = brand;
+        this.model = model;
+    }
 
-.cellListOddItem {
-    padding: 1px;
-    margin-bottom: 1px;
-    cursor: pointer;
-    zoom: 1;
-}
+    public String getBrand() {
+        return brand;
+    }
 
-.cellListKeyboardSelectedItem {
-    background: #ffc; 
-}
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
-.cellListSelectedItem {
-    background-color: rgb(200,200,200);
+    public String getModel() {
+        return model;
+    }
+
+    public void setModel(String model) {
+        this.model = model;
+    }
+    
 }

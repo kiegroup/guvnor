@@ -15,26 +15,23 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.Widget;
 
 /**
  * A summary page for the guided Decision Table Wizard
  */
-public class SummaryPage
-        extends AbstractGuidedDecisionTableWizardPage {
+public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
+    implements
+    SummaryPageView.Presenter {
 
     private static Constants constants = GWT.create( Constants.class );
 
-    private SimplePanel      content   = new SimplePanel();
+    private SummaryPageView  view      = new SummaryPageViewImpl();
 
     public SummaryPage(NewAssetWizardContext context,
                        GuidedDecisionTable52 dtable,
@@ -42,49 +39,29 @@ public class SummaryPage
         super( context,
                dtable,
                eventBus );
-        this.content.add( new SummaryPageWidget( context ) );
     }
 
     public String getTitle() {
         return constants.DecisionTableWizardSummary();
     }
 
-    public Widget asWidget() {
-        return content;
-    }
-
     public boolean isComplete() {
-        return true;
+        String assetName = view.getAssetName();
+        boolean isValid = (assetName != null && !assetName.equals( "" ));
+        view.setHasInvalidAssetName( !isValid );
+        return isValid;
     }
 
     public void initialise() {
-        //Nothing required
+        view.setPresenter( this );
+        view.setAssetName( context.getAssetName() );
+        view.setAssetDescription( context.getDescription() );
+        view.setPackageName( context.getPackageName() );
+        content.setWidget( view );
     }
 
     public void prepareView() {
         //Nothing required
-    }
-
-    private class SummaryPageWidget extends SimplePanel {
-
-        private SummaryPageWidget(NewAssetWizardContext context) {
-            FormStyleLayout layout = new FormStyleLayout();
-            layout.addAttribute( constants.NameColon(),
-                                 new Label( context.getAssetName() ) );
-            layout.addAttribute( constants.CreateInPackage(),
-                                 new Label( context.getPackageName() ) );
-            layout.addAttribute( constants.InitialDescription(),
-                                 new Label( getDescription( context.getDescription() ) ) );
-            setWidget( layout );
-        }
-
-        private String getDescription(String description) {
-            if ( description == null || description.length() == 0 ) {
-                description = "<None>";
-            }
-            return description;
-        }
-
     }
 
 }

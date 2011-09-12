@@ -16,25 +16,16 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import java.util.List;
-
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * View and Presenter definitions for the Fact Patterns page
+ * View and Presenter definitions for the Summary page
  */
-public interface FactPatternsPageView
+public interface SummaryPageView
         extends
         IsWidget {
 
     interface Presenter {
-
-        boolean isPatternEvent(Pattern52 pattern);
-
-        void signalRemovalOfPattern(Pattern52 pattern);
 
         void stateChanged();
 
@@ -47,12 +38,14 @@ public interface FactPatternsPageView
      */
     void setPresenter(Presenter presenter);
 
-    void setDecisionTable(GuidedDecisionTable52 dtable);
+    void setAssetName(String assetName);
 
-    void setAvailableFactTypes(List<String> types);
+    void setAssetDescription(String assetDescription);
 
-    void setChosenPatterns(List<Pattern52> types);
+    void setPackageName(String packageName);
 
-    void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings);
+    String getAssetName();
+
+    void setHasInvalidAssetName(boolean isInvalid);
 
 }

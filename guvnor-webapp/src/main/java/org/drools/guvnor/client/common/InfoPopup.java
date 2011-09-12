@@ -21,6 +21,7 @@ import org.drools.guvnor.client.resources.Images;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Image;
 
@@ -31,6 +32,7 @@ public class InfoPopup extends Composite {
 
     private static Images images = (Images) GWT.create( Images.class );
 
+    @UiConstructor
     public InfoPopup(final String title,
                      final String message) {
         Image info = new Image( images.information() );

@@ -1,0 +1,27 @@
+package org.drools.verifier.consequence
+import org.drools.verifier.components.*;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import org.drools.verifier.report.components.VerifierMessage;
+import org.drools.verifier.data.VerifierReport;
+import org.drools.verifier.report.components.Severity;
+import org.drools.verifier.report.components.MessageType;
+global VerifierReport result;
+
+rule "Mandatory_Field_Constraint_PATTERN_WITH_CONSTRAINTS_$uuid$"
+  when
+	\$ot: ObjectType (name == "$factType$")
+	\$pattern: Pattern (objectTypePath == \$ot.path)
+        \$arr: ArrayList(size == 0) from 
+            collect( Restriction (parentPath == \$pattern.path, fieldPath matches ".*/field\\\[@name='$fieldName$'\\\]\$"))
+  then
+      Map<String,String> impactedRules = new HashMap<String,String>();
+      impactedRules.put( \$pattern.getPackagePath(), \$pattern.getRuleName());
+      result.add(new VerifierMessage(
+                        impactedRules,
+                        Severity.ERROR,
+                        MessageType.NOT_SPECIFIED,
+                        \$pattern,
+                        "If you use '$factType$' in your rule, you must define a constraint on its '$fieldName$' attribute." ) );
+end

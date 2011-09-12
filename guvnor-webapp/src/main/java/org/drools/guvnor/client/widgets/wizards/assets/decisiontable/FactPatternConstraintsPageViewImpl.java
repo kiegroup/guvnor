@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
@@ -39,10 +38,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Composite;
@@ -66,91 +63,91 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     implements
     FactPatternConstraintsPageView {
 
-    private Presenter                    presenter;
+    private Presenter                            presenter;
 
-    private Validator                    validator               = new Validator();
+    private Validator                            validator               = new Validator();
 
-    private List<Pattern52>              availablePatterns;
-    private Pattern52                    availablePatternsSelection;
-    private CellList<Pattern52>          availablePatternsWidget = new CellList<Pattern52>( new PatternCell( validator ),
-                                                                                            WizardCellListResources.INSTANCE );
+    private List<Pattern52>                      availablePatterns;
+    private Pattern52                            availablePatternsSelection;
+    private MinimumWidthCellList<Pattern52>      availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
+                                                                                                                WizardCellListResources.INSTANCE );
 
-    private Set<AvailableField>          availableFieldsSelections;
-    private CellList<AvailableField>     availableFieldsWidget   = new CellList<AvailableField>( new AvailableFieldCell(),
-                                                                                                 WizardCellListResources.INSTANCE );
+    private Set<AvailableField>                  availableFieldsSelections;
+    private MinimumWidthCellList<AvailableField> availableFieldsWidget   = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
+                                                                                                                     WizardCellListResources.INSTANCE );
 
-    private List<ConditionCol52>         chosenConditions;
-    private ConditionCol52               chosenConditionsSelection;
-    private Set<ConditionCol52>          chosenConditionsSelections;
-    private CellList<ConditionCol52>     chosenConditionsWidget  = new CellList<ConditionCol52>( new ConditionCell( validator ),
-                                                                                                 WizardCellListResources.INSTANCE );
+    private List<ConditionCol52>                 chosenConditions;
+    private ConditionCol52                       chosenConditionsSelection;
+    private Set<ConditionCol52>                  chosenConditionsSelections;
+    private MinimumWidthCellList<ConditionCol52> chosenConditionsWidget  = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
+                                                                                                                     WizardCellListResources.INSTANCE );
 
-    private static final Constants       constants               = GWT.create( Constants.class );
+    private static final Constants               constants               = GWT.create( Constants.class );
 
-    private static final Images          images                  = GWT.create( Images.class );
-
-    @UiField
-    protected ScrollPanel                availablePatternsContainer;
+    private static final Images                  images                  = GWT.create( Images.class );
 
     @UiField
-    protected ScrollPanel                availableFieldsContainer;
+    protected ScrollPanel                        availablePatternsContainer;
 
     @UiField
-    protected ScrollPanel                chosenConditionsContainer;
+    protected ScrollPanel                        availableFieldsContainer;
 
     @UiField
-    protected PushButton                 btnAdd;
+    protected ScrollPanel                        chosenConditionsContainer;
 
     @UiField
-    protected PushButton                 btnRemove;
+    protected PushButton                         btnAdd;
 
     @UiField
-    VerticalPanel                        conditionDefinition;
+    protected PushButton                         btnRemove;
 
     @UiField
-    HorizontalPanel                      calculationType;
+    VerticalPanel                                conditionDefinition;
 
     @UiField
-    RadioButton                          optLiteral;
+    HorizontalPanel                              calculationType;
 
     @UiField
-    RadioButton                          optFormula;
+    RadioButton                                  optLiteral;
 
     @UiField
-    RadioButton                          optPredicate;
+    RadioButton                                  optFormula;
 
     @UiField
-    TextBox                              txtColumnHeader;
+    RadioButton                                  optPredicate;
 
     @UiField
-    HorizontalPanel                      columnHeaderContainer;
+    TextBox                                      txtColumnHeader;
 
     @UiField
-    TextBox                              txtPredicateExpression;
+    HorizontalPanel                              columnHeaderContainer;
 
     @UiField
-    HorizontalPanel                      predicateExpressionContainer;
+    TextBox                                      txtPredicateExpression;
 
     @UiField
-    HorizontalPanel                      operatorContainer;
+    HorizontalPanel                              predicateExpressionContainer;
 
     @UiField
-    SimplePanel                          ddOperatorContainer;
+    HorizontalPanel                              operatorContainer;
 
     @UiField
-    TextBox                              txtValueList;
+    SimplePanel                                  ddOperatorContainer;
 
     @UiField
-    TextBox                              txtDefaultValue;
+    TextBox                                      txtValueList;
 
     @UiField
-    HorizontalPanel                      messages;
+    TextBox                                      txtDefaultValue;
+
+    @UiField
+    HorizontalPanel                              messages;
 
     @UiField(provided = true)
-    PushButton                           btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                                   btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                           btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                                   btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -175,6 +172,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseAvailablePatterns() {
         availablePatternsContainer.add( availablePatternsWidget );
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        availablePatternsWidget.setMinimumWidth( 175 );
 
         Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -196,6 +194,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseAvailableFields() {
         availableFieldsContainer.add( availableFieldsWidget );
         availableFieldsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        availableFieldsWidget.setMinimumWidth( 175 );
 
         Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -217,6 +216,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private void initialiseChosenFields() {
         chosenConditionsContainer.add( chosenConditionsWidget );
         chosenConditionsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
+        chosenConditionsWidget.setMinimumWidth( 175 );
 
         Label lstEmpty = new Label( constants.DecisionTableWizardNoChosenFields() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
@@ -308,7 +308,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
                     public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                         chosenConditionsSelection.setOperator( event.getValue().getValue() );
-                        
+
                         //Redraw applicable widgets displaying the header. Header is 
                         //mandatory, inform state change so model is re-validated
                         chosenConditionsWidget.redraw();
@@ -336,7 +336,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             columnHeaderContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
         }
     }
-    
+
     private void validateConditionOperator() {
         if ( validator.isConditionOperatorValid( chosenConditionsSelection ) ) {
             operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
@@ -550,12 +550,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         txtDefaultValue.setText( "" );
         conditionDefinition.setVisible( false );
         btnRemove.setEnabled( false );
-    }
-    
-    @UiFactory 
-    InfoPopup makePredicatePopup() {
-        return new InfoPopup(constants.Predicates(),
-                             constants.PredicatesInfo());
     }
 
 }

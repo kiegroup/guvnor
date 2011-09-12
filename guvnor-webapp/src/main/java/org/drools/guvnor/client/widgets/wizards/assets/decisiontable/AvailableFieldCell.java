@@ -28,7 +28,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  */
 class AvailableFieldCell extends AbstractCell<AvailableField> {
 
-    interface ConditionCellTemplate
+    interface AvailableFieldCellTemplate
         extends
         SafeHtmlTemplates {
 
@@ -36,7 +36,7 @@ class AvailableFieldCell extends AbstractCell<AvailableField> {
         SafeHtml text(String message);
     }
 
-    private static final ConditionCellTemplate TEMPLATE = GWT.create( ConditionCellTemplate.class );
+    private static final AvailableFieldCellTemplate TEMPLATE = GWT.create( AvailableFieldCellTemplate.class );
 
     @Override
     public void render(Context context,
@@ -44,14 +44,18 @@ class AvailableFieldCell extends AbstractCell<AvailableField> {
                        SafeHtmlBuilder sb) {
         StringBuilder b = new StringBuilder();
         b.append( value.getName() );
-        if ( value.getCalculationType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-            b.append( " : " );
-            b.append( value.getType() );
-        } else if ( value.getCalculationType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
-            b.append( " : " );
-            b.append( value.getType() );
+        if ( value.getCalculationType() == BaseSingleFieldConstraint.TYPE_LITERAL || value.getCalculationType() == BaseSingleFieldConstraint.TYPE_RET_VALUE ) {
+            appendType( b,
+                        value );
         }
         sb.append( TEMPLATE.text( b.toString() ) );
     }
 
+    private void appendType(StringBuilder b,
+                            AvailableField af) {
+        if ( af.getType() != null && !af.getType().equals( "" ) ) {
+            b.append( " : " );
+            b.append( af.getType() );
+        }
+    }
 }

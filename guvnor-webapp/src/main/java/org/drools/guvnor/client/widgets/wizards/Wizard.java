@@ -70,5 +70,10 @@ public interface Wizard {
      * @return True if the page is considered complete
      */
     boolean isComplete();
+    
+    /**
+     * The Wizard has been completed
+     */
+    void complete();
 
 }

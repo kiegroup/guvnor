@@ -60,10 +60,26 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
         this.sce = sce;
     }
-    
+
+    /**
+     * Broadcast a change in state on a page
+     */
     public void stateChanged() {
         WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
         eventBus.fireEvent( event );
     }
-    
+
+    /**
+     * When the Widget is finished a GuidedDecisionTable52 instance is passed to
+     * each page for enrichment. Some pages are able to work on this instance
+     * directly (i.e. the model is suitable for direct use in the page, such as
+     * FactPatternsPage) however others maintain their own representation of the
+     * model that must be copied into the GuidedDecisionTable52.
+     * 
+     * @param dtable
+     */
+    public void makeResult(GuidedDecisionTable52 dtable) {
+        //Default implementation does nothing
+    }
+
 }
