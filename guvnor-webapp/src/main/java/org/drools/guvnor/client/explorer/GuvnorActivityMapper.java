@@ -45,10 +45,11 @@ import com.google.gwt.place.shared.Place;
 public class GuvnorActivityMapper
         implements
         ActivityMapper {
-    private ClientFactory clientFactory;
+    private ClientFactory  clientFactory;
     private final EventBus eventBus;
 
-    public GuvnorActivityMapper(ClientFactory clientFactory, EventBus eventBus) {
+    public GuvnorActivityMapper(ClientFactory clientFactory,
+                                EventBus eventBus) {
         super();
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -58,60 +59,60 @@ public class GuvnorActivityMapper
         if ( place instanceof FindPlace ) {
             return new FindActivity( clientFactory );
         } else if ( place instanceof AssetEditorPlace ) {
-            return new AssetEditorActivity( (AssetEditorPlace) place, clientFactory );
+            return new AssetEditorActivity( (AssetEditorPlace) place,
+                                            clientFactory );
         } else if ( place instanceof ModuleEditorPlace ) {
             return new ModuleEditorActivity( ((ModuleEditorPlace) place).getUuid(),
-                    clientFactory );
+                                             clientFactory );
         } else if ( place instanceof AssetViewerPlace ) {
             return new AssetViewerActivity( ((AssetViewerPlace) place).getUuid(),
-                    clientFactory );
+                                            clientFactory );
         } else if ( place instanceof org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace ) {
             return new org.drools.guvnor.client.explorer.ModuleFormatsGridPlace(
-                    (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
-                    clientFactory );
+                                                                                 (org.drools.guvnor.client.explorer.navigation.ModuleFormatsGridPlace) place,
+                                                                                 clientFactory );
         } else if ( place instanceof ManagerPlace ) {
             return new ManagerActivity(
-                    ((ManagerPlace) place).getId(),
-                    clientFactory );
+                                        ((ManagerPlace) place).getId(),
+                                        clientFactory );
         } else if ( place instanceof TestScenarioListPlace ) {
             return new TestScenarioListActivity(
-                    ((TestScenarioListPlace) place).getModuleUuid(),
-                    clientFactory );
+                                                 ((TestScenarioListPlace) place).getModuleUuid(),
+                                                 clientFactory );
         } else if ( place instanceof VerifierPlace ) {
             return new VerifierActivity(
-                    ((VerifierPlace) place).getModuleUuid(),
-                    clientFactory );
+                                         ((VerifierPlace) place).getModuleUuid(),
+                                         clientFactory );
         } else if ( place instanceof SnapshotPlace ) {
             return new SnapshotActivity(
-                    ((SnapshotPlace) place).getModuleName(),
-                    ((SnapshotPlace) place).getSnapshotName(),
-                    clientFactory,
-                    eventBus);
+                                         ((SnapshotPlace) place).getModuleName(),
+                                         ((SnapshotPlace) place).getSnapshotName(),
+                                         clientFactory,
+                                         eventBus );
         } else if ( place instanceof SnapshotAssetListPlace ) {
             return new SnapshotAssetListActivity(
-                    (SnapshotAssetListPlace) place,
-                    clientFactory );
+                                                  (SnapshotAssetListPlace) place,
+                                                  clientFactory );
         } else if ( place instanceof CategoryPlace ) {
             return new CategoryActivity(
-                    ((CategoryPlace) place).getCategoryPath(),
-                    clientFactory );
+                                         ((CategoryPlace) place).getCategoryPath(),
+                                         clientFactory );
         } else if ( place instanceof StatePlace ) {
             return new StateActivity(
-                    ((StatePlace) place).getStateName(),
-                    clientFactory );
+                                      ((StatePlace) place).getStateName(),
+                                      clientFactory );
         } else if ( place instanceof InboxPlace ) {
             return new InboxActivity(
-                    (InboxPlace) place,
-                    clientFactory );
+                                      (InboxPlace) place,
+                                      clientFactory );
         } else if ( place instanceof MultiAssetPlace ) {
             return new MultiAssetActivity(
-                    (MultiAssetPlace) place,
-                    clientFactory );
+                                           (MultiAssetPlace) place,
+                                           clientFactory );
         } else if ( place instanceof WizardPlace ) {
             return new WizardActivity(
-                    (WizardPlace<?>) place,
-                    clientFactory, 
-                    eventBus );
+                                       (WizardPlace< ? >) place,
+                                       clientFactory );
         } else {
             return null;
         }
