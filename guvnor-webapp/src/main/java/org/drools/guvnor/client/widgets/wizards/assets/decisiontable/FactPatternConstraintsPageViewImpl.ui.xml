@@ -75,7 +75,7 @@
         <gwt:HorizontalPanel ui:field="predicateExpressionContainer" styleName="{res.style.wizardDTableFieldContainerValid}" visible="false">
           <gwt:Label text="{i18n.DecisionTableWizardPredicateExpression}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtPredicateExpression" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <c:InfoPopup styleName="{res.style.wizardDTableFields}"></c:InfoPopup>
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.Predicates}" message="{i18n.PredicatesInfo}"/>
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel ui:field="operatorContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Operator}" styleName="{res.style.wizardDTableFields}" />
@@ -85,6 +85,7 @@
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.optionalValueList}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtValueList" enabled="false" styleName="{res.style.wizardDTableFields}" />
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />

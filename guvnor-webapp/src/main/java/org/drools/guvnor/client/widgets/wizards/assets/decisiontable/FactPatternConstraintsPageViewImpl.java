@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
@@ -39,7 +38,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
@@ -552,12 +550,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         txtDefaultValue.setText( "" );
         conditionDefinition.setVisible( false );
         btnRemove.setEnabled( false );
-    }
-
-    @UiFactory
-    InfoPopup makePredicatePopup() {
-        return new InfoPopup( constants.Predicates(),
-                              constants.PredicatesInfo() );
     }
 
 }

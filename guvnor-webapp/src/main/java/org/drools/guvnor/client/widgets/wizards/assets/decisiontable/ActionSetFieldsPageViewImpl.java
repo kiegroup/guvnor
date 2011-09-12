@@ -29,12 +29,14 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -106,6 +108,9 @@ public class ActionSetFieldsPageViewImpl extends Composite
     TextBox                                           txtDefaultValue;
 
     @UiField
+    CheckBox                                          chkUpdateEngine;
+
+    @UiField
     HorizontalPanel                                   messages;
 
     interface ActionSetFieldPageWidgetBinder
@@ -123,6 +128,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         initialiseColumnHeader();
         initialiseDefaultValue();
         initialiseValueList();
+        initialiseUpdateEngine();
     }
 
     private void initialiseAvailablePatterns() {
@@ -200,9 +206,11 @@ public class ActionSetFieldsPageViewImpl extends Composite
                     txtColumnHeader.setEnabled( true );
                     txtDefaultValue.setEnabled( true );
                     txtValueList.setEnabled( true );
+                    chkUpdateEngine.setEnabled( true );
                     txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
                     txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
                     txtValueList.setText( chosenFieldsSelection.getValueList() );
+                    chkUpdateEngine.setValue( chosenFieldsSelection.isUpdate() );
                     validateFieldHeader();
                 } else {
                     chosenFieldsSelection = null;
@@ -210,6 +218,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
                     txtColumnHeader.setEnabled( false );
                     txtValueList.setEnabled( false );
                     txtDefaultValue.setEnabled( false );
+                    chkUpdateEngine.setEnabled( false );
                 }
             }
 
@@ -264,6 +273,16 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         } );
 
+    }
+
+    private void initialiseUpdateEngine() {
+        chkUpdateEngine.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                chosenFieldsSelection.setUpdate( chkUpdateEngine.getValue() );
+            }
+
+        } );
     }
 
     public void setPresenter(Presenter presenter) {
