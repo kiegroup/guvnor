@@ -25,16 +25,10 @@
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:HorizontalPanel ui:field="msgDuplicateBindings" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+    <gwt:HorizontalPanel ui:field="msgIncompleteActions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
-      </gwt:HorizontalPanel>
-    </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel ui:field="msgIncompleteConditions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
-      <gwt:HorizontalPanel>
-        <gwt:Image resource="{images.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardIncompleteConditions}" styleName="{res.style.wizardDTableMessage}" />
+        <gwt:Label text="{i18n.DecisionTableWizardIncompleteActions}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
     <gwt:VerticalPanel>
@@ -43,13 +37,23 @@
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardAvailableTypes}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="availablePatternsContainer" styleName="{res.style.wizardDTableList}" height="250px" width="180px" />
+          <gwt:ScrollPanel ui:field="availableFactTypesContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
+        </gwt:VerticalPanel>
+        <gwt:VerticalPanel ui:field="buttonBarFactTypes" styleName="{res.style.wizardDTableButtons}">
+          <gwt:PushButton ui:field="btnAddFactTypes" enabled="false">&gt;&gt;</gwt:PushButton>
+          <gwt:PushButton ui:field="btnRemoveFactTypes" enabled="false">&lt;&lt;</gwt:PushButton>
+        </gwt:VerticalPanel>
+        <gwt:VerticalPanel>
+          <gwt:SimplePanel>
+            <gwt:Label text="{i18n.DecisionTableWizardChosenTypes}" styleName="{res.style.wizardDTableHeader}" />
+          </gwt:SimplePanel>
+          <gwt:ScrollPanel ui:field="chosenPatternsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardAvailableFields}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.style.wizardDTableList}" height="250px" width="180px" />
+          <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.style.wizardDTableButtons}">
           <gwt:PushButton ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:PushButton>
@@ -57,35 +61,15 @@
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
-            <gwt:Label text="{i18n.DecisionTableWizardChosenConditions}" styleName="{res.style.wizardDTableHeader}" />
+            <gwt:Label text="{i18n.DecisionTableWizardChosenFields}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="chosenConditionsContainer" styleName="{res.style.wizardDTableList}" height="250px" width="180px" />
-        </gwt:VerticalPanel>
-        <gwt:VerticalPanel styleName="{res.style.wizardDTableButtons}">
-          <gwt:PushButton ui:field="btnMoveUp" enabled="false" />
-          <gwt:PushButton ui:field="btnMoveDown" enabled="false" />
+          <gwt:ScrollPanel ui:field="chosenFieldsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
-      <gwt:VerticalPanel ui:field="conditionDefinition" visible="false">
-        <gwt:HorizontalPanel ui:field="calculationType" styleName="{res.style.wizardDTableFieldContainerValid">
-          <gwt:Label text="{i18n.CalculationType}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.LiteralValue}" ui:field="optLiteral" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.Formula}" ui:field="optFormula" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <gwt:RadioButton name="calculationType" text="{i18n.Predicate}" ui:field="optPredicate" enabled="false" styleName="{res.style.wizardDTableFields}" />
-        </gwt:HorizontalPanel>
+      <gwt:VerticalPanel ui:field="fieldDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="columnHeaderContainer" styleName="{res.style.wizardDTableFieldContainerValid">
           <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtColumnHeader" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="predicateExpressionContainer" styleName="{res.style.wizardDTableFieldContainerValid}" visible="false">
-          <gwt:Label text="{i18n.DecisionTableWizardPredicateExpression}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:TextBox ui:field="txtPredicateExpression" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.Predicates}" message="{i18n.PredicatesInfo}"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel ui:field="operatorContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
-          <gwt:Label text="{i18n.Operator}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:SimplePanel ui:field="ddOperatorContainer" />
           <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
@@ -96,6 +80,10 @@
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtDefaultValue" enabled="false" styleName="{res.style.wizardDTableFields}" />
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+          <gwt:CheckBox ui:field="chkLogicalInsert" styleName="{res.style.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
         </gwt:HorizontalPanel>
       </gwt:VerticalPanel>
     </gwt:VerticalPanel>

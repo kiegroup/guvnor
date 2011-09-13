@@ -20,7 +20,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 /**
  * A Pattern Field available for selection
  */
-class AvailableField {
+public class AvailableField {
 
     private String name;
 
@@ -28,29 +28,29 @@ class AvailableField {
 
     private int    calculationType = BaseSingleFieldConstraint.TYPE_LITERAL;
 
-    AvailableField(String name,
-                   int calculationType) {
+    public AvailableField(String name,
+                          int calculationType) {
         this.name = name;
         this.calculationType = calculationType;
     }
 
-    AvailableField(String name,
-                   String type,
-                   int calculationType) {
+    public AvailableField(String name,
+                          String type,
+                          int calculationType) {
         this.name = name;
         this.type = type;
         this.calculationType = calculationType;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    String getType() {
+    public String getType() {
         return type;
     }
 
-    int getCalculationType() {
+    public int getCalculationType() {
         return this.calculationType;
     }
 

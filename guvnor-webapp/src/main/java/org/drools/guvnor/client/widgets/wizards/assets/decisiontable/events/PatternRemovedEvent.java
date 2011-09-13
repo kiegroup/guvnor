@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events;
 
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 

@@ -16,38 +16,37 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionSetFieldsDefinedEvent;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactFieldsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * A page for the guided Decision Table Wizard to define Actions setting fields
- * on previously bound patterns. This page does not use the GuidedDecisionTable
- * model directly; instead maintaining its own Pattern-to-Action associations.
+ * A page for the guided Decision Table Wizard to define new Facts and fields.
+ * This page does not use the GuidedDecisionTable model directly; instead
+ * maintaining its own Pattern-to-Action associations.
  */
-public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
+public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizardPage
     implements
-    ActionSetFieldsPageView.Presenter,
+    ActionInsertFactFieldsPageView.Presenter,
     PatternRemovedEvent.Handler,
-    DuplicatePatternsEvent.Handler,
-    ActionSetFieldsDefinedEvent.Handler {
+    ActionInsertFactFieldsDefinedEvent.Handler {
 
-    private final ModelNameHelper                     modelNameHelper     = new ModelNameHelper();
+    private final ModelNameHelper                       modelNameHelper     = new ModelNameHelper();
 
-    private ActionSetFieldsPageView                   view;
+    private ActionInsertFactFieldsPageView              view;
 
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
     //patterns are bound to the same name we cannot distinguish which Actions relate to which Patterns. The Wizard therefore 
@@ -56,99 +55,111 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
     //A WeakIdentityHashMap would have been more appropriate, however JavaScript has no concept of a weak reference, and so 
     //it can't be implement in GWT. In the absence of such a Map an Event is raised by FactPatternsPage when a Pattern is 
     //removed that is handled here to synchronise the Pattern lists.
-    private Map<Pattern52, List<ActionSetFieldCol52>> patternToActionsMap = new IdentityHashMap<Pattern52, List<ActionSetFieldCol52>>();
+    private Map<Pattern52, List<ActionInsertFactCol52>> patternToActionsMap = new IdentityHashMap<Pattern52, List<ActionInsertFactCol52>>();
 
-    public ActionSetFieldsPage(NewAssetWizardContext context,
-                               GuidedDecisionTable52 dtable,
-                               EventBus eventBus,
-                               Validator validator) {
+    public ActionInsertFactFieldsPage(NewAssetWizardContext context,
+                                      GuidedDecisionTable52 dtable,
+                                      EventBus eventBus,
+                                      Validator validator) {
         super( context,
                dtable,
                eventBus,
                validator );
 
         //Set-up validator for the pattern-to-action mapping voodoo
-        getValidator().setPatternToActionSetFieldsMap( patternToActionsMap );
-        this.view = new ActionSetFieldsPageViewImpl( getValidator() );
+        getValidator().setPatternToActionInsertFactFieldsMap( patternToActionsMap );
+        this.view = new ActionInsertFactFieldsPageViewImpl( getValidator() );
 
         //Wire-up the events
         eventBus.addHandler( PatternRemovedEvent.TYPE,
                              this );
-        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
-                             this );
-        eventBus.addHandler( ActionSetFieldsDefinedEvent.TYPE,
+        eventBus.addHandler( ActionInsertFactFieldsDefinedEvent.TYPE,
                              this );
     }
 
     //See comments about use of IdentityHashMap in instance member declaration section
     public void onPatternRemoved(PatternRemovedEvent event) {
-        patternToActionsMap.remove( event.getPattern() );
+        removePattern( event.getPattern() );
     }
 
     public String getTitle() {
-        return constants.DecisionTableWizardActionSetFields();
+        return constants.DecisionTableWizardActionInsertFacts();
     }
 
     public void initialise() {
         if ( sce == null ) {
             return;
         }
+        view.setPresenter( this );
 
-        //Existing ActionSetFieldCols (should be empty for a new Decision Table)
+        //Available types
+        List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
+        view.setAvailableFactTypes( availableTypes );
+
+        //Existing ActionInsertFactCols (should be empty for a new Decision Table)
         for ( ActionCol52 a : dtable.getActionCols() ) {
-            if ( a instanceof ActionSetFieldCol52 ) {
-                ActionSetFieldCol52 asf = (ActionSetFieldCol52) a;
-                Pattern52 p = dtable.getConditionPattern( asf.getBoundName() );
-                if ( !patternToActionsMap.containsKey( p ) ) {
-                    patternToActionsMap.put( p,
-                                             new ArrayList<ActionSetFieldCol52>() );
-                }
-                List<ActionSetFieldCol52> actions = patternToActionsMap.get( p );
-                actions.add( asf );
+            if ( a instanceof ActionInsertFactCol52 ) {
+                ActionInsertFactCol52 aif = (ActionInsertFactCol52) a;
+                Pattern52 p = lookupExistingInsertFactPattern( aif.getBoundName() );
+                List<ActionInsertFactCol52> actions = patternToActionsMap.get( p );
+                getValidator().addActionPattern( p );
+                actions.add( aif );
             }
         }
+        view.setChosenPatterns( new ArrayList<Pattern52>( patternToActionsMap.keySet() ) );
 
-        view.setPresenter( this );
         content.setWidget( view );
     }
 
-    public void prepareView() {
-        //Setup the available patterns, that could have changed each time this page is visited
-        List<Pattern52> availablePatterns = new ArrayList<Pattern52>();
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            if ( p.getBoundName() != null && !p.getBoundName().equals( "" ) ) {
-                availablePatterns.add( p );
+    private Pattern52 lookupExistingInsertFactPattern(String boundName) {
+        for ( Pattern52 p : patternToActionsMap.keySet() ) {
+            if ( p.getBoundName().equals( boundName ) ) {
+                return p;
             }
         }
-        view.setAvailablePatterns( availablePatterns );
+        Pattern52 p = new Pattern52();
+        patternToActionsMap.put( p,
+                                 new ArrayList<ActionInsertFactCol52>() );
+        return p;
+    }
+
+    public void prepareView() {
+        //Nothing to do here, this page is self-contained
     }
 
     public boolean isComplete() {
 
-        //Have all Actions been defined?
-        boolean areActionSetFieldsDefined = true;
-        for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionSetFieldCol52 a : actions ) {
+        //Are all Actions defined?
+        boolean areActionInsertFieldsDefined = true;
+        for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
+            for ( ActionInsertFactCol52 a : actions ) {
                 if ( !getValidator().isActionValid( a ) ) {
-                    areActionSetFieldsDefined = false;
+                    areActionInsertFieldsDefined = false;
                     break;
                 }
             }
         }
 
-        //Signal Action Set Fields definitions to other pages
-        ActionSetFieldsDefinedEvent event = new ActionSetFieldsDefinedEvent( areActionSetFieldsDefined );
-        eventBus.fireEvent( event );
+        //Signal Action Insert Fact Fields to other pages
+        ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
+        eventBus.fireEvent( eventFactFields );
 
-        return areActionSetFieldsDefined;
+        return areActionInsertFieldsDefined;
     }
 
-    public void onDuplicatePatterns(DuplicatePatternsEvent event) {
-        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    public void onActionInsertFactFieldsDefined(ActionInsertFactFieldsDefinedEvent event) {
+        view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
     }
 
-    public void onActionSetFieldsDefined(ActionSetFieldsDefinedEvent event) {
-        view.setAreActionSetFieldsDefined( event.getAreActionSetFieldsDefined() );
+    public void addPattern(Pattern52 pattern) {
+        patternToActionsMap.put( pattern,
+                                 new ArrayList<ActionInsertFactCol52>() );
+        getValidator().addActionPattern( pattern );
+    }
+
+    public void removePattern(Pattern52 pattern) {
+        patternToActionsMap.remove( pattern );
+        getValidator().removeActionPattern( pattern );
     }
 
     public void selectPattern(Pattern52 pattern) {
@@ -168,9 +179,9 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         view.setAvailableFields( availableFields );
 
         //Set fields already chosen
-        List<ActionSetFieldCol52> actionsForPattern = patternToActionsMap.get( pattern );
+        List<ActionInsertFactCol52> actionsForPattern = patternToActionsMap.get( pattern );
         if ( actionsForPattern == null ) {
-            actionsForPattern = new ArrayList<ActionSetFieldCol52>();
+            actionsForPattern = new ArrayList<ActionInsertFactCol52>();
             patternToActionsMap.put( pattern,
                                      actionsForPattern );
         }
@@ -179,9 +190,8 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
-        dtable.getActionCols().clear();
-        for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionSetFieldCol52 af : actions ) {
+        for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
+            for ( ActionInsertFactCol52 af : actions ) {
                 dtable.getActionCols().add( af );
             }
         }

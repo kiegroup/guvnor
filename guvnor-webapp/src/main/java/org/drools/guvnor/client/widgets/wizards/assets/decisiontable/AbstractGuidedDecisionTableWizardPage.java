@@ -45,12 +45,16 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected NewAssetWizardContext      context;
     protected SuggestionCompletionEngine sce;
 
+    private Validator                    validator;
+
     public AbstractGuidedDecisionTableWizardPage(NewAssetWizardContext context,
                                                  GuidedDecisionTable52 dtable,
-                                                 EventBus eventBus) {
+                                                 EventBus eventBus,
+                                                 Validator validator) {
         this.context = context;
         this.dtable = dtable;
         this.eventBus = eventBus;
+        this.validator = validator;
     }
 
     public Widget asWidget() {
@@ -59,6 +63,10 @@ public abstract class AbstractGuidedDecisionTableWizardPage
 
     public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
         this.sce = sce;
+    }
+
+    public Validator getValidator() {
+        return this.validator;
     }
 
     /**

@@ -20,7 +20,9 @@ import com.google.gwt.user.client.ui.IsWidget;
 /**
  * A page for a Wizard
  */
-public interface WizardPage extends IsWidget {
+public interface WizardPage
+    extends
+    IsWidget {
 
     /**
      * Page title
@@ -35,14 +37,15 @@ public interface WizardPage extends IsWidget {
      * @return
      */
     boolean isComplete();
-    
+
     /**
-     * Initialise the page
+     * Initialise the page with things that don't change between page visits
      */
     void initialise();
-    
+
     /**
-     * Prepare the page before it is displayed
+     * Prepare the page before it is displayed with things that can change
+     * between page visits
      */
     void prepareView();
 

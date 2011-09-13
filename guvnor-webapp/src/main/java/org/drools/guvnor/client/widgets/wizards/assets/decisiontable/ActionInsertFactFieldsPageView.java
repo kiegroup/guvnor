@@ -18,27 +18,25 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.List;
 
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
- * View and Presenter definitions for the Fact Pattern Constraints page
+ * View and Presenter definitions for the ActionInsertFactsFields page
  */
-public interface FactPatternConstraintsPageView
+public interface ActionInsertFactFieldsPageView
         extends
         IsWidget {
 
     interface Presenter {
 
+        void addPattern(Pattern52 pattern);
+
+        void removePattern(Pattern52 pattern);
+
         void selectPattern(Pattern52 pattern);
-
-        void setChosenConditions(Pattern52 pattern,
-                                 List<ConditionCol52> conditions);
-
-        String[] getOperatorCompletions(Pattern52 selectedPattern,
-                                        ConditionCol52 selectedCondition);
 
         void stateChanged();
 
@@ -51,14 +49,14 @@ public interface FactPatternConstraintsPageView
      */
     void setPresenter(Presenter presenter);
 
-    void setAvailablePatterns(List<Pattern52> patterns);
+    void setAvailableFactTypes(List<String> availableTypes);
+
+    void setChosenPatterns(List<Pattern52> patterns);
 
     void setAvailableFields(List<AvailableField> fields);
 
-    void setChosenConditions(List<ConditionCol52> conditions);
+    void setChosenFields(List<ActionInsertFactCol52> fields);
 
-    void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
-    
-    void setAreConditionsDefined(boolean areConditionsDefined);
+    void setAreActionInsertFactFieldsDefined(boolean areActionInsertFactFieldsDefined);
 
 }

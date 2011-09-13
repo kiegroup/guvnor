@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.cell.client.Cell;
@@ -29,7 +30,7 @@ public class MinimumWidthCellList<T> extends CellList<T> {
 
     private WidthCalculator<T> sizer;
 
-    private List< ? extends T> values;
+    private List< ? extends T> values=new ArrayList<T>();
 
     public MinimumWidthCellList(final Cell<T> cell,
                                 Resources resources) {

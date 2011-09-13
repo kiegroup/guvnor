@@ -49,18 +49,28 @@ public class NewGuidedDecisionTableWizard
         super( clientFactory,
                eventBus,
                context );
+
+        Validator validator = new Validator( dtable.getConditionPatterns() );
         pages.add( new SummaryPage( context,
                                     dtable,
-                                    eventBus ) );
+                                    eventBus,
+                                    validator ) );
         pages.add( new FactPatternsPage( context,
                                          dtable,
-                                         eventBus ) );
+                                         eventBus,
+                                         validator ) );
         pages.add( new FactPatternConstraintsPage( context,
                                                    dtable,
-                                                   eventBus ) );
+                                                   eventBus,
+                                                   validator ) );
         pages.add( new ActionSetFieldsPage( context,
                                             dtable,
-                                            eventBus ) );
+                                            eventBus,
+                                            validator ) );
+        pages.add( new ActionInsertFactFieldsPage( context,
+                                                   dtable,
+                                                   eventBus,
+                                                   validator ) );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
                                                                  new Command() {
@@ -115,7 +125,7 @@ public class NewGuidedDecisionTableWizard
             AbstractGuidedDecisionTableWizardPage gep = (AbstractGuidedDecisionTableWizardPage) page;
             gep.makeResult( dtable );
         }
-        
+
         //TODO Save, update asset and open editor
         System.out.println( "Spoon!" );
     }
