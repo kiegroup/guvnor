@@ -101,7 +101,7 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     }
 
     public void onNewFile() {
-        view.openNewAssetWizardWithoutCategories( "*", clientFactory, eventBus );
+        view.openNewAssetWizardWithoutCategories( "", clientFactory, eventBus );
     }
 
     public void onRebuildAllPackages() {

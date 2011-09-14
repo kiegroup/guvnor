@@ -42,8 +42,8 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
         view.openNewServiceWizard( clientFactory, eventBus );
     }
 
-    public void onNewSpringContext() {
-        view.openNewAssetWizardWithoutCategories( AssetFormats.SPRING_CONTEXT, clientFactory, eventBus );
+    public void onNewAsset(String format) {
+        view.openNewAssetWizardWithoutCategories(format, clientFactory, eventBus );
     }
 
     public void onNewBPELPackage() {

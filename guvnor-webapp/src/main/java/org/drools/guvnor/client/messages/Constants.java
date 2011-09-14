@@ -2491,4 +2491,6 @@ public interface Constants
     String Documentation();
     
     String Other();
+    
+    String New();
 }
