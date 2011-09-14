@@ -9,6 +9,55 @@
 
   <title>Spring Contexts</title>
 
-  <para>TODO</para>
+  <para>This textual editor allows you to define Drools (and potencially any) 
+  Spring context file. These files are later accesibles through HTTP</para>
 
+  <figure>
+    <title>Spring Context - Editor</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-editor.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+
+  <para>The editor comes with a basic pallete that you can use to paste 
+  predefined Spring Bean's templates like kbases, ksessions and so on.</para>
+  <para>The pallete also has a Package tree that can be used to add
+  resources to the Spring Context file being edited.</para>
+  <para>The Beans are inserted in the caret position of the editor</para>
+  
+  <para>The elements in the pallete can be customized editing the file
+  $GUVNOR_HOME/WEB-INF/Clases/springContextElements.properties</para>
+  
+    <figure>
+    <title>Spring Context - Pallete Configuration</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-properties-file.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+    
+  <para>Each Spring Context has its own URL that applications can use
+  to access it. These URLs are shown in the Package Edit Screen</para>
+  
+    <figure>
+    <title>Spring Context - Public URLs</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/NewSpringContext-urls.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
+  
 </section>
