@@ -10,7 +10,7 @@
 
   <!-- TODO Move this file under WEB-INF after fixing https://issues.jboss.org/browse/SEAMCONFIG-50 -->
 
-  <guvnorRepository:RepositoryStartupService>
+  <guvnorRepository:GuvnorBootstrapConfiguration>
     <s:modifies/>
 
     <!-- JackRabbit  -->
@@ -33,7 +33,7 @@
       <!--<s:entry><s:key>org.drools.repository.mailman.password</s:key><s:value>mailman</s:value></s:entry>-->
     <!--</my:properties>-->
 
-  </guvnorRepository:RepositoryStartupService>
+  </guvnorRepository:GuvnorBootstrapConfiguration>
 
 
   <security:IdentityImpl>
