@@ -32,9 +32,7 @@
   <xi:include href="Chapter-Packaging/Chapter-6-Packaging.xml"
               xpointer="element(/1)" />
 
-  <xi:include href="Chapter-Administrative_Functions/Chapter-8-Administrative-Functions.xml"
+  <xi:include href="Chapter-Administrative_Functions/Chapter-7-Administrative-Functions.xml"
               xpointer="element(/1)" />
 
-  <xi:include href="Chapter-Integration/Chapter-7-Integration.xml"
-              xpointer="element(/1)" />
 </part>
