@@ -56,7 +56,7 @@ public class RepositoryStartupService {
 
     private RulesRepositoryConfigurator configurator;
 
-    Repository repository;
+    private Repository repository;
     private Session sessionForSetup;
     private RulesRepository mailmanRulesRepository;
 
