@@ -22,12 +22,15 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.NewPackageWizard;
 import org.drools.guvnor.client.packages.NewSOAServiceWizard;
+import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;
@@ -43,11 +46,12 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
     private MenuBar getMenu() {
         addNewServiceMenuItem();
 
-        addNewSpringContextMenuItem();
-        addNewBPELEditorMenuItem();
-        addNewRuleFlowMenuItem();
-        addNewBPMN2ProcessMenuItem();
-        addNewFileMenuItem();
+        //We assume for every asset type, we always have a corresponding "New Asset" menu item for this type
+        PerspectiveFactory perspectiveFactory = GWT.create(PerspectiveFactory.class);
+        String[] formats = perspectiveFactory.getRegisteredAssetEditorFormats("soaservice");
+        for(final String format:formats) {
+            addNewAssetMenuItem(format);         
+        }
 
         MenuBar rootMenuBar = new MenuBar( true );
         rootMenuBar.setAutoOpen( true );
@@ -56,58 +60,6 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
         rootMenuBar.addItem( new MenuItem( constants.CreateNew(), createNewMenu ) );
 
         return rootMenuBar;
-    }
-
-    private void addNewFileMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.newFile(), constants.CreateAFile() ).asString(),
-                true,
-                new Command() {
-                    public void execute() {
-                        presenter.onNewFile();
-                    }
-                } );
-    }
-
-    private void addNewBPMN2ProcessMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.ruleflowSmall(), constants.NewBPMN2Process() ).asString(),
-                true,
-                new Command() {
-                    public void execute() {
-                        presenter.onNewBPMN2Process();
-                    }
-                } );
-    }
-
-    private void addNewRuleFlowMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.ruleflowSmall(), constants.NewRuleFlow() ).asString(),
-                true,
-                new Command() {
-                    public void execute() {
-                        presenter.onNewRuleFlow();
-                    }
-                } );
-    }
-
-    private void addNewBPELEditorMenuItem() {
-        if ( ApplicationPreferences.showFlewBPELEditor() ) {
-            createNewMenu.addItem( Util.getHeader( images.modelAsset(), constants.NewBPELPackage() ).asString(),
-                    true,
-                    new Command() {
-                        public void execute() {
-                            presenter.onNewBPELPackage();
-                        }
-                    } );
-        }
-    }
-
-    private void addNewSpringContextMenuItem() {
-        createNewMenu.addItem( Util.getHeader( images.newEnumeration(), constants.NewSpringContext() ).asString(),
-                true,
-                new Command() {
-                    public void execute() {
-                        presenter.onNewSpringContext();
-                    }
-                } );
     }
 
     private void addNewServiceMenuItem() {
@@ -120,6 +72,18 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
                 } );
     }
 
+    private void addNewAssetMenuItem(final String format) {
+        AssetEditorFactory assetEditorFactory = GWT.create( AssetEditorFactory.class );
+        String title = "New " + assetEditorFactory.getAssetEditorTitle(format);
+        createNewMenu.addItem( Util.getHeader( assetEditorFactory.getAssetEditorIcon(format), title ).asString(),
+                true,
+                new Command() {
+                    public void execute() {
+                        presenter.onNewAsset(format);
+                    }
+                } );   
+    }
+    
     public Widget asWidget() {
         return getMenu();
     }
@@ -129,10 +93,6 @@ public class SOAServicesNewAssetMenuViewImpl implements SOAServicesNewAssetMenuV
     }
     public void openNewServiceWizard( ClientFactory clientFactory, EventBus eventBus ) {
         NewSOAServiceWizard wiz = new NewSOAServiceWizard( clientFactory, eventBus );
-        wiz.show();
-    }
-    public void openNewPackageWizard( ClientFactory clientFactory, EventBus eventBus ) {
-        NewPackageWizard wiz = new NewPackageWizard( clientFactory, eventBus );
         wiz.show();
     }
 

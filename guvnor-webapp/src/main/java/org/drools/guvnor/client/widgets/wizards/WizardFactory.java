@@ -20,6 +20,7 @@ package org.drools.guvnor.client.widgets.wizards;
  */
 public interface WizardFactory {
 
-    Wizard getWizard(WizardContext context);
+    Wizard getWizard(WizardContext context,
+                     WizardActivityView.Presenter presenter);
 
 }

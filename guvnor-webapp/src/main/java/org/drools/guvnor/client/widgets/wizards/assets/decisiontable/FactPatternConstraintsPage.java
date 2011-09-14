@@ -20,6 +20,8 @@ import java.util.List;
 
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -28,25 +30,34 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import com.google.gwt.event.shared.EventBus;
 
 /**
- * A page for the guided Decision Table Wizard to define Fact Pattern Constraints
+ * A page for the guided Decision Table Wizard to define Fact Pattern
+ * Constraints
  */
 public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizardPage
     implements
-    FactPatternConstraintsPageView.Presenter {
+    FactPatternConstraintsPageView.Presenter,
+    DuplicatePatternsEvent.Handler,
+    ConditionsDefinedEvent.Handler {
 
     private final ModelNameHelper          modelNameHelper = new ModelNameHelper();
 
-    private FactPatternConstraintsPageView view            = new FactPatternConstraintsPageViewImpl();
-
-    private Validator                      validator;
+    private FactPatternConstraintsPageView view;
 
     public FactPatternConstraintsPage(NewAssetWizardContext context,
                                       GuidedDecisionTable52 dtable,
-                                      EventBus eventBus) {
+                                      EventBus eventBus,
+                                      Validator validator) {
         super( context,
                dtable,
-               eventBus );
-        validator = new Validator( dtable.getConditionPatterns() );
+               eventBus,
+               validator );
+        this.view = new FactPatternConstraintsPageViewImpl( getValidator() );
+
+        //Wire-up the events
+        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
+                             this );
+        eventBus.addHandler( ConditionsDefinedEvent.TYPE,
+                             this );
     }
 
     public String getTitle() {
@@ -62,33 +73,40 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public void prepareView() {
+        //Setup the available patterns, that could have changed each time this page is visited
         view.setAvailablePatterns( dtable.getConditionPatterns() );
     }
 
     public boolean isComplete() {
 
-        //Have patterns been defined?
-        if ( dtable.getConditionPatterns() == null || dtable.getConditionPatterns().size() == 0 ) {
-            return false;
-        }
-
         //Have all patterns conditions been defined?
-        boolean isValid = true;
+        boolean areConditionsDefined = true;
         for ( Pattern52 p : dtable.getConditionPatterns() ) {
             for ( ConditionCol52 c : p.getConditions() ) {
-                if ( !validator.isConditionValid( c ) ) {
-                    isValid = false;
+                if ( !getValidator().isConditionValid( c ) ) {
+                    areConditionsDefined = false;
                     break;
                 }
 
             }
         }
 
-        view.setHasIncompleteConditionDefinitions( !isValid );
-        return isValid;
+        //Signal Condition definitions to other pages
+        ConditionsDefinedEvent event = new ConditionsDefinedEvent( areConditionsDefined );
+        eventBus.fireEvent( event );
+
+        return areConditionsDefined;
     }
 
-    public void patternSelected(Pattern52 pattern) {
+    public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    }
+
+    public void onConditionsDefined(ConditionsDefinedEvent event) {
+        view.setAreConditionsDefined( event.getAreConditionsDefined() );
+    }
+
+    public void selectPattern(Pattern52 pattern) {
         String type = pattern.getFactType();
 
         //Add Fact fields

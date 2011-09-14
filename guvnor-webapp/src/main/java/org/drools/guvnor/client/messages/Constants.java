@@ -2469,5 +2469,32 @@ public interface Constants
     String DecisionTableWizardIncompleteActions();
 
     String DecisionTableWizardSummaryNameMissing();
-
+    
+    String DecisionTableWizardIncompletePatterns();
+    
+    String XMLSchemas();
+    
+    String SampleMessages();
+    
+    String WSDLs();
+    
+    String JBOSSESBConfig();
+    
+    String Smooks();
+    
+    String ScenarioDiagrams();
+    
+    String ChoreographyModels();
+    
+    String DeploymentArchives();
+    
+    String JMSDestinations();
+    
+    String JavaSource();
+    
+    String Documentation();
+    
+    String Other();
+    
+    String New();
 }

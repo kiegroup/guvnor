@@ -32,7 +32,7 @@ public interface FactPatternConstraintsPageView
 
     interface Presenter {
 
-        void patternSelected(Pattern52 pattern);
+        void selectPattern(Pattern52 pattern);
 
         void setChosenConditions(Pattern52 pattern,
                                  List<ConditionCol52> conditions);
@@ -57,6 +57,8 @@ public interface FactPatternConstraintsPageView
 
     void setChosenConditions(List<ConditionCol52> conditions);
 
-    void setHasIncompleteConditionDefinitions(boolean hasIncompleteConditionDefinitions);
+    void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
+    
+    void setAreConditionsDefined(boolean areConditionsDefined);
 
 }

@@ -32,7 +32,7 @@ public interface ActionSetFieldsPageView
 
     interface Presenter {
 
-        void patternSelected(Pattern52 pattern);
+        void selectPattern(Pattern52 pattern);
 
         void stateChanged();
 
@@ -51,6 +51,8 @@ public interface ActionSetFieldsPageView
 
     void setChosenFields(List<ActionSetFieldCol52> fields);
 
-    void setHasIncompleteFieldDefinitions(boolean hasIncompleteFieldDefinitions);
+    void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
+
+    void setAreActionSetFieldsDefined(boolean areActionSetFieldsDefined);
 
 }

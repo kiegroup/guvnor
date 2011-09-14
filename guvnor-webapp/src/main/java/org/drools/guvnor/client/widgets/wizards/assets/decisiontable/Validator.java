@@ -22,6 +22,8 @@ import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -30,18 +32,22 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
  */
 public class Validator {
 
-    private List<Pattern52> patterns;
-
-    Validator() {
-        this.patterns = new ArrayList<Pattern52>();
-    }
+    private List<Pattern52>                                                 patternsConditions;
+    private List<Pattern52>                                                 patternsActions;
+    private Map<Pattern52, List<ActionSetFieldCol52>>                       patternToActionSetFieldsMap;
+    private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
     Validator(List<Pattern52> patterns) {
-        this.patterns = patterns;
+        this.patternsConditions = patterns;
+        this.patternsActions = new ArrayList<Pattern52>();
     }
 
-    void setPatterns(List<Pattern52> patterns) {
-        this.patterns = patterns;
+    void addActionPattern(Pattern52 pattern) {
+        this.patternsActions.add( pattern );
+    }
+
+    void removeActionPattern(Pattern52 pattern) {
+        this.patternsActions.remove( pattern );
     }
 
     public boolean arePatternBindingsUnique() {
@@ -50,7 +56,19 @@ public class Validator {
 
         //Store Patterns by their binding
         Map<String, List<Pattern52>> bindings = new HashMap<String, List<Pattern52>>();
-        for ( Pattern52 p : patterns ) {
+        for ( Pattern52 p : patternsConditions ) {
+            String binding = p.getBoundName();
+            if ( binding != null && !binding.equals( "" ) ) {
+                List<Pattern52> ps = bindings.get( binding );
+                if ( ps == null ) {
+                    ps = new ArrayList<Pattern52>();
+                    bindings.put( binding,
+                                  ps );
+                }
+                ps.add( p );
+            }
+        }
+        for ( Pattern52 p : patternsActions ) {
             String binding = p.getBoundName();
             if ( binding != null && !binding.equals( "" ) ) {
                 List<Pattern52> ps = bindings.get( binding );
@@ -78,7 +96,14 @@ public class Validator {
         if ( binding == null || binding.equals( "" ) ) {
             return true;
         }
-        for ( Pattern52 p : patterns ) {
+        for ( Pattern52 p : patternsConditions ) {
+            if ( p != pattern ) {
+                if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
+                    return false;
+                }
+            }
+        }
+        for ( Pattern52 p : patternsActions ) {
             if ( p != pattern ) {
                 if ( p.getBoundName() != null && p.getBoundName().equals( binding ) ) {
                     return false;
@@ -88,25 +113,23 @@ public class Validator {
         return true;
     }
 
+    public boolean isPatternValid(Pattern52 p) {
+        return !(p.getBoundName() == null || p.getBoundName().equals( "" ));
+    }
+
     public boolean isConditionValid(ConditionCol52 c) {
         return isConditionHeaderValid( c ) && isConditionOperatorValid( c );
     }
 
     public boolean isConditionHeaderValid(ConditionCol52 c) {
-        if ( c.getHeader() == null || c.getHeader().equals( "" ) ) {
-            return false;
-        }
-        return true;
+        return !(c.getHeader() == null || c.getHeader().equals( "" ));
     }
 
     public boolean isConditionOperatorValid(ConditionCol52 c) {
         if ( c.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
             return true;
         }
-        if ( c.getOperator() == null || c.getOperator().equals( "" ) ) {
-            return false;
-        }
-        return true;
+        return !(c.getOperator() == null || c.getOperator().equals( "" ));
     }
 
     public boolean isActionValid(ActionCol52 c) {
@@ -114,8 +137,45 @@ public class Validator {
     }
 
     public boolean isActionHeaderValid(ActionCol52 a) {
-        if ( a.getHeader() == null || a.getHeader().equals( "" ) ) {
-            return false;
+        return !(a.getHeader() == null || a.getHeader().equals( "" ));
+    }
+
+    public void setPatternToActionSetFieldsMap(Map<Pattern52, List<ActionSetFieldCol52>> patternToActionSetFieldsMap) {
+        this.patternToActionSetFieldsMap = patternToActionSetFieldsMap;
+    }
+
+    public boolean arePatternActionSetFieldsValid(Pattern52 p) {
+        if ( patternToActionSetFieldsMap == null ) {
+            return true;
+        }
+        List<ActionSetFieldCol52> actions = patternToActionSetFieldsMap.get( p );
+        if ( actions == null ) {
+            return true;
+        }
+        for ( ActionSetFieldCol52 a : actions ) {
+            if ( !isActionValid( a ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void setPatternToActionInsertFactFieldsMap(Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap) {
+        this.patternToActionInsertFactFieldsMap = patternToActionInsertFactFieldsMap;
+    }
+
+    public boolean arePatternActionInsertFactFieldsValid(Pattern52 p) {
+        if ( patternToActionInsertFactFieldsMap == null ) {
+            return true;
+        }
+        List<ActionInsertFactCol52> actions = patternToActionInsertFactFieldsMap.get( p );
+        if ( actions == null ) {
+            return true;
+        }
+        for ( ActionInsertFactCol52 a : actions ) {
+            if ( !isActionValid( a ) ) {
+                return false;
+            }
         }
         return true;
     }

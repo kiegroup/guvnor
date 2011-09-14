@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells;
 
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.Validator;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -27,9 +28,9 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A cell to display a Fact Pattern
  */
-class PatternCell extends AbstractCell<Pattern52> {
+public class PatternCell extends AbstractCell<Pattern52> {
 
-    private Validator validator;
+    protected Validator validator;
 
     interface FactPatternCellTemplate
         extends
@@ -42,7 +43,7 @@ class PatternCell extends AbstractCell<Pattern52> {
 
     private static final FactPatternCellTemplate TEMPLATE = GWT.create( FactPatternCellTemplate.class );
 
-    PatternCell(Validator validator) {
+    public PatternCell(Validator validator) {
         this.validator = validator;
     }
 
@@ -63,7 +64,7 @@ class PatternCell extends AbstractCell<Pattern52> {
                                   b.toString() ) );
     }
 
-    private String getCssStyleName(Pattern52 p) {
+    protected String getCssStyleName(Pattern52 p) {
         if ( !validator.isPatternBindingUnique( p ) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }

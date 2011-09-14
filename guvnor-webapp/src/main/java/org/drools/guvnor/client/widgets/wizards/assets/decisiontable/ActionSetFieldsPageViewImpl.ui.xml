@@ -25,7 +25,13 @@
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">
-    <gwt:HorizontalPanel ui:field="messages" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+    <gwt:HorizontalPanel ui:field="msgDuplicateBindings" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel ui:field="msgIncompleteActionSetFields" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
         <gwt:Label text="{i18n.DecisionTableWizardIncompleteActions}" styleName="{res.style.wizardDTableMessage}" />

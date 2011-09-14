@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -29,19 +31,24 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     implements
-    FactPatternsPageView.Presenter {
+    FactPatternsPageView.Presenter,
+    DuplicatePatternsEvent.Handler {
 
-    private FactPatternsPageView view = new FactPatternsPageViewImpl();
-
-    private Validator            validator;
+    private FactPatternsPageView view;
 
     public FactPatternsPage(NewAssetWizardContext context,
                             GuidedDecisionTable52 dtable,
-                            EventBus eventBus) {
+                            EventBus eventBus,
+                            Validator validator) {
         super( context,
                dtable,
-               eventBus );
-        validator = new Validator( dtable.getConditionPatterns() );
+               eventBus,
+               validator );
+        this.view = new FactPatternsPageViewImpl( getValidator() );
+
+        //Wire-up the events
+        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
+                             this );
     }
 
     public String getTitle() {
@@ -70,15 +77,18 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
     public boolean isComplete() {
 
-        //Have patterns been defined?
-        if ( dtable.getConditionPatterns() == null || dtable.getConditionPatterns().size() == 0 ) {
-            return false;
-        }
-
         //Are the patterns valid?
-        boolean isValid = validator.arePatternBindingsUnique();
-        view.setHasDuplicatePatternBindings( !isValid );
-        return isValid;
+        boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
+
+        //Signal duplicates to other pages
+        DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
+        eventBus.fireEvent( event );
+
+        return arePatternBindingsUnique;
+    }
+
+    public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {

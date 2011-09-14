@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
@@ -32,10 +33,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Work in progress.
+ * Wizard for creating a Guided Decision Table
  */
 public class NewGuidedDecisionTableWizard
-        extends AbstractNewAssetWizard {
+        extends AbstractNewAssetWizard<GuidedDecisionTable52> {
 
     private SuggestionCompletionEngine sce;
 
@@ -43,24 +44,39 @@ public class NewGuidedDecisionTableWizard
 
     private GuidedDecisionTable52      dtable = new GuidedDecisionTable52();
 
+    private SummaryPage                summaryPage;
+
     public NewGuidedDecisionTableWizard(final ClientFactory clientFactory,
                                         final EventBus eventBus,
-                                        final NewAssetWizardContext context) {
+                                        final NewAssetWizardContext context,
+                                        final WizardActivityView.Presenter presenter) {
         super( clientFactory,
                eventBus,
-               context );
-        pages.add( new SummaryPage( context,
-                                    dtable,
-                                    eventBus ) );
+               context,
+               presenter );
+
+        Validator validator = new Validator( dtable.getConditionPatterns() );
+        this.summaryPage = new SummaryPage( context,
+                                            dtable,
+                                            eventBus,
+                                            validator );
+        pages.add( summaryPage );
         pages.add( new FactPatternsPage( context,
                                          dtable,
-                                         eventBus ) );
+                                         eventBus,
+                                         validator ) );
         pages.add( new FactPatternConstraintsPage( context,
                                                    dtable,
-                                                   eventBus ) );
+                                                   eventBus,
+                                                   validator ) );
         pages.add( new ActionSetFieldsPage( context,
                                             dtable,
-                                            eventBus ) );
+                                            eventBus,
+                                            validator ) );
+        pages.add( new ActionInsertFactFieldsPage( context,
+                                                   dtable,
+                                                   eventBus,
+                                                   validator ) );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
                                                                  new Command() {
@@ -115,9 +131,12 @@ public class NewGuidedDecisionTableWizard
             AbstractGuidedDecisionTableWizardPage gep = (AbstractGuidedDecisionTableWizardPage) page;
             gep.makeResult( dtable );
         }
-        
-        //TODO Save, update asset and open editor
-        System.out.println( "Spoon!" );
+        save( summaryPage.getAssetName(),
+              context.getDescription(),
+              context.getInitialCategory(),
+              context.getPackageName(),
+              context.getFormat(),
+              dtable );
     }
 
 }

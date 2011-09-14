@@ -25,7 +25,7 @@ public interface SOAServicesNewAssetMenuView extends IsWidget {
     interface Presenter {
         void onNewService();
 
-        void onNewSpringContext();
+        void onNewAsset(String format);
 
         void onNewBPELPackage();
 

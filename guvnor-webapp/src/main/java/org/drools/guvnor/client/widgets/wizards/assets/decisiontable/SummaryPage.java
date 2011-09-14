@@ -35,14 +35,20 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     public SummaryPage(NewAssetWizardContext context,
                        GuidedDecisionTable52 dtable,
-                       EventBus eventBus) {
+                       EventBus eventBus,
+                       Validator validator) {
         super( context,
                dtable,
-               eventBus );
+               eventBus,
+               validator );
     }
 
     public String getTitle() {
         return constants.DecisionTableWizardSummary();
+    }
+
+    public String getAssetName() {
+        return view.getAssetName();
     }
 
     public boolean isComplete() {

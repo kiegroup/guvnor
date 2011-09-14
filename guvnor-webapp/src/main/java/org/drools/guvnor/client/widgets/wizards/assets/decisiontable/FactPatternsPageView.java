@@ -53,6 +53,6 @@ public interface FactPatternsPageView
 
     void setChosenPatterns(List<Pattern52> types);
 
-    void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings);
+    void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
 
 }

@@ -17,13 +17,15 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ActionSetFieldCell;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ActionSetFieldPatternCell;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -58,24 +60,21 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     private Presenter                                 presenter;
 
-    private Validator                                 validator               = new Validator();
+    private Validator                                 validator;
 
     private List<Pattern52>                           availablePatterns;
     private Pattern52                                 availablePatternsSelection;
-    private MinimumWidthCellList<Pattern52>           availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
-                                                                                                                     WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<Pattern52>           availablePatternsWidget;
 
     private Set<AvailableField>                       availableFieldsSelections;
-    private MinimumWidthCellList<AvailableField>      availableFieldsWidget   = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
-                                                                                                                          WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<AvailableField>      availableFieldsWidget;
 
     private List<ActionSetFieldCol52>                 chosenFields;
     private ActionSetFieldCol52                       chosenFieldsSelection;
     private Set<ActionSetFieldCol52>                  chosenFieldsSelections;
-    private MinimumWidthCellList<ActionSetFieldCol52> chosenFieldsWidget      = new MinimumWidthCellList<ActionSetFieldCol52>( new ActionSetFieldCell( validator ),
-                                                                                                                               WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<ActionSetFieldCol52> chosenFieldsWidget;
 
-    private static final Constants                    constants               = GWT.create( Constants.class );
+    private static final Constants                    constants = GWT.create( Constants.class );
 
     @UiField
     protected ScrollPanel                             availablePatternsContainer;
@@ -111,7 +110,10 @@ public class ActionSetFieldsPageViewImpl extends Composite
     CheckBox                                          chkUpdateEngine;
 
     @UiField
-    HorizontalPanel                                   messages;
+    HorizontalPanel                                   msgDuplicateBindings;
+
+    @UiField
+    HorizontalPanel                                   msgIncompleteActionSetFields;
 
     interface ActionSetFieldPageWidgetBinder
         extends
@@ -120,7 +122,15 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     private static ActionSetFieldPageWidgetBinder uiBinder = GWT.create( ActionSetFieldPageWidgetBinder.class );
 
-    public ActionSetFieldsPageViewImpl() {
+    public ActionSetFieldsPageViewImpl(Validator validator) {
+        this.validator = validator;
+        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ActionSetFieldPatternCell( validator ),
+                                                                            WizardCellListResources.INSTANCE );
+        this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
+                                                                               WizardCellListResources.INSTANCE );
+        this.chosenFieldsWidget = new MinimumWidthCellList<ActionSetFieldCol52>( new ActionSetFieldCell( validator ),
+                                                                                 WizardCellListResources.INSTANCE );
+
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailablePatterns();
         initialiseAvailableFields();
@@ -147,7 +157,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
             public void onSelectionChange(SelectionChangeEvent event) {
                 availablePatternsSelection = selectionModel.getSelectedObject();
-                presenter.patternSelected( availablePatternsSelection );
+                presenter.selectPattern( availablePatternsSelection );
             }
 
         } );
@@ -190,11 +200,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenFieldsSelections = new HashSet<ActionSetFieldCol52>();
-                Set<ActionSetFieldCol52> selections = selectionModel.getSelectedSet();
-                for ( ActionSetFieldCol52 a : selections ) {
-                    chosenFieldsSelections.add( a );
-                }
+                chosenFieldsSelections = selectionModel.getSelectedSet();
                 chosenConditionsSelected( chosenFieldsSelections );
             }
 
@@ -239,12 +245,8 @@ public class ActionSetFieldsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String header = txtColumnHeader.getText();
                 chosenFieldsSelection.setHeader( header );
-
-                //Redraw applicable widgets displaying the header. Header is 
-                //mandatory, inform state change so model is re-validated
-                chosenFieldsWidget.redraw();
-                validateFieldHeader();
                 presenter.stateChanged();
+                validateFieldHeader();
             }
 
         } );
@@ -289,13 +291,21 @@ public class ActionSetFieldsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
+    public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
+        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        availablePatternsWidget.redraw();
+    }
+
+    public void setAreActionSetFieldsDefined(boolean areActionSetFieldsDefined) {
+        msgIncompleteActionSetFields.setVisible( !areActionSetFieldsDefined );
+        chosenFieldsWidget.redraw();
+    }
+
     public void setHasIncompleteFieldDefinitions(boolean hasIncompleteFieldDefinitions) {
-        messages.setVisible( hasIncompleteFieldDefinitions );
     }
 
     public void setAvailablePatterns(List<Pattern52> patterns) {
         availablePatterns = patterns;
-        validator.setPatterns( availablePatterns );
         availablePatternsWidget.setRowCount( availablePatterns.size(),
                                              true );
         availablePatternsWidget.setRowData( availablePatterns );
@@ -309,7 +319,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 setChosenFields( new ArrayList<ActionSetFieldCol52>() );
                 chosenFieldsSelection = null;
                 fieldDefinition.setVisible( false );
-                messages.setVisible( false );
+                msgIncompleteActionSetFields.setVisible( false );
             }
         } else {
 
@@ -330,6 +340,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         chosenFieldsWidget.setRowCount( fields.size(),
                                         true );
         chosenFieldsWidget.setRowData( fields );
+        fieldDefinition.setVisible( fields.contains( chosenFieldsSelection ) );
         presenter.stateChanged();
     }
 

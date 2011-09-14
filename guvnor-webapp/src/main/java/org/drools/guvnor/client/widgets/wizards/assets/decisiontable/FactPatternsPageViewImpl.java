@@ -26,6 +26,7 @@ import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.PatternCell;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -58,67 +59,62 @@ public class FactPatternsPageViewImpl extends Composite
     implements
     FactPatternsPageView {
 
-    private Presenter                    presenter;
+    private Presenter                       presenter;
 
-    private GuidedDecisionTable52        dtable;
+    private Validator                       validator;
 
-    private Validator                    validator            = new Validator();
+    private GuidedDecisionTable52           dtable;
 
-    private TextCell                     cellText             = new TextCell();
-    private PatternCell                  cellPattern          = new PatternCell( validator );
+    private Set<String>                     availableTypesSelections;
+    private MinimumWidthCellList<String>    availableTypesWidget;
 
-    private Set<String>                  availableTypesSelections;
-    private MinimumWidthCellList<String>    availableTypesWidget = new MinimumWidthCellList<String>( cellText,
-                                                                                               WizardCellListResources.INSTANCE );
+    private List<Pattern52>                 chosenPatterns;
+    private Pattern52                       chosenPatternSelection;
+    private Set<Pattern52>                  chosenPatternSelections;
+    private MinimumWidthCellList<Pattern52> chosenPatternWidget;
 
-    private List<Pattern52>              chosenPatterns;
-    private Pattern52                    chosenPatternSelection;
-    private Set<Pattern52>               chosenPatternSelections;
-    private MinimumWidthCellList<Pattern52> chosenPatternWidget  = new MinimumWidthCellList<Pattern52>( cellPattern,
-                                                                                                  WizardCellListResources.INSTANCE );
+    private static final Constants          constants   = GWT.create( Constants.class );
 
-    private static final Constants       constants            = GWT.create( Constants.class );
-
-    private static final Images          images               = GWT.create( Images.class );
+    private static final Images             images      = GWT.create( Images.class );
 
     @UiField
-    ScrollPanel                          availableTypesContainer;
+    ScrollPanel                             availableTypesContainer;
 
     @UiField
-    ScrollPanel                          chosenPatternsContainer;
+    ScrollPanel                             chosenPatternsContainer;
 
     @UiField
-    PushButton                           btnAdd;
+    PushButton                              btnAdd;
 
     @UiField
-    PushButton                           btnRemove;
+    PushButton                              btnRemove;
 
     @UiField
-    VerticalPanel                        patternDefinition;
+    VerticalPanel                           patternDefinition;
 
     @UiField
-    TextBox                              txtBinding;
+    TextBox                                 txtBinding;
 
     @UiField
-    HorizontalPanel                      bindingContainer;
+    HorizontalPanel                         bindingContainer;
 
     @UiField
-    TextBox                              txtEntryPoint;
+    TextBox                                 txtEntryPoint;
 
     @UiField
-    CEPWindowOperatorsDropdown           ddCEPWindow;
+    CEPWindowOperatorsDropdown              ddCEPWindow;
 
     @UiField
-    HorizontalPanel                      cepWindowContainer;
+    HorizontalPanel                         cepWindowContainer;
 
     @UiField
-    HorizontalPanel                      messages;
+    HorizontalPanel                         msgDuplicateBindings;
 
     @UiField(provided = true)
-    PushButton                           btnMoveUp            = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                              btnMoveUp   = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                           btnMoveDown          = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                              btnMoveDown = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternsPageWidgetBinder
         extends
@@ -127,7 +123,13 @@ public class FactPatternsPageViewImpl extends Composite
 
     private static FactPatternsPageWidgetBinder uiBinder = GWT.create( FactPatternsPageWidgetBinder.class );
 
-    public FactPatternsPageViewImpl() {
+    public FactPatternsPageViewImpl(Validator validator) {
+        this.validator = validator;
+        this.availableTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
+                                                                      WizardCellListResources.INSTANCE );
+        this.chosenPatternWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
+                                                                        WizardCellListResources.INSTANCE );
+
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailableTypes();
         initialiseChosenPatterns();
@@ -249,9 +251,8 @@ public class FactPatternsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String binding = txtBinding.getText();
                 chosenPatternSelection.setBoundName( binding );
-                chosenPatternWidget.redraw();
-                validateBinding();
                 presenter.stateChanged();
+                validateBinding();
             }
 
         } );
@@ -324,7 +325,6 @@ public class FactPatternsPageViewImpl extends Composite
 
     public void setChosenPatterns(List<Pattern52> types) {
         chosenPatterns = types;
-        validator.setPatterns( chosenPatterns );
         chosenPatternWidget.setRowCount( types.size(),
                                          true );
         chosenPatternWidget.setRowData( types );
@@ -337,8 +337,9 @@ public class FactPatternsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
-    public void setHasDuplicatePatternBindings(boolean hasDuplicatePatternBindings) {
-        messages.setVisible( hasDuplicatePatternBindings );
+    public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
+        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        chosenPatternWidget.redraw();
     }
 
     @UiHandler(value = "btnAdd")

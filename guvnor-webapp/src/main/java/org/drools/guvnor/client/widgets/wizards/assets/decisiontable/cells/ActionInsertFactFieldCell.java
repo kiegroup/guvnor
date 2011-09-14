@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells;
 
 import org.drools.guvnor.client.resources.WizardResources;
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.Validator;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.core.client.GWT;
@@ -27,7 +28,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A cell to display Actions
  */
-class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
+public class ActionInsertFactFieldCell extends AbstractCell<ActionInsertFactCol52> {
 
     private Validator validator;
 
@@ -42,13 +43,13 @@ class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
 
     private static final ActionSetFieldCellTemplate TEMPLATE = GWT.create( ActionSetFieldCellTemplate.class );
 
-    ActionSetFieldCell(Validator validator) {
+    public ActionInsertFactFieldCell(Validator validator) {
         this.validator = validator;
     }
 
     @Override
     public void render(Context context,
-                       ActionSetFieldCol52 value,
+                       ActionInsertFactCol52 value,
                        SafeHtmlBuilder sb) {
         StringBuilder b = new StringBuilder();
         appendHeader( b,
@@ -59,7 +60,7 @@ class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
     }
 
     private void appendHeader(StringBuilder sb,
-                              ActionSetFieldCol52 a) {
+                              ActionInsertFactCol52 a) {
         if ( validator.isActionHeaderValid( a ) ) {
             sb.append( "[" );
             sb.append( a.getHeader() );
@@ -67,7 +68,7 @@ class ActionSetFieldCell extends AbstractCell<ActionSetFieldCol52> {
         }
     }
 
-    private String getCssStyleName(ActionSetFieldCol52 a) {
+    private String getCssStyleName(ActionInsertFactCol52 a) {
         if ( !validator.isActionValid( a ) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }

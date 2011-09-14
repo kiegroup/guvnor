@@ -350,14 +350,9 @@ public class PackageItem extends VersionableItem {
     public static void ensureMixinType(AssetItem assetItem, String mixin)
             throws RepositoryException {
         if (!assetItem.getNode().isNodeType(mixin)) {
-            if (assetItem.getNode().canAddMixin(mixin)) {
-                assetItem.checkout();
-                assetItem.getNode().addMixin(mixin);
-                assetItem.checkin("add " + mixin);
-            } else {
-                throw new RulesRepositoryException(assetItem.getNode().getPath()
-                        + " does not support adding " + mixin);
-            }
+            assetItem.checkout();
+            assetItem.getNode().addMixin(mixin);
+            assetItem.checkin("add " + mixin);
         }
     }
     

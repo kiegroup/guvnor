@@ -28,6 +28,8 @@ import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ConditionPatternCell;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -65,26 +67,23 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private Presenter                            presenter;
 
-    private Validator                            validator               = new Validator();
+    private Validator                            validator;
 
     private List<Pattern52>                      availablePatterns;
     private Pattern52                            availablePatternsSelection;
-    private MinimumWidthCellList<Pattern52>      availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new PatternCell( validator ),
-                                                                                                                WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<Pattern52>      availablePatternsWidget;
 
     private Set<AvailableField>                  availableFieldsSelections;
-    private MinimumWidthCellList<AvailableField> availableFieldsWidget   = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
-                                                                                                                     WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<AvailableField> availableFieldsWidget;
 
     private List<ConditionCol52>                 chosenConditions;
     private ConditionCol52                       chosenConditionsSelection;
     private Set<ConditionCol52>                  chosenConditionsSelections;
-    private MinimumWidthCellList<ConditionCol52> chosenConditionsWidget  = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
-                                                                                                                     WizardCellListResources.INSTANCE );
+    private MinimumWidthCellList<ConditionCol52> chosenConditionsWidget;
 
-    private static final Constants               constants               = GWT.create( Constants.class );
+    private static final Constants               constants   = GWT.create( Constants.class );
 
-    private static final Images                  images                  = GWT.create( Images.class );
+    private static final Images                  images      = GWT.create( Images.class );
 
     @UiField
     protected ScrollPanel                        availablePatternsContainer;
@@ -141,13 +140,16 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     TextBox                                      txtDefaultValue;
 
     @UiField
-    HorizontalPanel                              messages;
+    HorizontalPanel                              msgDuplicateBindings;
+
+    @UiField
+    HorizontalPanel                              msgIncompleteConditions;
 
     @UiField(provided = true)
-    PushButton                                   btnMoveUp               = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
+    PushButton                                   btnMoveUp   = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
 
     @UiField(provided = true)
-    PushButton                                   btnMoveDown             = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
+    PushButton                                   btnMoveDown = new PushButton( AbstractImagePrototype.create( images.shuffleDown() ).createImage() );
 
     interface FactPatternConstraintsPageWidgetBinder
         extends
@@ -156,7 +158,15 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     private static FactPatternConstraintsPageWidgetBinder uiBinder = GWT.create( FactPatternConstraintsPageWidgetBinder.class );
 
-    public FactPatternConstraintsPageViewImpl() {
+    public FactPatternConstraintsPageViewImpl(Validator validator) {
+        this.validator = validator;
+        this.availablePatternsWidget = new MinimumWidthCellList<Pattern52>( new ConditionPatternCell( validator ),
+                                                                            WizardCellListResources.INSTANCE );
+        this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
+                                                                               WizardCellListResources.INSTANCE );
+        this.chosenConditionsWidget = new MinimumWidthCellList<ConditionCol52>( new ConditionCell( validator ),
+                                                                                WizardCellListResources.INSTANCE );
+
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAvailablePatterns();
         initialiseAvailableFields();
@@ -185,7 +195,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
             public void onSelectionChange(SelectionChangeEvent event) {
                 availablePatternsSelection = selectionModel.getSelectedObject();
-                presenter.patternSelected( availablePatternsSelection );
+                presenter.selectPattern( availablePatternsSelection );
             }
 
         } );
@@ -308,12 +318,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
                     public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                         chosenConditionsSelection.setOperator( event.getValue().getValue() );
-
-                        //Redraw applicable widgets displaying the header. Header is 
-                        //mandatory, inform state change so model is re-validated
-                        chosenConditionsWidget.redraw();
-                        validateConditionOperator();
                         presenter.stateChanged();
+                        validateConditionOperator();
                     }
 
                 } );
@@ -374,12 +380,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String header = txtColumnHeader.getText();
                 chosenConditionsSelection.setHeader( header );
-
-                //Redraw applicable widgets displaying the header. Header is 
-                //mandatory, inform state change so model is re-validated
-                chosenConditionsWidget.redraw();
-                validateConditionHeader();
                 presenter.stateChanged();
+                validateConditionHeader();
             }
 
         } );
@@ -392,8 +394,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 String expression = txtPredicateExpression.getText();
                 chosenConditionsSelection.setFactField( expression );
 
-                //Redraw list widget that shows Predicate expressions. PredicateExpression 
-                //is optional, no need to advise of state change
+                //Redraw list widget that shows Predicate expressions
                 chosenConditionsWidget.redraw();
 
             }
@@ -475,13 +476,19 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
-    public void setHasIncompleteConditionDefinitions(boolean hasIncompleteConditionDefinitions) {
-        messages.setVisible( hasIncompleteConditionDefinitions );
+    public void setAreConditionsDefined(boolean areConditionsDefined) {
+        msgIncompleteConditions.setVisible( !areConditionsDefined );
+        chosenConditionsWidget.redraw();
+        availablePatternsWidget.redraw();
+    }
+
+    public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
+        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        availablePatternsWidget.redraw();
     }
 
     public void setAvailablePatterns(List<Pattern52> patterns) {
         availablePatterns = patterns;
-        validator.setPatterns( availablePatterns );
         availablePatternsWidget.setRowCount( availablePatterns.size(),
                                              true );
         availablePatternsWidget.setRowData( availablePatterns );
@@ -495,7 +502,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 setChosenConditions( new ArrayList<ConditionCol52>() );
                 chosenConditionsSelection = null;
                 conditionDefinition.setVisible( false );
-                messages.setVisible( false );
+                msgIncompleteConditions.setVisible( false );
             }
         } else {
 
@@ -516,6 +523,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         chosenConditionsWidget.setRowCount( conditions.size(),
                                             true );
         chosenConditionsWidget.setRowData( conditions );
+        conditionDefinition.setVisible( conditions.contains( chosenConditionsSelection ) );
         enableMoveUpButton();
         enableMoveDownButton();
         presenter.stateChanged();

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells;
 
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.AvailableField;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -26,7 +27,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A cell to display a available Fields
  */
-class AvailableFieldCell extends AbstractCell<AvailableField> {
+public class AvailableFieldCell extends AbstractCell<AvailableField> {
 
     interface AvailableFieldCellTemplate
         extends
