@@ -94,11 +94,6 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         rule.checkin( "version 1" );
         
     }
-    
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
 
     @Test
     public void testGetAssetsByCategoryAsAtom() throws Exception {

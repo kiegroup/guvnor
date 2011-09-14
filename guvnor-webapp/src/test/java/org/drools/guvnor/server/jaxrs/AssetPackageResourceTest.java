@@ -127,11 +127,6 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         //impl.buildPackage(pkg.getUUID(), true);
         pkg.checkin( "version3" );            
     }
-    
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
 
     @Test
     public void testGetAssetsAsAtom() throws Exception {

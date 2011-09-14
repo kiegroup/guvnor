@@ -125,11 +125,6 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         pkg.checkin( "version3" );               
     }
     
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
-    
     @Test
     public void testBasicAuthentication() throws MalformedURLException, IOException {
         //Test with invalid user name and pwd

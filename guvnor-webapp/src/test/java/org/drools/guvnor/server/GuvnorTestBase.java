@@ -97,13 +97,6 @@ public abstract class GuvnorTestBase {
 //        mockIdentity.create();
 //    }
 
-    @After
-    public void tearDownGuvnorTestBase() {
-        // TODO seam3upgrade
-        MailboxService.getInstance().stop();
-        TestEnvironmentSessionHelper.shutdown();
-    }
-
     // ************************************************************************
     // Helper methods
     // ************************************************************************

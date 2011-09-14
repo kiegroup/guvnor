@@ -22,10 +22,6 @@ public class RestTestingBase extends GuvnorTestBase {
     public void setup() {
     	this.setUpGuvnorTestBase();
     }
-
-    public void destroy() {
-    	this.tearDownGuvnorTestBase();
-    }
     
 /*    public static String GetContent (InputStream is) throws IOException {
         StringAppender ret = new StringAppender();

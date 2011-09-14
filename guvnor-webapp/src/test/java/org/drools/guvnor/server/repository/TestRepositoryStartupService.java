@@ -38,7 +38,6 @@ import javax.jcr.Session;
 import org.apache.commons.io.FileUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.JCRRepositoryConfigurator;
-import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryConfigurator;

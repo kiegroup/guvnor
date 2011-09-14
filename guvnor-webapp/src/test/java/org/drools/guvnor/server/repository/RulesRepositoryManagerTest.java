@@ -23,7 +23,6 @@ import static org.junit.Assert.assertFalse;
 import javax.jcr.Repository;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepositoryConfigurator;
 import org.junit.After;
 import org.junit.Test;
