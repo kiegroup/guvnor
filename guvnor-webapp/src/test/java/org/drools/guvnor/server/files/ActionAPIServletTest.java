@@ -22,6 +22,8 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.ActionsAPI.Parameters;
@@ -38,6 +40,9 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     private final String compilationPath = "http://foo/action/compile";
     private final String snapshotPath    = "http://foo/action/snapshot";
 
+    @Inject
+    private ActionsAPIServlet actionsAPIServlet;
+
     /*
      * Modeled after testPost in RestAPIServletTest.
      */
@@ -45,10 +50,8 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        repo.createPackage( dynamicPackage,
-                            "test-action package for testing" );
+        rulesRepository.createPackage(dynamicPackage,
+                "test-action package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
@@ -61,26 +64,23 @@ public class ActionAPIServletTest extends GuvnorTestBase {
                      dynamicPackage );
             }
         };
-        ActionsAPIServlet serv = new ActionsAPIServlet();
         MockHTTPRequest req = new MockHTTPRequest( compilationPath,
                                                    headers,
                                                    parameters );
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doPost( req,
+        actionsAPIServlet.doPost( req,
                      res );
         assertEquals( 200,
                       res.status );
-        repo.logout();
+        rulesRepository.logout();
     }
 
     @Test
     public void testSnapshotCreation() throws Exception {
         final String dynamicPackage = "test-snap" + UUID.randomUUID();
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        repo.createPackage( dynamicPackage,
-                            "test-snapshot package for testing" );
+        rulesRepository.createPackage(dynamicPackage,
+                "test-snapshot package for testing");
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
@@ -97,17 +97,16 @@ public class ActionAPIServletTest extends GuvnorTestBase {
         };
 
         ByteArrayInputStream in = new ByteArrayInputStream( "some content".getBytes() );
-        ActionsAPIServlet serv = new ActionsAPIServlet();
         MockHTTPRequest req = new MockHTTPRequest( snapshotPath,
                                                    headers,
                                                    parameters,
                                                    in );
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doPost( req,
+        actionsAPIServlet.doPost( req,
                      res );
         assertEquals( 200,
                       res.status );
-        repo.logout();
+        rulesRepository.logout();
     }
 
 }
