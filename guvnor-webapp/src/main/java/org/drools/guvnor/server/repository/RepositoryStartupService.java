@@ -160,7 +160,7 @@ public class RepositoryStartupService {
         try {
             return configurator.login(userName);
         } catch (LoginException e) {
-            throw new RulesRepositoryException("Unable to login to JCR backend.");
+            throw new RulesRepositoryException("Unable to login to JCR backend.", e);
         } catch (RepositoryException e) {
             throw new RulesRepositoryException(e);
         }
