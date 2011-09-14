@@ -19,7 +19,6 @@ package org.drools.guvnor.server.repository;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
