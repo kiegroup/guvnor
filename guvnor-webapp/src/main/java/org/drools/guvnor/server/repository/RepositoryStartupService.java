@@ -48,10 +48,10 @@ import java.util.Properties;
 @ApplicationScoped
 public class RepositoryStartupService {
 
-    private transient final Logger log = LoggerFactory.getLogger(getClass());
+    protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
     @Inject
-    private GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
+    protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
 
     private RulesRepositoryConfigurator configurator;
 

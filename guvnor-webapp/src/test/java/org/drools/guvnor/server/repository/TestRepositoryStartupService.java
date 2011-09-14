@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server.repository;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,8 +35,10 @@ import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import org.apache.commons.io.FileUtils;
 import org.drools.repository.AssetItem;
 import org.drools.repository.JCRRepositoryConfigurator;
+import org.drools.repository.RepositorySessionUtil;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryAdministrator;
 import org.drools.repository.RulesRepositoryConfigurator;
@@ -53,11 +57,23 @@ public class TestRepositoryStartupService extends RepositoryStartupService {
 
     @Override
     public Repository getRepositoryInstance() {
-        System.out.println("blub");
-        System.out.println("blub");
-        System.out.println("blub");
-        System.out.println("blub");
-        System.out.println("blub");
+        // Note that in tomcat-managed, the working directory is not the module directory
+        File targetDir = new File("target/");
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+        File repositoryDir = new File(targetDir, "repository/");
+        if (repositoryDir.exists()) {
+            try {
+                FileUtils.deleteDirectory(repositoryDir);
+            } catch (IOException e) {
+                throw new IllegalStateException("Failed at deleting test repositoryDir (" + repositoryDir + ").", e);
+            }
+            log.info("Deleted test repositoryDir (" + repositoryDir + ").");
+        }
+        // Automated tests writes in the target dir, so "mvn clean" can cleans it
+        guvnorBootstrapConfiguration.getProperties().put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
+                            repositoryDir.getAbsolutePath());
         return super.getRepositoryInstance();
     }
 
