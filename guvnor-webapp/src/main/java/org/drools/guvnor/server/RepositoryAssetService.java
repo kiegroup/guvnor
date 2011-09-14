@@ -552,8 +552,6 @@ public class RepositoryAssetService
                     pkg.getName());
 
         } catch (RulesRepositoryException e) {
-            log.error("Unable to get item format.",
-                    e);
             throw e;
         }
     }
