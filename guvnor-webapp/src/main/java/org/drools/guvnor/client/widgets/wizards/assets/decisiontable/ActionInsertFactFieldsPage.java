@@ -46,9 +46,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     ActionInsertFactPatternsDefinedEvent.Handler,
     ActionInsertFactFieldsDefinedEvent.Handler {
 
-    private final ModelNameHelper                       modelNameHelper     = new ModelNameHelper();
+    private final ModelNameHelper                                           modelNameHelper     = new ModelNameHelper();
 
-    private ActionInsertFactFieldsPageView              view;
+    private ActionInsertFactFieldsPageView                                  view;
 
     //GuidedDecisionTable52 maintains a single collection of Actions, linked to patterns by boundName. Thus if multiple 
     //patterns are bound to the same name we cannot distinguish which Actions relate to which Patterns. The Wizard therefore 
@@ -217,10 +217,16 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
-        //TODO Needs to populate ActionInsertFactCol52's correctly
-        for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
-            for ( ActionInsertFactCol52 af : actions ) {
-                dtable.getActionCols().add( af );
+        for ( ActionInsertFactFieldsPattern p : patternToActionsMap.keySet() ) {
+            String factType = p.getFactType();
+            String boundName = p.getBoundName();
+            boolean isLogicalInsert = p.isInsertedLogically();
+
+            for ( ActionInsertFactCol52 aif : patternToActionsMap.get( p ) ) {
+                aif.setFactType( factType );
+                aif.setBoundName( boundName );
+                aif.setInsertLogical( isLogicalInsert );
+                dtable.getActionCols().add( aif );
             }
         }
     }

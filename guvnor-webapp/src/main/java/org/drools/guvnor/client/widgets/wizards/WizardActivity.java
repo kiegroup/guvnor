@@ -44,7 +44,8 @@ public class WizardActivity extends Activity
         view = clientFactory.getNavigationViewFactory().getWizardView();
 
         //The specific "page factory" for a particular Wizard
-        wizard = clientFactory.getWizardFactory().getWizard( place.getContext() );
+        wizard = clientFactory.getWizardFactory().getWizard( place.getContext(),
+                                                             this );
         view.setPresenter( this );
     }
 
@@ -76,13 +77,13 @@ public class WizardActivity extends Activity
     @Override
     public void start(AcceptItem acceptTabItem,
                       EventBus eventBus) {
-        
+
         //Wire-up the events
         eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
                              this );
         eventBus.addHandler( WizardPageSelectedEvent.TYPE,
                              this );
-        
+
         //Go, Go gadget Wizard
         view.setTitle( wizard.getTitle() );
         view.setPreferredHeight( wizard.getPreferredHeight() );
@@ -99,6 +100,30 @@ public class WizardActivity extends Activity
 
     public void complete() {
         wizard.complete();
+    }
+
+    public void showSavingIndicator() {
+        view.showSavingIndicator();
+    }
+
+    public void hideSavingIndicator() {
+        view.hideSavingIndicator();
+    }
+
+    public void showDuplicateAssetNameError() {
+        view.showDuplicateAssetNameError();
+    }
+
+    public void showUnspecifiedCheckinError() {
+        view.showUnspecifiedCheckinError();
+    }
+
+    public void showCheckinError(String message) {
+        view.showCheckinError( message );
+    }
+
+    public void hide() {
+        view.hide();
     }
 
 }

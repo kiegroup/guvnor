@@ -47,6 +47,10 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         return constants.DecisionTableWizardSummary();
     }
 
+    public String getAssetName() {
+        return view.getAssetName();
+    }
+
     public boolean isComplete() {
         String assetName = view.getAssetName();
         boolean isValid = (assetName != null && !assetName.equals( "" ));

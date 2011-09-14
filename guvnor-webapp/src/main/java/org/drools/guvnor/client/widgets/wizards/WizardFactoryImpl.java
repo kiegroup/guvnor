@@ -38,11 +38,15 @@ public class WizardFactoryImpl
         this.eventBus = eventBus;
     }
 
-    public Wizard getWizard(WizardContext context) {
+    public Wizard getWizard(WizardContext context,
+                            WizardActivityView.Presenter presenter) {
         if ( context instanceof NewAssetWizardContext ) {
             NewAssetWizardContext newAssetContext = (NewAssetWizardContext) context;
             if ( newAssetContext.getFormat().equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
-                return new NewGuidedDecisionTableWizard( clientFactory, eventBus, newAssetContext );
+                return new NewGuidedDecisionTableWizard( clientFactory,
+                                                         eventBus,
+                                                         newAssetContext,
+                                                         presenter );
             }
         }
         return null;

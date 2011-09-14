@@ -179,7 +179,6 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
-        dtable.getActionCols().clear();
         for ( List<ActionSetFieldCol52> actions : patternToActionsMap.values() ) {
             for ( ActionSetFieldCol52 af : actions ) {
                 dtable.getActionCols().add( af );
