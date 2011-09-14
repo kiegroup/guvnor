@@ -46,7 +46,6 @@ import java.util.Properties;
  * This startup class manages the JCR repository, sets it up if necessary.
  */
 @ApplicationScoped
-@Named("repositoryConfiguration")
 public class RepositoryStartupService {
 
     private transient final Logger log = LoggerFactory.getLogger(getClass());
