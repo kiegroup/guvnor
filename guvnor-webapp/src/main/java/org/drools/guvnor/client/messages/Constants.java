@@ -2466,6 +2466,8 @@ public interface Constants
 
     String DecisionTableWizardSummaryNameMissing();
     
+    String DecisionTableWizardIncompletePatterns();
+    
     String XMLSchemas();
     
     String SampleMessages();

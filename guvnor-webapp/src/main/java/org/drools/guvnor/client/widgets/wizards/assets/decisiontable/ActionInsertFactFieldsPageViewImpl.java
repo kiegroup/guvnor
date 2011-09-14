@@ -28,7 +28,6 @@ import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.Actio
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ActionInsertFactFieldPatternCell;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -59,72 +58,87 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     implements
     ActionInsertFactFieldsPageView {
 
-    private Presenter                                   presenter;
+    private Presenter                                           presenter;
 
-    private Validator                                   validator;
+    private Validator                                           validator;
 
-    private Set<String>                                 availableFactTypesSelections;
-    private MinimumWidthCellList<String>                availableFactTypesWidget;
+    private Set<String>                                         availableFactTypesSelections;
+    private MinimumWidthCellList<String>                        availableFactTypesWidget;
 
-    private List<Pattern52>                             chosenPatterns;
-    private Pattern52                                   chosenPatternsSelection;
-    private Set<Pattern52>                              chosenPatternsSelections;
-    private MinimumWidthCellList<Pattern52>             chosenPatternsWidget;
+    private List<ActionInsertFactFieldsPattern>                 chosenPatterns;
+    private ActionInsertFactFieldsPattern                       chosenPatternsSelection;
+    private Set<ActionInsertFactFieldsPattern>                  chosenPatternsSelections;
+    private MinimumWidthCellList<ActionInsertFactFieldsPattern> chosenPatternsWidget;
 
-    private Set<AvailableField>                         availableFieldsSelections;
-    private MinimumWidthCellList<AvailableField>        availableFieldsWidget;
+    private Set<AvailableField>                                 availableFieldsSelections;
+    private MinimumWidthCellList<AvailableField>                availableFieldsWidget;
 
-    private List<ActionInsertFactCol52>                 chosenFields;
-    private ActionInsertFactCol52                       chosenFieldsSelection;
-    private Set<ActionInsertFactCol52>                  chosenFieldsSelections;
-    private MinimumWidthCellList<ActionInsertFactCol52> chosenFieldsWidget;
+    private List<ActionInsertFactCol52>                         chosenFields;
+    private ActionInsertFactCol52                               chosenFieldsSelection;
+    private Set<ActionInsertFactCol52>                          chosenFieldsSelections;
+    private MinimumWidthCellList<ActionInsertFactCol52>         chosenFieldsWidget;
 
-    private static final Constants                      constants = GWT.create( Constants.class );
-
-    @UiField
-    protected ScrollPanel                               availableFactTypesContainer;
+    private static final Constants                              constants = GWT.create( Constants.class );
 
     @UiField
-    protected ScrollPanel                               chosenPatternsContainer;
+    protected ScrollPanel                                       availableFactTypesContainer;
 
     @UiField
-    protected ScrollPanel                               availableFieldsContainer;
+    protected ScrollPanel                                       chosenPatternsContainer;
 
     @UiField
-    protected ScrollPanel                               chosenFieldsContainer;
+    protected ScrollPanel                                       availableFieldsContainer;
 
     @UiField
-    protected PushButton                                btnAddFactTypes;
+    protected ScrollPanel                                       chosenFieldsContainer;
 
     @UiField
-    protected PushButton                                btnRemoveFactTypes;
+    protected PushButton                                        btnAddFactTypes;
 
     @UiField
-    protected PushButton                                btnAdd;
+    protected PushButton                                        btnRemoveFactTypes;
 
     @UiField
-    protected PushButton                                btnRemove;
+    protected PushButton                                        btnAdd;
 
     @UiField
-    VerticalPanel                                       fieldDefinition;
+    protected PushButton                                        btnRemove;
 
     @UiField
-    TextBox                                             txtColumnHeader;
+    VerticalPanel                                               patternDefinition;
 
     @UiField
-    HorizontalPanel                                     columnHeaderContainer;
+    HorizontalPanel                                             bindingContainer;
 
     @UiField
-    TextBox                                             txtValueList;
+    TextBox                                                     txtBinding;
 
     @UiField
-    TextBox                                             txtDefaultValue;
+    VerticalPanel                                               fieldDefinition;
 
     @UiField
-    CheckBox                                            chkLogicalInsert;
+    TextBox                                                     txtColumnHeader;
 
     @UiField
-    HorizontalPanel                                     msgIncompleteActions;
+    HorizontalPanel                                             columnHeaderContainer;
+
+    @UiField
+    TextBox                                                     txtValueList;
+
+    @UiField
+    TextBox                                                     txtDefaultValue;
+
+    @UiField
+    CheckBox                                                    chkLogicalInsert;
+
+    @UiField
+    HorizontalPanel                                             msgDuplicateBindings;
+
+    @UiField
+    HorizontalPanel                                             msgIncompletePatterns;
+
+    @UiField
+    HorizontalPanel                                             msgIncompleteActions;
 
     interface ActionInsertFactFieldsPageWidgetBinder
         extends
@@ -137,8 +151,8 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         this.validator = validator;
         this.availableFactTypesWidget = new MinimumWidthCellList<String>( new TextCell(),
                                                                           WizardCellListResources.INSTANCE );
-        this.chosenPatternsWidget = new MinimumWidthCellList<Pattern52>( new ActionInsertFactFieldPatternCell( validator ),
-                                                                         WizardCellListResources.INSTANCE );
+        this.chosenPatternsWidget = new MinimumWidthCellList<ActionInsertFactFieldsPattern>( new ActionInsertFactFieldPatternCell( validator ),
+                                                                                             WizardCellListResources.INSTANCE );
         this.availableFieldsWidget = new MinimumWidthCellList<AvailableField>( new AvailableFieldCell(),
                                                                                WizardCellListResources.INSTANCE );
         this.chosenFieldsWidget = new MinimumWidthCellList<ActionInsertFactCol52>( new ActionInsertFactFieldCell( validator ),
@@ -149,10 +163,11 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         initialiseChosenPatterns();
         initialiseAvailableFields();
         initialiseChosenFields();
+        initialiseBinding();
+        initialiseLogicalInsert();
         initialiseColumnHeader();
         initialiseDefaultValue();
         initialiseValueList();
-        initialiseLogicalInsert();
     }
 
     private void initialiseAvailableFactTypes() {
@@ -186,7 +201,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         chosenPatternsWidget.setEmptyListWidget( lstEmpty );
 
-        final MultiSelectionModel<Pattern52> selectionModel = new MultiSelectionModel<Pattern52>();
+        final MultiSelectionModel<ActionInsertFactFieldsPattern> selectionModel = new MultiSelectionModel<ActionInsertFactFieldsPattern>();
         chosenPatternsWidget.setSelectionModel( selectionModel );
 
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
@@ -196,17 +211,31 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                 chosenPatternsSelected( chosenPatternsSelections );
             }
 
-            private void chosenPatternsSelected(Set<Pattern52> cps) {
+            private void chosenPatternsSelected(Set<ActionInsertFactFieldsPattern> cps) {
                 btnRemoveFactTypes.setEnabled( cps.size() > 0 );
                 fieldDefinition.setVisible( false );
                 if ( cps.size() == 1 ) {
                     chosenPatternsSelection = cps.iterator().next();
                     presenter.selectPattern( chosenPatternsSelection );
+                    patternDefinition.setVisible( true );
+                    validateBinding();
+                    txtBinding.setEnabled( true );
+                    txtBinding.setVisible( true );
+                    txtBinding.setText( chosenPatternsSelection.getBoundName() );
+                    chkLogicalInsert.setEnabled( true );
+                    chkLogicalInsert.setVisible( true );
+                    chkLogicalInsert.setValue( chosenPatternsSelection.isInsertedLogically() );
 
                 } else {
                     chosenPatternsSelection = null;
                     setAvailableFields( new ArrayList<AvailableField>() );
                     setChosenFields( new ArrayList<ActionInsertFactCol52>() );
+                    patternDefinition.setVisible( false );
+                    txtBinding.setEnabled( false );
+                    txtBinding.setVisible( false );
+                    txtBinding.setText( "" );
+                    chkLogicalInsert.setEnabled( false );
+                    chkLogicalInsert.setVisible( false );
                 }
             }
 
@@ -267,11 +296,9 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                     txtColumnHeader.setEnabled( true );
                     txtDefaultValue.setEnabled( true );
                     txtValueList.setEnabled( true );
-                    chkLogicalInsert.setEnabled( true );
                     txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
                     txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
                     txtValueList.setText( chosenFieldsSelection.getValueList() );
-                    chkLogicalInsert.setValue( chosenFieldsSelection.isInsertLogical() );
                     validateFieldHeader();
                 } else {
                     chosenFieldsSelection = null;
@@ -279,11 +306,34 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                     txtColumnHeader.setEnabled( false );
                     txtValueList.setEnabled( false );
                     txtDefaultValue.setEnabled( false );
-                    chkLogicalInsert.setEnabled( false );
                 }
             }
 
         } );
+    }
+
+    private void initialiseBinding() {
+        txtBinding.addValueChangeHandler( new ValueChangeHandler<String>() {
+
+            public void onValueChange(ValueChangeEvent<String> event) {
+                String binding = txtBinding.getText();
+                chosenPatternsSelection.setBoundName( binding );
+                presenter.stateChanged();
+                validateBinding();
+            }
+
+        } );
+    }
+
+    private void validateBinding() {
+        if ( chosenPatternsSelection == null ) {
+            return;
+        }
+        if ( validator.isPatternBindingUnique( chosenPatternsSelection ) && validator.isPatternValid( chosenPatternsSelection ) ) {
+            bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
+        } else {
+            bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
+        }
     }
 
     private void initialiseColumnHeader() {
@@ -336,7 +386,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         chkLogicalInsert.addClickHandler( new ClickHandler() {
 
             public void onClick(ClickEvent event) {
-                chosenFieldsSelection.setInsertLogical( chkLogicalInsert.getValue() );
+                chosenPatternsSelection.setInsertedLogically( chkLogicalInsert.getValue() );
             }
 
         } );
@@ -344,6 +394,17 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
+        msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        chosenPatternsWidget.redraw();
+        validateBinding();
+    }
+
+    public void setAreActionInsertFactPatternsDefined(boolean areActionInsertFactPatternsDefined) {
+        msgIncompletePatterns.setVisible( !areActionInsertFactPatternsDefined );
+        chosenPatternsWidget.redraw();
     }
 
     public void setAreActionInsertFactFieldsDefined(boolean areActionInsertFactFieldsDefined) {
@@ -358,7 +419,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         availableFactTypesWidget.setRowData( types );
     }
 
-    public void setChosenPatterns(List<Pattern52> patterns) {
+    public void setChosenPatterns(List<ActionInsertFactFieldsPattern> patterns) {
         chosenPatterns = patterns;
         chosenPatternsWidget.setRowCount( chosenPatterns.size(),
                                           true );
@@ -383,7 +444,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     @UiHandler(value = "btnAddFactTypes")
     public void btnAddFactTypesClick(ClickEvent event) {
         for ( String type : availableFactTypesSelections ) {
-            Pattern52 pattern = new Pattern52();
+            ActionInsertFactFieldsPattern pattern = new ActionInsertFactFieldsPattern();
             pattern.setFactType( type );
             chosenPatterns.add( pattern );
             presenter.addPattern( pattern );
@@ -394,7 +455,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     @UiHandler(value = "btnRemoveFactTypes")
     public void btnRemoveFactTypesClick(ClickEvent event) {
-        for ( Pattern52 p : chosenPatternsSelections ) {
+        for ( ActionInsertFactFieldsPattern p : chosenPatternsSelections ) {
             chosenPatterns.remove( p );
             presenter.removePattern( p );
         }
@@ -403,7 +464,11 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         setAvailableFields( new ArrayList<AvailableField>() );
         setChosenFields( new ArrayList<ActionInsertFactCol52>() );
         presenter.stateChanged();
+
+        txtBinding.setText( "" );
+        txtBinding.setEnabled( false );
         btnRemoveFactTypes.setEnabled( false );
+        patternDefinition.setVisible( false );
     }
 
     @UiHandler(value = "btnAdd")

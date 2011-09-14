@@ -24,7 +24,8 @@ import java.util.Map;
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactFieldsDefinedEvent;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactPatternsDefinedEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -41,7 +42,8 @@ import com.google.gwt.event.shared.EventBus;
 public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizardPage
     implements
     ActionInsertFactFieldsPageView.Presenter,
-    PatternRemovedEvent.Handler,
+    DuplicatePatternsEvent.Handler,
+    ActionInsertFactPatternsDefinedEvent.Handler,
     ActionInsertFactFieldsDefinedEvent.Handler {
 
     private final ModelNameHelper                       modelNameHelper     = new ModelNameHelper();
@@ -55,7 +57,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     //A WeakIdentityHashMap would have been more appropriate, however JavaScript has no concept of a weak reference, and so 
     //it can't be implement in GWT. In the absence of such a Map an Event is raised by FactPatternsPage when a Pattern is 
     //removed that is handled here to synchronise the Pattern lists.
-    private Map<Pattern52, List<ActionInsertFactCol52>> patternToActionsMap = new IdentityHashMap<Pattern52, List<ActionInsertFactCol52>>();
+    private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionsMap = new IdentityHashMap<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>>();
 
     public ActionInsertFactFieldsPage(NewAssetWizardContext context,
                                       GuidedDecisionTable52 dtable,
@@ -71,15 +73,12 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         this.view = new ActionInsertFactFieldsPageViewImpl( getValidator() );
 
         //Wire-up the events
-        eventBus.addHandler( PatternRemovedEvent.TYPE,
+        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
                              this );
         eventBus.addHandler( ActionInsertFactFieldsDefinedEvent.TYPE,
                              this );
-    }
-
-    //See comments about use of IdentityHashMap in instance member declaration section
-    public void onPatternRemoved(PatternRemovedEvent event) {
-        removePattern( event.getPattern() );
+        eventBus.addHandler( ActionInsertFactPatternsDefinedEvent.TYPE,
+                             this );
     }
 
     public String getTitle() {
@@ -100,24 +99,24 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         for ( ActionCol52 a : dtable.getActionCols() ) {
             if ( a instanceof ActionInsertFactCol52 ) {
                 ActionInsertFactCol52 aif = (ActionInsertFactCol52) a;
-                Pattern52 p = lookupExistingInsertFactPattern( aif.getBoundName() );
+                ActionInsertFactFieldsPattern p = lookupExistingInsertFactPattern( aif.getBoundName() );
                 List<ActionInsertFactCol52> actions = patternToActionsMap.get( p );
                 getValidator().addActionPattern( p );
                 actions.add( aif );
             }
         }
-        view.setChosenPatterns( new ArrayList<Pattern52>( patternToActionsMap.keySet() ) );
+        view.setChosenPatterns( new ArrayList<ActionInsertFactFieldsPattern>( patternToActionsMap.keySet() ) );
 
         content.setWidget( view );
     }
 
-    private Pattern52 lookupExistingInsertFactPattern(String boundName) {
-        for ( Pattern52 p : patternToActionsMap.keySet() ) {
+    private ActionInsertFactFieldsPattern lookupExistingInsertFactPattern(String boundName) {
+        for ( ActionInsertFactFieldsPattern p : patternToActionsMap.keySet() ) {
             if ( p.getBoundName().equals( boundName ) ) {
                 return p;
             }
         }
-        Pattern52 p = new Pattern52();
+        ActionInsertFactFieldsPattern p = new ActionInsertFactFieldsPattern();
         patternToActionsMap.put( p,
                                  new ArrayList<ActionInsertFactCol52>() );
         return p;
@@ -128,6 +127,26 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     }
 
     public boolean isComplete() {
+
+        //Do all Patterns have unique bindings?
+        boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
+
+        //Signal duplicates to other pages
+        DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
+        eventBus.fireEvent( event );
+
+        //Are all Patterns defined?
+        boolean areActionInsertPatternsDefined = true;
+        for ( Pattern52 p : patternToActionsMap.keySet() ) {
+            if ( !getValidator().isPatternValid( p ) ) {
+                areActionInsertPatternsDefined = false;
+                break;
+            }
+        }
+
+        //Signal Action Insert Fact Patterns to other pages
+        ActionInsertFactPatternsDefinedEvent eventFactPatterns = new ActionInsertFactPatternsDefinedEvent( areActionInsertPatternsDefined );
+        eventBus.fireEvent( eventFactPatterns );
 
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
@@ -144,25 +163,33 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
         eventBus.fireEvent( eventFactFields );
 
-        return areActionInsertFieldsDefined;
+        return arePatternBindingsUnique && areActionInsertPatternsDefined && areActionInsertFieldsDefined;
+    }
+
+    public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    }
+
+    public void onActionInsertFactPatternsDefined(ActionInsertFactPatternsDefinedEvent event) {
+        view.setAreActionInsertFactPatternsDefined( event.getAreActionInsertFactPatternsDefined() );
     }
 
     public void onActionInsertFactFieldsDefined(ActionInsertFactFieldsDefinedEvent event) {
         view.setAreActionInsertFactFieldsDefined( event.getAreActionInsertFactFieldsDefined() );
     }
 
-    public void addPattern(Pattern52 pattern) {
+    public void addPattern(ActionInsertFactFieldsPattern pattern) {
         patternToActionsMap.put( pattern,
                                  new ArrayList<ActionInsertFactCol52>() );
         getValidator().addActionPattern( pattern );
     }
 
-    public void removePattern(Pattern52 pattern) {
+    public void removePattern(ActionInsertFactFieldsPattern pattern) {
         patternToActionsMap.remove( pattern );
         getValidator().removeActionPattern( pattern );
     }
 
-    public void selectPattern(Pattern52 pattern) {
+    public void selectPattern(ActionInsertFactFieldsPattern pattern) {
 
         //Add fields available
         String type = pattern.getFactType();
@@ -190,6 +217,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
+        //TODO Needs to populate ActionInsertFactCol52's correctly
         for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
             for ( ActionInsertFactCol52 af : actions ) {
                 dtable.getActionCols().add( af );

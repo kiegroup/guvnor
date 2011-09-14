@@ -25,6 +25,18 @@
   <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
 
   <gwt:VerticalPanel ui:field="container" width="100%">
+    <gwt:HorizontalPanel ui:field="msgDuplicateBindings" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel ui:field="msgIncompletePatterns" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.DecisionTableWizardIncompletePatterns}" styleName="{res.style.wizardDTableMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
     <gwt:HorizontalPanel ui:field="msgIncompleteActions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
@@ -66,6 +78,17 @@
           <gwt:ScrollPanel ui:field="chosenFieldsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
+      <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
+        <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
+          <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
+          <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+          <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
+        </gwt:HorizontalPanel>
+        <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+          <gwt:CheckBox ui:field="chkLogicalInsert" styleName="{res.style.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
+        </gwt:HorizontalPanel>
+      </gwt:VerticalPanel>
       <gwt:VerticalPanel ui:field="fieldDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="columnHeaderContainer" styleName="{res.style.wizardDTableFieldContainerValid">
           <gwt:Label text="{i18n.ColumnHeaderDescription}" styleName="{res.style.wizardDTableFields}" />
@@ -80,10 +103,6 @@
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtDefaultValue" enabled="false" styleName="{res.style.wizardDTableFields}" />
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
-          <gwt:CheckBox ui:field="chkLogicalInsert" styleName="{res.style.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>
-          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>
         </gwt:HorizontalPanel>
       </gwt:VerticalPanel>
     </gwt:VerticalPanel>

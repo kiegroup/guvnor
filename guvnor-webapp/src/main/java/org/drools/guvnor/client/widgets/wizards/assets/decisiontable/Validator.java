@@ -32,10 +32,10 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
  */
 public class Validator {
 
-    private List<Pattern52>                             patternsConditions;
-    private List<Pattern52>                             patternsActions;
-    private Map<Pattern52, List<ActionSetFieldCol52>>   patternToActionSetFieldsMap;
-    private Map<Pattern52, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
+    private List<Pattern52>                                                 patternsConditions;
+    private List<Pattern52>                                                 patternsActions;
+    private Map<Pattern52, List<ActionSetFieldCol52>>                       patternToActionSetFieldsMap;
+    private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
     Validator(List<Pattern52> patterns) {
         this.patternsConditions = patterns;
@@ -113,6 +113,10 @@ public class Validator {
         return true;
     }
 
+    public boolean isPatternValid(Pattern52 p) {
+        return !(p.getBoundName() == null || p.getBoundName().equals( "" ));
+    }
+
     public boolean isConditionValid(ConditionCol52 c) {
         return isConditionHeaderValid( c ) && isConditionOperatorValid( c );
     }
@@ -156,7 +160,7 @@ public class Validator {
         return true;
     }
 
-    public void setPatternToActionInsertFactFieldsMap(Map<Pattern52, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap) {
+    public void setPatternToActionInsertFactFieldsMap(Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap) {
         this.patternToActionInsertFactFieldsMap = patternToActionInsertFactFieldsMap;
     }
 

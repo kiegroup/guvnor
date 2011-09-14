@@ -19,7 +19,6 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
 
@@ -32,11 +31,11 @@ public interface ActionInsertFactFieldsPageView
 
     interface Presenter {
 
-        void addPattern(Pattern52 pattern);
+        void addPattern(ActionInsertFactFieldsPattern pattern);
 
-        void removePattern(Pattern52 pattern);
+        void removePattern(ActionInsertFactFieldsPattern pattern);
 
-        void selectPattern(Pattern52 pattern);
+        void selectPattern(ActionInsertFactFieldsPattern pattern);
 
         void stateChanged();
 
@@ -51,11 +50,15 @@ public interface ActionInsertFactFieldsPageView
 
     void setAvailableFactTypes(List<String> availableTypes);
 
-    void setChosenPatterns(List<Pattern52> patterns);
+    void setChosenPatterns(List<ActionInsertFactFieldsPattern> patterns);
 
     void setAvailableFields(List<AvailableField> fields);
 
     void setChosenFields(List<ActionInsertFactCol52> fields);
+
+    void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
+
+    void setAreActionInsertFactPatternsDefined(boolean areActionInsertFactPatternsDefined);
 
     void setAreActionInsertFactFieldsDefined(boolean areActionInsertFactFieldsDefined);
 
