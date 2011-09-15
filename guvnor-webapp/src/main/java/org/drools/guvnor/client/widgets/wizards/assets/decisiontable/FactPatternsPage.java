@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.FactPatternsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -32,7 +33,8 @@ import com.google.gwt.event.shared.EventBus;
 public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     implements
     FactPatternsPageView.Presenter,
-    DuplicatePatternsEvent.Handler {
+    DuplicatePatternsEvent.Handler,
+    FactPatternsDefinedEvent.Handler {
 
     private FactPatternsPageView view;
 
@@ -48,6 +50,8 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
         //Wire-up the events
         eventBus.addHandler( DuplicatePatternsEvent.TYPE,
+                             this );
+        eventBus.addHandler( FactPatternsDefinedEvent.TYPE,
                              this );
     }
 
@@ -84,11 +88,28 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
         eventBus.fireEvent( event );
 
-        return arePatternBindingsUnique;
+        //Are all Patterns defined?
+        boolean arePatternsDefined = true;
+        for ( Pattern52 p : dtable.getConditionPatterns() ) {
+            if ( !getValidator().isPatternValid( p ) ) {
+                arePatternsDefined = false;
+                break;
+            }
+        }
+
+        //Signal Fact Patterns to other pages
+        FactPatternsDefinedEvent eventFactPatterns = new FactPatternsDefinedEvent( arePatternsDefined );
+        eventBus.fireEvent( eventFactPatterns );
+
+        return arePatternBindingsUnique && arePatternsDefined;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    }
+
+    public void onFactPatternsDefined(FactPatternsDefinedEvent event) {
+        view.setAreFactPatternsDefined( event.getAreFactPatternsDefined() );
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {

@@ -65,7 +65,7 @@ public class PatternCell extends AbstractCell<Pattern52> {
     }
 
     protected String getCssStyleName(Pattern52 p) {
-        if ( !validator.isPatternBindingUnique( p ) ) {
+        if ( !validator.isPatternBindingUnique( p ) || !validator.isPatternValid( p ) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }
         return "";

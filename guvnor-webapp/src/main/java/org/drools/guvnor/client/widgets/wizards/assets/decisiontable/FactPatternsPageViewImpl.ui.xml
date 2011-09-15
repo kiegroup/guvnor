@@ -30,7 +30,14 @@
         <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
+    <gwt:HorizontalPanel ui:field="msgIncompletePatterns" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.DecisionTableWizardIncompletePatterns}" styleName="{res.style.wizardDTableMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
     <gwt:VerticalPanel>
+      <gwt:Label text="{i18n.DecisionTableWizardDescriptionFactPatternsPage}" styleName="{res.style.wizardDTableCaption}"/>
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
@@ -57,6 +64,7 @@
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+          <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.DTLabelFromEntryPoint}" styleName="{res.style.wizardDTableFields}" />

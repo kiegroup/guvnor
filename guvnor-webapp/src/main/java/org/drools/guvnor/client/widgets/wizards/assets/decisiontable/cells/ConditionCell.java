@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells;
 
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.Validator;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 
@@ -28,7 +29,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A cell to display Conditions
  */
-class ConditionCell extends AbstractCell<ConditionCol52> {
+public class ConditionCell extends AbstractCell<ConditionCol52> {
 
     private Validator validator;
 
@@ -43,7 +44,7 @@ class ConditionCell extends AbstractCell<ConditionCol52> {
 
     private static final ConditionCellTemplate TEMPLATE = GWT.create( ConditionCellTemplate.class );
 
-    ConditionCell(Validator validator) {
+    public ConditionCell(Validator validator) {
         this.validator = validator;
     }
 

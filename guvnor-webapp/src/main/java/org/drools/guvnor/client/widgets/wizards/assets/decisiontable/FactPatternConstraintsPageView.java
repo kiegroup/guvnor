@@ -58,7 +58,9 @@ public interface FactPatternConstraintsPageView
     void setChosenConditions(List<ConditionCol52> conditions);
 
     void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
-    
+
+    void setAreFactPatternsDefined(boolean areFactPatternsDefined);
+
     void setAreConditionsDefined(boolean areConditionsDefined);
 
 }

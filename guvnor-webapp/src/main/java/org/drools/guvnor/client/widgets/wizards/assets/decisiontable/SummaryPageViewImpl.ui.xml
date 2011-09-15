@@ -30,6 +30,7 @@
         <gwt:Label text="{i18n.DecisionTableWizardSummaryNameMissing}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
+    <gwt:Label text="{i18n.DecisionTableWizardDescriptionSummaryPage}" styleName="{res.style.wizardDTableCaption}"/>
     <gwt:VerticalPanel styleName="{res.style.wizardDTableSummaryContainer}">
       <gwt:HorizontalPanel ui:field="assetNameContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
         <gwt:Label text="{i18n.NameColon}" styleName="{res.style.wizardDTableFields}" />

@@ -29,6 +29,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ConditionCell;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ConditionPatternCell;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -141,6 +142,9 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     @UiField
     HorizontalPanel                              msgDuplicateBindings;
+
+    @UiField
+    HorizontalPanel                              msgIncompletePatterns;
 
     @UiField
     HorizontalPanel                              msgIncompleteConditions;
@@ -484,6 +488,11 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        availablePatternsWidget.redraw();
+    }
+
+    public void setAreFactPatternsDefined(boolean areFactPatternsDefined) {
+        msgIncompletePatterns.setVisible( !areFactPatternsDefined );
         availablePatternsWidget.redraw();
     }
 
