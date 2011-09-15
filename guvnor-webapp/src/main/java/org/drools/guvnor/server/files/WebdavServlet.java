@@ -70,7 +70,7 @@ public class WebdavServlet extends WebDavServletBean {
                            HttpServletResponse resp) throws ServletException,
                                                     IOException {
         String auth = req.getHeader( "Authorization" );
-        if ( !authorizationHeaderChecker.allowUser( auth ) ) {
+        if ( !authorizationHeaderChecker.loginByHeader(auth) ) {
             resp.setHeader( "WWW-Authenticate",
                             "BASIC realm=\"users\"" );
             resp.sendError( HttpServletResponse.SC_UNAUTHORIZED );

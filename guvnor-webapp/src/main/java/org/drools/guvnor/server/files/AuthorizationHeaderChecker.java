@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
+@Deprecated
 public class AuthorizationHeaderChecker {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -38,11 +39,14 @@ public class AuthorizationHeaderChecker {
     protected Credentials credentials;
 
     /**
+     * Deprecated: should use the seam-security support for this
+     * <p/>
      * Check the users credentials.
      * This takes the Authorization string from the HTTP request header (the whole lot).
      * uses Seam Identity component to set the user up.
      */
-    public boolean allowUser(String auth) {
+    @Deprecated
+    public boolean loginByHeader(String auth) {
         //If the request is from same session, the user should be logged in already.
         if (identity.isLoggedIn()) {
             return true;
@@ -63,7 +67,6 @@ public class AuthorizationHeaderChecker {
         }
         log.info(username + " authenticated for rest api");
         return true;
-
     }
 
     protected String[] unpack(String auth) {

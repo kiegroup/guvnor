@@ -65,29 +65,28 @@
     the jaas-configuration section, and change the policy name from 'other' to 'modeshape':
      </para>
     
-    <programlisting language="XML"><![CDATA[<!-- SECURITY IDENTITY CONFIGURATION -->
-<!--
-    default (will take any username, useful if you want to keep track of
-    users but not authenticate
-<security:identity authenticate-method="#{defaultAuthenticator.authenticate}" />
--->
-<!--
-    NO authentication. This will bypass the login screen when you hit the
-    app. Everyone is "guest"
-    <security:identity
-    authenticate-method="#{nilAuthenticator.authenticate}"/>
--->
-<!--
-    FOR EXAMPLE: the following one will use the jaas configuration called
-    "other" - which in jboss AS means you can use properties files for
-    users:
--->
-    <security:identity authenticate-method="#{authenticator.authenticate}"
-    jaas-config-name="modeshape"/>
-<!--
-    as JAAS is used you can use container specific ones to link up to your
-    login services, eg LDAP/AD etc
--->]]></programlisting>
+    <programlisting language="XML"><![CDATA[
+  <security:IdentityImpl>
+    <s:modifies/>
+
+    <!-- No real authentication: demo authentication for demo purposes -->
+    <security:authenticatorClass>org.drools.guvnor.server.security.DemoAuthenticator</security:authenticatorClass>
+
+    <!-- JAAS based authentication -->
+    <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
+
+    <!-- IDM based authentication (supports LDAP, see Seam 3 and PicketLink IDM documentation) -->
+    <!--<security:authenticatorClass>org.jboss.seam.security.management.IdmAuthenticator</security:authenticator>-->
+  </security:IdentityImpl>
+
+  <!--<security:jaas.JaasAuthenticator>-->
+    <!--<s:modifies/>-->
+    <!--
+      The following one will use the jaas configuration called "other",
+      which in jboss AS means you can use properties files for users.
+    -->
+    <!--<jaasConfigName>other</jaasConfigName>-->
+  <!--</security:jaas.JaasAuthenticator>-->]]></programlisting>
 
     <para>
     You may have noticed the settings of two passwords in the modeshape property settings for the 'admin' and

@@ -21,11 +21,11 @@ import static org.junit.Assert.assertTrue;
 import org.jboss.seam.security.Authenticator;
 import org.junit.Test;
 
-public class NilAuthenticatorTest {
+public class DemoAuthenticatorTest {
 
     @Test
     public void testAdmin() {
-        NilAuthenticator ni = new NilAuthenticator();
+        DemoAuthenticator ni = new DemoAuthenticator();
         ni.authenticate();
         assertTrue(ni.getStatus() == Authenticator.AuthenticationStatus.SUCCESS);
     }

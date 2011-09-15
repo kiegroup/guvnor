@@ -39,11 +39,8 @@
   <security:IdentityImpl>
     <s:modifies/>
 
-    <!--
-        NO authentication. This will bypass the login screen when you hit the
-        app. Everyone is "guest"
-    -->
-    <security:authenticatorClass>org.drools.guvnor.server.security.NilAuthenticator</security:authenticatorClass>
+    <!-- No real authentication: demo authentication for demo purposes -->
+    <security:authenticatorClass>org.drools.guvnor.server.security.DemoAuthenticator</security:authenticatorClass>
 
     <!-- JAAS based authentication -->
     <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->

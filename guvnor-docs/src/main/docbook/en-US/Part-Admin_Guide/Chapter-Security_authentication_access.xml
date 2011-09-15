@@ -39,13 +39,19 @@
    the following:
    </para>
 
-    <programlisting language="XML"><![CDATA[<!-- SECURITY CONFIGURATION -->
-    
-<!-- default (will take any username, useful if you want to keep track of users but not authenticate -->
-<security:identity authenticate-method="#{defaultAuthenticator.authenticate}"/>
+    <programlisting language="XML"><![CDATA[
+  <security:IdentityImpl>
+    <s:modifies/>
 
-<!-- NO authentication. This will bypass the login screen when you hit the app. Everyone is "guest" -->
-<!-- <security:identity authenticate-method="#{nilAuthenticator.authenticate}"/> -->]]></programlisting>
+    <!-- No real authentication: demo authentication for demo purposes -->
+    <security:authenticatorClass>org.drools.guvnor.server.security.DemoAuthenticator</security:authenticatorClass>
+
+    <!-- JAAS based authentication -->
+    <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
+
+    <!-- IDM based authentication (supports LDAP, see Seam 3 and PicketLink IDM documentation) -->
+    <!--<security:authenticatorClass>org.jboss.seam.security.management.IdmAuthenticator</security:authenticator>-->
+  </security:IdentityImpl>]]></programlisting>
 
    <para>
    As you can see from above, the 2 "out of the box" options are pass through - which means any user is

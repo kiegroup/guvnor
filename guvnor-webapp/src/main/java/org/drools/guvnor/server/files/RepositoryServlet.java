@@ -19,10 +19,7 @@ package org.drools.guvnor.server.files;
 import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
-import org.drools.util.codec.Base64;
-import org.jboss.seam.security.Credentials;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
-import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +28,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Locale;
 
 /**
  * This is a base servlet that all repo servlets inherit behaviour from.
@@ -76,7 +72,7 @@ public class RepositoryServlet extends HttpServlet {
                             Command action) throws IOException {
         String auth = req.getHeader("Authorization");
 
-        if (!authorizationHeaderChecker.allowUser(auth)) {
+        if (!authorizationHeaderChecker.loginByHeader(auth)) {
             res.setHeader("WWW-Authenticate",
                     "BASIC realm=\"users\"");
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED);
