@@ -28,6 +28,7 @@ import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRXMLPersistence;
+import java.util.UUID;
 
 /**
  * BRL -> RuleAsset converter used by standalone editor.
@@ -84,7 +85,7 @@ public class BRLRuleAssetProvider
     private RuleAsset createAsset(RuleModel ruleModel) {
         RuleAsset asset = new RuleAsset();
 
-        asset.uuid = "mock";
+        asset.uuid = "mock-"+UUID.randomUUID().toString();
         asset.content = ruleModel;
         asset.name = ruleModel.name;
         asset.metaData = createMetaData( ruleModel );
