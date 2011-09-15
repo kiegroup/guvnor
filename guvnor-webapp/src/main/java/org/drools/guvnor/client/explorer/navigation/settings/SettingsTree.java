@@ -16,10 +16,10 @@
 
 package org.drools.guvnor.client.explorer.navigation.settings;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 
 public class SettingsTree implements IsWidget, SettingsTreeView.Presenter {
 
@@ -37,14 +37,14 @@ public class SettingsTree implements IsWidget, SettingsTreeView.Presenter {
     }
 
     public void onPreferencesSelected() {
-        goTo(RuntimePlace.Location.PREFERENCES);
+        goTo(new PreferencesPlace());
     }
 
     public void onSystemSelected() {
-        goTo(RuntimePlace.Location.SYSTEM);
+        goTo(new SystemPlace());
     }
 
-    private void goTo(RuntimePlace.Location location) {
-        placeController.goTo(new RuntimePlace(location));
+    private void goTo(Place place) {
+        placeController.goTo(place);
     }
 }

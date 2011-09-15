@@ -94,8 +94,7 @@ public class ClientFactoryImpl
     }
 
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorActivityMapper( this,
-                                         eventBus );
+        return new GuvnorActivityMapper( this );
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {

@@ -30,7 +30,7 @@ public class MinimumWidthCellList<T> extends CellList<T> {
 
     private WidthCalculator<T> sizer;
 
-    private List< ? extends T> values=new ArrayList<T>();
+    private List< ? extends T> values = new ArrayList<T>();
 
     public MinimumWidthCellList(final Cell<T> cell,
                                 Resources resources) {

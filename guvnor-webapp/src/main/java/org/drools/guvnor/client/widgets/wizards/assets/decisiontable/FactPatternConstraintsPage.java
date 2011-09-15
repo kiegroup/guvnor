@@ -22,6 +22,7 @@ import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.FactPatternsDefinedEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -37,6 +38,7 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
     implements
     FactPatternConstraintsPageView.Presenter,
     DuplicatePatternsEvent.Handler,
+    FactPatternsDefinedEvent.Handler,
     ConditionsDefinedEvent.Handler {
 
     private final ModelNameHelper          modelNameHelper = new ModelNameHelper();
@@ -55,6 +57,8 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
         //Wire-up the events
         eventBus.addHandler( DuplicatePatternsEvent.TYPE,
+                             this );
+        eventBus.addHandler( FactPatternsDefinedEvent.TYPE,
                              this );
         eventBus.addHandler( ConditionsDefinedEvent.TYPE,
                              this );
@@ -100,6 +104,10 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    }
+
+    public void onFactPatternsDefined(FactPatternsDefinedEvent event) {
+        view.setAreFactPatternsDefined( event.getAreFactPatternsDefined() );
     }
 
     public void onConditionsDefined(ConditionsDefinedEvent event) {

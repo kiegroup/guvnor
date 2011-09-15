@@ -17,11 +17,9 @@
 package org.drools.guvnor.client.explorer.navigation.processes;
 
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.guvnor.client.explorer.navigation.RuntimeTestMethods.*;
 import static org.mockito.Mockito.*;
 
 public class ProcessesTreeTest {
@@ -53,12 +51,12 @@ public class ProcessesTreeTest {
     @Test
     public void testGoToExecutionHistory() throws Exception {
         presenter.onExecutionHistorySelected();
-        assertGoesTo(placeController, RuntimePlace.Location.EXECUTION_HISTORY);
+        verify(placeController).goTo(any(ExecutionHistoryPlace.class));
     }
 
     @Test
     public void testGoToProcessOverview() throws Exception {
         presenter.onProcessOverViewSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.PROCESS_OVERVIEW);
+        verify(placeController).goTo(any(ProcessOverviewPlace.class));
     }
 }

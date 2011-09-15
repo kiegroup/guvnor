@@ -62,7 +62,6 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
                         final String packageName,
                         final String format,
                         final T content) {
-        presenter.showSavingIndicator();
         RepositoryServiceFactory.getService().createNewRule( assetName,
                                                              description,
                                                              initialCategory,

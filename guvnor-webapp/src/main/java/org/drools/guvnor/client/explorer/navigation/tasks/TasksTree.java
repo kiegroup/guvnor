@@ -1,9 +1,9 @@
 package org.drools.guvnor.client.explorer.navigation.tasks;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 
 public class TasksTree implements TasksTreeView.Presenter, IsWidget {
 
@@ -21,14 +21,14 @@ public class TasksTree implements TasksTreeView.Presenter, IsWidget {
     }
 
     public void onPersonalTasksSelected() {
-        goTo(RuntimePlace.Location.PERSONAL_TASKS);
+        goTo(new PersonalTasksPlace());
     }
 
     public void onGroupTasksSelected() {
-        goTo(RuntimePlace.Location.GROUP_TASKS);
+        goTo(new GroupTasksPlace());
     }
 
-    private void goTo(RuntimePlace.Location location) {
-        placeController.goTo(new RuntimePlace(location));
+    private void goTo(Place place) {
+        placeController.goTo(place);
     }
 }

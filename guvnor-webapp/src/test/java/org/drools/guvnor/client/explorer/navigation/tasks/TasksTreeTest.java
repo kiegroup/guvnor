@@ -1,11 +1,9 @@
 package org.drools.guvnor.client.explorer.navigation.tasks;
 
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.guvnor.client.explorer.navigation.RuntimeTestMethods.*;
 import static org.mockito.Mockito.*;
 
 public class TasksTreeTest {
@@ -38,13 +36,13 @@ public class TasksTreeTest {
     @Test
     public void testGoToPersonalTasks() throws Exception {
         presenter.onPersonalTasksSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.PERSONAL_TASKS);
+        verify(placeController).goTo(any(PersonalTasksPlace.class));
     }
 
     @Test
     public void testGoToGroupTasks() throws Exception {
         presenter.onGroupTasksSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.GROUP_TASKS);
+        verify(placeController).goTo(any(GroupTasksPlace.class));
     }
 
 }

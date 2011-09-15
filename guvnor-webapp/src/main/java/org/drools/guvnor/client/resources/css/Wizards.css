@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 .wizardDTableList {
-    border-color: rgb(200,200,200);
+    border-color: rgb(200, 200, 200);
     border-top-style: none;
     border-left-style: solid;
     border-right-style: solid;
@@ -27,8 +26,8 @@
 
 .wizardDTableHeader {
     font-weight: bold;
-    background-color: rgb(220,220,220);
-    border-color: rgb(200,200,200);
+    background-color: rgb(220, 220, 220);
+    border-color: rgb(200, 200, 200);
     border-top-style: solid;
     border-left-style: solid;
     border-right-style: solid;
@@ -62,7 +61,7 @@
     padding: 5px;
     width: 100%;
 }
- 
+
 .wizardDTableMessage {
     margin-left: 10px;
     margin-top: 6px;
@@ -76,7 +75,7 @@
 .wizardSidebar {
     width: 200px;
     height: 100%;
-    border-right: 1px solid rgb(200,200,200);
+    border-right: 1px solid rgb(200, 200, 200);
     padding-right: 5px;
     margin-left: 2px;
 }
@@ -84,12 +83,12 @@
 .wizardSidebarSpacer {
     width: 5px;
 }
-    
+
 .wizardButtonbar {
     width: 100%;
-    background-color: rgb(220,220,220);
-    border-top: 1px solid rgb(200,200,200);
-    border-bottom: 1px solid rgb(200,200,200);
+    background-color: rgb(220, 220, 220);
+    border-top: 1px solid rgb(200, 200, 200);
+    border-bottom: 1px solid rgb(200, 200, 200);
     padding-top: 5px;
     padding-bottom: 5px;
 }
@@ -124,9 +123,16 @@
 .wizardDTableFieldContainerInvalid {
     padding: 2px;
     margin-bottom: 3px;
-    background-color: #990000;    
+    background-color: #990000;
 }
 
 .wizardDTableSummaryContainer {
     margin: 10px;
+}
+
+.wizardDTableCaption {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }

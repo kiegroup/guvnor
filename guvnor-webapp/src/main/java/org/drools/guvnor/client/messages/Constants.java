@@ -2497,4 +2497,29 @@ public interface Constants
     String Other();
     
     String New();
+    
+    String DecisionTableWizardColumnExpansion();
+    
+    String DecisionTableWizardAvailableColumns();
+
+    String DecisionTableWizardChosenColumns();
+    
+    String DecisionTableWizardNoAvailableColumns();
+    
+    String DecisionTableWizardNoChosenColumns();
+    
+    String DecisionTableWizardDescriptionSummaryPage();
+    
+    String DecisionTableWizardDescriptionFactPatternsPage();
+
+    String DecisionTableWizardDescriptionFactPatternConstraintsPage();
+
+    String DecisionTableWizardDescriptionActionSetFieldsPage();
+
+    String DecisionTableWizardDescriptionActionInsertFactFieldsPage();
+
+    String DecisionTableWizardDescriptionExpandColumnsPage();
+
+    String DecisionTableWizardExpandInFull();
+    
 }

@@ -17,11 +17,9 @@
 package org.drools.guvnor.client.explorer.navigation.reporting;
 
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.guvnor.client.explorer.navigation.RuntimeTestMethods.*;
 import static org.mockito.Mockito.*;
 
 public class ReportingTreeTest {
@@ -35,7 +33,7 @@ public class ReportingTreeTest {
     public void setUp() throws Exception {
         view = mock(ReportingTreeView.class);
         placeController = mock(PlaceController.class);
-        reportingTree = new ReportingTree(view,placeController);
+        reportingTree = new ReportingTree(view, placeController);
         presenter = reportingTree;
     }
 
@@ -53,6 +51,6 @@ public class ReportingTreeTest {
     @Test
     public void testGoToReportTemplates() throws Exception {
         presenter.onReportTemplatesSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.REPORT_TEMPLATES);
+        verify(placeController).goTo(any(ReportTemplatesPlace.class));
     }
 }

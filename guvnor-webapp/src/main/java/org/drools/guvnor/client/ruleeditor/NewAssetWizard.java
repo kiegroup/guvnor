@@ -94,7 +94,8 @@ public class NewAssetWizard extends FormStylePopup {
                            ClientFactory clientFactory,
                            EventBus eventBus) {
         super( images.newWiz(),
-               getTitle( format, clientFactory ) );
+               getTitle( format,
+                         clientFactory ) );
         this.format = format;
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -137,10 +138,14 @@ public class NewAssetWizard extends FormStylePopup {
     }
 
     private static String getTitle(String format, ClientFactory cf) {
+        //Just a quick temporary fix. 
+        if(format == null) {
+            return  constants.NewRule();
+        }
         String title = cf.getAssetEditorFactory().getAssetEditorTitle(format);
         return constants.New() + " " + title;
     }
-    
+
     private class ImportAssetFormStyleLayout extends FormStyleLayout {
         protected void buildImportAssetLayout() {
             this.addAttribute( constants.AssetToImport(),
@@ -222,7 +227,7 @@ public class NewAssetWizard extends FormStylePopup {
             newAssetLayout.setAttributeVisibility( useWizardRowIndex,
                                                    false );
 
-            //TODO Once the Guided Decision table Wizard is complete
+            //If the type is Guided Decision table add a checkbox for a Wizard
             this.formatChooser.addChangeHandler( new ChangeHandler() {
 
                 public void onChange(ChangeEvent event) {

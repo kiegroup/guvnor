@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -108,6 +107,9 @@ public class FactPatternsPageViewImpl extends Composite
     HorizontalPanel                         cepWindowContainer;
 
     @UiField
+    HorizontalPanel                         msgIncompletePatterns;
+
+    @UiField
     HorizontalPanel                         msgDuplicateBindings;
 
     @UiField(provided = true)
@@ -176,11 +178,7 @@ public class FactPatternsPageViewImpl extends Composite
         selectionModel.addSelectionChangeHandler( new SelectionChangeEvent.Handler() {
 
             public void onSelectionChange(SelectionChangeEvent event) {
-                chosenPatternSelections = new HashSet<Pattern52>();
-                Set<Pattern52> selections = selectionModel.getSelectedSet();
-                for ( Pattern52 p : selections ) {
-                    chosenPatternSelections.add( p );
-                }
+                chosenPatternSelections = selectionModel.getSelectedSet();
                 chosenTypesSelected( chosenPatternSelections );
             }
 
@@ -220,7 +218,7 @@ public class FactPatternsPageViewImpl extends Composite
     }
 
     private void validateBinding() {
-        if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
+        if ( validator.isPatternBindingUnique( chosenPatternSelection ) && validator.isPatternValid( chosenPatternSelection ) ) {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
@@ -339,6 +337,11 @@ public class FactPatternsPageViewImpl extends Composite
 
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
+        chosenPatternWidget.redraw();
+    }
+
+    public void setAreFactPatternsDefined(boolean areFactPatternsDefined) {
+        msgIncompletePatterns.setVisible( !areFactPatternsDefined );
         chosenPatternWidget.redraw();
     }
 

@@ -17,11 +17,20 @@
 package org.drools.guvnor.client.perspectives;
 
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+
+import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
+import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeSelectableItem;
 import org.drools.guvnor.client.perspectives.PerspectivesPanelView.Presenter;
 import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
 import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
 import org.drools.guvnor.client.perspectives.soa.SOAPerspective;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
@@ -56,11 +65,31 @@ public class PerspectivesPanel implements Presenter {
     }
     
     public void onChangePerspective(String perspectiveType) {
+        updateGlobalAreaType(perspectiveType);
         setPerspective(clientFactory.getPerspectiveFactory().getPerspective(perspectiveType));        
     }
     
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
+    }
+    
+    //TODO: a temporary hack
+    private void updateGlobalAreaType(final String perspectiveType) {
+        clientFactory.getPackageService().loadGlobalPackage( new GenericCallback<PackageConfigData>() {
+            public void onSuccess( PackageConfigData packageConfigData ) {
+                if("author".equals(perspectiveType)) {
+                    packageConfigData.setFormat("package");
+                } else if("soaservice".equals(perspectiveType)) {
+                    packageConfigData.setFormat("soaservice");
+                }
+                clientFactory.getPackageService().savePackage( packageConfigData,
+                        new GenericCallback<ValidatedResponse>() {
+                            public void onSuccess(ValidatedResponse data) {
+                            }
+                } );
+            }
+        } );
+        
     }
 
 }

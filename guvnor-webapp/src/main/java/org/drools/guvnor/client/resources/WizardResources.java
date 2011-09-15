@@ -67,5 +67,7 @@ public interface WizardResources
         
         String wizardDTableSummaryContainer();
         
+        String wizardDTableCaption();
+        
     }
 }

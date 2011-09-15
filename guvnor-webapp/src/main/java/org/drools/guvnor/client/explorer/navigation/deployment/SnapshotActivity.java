@@ -20,31 +20,28 @@ public class SnapshotActivity extends Activity {
     private final ClientFactory clientFactory;
     private final String moduleName;
     private final String snapshotName;
-    private final EventBus eventBus;
 
     public SnapshotActivity(String moduleName,
                             String snapshotName,
-                            ClientFactory clientFactory,
-                            EventBus eventBus) {
+                            ClientFactory clientFactory) {
         this.moduleName = moduleName;
         this.snapshotName = snapshotName;
         this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
     }
 
     @Override
-    public void start(final AcceptItem tabbedPanel, EventBus eventBus) {
+    public void start(final AcceptItem tabbedPanel, final EventBus eventBus) {
         clientFactory.getPackageService().loadSnapshotInfo(
                 moduleName,
                 snapshotName,
                 new GenericCallback<SnapshotInfo>() {
                     public void onSuccess(SnapshotInfo snapshotInfo) {
-                        showTab( tabbedPanel, snapshotInfo );
+                        showTab( tabbedPanel, snapshotInfo, eventBus );
                     }
                 } );
     }
 
-    private void showTab(final AcceptItem tabbedPanel, final SnapshotInfo snapshotInfo) {
+    private void showTab(final AcceptItem tabbedPanel, final SnapshotInfo snapshotInfo, final EventBus eventBus) {
 
         LoadingPopup.showMessage( constants.LoadingSnapshot() );
 

@@ -38,6 +38,7 @@
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
     <gwt:VerticalPanel>
+      <gwt:Label text="{i18n.DecisionTableWizardDescriptionActionSetFieldsPage}" styleName="{res.style.wizardDTableCaption}"/>
       <gwt:HorizontalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>

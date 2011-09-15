@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer.navigation.processes;
 
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import org.mockito.ArgumentCaptor;
 
-import static org.mockito.Mockito.*;
+public class ExecutionHistoryPlace extends Place{
 
-public class RuntimeTestMethods {
-
-    public static <T> void assertGoesTo(PlaceController placeController, Class<Place> place) {
-
-    }
 }

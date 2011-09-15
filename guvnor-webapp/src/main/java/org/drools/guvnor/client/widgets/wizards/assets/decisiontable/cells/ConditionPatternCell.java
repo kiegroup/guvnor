@@ -32,7 +32,7 @@ public class ConditionPatternCell extends PatternCell {
     }
 
     protected String getCssStyleName(Pattern52 p) {
-        if ( !validator.isPatternBindingUnique( p ) ) {
+        if ( !validator.isPatternBindingUnique( p ) || !validator.isPatternValid( p ) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }
         for ( ConditionCol52 c : p.getConditions() ) {
