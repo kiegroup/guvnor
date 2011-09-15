@@ -19,6 +19,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
+import org.bouncycastle.crypto.engines.IDEAEngine;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.files.WebDAVImpl;
@@ -29,6 +30,8 @@ import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
@@ -40,6 +43,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.picketlink.idm.impl.api.PasswordCredential;
 
 @RunWith(Arquillian.class)
 public abstract class GuvnorTestBase {
@@ -74,6 +78,14 @@ public abstract class GuvnorTestBase {
     @Inject
     protected RepositoryCategoryService repositoryCategoryService;
 
+    @Inject
+    protected Identity identity;
+
+    @Inject
+    protected Credentials credentials;
+
+    protected boolean autoLoginAsAdmin = true;
+
     // ************************************************************************
     // Lifecycle methods
     // ************************************************************************
@@ -81,6 +93,23 @@ public abstract class GuvnorTestBase {
     @BeforeClass
     public static void setUpGuvnorTestBase() {
         System.setProperty( KeyStoreHelper.PROP_SIGN, "false" );
+    }
+
+    @Before
+    public void loginAsAdmin() {
+        if (autoLoginAsAdmin) {
+            credentials.setUsername("admin");
+            credentials.setCredential(new PasswordCredential("admin"));
+            identity.login();
+        }
+    }
+
+    @After
+    public void logoutAsAdmin() {
+        if (autoLoginAsAdmin) {
+            identity.logout();
+            credentials.clear();
+        }
     }
 
 //    protected void setUpMockIdentity() {

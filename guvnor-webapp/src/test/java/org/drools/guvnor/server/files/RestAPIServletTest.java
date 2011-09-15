@@ -103,7 +103,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "testuser:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
 
@@ -158,7 +158,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
 
@@ -226,7 +226,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
                 put( "Checkin-Comment",
                      "hey ho" );
             }
@@ -274,7 +274,7 @@ public class RestAPIServletTest extends GuvnorTestBase {
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
 

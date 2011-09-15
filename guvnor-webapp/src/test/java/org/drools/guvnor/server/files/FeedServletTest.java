@@ -28,11 +28,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.RepositoryAssetService;
-import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
 import org.junit.Test;
 
@@ -41,24 +38,18 @@ public class FeedServletTest extends GuvnorTestBase {
     @Inject
     private FeedServlet feedServlet;
 
-    @Test
-    public void testPackageFeed() throws Exception {
+    public FeedServletTest() {
+        autoLoginAsAdmin = false;
+    }
 
-        PackageItem pkg = rulesRepository.createPackage( "testPackageFeed",
+    @Test
+    public void testPackageFeedNoLogin() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testPackageFeedNoLogin",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
         asset.updateFormat( "drl" );
         asset.checkin( "" );
-
-        // TODO seam3upgrade
-//        //Mock up SEAM contexts
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( false );
-//        midentity.setCheckPermission( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -72,7 +63,7 @@ public class FeedServletTest extends GuvnorTestBase {
                                                    new HashMap<String, String>() {
                                                        {
                                                            put( "name",
-                                                                "testPackageFeed" );
+                                                                "testPackageFeedNoLogin" );
                                                            put( "viewUrl",
                                                                 "http://foo.bar" );
                                                        }
@@ -82,18 +73,24 @@ public class FeedServletTest extends GuvnorTestBase {
                 res);
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
+    }
 
-        // TODO seam3upgrade
-//        //try again with valid user and password
-//        midentity.setAllowLogin( true );
+    @Test
+    public void testPackageFeed() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testPackageFeed",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "desc" );
+        asset.updateFormat( "drl" );
+        asset.checkin( "" );
 
-        headers = new HashMap<String, String>() {
+        Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "testuser:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
-        req = new MockHTTPRequest( "/org.foo/feed/package",
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/package",
                                    headers,
                                    new HashMap<String, String>() {
                                        {
@@ -103,7 +100,7 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "http://foo.bar" );
                                        }
                                    } );
-        res = new MockHTTPResponse();
+        MockHTTPResponse res = new MockHTTPResponse();
         feedServlet.doGet( req,
                   res );
 
@@ -152,6 +149,9 @@ public class FeedServletTest extends GuvnorTestBase {
         r = res.extractContent();
         assertNotNull( r );
         assertTrue( r.indexOf( "asset1" ) > -1 );
+
+        identity.logout();
+        credentials.clear();
     }
 
     @Test
@@ -167,20 +167,11 @@ public class FeedServletTest extends GuvnorTestBase {
         asset.updateCategoryList( new String[]{"testCategoryFeedCat"} );
         asset.checkin( "" );
 
-        // TODO seam3upgrade
-//        //Mock up SEAM contexts
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( true );
-//        midentity.setCheckPermission( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
-
         //try with valid password
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "testuser:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
         MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/category",
@@ -224,36 +215,16 @@ public class FeedServletTest extends GuvnorTestBase {
 
         assertTrue(r.indexOf("asset1") > -1);
         assertTrue( r.indexOf( "http://foo.bar" ) > -1 );
-
-        // TODO seam3upgrade
-//        midentity.setAllowLogin( false );
-        res = new MockHTTPResponse();
-        feedServlet.doGet(req,
-                res);
-        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
-                      res.errorCode );
     }
 
     @Test
-    public void testDiscussionFeed() throws Exception {
-
-        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeed",
+    public void testDiscussionFeedNoLogin() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeedNoLogin",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
         asset.updateFormat( "drl" );
         asset.checkin( "" );
-
-        // TODO seam3upgrade
-//        //Mock up SEAM contexts
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( false );
-//        midentity.setCheckPermission( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
-
-        repositoryAssetService.setRulesRepository( rulesRepository );
         repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
                                                         "This is a comment" );
         repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
@@ -271,7 +242,7 @@ public class FeedServletTest extends GuvnorTestBase {
                                                    new HashMap<String, String>() {
                                                        {
                                                            put( "package",
-                                                                "testDiscussionFeed" );
+                                                                "testDiscussionFeedNoLogin" );
                                                            put( "assetName",
                                                                 "asset1" );
                                                        }
@@ -281,17 +252,28 @@ public class FeedServletTest extends GuvnorTestBase {
                 res);
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
+    }
 
-        headers = new HashMap<String, String>() {
+    @Test
+    public void testDiscussionFeed() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeed",
+                                              "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "desc" );
+        asset.updateFormat( "drl" );
+        asset.checkin( "" );
+        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+                                                        "This is a comment" );
+        repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
+                                                        "This is another comment" );
+
+        Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( Base64.encodeBase64( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
-
-        // TODO seam3upgrade
-//        midentity.setAllowLogin( true );
-        req = new MockHTTPRequest( "/org.foo/feed/discussion",
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/discussion",
                                    headers,
                                    new HashMap<String, String>() {
                                        {
@@ -301,7 +283,7 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "asset1" );
                                        }
                                    } );
-        res = new MockHTTPResponse();
+        MockHTTPResponse res = new MockHTTPResponse();
         feedServlet.doGet(req,
                 res);
 
@@ -309,7 +291,6 @@ public class FeedServletTest extends GuvnorTestBase {
         assertNotNull( r );
         assertTrue( r.indexOf( "This is a comment" ) > -1 );
         assertTrue( r.indexOf( "This is another comment" ) > r.indexOf( "This is a comment" ) );
-        System.err.println( r );
     }
 
 }

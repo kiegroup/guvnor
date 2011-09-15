@@ -27,6 +27,7 @@ import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.util.codec.Base64;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.picketlink.idm.api.Credential;
 import org.picketlink.idm.impl.api.PasswordCredential;
@@ -36,51 +37,39 @@ public class AuthorizationHeaderCheckerTest extends GuvnorTestBase {
     @Inject
     private AuthorizationHeaderChecker authorizationHeaderChecker;
 
-    @Inject
-    private Identity identity;
-
-    @Inject
-    protected Credentials credentials;
+    public AuthorizationHeaderCheckerTest() {
+        autoLoginAsAdmin = false;
+    }
 
     @Test
     public void testExecuteAllowUser() throws Exception {
-        identity.logout();
-        String authToken = "usr:pwd";
+        assertFalse(identity.isLoggedIn());
+
+        String authToken = "admin:admin";
         String encodedAuthToken = "BASIC " + new String(Base64.encodeBase64(authToken.getBytes()));
         boolean allowed = authorizationHeaderChecker.loginByHeader(encodedAuthToken);
         assertTrue(allowed);
         assertTrue(identity.isLoggedIn());
+        
+        identity.logout();
+        credentials.clear();
     }
 
     @Test
     public void testExecuteAllowUserNoBasicAuthenticationHeader() throws Exception {
-        // TODO this test doesn't really seem to make any sense?
-        identity.logout();
-        String encodedAuthToken = null;
-        boolean allowed = authorizationHeaderChecker.loginByHeader(encodedAuthToken);
-        assertTrue(allowed);
-        assertTrue(identity.isLoggedIn());
-    }
+        assertFalse(identity.isLoggedIn());
 
-    @Test
-    public void testExecuteAllowUserNoBasicAuthenticationHeaderNotAllowLogin() throws Exception {
-        identity.logout();
-        Credential oldCredential = credentials.getCredential();
-        credentials.setCredential(new PasswordCredential("wrongpassword"));
-
-        String encodedAuthToken = null;
-        boolean allowed = authorizationHeaderChecker.loginByHeader(encodedAuthToken);
+        boolean allowed = authorizationHeaderChecker.loginByHeader(null);
         assertFalse(allowed);
         assertFalse(identity.isLoggedIn());
 
-        credentials.setCredential(oldCredential);
-        identity.login();
     }
 
-    @Test
+    @Test @Ignore
+    // TODO this test doesn't really seem to make any sense? If NON-Basic no authentication is needed?!?
     public void testExecuteAllowUserNotBasicAuthenticationHeader() throws Exception {
-        // TODO this test doesn't really seem to make any sense?
-        identity.logout();
+        assertFalse(identity.isLoggedIn());
+
         String encodedAuthToken = "NON-Basic ";
         boolean allowed = authorizationHeaderChecker.loginByHeader(encodedAuthToken);
         assertTrue(allowed);

@@ -55,7 +55,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( new Base64().encode( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( new Base64().encode( "admin:admin".getBytes() ) ) );
             }
         };
         HashMap<String, String> parameters = new HashMap<String, String>() {
@@ -84,7 +84,7 @@ public class ActionAPIServletTest extends GuvnorTestBase {
         HashMap<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     "BASIC " + new String( new Base64().encode( "test:password".getBytes() ) ) );
+                     "BASIC " + new String( new Base64().encode( "admin:admin".getBytes() ) ) );
             }
         };
         HashMap<String, String> parameters = new HashMap<String, String>() {

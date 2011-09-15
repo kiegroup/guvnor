@@ -16,7 +16,14 @@
 
 package org.drools.guvnor.server.security;
 
+import java.util.Arrays;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.jboss.seam.security.BaseAuthenticator;
+import org.jboss.seam.security.Credentials;
+import org.picketlink.idm.api.Credential;
+import org.picketlink.idm.impl.api.PasswordCredential;
 import org.picketlink.idm.impl.api.model.SimpleUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +34,29 @@ import org.slf4j.LoggerFactory;
  */
 public class DemoAuthenticator extends BaseAuthenticator {
 
+    private static final List<String> DEMO_USERNAME_LIST = Arrays.asList("guest", "author1", "author2", "admin");
+
     protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
+    @Inject
+    private Credentials credentials;
+
     public void authenticate() {
-        log.info("All users are guests.");
-        setStatus(AuthenticationStatus.SUCCESS);
-        setUser(new SimpleUser("guest"));
+        String username = credentials.getUsername();
+        if (username == null || !DEMO_USERNAME_LIST.contains(username)) {
+            setStatus(AuthenticationStatus.DEFERRED);
+            log.info("Demo login for user (" + username + ") deferred.");
+        }
+        Credential credential = credentials.getCredential();
+        if (credential instanceof PasswordCredential
+                && username.equals(((PasswordCredential) credentials.getCredential()).getValue())) {
+            setStatus(AuthenticationStatus.SUCCESS);
+            setUser(new SimpleUser(username));
+            log.info("Demo login for user (" + username + ") succeeded.");
+        } else {
+            setStatus(AuthenticationStatus.FAILURE);
+            log.info("Demo login for user (" + username + ") failed.");
+        }
     }
 
 }
