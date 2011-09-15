@@ -3,7 +3,6 @@ package org.drools.guvnor.client.explorer.navigation.reporting;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 
 public class ReportingTree implements ReportingTreeView.Presenter, IsWidget {
 
@@ -21,6 +20,6 @@ public class ReportingTree implements ReportingTreeView.Presenter, IsWidget {
     }
 
     public void onReportTemplatesSelected() {
-        placeController.goTo(new RuntimePlace(RuntimePlace.Location.REPORT_TEMPLATES));
+        placeController.goTo(new ReportTemplatesPlace());
     }
 }

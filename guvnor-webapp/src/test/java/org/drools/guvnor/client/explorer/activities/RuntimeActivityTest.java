@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer.activities;
 
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import org.mockito.ArgumentCaptor;
+import org.junit.Test;
 
-import static org.mockito.Mockito.*;
+public class RuntimeActivityTest {
 
-public class RuntimeTestMethods {
-
-    public static <T> void assertGoesTo(PlaceController placeController, Class<Place> place) {
-
+    @Test
+    public void testPersonalTasks() throws Exception {
+        // TODO: Generated code -Rikkola-
     }
 }

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation;
+package org.drools.guvnor.client.explorer.navigation.reporting;
 
-import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceController;
-import org.mockito.ArgumentCaptor;
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.AcceptItem;
+import org.drools.guvnor.client.util.Activity;
 
-import static org.mockito.Mockito.*;
+public class ReportTemplatesActivity extends Activity {
 
-public class RuntimeTestMethods {
-
-    public static <T> void assertGoesTo(PlaceController placeController, Class<Place> place) {
-
+    @Override
+    public void start(AcceptItem tabbedPanel, EventBus eventBus) {
+        //TODO: Generated code -Rikkola-
     }
 }

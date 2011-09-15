@@ -17,11 +17,9 @@
 package org.drools.guvnor.client.explorer.navigation.settings;
 
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.drools.guvnor.client.explorer.navigation.RuntimeTestMethods.*;
 import static org.mockito.Mockito.*;
 
 public class SettingsTreeTest {
@@ -53,12 +51,12 @@ public class SettingsTreeTest {
     @Test
     public void testGoToPreferences() throws Exception {
         presenter.onPreferencesSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.PREFERENCES);
+        verify(placeController).goTo(any(PreferencesPlace.class));
     }
 
     @Test
     public void testGoToSystem() throws Exception {
         presenter.onSystemSelected();
-        assertGoesTo(placeController, RuntimePlace.Location.SYSTEM);
+        verify(placeController).goTo(any(SystemPlace.class));
     }
 }
