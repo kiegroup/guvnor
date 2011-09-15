@@ -43,9 +43,13 @@ public class ActionAPIServletTest extends GuvnorTestBase {
     @Inject
     private ActionsAPIServlet actionsAPIServlet;
 
+    public ActionAPIServletTest() {
+        autoLoginAsAdmin = false;
+    }
+
     /*
-     * Modeled after testPost in RestAPIServletTest.
-     */
+    * Modeled after testPost in RestAPIServletTest.
+    */
     @Test
     public void testCompilation() throws Exception {
         final String dynamicPackage = "test-action" + UUID.randomUUID();

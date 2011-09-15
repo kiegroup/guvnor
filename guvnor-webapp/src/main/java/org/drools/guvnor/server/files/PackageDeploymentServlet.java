@@ -58,8 +58,13 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private RulesRepository rulesRepository;
 
     @Inject
-    private FileManagerService fileManagerService;
+    private ServiceImplementation serviceImplementation;
 
+    @Inject
+    private RepositoryPackageService repositoryPackageService;
+
+    @Inject
+    private FileManagerService fileManagerService;
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
@@ -274,17 +279,15 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private void doRunScenarios(PackageDeploymentURIHelper helper,
                                 ByteArrayOutputStream out) throws IOException {
-        ServiceImplementation serv = RepositoryServiceServlet.getService();
-        RepositoryPackageService packageService = RepositoryServiceServlet.getPackageService();
         PackageItem pkg;
         if (helper.isLatest()) {
-            pkg = serv.getRulesRepository().loadPackage(helper.getPackageName());
+            pkg = serviceImplementation.getRulesRepository().loadPackage(helper.getPackageName());
         } else {
-            pkg = serv.getRulesRepository().loadPackageSnapshot(helper.getPackageName(),
+            pkg = serviceImplementation.getRulesRepository().loadPackageSnapshot(helper.getPackageName(),
                     helper.getVersion());
         }
         try {
-            BulkTestRunResult result = packageService.runScenariosInPackage(pkg);
+            BulkTestRunResult result = repositoryPackageService.runScenariosInPackage(pkg);
             out.write(result.toString().getBytes());
         } catch (DetailedSerializationException e) {
             log.error("Unable to run scenarios.", e);

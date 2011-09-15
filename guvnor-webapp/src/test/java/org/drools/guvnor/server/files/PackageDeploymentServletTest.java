@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -36,6 +38,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PackageDeploymentServletTest extends GuvnorTestBase {
+
+    @Inject
+    private PackageDeploymentServlet packageDeploymentServlet;
 
     /*
         @Test
@@ -278,21 +283,19 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
 
         }
     */
+
     @Test
     public void testScenariosAndChangeSet() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        repo.createPackage( "testScenariosURL",
-                            "" );
+        rulesRepository.createPackage("testScenariosURL",
+                "");
         repositoryPackageService.createPackageSnapshot("testScenariosURL",
                 "SNAP1",
                 false,
                 "");
 
         Base64 enc = new Base64();
-        String userpassword = "test" + ":" + "password";
-        final String encodedAuthorization = enc.encodeToString( userpassword.getBytes() );
+        final String encodedAuthorization = enc.encodeToString( "admin:admin".getBytes() );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -301,36 +304,33 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
             }
         };
         //now run the scenarios
-        PackageDeploymentServlet serv = new PackageDeploymentServlet();
         MockHTTPRequest req = new MockHTTPRequest( "/package/testScenariosURL/LATEST/SCENARIOS",
                                                    headers );
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+        packageDeploymentServlet.doGet(req,
+                res);
         String testResult = res.extractContent();
         assertNotNull( testResult );
         assertEquals( "No test scenarios found.",
                       testResult );
 
-        serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest( "/package/testScenariosURL/SNAP1/SCENARIOS",
                                    headers );
         res = new MockHTTPResponse();
-        serv.doGet( req,
+        packageDeploymentServlet.doGet( req,
                     res );
         testResult = res.extractContent();
         assertNotNull( testResult );
-        assertEquals( "No test scenarios found.",
-                      testResult );
+        assertEquals("No test scenarios found.",
+                testResult);
 
-        serv = new PackageDeploymentServlet();
         req = new MockHTTPRequest( "/package/testScenariosURL/SNAP1/ChangeSet.xml",
                                    headers );
         req.url = new StringBuffer( "http://foo/ChangeSet.xml" );
         res = new MockHTTPResponse();
 
-        serv.doGet( req,
-                    res );
+        packageDeploymentServlet.doGet(req,
+                res);
         testResult = res.extractContent();
         assertNotNull( testResult );
         assertTrue( testResult.indexOf( "<resource source='http://foo' type='PKG' />" ) > 0 );
@@ -339,41 +339,38 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
     @Test
     public void testPNG() throws Exception {
         
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testPNGPackage",
+        PackageItem pkg = rulesRepository.createPackage( "testPNGPackage",
                                               "" );
         AssetItem asset = pkg.addAsset( "myprocess",
                                         "" );
-        asset.updateFormat( "pgn" );
+        asset.updateFormat("pgn");
         File imageFile = new File( getClass().getResource( "resources/myprocess.png" ).toURI() );
-        asset.updateBinaryContentAttachment( new FileInputStream( imageFile ) );
+        asset.updateBinaryContentAttachment(new FileInputStream(imageFile));
         asset.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
-        asset.checkin( "" );
+        asset.checkin("");
 
-        AssetItem assetnew = repo.loadAssetByUUID( asset.getUUID() );
+        AssetItem assetnew = rulesRepository.loadAssetByUUID( asset.getUUID() );
         assertEquals( "myprocess",
                       assetnew.getName() );
 
         //check png
         Base64 enc = new Base64();
-        String userpassword = "test" + ":" + "password";
-        final String encodedAuthorization = enc.encodeToString( userpassword.getBytes() );
+        final String encodedAuthorization = enc.encodeToString( "admin:admin".getBytes() );
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
                      "BASIC " + encodedAuthorization );
             }
         };
-        PackageDeploymentServlet serv = new PackageDeploymentServlet();
         MockHTTPRequest req = new MockHTTPRequest( "/package/testPNGPackage/LATEST/myprocess.png",
                                                    headers );
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+        packageDeploymentServlet.doGet(req,
+                res);
 
         assertNotNull( res.extractContentBytes() );
         byte[] bin = res.extractContentBytes();
         assertTrue( bin.length > 0 );
     }
+
 }

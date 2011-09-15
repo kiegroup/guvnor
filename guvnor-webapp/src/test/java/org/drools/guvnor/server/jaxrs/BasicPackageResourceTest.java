@@ -126,29 +126,29 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
     
     @Test
-    public void testBasicAuthentication() throws MalformedURLException, IOException {
+    public void testBasicAuthenticationInvalidPassword() throws MalformedURLException, IOException {
         //Test with invalid user name and pwd
         URL url = new URL(generateBaseUrl() + "/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "invalidPwd";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword
+        byte[] authEncBytes = Base64.encodeBase64("admin:invalidPassword"
                 .getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
         assertEquals (401, connection.getResponseCode());
         //assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        
+    }
+
+    @Test
+    public void testBasicAuthentication() throws MalformedURLException, IOException {
         //Test with valid user name and pwd
-        url = new URL(generateBaseUrl() + "/packages");
-        connection = (HttpURLConnection)url.openConnection();
+        URL url = new URL(generateBaseUrl() + "/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        userpassword = "test" + ":" + "password";
-        authEncBytes = Base64.encodeBase64(userpassword
-                .getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
@@ -744,8 +744,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "password";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
@@ -1048,8 +1047,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "password";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
