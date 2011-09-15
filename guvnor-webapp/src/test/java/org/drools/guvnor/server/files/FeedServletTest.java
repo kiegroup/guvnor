@@ -38,12 +38,13 @@ import org.junit.Test;
 
 public class FeedServletTest extends GuvnorTestBase {
 
+    @Inject
+    private FeedServlet feedServlet;
+
     @Test
     public void testPackageFeed() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testPackageFeed",
+        PackageItem pkg = rulesRepository.createPackage( "testPackageFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -66,12 +67,19 @@ public class FeedServletTest extends GuvnorTestBase {
             }
         };
 
-        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/package?name=...",
-                                                   headers );
-        FeedServlet fs = new FeedServlet();
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/package",
+                                                   headers,
+                                                   new HashMap<String, String>() {
+                                                       {
+                                                           put( "name",
+                                                                "testPackageFeed" );
+                                                           put( "viewUrl",
+                                                                "http://foo.bar" );
+                                                       }
+                                                   } );
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
 
@@ -95,13 +103,12 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "http://foo.bar" );
                                        }
                                    } );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
+        feedServlet.doGet( req,
                   res );
 
         String r = res.extractContent();
-        assertNotNull( r );
+        assertNotNull(r);
 
         assertTrue( r.indexOf( "asset1" ) > -1 );
 
@@ -117,15 +124,14 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "Foo" );
                                        }
                                    } );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
+        feedServlet.doGet( req,
                   res );
 
         r = res.extractContent();
         assertNotNull( r );
 
-        assertFalse( r.indexOf( "asset1.drl" ) > -1 );
+        assertFalse(r.indexOf("asset1.drl") > -1);
 
         req = new MockHTTPRequest( "/org.foo/feed/package",
                                    headers,
@@ -139,10 +145,9 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "Draft" );
                                        }
                                    } );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
 
         r = res.extractContent();
         assertNotNull( r );
@@ -152,11 +157,9 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testCategoryFeed() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testCategoryFeed",
+        PackageItem pkg = rulesRepository.createPackage( "testCategoryFeed",
                                               "" );
-        repo.loadCategory( "/" ).addCategory( "testCategoryFeedCat",
+        rulesRepository.loadCategory("/").addCategory( "testCategoryFeedCat",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -190,10 +193,9 @@ public class FeedServletTest extends GuvnorTestBase {
                                                                 "http://foo.bar" );
                                                        }
                                                    } );
-        FeedServlet fs = new FeedServlet();
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
 
         String r = res.extractContent();
         assertNotNull( r );
@@ -213,23 +215,21 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "*" );
                                        }
                                    } );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
+        feedServlet.doGet( req,
                   res );
 
         r = res.extractContent();
         assertNotNull( r );
 
-        assertTrue( r.indexOf( "asset1" ) > -1 );
+        assertTrue(r.indexOf("asset1") > -1);
         assertTrue( r.indexOf( "http://foo.bar" ) > -1 );
 
         // TODO seam3upgrade
 //        midentity.setAllowLogin( false );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
     }
@@ -237,9 +237,7 @@ public class FeedServletTest extends GuvnorTestBase {
     @Test
     public void testDiscussionFeed() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testDiscussionFeed",
+        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeed",
                                               "" );
         AssetItem asset = pkg.addAsset( "asset1",
                                         "desc" );
@@ -255,8 +253,7 @@ public class FeedServletTest extends GuvnorTestBase {
 //        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
 //                                          midentity );
 
-        RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
-        repositoryAssetService.setRulesRepository( repo );
+        repositoryAssetService.setRulesRepository( rulesRepository );
         repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
                                                         "This is a comment" );
         repositoryAssetService.addToDiscussionForAsset( asset.getUUID(),
@@ -269,12 +266,19 @@ public class FeedServletTest extends GuvnorTestBase {
             }
         };
 
-        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/discussion?package=...",
-                                                   headers );
-        FeedServlet fs = new FeedServlet();
+        MockHTTPRequest req = new MockHTTPRequest( "/org.foo/feed/discussion",
+                                                   headers,
+                                                   new HashMap<String, String>() {
+                                                       {
+                                                           put( "package",
+                                                                "testDiscussionFeed" );
+                                                           put( "assetName",
+                                                                "asset1" );
+                                                       }
+                                                   } );
         MockHTTPResponse res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
         assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
                       res.errorCode );
 
@@ -297,10 +301,9 @@ public class FeedServletTest extends GuvnorTestBase {
                                                 "asset1" );
                                        }
                                    } );
-        fs = new FeedServlet();
         res = new MockHTTPResponse();
-        fs.doGet( req,
-                  res );
+        feedServlet.doGet(req,
+                res);
 
         String r = res.extractContent();
         assertNotNull( r );

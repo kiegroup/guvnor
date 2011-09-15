@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +34,11 @@ import net.sf.webdav.WebDavServletBean;
  * of writing was included as source as it was easier - needed some fixes).
  */
 public class WebdavServlet extends WebDavServletBean {
+
     private static final long serialVersionUID = 510l;
+
+    @Inject
+    protected AuthorizationHeaderChecker authorizationHeaderChecker;
 
     public void init() throws ServletException {
 
@@ -65,7 +70,7 @@ public class WebdavServlet extends WebDavServletBean {
                            HttpServletResponse resp) throws ServletException,
                                                     IOException {
         String auth = req.getHeader( "Authorization" );
-        if ( !RestAPIServlet.allowUser( auth ) ) {
+        if ( !authorizationHeaderChecker.allowUser( auth ) ) {
             resp.setHeader( "WWW-Authenticate",
                             "BASIC realm=\"users\"" );
             resp.sendError( HttpServletResponse.SC_UNAUTHORIZED );
