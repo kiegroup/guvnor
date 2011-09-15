@@ -137,6 +137,10 @@ public class NewAssetWizard extends FormStylePopup {
     }
 
     private static String getTitle(String format, ClientFactory cf) {
+        //Just a quick temporary fix. 
+        if(format == null) {
+            return  constants.NewRule();
+        }
         String title = cf.getAssetEditorFactory().getAssetEditorTitle(format);
         return constants.New() + " " + title;
     }
