@@ -62,7 +62,7 @@ public class ColumnExpansionPageViewImpl extends Composite
     private MultiSelectionModel<ConditionCol52>  availableSelectionModel = new MultiSelectionModel<ConditionCol52>();
     private MultiSelectionModel<ConditionCol52>  chosenSelectionModel    = new MultiSelectionModel<ConditionCol52>();
 
-    private boolean                              isExandInFull;
+    private boolean                              isExandInFull           = true;
 
     private static final Constants               constants               = GWT.create( Constants.class );
 
@@ -169,6 +169,7 @@ public class ColumnExpansionPageViewImpl extends Composite
     public void setAvailableColumns(List<ConditionCol52> columns) {
         availableColumns = columns;
         availableColumns.removeAll( chosenColumns );
+        presenter.setColumnsToExpand( getColumnsToExpand() );
         availableColumnsWidget.setRowCount( columns.size(),
                                             true );
         availableColumnsWidget.setRowData( columns );
