@@ -25,6 +25,7 @@ import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
@@ -39,12 +40,16 @@ import org.junit.Test;
 
 public class RestAPIServletTest extends GuvnorTestBase {
 
+    @Inject
+    private RestAPIServlet restAPIServlet;
+
+    public RestAPIServletTest() {
+        autoLoginAsAdmin = false;
+    }
+
     @Test
-    public void testGet() throws Exception {
-
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testGetRestServlet",
+    public void testGetRestServletNoLogin() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testGetRestServletNoLogin",
                                               "" );
         AssetItem ass = pkg.addAsset( "asset1",
                                       "" );
@@ -52,69 +57,79 @@ public class RestAPIServletTest extends GuvnorTestBase {
         ass.updateContent( "some content" );
         ass.checkin( "hey ho" );
 
-        // TODO seam3upgrade
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( false );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
-
-        RestAPIServlet serv = new RestAPIServlet();
-        assertNotNull( serv.getAPI() );
+        assertNotNull(restAPIServlet.getAPI());
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Irrelevant",
                      "garbage" );
             }
         };
-        String uri = "http://loser/api/packages/testGetRestServlet/asset1.drl";
+        String uri = "http://loser/api/packages/testGetRestServletNoLogin/asset1.drl";
         MockHTTPRequest req = new MockHTTPRequest( uri,
                                                    headers );
-
         MockHTTPResponse res = new MockHTTPResponse();
 
         //try with no password
-        serv.doGet( req,
+        restAPIServlet.doGet( req,
                     res );
-        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
-                      res.errorCode );
-        assertTrue( res.headers.containsKey( "WWW-Authenticate" ) );
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED,
+                res.errorCode);
+        assertTrue(res.headers.containsKey("WWW-Authenticate"));
+    }
+
+    @Test
+    public void testGetRestServletBadLogin() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testGetRestServletBadLogin",
+                                              "" );
+        AssetItem ass = pkg.addAsset( "asset1",
+                                      "" );
+        ass.updateFormat( "drl" );
+        ass.updateContent( "some content" );
+        ass.checkin( "hey ho" );
 
         //try again with bad password
-        headers = new HashMap<String, String>() {
+        Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
-                     new String( Base64.encodeBase64( "foo:bar".getBytes() ) ) );
+                     new String( Base64.encodeBase64( "admin:invalidPwd".getBytes() ) ) );
             }
         };
-        req = new MockHTTPRequest( uri,
+        String uri = "http://loser/api/packages/testGetRestServletBadLogin/asset1.drl";
+        MockHTTPRequest req = new MockHTTPRequest( uri,
                                    headers );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
+        MockHTTPResponse res = new MockHTTPResponse();
+        restAPIServlet.doGet( req,
                     res );
-        assertEquals( HttpServletResponse.SC_UNAUTHORIZED,
-                      res.errorCode );
-        assertTrue( res.headers.containsKey( "WWW-Authenticate" ) );
+        assertEquals(HttpServletResponse.SC_UNAUTHORIZED,
+                res.errorCode);
+        assertTrue(res.headers.containsKey("WWW-Authenticate"));
+    }
 
-        //finally, making it work
-        // TODO seam3upgrade
-//        midentity.setAllowLogin( true );
+    @Test
+    public void testGetRestServlet() throws Exception {
+        PackageItem pkg = rulesRepository.createPackage( "testGetRestServlet",
+                                              "" );
+        AssetItem ass = pkg.addAsset( "asset1",
+                                      "" );
+        ass.updateFormat( "drl" );
+        ass.updateContent( "some content" );
+        ass.checkin( "hey ho" );
 
-        headers = new HashMap<String, String>() {
+        Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
                      "BASIC " + new String( Base64.encodeBase64( "admin:admin".getBytes() ) ) );
             }
         };
-
-        req = new MockHTTPRequest( uri,
+        String uri = "http://loser/api/packages/testGetRestServlet/asset1.drl";
+        MockHTTPRequest req = new MockHTTPRequest( uri,
                                    headers );
-        res = new MockHTTPResponse();
-        serv.doGet( req,
+        MockHTTPResponse res = new MockHTTPResponse();
+        restAPIServlet.doGet( req,
                     res );
 
-        assertEquals( 0,
-                      res.errorCode );
+        assertEquals(0,
+                res.errorCode);
         String data = res.extractContent();
         assertEquals( "some content",
                       data );
@@ -122,38 +137,27 @@ public class RestAPIServletTest extends GuvnorTestBase {
         assertEquals( "application/x-download",
                       res.getContentType() );
         assertEquals( true,
-                      res.containsHeader( "Content-Disposition" ) );
+                      res.containsHeader("Content-Disposition") );
 
         //now try getting some version listings
         req = new MockHTTPRequest( uri,
                                    headers );
         req.queryString = "version=all";
         res = new MockHTTPResponse();
-        serv.doGet( req,
-                    res );
+        restAPIServlet.doGet(req,
+                res);
 
         assertEquals( 0,
                       res.errorCode );
         data = res.extractContent();
         assertFalse( "some content".equals( data ) );
         assertNotNull( data );
-
     }
 
     @Test
     public void testPost() throws Exception {
-
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testPostRestServlet",
+        PackageItem pkg = rulesRepository.createPackage( "testPostRestServlet",
                                               "" );
-
-        // TODO seam3upgrade
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
 
         Map<String, String> headers = new HashMap<String, String>() {
             {
@@ -163,14 +167,13 @@ public class RestAPIServletTest extends GuvnorTestBase {
         };
 
         ByteArrayInputStream in = new ByteArrayInputStream( "some new content".getBytes() );
-        RestAPIServlet serv = new RestAPIServlet();
         MockHTTPRequest req = new MockHTTPRequest( "http://foo/api/packages/testPostRestServlet/asset1.drl",
                                                    headers,
                                                    in );
 
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doPost( req,
-                     res );
+        restAPIServlet.doPost(req,
+                res);
 
         assertEquals( "OK",
                       res.extractContent() );
@@ -190,8 +193,8 @@ public class RestAPIServletTest extends GuvnorTestBase {
                                    headers,
                                    in );
         res = new MockHTTPResponse();
-        serv.doPost( req,
-                     res );
+        restAPIServlet.doPost(req,
+                res);
         assertEquals( "OK",
                       res.extractContent() );
 
@@ -216,13 +219,6 @@ public class RestAPIServletTest extends GuvnorTestBase {
         ass.checkin( "" );
         long ver = ass.getVersionNumber();
 
-        // TODO seam3upgrade
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
-
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
@@ -233,14 +229,13 @@ public class RestAPIServletTest extends GuvnorTestBase {
         };
 
         ByteArrayInputStream in = new ByteArrayInputStream( "some new content".getBytes() );
-        RestAPIServlet serv = new RestAPIServlet();
         MockHTTPRequest req = new MockHTTPRequest( "http://foo/api/packages/testPutRestServlet/asset1.drl",
                                                    headers,
                                                    in );
 
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doPut( req,
-                    res );
+        restAPIServlet.doPut(req,
+                res);
 
         assertEquals( "OK",
                       res.extractContent() );
@@ -264,13 +259,6 @@ public class RestAPIServletTest extends GuvnorTestBase {
         ass.updateFormat("drl");
         ass.checkin( "" );
 
-        // TODO seam3upgrade
-//        MockIdentity midentity = new MockIdentity();
-//        midentity.setIsLoggedIn( false );
-//        midentity.setAllowLogin( true );
-//        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-//                                          midentity );
-
         Map<String, String> headers = new HashMap<String, String>() {
             {
                 put( "Authorization",
@@ -279,14 +267,13 @@ public class RestAPIServletTest extends GuvnorTestBase {
         };
 
         ByteArrayInputStream in = new ByteArrayInputStream( "some new content".getBytes() );
-        RestAPIServlet serv = new RestAPIServlet();
         MockHTTPRequest req = new MockHTTPRequest( "http://foo/api/packages/testDeleteRestServlet/asset1.drl",
                                                    headers,
                                                    in );
 
         MockHTTPResponse res = new MockHTTPResponse();
-        serv.doDelete( req,
-                       res );
+        restAPIServlet.doDelete(req,
+                res);
 
         assertEquals( "OK",
                       res.extractContent() );
