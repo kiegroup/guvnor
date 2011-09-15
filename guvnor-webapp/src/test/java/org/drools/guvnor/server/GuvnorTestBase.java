@@ -97,6 +97,7 @@ public abstract class GuvnorTestBase {
 
     @Before
     public void loginAsAdmin() {
+        // TODO this method seems to be called after the request and the rulesRepository therefor is created...
         if (autoLoginAsAdmin) {
             credentials.setUsername("admin");
             credentials.setCredential(new PasswordCredential("admin"));

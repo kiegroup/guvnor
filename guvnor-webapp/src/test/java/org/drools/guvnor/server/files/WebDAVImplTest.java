@@ -252,15 +252,15 @@ public class WebDAVImplTest extends GuvnorTestBase {
     public void testCreateResourceAndCreatedDate() throws Exception {
         try {
             webDAV.createFolder( new TransactionMock(),
-                              "/packages/testCreateResourceDAVFolder" );
+                              "/packages/testCreateResourceAndCreatedDate" );
 
             Thread.sleep( 100 );
 
             webDAV.createResource( new TransactionMock(),
-                                "/packages/testCreateResourceDAVFolder/asset.drl" );
+                                "/packages/testCreateResourceAndCreatedDate/asset.drl" );
 
             String[] resources = webDAV.getChildrenNames( new TransactionMock(),
-                                                       "/packages/testCreateResourceDAVFolder" );
+                                                       "/packages/testCreateResourceAndCreatedDate" );
             assertEquals( 1,
                           resources.length );
             assertEquals( "asset.drl",
@@ -268,11 +268,11 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
             //should be ignored
             webDAV.createResource( new TransactionMock(),
-                                "/packages/testCreateResourceDAVFolder/._asset.drl" );
+                                "/packages/testCreateResourceAndCreatedDate/._asset.drl" );
             webDAV.createResource( new TransactionMock(),
                                 "/packages/.DS_Store" );
 
-            PackageItem pkg = rulesRepository.loadPackage( "testCreateResourceDAVFolder" );
+            PackageItem pkg = rulesRepository.loadPackage( "testCreateResourceAndCreatedDate" );
             assertFalse( pkg.containsAsset( "._asset" ) );
             assertTrue( pkg.containsAsset( "asset" ) );
 
@@ -283,18 +283,18 @@ public class WebDAVImplTest extends GuvnorTestBase {
             assertEquals( "drl",
                           ass.getFormat() );
 
-            Date create = webDAV.getCreationDate( "/packages/testCreateResourceDAVFolder" );
+            Date create = webDAV.getCreationDate( "/packages/testCreateResourceAndCreatedDate" );
             assertNotNull( create );
             assertTrue( create.after( new Date( "10-Jul-1974" ) ) );
 
-            Date assetCreate = webDAV.getCreationDate( "/packages/testCreateResourceDAVFolder/asset.drl" );
+            Date assetCreate = webDAV.getCreationDate( "/packages/testCreateResourceAndCreatedDate/asset.drl" );
             assertTrue( assetCreate.after( create ) );
 
-            Date lm = webDAV.getLastModified( "/packages/testCreateResourceDAVFolder" );
+            Date lm = webDAV.getLastModified( "/packages/testCreateResourceAndCreatedDate" );
             assertNotNull( lm );
             assertTrue( lm.after( new Date( "10-Jul-1974" ) ) );
 
-            Date alm = webDAV.getLastModified( "/packages/testCreateResourceDAVFolder/asset.drl" );
+            Date alm = webDAV.getLastModified( "/packages/testCreateResourceAndCreatedDate/asset.drl" );
             assertTrue( alm.after( lm ) );
 
             try {
@@ -310,7 +310,6 @@ public class WebDAVImplTest extends GuvnorTestBase {
                 webDAV.commit( new TransactionMock() );
             }
         }
-
     }
 
     @Test
