@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.security;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 import javax.inject.Inject;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * This will let any user in, effectively removing any authentication (as the system
  * will attempt to auto login the first time).
  */
-public class DemoAuthenticator extends BaseAuthenticator {
+public class DemoAuthenticator extends BaseAuthenticator implements Serializable {
 
     private static final List<String> DEMO_USERNAME_LIST = Arrays.asList("guest", "author1", "author2", "admin");
 

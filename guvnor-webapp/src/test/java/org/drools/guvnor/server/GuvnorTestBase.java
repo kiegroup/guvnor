@@ -142,9 +142,4 @@ public abstract class GuvnorTestBase {
         throw new UnsupportedOperationException("Use injection instead");
     }
 
-    @Deprecated // TODO seam3upgrade should probably be injected now
-    public WebDAVImpl getWebDAVImpl() throws Exception {
-        return new WebDAVImpl(rulesRepository);
-    }
-
 }
