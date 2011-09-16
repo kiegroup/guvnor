@@ -30,6 +30,7 @@ import org.drools.guvnor.client.perspectives.PerspectivesPanel;
 import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
 import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
+import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -81,6 +82,13 @@ public class PerspectivesPanelTest {
         ).thenReturn(
                 new String[]{"author", "runtime"}
                 
+        );
+        
+        PackageServiceAsync packageService = mock(PackageServiceAsync.class);
+        when(
+                clientFactory.getPackageService()
+        ).thenReturn(
+                packageService
         );
         
         perspectivesPanel = new PerspectivesPanel(clientFactory, eventBus);
