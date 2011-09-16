@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
@@ -37,7 +38,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testAssetItemCreation() throws Exception {
 
-            Calendar now = Calendar.getInstance();
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
 
             Thread.sleep(500); //MN: need this sleep to get the correct date
 
@@ -544,7 +545,7 @@ public class AssetItemTest extends RepositoryTestCase {
     public void testGetLastModifiedOnCheckin() throws Exception  {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetLastModified", "test content");
 
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
             long before = cal.getTimeInMillis();
 
             Thread.sleep( 100 );
@@ -553,10 +554,8 @@ public class AssetItemTest extends RepositoryTestCase {
             Calendar cal2 = ruleItem1.getLastModified();
             long lastMod = cal2.getTimeInMillis();
 
-            cal = Calendar.getInstance();
+            cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
             long after = cal.getTimeInMillis();
-
-
 
             assertTrue(before < lastMod);
             assertTrue(lastMod < after);
@@ -572,7 +571,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertTrue(ruleItem1.getDateEffective() == null);
 
             //now try setting it, then retrieving it
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
             ruleItem1.updateDateEffective(cal);
             Calendar cal2 = ruleItem1.getDateEffective();
 
@@ -588,7 +587,7 @@ public class AssetItemTest extends RepositoryTestCase {
             assertTrue(ruleItem1.getDateExpired() == null);
 
             //now try setting it, then retrieving it
-            Calendar cal = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
             ruleItem1.updateDateExpired(cal);
             Calendar cal2 = ruleItem1.getDateExpired();
 

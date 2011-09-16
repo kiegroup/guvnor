@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.TimeZone;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
@@ -510,8 +511,8 @@ public class RulesRepositoryTest extends RepositoryTestCase {
     public void testAddRuleCalendarWithDates() {
         RulesRepository rulesRepository = getRepo();
 
-        Calendar effectiveDate = Calendar.getInstance();
-        Calendar expiredDate = Calendar.getInstance();
+        Calendar effectiveDate = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+        Calendar expiredDate = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
         expiredDate.setTimeInMillis( effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24) );
         AssetItem ruleItem1 = rulesRepository.loadDefaultPackage().addAsset( "testAddRuleCalendarCalendar",
                                                                              "desc" );
@@ -1148,7 +1149,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assetNode.setProperty("drools:title", "title");
         assetNode.setProperty("drools:format", "format");
         assetNode.setProperty("drools:description", "description");
-        Calendar lastModified = Calendar.getInstance();
+        Calendar lastModified = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
         assetNode.setProperty("drools:lastModified", lastModified);
         getRepo().getSession().save();
         assetNode.checkin();

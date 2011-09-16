@@ -16,12 +16,19 @@
 
 package org.drools.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -31,14 +38,7 @@ import javax.jcr.Workspace;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 public class ShareableAssetItemTest extends RepositoryTestCase {
 
@@ -48,7 +48,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testCreateShareableAsset() throws Exception {
-        Calendar now = Calendar.getInstance();
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         Thread.sleep(500); // MN: need this sleep to get the correct date
 
         AssetItem ruleItem = loadGlobalArea().addAsset("testCreateShareableAssetAsset", "desc");
@@ -184,7 +184,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assetNode.setProperty("drools:title", "title");
         assetNode.setProperty("drools:format", "format");
         assetNode.setProperty("drools:description", "description");
-        Calendar lastModified = Calendar.getInstance();
+        Calendar lastModified = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         assetNode.setProperty("drools:lastModified", lastModified);
         getRepo().getSession().save();
         assetNode.checkin();
@@ -476,7 +476,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertTrue(linkedAsset.getDateEffective() == null);
 
         // now try setting it, then retrieving it
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         linkedAsset.updateDateEffective(cal);
         Calendar cal2 = linkedAsset.getDateEffective();
 
@@ -492,7 +492,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertTrue(linkedAsset.getDateExpired() == null);
 
         // now try setting it, then retrieving it
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         linkedAsset.updateDateExpired(cal);
         Calendar cal2 = linkedAsset.getDateExpired();
 
