@@ -46,7 +46,7 @@ public class Translator {
     public static final QName FORMAT = new QName(NS, "format");
     public static final QName CATEGORIES = new QName(NS, "categories");
 
-    public static Asset ToAsset(AssetItem a, UriInfo uriInfo) {
+    public static Asset toAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
         metadata.setUuid(a.getUUID());
         metadata.setTitle(a.getTitle());
@@ -81,7 +81,7 @@ public class Translator {
         return ret;
     }
 
-    public static Package ToPackage(PackageItem p, UriInfo uriInfo) {
+    public static Package toPackage(PackageItem p, UriInfo uriInfo) {
         PackageMetadata metadata = new PackageMetadata();
         metadata.setUuid(p.getUUID());
         metadata.setCreated(p.getCreatedDate().getTime());
@@ -108,7 +108,7 @@ public class Translator {
         Set<URI> assets = new HashSet<URI>();
         while (iter.hasNext()) {
             AssetItem a = iter.next();
-            Asset asset = ToAsset(a, uriInfo);
+            Asset asset = toAsset(a, uriInfo);
             assets.add(asset.getRefLink());
         }
 
@@ -116,7 +116,7 @@ public class Translator {
         return ret;
     }
 
-    public static Entry ToPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
+    public static Entry toPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
         UriBuilder base;
         if (p.isHistoricalVersion()) {
             base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
@@ -208,7 +208,7 @@ public class Translator {
         
         return e;
     }*/
-    public static Entry ToAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
+    public static Entry toAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
         UriBuilder base;
         if (a.isHistoricalVersion()) {
             base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName()).path("versions").path(Long.toString(a.getVersionNumber()));
