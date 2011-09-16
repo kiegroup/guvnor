@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
@@ -38,7 +37,7 @@ public class AssetItemTest extends RepositoryTestCase {
     @Test
     public void testAssetItemCreation() throws Exception {
 
-            Calendar now = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+            Calendar now = Calendar.getInstance();
 
             Thread.sleep(500); //MN: need this sleep to get the correct date
 
@@ -545,7 +544,7 @@ public class AssetItemTest extends RepositoryTestCase {
     public void testGetLastModifiedOnCheckin() throws Exception  {
             AssetItem ruleItem1 = getDefaultPackage().addAsset("testGetLastModified", "test content");
 
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+            Calendar cal = Calendar.getInstance();
             long before = cal.getTimeInMillis();
 
             Thread.sleep( 100 );
@@ -554,7 +553,7 @@ public class AssetItemTest extends RepositoryTestCase {
             Calendar cal2 = ruleItem1.getLastModified();
             long lastMod = cal2.getTimeInMillis();
 
-            cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+            cal = Calendar.getInstance();
             long after = cal.getTimeInMillis();
 
             assertTrue(before < lastMod);
@@ -571,11 +570,14 @@ public class AssetItemTest extends RepositoryTestCase {
             assertTrue(ruleItem1.getDateEffective() == null);
 
             //now try setting it, then retrieving it
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+            Calendar cal = Calendar.getInstance();
             ruleItem1.updateDateEffective(cal);
             Calendar cal2 = ruleItem1.getDateEffective();
 
-            assertEquals(cal, cal2);
+            //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+            //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+            //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+            assertEquals(cal.getTimeInMillis(), cal2.getTimeInMillis());
     }
 
     @Test
@@ -587,11 +589,16 @@ public class AssetItemTest extends RepositoryTestCase {
             assertTrue(ruleItem1.getDateExpired() == null);
 
             //now try setting it, then retrieving it
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+            Calendar cal = Calendar.getInstance();
             ruleItem1.updateDateExpired(cal);
             Calendar cal2 = ruleItem1.getDateExpired();
 
-            assertEquals(cal, cal2);
+            //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+            //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+            //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+            assertEquals( cal.getTimeInMillis(), 
+                         cal2.getTimeInMillis() );
+            
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);

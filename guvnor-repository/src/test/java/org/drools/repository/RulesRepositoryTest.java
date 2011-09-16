@@ -31,7 +31,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.TimeZone;
 
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
@@ -45,7 +44,6 @@ import javax.jcr.Workspace;
 import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.migration.MigrateDroolsPackage;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -511,8 +509,8 @@ public class RulesRepositoryTest extends RepositoryTestCase {
     public void testAddRuleCalendarWithDates() {
         RulesRepository rulesRepository = getRepo();
 
-        Calendar effectiveDate = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
-        Calendar expiredDate = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+        Calendar effectiveDate = Calendar.getInstance();
+        Calendar expiredDate = Calendar.getInstance();
         expiredDate.setTimeInMillis( effectiveDate.getTimeInMillis() + (1000 * 60 * 60 * 24) );
         AssetItem ruleItem1 = rulesRepository.loadDefaultPackage().addAsset( "testAddRuleCalendarCalendar",
                                                                              "desc" );
@@ -521,10 +519,18 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
         assertNotNull( ruleItem1 );
         assertNotNull( ruleItem1.getNode() );
-        assertEquals( effectiveDate,
-                      ruleItem1.getDateEffective() );
-        assertEquals( expiredDate,
-                      ruleItem1.getDateExpired() );
+        
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( effectiveDate.getTimeInMillis(), 
+                      ruleItem1.getDateEffective().getTimeInMillis() );
+
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( expiredDate.getTimeInMillis(),
+                      ruleItem1.getDateExpired().getTimeInMillis() );
 
         ruleItem1.checkin( "ho " );
     }
@@ -1149,7 +1155,7 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assetNode.setProperty("drools:title", "title");
         assetNode.setProperty("drools:format", "format");
         assetNode.setProperty("drools:description", "description");
-        Calendar lastModified = Calendar.getInstance(TimeZone.getTimeZone( "UTC" ));
+        Calendar lastModified = Calendar.getInstance();
         assetNode.setProperty("drools:lastModified", lastModified);
         getRepo().getSession().save();
         assetNode.checkin();

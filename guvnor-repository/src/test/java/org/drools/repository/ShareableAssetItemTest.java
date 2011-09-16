@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -48,7 +47,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
 
     @Test
     public void testCreateShareableAsset() throws Exception {
-        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar now = Calendar.getInstance();
         Thread.sleep(500); // MN: need this sleep to get the correct date
 
         AssetItem ruleItem = loadGlobalArea().addAsset("testCreateShareableAssetAsset", "desc");
@@ -184,7 +183,7 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assetNode.setProperty("drools:title", "title");
         assetNode.setProperty("drools:format", "format");
         assetNode.setProperty("drools:description", "description");
-        Calendar lastModified = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar lastModified = Calendar.getInstance();
         assetNode.setProperty("drools:lastModified", lastModified);
         getRepo().getSession().save();
         assetNode.checkin();
@@ -476,11 +475,15 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertTrue(linkedAsset.getDateEffective() == null);
 
         // now try setting it, then retrieving it
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
         linkedAsset.updateDateEffective(cal);
         Calendar cal2 = linkedAsset.getDateEffective();
 
-        assertEquals(cal, cal2);
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( cal.getTimeInMillis(), 
+                      cal2.getTimeInMillis() );
     }
 
     @Test
@@ -492,11 +495,15 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         assertTrue(linkedAsset.getDateExpired() == null);
 
         // now try setting it, then retrieving it
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
         linkedAsset.updateDateExpired(cal);
         Calendar cal2 = linkedAsset.getDateExpired();
 
-        assertEquals(cal, cal2);
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( cal.getTimeInMillis(), 
+                      cal2.getTimeInMillis() );
     }
 
     @Test
