@@ -27,6 +27,7 @@ import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
@@ -60,7 +61,10 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
-
+        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
+        cat.addCategory( "testRESTCat",
+                         "testRESTCat" );
+        
         //Package version 2	
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
                                          pkg );
@@ -93,6 +97,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
                                         "desc for model1" );
         rule3.updateFormat( AssetFormats.DRL_MODEL );
         rule3.updateContent( "declare Album1\n genre1: String \n end" );
+        rule3.addCategory("testRESTCat");
         rule3.checkin( "version 1" );
 
         pkg.checkin( "version2" );
@@ -164,7 +169,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        //System.out.println(GetContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -188,8 +193,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
         ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
-        assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));   
-		
+        assertNotNull("testRESTCat", categoryExtension.getSimpleExtension(Translator.VALUE));   		
     }
 
     @Test
