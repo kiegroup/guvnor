@@ -57,6 +57,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private static final LoggingHelper log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
     private Verifier                   defaultVerifier  = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+    private final ServiceSecurity            serviceSecurity           = new ServiceSecurity();
 
     private RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
@@ -94,10 +95,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
     private AnalysisReport performAssetVerification(RuleAsset asset, boolean useVerifierDefaultConfig, Set<String> activeWorkingSets) throws SerializationException {
         long startTime = System.currentTimeMillis();
-
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ), RoleTypes.PACKAGE_DEVELOPER );
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( asset );
 
         PackageItem packageItem = getAssetService().getRulesRepository().loadPackage( asset.metaData.packageName );
 

@@ -200,7 +200,7 @@ public class ServiceImplementation
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
+        serviceSecurity.checkIsPackageDeveloper( initialPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CREATING new asset name [" + ruleName + "] in package [" + initialPackage + "]" );
 
@@ -242,7 +242,7 @@ public class ServiceImplementation
     @Restrict("#{identity.loggedIn}")
     public String createNewImportedRule(String sharedAssetName,
                                         String initialPackage) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( initialPackage );
+        serviceSecurity.checkIsPackageDeveloper( initialPackage );
 
         log.info( "USER:" + getRulesRepository().getSession().getUserID() + " CREATING shared asset imported from global area named [" + sharedAssetName + "] in package [" + initialPackage + "]" );
 

@@ -18,10 +18,12 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.security.AdminType;
+import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
@@ -35,9 +37,15 @@ public class ServiceSecurity {
         if ( Contexts.isSessionContextActive() ) {
             return Identity.instance().hasPermission( target,
                                                        RoleTypes.ANALYST_READ );
-
         }
         return true;
+    }
+
+    protected void checkSecurityIsAdmin() {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new AdminType(),
+                                                 RoleTypes.ADMIN );
+        }
     }
 
     protected void checkSecurityIsPackageNameTypeAdmin(String packageName) {
@@ -54,13 +62,6 @@ public class ServiceSecurity {
         }
     }
 
-    protected void checkSecurityIsPackageDeveloper(RuleAsset asset) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-    }
-
     protected void checkSecurityIsPackageReadOnly(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
             Identity.instance().checkPermission( new PackageNameType( packageName ),
@@ -68,24 +69,10 @@ public class ServiceSecurity {
         }
     }
 
-    protected void checkSecurityIsPackageDeveloper(AssetItem item) {
+    protected void checkSecurityIsPackageAdmin(String packageUuid) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-    }
-
-    protected void checkSecurityIsPackageAdmin(String uuid) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( uuid ),
+            Identity.instance().checkPermission( new PackageUUIDType( packageUuid ),
                                                  RoleTypes.PACKAGE_ADMIN );
-        }
-    }
-
-    protected void checkSecurityIsAdmin() {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(),
-                                                 RoleTypes.ADMIN );
         }
     }
 
@@ -96,17 +83,113 @@ public class ServiceSecurity {
         }
     }
 
-    protected void checkSecurityIsPackageDeveloperForName(String initialPackage) {
+    protected void checkIsPackageDeveloper(String packageName) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( initialPackage ),
+            Identity.instance().checkPermission( new PackageNameType( packageName ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+    }
+    
+    protected void checkSecurityIsPackageReadOnly(AssetItem item) {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
+                                                 RoleTypes.PACKAGE_READONLY );
+        }
+    }
+    
+    protected void checkSecurityIsPackageDeveloper(AssetItem item) {
+        if ( Contexts.isSessionContextActive() ) {
+            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
                                                  RoleTypes.PACKAGE_DEVELOPER );
         }
     }
 
-    protected void checkSecurityAssetPackagePackageReadOnly(AssetItem item) {
+    protected void checkSecurityIsPackageDeveloper(RuleAsset asset) {
         if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageUUIDType( item.getPackage().getUUID() ),
-                                                 RoleTypes.PACKAGE_READONLY );
+            Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                 RoleTypes.PACKAGE_DEVELOPER );
+        }
+    }
+    
+    /**
+    *
+    * Role-based Authorization check: This method can be accessed if user has
+    * following permissions:
+    * 1. The user has a Analyst role and this role has permission to access the category
+    * which the asset belongs to.
+    * Or.
+    * 2. The user has a package.developer role or higher (i.e., package.admin)
+    * and this role has permission to access the package which the asset belongs to.
+    */
+    protected void checkSecurityIsPackageDeveloperOrAnalyst(RuleAsset asset) {
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
+                                                     RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.metaData.categories.length == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
+
+                    for ( String cat : asset.metaData.categories ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat ),
+                                                                 RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+    *
+    * Role-based Authorization check: This method can be accessed if user has
+    * following permissions:
+    * 1. The user has a Analyst role and this role has permission to access the category
+    * which the asset belongs to.
+    * Or.
+    * 2. The user has a package.developer role or higher (i.e., package.admin)
+    * and this role has permission to access the package which the asset belongs to.
+    */
+    protected void checkSecurityIsPackageDeveloperOrAnalyst(AssetItem asset) {
+        if ( Contexts.isSessionContextActive() ) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission( new PackageNameType( asset.getPackage().getName() ),
+                                                     RoleTypes.PACKAGE_DEVELOPER );
+            } catch ( RuntimeException e ) {
+                if ( asset.getCategories().size() == 0 ) {
+                    Identity.instance().checkPermission( new CategoryPathType( null ),
+                                                         RoleTypes.ANALYST );
+                } else {
+                    RuntimeException exception = null;
+
+                    for ( CategoryItem cat : asset.getCategories() ) {
+                        try {
+                            Identity.instance().checkPermission( new CategoryPathType( cat.getFullPath() ),
+                                                                 RoleTypes.ANALYST );
+                            passed = true;
+                        } catch ( RuntimeException re ) {
+                            exception = re;
+                        }
+                    }
+                    if ( !passed ) {
+                        throw exception;
+                    }
+                }
+            }
         }
     }
 }

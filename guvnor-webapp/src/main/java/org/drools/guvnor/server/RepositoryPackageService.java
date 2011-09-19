@@ -367,7 +367,7 @@ public class RepositoryPackageService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public SnapshotInfo[] listSnapshots(String packageName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
+        serviceSecurity.checkIsPackageDeveloper(packageName);
 
         String[] snaps = getRulesRepository().listPackageSnapshots( packageName );
         SnapshotInfo[] res = new SnapshotInfo[snaps.length];
@@ -500,7 +500,7 @@ public class RepositoryPackageService
     @Restrict("#{identity.loggedIn}")
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName(packageName);
+        serviceSecurity.checkIsPackageDeveloper(packageName);
 
         return runScenario( packageName,
                 scenario,

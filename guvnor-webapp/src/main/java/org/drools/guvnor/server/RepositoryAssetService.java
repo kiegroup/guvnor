@@ -42,12 +42,10 @@ import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
-import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
@@ -187,40 +185,7 @@ public class RepositoryAssetService
      * and this role has permission to access the package which the asset belongs to.
      */
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-
-        // Verify if the user has permission to access the asset through package
-        // based permission.
-        // If failed, then verify if the user has permission to access the asset
-        // through category
-        // based permission
-        if ( Contexts.isSessionContextActive() ) {
-            boolean passed = false;
-
-            try {
-                Identity.instance().checkPermission( new PackageNameType( asset.metaData.packageName ),
-                                                     RoleTypes.PACKAGE_DEVELOPER );
-            } catch ( RuntimeException e ) {
-                if ( asset.metaData.categories.length == 0 ) {
-                    Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                         RoleTypes.ANALYST );
-                } else {
-                    RuntimeException exception = null;
-
-                    for ( String cat : asset.metaData.categories ) {
-                        try {
-                            Identity.instance().checkPermission( new CategoryPathType( cat ),
-                                                                 RoleTypes.ANALYST );
-                            passed = true;
-                        } catch ( RuntimeException re ) {
-                            exception = re;
-                        }
-                    }
-                    if ( !passed ) {
-                        throw exception;
-                    }
-                }
-            }
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( asset );
 
         log.info( "USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.name + "] UUID: [" + asset.uuid + "] " );
         return repositoryAssetOperations.checkinVersion( asset );       
@@ -253,7 +218,7 @@ public class RepositoryAssetService
                                             String assetName) throws SerializationException {
         PackageItem pi = getRulesRepository().loadPackageByUUID( packageUUID );
         AssetItem assetItem = pi.loadAsset( assetName );
-        serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
+        serviceSecurity.checkSecurityIsPackageReadOnly( assetItem );
 
         return repositoryAssetOperations.loadItemHistory( assetItem );
     }
@@ -325,7 +290,7 @@ public class RepositoryAssetService
     public String copyAsset(String assetUUID,
                             String newPackage,
                             String newName) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
+        serviceSecurity.checkIsPackageDeveloper( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]" );
         return getRulesRepository().copyAsset( assetUUID,
@@ -338,7 +303,7 @@ public class RepositoryAssetService
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
-        serviceSecurity.checkSecurityIsPackageDeveloperForName( newPackage );
+        serviceSecurity.checkIsPackageDeveloper( newPackage );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]" );
         getRulesRepository().moveRuleItemPackage( newPackage,
@@ -349,11 +314,10 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void promoteAssetToGlobalArea(String uuid) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new PackageNameType( RulesRepository.RULE_GLOBAL_AREA ),
-                                                 RoleTypes.PACKAGE_DEVELOPER );
-        }
-
+        serviceSecurity.checkIsPackageDeveloper( RulesRepository.RULE_GLOBAL_AREA );
+        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
+        //serviceSecurity.checkIsPackageDeveloper( item );
+        
         log.info( "USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]" );
         getRulesRepository().moveRuleItemPackage( RulesRepository.RULE_GLOBAL_AREA,
                                                   uuid,
@@ -363,7 +327,7 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.buildAssetSource( asset );
     }
 
@@ -372,7 +336,7 @@ public class RepositoryAssetService
     public String renameAsset(String uuid,
                               String newName) {
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
-        serviceSecurity.checkSecurityIsPackageDeveloper( item );
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( item );
 
         return repositoryAssetOperations.renameAsset( uuid,
                                                       newName );
@@ -388,7 +352,7 @@ public class RepositoryAssetService
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloper( asset );
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( asset );
         return repositoryAssetOperations.validateAsset(asset);
     }
 
@@ -555,7 +519,7 @@ public class RepositoryAssetService
         try {
             AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
 
-            serviceSecurity.checkSecurityIsPackageDeveloper( item );
+            serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( item );
 
             if ( item.getPackage().isArchived() ) {
                 throw new RulesRepositoryException( "The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first." );
@@ -611,54 +575,12 @@ public class RepositoryAssetService
         return new Discussion().fromString( getRulesRepository().loadAssetByUUID( assetId ).getStringProperty( Discussion.DISCUSSION_PROPERTY_KEY ) );
     }
 
-    /**
-     * 
-     * Role-based Authorization check: This method can be accessed if user has
-     * following permissions: 1. The user has a Analyst role and this role has
-     * permission to access the category which the asset belongs to. Or. 2. The
-     * user has a package.developer role or higher (i.e., package.admin) and
-     * this role has permission to access the package which the asset belongs
-     * to.
-     */
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public void changeState(String uuid,
                             String newState) {
         AssetItem asset = getRulesRepository().loadAssetByUUID( uuid );
-
-        // Verify if the user has permission to access the asset through
-        // package based permission.
-        // If failed, then verify if the user has permission to access the
-        // asset through category
-        // based permission
-        if ( Contexts.isSessionContextActive() ) {
-            boolean passed = false;
-
-            try {
-                Identity.instance().checkPermission( new PackageUUIDType( asset.getPackage().getUUID() ),
-                                                         RoleTypes.PACKAGE_DEVELOPER );
-            } catch ( RuntimeException e ) {
-                if ( asset.getCategories().size() == 0 ) {
-                    Identity.instance().checkPermission( new CategoryPathType( null ),
-                                                             RoleTypes.ANALYST );
-                } else {
-                    RuntimeException exception = null;
-
-                    for ( CategoryItem cat : asset.getCategories() ) {
-                        try {
-                            Identity.instance().checkPermission( new CategoryPathType( cat.getName() ),
-                                                                     RoleTypes.ANALYST );
-                            passed = true;
-                        } catch ( RuntimeException re ) {
-                            exception = re;
-                        }
-                    }
-                    if ( !passed ) {
-                        throw exception;
-                    }
-                }
-            }
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloperOrAnalyst( asset );
 
         log.info( "USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]" );
         String oldState = asset.getStateDescription();
