@@ -16,7 +16,10 @@
 
 package org.drools.guvnor.server;
 
+import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.security.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
@@ -105,5 +108,119 @@ public class ServiceSecurity {
         }
     }
 
+    /**
+    *
+    * Role-based Authorization check: This method can be accessed if user has
+    * following permissions:
+    * 1. The user has a Analyst role and this role has permission to access the category
+    * which the asset belongs to.
+    * Or.
+    * 2. The user has a package.developer role or higher (i.e., package.admin)
+    * and this role has permission to access the package which the asset belongs to.
+    */
+    //TODO: may need some refactorings after Ge0ffrey's domain object change.
+    protected void checkIsPackageDeveloperOrAnalyst(final RuleAsset asset) {
+        if (Contexts.isSessionContextActive()) {
+            boolean passed = false;
 
+            try {
+                Identity.instance().checkPermission(new PackageNameType(asset.getMetaData().getPackageName()),
+                        RoleType.PACKAGE_DEVELOPER.getName());
+            } catch (RuntimeException e) {
+                if (asset.getMetaData().getCategories().length == 0) {
+                    Identity.instance().checkPermission(new CategoryPathType(null),
+                            RoleType.ANALYST.getName());
+                } else {
+                    RuntimeException exception = null;
+
+                    for (String cat : asset.getMetaData().getCategories()) {
+                        try {
+                            Identity.instance().checkPermission(new CategoryPathType(cat),
+                                    RoleType.ANALYST.getName());
+                            passed = true;
+                        } catch (RuntimeException re) {
+                            exception = re;
+                        }
+                    }
+                    if (!passed) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+    *
+    * Role-based Authorization check: This method can be accessed if user has
+    * following permissions:
+    * 1. The user has a Analyst role and this role has permission to access the category
+    * which the asset belongs to.
+    * Or.
+    * 2. The user has a package.developer role or higher (i.e., package.admin)
+    * and this role has permission to access the package which the asset belongs to.
+    */
+    //TODO: may need some refactorings after Ge0ffrey's domain object change.
+    protected void checkIsPackageDeveloperOrAnalyst(final AssetItem asset) {
+        if (Contexts.isSessionContextActive()) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission(new PackageUUIDType(asset.getPackage().getUUID()),
+                        RoleType.PACKAGE_DEVELOPER.getName());
+            } catch (RuntimeException e) {
+                if (asset.getCategories().size() == 0) {
+                    Identity.instance().checkPermission(new CategoryPathType(null),
+                            RoleType.ANALYST.getName());
+                } else {
+                    RuntimeException exception = null;
+
+                    for (CategoryItem cat : asset.getCategories()) {
+                        try {
+                            Identity.instance().checkPermission(new CategoryPathType(cat.getFullPath()),
+                                    RoleType.ANALYST.getName());
+                            passed = true;
+                        } catch (RuntimeException re) {
+                            exception = re;
+                        }
+                    }
+                    if (!passed) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+    }   
+
+    //TODO: may need some refactorings after Ge0ffrey's domain object change.
+    protected void checkIsPackageReadOnlyOrAnalystReadOnly(final RuleAsset asset) {
+        if (Contexts.isSessionContextActive()) {
+            boolean passed = false;
+
+            try {
+                Identity.instance().checkPermission(new PackageNameType(asset.getMetaData().getPackageName()),
+                        RoleType.PACKAGE_READONLY.getName());
+            } catch (RuntimeException e) {
+                if (asset.getMetaData().getCategories().length == 0) {
+                    Identity.instance().checkPermission(new CategoryPathType(null),
+                            RoleType.ANALYST_READ.getName());
+                } else {
+                    RuntimeException exception = null;
+
+                    for (String cat : asset.getMetaData().getCategories()) {
+                        try {
+                            Identity.instance().checkPermission(new CategoryPathType(cat),
+                                    RoleType.ANALYST_READ.getName());
+                            passed = true;
+                        } catch (RuntimeException re) {
+                            exception = re;
+                        }
+                    }
+                    if (!passed) {
+                        throw exception;
+                    }
+                }
+            }
+        }
+    } 
 }
