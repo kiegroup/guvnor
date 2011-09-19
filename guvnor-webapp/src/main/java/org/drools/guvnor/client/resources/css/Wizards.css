@@ -38,7 +38,7 @@
 }
 
 .wizardDTableButtons {
-    margin-top: 140px;
+    margin-top: 100px;
     margin-left: 10px;
     margin-right: 10px;
 }
@@ -78,6 +78,7 @@
     border-right: 1px solid rgb(200, 200, 200);
     padding-right: 5px;
     margin-left: 2px;
+    overflow: auto;
 }
 
 .wizardSidebarSpacer {
@@ -99,7 +100,6 @@
     padding-top: 2px;
     padding-bottom: 2px;
     padding-left: 2px;
-    width: 100%;
 }
 
 .wizardPageTitleContainer:HOVER {
@@ -112,7 +112,7 @@
 }
 
 .wizardPageTitleLabelContainer {
-    width: 170px;
+    width: 180px;
 }
 
 .wizardDTableFieldContainerValid {
