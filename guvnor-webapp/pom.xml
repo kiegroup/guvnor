@@ -336,18 +336,18 @@
         </exclusion>        
       </exclusions>
     </dependency>
-    <!-- This is needed by CXF to work with JBoss AS -->
-    <dependency>
-      <groupId>org.apache.geronimo.specs</groupId>
-      <artifactId>geronimo-annotation_1.0_spec</artifactId>
-      <version>1.1.1</version>
-    </dependency>  
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-testutils</artifactId>
       <!-- TODO JBRULES-3028 overwrites the droolsjbpm-parent version of 2.2.9 used by drools-camel -->
       <version>2.3.1</version>
       <scope>test</scope>
+    </dependency>
+    <!-- This is needed by CXF to work with JBoss AS -->
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-annotation_1.0_spec</artifactId>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.abdera</groupId>
