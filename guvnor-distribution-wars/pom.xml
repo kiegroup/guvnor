@@ -35,6 +35,8 @@
                 <descriptor>src/main/assembly/assembly-guvnor-jboss-as-5_1.xml</descriptor>
                 <descriptor>src/main/assembly/assembly-guvnor-jboss-as-6_0.xml</descriptor>
                 <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
+                <!-- TODO jboss-as-web doesn't work yet -->
+                <!--<descriptor>src/main/assembly/assembly-guvnor-jboss-as-web-7_0.xml</descriptor>-->
               </descriptors>
             </configuration>
           </execution>
@@ -72,6 +74,11 @@
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp</artifactId>
       <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.ws.cxf</groupId>
+      <artifactId>jbossws-cxf-client</artifactId>
+      <version>4.0.0.Beta3</version>
     </dependency>
   </dependencies>
 
