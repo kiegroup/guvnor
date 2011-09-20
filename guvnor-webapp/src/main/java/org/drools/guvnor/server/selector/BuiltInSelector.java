@@ -108,13 +108,13 @@ public class BuiltInSelector implements AssetSelector {
     private boolean isCategoryAllowed(AssetItem item) {
         if ( "=".equals( categoryOperator ) ) {
             for ( CategoryItem cat : item.getCategories() ) {
-                if ( cat.getName().equals( category ) ) {
+                if ( cat.getFullPath().equals( category ) ) {
                     return true;
                 }
             }
         } else if ( "!=".equals( categoryOperator ) ) {
             for ( CategoryItem cat : item.getCategories() ) {
-                if ( !cat.getName().equals( category ) ) {
+                if ( !cat.getFullPath().equals( category ) ) {
                     return true;
                 }
             }
