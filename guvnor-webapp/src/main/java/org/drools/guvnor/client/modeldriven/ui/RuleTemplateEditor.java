@@ -84,7 +84,6 @@ public class RuleTemplateEditor extends DirtyableComposite
                         final FormStylePopup popUp = new FormStylePopup(null,
                                 constants.TemplateData(),
                                 width);
-                        popUp.setHeight(height + "px");
 
                         //Initialise table to edit data
                         table = new TemplateDataTableWidget(sce);

@@ -26,7 +26,7 @@
     <gwt:SimplePanel styleName="{res.style.wizardPageTitleImageContainer}">
       <gwt:Image ui:field="imgCompleted" resource="{images.tick}" />
     </gwt:SimplePanel>
-    <gwt:SimplePanel styleName="{res.style.wizardPageTitleLabelContainer}">
+    <gwt:SimplePanel ui:field="lblContainer" styleName="{res.style.wizardPageTitleLabelContainer}">
       <gwt:Label ui:field="lblTitle"></gwt:Label>
     </gwt:SimplePanel>
   </gwt:HorizontalPanel>

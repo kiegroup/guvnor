@@ -556,8 +556,6 @@ public class AssetItemTest extends RepositoryTestCase {
             cal = Calendar.getInstance();
             long after = cal.getTimeInMillis();
 
-
-
             assertTrue(before < lastMod);
             assertTrue(lastMod < after);
 
@@ -576,7 +574,10 @@ public class AssetItemTest extends RepositoryTestCase {
             ruleItem1.updateDateEffective(cal);
             Calendar cal2 = ruleItem1.getDateEffective();
 
-            assertEquals(cal, cal2);
+            //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+            //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+            //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+            assertEquals(cal.getTimeInMillis(), cal2.getTimeInMillis());
     }
 
     @Test
@@ -592,7 +593,12 @@ public class AssetItemTest extends RepositoryTestCase {
             ruleItem1.updateDateExpired(cal);
             Calendar cal2 = ruleItem1.getDateExpired();
 
-            assertEquals(cal, cal2);
+            //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+            //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+            //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+            assertEquals( cal.getTimeInMillis(), 
+                         cal2.getTimeInMillis() );
+            
         }
         catch(Exception e) {
             fail("Caught unexpected exception: " + e);

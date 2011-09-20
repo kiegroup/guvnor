@@ -23,9 +23,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
@@ -36,8 +33,6 @@ import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 
 import java.util.Set;
 
@@ -48,6 +43,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
+    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
 
     protected RepositoryAssetService getAssetService() {
         return RepositoryServiceServlet.getAssetService();
@@ -56,7 +52,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @WebRemote
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
-        hasPackageDeveloperPermission(packageUUID);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
 
 
         AnalysisReport report = new PackageVerifier(
@@ -73,7 +69,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport verifyAsset(RuleAsset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
-        hasPackageDeveloperPermission(asset);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
         return verify(
                 asset,
@@ -85,7 +81,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @Restrict("#{identity.loggedIn}")
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
                                                            Set<String> activeWorkingIds) throws SerializationException {
-        hasPackageDeveloperPermission(asset);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
         return verify(
                 asset,
@@ -128,15 +124,4 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
                 assetItem);
     }
 
-    private void hasPackageDeveloperPermission(String packageUUID) {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageUUIDType(packageUUID), RoleTypes.PACKAGE_DEVELOPER);
-        }
-    }
-
-    private void hasPackageDeveloperPermission(RuleAsset asset) {
-        if (Contexts.isSessionContextActive()) {
-            Identity.instance().checkPermission(new PackageNameType(asset.metaData.packageName), RoleTypes.PACKAGE_DEVELOPER);
-        }
-    }
 }

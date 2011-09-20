@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.*;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.rule.Package;
@@ -43,10 +44,8 @@ import org.mvel2.MVEL;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.jar.JarInputStream;
 
 import static org.junit.Assert.*;
 
@@ -933,7 +932,85 @@ public class PackageAssemblerTest extends GuvnorTestBase {
         assertEquals(2,
                 pk.getRules().length);
     }
+    
+    @Test
+    public void testBuiltInSelector() throws Exception {
+        ServiceImplementation serviceImplementation = getServiceImplementation();
+        RulesRepository repo = serviceImplementation.getRulesRepository();
 
+        CategoryItem rootCat = repo.loadCategory( "/" );
+        CategoryItem testBuiltInSelectorCategory1 = rootCat.addCategory( "testBuiltInSelectorCategory1",
+                         "yeah" );
+        testBuiltInSelectorCategory1.addCategory( "testBuiltInSelectorCategory1Child",
+        "yeah" );        
+        CategoryItem testBuiltInSelectorCategory2 = rootCat.addCategory( "testBuiltInSelectorCategory2",
+        "yeah" );
+        testBuiltInSelectorCategory2.addCategory( "testBuiltInSelectorCategory2Child",
+        "yeah" );     
+        
+        //create our package
+        PackageItem pkg = repo.createPackage("testBuiltInSelector",
+                "");
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
+                pkg);
+        AssetItem rule1 = pkg.addAsset("rule1",
+                "");
+        rule1.updateFormat(AssetFormats.DRL);
+        rule1.updateCategoryList(new String[]{"testBuiltInSelectorCategory1/testBuiltInSelectorCategory1Child"});
+
+        rule1.updateContent("when \n Person() \n then \n System.out.println(\"yeah\");\n");
+        rule1.checkin("");
+
+        AssetItem rule2 = pkg.addAsset("rule2",
+                "");
+        rule2.updateFormat(AssetFormats.DRL);
+        rule2.updateCategoryList(new String[]{"testBuiltInSelectorCategory2/testBuiltInSelectorCategory2Child"});
+        rule2.updateContent("when \n Person() \n then \n System.out.println(\"yeah\");\n");
+        rule2.checkin("");
+
+        SelectorManager sm = SelectorManager.getInstance();
+        sm.selectors.put("testSelect",
+                new AssetSelector() {
+                    public boolean isAssetAllowed(AssetItem asset) {
+                        return asset.getName().equals("rule2");
+                    }
+                });
+
+        PackageAssemblerConfiguration packageAssemblerConfiguration = new PackageAssemblerConfiguration();
+        packageAssemblerConfiguration.setBuildMode("BuiltInSelector");
+        packageAssemblerConfiguration.setEnableStatusSelector(false);
+        packageAssemblerConfiguration.setCategoryOperator( "=" );
+        packageAssemblerConfiguration.setCategoryValue( "testBuiltInSelectorCategory1/testBuiltInSelectorCategory1Child" );
+        packageAssemblerConfiguration.setEnableCategorySelector(true);
+
+        //without selector
+        PackageAssembler asm = new PackageAssembler(pkg);
+        asm.compile();
+        Package pk = asm.getBinaryPackage();
+        assertEquals(2, pk.getRules().length);
+        
+        //with built-in selector
+        asm = new PackageAssembler(pkg, packageAssemblerConfiguration);
+        asm.compile();
+        pk = asm.getBinaryPackage();
+        assertEquals(1, pk.getRules().length);
+        assertEquals("rule1", pk.getRules()[0].getName());
+
+        packageAssemblerConfiguration = new PackageAssemblerConfiguration();
+        packageAssemblerConfiguration.setBuildMode("BuiltInSelector");
+        packageAssemblerConfiguration.setEnableStatusSelector(false);
+        packageAssemblerConfiguration.setCategoryOperator( "!=" );
+        packageAssemblerConfiguration.setCategoryValue( "testBuiltInSelectorCategory1/testBuiltInSelectorCategory1Child" );
+        packageAssemblerConfiguration.setEnableCategorySelector(true);
+
+        //with built-in selector
+        asm = new PackageAssembler(pkg, packageAssemblerConfiguration);
+        asm.compile();
+        pk = asm.getBinaryPackage();
+        assertEquals(1, pk.getRules().length);
+        assertEquals("rule2", pk.getRules()[0].getName());
+    }
+    
     private void assertNotEmpty(String s) {
         if (s == null) fail("should not be null");
         if (s.trim().equals("")) fail("should not be empty string");

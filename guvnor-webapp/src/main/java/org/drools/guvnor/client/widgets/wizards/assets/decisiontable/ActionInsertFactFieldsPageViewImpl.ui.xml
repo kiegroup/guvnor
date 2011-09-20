@@ -50,7 +50,7 @@
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardAvailableTypes}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="availableFactTypesContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
+          <gwt:ScrollPanel ui:field="availableFactTypesContainer" styleName="{res.style.wizardDTableList}" height="200px" width="140px" />
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBarFactTypes" styleName="{res.style.wizardDTableButtons}">
           <gwt:PushButton ui:field="btnAddFactTypes" enabled="false">&gt;&gt;</gwt:PushButton>
@@ -60,13 +60,13 @@
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardChosenTypes}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="chosenPatternsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
+          <gwt:ScrollPanel ui:field="chosenPatternsContainer" styleName="{res.style.wizardDTableList}" height="200px" width="140px" />
         </gwt:VerticalPanel>
         <gwt:VerticalPanel>
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardAvailableFields}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
+          <gwt:ScrollPanel ui:field="availableFieldsContainer" styleName="{res.style.wizardDTableList}" height="200px" width="140px" />
         </gwt:VerticalPanel>
         <gwt:VerticalPanel ui:field="buttonBar" styleName="{res.style.wizardDTableButtons}">
           <gwt:PushButton ui:field="btnAdd" enabled="false">&gt;&gt;</gwt:PushButton>
@@ -76,7 +76,7 @@
           <gwt:SimplePanel>
             <gwt:Label text="{i18n.DecisionTableWizardChosenFields}" styleName="{res.style.wizardDTableHeader}" />
           </gwt:SimplePanel>
-          <gwt:ScrollPanel ui:field="chosenFieldsContainer" styleName="{res.style.wizardDTableList}" height="240px" width="140px" />
+          <gwt:ScrollPanel ui:field="chosenFieldsContainer" styleName="{res.style.wizardDTableList}" height="200px" width="140px" />
         </gwt:VerticalPanel>
       </gwt:HorizontalPanel>
       <gwt:VerticalPanel ui:field="patternDefinition" visible="false">

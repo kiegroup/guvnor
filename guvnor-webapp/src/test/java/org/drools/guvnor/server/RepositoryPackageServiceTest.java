@@ -1244,6 +1244,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         // the binary test below "testLoadAndExecBinary"
         boolean saveBinPackage = false;
         if ( saveBinPackage ) {
+            //FileOutputStream out = new FileOutputStream( "RepoBinPackage.pkg" );
             FileOutputStream out = new FileOutputStream( "guvnor-webapp/src/test/resources/RepoBinPackage.pkg" );
             out.write( binPackage );
             out.flush();
