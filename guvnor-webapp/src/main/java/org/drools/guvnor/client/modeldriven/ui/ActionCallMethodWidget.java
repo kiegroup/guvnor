@@ -82,19 +82,25 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         if ( completions.isGlobalVariable( set.variable ) ) {
 
-            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable( set.variable );
-            this.fieldCompletionTexts = new String[infos.size()];
-            this.fieldCompletionValues = new String[infos.size()];
-            int i = 0;
-            for ( MethodInfo info : infos ) {
-                this.fieldCompletionTexts[i] = info.getName();
-                this.fieldCompletionValues[i] = info.getNameWithParameters();
-                i++;
-            }
+            List<MethodInfo> infos = completions.getMethodInfosForGlobalVariable(set.variable);
+            if (infos != null) {
+                this.fieldCompletionTexts = new String[infos.size()];
+                this.fieldCompletionValues = new String[infos.size()];
+                int i = 0;
+                for (MethodInfo info : infos) {
+                    this.fieldCompletionTexts[i] = info.getName();
+                    this.fieldCompletionValues[i] = info.getNameWithParameters();
+                    i++;
+                }
 
-            this.variableClass = (String) completions.getGlobalVariable( set.variable );
+                this.variableClass = completions.getGlobalVariable(set.variable);
+            } else {
+                this.fieldCompletionTexts = new String[0];
+                this.fieldCompletionValues = new String[0];
+                readOnly = true;
+            }
         } else {
-            FactPattern pattern = mod.getModel().getBoundFact( set.variable );
+            FactPattern pattern = mod.getModel().getBoundFact(set.variable);
             if ( pattern != null ) {
                 List<String> methodList = completions.getMethodNames( pattern.getFactType() );
                 fieldCompletionTexts = new String[methodList.size()];
@@ -124,6 +130,8 @@ public class ActionCallMethodWidget extends RuleModellerWidget {
                     }
                     this.variableClass = patternRhs.factType;
                     this.isBoundFact = true;
+                } else {
+                    readOnly = true;
                 }
             }
         }
