@@ -121,7 +121,6 @@ public class EnumDropDownLabel extends Composite {
                                                                                 String newValue) {
                                                            constraint.setValue( newValue );
                                                            textWidget.setText( newText );
-                                                           okButton.click();
                                                        }
                                                    },
                                                    getDropDownData() );
