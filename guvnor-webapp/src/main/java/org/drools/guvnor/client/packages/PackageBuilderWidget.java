@@ -86,7 +86,7 @@ public class PackageBuilderWidget extends Composite {
                 buildWholePackageLayout.setVisible(false);
                 builtInSelectorLayout.setVisible(true);
                 customSelectorLayout.setVisible(false);
-                buildMode = "builtInSelector";
+                buildMode = "BuiltInSelector";
             }
         });
         customSelectorRadioButton.addClickHandler(new ClickHandler() {

@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 .wizardDTableList {
-    border-color: rgb(200,200,200);
+    border-color: rgb(200, 200, 200);
     border-top-style: none;
     border-left-style: solid;
     border-right-style: solid;
@@ -23,14 +22,12 @@
     border-width: 1px;
     margin: 0px 10px 10px 10px;
     padding: 5px;
-    height: 300px;
-    width: 250px;
 }
 
 .wizardDTableHeader {
     font-weight: bold;
-    background-color: rgb(220,220,220);
-    border-color: rgb(200,200,200);
+    background-color: rgb(220, 220, 220);
+    border-color: rgb(200, 200, 200);
     border-top-style: solid;
     border-left-style: solid;
     border-right-style: solid;
@@ -41,22 +38,21 @@
 }
 
 .wizardDTableButtons {
-    margin-top: 140px;
+    margin-top: 100px;
     margin-left: 10px;
     margin-right: 10px;
 }
 
 .wizardDTableButtons td {
     margin-bottom: 10px;
-    width: 64px;
+    width: 48px;
     height: 32px;
     text-align: center;
 }
 
 .wizardDTableFields {
-    margin-top: 5px;
-    margin-top: 5px;
-    margin-right: 5px;    
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 .wizardDTableMessageContainer {
@@ -65,12 +61,13 @@
     padding: 5px;
     width: 100%;
 }
- 
+
 .wizardDTableMessage {
     margin-left: 10px;
+    margin-top: 6px;
 }
 
-.wizardDTableDuplicatePattern {
+.wizardDTableValidationError {
     font-weight: bolder;
     color: red;
 }
@@ -78,20 +75,21 @@
 .wizardSidebar {
     width: 200px;
     height: 100%;
-    border-right: 1px solid rgb(200,200,200);
+    border-right: 1px solid rgb(200, 200, 200);
     padding-right: 5px;
     margin-left: 2px;
+    overflow: auto;
 }
 
 .wizardSidebarSpacer {
     width: 5px;
 }
-    
+
 .wizardButtonbar {
     width: 100%;
-    background-color: rgb(220,220,220);
-    border-top: 1px solid rgb(200,200,200);
-    border-bottom: 1px solid rgb(200,200,200);
+    background-color: rgb(220, 220, 220);
+    border-top: 1px solid rgb(200, 200, 200);
+    border-bottom: 1px solid rgb(200, 200, 200);
     padding-top: 5px;
     padding-bottom: 5px;
 }
@@ -102,7 +100,6 @@
     padding-top: 2px;
     padding-bottom: 2px;
     padding-left: 2px;
-    width: 100%;
 }
 
 .wizardPageTitleContainer:HOVER {
@@ -115,5 +112,27 @@
 }
 
 .wizardPageTitleLabelContainer {
-    width: 170px;
+    width: 180px;
+}
+
+.wizardDTableFieldContainerValid {
+    padding: 2px;
+    margin-bottom: 3px;
+}
+
+.wizardDTableFieldContainerInvalid {
+    padding: 2px;
+    margin-bottom: 3px;
+    background-color: #990000;
+}
+
+.wizardDTableSummaryContainer {
+    margin: 10px;
+}
+
+.wizardDTableCaption {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
 }

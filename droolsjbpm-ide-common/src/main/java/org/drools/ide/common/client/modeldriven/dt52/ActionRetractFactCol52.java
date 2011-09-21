@@ -22,51 +22,12 @@ public class ActionRetractFactCol52 extends ActionCol52 {
      */
     private String boundName;
 
-    @Override
-    public boolean equals(Object obj) {
-        if ( obj == null ) {
-            return false;
-        }
-        if ( !(obj instanceof ActionRetractFactCol52) ) {
-            return false;
-        }
-        ActionRetractFactCol52 that = (ActionRetractFactCol52) obj;
-        return nullOrEqual( this.boundName,
-                            that.boundName )
-               && super.equals( obj );
-    }
-
     public String getBoundName() {
         return boundName;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash
-               * 31
-               + (boundName == null ? 0 : boundName.hashCode());
-        hash = hash
-               * 31
-               + super.hashCode();
-        return hash;
-    }
-
     public void setBoundName(String boundName) {
         this.boundName = boundName;
-    }
-
-    private boolean nullOrEqual(Object thisAttr,
-                                Object thatAttr) {
-        if ( thisAttr == null
-             && thatAttr == null ) {
-            return true;
-        }
-        if ( thisAttr == null
-             && thatAttr != null ) {
-            return false;
-        }
-        return thisAttr.equals( thatAttr );
     }
 
 }

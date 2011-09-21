@@ -21,10 +21,15 @@ import java.util.List;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.RowExpander.RowIterator;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -32,10 +37,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * Work in progress.
+ * Wizard for creating a Guided Decision Table
  */
 public class NewGuidedDecisionTableWizard
-        extends AbstractNewAssetWizard {
+        extends AbstractNewAssetWizard<GuidedDecisionTable52> {
 
     private SuggestionCompletionEngine sce;
 
@@ -43,21 +48,47 @@ public class NewGuidedDecisionTableWizard
 
     private GuidedDecisionTable52      dtable = new GuidedDecisionTable52();
 
+    private SummaryPage                summaryPage;
+
+    private ColumnExpansionPage        columnExpansionPage;
+
     public NewGuidedDecisionTableWizard(final ClientFactory clientFactory,
                                         final EventBus eventBus,
-                                        final NewAssetWizardContext context) {
+                                        final NewAssetWizardContext context,
+                                        final WizardActivityView.Presenter presenter) {
         super( clientFactory,
                eventBus,
-               context );
-        pages.add( new SummaryPage( context,
-                                    dtable,
-                                    eventBus ) );
+               context,
+               presenter );
+
+        Validator validator = new Validator( dtable.getConditionPatterns() );
+        this.summaryPage = new SummaryPage( context,
+                                            dtable,
+                                            eventBus,
+                                            validator );
+        this.columnExpansionPage = new ColumnExpansionPage( context,
+                                                            dtable,
+                                                            eventBus,
+                                                            validator );
+
+        pages.add( summaryPage );
         pages.add( new FactPatternsPage( context,
                                          dtable,
-                                         eventBus ) );
+                                         eventBus,
+                                         validator ) );
         pages.add( new FactPatternConstraintsPage( context,
                                                    dtable,
-                                                   eventBus ) );
+                                                   eventBus,
+                                                   validator ) );
+        pages.add( new ActionSetFieldsPage( context,
+                                            dtable,
+                                            eventBus,
+                                            validator ) );
+        pages.add( new ActionInsertFactFieldsPage( context,
+                                                   dtable,
+                                                   eventBus,
+                                                   validator ) );
+        pages.add( columnExpansionPage );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
                                                                  new Command() {
@@ -76,7 +107,7 @@ public class NewGuidedDecisionTableWizard
     }
 
     public String getTitle() {
-        return "An example wizard serving no purpose";
+        return "Guided Decision Table Wizard";
     }
 
     public List<WizardPage> getPages() {
@@ -105,6 +136,57 @@ public class NewGuidedDecisionTableWizard
             }
         }
         return true;
+    }
+
+    public void complete() {
+
+        //Show a "busy" indicator
+        presenter.showSavingIndicator();
+
+        //Ensure each page updates the decision table as necessary
+        for ( WizardPage page : this.pages ) {
+            AbstractGuidedDecisionTableWizardPage gep = (AbstractGuidedDecisionTableWizardPage) page;
+            gep.makeResult( dtable );
+        }
+
+        //Expand rows
+        RowExpander re = new RowExpander( dtable,
+                                          sce );
+
+        //Mark columns on which we are to expand (default is to include)
+        for ( DTColumnConfig52 c : dtable.getAllColumns() ) {
+            re.setExpandColumn( c,
+                                false );
+        }
+        List<ConditionCol52> columns = columnExpansionPage.getColumnsToExpand();
+        for ( ConditionCol52 c : columns ) {
+            re.setExpandColumn( c,
+                                true );
+        }
+
+        //Slurp out expanded rows and construct decision table data
+        RowIterator ri = re.iterator();
+        while ( ri.hasNext() ) {
+            List<String> row = ri.next();
+            dtable.getData().add( makeRow( row ) );
+        }
+
+        //Save it!
+        save( summaryPage.getAssetName(),
+              context.getDescription(),
+              context.getInitialCategory(),
+              context.getPackageName(),
+              context.getFormat(),
+              dtable );
+    }
+
+    private List<DTCellValue52> makeRow(List<String> row) {
+        //All enumerated lists (Guvnor enums, Java enums and Decision Table Value Lists) are handled as Strings
+        List<DTCellValue52> dtRow = new ArrayList<DTCellValue52>();
+        for ( String value : row ) {
+            dtRow.add( new DTCellValue52( value ) );
+        }
+        return dtRow;
     }
 
 }

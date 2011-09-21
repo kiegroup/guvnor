@@ -24,11 +24,13 @@
   
   <gwt:VerticalPanel ui:field="container">
     <gwt:HorizontalPanel>
-      <gwt:SimplePanel ui:field="sideBarContainer" styleName="{res.style.wizardSidebar}">
+      <gwt:ScrollPanel ui:field="sideBarContainer" styleName="{res.style.wizardSidebar}">
         <gwt:VerticalPanel ui:field="sideBar" width="100%"></gwt:VerticalPanel>
-      </gwt:SimplePanel>
-      <gwt:SimplePanel styleName="{res.style.wizardSidebarSpacer}"></gwt:SimplePanel>
-      <gwt:SimplePanel ui:field="body"></gwt:SimplePanel>
+      </gwt:ScrollPanel>
+      <gwt:SimplePanel styleName="{res.style.wizardSidebarSpacer}"/>
+      <gwt:ScrollPanel ui:field="bodyContainer">
+        <gwt:SimplePanel ui:field="body"/>
+      </gwt:ScrollPanel>
     </gwt:HorizontalPanel>
     <gwt:SimplePanel styleName="{res.style.wizardButtonbar}">
       <gwt:HorizontalPanel ui:field="buttonBar" spacing="5">

@@ -98,7 +98,7 @@ public class PackageResource extends Resource {
         PackageIterator iter = repository.listPackages();
         while (iter.hasNext()) {
             //REVIST: Do not return detailed package info here. Package title and link should be enough. 
-            ret.add(ToPackage(iter.next(), uriInfo));
+            ret.add(toPackage(iter.next(), uriInfo));
         }
         return ret;
     }
@@ -130,7 +130,7 @@ public class PackageResource extends Resource {
         try {
             String packageName = RepositoryServlet.getFileManager()
                     .importClassicDRL(is, null);
-            return ToPackage(repository.loadPackage(packageName), uriInfo);
+            return toPackage(repository.loadPackage(packageName), uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -155,7 +155,7 @@ public class PackageResource extends Resource {
     public Package createPackageFromJAXB(Package p) {
         try {
             PackageItem packageItem = repository.createPackage(p.getTitle(), p.getDescription());
-            return ToPackage(packageItem, uriInfo);
+            return toPackage(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
@@ -181,7 +181,7 @@ public class PackageResource extends Resource {
     public Package getPackageAsJAXB(@PathParam("packageName") String packageName) {
         try {
             PackageItem packageItem = repository.loadPackage(packageName);
-            return ToPackage(packageItem, uriInfo);
+            return toPackage(packageItem, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package does not exists.
             throw new WebApplicationException(e);
@@ -388,15 +388,28 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
-    public Feed getAssetsAsAtom(@PathParam("packageName") String packageName) {
+    public Feed getAssetsAsAtom(
+            @PathParam("packageName") String packageName,
+            @QueryParam("format") List<String> formats) {
         try {
             Factory factory = Abdera.getNewFactory();
             Feed feed = factory.getAbdera().newFeed();
             PackageItem p = repository.loadPackage(packageName);
             feed.setTitle(p.getTitle() + "-asset-feed");
-            Iterator<AssetItem> iter = p.getAssets();
+            
+            Iterator<AssetItem> iter = null;
+            
+            if (formats.isEmpty()){
+                //no format specified? Return all assets
+                iter = p.getAssets();
+            }else{
+                //if the format is specified, return only the assets of
+                //the specified formats.
+                iter = p.listAssetsByFormat(formats);
+            }
+            
             while (iter.hasNext())
-                feed.addEntry(ToAssetEntryAbdera(iter.next(), uriInfo));
+                feed.addEntry(toAssetEntryAbdera(iter.next(), uriInfo));
             return feed;
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -406,13 +419,26 @@ public class PackageResource extends Resource {
     @GET
     @Path("{packageName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Collection<Asset> getAssetsAsJAXB(@PathParam("packageName") String packageName) {
+    public Collection<Asset> getAssetsAsJAXB(
+            @PathParam("packageName") String packageName,
+            @QueryParam("format") List<String> formats) {
         try {
             List<Asset> ret = new ArrayList<Asset>();
             PackageItem p = repository.loadPackage(packageName);
-            Iterator<AssetItem> iter = p.getAssets();
+            
+            Iterator<AssetItem> iter = null;
+            
+            if (formats.isEmpty()){
+                //no format specified? Return all assets
+                iter = p.getAssets();
+            }else{
+                //if the format is specified, return only the assets of
+                //the specified formats.
+                iter = p.listAssetsByFormat(formats);
+            }
+            
             while (iter.hasNext()) {
-                ret.add(ToAsset(iter.next(), uriInfo));
+                ret.add(toAsset(iter.next(), uriInfo));
             }
             return ret;
         } catch (Exception e) {
@@ -427,7 +453,7 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8")); 
-            return ToAssetEntryAbdera(asset, uriInfo);
+            return toAssetEntryAbdera(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -440,7 +466,7 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(assetName);
-            return ToAsset(asset, uriInfo);
+            return toAsset(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }
@@ -494,7 +520,7 @@ public class PackageResource extends Resource {
             //The categories are not saved by addAsset(). Need to force it here.
             repository.getSession().save();
             
-            return ToAssetEntryAbdera(ai, uriInfo);
+            return toAssetEntryAbdera(ai, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
@@ -530,7 +556,7 @@ public class PackageResource extends Resource {
             ai.getPackage().updateBinaryUpToDate(false);
             ai.checkin("update binary");
             repository.save();
-            return ToAssetEntryAbdera(ai, uriInfo);
+            return toAssetEntryAbdera(ai, uriInfo);
         } catch (Exception e) {
             //catch RulesRepositoryException and other exceptions. For example when the package already exists.
             throw new WebApplicationException(e);
@@ -694,7 +720,7 @@ public class PackageResource extends Resource {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
             AssetItem asset = repository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"), versionNumber); 
-            return ToAssetEntryAbdera(asset, uriInfo);
+            return toAssetEntryAbdera(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
         }

@@ -2437,4 +2437,85 @@ public interface Constants
     String DecisionTableWizardChosenTypes();
 
     String DecisionTableWizardDuplicateBindings();
+    
+    String DecisionTableWizardAvailableFields();
+    
+    String DecisionTableWizardChosenConditions();
+    
+    String DecisionTableWizardNoAvailableFields();
+    
+    String DecisionTableWizardNoChosenFields();
+    
+    String DecisionTableWizardIncompleteConditions();
+    
+    String DecisionTableWizardPredicate();
+    
+    String DecisionTableWizardPredicateExpression();
+
+    String MandatoryField();
+    
+    String DecisionTableWizardActionSetFields();
+    
+    String DecisionTableWizardChosenFields();
+    
+    String DecisionTableWizardActionInsertFacts();
+    
+    String DecisionTableWizardNoAvailableBoundPatterns();
+    
+    String DecisionTableWizardIncompleteActions();
+
+    String DecisionTableWizardSummaryNameMissing();
+    
+    String DecisionTableWizardIncompletePatterns();
+    
+    String XMLSchemas();
+    
+    String SampleMessages();
+    
+    String WSDLs();
+    
+    String JBOSSESBConfig();
+    
+    String Smooks();
+    
+    String ScenarioDiagrams();
+    
+    String ChoreographyModels();
+    
+    String DeploymentArchives();
+    
+    String JMSDestinations();
+    
+    String JavaSource();
+    
+    String Documentation();
+    
+    String Other();
+    
+    String New();
+    
+    String DecisionTableWizardColumnExpansion();
+    
+    String DecisionTableWizardAvailableColumns();
+
+    String DecisionTableWizardChosenColumns();
+    
+    String DecisionTableWizardNoAvailableColumns();
+    
+    String DecisionTableWizardNoChosenColumns();
+    
+    String DecisionTableWizardDescriptionSummaryPage();
+    
+    String DecisionTableWizardDescriptionFactPatternsPage();
+
+    String DecisionTableWizardDescriptionFactPatternConstraintsPage();
+
+    String DecisionTableWizardDescriptionActionSetFieldsPage();
+
+    String DecisionTableWizardDescriptionActionInsertFactFieldsPage();
+
+    String DecisionTableWizardDescriptionExpandColumnsPage();
+
+    String DecisionTableWizardExpandInFull();
+    
 }

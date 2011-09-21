@@ -31,11 +31,46 @@ public interface WizardActivityView
     interface Presenter {
 
         /**
+         * Show an indicator that a save operation is in progress
+         */
+        void showSavingIndicator();
+
+        /**
+         * Hide the indicator that a save operation is in ro
+         */
+        void hideSavingIndicator();
+
+        /**
+         * Show a message that the asset is a duplicate and cannot be saved
+         */
+        void showDuplicateAssetNameError();
+
+        /**
+         * Show a message that an unspecified error occurred during the save
+         */
+        void showUnspecifiedCheckinError();
+
+        /**
+         * Show a message that a specified error occurred during the save
+         */
+        void showCheckinError(String message);
+
+        /**
          * A page has been selected from the UI
          * 
          * @param pageNumber
          */
         void pageSelected(int pageNumber);
+
+        /**
+         * The Wizard has been finished
+         */
+        void complete();
+
+        /**
+         * Hide the Wizard
+         */
+        void hide();
 
     }
 
@@ -108,5 +143,35 @@ public interface WizardActivityView
      * @param isComplete
      */
     void setCompletionStatus(boolean isComplete);
+
+    /**
+     * Show an indicator that a save operation is in progress
+     */
+    void showSavingIndicator();
+
+    /**
+     * Hide the indicator that a save operation is in ro
+     */
+    void hideSavingIndicator();
+
+    /**
+     * Show a message that the asset is a duplicate and cannot be saved
+     */
+    void showDuplicateAssetNameError();
+
+    /**
+     * Show a message that an unspecified error occurred during the save
+     */
+    void showUnspecifiedCheckinError();
+
+    /**
+     * Show a message that a specified error occurred during the save
+     */
+    void showCheckinError(String message);
+
+    /**
+     * Hide the Wizard
+     */
+    void hide();
 
 }

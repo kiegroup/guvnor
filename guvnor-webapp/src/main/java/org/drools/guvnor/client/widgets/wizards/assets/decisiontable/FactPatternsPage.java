@@ -16,12 +16,12 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.FactPatternsDefinedEvent;
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -32,16 +32,27 @@ import com.google.gwt.event.shared.EventBus;
  */
 public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     implements
-    FactPatternsPageView.Presenter {
+    FactPatternsPageView.Presenter,
+    DuplicatePatternsEvent.Handler,
+    FactPatternsDefinedEvent.Handler {
 
-    private FactPatternsPageView view = new FactPatternsPageViewImpl();
+    private FactPatternsPageView view;
 
     public FactPatternsPage(NewAssetWizardContext context,
                             GuidedDecisionTable52 dtable,
-                            EventBus eventBus) {
+                            EventBus eventBus,
+                            Validator validator) {
         super( context,
                dtable,
-               eventBus );
+               eventBus,
+               validator );
+        this.view = new FactPatternsPageViewImpl( getValidator() );
+
+        //Wire-up the events
+        eventBus.addHandler( DuplicatePatternsEvent.TYPE,
+                             this );
+        eventBus.addHandler( FactPatternsDefinedEvent.TYPE,
+                             this );
     }
 
     public String getTitle() {
@@ -53,48 +64,61 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
             return;
         }
         view.setPresenter( this );
+        view.setDecisionTable( dtable );
 
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
 
         List<Pattern52> chosenTypes = dtable.getConditionPatterns();
-        view.setChosenFactTypes( chosenTypes );
+        view.setChosenPatterns( chosenTypes );
 
         content.setWidget( view );
     }
-    
+
     public void prepareView() {
         // Nothing needs to be done when the page is viewed; it is setup in initialise
     }
 
     public boolean isComplete() {
-        if ( dtable.getConditionPatterns().size() == 0 ) {
-            return false;
-        }
-        Set<String> bindings = new HashSet<String>();
-        for ( Pattern52 pattern : dtable.getConditionPatterns() ) {
-            String binding = pattern.getBoundName();
-            if ( binding != null && !binding.equals( "" ) ) {
-                if ( bindings.contains( binding ) ) {
-                    return false;
-                }
-                bindings.add( binding );
+
+        //Are the patterns valid?
+        boolean arePatternBindingsUnique = getValidator().arePatternBindingsUnique();
+
+        //Signal duplicates to other pages
+        DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
+        eventBus.fireEvent( event );
+
+        //Are all Patterns defined?
+        boolean arePatternsDefined = true;
+        for ( Pattern52 p : dtable.getConditionPatterns() ) {
+            if ( !getValidator().isPatternValid( p ) ) {
+                arePatternsDefined = false;
+                break;
             }
         }
-        return true;
+
+        //Signal Fact Patterns to other pages
+        FactPatternsDefinedEvent eventFactPatterns = new FactPatternsDefinedEvent( arePatternsDefined );
+        eventBus.fireEvent( eventFactPatterns );
+
+        return arePatternBindingsUnique && arePatternsDefined;
+    }
+
+    public void onDuplicatePatterns(DuplicatePatternsEvent event) {
+        view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
+    }
+
+    public void onFactPatternsDefined(FactPatternsDefinedEvent event) {
+        view.setAreFactPatternsDefined( event.getAreFactPatternsDefined() );
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {
         return sce.isFactTypeAnEvent( pattern.getFactType() );
     }
 
-    public void stateChanged() {
-        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+    public void signalRemovalOfPattern(Pattern52 pattern) {
+        PatternRemovedEvent event = new PatternRemovedEvent( pattern );
         eventBus.fireEvent( event );
-    }
-
-    public void setChosenPatterns(List<Pattern52> patterns) {
-        dtable.setConditionPatterns( patterns );
     }
 
 }

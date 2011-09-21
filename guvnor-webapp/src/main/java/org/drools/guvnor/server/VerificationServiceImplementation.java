@@ -23,10 +23,6 @@ import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.security.RoleTypes;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
@@ -53,6 +49,9 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
     
     @Inject
+    private ServiceSecurity serviceSecurity;
+    
+    @Inject
     private RulesRepository rulesRepository;
     
     @Inject
@@ -61,7 +60,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @WebRemote
     @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
-        hasPackageDeveloperPermission(packageUUID);
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
 
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
@@ -77,7 +76,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @LoggedIn
     public AnalysisReport verifyAsset(RuleAsset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
-        hasPackageDeveloperPermission(asset);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
         return verify(
                 asset,
@@ -89,7 +88,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     @LoggedIn
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
                                                            Set<String> activeWorkingIds) throws SerializationException {
-        hasPackageDeveloperPermission(asset);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
 
         return verify(
                 asset,
@@ -132,17 +131,4 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
                 assetItem);
     }
 
-    private void hasPackageDeveloperPermission(String packageUUID) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageUUIDType(packageUUID), RoleTypes.PACKAGE_DEVELOPER);
-        }
-    }
-
-    private void hasPackageDeveloperPermission(RuleAsset asset) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(asset.metaData.packageName), RoleTypes.PACKAGE_DEVELOPER);
-        }
-    }
 }

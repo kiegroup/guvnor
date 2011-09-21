@@ -26,16 +26,19 @@ public abstract class AbstractWizard<T extends WizardContext>
     implements
     Wizard {
 
-    protected final T             context;
-    protected final ClientFactory clientFactory;
-    protected final EventBus      eventBus;
+    protected final T                            context;
+    protected final ClientFactory                clientFactory;
+    protected final EventBus                     eventBus;
+    protected final WizardActivityView.Presenter presenter;
 
     public AbstractWizard(ClientFactory clientFactory,
                           EventBus eventBus,
-                          T context) {
+                          T context,
+                          WizardActivityView.Presenter presenter) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.context = context;
+        this.presenter = presenter;
     }
 
 }

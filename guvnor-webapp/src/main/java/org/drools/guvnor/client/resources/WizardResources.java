@@ -47,7 +47,7 @@ public interface WizardResources
 
         String wizardDTableMessage();
 
-        String wizardDTableDuplicatePattern();
+        String wizardDTableValidationError();
 
         String wizardSidebar();
 
@@ -60,6 +60,14 @@ public interface WizardResources
         String wizardPageTitleImageContainer();
 
         String wizardPageTitleLabelContainer();
+        
+        String wizardDTableFieldContainerValid();
 
+        String wizardDTableFieldContainerInvalid();
+        
+        String wizardDTableSummaryContainer();
+        
+        String wizardDTableCaption();
+        
     }
 }

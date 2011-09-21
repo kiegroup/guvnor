@@ -16,15 +16,55 @@
 
 package org.drools.guvnor.client.explorer;
 
+import com.google.gwt.event.shared.EventBus;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
+import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
+import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
+import org.drools.guvnor.client.explorer.navigation.settings.PreferencesActivity;
+import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
+import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksActivity;
+import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
+import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
+import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
+import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class GuvnorActivityMapperTest {
-    //TODO: -Rikkola-
+
+    private GuvnorActivityMapper guvnorActivityMapper;
+
+    @Before
+    public void setUp() throws Exception {
+        ClientFactory clientFactory = mock(ClientFactory.class);
+        guvnorActivityMapper = new GuvnorActivityMapper(clientFactory);
+    }
 
     @Test
-    public void testMock() throws Exception {
-        assertTrue(true);
+    public void testPersonalTasksActivity() throws Exception {
+        assertTrue(guvnorActivityMapper.getActivity(new PersonalTasksPlace()) instanceof PersonalTasksActivity);
+    }
+
+    @Test
+    public void testGroupTasks() throws Exception {
+        assertTrue(guvnorActivityMapper.getActivity(new GroupTasksPlace()) instanceof GroupTasksActivity);
+    }
+
+    @Test
+    public void testReportingTemplates() throws Exception {
+        assertTrue(guvnorActivityMapper.getActivity(new ReportTemplatesPlace()) instanceof ReportTemplatesActivity);
+    }
+
+    @Test
+    public void testPreferences() throws Exception {
+        assertTrue(guvnorActivityMapper.getActivity(new PreferencesPlace()) instanceof PreferencesActivity);
+    }
+
+    @Test
+    public void testProcessOverview() throws Exception {
+        assertTrue(guvnorActivityMapper.getActivity(new ProcessOverviewPlace()) instanceof ProcessOverviewActivity);
     }
 }

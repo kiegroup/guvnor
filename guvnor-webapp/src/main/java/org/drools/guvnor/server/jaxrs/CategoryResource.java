@@ -39,8 +39,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import static org.drools.guvnor.server.jaxrs.Translator.ToAsset;
-import static org.drools.guvnor.server.jaxrs.Translator.ToAssetEntryAbdera;
+import static org.drools.guvnor.server.jaxrs.Translator.toAsset;
+import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
 
 /*import org.jboss.resteasy.plugins.providers.atom.Entry;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
@@ -69,7 +69,7 @@ public class CategoryResource extends Resource {
                     decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             for (AssetItem item : assets) {
-                Entry e = ToAssetEntryAbdera(item, uriInfo);
+                Entry e = toAssetEntryAbdera(item, uriInfo);
                 f.addEntry(e);
             }
 
@@ -99,7 +99,7 @@ public class CategoryResource extends Resource {
             if (assets.size() > 0) {
                 ret = new ArrayList<Asset>();
                 for (AssetItem item : assets) {
-                    ret.add(ToAsset(item, uriInfo));
+                    ret.add(toAsset(item, uriInfo));
                 }
             }
         } catch (UnsupportedEncodingException e) {
@@ -156,7 +156,7 @@ public class CategoryResource extends Resource {
             if (assets.size() > 0) {
                 ret = new ArrayList<Asset>();
                 for (AssetItem item : assets) {
-                    ret.add(ToAsset(item, uriInfo));
+                    ret.add(toAsset(item, uriInfo));
                 }
             }
         } catch (UnsupportedEncodingException e) {

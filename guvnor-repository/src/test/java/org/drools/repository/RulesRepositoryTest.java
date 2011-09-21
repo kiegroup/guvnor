@@ -19,7 +19,11 @@ package org.drools.repository;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
@@ -39,7 +44,6 @@ import javax.jcr.Workspace;
 import org.drools.repository.RulesRepository.DateQuery;
 import org.drools.repository.migration.MigrateDroolsPackage;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -515,10 +519,18 @@ public class RulesRepositoryTest extends RepositoryTestCase {
 
         assertNotNull( ruleItem1 );
         assertNotNull( ruleItem1.getNode() );
-        assertEquals( effectiveDate,
-                      ruleItem1.getDateEffective() );
-        assertEquals( expiredDate,
-                      ruleItem1.getDateExpired() );
+        
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( effectiveDate.getTimeInMillis(), 
+                      ruleItem1.getDateEffective().getTimeInMillis() );
+
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( expiredDate.getTimeInMillis(),
+                      ruleItem1.getDateExpired().getTimeInMillis() );
 
         ruleItem1.checkin( "ho " );
     }
@@ -1224,19 +1236,19 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertTrue(list.get( 0 ) instanceof AssetItem);
     }
 
+    //GUVNOR-475
     @Test
-    @Ignore("Due to GUVNOR-475.")
     public void testImportExportWithShareableNodes() throws Exception {
         RulesRepository repo = getRepo();
         AssetItem item = repo.loadDefaultPackage().addAsset("testImportExportShareableNodeOriginal", "desc");
         item.updateContent("la");
-        item.getNode().addMixin("mix:shareable");
+        PackageItem.ensureMixinType(item, "mix:shareable");
         PackageItem source = repo.createPackage("testImportExportShareableNodesPackage", "desc");
         repo.save();
 
         source.checkout();
 
-        Session session = repo.getSession();
+        Session session = item.getNode().getSession();
         Workspace workspace = session.getWorkspace();
         String path = "/drools:repository/drools:package_area/testImportExportShareableNodesPackage/assets/testImportExportShareableNodeShared";
         workspace.clone(workspace.getName(), item.getNode().getPath(), path, false);
@@ -1255,6 +1267,67 @@ public class RulesRepositoryTest extends RepositoryTestCase {
         assertTrue(repo.loadPackage("testImportExportShareableNodesPackage").containsAsset("testImportExportShareableNodeOriginal"));
     }
 
+    @Test    
+    public void testImportExportWithShareableNodesOnJCRLayer() throws Exception {
+        RulesRepository repo = getRepo();
+        Node testRootNode = getRepo().getSession().getRootNode().addNode("testRoot");
+        getRepo().getSession().getRootNode().save();
+        
+        // setup parent nodes and first child
+        Node a1 = testRootNode.addNode("a1");
+        Node a2 = testRootNode.addNode("a2");
+        Node a3 = testRootNode.addNode("a3");
+        Node b1 = a1.addNode("b1");
+        testRootNode.save();
+
+        // add mixin
+        ensureMixinType(b1, "mix:shareable");
+        b1.save();
+
+        // clone
+        Session session = b1.getSession();
+        Workspace workspace = session.getWorkspace();
+        workspace.clone(workspace.getName(), b1.getPath(),
+                a2.getPath() + "/b2", false);
+
+        // add child c to shareable nodes b1 & b2
+        b1.addNode("c");
+        b1.save();
+
+        // create temp file
+        File tmpFile = File.createTempFile("test", null);
+        tmpFile.deleteOnExit();
+
+        // export system view of /a1/b1
+        OutputStream out = new FileOutputStream(tmpFile);
+        try {
+            session.exportSystemView(testRootNode.getPath(), out, false, false);
+        } finally {
+            out.close();
+        }
+
+        // and import again underneath /a3
+        InputStream in = new FileInputStream(tmpFile);
+        try {
+            session.getWorkspace().importXML("/", in, ImportUUIDBehavior.IMPORT_UUID_COLLISION_THROW);
+            session.save();
+        } finally {
+            try { in.close(); } catch (IOException ignore) {}
+        }
+    }
+    
+    protected void ensureMixinType(Node node, String mixin)
+            throws RepositoryException {
+        if (!node.isNodeType(mixin)) {
+            if (node.canAddMixin(mixin)) {
+                node.addMixin(mixin);
+            } else {
+                throw new RepositoryException(node.getPath()
+                        + " does not support adding " + mixin);
+            }
+        }
+    }
+  
     //In this test case we expect an ItemExistException from the second thread,
     //other than ending up with two packages with same name.
     //https://jira.jboss.org/jira/browse/GUVNOR-346

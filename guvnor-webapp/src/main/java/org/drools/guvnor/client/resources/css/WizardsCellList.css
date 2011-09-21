@@ -15,18 +15,29 @@
  */
  
 .cellListWidget {
+    width: 250px;
+    overflow: hidden;
+    padding: 2px;
 }
 
 .cellListEvenItem {
-    margin: 2px;
     padding: 1px;
+    margin-bottom: 1px;
     cursor: pointer;
     zoom: 1;
 }
 
-.cellListOddItem {
-    margin: 2px;
+.cellListEmptyItem {
     padding: 1px;
+    cursor: pointer;
+    color: rgb(150, 150, 150);
+    font-style: italic;
+    zoom: 1;
+}
+
+.cellListOddItem {
+    padding: 1px;
+    margin-bottom: 1px;
     cursor: pointer;
     zoom: 1;
 }

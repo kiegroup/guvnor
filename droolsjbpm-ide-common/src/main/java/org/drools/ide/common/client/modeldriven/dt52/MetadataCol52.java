@@ -24,42 +24,12 @@ public class MetadataCol52 extends DTColumnConfig52 {
 
     private String metadata;
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof MetadataCol52)) {
-            return false;
-        }
-        MetadataCol52 that = (MetadataCol52) obj;
-        return nullOrEqual(this.metadata, that.metadata) && super.equals(obj);
-    }
-
     public String getMetadata() {
         return metadata;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + (metadata == null ? 0 : metadata.hashCode());
-        hash = hash * 31 + super.hashCode();
-        return hash;
-    }
-
     public void setMetadata(String metadata) {
         this.metadata = metadata;
-    }
-
-    private boolean nullOrEqual(Object thisAttr, Object thatAttr) {
-        if (thisAttr == null && thatAttr == null) {
-            return true;
-        }
-        if (thisAttr == null && thatAttr != null) {
-            return false;
-        }
-        return thisAttr.equals(thatAttr);
     }
 
 }

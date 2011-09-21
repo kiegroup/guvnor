@@ -19,7 +19,10 @@ package org.drools.guvnor.client.widgets.wizards;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.common.ErrorPopup;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.Popup;
+import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,7 +30,9 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -44,6 +49,9 @@ public class WizardActivityViewImpl extends Popup
 
     @UiField
     protected SimplePanel                sideBarContainer;
+
+    @UiField
+    ScrollPanel                          bodyContainer;
 
     @UiField
     protected SimplePanel                body;
@@ -71,7 +79,9 @@ public class WizardActivityViewImpl extends Popup
         UiBinder<Widget, WizardActivityViewImpl> {
     }
 
-    private static WizardActivityViewImplBinder uiBinder = GWT.create( WizardActivityViewImplBinder.class );
+    private static WizardActivityViewImplBinder uiBinder  = GWT.create( WizardActivityViewImplBinder.class );
+
+    private static Constants                    constants = GWT.create( Constants.class );
 
     public WizardActivityViewImpl(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -100,6 +110,11 @@ public class WizardActivityViewImpl extends Popup
     @UiHandler(value = "btnCancel")
     public void btnCancelClick(ClickEvent event) {
         this.hide();
+    }
+
+    @UiHandler(value = "btnFinish")
+    public void btnFinishClick(ClickEvent event) {
+        presenter.complete();
     }
 
     @UiHandler(value = "btnNext")
@@ -140,12 +155,12 @@ public class WizardActivityViewImpl extends Popup
     }
 
     public void setPreferredHeight(int height) {
-        body.setHeight( height + "px" );
+        bodyContainer.setHeight( height + "px" );
         sideBarContainer.setHeight( height + "px" );
     }
 
     public void setPreferredWidth(int width) {
-        body.setWidth( width + "px" );
+        bodyContainer.setWidth( width + "px" );
     }
 
     public void setPageCompletionState(int pageIndex,
@@ -156,6 +171,26 @@ public class WizardActivityViewImpl extends Popup
 
     public void setCompletionStatus(boolean isComplete) {
         btnFinish.setEnabled( isComplete );
+    }
+
+    public void showSavingIndicator() {
+        LoadingPopup.showMessage( constants.SavingPleaseWait() );
+    }
+
+    public void hideSavingIndicator() {
+        LoadingPopup.close();
+    }
+
+    public void showDuplicateAssetNameError() {
+        Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
+    }
+
+    public void showUnspecifiedCheckinError() {
+        ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
+    }
+
+    public void showCheckinError(String message) {
+        ErrorPopup.showMessage( message );
     }
 
 }

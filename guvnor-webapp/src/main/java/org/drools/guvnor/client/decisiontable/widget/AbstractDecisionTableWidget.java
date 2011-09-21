@@ -780,7 +780,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Update column field in Header Widget
-        if ( !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+        if ( origColumn.getFactField()!=null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
             bRedrawHeader = true;
         }
         
@@ -875,6 +875,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Check operator is supported
+        if ( cc.getOperator() == null ) {
+            return false;
+        }
         if ( cc.getOperator().equals( "==" ) ) {
             return true;
         }

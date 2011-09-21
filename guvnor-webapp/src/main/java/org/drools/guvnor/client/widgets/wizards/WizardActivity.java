@@ -38,33 +38,34 @@ public class WizardActivity extends Activity
     private Wizard             wizard;
 
     public WizardActivity(WizardPlace< ? > place,
-                          ClientFactory clientFactory,
-                          EventBus eventBus) {
+                          ClientFactory clientFactory) {
 
         //The generic view
         view = clientFactory.getNavigationViewFactory().getWizardView();
 
         //The specific "page factory" for a particular Wizard
-        wizard = clientFactory.getWizardFactory().getWizard( place.getContext() );
+        wizard = clientFactory.getWizardFactory().getWizard( place.getContext(),
+                                                             this );
         view.setPresenter( this );
-
-        //Wire-up the events
-        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
-                             this );
-        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
-                             this );
     }
 
     public void onStatusChange(WizardPageStatusChangeEvent event) {
-        WizardPage page = event.getSource();
-        int index = wizard.getPages().indexOf( page );
 
         //The event might not have been raised by a page belonging to this Wizard instance
-        if ( index >= 0 ) {
-            view.setPageCompletionState( index,
-                                         page.isComplete() );
-            view.setCompletionStatus( wizard.isComplete() );
+        WizardPage page = event.getSource();
+        if ( !wizard.getPages().contains( page ) ) {
+            return;
         }
+
+        //Update the status of each belonging to this Wizard
+        for ( WizardPage wp : wizard.getPages() ) {
+            int index = wizard.getPages().indexOf( wp );
+            view.setPageCompletionState( index,
+                                         wp.isComplete() );
+        }
+
+        //Update the status of this Wizard
+        view.setCompletionStatus( wizard.isComplete() );
     }
 
     public void onPageSelected(WizardPageSelectedEvent event) {
@@ -76,6 +77,14 @@ public class WizardActivity extends Activity
     @Override
     public void start(AcceptItem acceptTabItem,
                       EventBus eventBus) {
+
+        //Wire-up the events
+        eventBus.addHandler( WizardPageStatusChangeEvent.TYPE,
+                             this );
+        eventBus.addHandler( WizardPageSelectedEvent.TYPE,
+                             this );
+
+        //Go, Go gadget Wizard
         view.setTitle( wizard.getTitle() );
         view.setPreferredHeight( wizard.getPreferredHeight() );
         view.setPreferredWidth( wizard.getPreferredWidth() );
@@ -87,6 +96,34 @@ public class WizardActivity extends Activity
     public void pageSelected(int pageNumber) {
         Widget w = wizard.getPageWidget( pageNumber );
         view.setBodyWidget( w );
+    }
+
+    public void complete() {
+        wizard.complete();
+    }
+
+    public void showSavingIndicator() {
+        view.showSavingIndicator();
+    }
+
+    public void hideSavingIndicator() {
+        view.hideSavingIndicator();
+    }
+
+    public void showDuplicateAssetNameError() {
+        view.showDuplicateAssetNameError();
+    }
+
+    public void showUnspecifiedCheckinError() {
+        view.showUnspecifiedCheckinError();
+    }
+
+    public void showCheckinError(String message) {
+        view.showCheckinError( message );
+    }
+
+    public void hide() {
+        view.hide();
     }
 
 }

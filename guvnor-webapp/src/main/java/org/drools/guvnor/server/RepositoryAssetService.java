@@ -22,10 +22,6 @@ import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.repository.UserInbox;
-import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.security.PackageNameType;
-import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.RuleAssetPopulator;
@@ -96,16 +92,7 @@ public class RepositoryAssetService
 
         asset.setMetaData(repositoryAssetOperations.populateMetaData(item));
 
-
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            try {
-                serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName(asset.getMetaData().getPackageName());
-            } catch (RuntimeException e) {
-                handleExceptionAndVerifyCategoryBasedPermission(asset);
-            }
-        }
-
+        serviceSecurity.checkIsPackageReadOnlyOrAnalystReadOnly(asset);
         PackageItem pkgItem = handlePackageItem(item,
                 asset);
 
@@ -139,52 +126,8 @@ public class RepositoryAssetService
 
     @WebRemote
     @LoggedIn
-    /**
-     *
-     * Role-based Authorization check: This method can be accessed if user has
-     * following permissions:
-     * 1. The user has a Analyst role and this role has permission to access the category
-     * which the asset belongs to.
-     * Or.
-     * 2. The user has a package.developer role or higher (i.e., package.admin)
-     * and this role has permission to access the package which the asset belongs to.
-     */
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-
-        // Verify if the user has permission to access the asset through package
-        // based permission.
-        // If failed, then verify if the user has permission to access the asset
-        // through category
-        // based permission
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            boolean passed = false;
-
-            try {
-                identity.checkPermission(new PackageNameType(asset.getMetaData().getPackageName()),
-                        RoleType.PACKAGE_DEVELOPER.getName());
-            } catch (RuntimeException e) {
-                if (asset.getMetaData().getCategories().length == 0) {
-                    identity.checkPermission(new CategoryPathType(null),
-                            RoleType.ANALYST.getName());
-                } else {
-                    RuntimeException exception = null;
-
-                    for (String cat : asset.getMetaData().getCategories()) {
-                        try {
-                            identity.checkPermission(new CategoryPathType(cat),
-                                    RoleType.ANALYST.getName());
-                            passed = true;
-                        } catch (RuntimeException re) {
-                            exception = re;
-                        }
-                    }
-                    if (!passed) {
-                        throw exception;
-                    }
-                }
-            }
-        }
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
         log.info("USER:" + getCurrentUserName() + " CHECKING IN asset: [" + asset.getName() + "] UUID: [" + asset.getUuid() + "] ");
         return repositoryAssetOperations.checkinVersion(asset);
@@ -315,11 +258,9 @@ public class RepositoryAssetService
     @WebRemote
     @LoggedIn
     public void promoteAssetToGlobalArea(String uuid) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            identity.checkPermission(new PackageNameType(RulesRepository.RULE_GLOBAL_AREA),
-                    RoleType.PACKAGE_DEVELOPER.getName());
-        }
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getPackageName());
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
         rulesRepository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
@@ -330,7 +271,7 @@ public class RepositoryAssetService
     @WebRemote
     @LoggedIn
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(asset.getMetaData().getPackageName());
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.buildAssetSource(asset);
     }
 
@@ -339,7 +280,7 @@ public class RepositoryAssetService
     public String renameAsset(String uuid,
                               String newName) {
         AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
 
         return repositoryAssetOperations.renameAsset(uuid,
                 newName);
@@ -355,7 +296,7 @@ public class RepositoryAssetService
     @WebRemote
     @LoggedIn
     public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
-        serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(asset.getMetaData().getPackageName());
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.validateAsset(asset);
     }
 
@@ -482,26 +423,6 @@ public class RepositoryAssetService
                 numRows);
     }
 
-    private void handleExceptionAndVerifyCategoryBasedPermission(RuleAsset asset) {
-        if (asset.getMetaData().getCategories().length == 0) {
-            serviceSecurity.checkPermissionAnalystReadWithCategoryPathType(null);
-        } else {
-            RuntimeException exception = null;
-            boolean passed = false;
-            for (String category : asset.getMetaData().getCategories()) {
-                try {
-                    serviceSecurity.checkPermissionAnalystReadWithCategoryPathType(category);
-                    passed = true;
-                } catch (RuntimeException re) {
-                    exception = re;
-                }
-            }
-            if (!passed) {
-                throw exception;
-            }
-        }
-    }
-
     RuleAsset[] loadRuleAssets(Collection<String> uuids) throws SerializationException {
         if (uuids == null) {
             return null;
@@ -519,8 +440,7 @@ public class RepositoryAssetService
                                          boolean archive) {
         try {
             AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-
-            serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
+            serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
 
             if (item.getPackage().isArchived()) {
                 throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
@@ -587,41 +507,7 @@ public class RepositoryAssetService
     public void changeState(String uuid,
                             String newState) {
         AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
-
-        // Verify if the user has permission to access the asset through
-        // package based permission.
-        // If failed, then verify if the user has permission to access the
-        // asset through category
-        // based permission
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            boolean passed = false;
-
-            try {
-                identity.checkPermission(new PackageUUIDType(asset.getPackage().getUUID()),
-                        RoleType.PACKAGE_DEVELOPER.getName());
-            } catch (RuntimeException e) {
-                if (asset.getCategories().size() == 0) {
-                    identity.checkPermission(new CategoryPathType(null),
-                            RoleType.ANALYST.getName());
-                } else {
-                    RuntimeException exception = null;
-
-                    for (CategoryItem cat : asset.getCategories()) {
-                        try {
-                            identity.checkPermission(new CategoryPathType(cat.getName()),
-                                    RoleType.ANALYST.getName());
-                            passed = true;
-                        } catch (RuntimeException re) {
-                            exception = re;
-                        }
-                    }
-                    if (!passed) {
-                        throw exception;
-                    }
-                }
-            }
-        }
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
         log.info("USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]");
         String oldState = asset.getStateDescription();

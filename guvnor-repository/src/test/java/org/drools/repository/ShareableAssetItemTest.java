@@ -16,6 +16,12 @@
 
 package org.drools.repository;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -31,14 +37,7 @@ import javax.jcr.Workspace;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
-import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 public class ShareableAssetItemTest extends RepositoryTestCase {
 
@@ -480,7 +479,11 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         linkedAsset.updateDateEffective(cal);
         Calendar cal2 = linkedAsset.getDateEffective();
 
-        assertEquals(cal, cal2);
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( cal.getTimeInMillis(), 
+                      cal2.getTimeInMillis() );
     }
 
     @Test
@@ -496,7 +499,11 @@ public class ShareableAssetItemTest extends RepositoryTestCase {
         linkedAsset.updateDateExpired(cal);
         Calendar cal2 = linkedAsset.getDateExpired();
 
-        assertEquals(cal, cal2);
+        //Comparing two Calendar instances entirely doesn't work as JackRabbit persists Calendar objects as Strings using
+        //http://svn.apache.org/repos/asf/jackrabbit/trunk/jackrabbit-jcr-commons/src/main/java/org/apache/jackrabbit/util/ISO8601.java
+        //Not all Calendar properties are taken into consideration so we only check the getTime() values.
+        assertEquals( cal.getTimeInMillis(), 
+                      cal2.getTimeInMillis() );
     }
 
     @Test

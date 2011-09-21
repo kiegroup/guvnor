@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
+import org.drools.guvnor.client.widgets.wizards.WizardPageStatusChangeEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -44,12 +45,16 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     protected NewAssetWizardContext      context;
     protected SuggestionCompletionEngine sce;
 
+    private Validator                    validator;
+
     public AbstractGuidedDecisionTableWizardPage(NewAssetWizardContext context,
                                                  GuidedDecisionTable52 dtable,
-                                                 EventBus eventBus) {
+                                                 EventBus eventBus,
+                                                 Validator validator) {
         this.context = context;
         this.dtable = dtable;
         this.eventBus = eventBus;
+        this.validator = validator;
     }
 
     public Widget asWidget() {
@@ -59,5 +64,30 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     public void setSuggestionCompletionEngine(SuggestionCompletionEngine sce) {
         this.sce = sce;
     }
-    
+
+    public Validator getValidator() {
+        return this.validator;
+    }
+
+    /**
+     * Broadcast a change in state on a page
+     */
+    public void stateChanged() {
+        WizardPageStatusChangeEvent event = new WizardPageStatusChangeEvent( this );
+        eventBus.fireEvent( event );
+    }
+
+    /**
+     * When the Widget is finished a GuidedDecisionTable52 instance is passed to
+     * each page for enrichment. Some pages are able to work on this instance
+     * directly (i.e. the model is suitable for direct use in the page, such as
+     * FactPatternsPage) however others maintain their own representation of the
+     * model that must be copied into the GuidedDecisionTable52.
+     * 
+     * @param dtable
+     */
+    public void makeResult(GuidedDecisionTable52 dtable) {
+        //Default implementation does nothing
+    }
+
 }

@@ -53,43 +53,4 @@ public class AttributeCol52 extends DTColumnConfig52 {
         this.reverseOrder = reverseOrder;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if ( obj == null ) {
-            return false;
-        }
-        if ( !(obj instanceof AttributeCol52) ) {
-            return false;
-        }
-        AttributeCol52 that = (AttributeCol52) obj;
-        return nullOrEqual( this.attribute,
-                            that.attribute )
-                            && this.useRowNumber == that.useRowNumber
-                            && this.reverseOrder == that.reverseOrder
-                            && super.equals( obj );
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + (attribute == null ? 0 : attribute.hashCode());
-        hash = hash * 31 + (useRowNumber ? 1 : 0);
-        hash = hash * 31 + (reverseOrder ? 1 : 0);
-        hash = hash * 31 + super.hashCode();
-        return hash;
-    }
-
-    private boolean nullOrEqual(Object thisAttr,
-                                Object thatAttr) {
-        if ( thisAttr == null
-             && thatAttr == null ) {
-            return true;
-        }
-        if ( thisAttr == null
-             && thatAttr != null ) {
-            return false;
-        }
-        return thisAttr.equals( thatAttr );
-    }
-
 }

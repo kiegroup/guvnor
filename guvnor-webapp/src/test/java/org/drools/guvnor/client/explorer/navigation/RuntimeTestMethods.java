@@ -16,18 +16,15 @@
 
 package org.drools.guvnor.client.explorer.navigation;
 
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import org.drools.guvnor.client.explorer.places.RuntimePlace;
 import org.mockito.ArgumentCaptor;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class RuntimeTestMethods {
 
-    public static void assertGoesTo(PlaceController placeController, RuntimePlace.Location location) {
-        ArgumentCaptor<RuntimePlace> runtimePlaceArgumentCaptor = ArgumentCaptor.forClass(RuntimePlace.class);
-        verify(placeController).goTo(runtimePlaceArgumentCaptor.capture());
-        assertEquals(location, runtimePlaceArgumentCaptor.getValue().getLocation());
+    public static <T> void assertGoesTo(PlaceController placeController, Class<Place> place) {
+
     }
 }

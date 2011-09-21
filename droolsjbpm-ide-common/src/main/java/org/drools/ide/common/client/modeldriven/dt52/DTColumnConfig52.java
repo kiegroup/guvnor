@@ -32,36 +32,12 @@ public class DTColumnConfig52
     //Column width
     private int               width            = -1;
 
-    @Override
-    public boolean equals(Object obj) {
-        if ( obj == null ) {
-            return false;
-        }
-        if ( !(obj instanceof DTColumnConfig52) ) {
-            return false;
-        }
-        DTColumnConfig52 that = (DTColumnConfig52) obj;
-        return this.width == that.width
-                && nullOrEqual( this.defaultValue,
-                                that.defaultValue )
-                && this.hideColumn == that.hideColumn;
-    }
-
     public String getDefaultValue() {
         return defaultValue;
     }
 
     public int getWidth() {
         return width;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash = hash * 31 + width;
-        hash = hash * 31 + (defaultValue == null ? 0 : defaultValue.hashCode());
-        hash = hash * 31 + (hideColumn ? 1 : 0);
-        return hash;
     }
 
     public boolean isHideColumn() {
@@ -78,17 +54,6 @@ public class DTColumnConfig52
 
     public void setWidth(int width) {
         this.width = width;
-    }
-
-    private boolean nullOrEqual(Object thisAttr,
-                                Object thatAttr) {
-        if ( thisAttr == null && thatAttr == null ) {
-            return true;
-        }
-        if ( thisAttr == null && thatAttr != null ) {
-            return false;
-        }
-        return thisAttr.equals( thatAttr );
     }
 
 }
