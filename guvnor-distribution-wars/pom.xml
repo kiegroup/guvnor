@@ -51,10 +51,10 @@
       <artifactId>guvnor-webapp</artifactId>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.jboss.ws.cxf</groupId>
-      <artifactId>jbossws-cxf-client</artifactId>
-      <version>4.0.0.Beta3</version>
+    <dependency><!-- Only used by jboss AS 6 -->
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+      <version>2.3.1</version>
     </dependency>
   </dependencies>
 
