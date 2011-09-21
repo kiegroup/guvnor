@@ -112,7 +112,6 @@ public abstract class Popup extends PopupPanel {
         });
 
         focusPanel.setStyleName("");
-        focusPanel.setFocus(true);
         focusPanel.setWidth("100%");
         add(focusPanel);
 
@@ -121,6 +120,8 @@ public abstract class Popup extends PopupPanel {
         if (!fixedLocation) {
             center();
         }
+
+        focusPanel.setFocus(true);
     }
 
     @Override
