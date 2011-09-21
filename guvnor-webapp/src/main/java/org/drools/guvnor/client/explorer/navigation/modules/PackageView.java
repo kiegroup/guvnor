@@ -49,5 +49,9 @@ public abstract class PackageView {
             }
         }
     }
+    
+    public void clear() {
+        root.getChildren().clear();
+    }
 
 }
