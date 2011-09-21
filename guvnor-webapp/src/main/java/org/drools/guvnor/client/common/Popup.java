@@ -99,7 +99,6 @@ public abstract class Popup extends PopupPanel {
 
         content.setWidth("100%");
         verticalPanel.add(content);
-        verticalPanel.setWidth("100%");
 
         FocusPanel focusPanel = new FocusPanel(verticalPanel);
 
