@@ -164,9 +164,9 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         //now lets see if we can access this asset with the permissions
         @SuppressWarnings("unused")
-        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid1 );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid1 );
         try {
-            asset = assetRepositoryService.loadRuleAsset( uuid2 );
+            asset = repositoryAssetService.loadRuleAsset( uuid2 );
             fail( "Did not catch expected exception" );
         } catch ( AuthorizationException e ) {
         }
@@ -213,7 +213,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           testManager );
 
         // now lets see if we can access this asset with the permissions
-        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset );
     }
 
@@ -266,7 +266,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           testManager );
 
         //now lets see if we can access this asset with the permissions
-        RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
         assertNotNull( asset );
     }
 
@@ -327,10 +327,10 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         //now lets see if we can access this asset with the permissions
         @SuppressWarnings("unused")
-        RuleAsset asset2 = assetRepositoryService.loadRuleAsset( uuid2 );
+        RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
         try {
             @SuppressWarnings("unused")
-            RuleAsset asset1 = assetRepositoryService.loadRuleAsset( uuid1 );
+            RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
             fail( "Did not catch expected exception" );
         } catch ( AuthorizationException e ) {
         }
@@ -395,7 +395,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         //now lets see if we can access this asset with the permissions
         //RuleAsset asset2 = impl.loadRuleAsset(uuid2);
         @SuppressWarnings("unused")
-        RuleAsset asset1 = assetRepositoryService.loadRuleAsset( uuid1 );
+        RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
     }
 
     @Test
@@ -449,7 +449,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         @SuppressWarnings("unused")
         RuleAsset asset = null;
         try {
-            asset = assetRepositoryService.loadRuleAsset( uuid );
+            asset = repositoryAssetService.loadRuleAsset( uuid );
         } catch ( AuthorizationException e ) {
             fail( "User has permissions for the category" );
         }
@@ -508,7 +508,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
         //now lets see if we can access this asset with the permissions
         try {
-            RuleAsset asset = assetRepositoryService.loadRuleAsset( uuid );
+            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
             fail( "Did not catch expected exception" );
         } catch ( AuthorizationException e ) {
         }
@@ -733,7 +733,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         Contexts.getSessionContext().set( "roleBasedPermissionManager",
                                           testManager );
 
-        TableDataResult result = assetRepositoryService.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
+        TableDataResult result = repositoryAssetService.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
                                                                        true,
                                                                        0,
                                                                        -1 );
