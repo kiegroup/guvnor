@@ -235,8 +235,8 @@ public class PopupCreator {
 
         box.setSelectedIndex( 0 );
 
-        box.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
                 if ( "...".equals( fieldName ) ) {
                     return;
