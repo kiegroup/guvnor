@@ -547,7 +547,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     public void clearAllDiscussionsForAsset(java.lang.String p0) {
         getAssetService().clearAllDiscussionsForAsset( p0 );
     }
-
+    
+    public long getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return getAssetService().findAssetPage( p0 ).getTotalRowSize();
+    }
 
     /**
      * PLACE THE FOLLOWING IN RepositoryServiceServlet.java *

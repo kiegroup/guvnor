@@ -37,4 +37,7 @@ public interface GuvnorResources
     @Source("css/TitledTextCell.css")
     TitledTextCellCss titledTextCellCss();
 
+    @Source("css/Guvnor.css")
+    GuvnorCss guvnorCss();
+
 }

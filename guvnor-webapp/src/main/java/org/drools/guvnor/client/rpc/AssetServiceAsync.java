@@ -55,4 +55,6 @@ public interface AssetServiceAsync {
     public void clearAllDiscussionsForAsset(java.lang.String p0, AsyncCallback cb);
     public void changeState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
     public void changePackageState(java.lang.String p0, java.lang.String p1, AsyncCallback cb);
+    public void getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0, AsyncCallback<java.lang.Long> cb);
+    
 }
