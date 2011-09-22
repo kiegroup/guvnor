@@ -42,42 +42,28 @@ public class CXFAuthenticationHandler implements RequestHandler {
     private Credentials credentials;
 
     public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            //If the request is from same session, the user should be logged already.
-            if (identity.isLoggedIn()) {
-                return null;
-            }
-
-            AuthorizationPolicy policy = (AuthorizationPolicy) m
-                    .get(AuthorizationPolicy.class);
-
-            // The policy can be null when the user did not specify credentials
-            if (policy != null) {
-                String username = policy.getUserName();
-                String password = policy.getPassword();
-
-                credentials.setUsername(username);
-                credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
-            }
-
-            identity.login();
-            if ( !identity.isLoggedIn() ) {
-                throw new WebApplicationException(getErrorResponse());
-            }
+        // TODO seam3upgrade this class isn't getting injects, see web.xml
+        //If the request is from same session, the user should be logged already.
+        if (identity.isLoggedIn()) {
             return null;
-        } else {
-            // NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-            AuthorizationPolicy policy = (AuthorizationPolicy) m
-                    .get(AuthorizationPolicy.class);
-
-            if (policy == null || (("test").equals(policy.getUserName())
-                    && ("password").equals(policy.getPassword()))) {
-                return null;
-            } else {
-                throw new WebApplicationException(getErrorResponse());
-            }
         }
+
+        AuthorizationPolicy policy = (AuthorizationPolicy) m.get(AuthorizationPolicy.class);
+
+        // The policy can be null when the user did not specify credentials
+        if (policy != null) {
+            String username = policy.getUserName();
+            String password = policy.getPassword();
+
+            credentials.setUsername(username);
+            credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
+        }
+
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
+            throw new WebApplicationException(getErrorResponse());
+        }
+        return null;
     }
     
     private Response getErrorResponse() {
