@@ -21,12 +21,13 @@ import org.drools.repository.security.PermissionManager;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @Named("org.drools.guvnor.server.security.RoleBasedPermissionStore")
-public class RoleBasedPermissionStore {
+public class RoleBasedPermissionStore implements Serializable {
 
     @Inject
     public RulesRepository repository;

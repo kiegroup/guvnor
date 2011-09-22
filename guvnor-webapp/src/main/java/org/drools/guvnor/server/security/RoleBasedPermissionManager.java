@@ -42,6 +42,9 @@ public class RoleBasedPermissionManager implements Serializable {
     private List<RoleBasedPermission> permissions;
 
     @Inject
+    private RoleBasedPermissionStore roleBasedPermissionStore;
+
+    @Inject
     private Credentials credentials;
 
     //    @Unwrap
@@ -51,8 +54,6 @@ public class RoleBasedPermissionManager implements Serializable {
 
     @PostConstruct
     public void create() {
-        RoleBasedPermissionStore roleBasedPermissionStore = (RoleBasedPermissionStore) BeanManagerUtils
-                .getInstance("org.drools.guvnor.server.security.RoleBasedPermissionStore");
         permissions = roleBasedPermissionStore.getRoleBasedPermissionsByUserName(credentials.getUsername());
     }
 

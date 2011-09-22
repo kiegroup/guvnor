@@ -17,7 +17,11 @@
 package org.drools.guvnor.server.security;
 
 import java.util.List;
+import javax.enterprise.inject.Alternative;
+import javax.inject.Named;
 
+@Alternative
+@Named("org.drools.guvnor.server.security.RoleBasedPermissionStore")
 public class MockRoleBasedPermissionStore extends RoleBasedPermissionStore {
 
     List<RoleBasedPermission> pbps;
