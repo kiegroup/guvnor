@@ -251,7 +251,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
@@ -264,7 +264,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient @Ignore
@@ -276,7 +276,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient @Ignore
@@ -288,7 +288,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
@@ -301,7 +301,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
     
     private Entry createProcessEntry(String title, String summary, List<String> categories){

@@ -31,6 +31,7 @@ import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -158,7 +159,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));        
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
     /**
@@ -173,7 +174,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());        
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         //TODO: verify
      }
 
@@ -189,7 +190,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         //TODO: verify
     }
 
@@ -205,7 +206,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -242,7 +243,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log (LogLevel, GetContent(connection));
+        //logger.log (LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient 
@@ -254,7 +255,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         Package p = unmarshalPackageXML(connection.getInputStream());
         assertEquals("restPackage1", p.getTitle());
         assertEquals("this is package restPackage1", p.getDescription());
@@ -291,7 +292,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -397,7 +398,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient @Ignore
@@ -421,7 +422,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient @Ignore
@@ -445,7 +446,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient
@@ -520,7 +521,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         conn2.setRequestMethod("GET");
         conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn2.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (500, conn2.getResponseCode());
     }
 
@@ -539,7 +540,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);        
+        String result = IOUtils.toString(connection.getInputStream());
   
         assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
@@ -561,7 +562,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient @Ignore
@@ -606,7 +607,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -639,7 +640,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -676,7 +677,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
        
         assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
@@ -696,7 +697,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         //TODO:
         //assertEquals (500, connection.getResponseCode());
-        //String result = GetContent(connection);
+        //String result = IOUtils.toString(connection.getInputStream());
         //System.out.println(result);
     }
 
@@ -737,7 +738,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals(200, connection3.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection3.getContentType());
-        String result = GetContent(connection3);
+        String result = IOUtils.toString(connection3.getInputStream());
         assertEquals(result,newContent+"\n");
     }
     
@@ -785,7 +786,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
         InputStream in = connection.getInputStream();
@@ -807,7 +808,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
         in = connection.getInputStream();
@@ -839,7 +840,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
@@ -892,7 +893,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertNotNull(result);
          
         //Roll back changes. 
@@ -900,7 +901,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
@@ -923,7 +924,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertTrue(result.indexOf("declare Album2") > -1);
     }
     
@@ -936,7 +937,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -967,7 +968,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         InputStream in = connection.getInputStream();
         
         assertNotNull(in);
@@ -993,7 +994,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         in = connection.getInputStream();
         
         assertNotNull(in);
@@ -1023,7 +1024,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
 
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
@@ -1037,7 +1038,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        result = GetContent(connection);
+        result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
 
         assertTrue(result.indexOf( "declare Album2" ) >= 0 );
@@ -1132,7 +1133,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
@@ -1144,29 +1145,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
                 + new String(authEncBytes));
         connection.connect();
         assertEquals(500, connection.getResponseCode());
-    } 
-
-    public static String GetContent (InputStream is) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
     }
-    
-    public static String GetContent (HttpURLConnection connection) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }    
 
     protected Package createTestPackage(String title) {
         Category c = new Category();

@@ -29,6 +29,7 @@ import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
@@ -339,7 +340,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        System.out.println(getContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
     @Test @RunAsClient
@@ -363,7 +364,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = getContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertTrue(result.indexOf("declare Album2")>=0);
         assertTrue(result.indexOf("genre2: String")>=0);
     }
@@ -522,30 +523,5 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testUpdateAssetFromJson(@ArquillianResource URL baseURL) throws Exception {
         //TODO: implement test
     }
-    
-    // TODO replace by IOUtils.toString(in)
-    public static String GetContent (InputStream is) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }
-
-    // TODO replace by IOUtils.toString(connection.getInputStream())
-    public static String getContent(HttpURLConnection connection) throws IOException {
-
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }    
 
 }
