@@ -65,6 +65,7 @@
       it is disabled.
   -->
   <guvnorSecurity:RoleBasedPermissionResolver>
+    <s:modifies/>
     <guvnorSecurity:enableRoleBasedAuthorization>false</guvnorSecurity:enableRoleBasedAuthorization>
   </guvnorSecurity:RoleBasedPermissionResolver>
 

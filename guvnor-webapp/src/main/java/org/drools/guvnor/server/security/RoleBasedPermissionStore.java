@@ -30,16 +30,15 @@ import java.util.Map;
 public class RoleBasedPermissionStore implements Serializable {
 
     @Inject
-    public RulesRepository repository;
+    public RulesRepository rulesRepository;
 
 
     public RoleBasedPermissionStore() {
     }
 
-
     public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
             String userName) {
-        PermissionManager permissionManager = new PermissionManager(repository);
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
         List<RoleBasedPermission> permissions = new ArrayList<RoleBasedPermission>();
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
@@ -51,7 +50,6 @@ public class RoleBasedPermissionStore implements Serializable {
 
         return permissions;
     }
-
 
     private void resolvePermissionsAndAdd(String userName,
                                           List<RoleBasedPermission> permissions,
@@ -78,10 +76,9 @@ public class RoleBasedPermissionStore implements Serializable {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     public void addRoleBasedPermissionForTesting(String userName, RoleBasedPermission rbp) {
-        PermissionManager permissionManager = new PermissionManager(repository);
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
         Object permissionsPerRole = perms.get(rbp.getRole());

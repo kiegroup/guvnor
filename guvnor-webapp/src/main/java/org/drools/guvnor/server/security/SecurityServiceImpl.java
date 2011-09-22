@@ -53,7 +53,7 @@ public class SecurityServiceImpl implements SecurityService {
     @Inject @Named("roleBasedPermissionManager")
     private RoleBasedPermissionManager roleBasedPermissionManager;
 
-    @Inject @Named("org.jboss.seam.security.roleBasedPermissionResolver")
+    @Inject
     private RoleBasedPermissionResolver roleBasedPermissionResolver;
 
     @Inject

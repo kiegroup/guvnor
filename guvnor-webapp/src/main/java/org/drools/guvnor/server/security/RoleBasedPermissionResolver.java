@@ -54,15 +54,12 @@ import org.jboss.seam.security.permission.PermissionResolver;
  * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly)
  *
  */
-@Named("org.jboss.seam.security.roleBasedPermissionResolver") // TODO name probably dead code because beans.xml doesn't use it
 @ApplicationScoped
 //@BypassInterceptors
 //@Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
 //@Startup
 public class RoleBasedPermissionResolver
-    implements
-    PermissionResolver,
-    Serializable {
+        implements PermissionResolver, Serializable {
     private static final LoggingHelper                     log                            = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
     private boolean                                        enableRoleBasedAuthorization   = false;
@@ -83,10 +80,6 @@ public class RoleBasedPermissionResolver
                                             new PackageNameTypeConverter() );
         permissionRuleObjectConverters.put( WebDavPackageNameType.class,
                                             new PackageNameTypeConverter() );
-    }
-
-    @PostConstruct
-    public void create() {
     }
 
     /**
