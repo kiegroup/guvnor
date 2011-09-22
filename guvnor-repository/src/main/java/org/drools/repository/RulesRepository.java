@@ -1685,7 +1685,7 @@ public class RulesRepository {
             
             //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
             //See http://markmail.org/message/mxmk5hkxrdtcc3hl
-            stringBuilder.append(" ORDER BY jcr:score DESC");
+            stringBuilder.append(" ORDER BY [jcr:score] DESC");
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery(stringBuilder.toString(),
                     Query.XPATH);
