@@ -384,6 +384,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                                dotIndex );
             factField = factAndField.substring( dotIndex + 1,
                                                 factAndField.length() );
+            selectedValue = value;
 
             //ChangeHandler for drop-down; not called when initialising the drop-down
             DropDownValueChanged handler = new DropDownValueChanged() {
