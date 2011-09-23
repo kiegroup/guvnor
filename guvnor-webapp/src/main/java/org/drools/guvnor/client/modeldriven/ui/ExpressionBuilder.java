@@ -29,6 +29,7 @@ import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionFieldVariable;
@@ -94,6 +95,15 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         panel.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
 
+        StringBuilder bindingLabel = new StringBuilder();
+        String binding = getBoundText();
+        if ( binding !=null && !binding.equals( "" )) {
+            bindingLabel.append( "<b>" );
+            bindingLabel.append( getBoundText() );
+            bindingLabel.append( "</b>" );
+        }
+        bindingLabel.append( expression.getText( false ) );
+        
         if ( expression == null || expression.isEmpty() ) {
             if ( this.readOnly ) {
                 panel.add( new SmallLabel( "<b>-</b>" ) );
@@ -102,9 +112,10 @@ public class ExpressionBuilder extends RuleModellerWidget
             }
         } else {
             if ( this.readOnly ) {
-                panel.add( createWidgetForExpression( "<b>" + getBoundText() + expression.getText( false ) + "</b>" ) );
+                panel.add( createWidgetForExpression( bindingLabel.toString() ) );
             } else {
-                panel.add( createWidgetForExpression( "<b>" + getBoundText() + expression.getText( false ) + ".</b>" ) );
+                bindingLabel.append(".");
+                panel.add( createWidgetForExpression( bindingLabel.toString() ) );
                 panel.add( getWidgetForCurrentType() );
             }
         }
@@ -187,7 +198,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         w = getWidgetForCurrentType();
 
         if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression( "<b>" + expression.getText() + ".</b>" ) );
+            panel.add( createWidgetForExpression( expression.getText() + "." ) );
         }
         if ( w != null ) {
             panel.add( w );
@@ -304,7 +315,7 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         panel.clear();
         if ( !expression.isEmpty() ) {
-            panel.add( createWidgetForExpression( "<b>" + expression.getText() + ".</b>" ) );
+            panel.add( createWidgetForExpression( expression.getText() + "." ) );
         }
         if ( w != null ) {
             panel.add( w );
@@ -352,19 +363,22 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                  0 );
 
             for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
-                boolean changed = false;
-                for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
-                    String method = i.next();
-                    if ( method.startsWith( field ) ) {
-                        completions.put( method,
-                                         METHOD_VALUE_PREFIX + "." + method );
-                        i.remove();
-                        changed = true;
+                //You can't use "this" in a nested accessor
+                if ( !field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                    boolean changed = false;
+                    for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
+                        String method = i.next();
+                        if ( method.startsWith( field ) ) {
+                            completions.put( method,
+                                             METHOD_VALUE_PREFIX + "." + method );
+                            i.remove();
+                            changed = true;
+                        }
                     }
-                }
-                if ( !changed ) {
-                    completions.put( field,
-                                     FIElD_VALUE_PREFIX + "." + field );
+                    if ( !changed ) {
+                        completions.put( field,
+                                         FIElD_VALUE_PREFIX + "." + field );
+                    }
                 }
             }
         }
