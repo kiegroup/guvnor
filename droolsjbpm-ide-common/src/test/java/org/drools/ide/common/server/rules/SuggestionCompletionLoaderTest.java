@@ -557,8 +557,8 @@ public class SuggestionCompletionLoaderTest {
         assertEquals( "Applicant",
                       eng.getFieldType( "LoanApplication",
                                         "applicant" ) );
-        assertNull( eng.getFieldClassName( "LoanApplication",
-                                           "applicant" ) );
+        assertEquals( "Applicant", eng.getFieldClassName( "LoanApplication",
+                                                          "applicant" ) );
         assertEquals( FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
                       eng.getFieldClassType( "LoanApplication",
                                              "applicant" ) );
