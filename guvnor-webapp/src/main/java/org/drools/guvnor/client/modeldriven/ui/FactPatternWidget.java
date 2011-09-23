@@ -388,7 +388,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                 this.renderFieldConstraint( inner,
                                             i,
                                             nested[i],
-                                            false,
+                                            true,
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
@@ -692,6 +692,10 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
+            if(c instanceof SingleFieldConstraintEBLeftSide) {
+                SingleFieldConstraintEBLeftSide sfc = (SingleFieldConstraintEBLeftSide) c;
+                factType = sfc.getExpressionLeftSide().getPreviousClassType();
+            }
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
                                                                                       fieldName );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
@@ -763,32 +767,34 @@ public class FactPatternWidget extends RuleModellerWidget {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
-        if ( !con.isBound() ) {
-            if ( bindable && showBinding && !this.readOnly ) {
-                ClickHandler click = new ClickHandler() {
+        StringBuilder bindingLabel = new StringBuilder();
+        if ( con.isBound() ) {
+            bindingLabel.append( "<b>[" );
+            bindingLabel.append( con.getFieldBinding() );
+            bindingLabel.append( "]</b>&nbsp;" );
+        }
+        bindingLabel.append( con.getFieldName() );
 
-                    public void onClick(ClickEvent event) {
-                        String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
-                        popupCreator.showBindFieldPopup( (Widget) event.getSource(),
-                                                         con,
-                                                         fields,
-                                                         popupCreator );
-                    }
-                };
-                ClickableLabel cl = new ClickableLabel( con.getFieldName(),
-                                                        click,
-                                                        !this.readOnly );
-                DOM.setStyleAttribute( cl.getElement(),
-                                       "marginLeft",
-                                       "" + padding + "pt" ); //NON-NLS
-                ab.add( cl );
-            } else {
-                ab.add( new SmallLabel( con.getFieldName() ) );
-            }
+        if ( bindable && showBinding && !this.readOnly ) {
+            ClickHandler click = new ClickHandler() {
 
+                public void onClick(ClickEvent event) {
+                    String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
+                    popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                     con,
+                                                     fields,
+                                                     popupCreator );
+                }
+            };
+            ClickableLabel cl = new ClickableLabel( bindingLabel.toString(),
+                                                    click,
+                                                    !this.readOnly );
+            DOM.setStyleAttribute( cl.getElement(),
+                                   "marginLeft",
+                                   "" + padding + "pt" );
+            ab.add( cl );
         } else {
-            ab.add( new SmallLabel( con.getFieldName() ) );
-            ab.add( new SmallLabel( " <b>[" + con.getFieldBinding() + "]</b>" ) ); //NON-NLS
+            ab.add( new SmallLabel( bindingLabel.toString() ) );
         }
 
         return ab;

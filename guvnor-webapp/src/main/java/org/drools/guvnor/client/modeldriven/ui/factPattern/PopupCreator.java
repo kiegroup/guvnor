@@ -209,6 +209,23 @@ public class PopupCreator {
         horiz.add( infoComp );
         popup.addAttribute( constants.MultipleFieldConstraint(),
                             horiz );
+        
+        //Include Expression Editor
+        popup.addRow( new SmallLabel( "<i>" + constants.AdvancedOptionsColon() + "</i>" ) );
+        Button ebBtn = new Button( constants.ExpressionEditor() );
+
+        ebBtn.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent event) {
+                SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
+                con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
+                con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
+                composite.addConstraint( con );
+                modeller.refreshWidget();
+                popup.hide();
+            }
+        } );
+        popup.addAttribute( constants.ExpressionEditor(),
+                            ebBtn );
 
         popup.show();
 
@@ -230,7 +247,10 @@ public class PopupCreator {
         String[] fields = this.completions.getFieldCompletions( FieldAccessorsAndMutators.ACCESSOR,
                                                                 factType );
         for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
+            //You can't use "this" in a nested accessor
+            if ( !fields[i].equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                box.addItem( fields[i] );
+            }
         }
 
         box.setSelectedIndex( 0 );
