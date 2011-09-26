@@ -50,7 +50,7 @@ public class SecurityServiceImpl implements SecurityService {
             KeyStoreHelper.PROP_PUB_KS_PWD
     };
 
-    @Inject @Named("roleBasedPermissionManager")
+    @Inject
     private RoleBasedPermissionManager roleBasedPermissionManager;
 
     @Inject

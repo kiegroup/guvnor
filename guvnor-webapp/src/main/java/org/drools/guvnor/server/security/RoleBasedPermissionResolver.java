@@ -33,6 +33,7 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import javax.annotation.PostConstruct;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.security.permission.PermissionResolver;
 
@@ -62,10 +63,13 @@ public class RoleBasedPermissionResolver
         implements PermissionResolver, Serializable {
     private static final LoggingHelper                     log                            = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
-    private boolean                                        enableRoleBasedAuthorization   = false;
+    private boolean                                        enableRoleBasedAuthorization   = true;
 
     private final Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
     private final Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();
+
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
 
     public RoleBasedPermissionResolver() {
         permissionRules.put( CategoryPathType.class,
@@ -109,8 +113,9 @@ public class RoleBasedPermissionResolver
 
         List<RoleBasedPermission> permissions = fetchAllRoleBasedPermissionsForCurrentUser();
 
-        if ( hasAdminPermission( permissions ) || RoleType.ADMIN.getName().equals( requestedPermission ) ) {
-            return hasAdminPermission( permissions );
+        boolean hasAdminPermission = hasAdminPermission( permissions );
+        if ( hasAdminPermission || RoleType.ADMIN.getName().equals( requestedPermission ) ) {
+            return hasAdminPermission;
         }
 
         return getPermissionRuleFor( requestedObject ).hasPermission( convertFor( requestedObject ),
@@ -128,7 +133,7 @@ public class RoleBasedPermissionResolver
     }
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
-        return ((RoleBasedPermissionManager) BeanManagerUtils.getInstance("roleBasedPermissionManager")).getRoleBasedPermission();
+        return roleBasedPermissionManager.getRoleBasedPermission();
     }
 
     private boolean isInvalidInstance(Object requestedObject) {

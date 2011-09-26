@@ -35,7 +35,10 @@ import org.slf4j.LoggerFactory;
  */
 public class DemoAuthenticator extends BaseAuthenticator implements Serializable {
 
-    private static final List<String> DEMO_USERNAME_LIST = Arrays.asList("guest", "author1", "author2", "admin");
+    private static final List<String> DEMO_USERNAME_LIST = Arrays.asList(
+            "guest", "author1", "author2", "admin",
+            "rdprUser" // Used by RoleBasedPermissionResolverTest
+            );
 
     protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -47,6 +50,7 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
         if (username == null || !DEMO_USERNAME_LIST.contains(username)) {
             setStatus(AuthenticationStatus.DEFERRED);
             log.info("Demo login for user (" + username + ") deferred.");
+            return;
         }
         Credential credential = credentials.getCredential();
         if (credential instanceof PasswordCredential

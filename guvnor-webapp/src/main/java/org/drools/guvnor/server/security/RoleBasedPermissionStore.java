@@ -18,19 +18,22 @@ package org.drools.guvnor.server.security;
 
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Named("org.drools.guvnor.server.security.RoleBasedPermissionStore")
+@RequestScoped
 public class RoleBasedPermissionStore implements Serializable {
 
     @Inject
-    public RulesRepository rulesRepository;
+    private RulesRepository rulesRepository;
 
 
     public RoleBasedPermissionStore() {
@@ -82,26 +85,22 @@ public class RoleBasedPermissionStore implements Serializable {
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
         Object permissionsPerRole = perms.get(rbp.getRole());
-        if (permissionsPerRole != null) {
-            if (rbp.getPackageName() != null) {
-                ((List<String>) permissionsPerRole).add("package="
-                        + rbp.getPackageName());
-            } else if (rbp.getCategoryPath() != null) {
-                ((List<String>) permissionsPerRole).add("category="
-                        + rbp.getPackageName());
-            }
-
-        } else {
-            List<String> perm = new ArrayList<String>();
-            if (rbp.getPackageName() != null) {
-                perm.add("package=" + rbp.getPackageName());
-            } else if (rbp.getCategoryPath() != null) {
-                perm.add("category=" + rbp.getCategoryPath());
-            }
-            perms.put(rbp.getRole(), perm);
+        List<String> permissionsPerRoleList = (List<String>) permissionsPerRole;
+        if (permissionsPerRoleList == null) {
+            permissionsPerRoleList = new ArrayList<String>();
         }
-
+        if (rbp.getPackageName() != null) {
+            permissionsPerRoleList.add("package=" + rbp.getPackageName());
+        } else if (rbp.getCategoryPath() != null) {
+            permissionsPerRoleList.add("category=" + rbp.getCategoryPath());
+        }
+        perms.put(rbp.getRole(), permissionsPerRoleList);
         permissionManager.updateUserPermissions(userName, perms);
+    }
+
+    public void clearAllRoleBasedPermissionsForTesting(String userName) {
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
+        permissionManager.updateUserPermissions(userName, new HashMap<String, List<String>>());
     }
 
 }

@@ -35,7 +35,6 @@ import org.jboss.seam.security.Identity;
  * This enhances the BRMS repository for lifecycle management.
  */
 @SessionScoped
-@Named("roleBasedPermissionManager")
 public class RoleBasedPermissionManager implements Serializable {
 
     //    @Inject

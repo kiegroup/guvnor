@@ -110,12 +110,13 @@
       <title>Enabling fine grained authorization</title>
 
       <para>
-      By default authorization is not enabled. To enable it, edit the <filename>beans.xml</filename> file
+      By default authorization is enabled. To enable it, edit the <filename>seam-beans.xml</filename> file
       in the <filename>WEB-INF</filename> directory:
       </para>
 
     <programlisting language="XML"><![CDATA[<component name="org.jboss.seam.security.roleBasedPermissionResolver">;
-   <property name="enableRoleBasedAuthorization">false</property>
+  <s:modifies/>
+  <property name="enableRoleBasedAuthorization">false</property>
 </component>]]></programlisting>
 
   </section>
