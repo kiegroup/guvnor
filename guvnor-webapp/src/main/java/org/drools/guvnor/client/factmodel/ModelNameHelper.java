@@ -29,7 +29,6 @@ public class ModelNameHelper {
     private static Map<String, String> TYPE_DESCRIPTIONS = new HashMap<String, String>() {
                                                              private static final long serialVersionUID = 510l;
                                                              {
-                                                                 //Existing Declarative models don't use FQN's
                                                                  put( "Integer",
                                                                       constants.WholeNumberInteger() );
                                                                  put( "Boolean",
@@ -41,13 +40,6 @@ public class ModelNameHelper {
                                                                  put( "java.math.BigDecimal",
                                                                       constants.DecimalNumber() );
 
-                                                                 //Decision Table Wizard uses FQN's
-                                                                 put( "java.lang.Integer",
-                                                                      constants.WholeNumberInteger() );
-                                                                 put( "java.lang.Boolean",
-                                                                      constants.TrueOrFalse() );
-                                                                 put( "java.lang.String",
-                                                                      constants.Text() );
                                                              }
                                                          };
 
@@ -77,6 +69,9 @@ public class ModelNameHelper {
     }
 
     public String getUserFriendlyTypeName(String systemTypeName) {
+        if(systemTypeName.contains( "." )) {
+            systemTypeName = systemTypeName.substring( systemTypeName.lastIndexOf( "." ) + 1 );
+        }
         String userFriendlyName = getTypeDescriptions().get( systemTypeName );
         if ( userFriendlyName == null ) {
             return systemTypeName;
