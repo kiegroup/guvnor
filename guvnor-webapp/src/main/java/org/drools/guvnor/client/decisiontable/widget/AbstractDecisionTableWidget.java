@@ -520,6 +520,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
+        boolean bUpdateCellsForDataType = false;
         DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
@@ -538,8 +539,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                  || !isEqualOrNull( origColumn.getFactField(),
                                     editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
-                updateCellsForDataType( editColumn,
-                                        column );
+                bUpdateCellsForDataType = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactType(),
@@ -547,15 +547,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
-            updateCellsForDataType( editColumn,
-                                    column );
+            bUpdateCellsForDataType = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            bRedrawColumn = updateCellsForOptionValueList( editColumn,
-                                                           column );
+            bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,
+                                                                            column );
         }
 
         // Update column header in Header Widget
@@ -567,13 +566,21 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
+        //Update model with new cells, if required
+        if ( bUpdateCellsForDataType ) {
+            updateCellsForDataType( origColumn,
+                                    column );
+        }
+
+        //Redraw columns
         if ( bRedrawColumn ) {
             int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
             widget.getGridWidget().redrawColumns( column.getColumnIndex(),
                                                   maxColumnIndex );
         }
+
+        // Schedule redraw event after column has been redrawn
         if ( bRedrawHeader ) {
-            // Schedule redraw event after column has been redrawn
             Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
@@ -603,6 +610,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
+        boolean bUpdateCellsForDataType = false;
         DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
@@ -619,22 +627,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( !isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
-                updateCellsForDataType( editColumn,
-                                        column );
+                bUpdateCellsForDataType = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
-            updateCellsForDataType( editColumn,
-                                    column );
+            bUpdateCellsForDataType = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            bRedrawColumn = updateCellsForOptionValueList( editColumn,
-                                                           column );
+            bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,
+                                                                            column );
         }
 
         // Update column header in Header Widget
@@ -646,13 +652,21 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
+        //Update model with new cells, if required
+        if ( bUpdateCellsForDataType ) {
+            updateCellsForDataType( origColumn,
+                                    column );
+        }
+
+        //Redraw columns
         if ( bRedrawColumn ) {
             int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
             widget.getGridWidget().redrawColumns( column.getColumnIndex(),
                                                   maxColumnIndex );
         }
+
+        // Schedule redraw event after column has been redrawn
         if ( bRedrawHeader ) {
-            // Schedule redraw event after column has been redrawn
             Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
@@ -693,6 +707,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         boolean bRedrawColumn = false;
         boolean bRedrawHeader = false;
+        boolean bUpdateCellsForDataType = false;
         DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
 
         // Update column's visibility
@@ -759,19 +774,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                        editColumn.getFactField() )
                     || !isEqualOrNull( origColumn.getFieldType(),
                                        editColumn.getFieldType() )
+                    || !isEqualOrNull( origColumn.getOperator(),
+                                       editColumn.getOperator() )
                     || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
 
-            // Update column's Cell type
+            // Update column's Cell type. Other than the obvious change in data-type if the 
+            // Operator changes to or from "not set" (possible for literal columns and formulae)
+            // the column needs to be changed to or from Text.
             bRedrawColumn = true;
-            updateCellsForDataType( editColumn,
-                                    column );
+            bUpdateCellsForDataType = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            bRedrawColumn = updateCellsForOptionValueList( editColumn,
-                                                           column );
+            bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,
+                                                                            column );
         }
 
         // Update column header in Header Widget
@@ -780,21 +798,29 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Update column field in Header Widget
-        if ( origColumn.getFactField()!=null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
             bRedrawHeader = true;
         }
-        
+
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
 
+        //Update model with new cells, if required
+        if ( bUpdateCellsForDataType ) {
+            updateCellsForDataType( origColumn,
+                                    column );
+        }
+
+        //Redraw columns
         if ( bRedrawColumn ) {
             int maxColumnIndex = widget.getGridWidget().getColumns().size() - 1;
             widget.getGridWidget().redrawColumns( column.getColumnIndex(),
                                                   maxColumnIndex );
         }
+
+        // Schedule redraw event after column has been redrawn
         if ( bRedrawHeader ) {
-            // Schedule redraw event after column has been redrawn
             Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
                     widget.getHeaderWidget().redraw();
