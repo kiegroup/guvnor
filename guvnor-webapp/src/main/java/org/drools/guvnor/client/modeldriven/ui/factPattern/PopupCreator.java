@@ -175,7 +175,9 @@ public class PopupCreator {
 
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                composite.addConstraint( new SingleFieldConstraint( box.getItemText( box.getSelectedIndex() ) ) );
+                String fieldName = box.getItemText( box.getSelectedIndex() );
+                String fieldType = getCompletions().getFieldType( pattern.getFactType(), fieldName );
+                composite.addConstraint( new SingleFieldConstraint( fieldName, fieldType, null ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
