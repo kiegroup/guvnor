@@ -20,14 +20,12 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
@@ -92,25 +90,15 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     public UserSecurityContext getCurrentUser() {
-        if ( !identity.isLoggedIn() ) {
-            //check to see if we can autologin
-            return new UserSecurityContext( checkAutoLogin() );
-        }
-        return new UserSecurityContext( credentials.getUsername() );
+        tryAutoLoginAsGuest();
+        return new UserSecurityContext( identity.isLoggedIn() ? credentials.getUsername() : null );
     }
 
-    /**
-     * This will return a auto login user name if it has been configured.
-     * Autologin means that its not really logged in, but a generic username will be used.
-     * Basically means security is bypassed.
-     */
-    private String checkAutoLogin() {
-        credentials.setUsername(GUEST_LOGIN);
-        identity.login();
-        if ( identity.isLoggedIn() ) {
-            return credentials.getUsername();
-        } else {
-            return null;
+    private void tryAutoLoginAsGuest() {
+        if ( !identity.isLoggedIn() ) {
+            // Note: the DemoAuthenticator upgrades guest to admin
+            credentials.setUsername(GUEST_LOGIN);
+            identity.login();
         }
     }
 

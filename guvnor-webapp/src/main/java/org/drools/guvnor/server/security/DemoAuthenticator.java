@@ -43,6 +43,7 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
     private Credentials credentials;
 
     public void authenticate() {
+        upgradeGuestToAdmin();
         String username = credentials.getUsername();
         Credential credential = credentials.getCredential();
         if (username == null || !(credential instanceof PasswordCredential)) {
@@ -59,6 +60,13 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
         setStatus(AuthenticationStatus.SUCCESS);
         setUser(new SimpleUser(username));
         log.info("Demo login for user (" + username + ") succeeded.");
+    }
+
+    private void upgradeGuestToAdmin() {
+        if (credentials.getUsername().equals("guest")) {
+            credentials.setUsername("admin");
+            credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential("admin"));
+        }
     }
 
 }
