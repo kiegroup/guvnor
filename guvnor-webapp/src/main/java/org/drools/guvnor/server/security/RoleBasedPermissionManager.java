@@ -56,9 +56,4 @@ public class RoleBasedPermissionManager implements Serializable {
         permissions = roleBasedPermissionStore.getRoleBasedPermissionsByUserName(credentials.getUsername());
     }
 
-    @PreDestroy
-    public void close() {
-
-    }
-
 }
