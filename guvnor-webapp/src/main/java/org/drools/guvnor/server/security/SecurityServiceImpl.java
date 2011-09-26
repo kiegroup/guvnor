@@ -70,30 +70,25 @@ public class SecurityServiceImpl implements SecurityService {
         }
 
         log.info( "Logging in user [" + userName + "]" );
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
 
-            // Check for banned characters in user name
-            // These will cause the session to jam if you let them go further
-            char[] bannedChars = {'\'', '*', '[', ']'};
-            for (char bannedChar : bannedChars) {
-                if (userName.indexOf(bannedChar) >= 0) {
-                    log.error("Not a valid name character " + bannedChar);
-                    return false;
-                }
+        // Check for banned characters in user name
+        // These will cause the session to jam if you let them go further
+        char[] bannedChars = {'\'', '*', '[', ']'};
+        for (char bannedChar : bannedChars) {
+            if (userName.indexOf(bannedChar) >= 0) {
+                log.error("Not a valid name character " + bannedChar);
+                return false;
             }
-
-            credentials.setUsername(userName);
-            credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
-
-            identity.login();
-            if ( !identity.isLoggedIn() ) {
-                log.error( "Unable to login.");
-            }
-            return identity.isLoggedIn();
         }
-        return true;
 
+        credentials.setUsername(userName);
+        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
+
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
+            log.error( "Unable to login.");
+        }
+        return identity.isLoggedIn();
     }
 
     public UserSecurityContext getCurrentUser() {

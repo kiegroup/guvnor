@@ -30,15 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This will let any user in, effectively removing any authentication (as the system
- * will attempt to auto login the first time).
+ * This will let any user in (as long as the password matches the username),
+ * effectively removing proper authentication.
+ * <p/>
+ * Useful for demo's, tests and development.
  */
 public class DemoAuthenticator extends BaseAuthenticator implements Serializable {
-
-    private static final List<String> DEMO_USERNAME_LIST = Arrays.asList(
-            "guest", "author1", "author2", "admin",
-            "rdprUser" // Used by RoleBasedPermissionResolverTest
-            );
 
     protected transient final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -47,21 +44,21 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
 
     public void authenticate() {
         String username = credentials.getUsername();
-        if (username == null || !DEMO_USERNAME_LIST.contains(username)) {
-            setStatus(AuthenticationStatus.DEFERRED);
-            log.info("Demo login for user (" + username + ") deferred.");
+        Credential credential = credentials.getCredential();
+        if (username == null || !(credential instanceof PasswordCredential)) {
+            setStatus(AuthenticationStatus.FAILURE);
+            log.info("Demo login for user (" + username + ") failed: unsupported username/credential.");
             return;
         }
-        Credential credential = credentials.getCredential();
-        if (credential instanceof PasswordCredential
-                && username.equals(((PasswordCredential) credentials.getCredential()).getValue())) {
-            setStatus(AuthenticationStatus.SUCCESS);
-            setUser(new SimpleUser(username));
-            log.info("Demo login for user (" + username + ") succeeded.");
-        } else {
+        PasswordCredential passwordCredential = (PasswordCredential) credentials.getCredential();
+        if (!username.equals(passwordCredential.getValue())) {
             setStatus(AuthenticationStatus.FAILURE);
-            log.info("Demo login for user (" + username + ") failed.");
+            log.info("Demo login for user (" + username + ") failed: wrong username/password.");
+            return;
         }
+        setStatus(AuthenticationStatus.SUCCESS);
+        setUser(new SimpleUser(username));
+        log.info("Demo login for user (" + username + ") succeeded.");
     }
 
 }

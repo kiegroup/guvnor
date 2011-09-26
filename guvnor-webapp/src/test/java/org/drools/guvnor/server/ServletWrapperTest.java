@@ -16,20 +16,26 @@
 
 package org.drools.guvnor.server;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 
 public class ServletWrapperTest extends GuvnorTestBase {
 
+    @Inject
+    private RepositoryServiceServlet repositoryServiceServlet;
+
+    @Inject
+    private SecurityServiceServlet securityServiceServlet;
+
     @Test
     public void testMainService() {
-        RepositoryServiceServlet serv = new RepositoryServiceServlet();
-        serv.listPackages();
+        repositoryServiceServlet.listPackages();
     }
 
     @Test
     public void testSecurityService() {
-        SecurityServiceServlet serv = new SecurityServiceServlet();
-        serv.getCurrentUser();
+        securityServiceServlet.getCurrentUser();
     }
 
 }
