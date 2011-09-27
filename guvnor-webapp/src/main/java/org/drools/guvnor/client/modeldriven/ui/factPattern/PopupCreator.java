@@ -181,13 +181,9 @@ public class PopupCreator {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
                 String fieldType = getCompletions().getFieldType( pattern.getFactType(),
                                                                   fieldName );
-                FieldConstraint parent = null;
-                if ( hasConstraints.getNumberOfConstraints() > 0 ) {
-                    parent = hasConstraints.getConstraint( hasConstraints.getNumberOfConstraints() - 1 );
-                }
                 hasConstraints.addConstraint( new SingleFieldConstraint( fieldName,
                                                                          fieldType,
-                                                                         parent ) );
+                                                                         null ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -276,8 +272,6 @@ public class PopupCreator {
                 }
                 String qualifiedName = factType + "." + fieldName;
                 String fieldType = completions.getFieldType( qualifiedName );
-
-                //TODO Need to distinguish between adding a constraint to the pattern or to a compositefieldconstraint
                 hasConstraints.addConstraint( new SingleFieldConstraint( qualifiedName,
                                                                          fieldType,
                                                                          con ) );
