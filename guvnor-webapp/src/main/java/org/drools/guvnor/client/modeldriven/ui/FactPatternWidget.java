@@ -791,9 +791,15 @@ public class FactPatternWidget extends RuleModellerWidget {
             bindingLabel.append( con.getFieldBinding() );
             bindingLabel.append( "]</b>&nbsp;" );
         }
+        
+        //If the field is a direct descendant of the Pattern only show the leaf-name
+        //otherwise show the qualified field name which includes the preceding field type 
         String fieldName = con.getFieldName();
         if ( fieldName.contains( "." ) ) {
-            fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            String factType = fieldName.substring( 0, fieldName.indexOf(".") );
+            if(factType.equals( this.pattern.getFactType() )) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
         }
         bindingLabel.append( fieldName );
 
