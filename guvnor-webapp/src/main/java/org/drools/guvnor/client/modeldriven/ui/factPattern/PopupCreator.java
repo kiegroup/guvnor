@@ -29,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
 import org.drools.ide.common.client.modeldriven.brl.ExpressionUnboundFact;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.HasConstraints;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
@@ -115,6 +116,7 @@ public class PopupCreator {
      */
     public void showBindFieldPopup(final Widget w,
                                    final SingleFieldConstraint con,
+                                   final HasConstraints hasConstraints,
                                    String[] fields,
                                    final PopupCreator popupCreator) {
         final FormStylePopup popup = new FormStylePopup();
@@ -148,7 +150,8 @@ public class PopupCreator {
                     popup.hide();
                     popupCreator.showPatternPopup( w,
                                                    con.getFieldType(),
-                                                   con );
+                                                   con,
+                                                   hasConstraints );
                 }
             } );
         }
@@ -160,7 +163,7 @@ public class PopupCreator {
      * This shows a popup for adding fields to a composite
      */
     public void showPatternPopupForComposite(Widget w,
-                                             final CompositeFieldConstraint composite) {
+                                             final HasConstraints hasConstraints) {
         final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
                                                          constants.AddFieldsToThisConstraint() );
 
@@ -176,8 +179,15 @@ public class PopupCreator {
         box.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 String fieldName = box.getItemText( box.getSelectedIndex() );
-                String fieldType = getCompletions().getFieldType( pattern.getFactType(), fieldName );
-                composite.addConstraint( new SingleFieldConstraint( fieldName, fieldType, null ) );
+                String fieldType = getCompletions().getFieldType( pattern.getFactType(),
+                                                                  fieldName );
+                FieldConstraint parent = null;
+                if ( hasConstraints.getNumberOfConstraints() > 0 ) {
+                    parent = hasConstraints.getConstraint( hasConstraints.getNumberOfConstraints() - 1 );
+                }
+                hasConstraints.addConstraint( new SingleFieldConstraint( fieldName,
+                                                                         fieldType,
+                                                                         parent ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -197,7 +207,7 @@ public class PopupCreator {
             public void onChange(ChangeEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
-                composite.addConstraint( comp );
+                hasConstraints.addConstraint( comp );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -211,7 +221,7 @@ public class PopupCreator {
         horiz.add( infoComp );
         popup.addAttribute( constants.MultipleFieldConstraint(),
                             horiz );
-        
+
         //Include Expression Editor
         popup.addRow( new SmallLabel( "<i>" + constants.AdvancedOptionsColon() + "</i>" ) );
         Button ebBtn = new Button( constants.ExpressionEditor() );
@@ -221,7 +231,7 @@ public class PopupCreator {
                 SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
                 con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
                 con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
-                composite.addConstraint( con );
+                hasConstraints.addConstraint( con );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -238,7 +248,8 @@ public class PopupCreator {
      */
     public void showPatternPopup(Widget w,
                                  final String factType,
-                                 final FieldConstraint con) {
+                                 final FieldConstraint con,
+                                 final HasConstraints hasConstraints) {
 
         String title = (con == null) ? constants.ModifyConstraintsFor0( factType ) : constants.AddSubFieldConstraint();
         final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
@@ -265,9 +276,11 @@ public class PopupCreator {
                 }
                 String qualifiedName = factType + "." + fieldName;
                 String fieldType = completions.getFieldType( qualifiedName );
-                pattern.addConstraint( new SingleFieldConstraint( fieldName,
-                                                                  fieldType,
-                                                                  con ) );
+
+                //TODO Need to distinguish between adding a constraint to the pattern or to a compositefieldconstraint
+                hasConstraints.addConstraint( new SingleFieldConstraint( qualifiedName,
+                                                                         fieldType,
+                                                                         con ) );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -287,7 +300,7 @@ public class PopupCreator {
             public void onChange(ChangeEvent event) {
                 CompositeFieldConstraint comp = new CompositeFieldConstraint();
                 comp.compositeJunctionType = composites.getValue( composites.getSelectedIndex() );
-                pattern.addConstraint( comp );
+                hasConstraints.addConstraint( comp );
                 modeller.refreshWidget();
                 popup.hide();
             }
@@ -312,7 +325,7 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     SingleFieldConstraint con = new SingleFieldConstraint();
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_PREDICATE );
-                    pattern.addConstraint( con );
+                    hasConstraints.addConstraint( con );
                     modeller.refreshWidget();
                     popup.hide();
                 }
@@ -326,7 +339,7 @@ public class PopupCreator {
                 public void onClick(ClickEvent event) {
                     SingleFieldConstraintEBLeftSide con = new SingleFieldConstraintEBLeftSide();
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_UNDEFINED );
-                    pattern.addConstraint( con );
+                    hasConstraints.addConstraint( con );
                     con.setExpressionLeftSide( new ExpressionFormLine( new ExpressionUnboundFact( pattern ) ) );
                     modeller.refreshWidget();
                     popup.hide();
