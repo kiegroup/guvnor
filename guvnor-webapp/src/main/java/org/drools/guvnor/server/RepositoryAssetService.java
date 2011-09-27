@@ -59,6 +59,9 @@ public class RepositoryAssetService
     private ServiceSecurity serviceSecurity;
 
     @Inject
+    private Backchannel backchannel;
+
+    @Inject
     private Identity identity;
 
     // TODO seam3upgrade
@@ -552,7 +555,7 @@ public class RepositoryAssetService
 
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish(new PushResponse(messageType,
+        backchannel.publish(new PushResponse(messageType,
                 message));
     }
 

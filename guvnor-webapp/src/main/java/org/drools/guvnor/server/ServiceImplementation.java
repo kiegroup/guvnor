@@ -123,6 +123,9 @@ public class ServiceImplementation
     @Inject
     private RepositoryPackageOperations repositoryPackageOperations;
 
+    @Inject
+    private Backchannel backchannel;
+
     // TODO seam3upgrade
     public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
         this.rulesRepository = repository;
@@ -930,7 +933,7 @@ public class ServiceImplementation
      */
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish( new PushResponse( messageType,
+        backchannel.publish( new PushResponse( messageType,
                                                              message ) );
     }
 
@@ -939,7 +942,7 @@ public class ServiceImplementation
     }
 
     public List<PushResponse> subscribe() {
-        return Backchannel.getInstance().subscribe();
+        return backchannel.subscribe();
     }
     
     /**

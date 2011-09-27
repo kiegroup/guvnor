@@ -57,6 +57,9 @@ public class RepositoryAssetOperations {
     private RulesRepository rulesRepository;
 
     @Inject
+    private Backchannel backchannel;
+
+    @Inject
     private Credentials credentials;
 
     private String[]                   registeredFormats;
@@ -671,7 +674,7 @@ public class RepositoryAssetOperations {
 
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish(new PushResponse(messageType,
+        backchannel.publish(new PushResponse(messageType,
                 message));
     }
 

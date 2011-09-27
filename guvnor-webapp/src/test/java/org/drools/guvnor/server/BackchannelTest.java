@@ -26,16 +26,19 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class BackchannelTest {
+public class BackchannelTest extends GuvnorTestBase {
+
+    @Inject
+    private Backchannel backchannel;
 
     @Test
     public void testPushAll() throws Exception {
-
-        final Backchannel backchannel = Backchannel.getInstance();
 
         final PushResponse[] resp = new PushResponse[2];
         Thread t = new Thread( new Runnable() {
@@ -87,8 +90,6 @@ public class BackchannelTest {
 
     @Test
     public void testSimple() throws Exception {
-
-        final Backchannel backchannel = Backchannel.getInstance();
 
         backchannel.push( "mici",
                           new PushResponse( "m",
@@ -178,7 +179,6 @@ public class BackchannelTest {
 
     @Test
     public void testManyConcurrent() throws Exception {
-        final Backchannel backchannel = Backchannel.getInstance();
         for ( int i = 0; i < 1000; i++ ) {
             spinup( backchannel,
                     i );
