@@ -560,15 +560,23 @@ public class BRDRLPersistence
                     SingleFieldConstraint parent = (SingleFieldConstraint) constr.getParent();
                     StringBuilder parentBuf = new StringBuilder();
                     while ( parent != null ) {
+                        String fieldName = parent.getFieldName();
+                        if( fieldName.contains( "." ) ) {
+                            fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                        }
                         parentBuf.insert( 0,
-                                          parent.getFieldName() + "." );
+                                          fieldName + "." );
                         parent = (SingleFieldConstraint) parent.getParent();
                     }
                     buf.append( parentBuf );
                     if ( constr instanceof SingleFieldConstraintEBLeftSide ) {
                         buf.append( ((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText() );
                     } else {
-                        buf.append( constr.getFieldName() );
+                        String fieldName = constr.getFieldName();
+                        if( fieldName.contains( "." ) ) {
+                            fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                        }
+                        buf.append( fieldName );
                     }
                 }
 

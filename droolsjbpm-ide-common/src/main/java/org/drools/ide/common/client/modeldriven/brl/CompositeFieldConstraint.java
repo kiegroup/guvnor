@@ -16,29 +16,28 @@
 
 package org.drools.ide.common.client.modeldriven.brl;
 
-
 /**
  * This is a field constraint that may span multiple fields.
  */
-public class CompositeFieldConstraint implements FieldConstraint {
-
+public class CompositeFieldConstraint
+    implements
+    FieldConstraint,
+    HasConstraints {
 
     /**
      * Means that any of the children can resolve to be true.
      */
-    public static final String COMPOSITE_TYPE_OR = "||";
+    public static final String COMPOSITE_TYPE_OR     = "||";
 
     /**
      * Means that ALL of the children constraints must resolve to be true.
      */
-    public static final String COMPOSITE_TYPE_AND = "&&";
-
+    public static final String COMPOSITE_TYPE_AND    = "&&";
 
     /**
      * The type of composite that it is.
      */
-    public String compositeJunctionType = null;
-
+    public String              compositeJunctionType = null;
 
     /**
      * This is the child field constraints of the composite.
@@ -48,8 +47,7 @@ public class CompositeFieldConstraint implements FieldConstraint {
      * (as they are all children that are "anded" together anyway in the fact
      * pattern that contains it).
      */
-    public FieldConstraint[] constraints = null;
-
+    public FieldConstraint[]   constraints           = null;
 
     //Note this is a bit ugly, GWT had some early limitations which required this to kind of work this way.
     //when generics are available, could probably switch to it, but remember this is persistent stuff
@@ -86,5 +84,18 @@ public class CompositeFieldConstraint implements FieldConstraint {
 
     }
 
+    public FieldConstraint getConstraint(int index) {
+        if ( this.constraints == null ) {
+            return null;
+        }
+        return this.constraints[index];
+    }
+
+    public int getNumberOfConstraints() {
+        if ( this.constraints == null ) {
+            return 0;
+        }
+        return this.constraints.length;
+    }
 
 }
