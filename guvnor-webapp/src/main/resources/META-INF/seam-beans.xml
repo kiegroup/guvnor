@@ -61,11 +61,11 @@
 
   <!-- SECURITY AUTHORIZATION CONFIGURATION -->
   <!--
-      This is used to enable or disable role-based authorization. By default it is enabled.
+      This is used to enable or disable role-based authorization. By default it is disabled.
   -->
   <!--<guvnorSecurity:RoleBasedPermissionResolver>-->
     <!--<s:modifies/>-->
-    <!--<guvnorSecurity:enableRoleBasedAuthorization>false</guvnorSecurity:enableRoleBasedAuthorization>-->
+    <!--<guvnorSecurity:enableRoleBasedAuthorization>true</guvnorSecurity:enableRoleBasedAuthorization>-->
   <!--</guvnorSecurity:RoleBasedPermissionResolver>-->
 
 </beans>

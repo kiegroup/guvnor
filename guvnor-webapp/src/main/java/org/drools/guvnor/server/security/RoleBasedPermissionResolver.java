@@ -63,7 +63,7 @@ public class RoleBasedPermissionResolver
         implements PermissionResolver, Serializable {
     private static final LoggingHelper                     log                            = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
-    private boolean                                        enableRoleBasedAuthorization   = true;
+    private boolean                                        enableRoleBasedAuthorization   = false;
 
     private final Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
     private final Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();

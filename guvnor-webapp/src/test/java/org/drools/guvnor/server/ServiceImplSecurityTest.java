@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
@@ -38,19 +40,51 @@ import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
+import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.permission.PermissionResolver;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.picketlink.idm.impl.api.PasswordCredential;
 
 public class ServiceImplSecurityTest extends GuvnorTestBase {
 
+    private static final String USER_NAME = "serviceImplSecurityUser";
+
+    @Inject
+    private RoleBasedPermissionStore roleBasedPermissionStore;
+
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
+
+    @Inject
+    private RoleBasedPermissionResolver roleBasedPermissionResolver;
+
+    public ServiceImplSecurityTest() {
+        autoLoginAsAdmin = false;
+    }
+
+    @Before
+    public void loginAsSpecificUser() {
+        credentials.setUsername(USER_NAME);
+        credentials.setCredential(new PasswordCredential(USER_NAME));
+        identity.login();
+    }
+
+    @After
+    public void logoutAsSpecificUser() {
+        identity.logout();
+        credentials.clear();
+    }
+
     @Test
     public void testLoadRuleAssetAnalyst() throws Exception {
-        rulesRepository.createPackage( "testLoadRuleAssetAnalystPack1",
+        rulesRepository.createPackage( "testLoadRuleAssetAnalyst",
                                                  "desc" );
         repositoryCategoryService.createCategory( "",
                                                   "testLoadRuleAssetAnalystCat1",
@@ -62,49 +96,34 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         String uuid1 = serviceImplementation.createNewRule( "testLoadRuleAssetAnalystRule1",
                                            "description",
                                            "testLoadRuleAssetAnalystCat1",
-                                           "testLoadRuleAssetAnalystPack1",
+                                           "testLoadRuleAssetAnalyst",
                                            AssetFormats.DRL );
         String uuid2 = serviceImplementation.createNewRule( "testLoadRuleAssetAnalystRule2",
                                            "description",
                                            "testLoadRuleAssetAnalystCat2",
-                                           "testLoadRuleAssetAnalystPack1",
+                                           "testLoadRuleAssetAnalyst",
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        //            Map<String, Object> application = new HashMap<String, Object>();
-        //            Lifecycle.beginApplication( application );
-        //            Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            "testLoadRuleAssetAnalystCat1" ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
-        @SuppressWarnings("unused")
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid1 );
         try {
-            asset = repositoryAssetService.loadRuleAsset( uuid2 );
-            fail( "Did not catch expected exception" );
-        } catch ( AuthorizationException e ) {
+            //now lets see if we can access this asset with the permissions
+            @SuppressWarnings("unused")
+            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid1 );
+            try {
+                asset = repositoryAssetService.loadRuleAsset( uuid2 );
+                fail( "Did not catch expected exception" );
+            } catch ( AuthorizationException e ) {
+            }
+
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -134,41 +153,25 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            "testLoadRuleAssetPackageReadonlyPack2",
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package1Name,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
-        @SuppressWarnings("unused")
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid1 );
         try {
-            asset = repositoryAssetService.loadRuleAsset( uuid2 );
-            fail( "Did not catch expected exception" );
-        } catch ( AuthorizationException e ) {
+            //now lets see if we can access this asset with the permissions
+            @SuppressWarnings("unused")
+            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid1 );
+            try {
+                asset = repositoryAssetService.loadRuleAsset( uuid2 );
+                fail( "Did not catch expected exception" );
+            } catch ( AuthorizationException e ) {
+            }
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -188,29 +191,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testLoadRuleAssetNoCategoryPack1",
                                           AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( false );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
-
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        // Like this by default: roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
 
         // now lets see if we can access this asset with the permissions
         RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
@@ -237,37 +218,21 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                           "testLoadRuleAssetNoCategoryPackageAdminPack1",
                                           AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_ADMIN.getName(),
                                            packageName,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
-        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
-        assertNotNull( asset );
+        try {
+            //now lets see if we can access this asset with the permissions
+            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+            assertNotNull( asset );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //Access an asset that belongs to no category.
@@ -297,42 +262,26 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            "testLoadRuleAssetNoCategoryAnalystPack1",
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            "testLoadRuleAssetNoCategoryAnalystCat2" ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
-        @SuppressWarnings("unused")
-        RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
         try {
+            //now lets see if we can access this asset with the permissions
             @SuppressWarnings("unused")
-            RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
-            fail( "Did not catch expected exception" );
-        } catch ( AuthorizationException e ) {
+            RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
+            try {
+                @SuppressWarnings("unused")
+                RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
+                fail( "Did not catch expected exception" );
+            } catch ( AuthorizationException e ) {
+            }
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -364,38 +313,23 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            "testLoadRuleAssetNoCategoryAnalystPositivePack1",
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+            roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
+                                               RoleType.ANALYST.getName(),
+                                               null,
+                                               null ) );
+            roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
+        try {
+            //now lets see if we can access this asset with the permissions
+            //RuleAsset asset2 = impl.loadRuleAsset(uuid2);
+            @SuppressWarnings("unused")
+            RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST.getName(),
-                                           null,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
-
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
-        //RuleAsset asset2 = impl.loadRuleAsset(uuid2);
-        @SuppressWarnings("unused")
-        RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -417,41 +351,25 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 "testLoadRuleAssetWithRoleBasedAuthrozationAssetHasCategoryPack",
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category1 ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        // now lets see if we can access this asset with the permissions
-        @SuppressWarnings("unused")
-        RuleAsset asset = null;
         try {
-            asset = repositoryAssetService.loadRuleAsset( uuid );
-        } catch ( AuthorizationException e ) {
-            fail( "User has permissions for the category" );
+            // now lets see if we can access this asset with the permissions
+            @SuppressWarnings("unused")
+            RuleAsset asset = null;
+            try {
+                asset = repositoryAssetService.loadRuleAsset( uuid );
+            } catch ( AuthorizationException e ) {
+                fail( "User has permissions for the category" );
+            }
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -474,43 +392,27 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 "testLoadRuleAssetWithRoleBasedAuthrozationAssetNoCategoryMixedPack",
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            "category1" ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_ADMIN.getName(),
                                            packageUuid,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
         try {
-            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
-            fail( "Did not catch expected exception" );
-        } catch ( AuthorizationException e ) {
+            //now lets see if we can access this asset with the permissions
+            try {
+                RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+                fail( "Did not catch expected exception" );
+            } catch ( AuthorizationException e ) {
+            }
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -522,11 +424,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                   "testSecurityCreateNewRule",
                                                   "this is a cat" );
 
-        Lifecycle.beginApplication( new HashMap<String, Object>() );
-        Lifecycle.beginCall();
-        MockIdentity mi = new MockIdentity();
-        mi.inject();
-        mi.create();
+        // roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false); like this by default
 
         try {
             serviceImplementation.createNewRule("testCreateNewRuleName22",
@@ -539,22 +437,24 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             assertNotNull( e.getMessage() );
         }
 
-        mi.addPermissionResolver( new PermissionResolver() {
-            public void filterSetByAction(Set<Object> arg0,
-                                          String arg1) {
-            }
-
-            public boolean hasPermission(Object arg0,
-                                         String arg1) {
-                return (arg1.equals( RoleType.PACKAGE_DEVELOPER.getName() ));
-            }
-
-        } );
+        // TODO seam3upgrade
+//        mockIdentity.addPermissionResolver( new PermissionResolver() {
+//            public void filterSetByAction(Set<Object> arg0,
+//                                          String arg1) {
+//            }
+//
+//            public boolean hasPermission(Object arg0,
+//                                         String arg1) {
+//                return (arg1.equals( RoleType.PACKAGE_DEVELOPER.getName() ));
+//            }
+//
+//        } );
         serviceImplementation.createNewRule("testCreateNewRuleName22",
                 "an initial desc",
                 "testSecurityCreateNewRule",
                 "testSecurityCreateNewRule",
                 AssetFormats.DSL_TEMPLATE_RULE);
+
     }
 
     @Test
@@ -582,38 +482,23 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            packageUuid,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        //now lets see if we can access this asset with the permissions
         try {
-            repositoryAssetService.checkinVersion( asset );
-            fail( "Did not catch expected exception" );
-        } catch ( AuthorizationException e ) {
+            //now lets see if we can access this asset with the permissions
+            try {
+                repositoryAssetService.checkinVersion( asset );
+                fail( "Did not catch expected exception" );
+            } catch ( AuthorizationException e ) {
+            }
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
     }
 
@@ -645,37 +530,22 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
         ((RuleContentText) asset.getContent()).content = "yeah !";
         Thread.sleep( 100 );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_DEVELOPER.getName(),
                                            packageName,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        // now lets see if we can access this asset with the permissions
-        String uuid2 = repositoryAssetService.checkinVersion( asset );
-        assertEquals( uuid,
-                      uuid2 );
+        try {
+            // now lets see if we can access this asset with the permissions
+            String uuid2 = repositoryAssetService.checkinVersion( asset );
+            assertEquals( uuid,
+                          uuid2 );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -705,40 +575,24 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            package4Name,
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package3Name,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        TableDataResult result = repositoryAssetService.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
-                                                                       true,
-                                                                       0,
-                                                                       -1 );
-        assertEquals( 1,
-                      result.data.length );
+        try {
+            TableDataResult result = repositoryAssetService.queryFullText( "testLoadRuleAssetWithRoleBasedAuthrozation",
+                                                                           true,
+                                                                           0,
+                                                                           -1 );
+            assertEquals( 1,
+                          result.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -778,56 +632,40 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            package8Name,
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication(application);
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver(resolver);
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add(new RoleBasedPermission("jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                 RoleType.PACKAGE_READONLY.getName(),
                 package7Name,
                 null));
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category7Name ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category8Name ) );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                store);
-
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set("roleBasedPermissionManager",
-                testManager);
-
-        MetaDataQuery[] qr = new MetaDataQuery[1];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-        qr[0].valueList = "MetaDataFilterDescription%";
-        TableDataResult result = serviceImplementation.queryMetaData( qr,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     false,
-                                                     0,
-                                                     -1 );
-        assertEquals( 2,
-                      result.data.length );
+        try {
+            MetaDataQuery[] qr = new MetaDataQuery[1];
+            qr[0] = new MetaDataQuery();
+            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+            qr[0].valueList = "MetaDataFilterDescription%";
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         0,
+                                                         -1 );
+            assertEquals( 2,
+                          result.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -867,52 +705,36 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                            package6Name,
                                            AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication(application);
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver(resolver);
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add(new RoleBasedPermission("jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                 RoleType.PACKAGE_READONLY.getName(),
                 package5Name,
                 null));
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package6Name,
                                            null ) );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                store);
-
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        MetaDataQuery[] qr = new MetaDataQuery[1];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-        qr[0].valueList = "MetaDataFilter2Description%";
-        TableDataResult result = serviceImplementation.queryMetaData( qr,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     false,
-                                                     0,
-                                                     -1 );
-        assertEquals( 2,
-                      result.data.length );
+        try {
+            MetaDataQuery[] qr = new MetaDataQuery[1];
+            qr[0] = new MetaDataQuery();
+            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+            qr[0].valueList = "MetaDataFilter2Description%";
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         0,
+                                                         -1 );
+            assertEquals( 2,
+                          result.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -952,52 +774,36 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                             package10Name,
                                             AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication(application);
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver(resolver);
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add(new RoleBasedPermission("jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                 RoleType.ANALYST.getName(),
                 null,
                 category9Name));
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category10Name ) );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set("org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                store);
-
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        MetaDataQuery[] qr = new MetaDataQuery[1];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-        qr[0].valueList = "MetaDataFilter3Description%";
-        TableDataResult result = serviceImplementation.queryMetaData( qr,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     false,
-                                                     0,
-                                                     -1 );
-        assertEquals( 2,
-                      result.data.length );
+        try {
+            MetaDataQuery[] qr = new MetaDataQuery[1];
+            qr[0] = new MetaDataQuery();
+            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+            qr[0].valueList = "MetaDataFilter3Description%";
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         0,
+                                                         -1 );
+            assertEquals( 2,
+                          result.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -1037,97 +843,81 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                             package12Name,
                                             AssetFormats.DRL );
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category11Name ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category12Name ) );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        try {
+            MetaDataQuery[] qr = new MetaDataQuery[1];
+            qr[0] = new MetaDataQuery();
+            qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
+            qr[0].valueList = "DisplayHandlerDescription%";
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+            TableDataResult result = serviceImplementation.queryMetaData( qr,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         null,
+                                                         false,
+                                                         1,
+                                                         1 );
+            assertEquals( 1,
+                          result.data.length );
 
-        MetaDataQuery[] qr = new MetaDataQuery[1];
-        qr[0] = new MetaDataQuery();
-        qr[0].attribute = AssetItem.DESCRIPTION_PROPERTY_NAME;
-        qr[0].valueList = "DisplayHandlerDescription%";
+            result = serviceImplementation.queryMetaData( qr,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         false,
+                                         0,
+                                         1 );
+            assertEquals( 1,
+                          result.data.length );
 
-        TableDataResult result = serviceImplementation.queryMetaData( qr,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     null,
-                                                     false,
-                                                     1,
-                                                     1 );
-        assertEquals( 1,
-                      result.data.length );
+            result = serviceImplementation.queryMetaData( qr,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         false,
+                                         0,
+                                         4 );
+            assertEquals( 2,
+                          result.data.length );
 
-        result = serviceImplementation.queryMetaData( qr,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     false,
-                                     0,
-                                     1 );
-        assertEquals( 1,
-                      result.data.length );
+            result = serviceImplementation.queryMetaData( qr,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         false,
+                                         -1,
+                                         4 );
+            assertEquals( 2,
+                          result.data.length );
 
-        result = serviceImplementation.queryMetaData( qr,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     false,
-                                     0,
-                                     4 );
-        assertEquals( 2,
-                      result.data.length );
-
-        result = serviceImplementation.queryMetaData( qr,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     false,
-                                     -1,
-                                     4 );
-        assertEquals( 2,
-                      result.data.length );
-
-        result = serviceImplementation.queryMetaData( qr,
-                                     null,
-                                     null,
-                                     null,
-                                     null,
-                                     false,
-                                     6,
-                                     4 );
-        assertEquals( 0,
-                      result.data.length );
+            result = serviceImplementation.queryMetaData( qr,
+                                         null,
+                                         null,
+                                         null,
+                                         null,
+                                         false,
+                                         6,
+                                         4 );
+            assertEquals( 0,
+                          result.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //BRMS-282: listPackages only returns packages that the user has package.readonly permission or higher
@@ -1164,41 +954,25 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 package2Name,
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_ADMIN.getName(),
                                            package1Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category1Name ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        PackageConfigData[] res = repositoryPackageService.listPackages();
-        assertEquals( 1,
-                      res.length );
+        try {
+            PackageConfigData[] res = repositoryPackageService.listPackages();
+            assertEquals( 1,
+                          res.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -1228,37 +1002,21 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 package1Name,
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            category1Name ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        String[] res = repositoryCategoryService.loadChildCategories( "/" );
-        assertEquals( 1,
-                      res.length );
+        try {
+            String[] res = repositoryCategoryService.loadChildCategories( "/" );
+            assertEquals( 1,
+                          res.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -1298,44 +1056,28 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 package3Name,
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package1Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_DEVELOPER.getName(),
                                            package2Name,
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        TableDataResult res = repositoryCategoryService.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyCat1",
-                                                                                   0,
-                                                                                   -1,
-                                                                                   ExplorerNodeConfig.RULE_LIST_TABLE_ID );
-        assertEquals( 0,
-                      res.data.length );
+        try {
+            TableDataResult res = repositoryCategoryService.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyCat1",
+                                                                                       0,
+                                                                                       -1,
+                                                                                       ExplorerNodeConfig.RULE_LIST_TABLE_ID );
+            assertEquals( 0,
+                          res.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -1375,48 +1117,32 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                 package3Name,
                 AssetFormats.DRL);
 
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-        midentity.create();
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package1Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_DEVELOPER.getName(),
                                            package2Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.ANALYST_READ.getName(),
                                            null,
                                            category1Name ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        TableDataResult res = repositoryCategoryService.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyPositiveCat1",
-                                                                                   0,
-                                                                                   -1,
-                                                                                   ExplorerNodeConfig.RULE_LIST_TABLE_ID );
-        assertEquals( 3,
-                      res.data.length );
+        try {
+            TableDataResult res = repositoryCategoryService.loadRuleListForCategories( "testloadRuleListForCategoriesPackageReadonlyPositiveCat1",
+                                                                                       0,
+                                                                                       -1,
+                                                                                       ExplorerNodeConfig.RULE_LIST_TABLE_ID );
+            assertEquals( 3,
+                          res.data.length );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
 }
