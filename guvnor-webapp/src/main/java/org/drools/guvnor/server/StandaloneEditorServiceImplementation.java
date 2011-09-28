@@ -41,18 +41,15 @@ import java.util.Map;
 public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         implements
         StandaloneEditorService {
+    private static final long serialVersionUID = 520l;
 
     @Inject
     public RulesRepository repository;
-    private static final long serialVersionUID = 520l;
 
-    public RulesRepository getRulesRepository() {
-        return this.repository;
-    }
-
-    private RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
-    }
+    @Inject
+    private ServiceImplementation serviceImplementation;
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
 
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
@@ -159,7 +156,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             provider = new NewRuleAssetProvider(packageName,
                     categoryName,
                     assetName,
-                    assetFormat);
+                    assetFormat, serviceImplementation, repositoryAssetService);
             invocationParameters.setTemporalAssets(false);
         } else if (assetsUUIDs != null) {
             provider = new UUIDRuleAssetProvider(assetsUUIDs);
@@ -221,7 +218,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         String[] sources = new String[assets.length];
 
         for (int i = 0; i < assets.length; i++) {
-            sources[i] = this.getAssetService().buildAssetSource(assets[i]);
+            sources[i] = repositoryAssetService.buildAssetSource(assets[i]);
         }
 
         return sources;
