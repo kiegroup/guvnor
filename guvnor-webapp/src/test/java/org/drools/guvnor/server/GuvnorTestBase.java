@@ -49,7 +49,7 @@ public abstract class GuvnorTestBase {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
-        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
+        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.4.0-SNAPSHOT.war")
                 .importDirectory(explodedWarFile)
                 .as(WebArchive.class)
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
