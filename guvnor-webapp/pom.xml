@@ -383,6 +383,11 @@
       <artifactId>seam-remoting</artifactId>
       <version>3.1.0.Beta2</version>
     </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.seam.remoting</groupId>-->
+      <!--<artifactId>seam-rest</artifactId>-->
+      <!--<version>3.1.0.Beta2</version>-->
+    <!--</dependency>-->
     <!-- Arquillian (testing for weld) -->
     <!--<dependency>-->
       <!--<groupId>org.jboss.arquillian.junit</groupId>-->

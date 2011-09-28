@@ -16,7 +16,6 @@
 package org.drools.guvnor.server;
 
 import java.io.File;
-import java.lang.IllegalStateException;
 
 import javax.inject.Inject;
 
@@ -33,7 +32,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
-import org.jboss.weld.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
