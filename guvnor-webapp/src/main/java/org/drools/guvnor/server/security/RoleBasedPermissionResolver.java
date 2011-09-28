@@ -71,19 +71,32 @@ public class RoleBasedPermissionResolver
     @Inject
     private RoleBasedPermissionManager roleBasedPermissionManager;
 
-    public RoleBasedPermissionResolver() {
+    @Inject
+    private CategoryPathTypePermissionRule categoryPathTypePermissionRule;
+
+    @Inject
+    private PackageUUIDTypePermissionRule packageUUIDTypePermissionRule;
+
+    @Inject
+    private PackagePermissionRule packagePermissionRule;
+
+    @Inject
+    private PackageNameTypeConverter packageNameTypeConverter;
+
+    @PostConstruct
+    public void setupPermissionRules() {
         permissionRules.put( CategoryPathType.class,
-                             new CategoryPathTypePermissionRule() );
+                             categoryPathTypePermissionRule );
         permissionRules.put( PackageUUIDType.class,
-                             new PackageUUIDTypePermissionRule() );
+                             packageUUIDTypePermissionRule );
         permissionRules.put( PackageNameType.class,
-                             new PackagePermissionRule() );
+                             packagePermissionRule );
         permissionRules.put( WebDavPackageNameType.class,
-                             new PackagePermissionRule() );
+                             packagePermissionRule );
         permissionRuleObjectConverters.put( PackageNameType.class,
-                                            new PackageNameTypeConverter() );
+                                            packageNameTypeConverter );
         permissionRuleObjectConverters.put( WebDavPackageNameType.class,
-                                            new PackageNameTypeConverter() );
+                                            packageNameTypeConverter );
     }
 
     /**

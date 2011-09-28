@@ -20,7 +20,9 @@ import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.LoggingHelper;
 
 import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
 
+@ApplicationScoped
 public class PackagePermissionRule
         implements
         PermissionRule {

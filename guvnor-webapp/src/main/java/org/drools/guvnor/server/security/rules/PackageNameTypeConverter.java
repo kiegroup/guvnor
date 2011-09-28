@@ -15,8 +15,11 @@
  */
 package org.drools.guvnor.server.security.rules;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.guvnor.server.security.PackageNameType;
 
+@ApplicationScoped
 public class PackageNameTypeConverter
     implements
     PermissionRuleObjectConverter {
