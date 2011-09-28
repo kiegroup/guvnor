@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -68,6 +69,11 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     public void prepareView() {
         //Nothing required
+    }
+
+    public void setTableFormat(TableFormat format) {
+        //TODO If the table is already defined we need to convert from one to the other
+        dtable.setTableFormat( format );
     }
 
 }

@@ -26,6 +26,8 @@ public class AvailableField {
 
     private String type;
 
+    private String displayType;
+
     private int    calculationType = BaseSingleFieldConstraint.TYPE_LITERAL;
 
     public AvailableField(String name,
@@ -36,9 +38,11 @@ public class AvailableField {
 
     public AvailableField(String name,
                           String type,
+                          String displayType,
                           int calculationType) {
         this.name = name;
         this.type = type;
+        this.displayType = displayType;
         this.calculationType = calculationType;
     }
 
@@ -48,6 +52,10 @@ public class AvailableField {
 
     public String getType() {
         return type;
+    }
+
+    public String getDisplayType() {
+        return this.displayType;
     }
 
     public int getCalculationType() {

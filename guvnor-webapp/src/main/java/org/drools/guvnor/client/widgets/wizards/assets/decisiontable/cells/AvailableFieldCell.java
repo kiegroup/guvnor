@@ -56,7 +56,7 @@ public class AvailableFieldCell extends AbstractCell<AvailableField> {
                             AvailableField af) {
         if ( af.getType() != null && !af.getType().equals( "" ) ) {
             b.append( " : " );
-            b.append( af.getType() );
+            b.append( af.getDisplayType() );
         }
     }
 }

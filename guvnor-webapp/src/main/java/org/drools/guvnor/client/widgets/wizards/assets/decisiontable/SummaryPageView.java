@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+
 import com.google.gwt.user.client.ui.IsWidget;
 
 /**
@@ -28,6 +30,8 @@ public interface SummaryPageView
     interface Presenter {
 
         void stateChanged();
+        
+        void setTableFormat( TableFormat format );
 
     }
 

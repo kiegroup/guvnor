@@ -19,6 +19,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -42,6 +43,8 @@ public interface FactPatternConstraintsPageView
 
         void stateChanged();
 
+        TableFormat getTableFormat();
+
     }
 
     /**
@@ -50,6 +53,8 @@ public interface FactPatternConstraintsPageView
      * @param presenter
      */
     void setPresenter(Presenter presenter);
+
+    void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory);
 
     void setAvailablePatterns(List<Pattern52> patterns);
 

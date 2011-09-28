@@ -2521,4 +2521,13 @@ public interface Constants
     String NoAssetsDefinedInPackage();
 
     String MissingExpectations();
+
+    String TableFormat();
+   
+    String TableFormatExtendedEntry();
+    
+    String TableFormatLimitedEntry();
+    
+    String LimitedEntryValue();
+    
 }
