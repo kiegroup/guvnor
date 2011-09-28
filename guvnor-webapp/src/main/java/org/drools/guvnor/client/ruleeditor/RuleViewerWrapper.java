@@ -60,7 +60,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     public RuleViewerWrapper(ClientFactory clientFactory,
                              EventBus eventBus,
-                             RuleAsset asset,
+                             final RuleAsset asset,
                              boolean isHistoricalReadOnly,
                              ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
                              RuleViewerSettings ruleViewerSettings) {
@@ -74,7 +74,9 @@ public class RuleViewerWrapper extends GuvnorEditor {
                 RefreshAssetEditorEvent.TYPE,
                 new RefreshAssetEditorEvent.Handler() {
                     public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-                        refresh();
+                        if (refreshAssetEditorEvent.getUuid().equals(asset.getUuid())) {
+                            refresh();
+                        }
                     }
                 });
 
