@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -90,7 +91,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
             return;
         }
         view.setPresenter( this );
-
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
+        
         //Available types
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
@@ -196,10 +199,12 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldClassName( type,
-                                                                                               fieldName ) );
+            String fieldType = sce.getFieldClassName( type,
+                                                      fieldName );
+            String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,
+                                                       fieldDisplayType,
                                                        BaseSingleFieldConstraint.TYPE_LITERAL );
             availableFields.add( field );
         }
@@ -229,6 +234,10 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
                 dtable.getActionCols().add( aif );
             }
         }
+    }
+    
+    public TableFormat getTableFormat() {
+        return dtable.getTableFormat();
     }
 
 }

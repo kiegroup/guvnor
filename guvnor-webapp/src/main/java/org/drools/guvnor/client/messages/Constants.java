@@ -2519,5 +2519,15 @@ public interface Constants
     String DecisionTableWizardExpandInFull();
     
     String NoAssetsDefinedInPackage();
+
+    String MissingExpectations();
+
+    String TableFormat();
+   
+    String TableFormatExtendedEntry();
+    
+    String TableFormatLimitedEntry();
+    
+    String LimitedEntryValue();
     
 }

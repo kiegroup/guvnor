@@ -15,27 +15,19 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
-
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle CEP 'window length' parameters
+ * A TextBox to handle numeric values
  */
-public class CEPLengthParameterTextBox extends AbstractCEPRestrictedEntryTextBox {
+public class NumericTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid Operator parameter expression
-    private static final RegExp VALID_LENGTH = RegExp.compile( "^\\d+$" );
-
-    public CEPLengthParameterTextBox(HasParameterizedOperator hop,
-                                     int index) {
-        super( hop,
-               index );
-    }
+    // A valid number
+    private static final RegExp VALID = RegExp.compile( "(^[-+]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     @Override
     protected boolean isValidValue(String value) {
-        return VALID_LENGTH.test( value );
+        return VALID.test( value );
     }
 
 }

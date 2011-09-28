@@ -17,14 +17,18 @@
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.resources.WizardResources;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -52,6 +56,12 @@ public class SummaryPageViewImpl extends Composite
     @UiField
     TextBox           txtPackageName;
 
+    @UiField
+    RadioButton       optExtendedEntry;
+
+    @UiField
+    RadioButton       optLimitedEntry;
+
     private String    assetName;
 
     interface SummaryPageWidgetBinder
@@ -64,6 +74,7 @@ public class SummaryPageViewImpl extends Composite
     public SummaryPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAssetName();
+        initialiseTableFormat();
     }
 
     private void initialiseAssetName() {
@@ -73,6 +84,23 @@ public class SummaryPageViewImpl extends Composite
                 assetName = txtAssetName.getText();
                 presenter.stateChanged();
                 validateAssetName();
+            }
+
+        } );
+    }
+
+    private void initialiseTableFormat() {
+        optExtendedEntry.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                presenter.setTableFormat( TableFormat.EXTENDED_ENTRY );
+            }
+
+        } );
+        optLimitedEntry.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                presenter.setTableFormat( TableFormat.LIMITED_ENTRY );
             }
 
         } );

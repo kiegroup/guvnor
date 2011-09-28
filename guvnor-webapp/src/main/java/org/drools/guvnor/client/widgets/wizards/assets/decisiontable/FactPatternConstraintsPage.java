@@ -26,6 +26,7 @@ import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.Fact
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -73,6 +74,8 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
             return;
         }
         view.setPresenter( this );
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
         content.setWidget( view );
     }
 
@@ -91,7 +94,6 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
                     areConditionsDefined = false;
                     break;
                 }
-
             }
         }
 
@@ -121,18 +123,22 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldClassName( type,
-                                                                                               fieldName ) );
+            String fieldType = sce.getFieldClassName( type,
+                                                      fieldName );
+            String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,
+                                                       fieldDisplayType,
                                                        BaseSingleFieldConstraint.TYPE_LITERAL );
             availableFields.add( field );
         }
 
         //Add predicates
-        AvailableField field = new AvailableField( constants.DecisionTableWizardPredicate(),
-                                                   BaseSingleFieldConstraint.TYPE_PREDICATE );
-        availableFields.add( field );
+        if ( dtable.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            AvailableField field = new AvailableField( constants.DecisionTableWizardPredicate(),
+                                                       BaseSingleFieldConstraint.TYPE_PREDICATE );
+            availableFields.add( field );
+        }
 
         view.setAvailableFields( availableFields );
         view.setChosenConditions( pattern.getConditions() );
@@ -149,6 +155,10 @@ public class FactPatternConstraintsPage extends AbstractGuidedDecisionTableWizar
         String[] ops = sce.getOperatorCompletions( selectedPattern.getFactType(),
                                                    selectedCondition.getFactField() );
         return ops;
+    }
+
+    public TableFormat getTableFormat() {
+        return dtable.getTableFormat();
     }
 
 }

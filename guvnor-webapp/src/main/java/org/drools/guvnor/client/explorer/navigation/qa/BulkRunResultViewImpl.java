@@ -30,7 +30,6 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 import org.drools.guvnor.client.util.PercentageBar;
 import org.drools.guvnor.client.util.ToggleLabel;
 import org.drools.guvnor.client.util.ValueList;
@@ -47,11 +46,12 @@ public class BulkRunResultViewImpl extends Composite
     interface BulkRunResultViewImplBinder
             extends
             UiBinder<Widget, BulkRunResultViewImpl> {
+
     }
 
-    private static BulkRunResultViewImplBinder uiBinder = GWT.create( BulkRunResultViewImplBinder.class );
+    private static BulkRunResultViewImplBinder uiBinder = GWT.create(BulkRunResultViewImplBinder.class);
 
-    private Constants constants = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
     private Presenter presenter;
 
@@ -78,61 +78,82 @@ public class BulkRunResultViewImpl extends Composite
 
     private SummaryTable summaryTable;
 
-    public BulkRunResultViewImpl( ClientFactory clientFactory ) {
+    public BulkRunResultViewImpl(ClientFactory clientFactory) {
         summaryTableView = new SummaryTableViewImpl();
         this.clientFactory = clientFactory;
         summaryTable = new SummaryTable(
                 summaryTableView,
-                clientFactory );
-        initWidget( uiBinder.createAndBindUi( this ) );
+                clientFactory);
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
-    @UiHandler("closeButton")
-    void close( ClickEvent clickEvent ) {
+    @UiHandler("closeButton") void close(ClickEvent clickEvent) {
         presenter.onClose();
     }
 
-    public void addSummary( ScenarioResultSummary summary ) {
-        summaryTable.addRow( summary );
-    }
-
-    public void showErrors( BuilderResult errors ) {
+    public void showErrors(BuilderResult errors) {
 
         Panel err = new SimplePanel();
 
         PackageBuilderWidget.showBuilderErrors(
                 errors,
                 err,
-                clientFactory );
+                clientFactory);
     }
 
-    public void setPresenter( Presenter presenter ) {
+    public void addNormalSummaryTableRow(int totalFailures, int grandTotal, String scenarioName, int percentage, String uuid) {
+
+        SummaryTable.Row row = new SummaryTable.Row();
+
+        row.setMessage(constants.TestFailureBulkFailures(totalFailures, grandTotal));
+        row.setScenarioName(scenarioName);
+        row.setUuid(uuid);
+        row.setPercentage(percentage);
+        row.setBackgroundColor("WHITE");
+
+        summaryTable.addRow(row);
+    }
+
+    public void addMissingExpectationSummaryTableRow(String scenarioName, String uuid) {
+
+        SummaryTable.Row row = new SummaryTable.Row();
+
+        row.setMessage(constants.MissingExpectations());
+        row.setScenarioName(scenarioName);
+        row.setUuid(uuid);
+        row.setPercentage(0);
+        row.setBackgroundColor("YELLOW");
+
+        summaryTable.addRow(row);
+    }
+
+    public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }
 
     public void setFailed() {
-        overAll.setValue( false );
+        overAll.setValue(false);
     }
 
     public void setSuccess() {
-        overAll.setValue( true );
+        overAll.setValue(true);
     }
 
-    public void setFailuresOutOfExpectation( int totalFailures,
-                                             int grandTotal ) {
-        failuresOutOfExpectations.setText( constants.failuresOutOFExpectations( totalFailures, grandTotal ) );
+    public void setFailuresOutOfExpectation(int totalFailures,
+            int grandTotal) {
+        failuresOutOfExpectations.setText(constants.failuresOutOFExpectations(totalFailures, grandTotal));
     }
 
-    public void setResultsPercent( int i ) {
-        resultsBar.setValue( i );
+    public void setResultsPercent(int i) {
+        resultsBar.setValue(i);
     }
 
-    public void setRulesCoveredPercent( int percentCovered ) {
-        coveredPercentBar.setValue( percentCovered );
-        ruleCoveragePercent.setText( constants.RuleCoveragePercent( percentCovered ) );
+    public void setRulesCoveredPercent(int percentCovered) {
+        coveredPercentBar.setValue(percentCovered);
+        ruleCoveragePercent.setText(constants.RuleCoveragePercent(percentCovered));
     }
 
-    public void addUncoveredRules( String uncoveredRule ) {
-        uncoveredRules.addItem( uncoveredRule );
+    public void addUncoveredRules(String uncoveredRule) {
+        uncoveredRules.addItem(uncoveredRule);
     }
 }
