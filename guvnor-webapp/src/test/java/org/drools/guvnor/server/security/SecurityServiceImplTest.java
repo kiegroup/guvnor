@@ -60,15 +60,12 @@ public class SecurityServiceImplTest extends GuvnorTestBase {
 
     @Before
     public void loginAsSpecificUser() {
-        credentials.setUsername(USER_NAME);
-        credentials.setCredential(new PasswordCredential(USER_NAME));
-        identity.login();
+        loginAs(USER_NAME);
     }
 
     @After
     public void logoutAsSpecificUser() {
-        identity.logout();
-        credentials.clear();
+        logoutAs(USER_NAME);
     }
 
     @Test

@@ -61,15 +61,12 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
 
     @Before
     public void loginAsSpecificUser() {
-        credentials.setUsername(USER_NAME);
-        credentials.setCredential(new PasswordCredential(USER_NAME));
-        identity.login();
+        loginAs(USER_NAME);
     }
 
     @After
     public void logoutAsSpecificUser() {
-        identity.logout();
-        credentials.clear();
+        logoutAs(USER_NAME);
     }
 
     @Test
@@ -414,7 +411,7 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
                                                   "testSecurityCreateNewRule",
                                                   "this is a cat" );
 
-        // roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false); like this by default
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
 
         try {
             serviceImplementation.createNewRule("testCreateNewRuleName22",
@@ -425,20 +422,10 @@ public class ServiceImplSecurityTest extends GuvnorTestBase {
             fail( "not allowed" );
         } catch ( AuthorizationException e ) {
             assertNotNull( e.getMessage() );
+        } finally {
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
         }
-
-        // TODO seam3upgrade
-//        mockIdentity.addPermissionResolver( new PermissionResolver() {
-//            public void filterSetByAction(Set<Object> arg0,
-//                                          String arg1) {
-//            }
-//
-//            public boolean hasPermission(Object arg0,
-//                                         String arg1) {
-//                return (arg1.equals( RoleType.PACKAGE_DEVELOPER.getName() ));
-//            }
-//
-//        } );
+        // TODO leave roleBasedAuthorization enabled and add RoleType.PACKAGE_DEVELOPER permission
         serviceImplementation.createNewRule("testCreateNewRuleName22",
                 "an initial desc",
                 "testSecurityCreateNewRule",

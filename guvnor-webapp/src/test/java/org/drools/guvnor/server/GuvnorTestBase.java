@@ -89,21 +89,29 @@ public abstract class GuvnorTestBase {
     }
 
     @Before
-    public void loginAsAdmin() {
+    public void autoLoginAsAdmin() {
         // TODO this method seems to be called after the request and the rulesRepository therefor is created...
         if (autoLoginAsAdmin) {
-            credentials.setUsername("admin");
-            credentials.setCredential(new PasswordCredential("admin"));
-            identity.login();
+            loginAs("admin");
         }
     }
 
     @After
-    public void logoutAsAdmin() {
+    public void autoLogoutAsAdmin() {
         if (autoLoginAsAdmin) {
-            identity.logout();
-            credentials.clear();
+            logoutAs("admin");
         }
+    }
+
+    protected void loginAs(String username) {
+        credentials.setUsername(username);
+        credentials.setCredential(new PasswordCredential(username));
+        identity.login();
+    }
+
+    protected void logoutAs(String username) {
+        identity.logout();
+        credentials.clear();
     }
 
     // ************************************************************************
