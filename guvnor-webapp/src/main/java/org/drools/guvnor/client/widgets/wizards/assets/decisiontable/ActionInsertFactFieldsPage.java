@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.event.shared.EventBus;
 
@@ -90,7 +91,9 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
             return;
         }
         view.setPresenter( this );
-
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
+        
         //Available types
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
@@ -231,6 +234,10 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
                 dtable.getActionCols().add( aif );
             }
         }
+    }
+    
+    public TableFormat getTableFormat() {
+        return dtable.getTableFormat();
     }
 
 }

@@ -94,6 +94,9 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         if ( sce == null ) {
             return;
         }
+        view.setPresenter( this );
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
 
         //Existing ActionSetFieldCols (should be empty for a new Decision Table)
         for ( ActionCol52 a : dtable.getActionCols() ) {
@@ -109,9 +112,6 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
 
-        view.setPresenter( this );
-        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
-                                                                        sce ) );
         content.setWidget( view );
     }
 

@@ -28,6 +28,8 @@ import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.Actio
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ActionInsertFactFieldPatternCell;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -45,6 +47,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -77,6 +80,8 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     private ActionInsertFactCol52                               chosenFieldsSelection;
     private Set<ActionInsertFactCol52>                          chosenFieldsSelections;
     private MinimumWidthCellList<ActionInsertFactCol52>         chosenFieldsWidget;
+
+    private DTCellValueWidgetFactory                            factory;
 
     private static final Constants                              constants = GWT.create( Constants.class );
 
@@ -139,6 +144,18 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
 
     @UiField
     HorizontalPanel                                             msgIncompleteActions;
+
+    @UiField
+    VerticalPanel                                               criteriaExtendedEntry;
+
+    @UiField
+    VerticalPanel                                               criteriaLimitedEntry;
+
+    @UiField
+    HorizontalPanel                                             limitedEntryValueContainer;
+
+    @UiField
+    SimplePanel                                                 limitedEntryValueWidgetContainer;
 
     interface ActionInsertFactFieldsPageWidgetBinder
         extends
@@ -293,13 +310,8 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                 if ( cws.size() == 1 ) {
                     chosenFieldsSelection = cws.iterator().next();
                     fieldDefinition.setVisible( true );
-                    txtColumnHeader.setEnabled( true );
-                    txtDefaultValue.setEnabled( true );
-                    txtValueList.setEnabled( true );
-                    txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
-                    txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
-                    txtValueList.setText( chosenFieldsSelection.getValueList() );
                     validateFieldHeader();
+                    populateFieldDefinition();
                 } else {
                     chosenFieldsSelection = null;
                     fieldDefinition.setVisible( false );
@@ -307,6 +319,42 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
                     txtValueList.setEnabled( false );
                     txtDefaultValue.setEnabled( false );
                 }
+            }
+
+            private void populateFieldDefinition() {
+
+                // Fields common to all table formats
+                txtColumnHeader.setEnabled( true );
+                txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
+
+                criteriaExtendedEntry.setVisible( presenter.getTableFormat() == TableFormat.EXTENDED_ENTRY );
+                criteriaLimitedEntry.setVisible( presenter.getTableFormat() == TableFormat.LIMITED_ENTRY );
+
+                // Fields specific to the table format
+                switch ( presenter.getTableFormat() ) {
+                    case EXTENDED_ENTRY :
+                        txtDefaultValue.setEnabled( true );
+                        txtValueList.setEnabled( true );
+                        txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
+                        txtValueList.setText( chosenFieldsSelection.getValueList() );
+                        break;
+                    case LIMITED_ENTRY :
+                        makeLimitedValueWidget();
+                        limitedEntryValueContainer.setVisible( true );
+                        break;
+                }
+            }
+
+            private void makeLimitedValueWidget() {
+                if ( !(chosenFieldsSelection instanceof LimitedEntryActionInsertFactCol52) ) {
+                    return;
+                }
+                LimitedEntryActionInsertFactCol52 lea = (LimitedEntryActionInsertFactCol52) chosenFieldsSelection;
+                if ( lea.getValue() == null ) {
+                    lea.setValue( factory.makeNewValue( chosenFieldsSelection ) );
+                }
+                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
+                                                                               lea.getValue() ) );
             }
 
         } );
@@ -396,6 +444,10 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
+    public void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory) {
+        this.factory = factory;
+    }
+
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternsWidget.redraw();
@@ -474,14 +526,30 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     @UiHandler(value = "btnAdd")
     public void btnAddClick(ClickEvent event) {
         for ( AvailableField f : availableFieldsSelections ) {
-            ActionInsertFactCol52 a = new ActionInsertFactCol52();
-            a.setBoundName( chosenPatternsSelection.getBoundName() );
-            a.setFactField( f.getName() );
-            a.setType( f.getType() );
-            chosenFields.add( a );
+            chosenFields.add( makeNewActionColumn( f ) );
         }
         setChosenFields( chosenFields );
         presenter.stateChanged();
+    }
+
+    private ActionInsertFactCol52 makeNewActionColumn(AvailableField f) {
+        TableFormat format = presenter.getTableFormat();
+        if ( format == TableFormat.EXTENDED_ENTRY ) {
+            ActionInsertFactCol52 a = new ActionInsertFactCol52();
+            a.setBoundName( chosenPatternsSelection.getBoundName() );
+            a.setFactType( chosenPatternsSelection.getFactType() );
+            a.setFactField( f.getName() );
+            a.setType( f.getType() );
+            return a;
+        } else {
+            LimitedEntryActionInsertFactCol52 a = new LimitedEntryActionInsertFactCol52();
+            a.setBoundName( chosenPatternsSelection.getBoundName() );
+            a.setFactType( chosenPatternsSelection.getFactType() );
+            a.setFactField( f.getName() );
+            a.setType( f.getType() );
+            return a;
+        }
+
     }
 
     @UiHandler(value = "btnRemove")
