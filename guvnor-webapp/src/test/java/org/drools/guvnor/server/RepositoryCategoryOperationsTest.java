@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.inject.Inject;
 import javax.jcr.RangeIterator;
 import javax.jcr.Session;
 
@@ -45,12 +44,14 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryCategoryOperationsTest {
 
+    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+
     private final RulesRepository              rulesRepository              = mock( RulesRepository.class );
     private final RepositoryCategoryOperations repositoryCategoryOperations = new RepositoryCategoryOperations();
 
     @Before
     public void setUp() {
-        repositoryCategoryOperations.setRulesRepository( rulesRepository );
+        repositoryCategoryOperations.setRulesRepositoryForTest(rulesRepository);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

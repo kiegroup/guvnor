@@ -48,7 +48,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
             RulesRepository repo = getRulesRepository();
 
             RepositoryPackageService impl = new RepositoryPackageService();
-            impl.setRulesRepository( repo );
+            impl.setRulesRepositoryForTest( repo );
 
             PackageItem pkg = repo.createPackage( "testPDSGetPackage",
                                                   "" );

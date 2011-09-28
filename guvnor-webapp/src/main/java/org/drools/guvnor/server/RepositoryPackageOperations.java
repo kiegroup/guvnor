@@ -31,6 +31,7 @@ import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -47,7 +48,7 @@ import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 /**
  * Handles operations for packages
  */
-@Named("org.drools.guvnor.server.RepositoryPackageOperations")
+@ApplicationScoped
 public class RepositoryPackageOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryPackageOperations.class );
@@ -60,8 +61,9 @@ public class RepositoryPackageOperations {
     @Inject
     private RulesRepository rulesRepository;
 
-    // TODO seam3upgrade
-    public void setRulesRepository(RulesRepository repository) {
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
         this.rulesRepository = repository;
     }
 

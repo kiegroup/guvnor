@@ -27,13 +27,14 @@ import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Named("org.drools.guvnor.server.RepositoryCategoryOperations")
+@ApplicationScoped
 public class RepositoryCategoryOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryCategoryOperations.class);
@@ -44,8 +45,9 @@ public class RepositoryCategoryOperations {
     @Inject
     private ServiceSecurity serviceSecurity;
 
-    // TODO seam3upgrade
-    public void setRulesRepository(RulesRepository repository) {
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
         this.rulesRepository = repository;
     }
 
