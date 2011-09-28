@@ -5,7 +5,6 @@ import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import javax.inject.Inject;
@@ -31,11 +30,6 @@ public class OryxEditorServlet extends HttpServlet {
             throws ServletException,
             IOException {
         log.debug("Incoming request from Oryx Designer:" + request.getRequestURL());
-
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (!beanManagerLocator.isBeanManagerAvailable()) {
-            throw new ServletException("No application context active.");
-        }
 
         //action never used. Why? - JT
         String action = request.getParameter("action");

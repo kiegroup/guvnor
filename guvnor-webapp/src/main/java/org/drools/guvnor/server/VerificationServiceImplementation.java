@@ -34,7 +34,6 @@ import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import java.util.Set;

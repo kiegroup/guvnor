@@ -88,7 +88,6 @@ import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 

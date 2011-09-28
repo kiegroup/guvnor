@@ -25,7 +25,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

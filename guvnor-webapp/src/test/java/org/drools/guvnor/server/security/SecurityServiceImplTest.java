@@ -31,7 +31,6 @@ import javax.inject.Inject;
 
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 import org.junit.After;
 import org.junit.Before;
