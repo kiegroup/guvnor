@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 

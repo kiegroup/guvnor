@@ -47,7 +47,6 @@ import org.drools.guvnor.server.contenthandler.IRuleAsset;
 import org.drools.guvnor.server.repository.MigrateRepository;
 import org.drools.guvnor.server.security.AdminType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -72,6 +71,9 @@ public class FileManagerService {
 
     @Inject
     private RulesRepository repository;
+
+    @Inject
+    private Identity identity;
 
     /**
      * This attach a file to an asset.
@@ -248,11 +250,8 @@ public class FileManagerService {
 
     @LoggedIn
     public void importRulesRepository(InputStream in) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission( new AdminType(),
+        identity.checkPermission( new AdminType(),
                                                  RoleType.ADMIN.getName() );
-        }
         repository.importRulesRepositoryFromStream( in );
 
         //

@@ -767,7 +767,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     
     public boolean doesAssetExistInPackage(java.lang.String p0,
                                            java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getService().doesAssetExistInPackage( p0,
+        return serviceImplementation.doesAssetExistInPackage( p0,
                                                      p1 );
     }
 

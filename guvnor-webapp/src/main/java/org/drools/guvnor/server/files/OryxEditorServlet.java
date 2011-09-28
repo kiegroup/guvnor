@@ -3,12 +3,12 @@ package org.drools.guvnor.server.files;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.guvnor.server.RepositoryServiceServlet;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
+import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +19,12 @@ import java.io.IOException;
 public class OryxEditorServlet extends HttpServlet {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(OryxEditorServlet.class);
+
+    @Inject
+    private Credentials credentials;
+
+    @Inject
+    private Identity identity;
 
     public void service(HttpServletRequest request,
                         HttpServletResponse response)
@@ -46,11 +52,9 @@ public class OryxEditorServlet extends HttpServlet {
         } */
 
         // log in
-        Credentials credentials = BeanManagerUtils.getContextualInstance(Credentials.class);
         credentials.setUsername(usr);
         credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
 
-        Identity identity = BeanManagerUtils.getContextualInstance(Identity.class);
         identity.login();
         if ( !identity.isLoggedIn() ) {
             throw new ServletException(new IllegalArgumentException("Unable to authenticate user."));

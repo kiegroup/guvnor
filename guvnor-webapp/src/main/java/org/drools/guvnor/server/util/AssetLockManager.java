@@ -26,8 +26,6 @@ import java.util.Map;
  * Manages the locks for assets.
  */
 @ApplicationScoped
-//@Startup
-@Named("assetLockManager")
 public class AssetLockManager {
 
     private static final long LOCK_EXPIRATION_TIME = 1200000;
@@ -43,10 +41,6 @@ public class AssetLockManager {
             this.userName = userName;
             timeStamp = System.currentTimeMillis();
         }
-    }
-
-    public static AssetLockManager instance() {
-        return (AssetLockManager) BeanManagerUtils.getInstance("assetLockManager");
     }
 
     public boolean isAssetLocked(String uuid) {

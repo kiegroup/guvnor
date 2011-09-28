@@ -21,14 +21,12 @@ import org.drools.guvnor.client.rpc.DiscussionRecord;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PackageNameType;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.ISO8601;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.mvel2.templates.TemplateRuntime;
@@ -47,6 +45,9 @@ public class FeedServlet extends RepositoryServlet {
 
     @Inject
     private RulesRepository rulesRepository;
+
+    @Inject
+    private Identity identity;
 
     @Override
     protected void doGet(final HttpServletRequest request,
@@ -144,11 +145,8 @@ public class FeedServlet extends RepositoryServlet {
     }
 
     void checkCategoryPermission(String cat) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new CategoryPathType(cat),
-                    RoleType.ANALYST_READ.getName());
-        }
+        identity.checkPermission(new CategoryPathType(cat),
+                RoleType.ANALYST_READ.getName());
     }
 
     private void doPackageFeed(HttpServletRequest request,
@@ -192,11 +190,8 @@ public class FeedServlet extends RepositoryServlet {
     }
 
     void checkPackageReadPermission(String packageName) {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            BeanManagerUtils.getContextualInstance(Identity.class).checkPermission(new PackageNameType(packageName),
-                    RoleType.PACKAGE_READONLY.getName());
-        }
+        identity.checkPermission(new PackageNameType(packageName),
+                RoleType.PACKAGE_READONLY.getName());
     }
 
     public static class AtomFeed {

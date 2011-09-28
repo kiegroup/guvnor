@@ -27,7 +27,6 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 

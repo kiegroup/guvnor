@@ -28,7 +28,6 @@ import org.drools.guvnor.server.security.rules.PackagePermissionRule;
 import org.drools.guvnor.server.security.rules.PackageUUIDTypePermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRuleObjectConverter;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
 import javax.annotation.PostConstruct;
 
