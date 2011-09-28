@@ -156,8 +156,10 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
         options.setAuthorization("BASIC " + new String( new Base64().encode( "admin:admin".getBytes() ) ));
-        
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets").toExternalForm(), options);
+
+        System.out.println("Checking: " + new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm());
+
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -171,7 +173,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetsAsJaxB(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -183,7 +185,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
      public void testGetAssetsAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -200,7 +202,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
         
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets?format=drl").toExternalForm(), options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -231,7 +233,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
         
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets?format=drl").toExternalForm(), options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -251,7 +253,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
         
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(), options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -283,7 +285,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
         
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(),options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(),options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -297,7 +299,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetAsAtom(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -333,7 +335,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetAsJaxB(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -345,7 +347,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -357,7 +359,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetSource(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1/source");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/source");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
@@ -371,7 +373,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient
     public void testGetAssetBinary(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1/binary");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -389,7 +391,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(new URL(baseURL, "packages/restPackage1/assets/model1-New").toExternalForm());
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
         //If the asset doesn't exist, an HTTP 500 Error is expected. :S
         if (resp.getType() != ResponseType.SERVER_ERROR){
@@ -407,7 +409,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(new URL(baseURL, "packages/restPackage1/assets/model1").toExternalForm());
+        resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve 'model1' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -430,7 +432,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         options = client.getDefaultRequestOptions();
         options.setContentType(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.post(new URL(baseURL, "packages/restPackage1/assets").toExternalForm(), entry, options);
+        resp = client.post(new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm(), entry, options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't store 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -445,7 +447,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(new URL(baseURL, "packages/restPackage1/assets/model1-New").toExternalForm());
+        resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -461,7 +463,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient
     public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -476,7 +478,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         Entry e = document.getRoot();
         e.addAuthor("Tester X McTestness");
 
-        url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
@@ -490,7 +492,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     @Test @RunAsClient
     @Ignore
     public void testUpdateAssetFromJaxB(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
