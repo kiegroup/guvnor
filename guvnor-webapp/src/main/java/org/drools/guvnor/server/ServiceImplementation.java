@@ -776,14 +776,6 @@ public class ServiceImplementation
         }
     }
 
-    /**
-     * Check to see if app context is active (not in hosted)
-     */
-    public Boolean isHostedMode() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        return !beanManagerLocator.isBeanManagerAvailable();
-    }
-
     @WebRemote
     @LoggedIn
     public PageResponse<QueryPageRow> queryFullText(QueryPageRequest request) throws SerializationException {

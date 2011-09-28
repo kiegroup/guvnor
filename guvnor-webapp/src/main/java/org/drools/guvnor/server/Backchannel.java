@@ -19,7 +19,6 @@ package org.drools.guvnor.server;
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.servlet.http.HttpSessionStatus;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import java.util.*;

@@ -49,7 +49,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.annotations.LoggedIn;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;

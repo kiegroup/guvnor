@@ -753,10 +753,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                 p1 );
     }
 
-    public java.lang.Boolean isHostedMode() {
-        return serviceImplementation.isHostedMode();
-    }
-
     public java.util.Map loadSpringContextElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return serviceImplementation.loadSpringContextElementData();
     }

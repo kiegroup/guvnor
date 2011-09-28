@@ -44,17 +44,6 @@ public class EditorLauncher {
 
     public static final Map<String, RuleFormatImageResource> TYPE_IMAGES = getTypeImages();
     private static RepositoryServiceAsync                    SERVICE     = RepositoryServiceFactory.getService();
-    public static Boolean hostedMode = Boolean.FALSE;
-
-    static {
-        SERVICE.isHostedMode( new GenericCallback<Boolean>() {
-            public void onSuccess(Boolean result) {
-                if ( result.booleanValue() ) {
-                    hostedMode = Boolean.TRUE;
-                }
-            }
-        } );
-    }
 
     /**
      * This will return the appropriate viewer for the asset.
