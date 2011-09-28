@@ -2519,5 +2519,6 @@ public interface Constants
     String DecisionTableWizardExpandInFull();
     
     String NoAssetsDefinedInPackage();
-    
+
+    String MissingExpectations();
 }
