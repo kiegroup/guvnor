@@ -29,13 +29,10 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
 import org.drools.util.codec.Base64;
-import org.junit.Before;
 import org.junit.Test;
 
 public class RestAPIServletTest extends GuvnorTestBase {

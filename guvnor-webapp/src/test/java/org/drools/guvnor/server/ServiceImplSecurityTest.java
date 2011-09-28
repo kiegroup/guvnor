@@ -20,12 +20,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.inject.Inject;
 
 import org.drools.guvnor.client.common.AssetFormats;
@@ -35,8 +29,6 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.client.rpc.TableDataResult;
-import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.MockRoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleBasedPermissionManager;
 import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
@@ -44,9 +36,7 @@ import org.drools.guvnor.server.security.RoleBasedPermissionStore;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
-import org.jboss.seam.security.permission.PermissionResolver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

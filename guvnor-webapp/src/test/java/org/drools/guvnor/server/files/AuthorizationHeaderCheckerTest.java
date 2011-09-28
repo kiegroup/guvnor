@@ -23,14 +23,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.security.MockIdentity;
 import org.drools.util.codec.Base64;
-import org.jboss.seam.security.Credentials;
-import org.jboss.seam.security.Identity;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.picketlink.idm.api.Credential;
-import org.picketlink.idm.impl.api.PasswordCredential;
 
 public class AuthorizationHeaderCheckerTest extends GuvnorTestBase {
 

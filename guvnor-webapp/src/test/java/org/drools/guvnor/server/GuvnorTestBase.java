@@ -19,14 +19,7 @@ import java.io.File;
 
 import javax.inject.Inject;
 
-import org.bouncycastle.crypto.engines.IDEAEngine;
 import org.drools.core.util.KeyStoreHelper;
-import org.drools.guvnor.server.files.FileManagerService;
-import org.drools.guvnor.server.files.WebDAVImpl;
-import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.security.MockIdentity;
-import org.drools.guvnor.server.security.RoleBasedPermissionResolver;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
