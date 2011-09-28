@@ -24,6 +24,8 @@ import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import javax.ws.rs.GET;
@@ -46,8 +48,9 @@ import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
-@Named("CategoryResource")
 @Path("/categories")
+@RequestScoped
+@Named
 public class CategoryResource extends Resource {
 
     private static final String Encoding = "UTF-8";

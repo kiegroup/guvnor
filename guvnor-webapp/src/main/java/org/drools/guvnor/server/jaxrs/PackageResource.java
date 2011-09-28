@@ -33,6 +33,8 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageHistoryIterator;
 import org.drools.repository.PackageItem;
 import org.drools.repository.PackageIterator;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
 import javax.ws.rs.*;
@@ -59,8 +61,9 @@ import static org.drools.guvnor.server.jaxrs.Translator.*;
  * HTTP response. Note, if there are no mappers found for custom exceptions, they will be propagated
  * (wrapped in ServletException) to the underlying container as required by the spec.
  */
-@Named("PackageResource")
 @Path("/packages")
+@RequestScoped
+@Named
 public class PackageResource extends Resource {
     private HttpHeaders headers;
 

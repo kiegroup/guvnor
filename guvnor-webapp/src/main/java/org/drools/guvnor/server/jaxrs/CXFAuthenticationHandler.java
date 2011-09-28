@@ -17,6 +17,7 @@
 package org.drools.guvnor.server.jaxrs;
 
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.ws.rs.WebApplicationException;
@@ -31,6 +32,7 @@ import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
 @Provider
+@ApplicationScoped
 public class CXFAuthenticationHandler implements RequestHandler {
 
     @Inject

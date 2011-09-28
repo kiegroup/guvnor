@@ -25,24 +25,26 @@ import org.drools.guvnor.server.files.FileManagerService;
 import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.repository.RulesRepository;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-public class Resource {
+@RequestScoped
+public abstract class Resource {
     @Context
     UriInfo uriInfo;
 
-    final ServiceImplementation service;
-    final RepositoryPackageService packageService;
-    final RepositoryAssetService assetService;
-    final RulesRepository repository;
-    final FileManagerService fileManagerService;
+    @Inject
+    protected ServiceImplementation service;
+    @Inject
+    protected RepositoryPackageService packageService;
+    @Inject
+    protected RepositoryAssetService assetService;
+    @Inject
+    protected RulesRepository repository;
+    @Inject
+    protected FileManagerService fileManagerService;
 
-    public Resource() {
-        service = RepositoryServiceServlet.getService();
-        packageService = RepositoryServiceServlet.getPackageService();
-        assetService = RepositoryServiceServlet.getAssetService();
-        repository = service.getRulesRepository();
-        fileManagerService = RepositoryServlet.getFileManager();
-    }
 }
