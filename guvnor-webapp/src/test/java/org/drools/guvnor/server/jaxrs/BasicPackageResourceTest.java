@@ -261,8 +261,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertEquals("this is package restPackage1", p.getDescription());
         assertEquals("version3", p.getCheckInComment());
         assertEquals(3, p.getVersion());
-        assertEquals("http://localhost:9080/packages/restPackage1/source", p.getSourceLink().toString());
-        assertEquals("http://localhost:9080/packages/restPackage1/binary", p.getBinaryLink().toString());
+        assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
+        assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
         assertEquals("alan_parsons", pm.getLastContributor());
         assertNotNull(pm.getCreated());
@@ -271,13 +271,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Set<URI> assetsURI = p.getAssets();
         
         assertEquals(7, assetsURI.size());
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/drools")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/func")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/myDSL")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule1")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule2")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule4")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/model1")));		
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/drools").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/func").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/myDSL").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule1").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule2").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule4").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/model1").toURI()));
     }
 
     /**
