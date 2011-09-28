@@ -17,7 +17,6 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.AssetItem;
 import org.jboss.seam.security.Identity;
 

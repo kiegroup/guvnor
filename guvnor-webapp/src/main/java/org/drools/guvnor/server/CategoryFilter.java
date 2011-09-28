@@ -17,9 +17,7 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.server.security.CategoryPathType;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {

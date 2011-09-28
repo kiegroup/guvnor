@@ -18,7 +18,6 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.server.security.PackageUUIDType;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.jboss.seam.security.Identity;
 
 public class PackageFilter extends AbstractFilter<PackageConfigData> {
