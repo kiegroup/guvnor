@@ -112,7 +112,7 @@ public class PackageResource extends Resource {
          * a package
          */
         try {
-            String packageName = RepositoryServlet.getFileManager().importClassicDRL(is, null);
+            String packageName = fileManagerService.importClassicDRL(is, null);
             return toPackageEntryAbdera(repository.loadPackage(packageName), uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -128,8 +128,7 @@ public class PackageResource extends Resource {
          * a package
          */
         try {
-            String packageName = RepositoryServlet.getFileManager()
-                    .importClassicDRL(is, null);
+            String packageName = fileManagerService.importClassicDRL(is, null);
             return toPackage(repository.loadPackage(packageName), uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);

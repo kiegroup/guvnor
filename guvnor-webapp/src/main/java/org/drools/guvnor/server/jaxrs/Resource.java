@@ -21,6 +21,8 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.files.FileManagerService;
+import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.repository.RulesRepository;
 
 import javax.ws.rs.core.Context;
@@ -34,11 +36,13 @@ public class Resource {
     final RepositoryPackageService packageService;
     final RepositoryAssetService assetService;
     final RulesRepository repository;
+    final FileManagerService fileManagerService;
 
     public Resource() {
         service = RepositoryServiceServlet.getService();
         packageService = RepositoryServiceServlet.getPackageService();
         assetService = RepositoryServiceServlet.getAssetService();
         repository = service.getRulesRepository();
+        fileManagerService = RepositoryServlet.getFileManager();
     }
 }
