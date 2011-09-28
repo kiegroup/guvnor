@@ -30,7 +30,7 @@ public class QueryMetadataPageRowBuilder
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
         RepositoryFilter packageFilter = new PackageFilter(identity);
-        RepositoryFilter categoryFilter = new CategoryFilter();
+        RepositoryFilter categoryFilter = new CategoryFilter(identity);
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
         while (iterator.hasNext() && (pageSize == null || rowList.size() < pageSize)) {

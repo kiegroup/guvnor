@@ -58,7 +58,7 @@ public class RepositoryCategoryOperations {
     @SuppressWarnings("rawtypes")
     protected String[] loadChildCategories(String categoryPath) {
         List<String> resultList = new ArrayList<String>();
-        CategoryFilter filter = new CategoryFilter();
+        CategoryFilter filter = new CategoryFilter(identity);
 
         CategoryItem item = rulesRepository.loadCategory(categoryPath);
         List children = item.getChildTags();

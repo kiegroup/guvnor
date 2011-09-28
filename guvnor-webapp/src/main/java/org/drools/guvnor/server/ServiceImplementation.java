@@ -346,7 +346,7 @@ public class ServiceImplementation
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         RepositoryFilter packageFilter = new PackageFilter(identity);
-        RepositoryFilter categoryFilter = new CategoryFilter();
+        RepositoryFilter categoryFilter = new CategoryFilter(identity);
 
         while ( it.hasNext() ) {
             AssetItem ai = it.next();

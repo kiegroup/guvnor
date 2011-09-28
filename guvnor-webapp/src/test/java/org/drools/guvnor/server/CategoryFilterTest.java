@@ -24,7 +24,7 @@ public class CategoryFilterTest {
 
     @Test
     public void testMakePath() {
-        CategoryFilter filter = new CategoryFilter();
+        CategoryFilter filter = new CategoryFilter(null);
         assertEquals("HR", filter.makePath("/", "HR"));
         assertEquals("HR", filter.makePath(null, "HR"));
         assertEquals("HR", filter.makePath("", "HR"));
