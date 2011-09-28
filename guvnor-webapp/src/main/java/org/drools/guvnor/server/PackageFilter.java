@@ -23,14 +23,14 @@ import org.jboss.seam.security.Identity;
 
 public class PackageFilter extends AbstractFilter<PackageConfigData> {
 
-    public PackageFilter() {
-        super( PackageConfigData.class );
+    public PackageFilter(Identity identity) {
+        super( PackageConfigData.class, identity );
     }
 
     @Override
     protected boolean checkPermission(final PackageConfigData packageConfigData,
                                       final String action) {
-        return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
+        return identity.hasPermission( new PackageUUIDType( packageConfigData.getUuid() ),
                                                   action );
     }
 

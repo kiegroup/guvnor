@@ -22,14 +22,15 @@ import org.drools.repository.AssetItem;
 import org.jboss.seam.security.Identity;
 
 public class AssetItemFilter extends AbstractFilter<AssetItem> {
-    public AssetItemFilter() {
-        super( AssetItem.class );
+
+    public AssetItemFilter(Identity identity) {
+        super( AssetItem.class, identity );
     }
 
     @Override
     protected boolean checkPermission(AssetItem assetItem,
                                       String action) {
-        return BeanManagerUtils.getContextualInstance(Identity.class).hasPermission( new PackageUUIDType( assetItem.getPackage().getUUID() ),
+        return identity.hasPermission( new PackageUUIDType( assetItem.getPackage().getUUID() ),
                                                   action );
     }
 

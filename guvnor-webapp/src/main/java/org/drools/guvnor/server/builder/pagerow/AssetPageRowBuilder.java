@@ -23,12 +23,14 @@ import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.server.util.AssetPageRowPopulator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
+import org.jboss.seam.security.Identity;
 
 public class AssetPageRowBuilder
     implements
     PageRowBuilder<PageRequest, AssetItemIterator> {
     private PageRequest       pageRequest;
     private AssetItemIterator iterator;
+    private Identity identity;
 
     public List<AssetPageRow> build() {
         validate();
@@ -57,6 +59,11 @@ public class AssetPageRowBuilder
 
     public AssetPageRowBuilder withPageRequest(PageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public AssetPageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 

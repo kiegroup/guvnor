@@ -26,6 +26,7 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
+import org.jboss.seam.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -44,6 +45,9 @@ public class RepositoryCategoryOperations {
 
     @Inject
     private ServiceSecurity serviceSecurity;
+
+    @Inject
+    private Identity identity;
 
     @Deprecated
     public void setRulesRepositoryForTest(RulesRepository repository) {
@@ -136,6 +140,7 @@ public class RepositoryCategoryOperations {
 
         List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(result.assets.iterator())
                 .build();
 

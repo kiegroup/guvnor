@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.repository.AssetItem;
+import org.jboss.seam.security.Identity;
 
 public class StatePageRowBuilder
     implements
@@ -30,6 +31,7 @@ public class StatePageRowBuilder
 
     private PageRequest         pageRequest;
     private Iterator<AssetItem> iterator;
+    private Identity identity;
 
     public List<StatePageRow> build() {
         validate();
@@ -71,6 +73,11 @@ public class StatePageRowBuilder
 
     public StatePageRowBuilder withPageRequest(PageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public StatePageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 

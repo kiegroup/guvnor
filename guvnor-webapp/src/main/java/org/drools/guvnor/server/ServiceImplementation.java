@@ -86,6 +86,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.mvel2.MVEL;
@@ -125,6 +126,9 @@ public class ServiceImplementation
 
     @Inject
     private Backchannel backchannel;
+
+    @Inject
+    private Identity identity;
 
     // TODO seam3upgrade
     public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
@@ -278,7 +282,7 @@ public class ServiceImplementation
 
         // TODO: May need to use a filter that acts on both package based and
         // category based.
-        RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter filter = new AssetItemFilter(identity);
         AssetItemPageResult result = rulesRepository.findAssetsByState( stateName,
                                                                              false,
                                                                              skip,
@@ -341,7 +345,7 @@ public class ServiceImplementation
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
-        RepositoryFilter packageFilter = new PackageFilter();
+        RepositoryFilter packageFilter = new PackageFilter(identity);
         RepositoryFilter categoryFilter = new CategoryFilter();
 
         while ( it.hasNext() ) {
@@ -494,6 +498,7 @@ public class ServiceImplementation
 
         List<LogPageRow> rowList = new LogPageRowBuilder()
                                        .withPageRequest( request )
+                                        .withIdentity( identity )
                                        .withContent( logEntries )
                                            .build();
 
@@ -578,6 +583,7 @@ public class ServiceImplementation
 
         List<PermissionsPageRow> rowList = new PermissionPageRowBuilder()
                                                 .withPageRequest( request )
+                                                .withIdentity( identity )
                                                 .withContent( permissions )
                                                     .build();
 
@@ -694,6 +700,7 @@ public class ServiceImplementation
             Iterator<InboxEntry> iterator = entries.iterator();
             List<InboxPageRow> rowList = new InboxPageRowBuilder()
                                             .withPageRequest( request )
+                                            .withIdentity( identity )
                                             .withContent( iterator )
                                                 .build();
 
@@ -796,6 +803,7 @@ public class ServiceImplementation
 
         List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder()
                                             .withPageRequest( request )
+                                            .withIdentity( identity )
                                             .withContent( iterator )
                                                 .build();
         boolean bHasMoreRows = iterator.hasNext();
@@ -835,6 +843,7 @@ public class ServiceImplementation
 
         List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder()
                                             .withPageRequest( request )
+                                            .withIdentity( identity )
                                             .withContent( iterator )
                                                 .build();
         boolean bHasMoreRows = iterator.hasNext();
@@ -892,7 +901,7 @@ public class ServiceImplementation
                                                                              false,
                                                                              request.getStartRowIndex(),
                                                                              numRowsToReturn,
-                                                                             new AssetItemFilter() );
+                                                                             new AssetItemFilter(identity) );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
@@ -900,6 +909,7 @@ public class ServiceImplementation
 
         List<StatePageRow> rowList = new StatePageRowBuilder()
                                             .withPageRequest( request )
+                                            .withIdentity( identity )
                                             .withContent( result.assets.iterator() )
                                                 .build();
 

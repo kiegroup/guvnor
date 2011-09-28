@@ -44,6 +44,7 @@ import org.drools.testframework.ScenarioRunner;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
 import java.io.IOException;
@@ -66,6 +67,9 @@ public class RepositoryPackageService
     private ServiceSecurity serviceSecurity;
 
     @Inject
+    private Identity identity;
+
+    @Inject
     private RepositoryPackageOperations repositoryPackageOperations;
 
     @Inject
@@ -86,7 +90,7 @@ public class RepositoryPackageService
     @WebRemote
     @LoggedIn
     public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
+        RepositoryFilter pf = new PackageFilter(identity);
         return repositoryPackageOperations.listPackages(
                 false,
                 workspace,
@@ -105,7 +109,7 @@ public class RepositoryPackageService
         return repositoryPackageOperations.listPackages(
                 true,
                 workspace,
-                new PackageFilter() );
+                new PackageFilter(identity) );
     }
 
     public PackageConfigData loadGlobalPackage() {

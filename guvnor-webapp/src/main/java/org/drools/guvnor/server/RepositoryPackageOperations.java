@@ -30,6 +30,7 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
+import org.jboss.seam.security.Identity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -60,6 +61,9 @@ public class RepositoryPackageOperations {
 
     @Inject
     private RulesRepository rulesRepository;
+
+    @Inject
+    private Identity identity;
 
     @Deprecated
     public void setRulesRepositoryForTest(RulesRepository repository) {
@@ -780,6 +784,7 @@ public class RepositoryPackageOperations {
 
         List<SnapshotComparisonPageRow> rowList = new SnapshotComparisonPageRowBuilder()
                 .withPageRequest( request )
+                .withIdentity(identity)
                 .withContent( diffs )
                 .build();
 

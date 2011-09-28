@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.repository.AssetItem;
+import org.jboss.seam.security.Identity;
 
 public class CategoryRuleListPageRowBuilder
     implements
@@ -30,6 +31,7 @@ public class CategoryRuleListPageRowBuilder
 
     private PageRequest         pageRequest;
     private Iterator<AssetItem> iterator;
+    private Identity identity;
 
     public List<CategoryPageRow> build() {
         validate();
@@ -60,6 +62,11 @@ public class CategoryRuleListPageRowBuilder
 
     public CategoryRuleListPageRowBuilder withPageRequest(final PageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public CategoryRuleListPageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 

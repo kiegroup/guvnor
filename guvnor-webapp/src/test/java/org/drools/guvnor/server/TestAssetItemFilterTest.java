@@ -9,21 +9,21 @@ import org.junit.Test;
 public class TestAssetItemFilterTest {
     @Test
     public void testAssetItemFilterAndDoesNotAccept() {
-        AssetItemFilter filter = new AssetItemFilter();
+        AssetItemFilter filter = new AssetItemFilter(null);
         assertFalse( filter.accept( new Object(),
                                     "action" ) );
     }
 
     @Test
     public void testAssetItemFilterAndAccepts() {
-        AssetItemFilter filter = new AssetItemFilter();
+        AssetItemFilter filter = new AssetItemFilter(null);
         assertTrue( filter.accept( new AssetItem(),
                                    "action" ) );
     }
 
     @Test
     public void testIsNullSafe() {
-        PackageFilter filter = new PackageFilter();
+        PackageFilter filter = new PackageFilter(null);
         assertFalse( filter.accept( null,
                                     null ) );
     }

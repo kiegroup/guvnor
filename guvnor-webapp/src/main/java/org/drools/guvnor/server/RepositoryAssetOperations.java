@@ -41,6 +41,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -58,6 +59,9 @@ public class RepositoryAssetOperations {
 
     @Inject
     private Backchannel backchannel;
+
+    @Inject
+    private Identity identity;
 
     @Inject
     private Credentials credentials;
@@ -245,7 +249,7 @@ public class RepositoryAssetOperations {
     protected TableDataResult loadArchivedAssets(int skip,
                                                  int numRows) {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
-        RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter filter = new AssetItemFilter(identity);
 
         AssetItemIterator it = rulesRepository.findArchivedAssets();
         it.skip(skip);
@@ -302,6 +306,7 @@ public class RepositoryAssetOperations {
 
         List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -376,7 +381,7 @@ public class RepositoryAssetOperations {
                 searchArchived);
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
-        RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter filter = new AssetItemFilter(identity);
 
         while (it.hasNext()) {
             AssetItem ai = it.next();
@@ -407,7 +412,7 @@ public class RepositoryAssetOperations {
                                             int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new PackageFilter();
+        RepositoryFilter filter = new PackageFilter(identity);
 
         AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
@@ -473,6 +478,7 @@ public class RepositoryAssetOperations {
 
         List<AssetPageRow> rowList = new AssetPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -511,6 +517,7 @@ public class RepositoryAssetOperations {
 
         List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
