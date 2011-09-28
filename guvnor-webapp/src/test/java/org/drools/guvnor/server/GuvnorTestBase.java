@@ -113,20 +113,6 @@ public abstract class GuvnorTestBase {
         }
     }
 
-//    protected void setUpMockIdentity() {
-//        MockIdentity mockIdentity = new MockIdentity();
-//        mockIdentity.setIsLoggedIn( true );
-//        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-//        resolver.setEnableRoleBasedAuthorization( false );
-//        mockIdentity.addPermissionResolver( new RoleBasedPermissionResolver() );
-//        setUpMockIdentity( mockIdentity );
-//    }
-//
-//    public void setUpMockIdentity(MockIdentity mockIdentity) {
-//        mockIdentity.inject();
-//        mockIdentity.create();
-//    }
-
     // ************************************************************************
     // Helper methods
     // ************************************************************************
