@@ -16,6 +16,7 @@
 package org.drools.guvnor.server;
 
 import java.io.File;
+import java.lang.IllegalStateException;
 
 import javax.inject.Inject;
 
@@ -32,6 +33,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+import org.jboss.weld.exceptions.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -44,8 +46,13 @@ public abstract class GuvnorTestBase {
     @Deployment
     public static WebArchive createDeployment() {
         // TODO FIXME do not hardcode the version number
+        File explodedWarFile = new File("target/guvnor-webapp-5.3.0-SNAPSHOT/");
+        if (!explodedWarFile.exists()) {
+            throw new IllegalStateException("The exploded war file (" + explodedWarFile
+                    + ") should exist, run \"mvn package\" first.");
+        }
         WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.3.0-SNAPSHOT.war")
-                .importDirectory(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/"))
+                .importDirectory(explodedWarFile)
                 .as(WebArchive.class)
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
                 .addAsLibraries(
