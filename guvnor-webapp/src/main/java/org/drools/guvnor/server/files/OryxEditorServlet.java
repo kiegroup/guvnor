@@ -2,6 +2,7 @@ package org.drools.guvnor.server.files;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.Credentials;
@@ -24,6 +25,9 @@ public class OryxEditorServlet extends HttpServlet {
 
     @Inject
     private Identity identity;
+
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
 
     public void service(HttpServletRequest request,
                         HttpServletResponse response)
@@ -56,7 +60,7 @@ public class OryxEditorServlet extends HttpServlet {
         log.debug("Successful login");
 
         try {
-            RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset(uuid);
+            RuleAsset asset = repositoryAssetService.loadRuleAsset(uuid);
             if (asset.getContent() != null) {
                 response.setContentType("application/xml");
                 response.setCharacterEncoding("UTF-8");

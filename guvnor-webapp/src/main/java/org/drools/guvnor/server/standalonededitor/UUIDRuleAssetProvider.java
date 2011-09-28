@@ -30,8 +30,11 @@ public class UUIDRuleAssetProvider
 
     private final String[] assetsUUIDs;
 
-    public UUIDRuleAssetProvider(String[] assetsUUIDs) {
+    private final RepositoryAssetService repositoryAssetService;
+
+    public UUIDRuleAssetProvider(String[] assetsUUIDs, RepositoryAssetService repositoryAssetService) {
         this.assetsUUIDs = assetsUUIDs;
+        this.repositoryAssetService = repositoryAssetService;
     }
 
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
@@ -41,7 +44,7 @@ public class UUIDRuleAssetProvider
 
             for (int i = 0; i < assetsUUIDs.length; i++) {
                 String uuid = assetsUUIDs[i];
-                assets[i] = this.getAssetService().loadRuleAsset(uuid);
+                assets[i] = repositoryAssetService.loadRuleAsset(uuid);
             }
 
             return assets;
@@ -50,10 +53,6 @@ public class UUIDRuleAssetProvider
                     ex.getMessage());
         }
 
-    }
-
-    private RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
     }
 
 }

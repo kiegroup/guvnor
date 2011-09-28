@@ -159,11 +159,11 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
                     assetFormat, serviceImplementation, repositoryAssetService);
             invocationParameters.setTemporalAssets(false);
         } else if (assetsUUIDs != null) {
-            provider = new UUIDRuleAssetProvider(assetsUUIDs);
+            provider = new UUIDRuleAssetProvider(assetsUUIDs, repositoryAssetService);
             invocationParameters.setTemporalAssets(false);
         } else if (initialBRL != null) {
             provider = new BRLRuleAssetProvider(packageName,
-                    initialBRL);
+                    initialBRL, repositoryAssetService);
             invocationParameters.setTemporalAssets(true);
         } else {
             throw new IllegalStateException();

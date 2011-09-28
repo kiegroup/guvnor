@@ -537,7 +537,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
     }
     
     public long getAssetCount(org.drools.guvnor.client.rpc.AssetPageRequest p0) throws com.google.gwt.user.client.rpc.SerializationException {
-        return getAssetService().findAssetPage( p0 ).getTotalRowSize();
+        return assetService.findAssetPage( p0 ).getTotalRowSize();
     }
 
     /**
