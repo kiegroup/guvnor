@@ -36,11 +36,11 @@ import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 
 import java.text.DateFormat;
 import java.util.*;
@@ -48,7 +48,7 @@ import java.util.*;
 /**
  * Handles operations for Assets
  */
-@Named("org.drools.guvnor.server.RepositoryAssetOperations")
+@ApplicationScoped
 public class RepositoryAssetOperations {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetOperations.class);
@@ -61,6 +61,9 @@ public class RepositoryAssetOperations {
 
     @Inject
     private Credentials credentials;
+
+    @Inject
+    private AssetLockManager assetLockManager;
 
     private String[]                   registeredFormats;
 
@@ -75,8 +78,9 @@ public class RepositoryAssetOperations {
         }
     }
 
-    // TODO seam3upgrade
-    public void setRulesRepository(RulesRepository repository) {
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
         this.rulesRepository = repository;
     }
 
@@ -522,32 +526,22 @@ public class RepositoryAssetOperations {
     }
 
     protected void lockAsset(String uuid) {
-        AssetLockManager lockManager = AssetLockManager.instance();
-
-        String userName;
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if ( beanManagerLocator.isBeanManagerAvailable() ) {
-            userName = credentials.getUsername();
-        } else {
-            userName = "anonymous";
-        }
+        String userName = credentials.getUsername();
 
         log.info("Locking asset uuid=" + uuid + " for user [" + userName + "]");
 
-        lockManager.lockAsset(uuid,
+        assetLockManager.lockAsset(uuid,
                 userName);
     }
 
     protected void unLockAsset(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
         log.info("Unlocking asset [" + uuid + "]");
-        alm.unLockAsset(uuid);
+        assetLockManager.unLockAsset(uuid);
     }
 
     protected String getAssetLockerUserName(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
 
-        String userName = alm.getAssetLockerUserName(uuid);
+        String userName = assetLockManager.getAssetLockerUserName(uuid);
 
         log.info("Asset locked by [" + userName + "]");
 
