@@ -19,8 +19,16 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' xmlns:guvnor='urn:import:org.drools.guvnor.client.common'>
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
+  <ui:with field="res" type="org.drools.guvnor.client.resources.GuvnorResources" />
 
   <gwt:VerticalPanel width="100%">
+    <gwt:HorizontalPanel ui:field="msgNoAssetsDefinedInPackage" styleName="{res.guvnorCss.warningContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.NoAssetsDefinedInPackage}" styleName="{res.guvnorCss.warningMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
     <gwt:VerticalPanel ui:field="assetGroupsContainer" width="100%"/>
   </gwt:VerticalPanel>
 

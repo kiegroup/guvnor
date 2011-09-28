@@ -649,6 +649,10 @@ public class PackageItem extends VersionableItem {
             }
 
             sql += " ORDER BY " + AssetItem.TITLE_PROPERTY_NAME;
+            
+            //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
+            //See http://markmail.org/message/mxmk5hkxrdtcc3hl
+            sql += ", jcr:score DESC";
 
             Query q = node.getSession().getWorkspace().getQueryManager().createQuery(sql,
                     Query.SQL);

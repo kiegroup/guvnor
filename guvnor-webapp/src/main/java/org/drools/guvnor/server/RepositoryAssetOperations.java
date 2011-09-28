@@ -462,22 +462,7 @@ public class RepositoryAssetOperations {
                 + request.getPackageUuid() + ")");
         long start = System.currentTimeMillis();
 
-        PackageItem packageItem = rulesRepository.loadPackageByUUID(request.getPackageUuid());
-
-        AssetItemIterator iterator;
-        if (request.getFormatInList() != null) {
-            if (request.getFormatIsRegistered() != null) {
-                throw new IllegalArgumentException("Combining formatInList and formatIsRegistered is not yet supported.");
-            }
-            iterator = packageItem.listAssetsByFormat(request.getFormatInList());
-
-        } else {
-            if (request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals(Boolean.FALSE)) {
-                iterator = packageItem.listAssetsNotOfFormat(registeredFormats);
-            } else {
-                iterator = packageItem.queryAssets("");
-            }
-        }
+        AssetItemIterator iterator = getAssetIterator( request );
 
         // Populate response
         long totalRowsCount = iterator.getSize();
@@ -492,6 +477,7 @@ public class RepositoryAssetOperations {
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
                 .buildWithTotalRowCount(totalRowsCount);
+        
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Found asset page of packageUuid ("
                 + request.getPackageUuid() + ") in " + methodDuration + " ms.");
@@ -653,16 +639,15 @@ public class RepositoryAssetOperations {
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                              String comment) {
-        RulesRepository repository = rulesRepository;
-        AssetItem asset = repository.loadAssetByUUID(assetId);
+        AssetItem asset = rulesRepository.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
-        discussion.add(new DiscussionRecord(repository.getSession().getUserID(),
+        discussion.add(new DiscussionRecord(rulesRepository.getSession().getUserID(),
                 StringEscapeUtils.escapeXml(comment)));
         asset.updateStringProperty(dp.toString(discussion),
                 Discussion.DISCUSSION_PROPERTY_KEY,
                 false);
-        repository.save();
+        rulesRepository.save();
 
         push("discussion",
                 assetId);
@@ -670,6 +655,38 @@ public class RepositoryAssetOperations {
         MailboxService.getInstance().recordItemUpdated(asset);
 
         return discussion;
+    }
+    
+    protected long getAssetCount(AssetPageRequest request) {
+        log.debug( "Counting assets in packageUuid (" + request.getPackageUuid() + ")" );
+        long start = System.currentTimeMillis();
+
+        AssetItemIterator iterator = getAssetIterator( request );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Counted assets in packageUuid ("
+                   + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        return iterator.getSize();
+    }
+    
+    private AssetItemIterator getAssetIterator(AssetPageRequest request) {
+        PackageItem packageItem = rulesRepository.loadPackageByUUID( request.getPackageUuid() );
+
+        AssetItemIterator iterator;
+        if ( request.getFormatInList() != null ) {
+            if ( request.getFormatIsRegistered() != null ) {
+                throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
+            }
+            iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
+
+        } else {
+            if ( request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals( Boolean.FALSE ) ) {
+                iterator = packageItem.listAssetsNotOfFormat( registeredFormats );
+            } else {
+                iterator = packageItem.queryAssets( "" );
+            }
+        }
+        return iterator;
     }
 
     private void push(String messageType,

@@ -664,7 +664,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
-        assertEquals( -1,
+        assertEquals( 0,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
 
@@ -739,7 +739,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
-        assertEquals( -1,
+        assertEquals( 0,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
         PackageItem packageItem = rulesRepository.loadPackage( packageName );

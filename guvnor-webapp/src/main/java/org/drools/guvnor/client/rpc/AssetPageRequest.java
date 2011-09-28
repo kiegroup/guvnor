@@ -50,6 +50,16 @@ public class AssetPageRequest extends PageRequest
         this.formatIsRegistered = formatIsRegistered;
     }
 
+    public AssetPageRequest(String packageUuid,
+                            List<String> formatInList,
+                            Boolean formatIsRegistered) {
+        super( 0,
+               null );
+        this.packageUuid = packageUuid;
+        this.formatInList = formatInList;
+        this.formatIsRegistered = formatIsRegistered;
+    }
+
     // ************************************************************************
     // Getters and setters
     // ************************************************************************

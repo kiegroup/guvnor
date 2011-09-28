@@ -15,8 +15,26 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.rpc.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -34,11 +52,7 @@ import org.jboss.seam.security.annotations.LoggedIn;
 import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.Identity;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Named("org.drools.guvnor.client.rpc.AssetService")
 public class RepositoryAssetService
@@ -551,6 +565,14 @@ public class RepositoryAssetService
     @LoggedIn
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName(uuid);
+    }
+    
+    @LoggedIn
+    public long getAssetCount(AssetPageRequest request) throws SerializationException {
+        if (request == null) {
+            throw new IllegalArgumentException("request cannot be null");
+        }
+        return repositoryAssetOperations.getAssetCount(request);
     }
 
     private void push(String messageType,

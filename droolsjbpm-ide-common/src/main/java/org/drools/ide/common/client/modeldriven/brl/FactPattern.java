@@ -26,7 +26,8 @@ import java.util.List;
 public class FactPattern
     implements
     IFactPattern,
-    HasCEPWindow {
+    HasCEPWindow,
+    HasConstraints {
 
     public CompositeFieldConstraint constraintList;
     private String                  factType;
@@ -130,6 +131,20 @@ public class FactPattern
             this.window = new CEPWindow();
         }
         return this.window;
+    }
+
+    public FieldConstraint getConstraint(int index) {
+        if ( this.constraintList == null ) {
+            return null;
+        }
+        return this.constraintList.getConstraint( index );
+    }
+
+    public int getNumberOfConstraints() {
+        if ( this.constraintList == null ) {
+            return 0;
+        }
+        return this.constraintList.getNumberOfConstraints();
     }
 
 }

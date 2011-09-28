@@ -49,18 +49,18 @@ public class EnumDropDownLabel extends Composite {
     protected Command                    onValueChangeCommand;
 
     protected FactPattern                pattern;
-    protected String                     fieldName;
+    protected String                     qualifiedFieldName;
     protected SuggestionCompletionEngine sce;
     protected BaseSingleFieldConstraint  constraint;
     protected boolean                    enabled;
 
     public EnumDropDownLabel(FactPattern pattern,
-                             String fieldName,
+                             String qualifiedFieldName,
                              SuggestionCompletionEngine sce,
                              BaseSingleFieldConstraint constraint,
                              boolean enabled) {
         this.pattern = pattern;
-        this.fieldName = fieldName;
+        this.qualifiedFieldName = qualifiedFieldName;
         this.constraint = constraint;
         this.sce = sce;
         this.enabled = enabled;
@@ -99,7 +99,17 @@ public class EnumDropDownLabel extends Composite {
             ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
             valueType = cc.getFieldType();
         } else {
-            valueType = sce.getFieldType( pattern.getFactType(),
+            
+            String factType = this.pattern.getFactType();
+            String fieldName = this.qualifiedFieldName;
+            if ( fieldName.contains( "." ) ) {
+                int index = fieldName.indexOf( "." );
+                factType = fieldName.substring( 0,
+                                                index );
+                fieldName = fieldName.substring( index + 1 );
+            }
+            
+            valueType = sce.getFieldType( factType,
                                           fieldName );
         }
 
@@ -108,7 +118,7 @@ public class EnumDropDownLabel extends Composite {
             dropDownData = DropDownData.create( new String[]{"true", "false"} ); //NON-NLS
         } else {
             dropDownData = sce.getEnums( pattern,
-                                         fieldName );
+                                         qualifiedFieldName );
         }
         return dropDownData;
     }
@@ -121,7 +131,6 @@ public class EnumDropDownLabel extends Composite {
                                                                                 String newValue) {
                                                            constraint.setValue( newValue );
                                                            textWidget.setText( newText );
-                                                           okButton.click();
                                                        }
                                                    },
                                                    getDropDownData() );

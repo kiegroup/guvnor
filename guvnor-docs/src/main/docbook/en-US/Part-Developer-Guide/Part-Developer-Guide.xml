@@ -8,10 +8,10 @@
       xmlns:m="http://www.w3.org/1998/Math/MathML"
       xmlns:html="http://www.w3.org/1999/xhtml"
       xmlns:db="http://docbook.org/ns/docbook">
-  <title>Integration Guide</title>
+  <title>Developer Guide</title>
 
   <partintro>
-    <para>This part covers Guvnor integration with external Applications.</para>
+    <para>This part covers Guvnor for software developers.</para>
   </partintro>
 
   <xi:include href="Chapter-Integrating_Rules/Chapter-1-Integration.xml"

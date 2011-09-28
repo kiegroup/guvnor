@@ -16,6 +16,11 @@
 
 package org.drools.guvnor.server.repository;
 
+import java.security.Principal;
+
+import javax.security.auth.Subject;
+
+import org.drools.repository.ClassUtil;
 import org.drools.repository.RulesRepository;
 import javax.annotation.PostConstruct;
 
@@ -24,6 +29,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.enterprise.inject.Produces;
 import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
+import org.jboss.security.SecurityContext;
+import org.jboss.security.SecurityContextAssociation;
+import org.jboss.security.SecurityContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Request scoped bean that produces the RulesRepository
@@ -32,10 +43,15 @@ import org.jboss.seam.security.Credentials;
 public class RulesRepositoryManager {
 
     private static final String DEFAULT_USERNAME = "guest";
+    
+    private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
 
     @Inject
-    RepositoryStartupService repositoryStartupService;
+    private RepositoryStartupService repositoryStartupService;
 
+    @Inject
+    private Identity identity;
+    
     @Inject
     private Credentials credentials;
 
@@ -50,7 +66,30 @@ public class RulesRepositoryManager {
             // with limited privileges. In Guvnor, access control is done in a higher level.
             username = DEFAULT_USERNAME;
         }
+        doSecurityContextAssociation();
         rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));
+    }
+
+    private void doSecurityContextAssociation() {
+        // TODO seam3upgrade seam3 uses PicketLink, not JAAS. If JaasAuthenticator is configured, we can extract the jaasConfigName there
+//        // Also set the JBoss security context if the JAAS realm is found.
+//        try {
+//            String configName = jaasAuthenticator.getJaasConfigName();
+//            boolean isJBoss = true;
+//            try {
+//                ClassUtil.forName("org.jboss.security.SecurityContext", this.getClass());
+//            } catch (ClassNotFoundException e) {
+//                isJBoss = false;
+//            }
+//            if (isJBoss && configName != null) {
+//                Subject subject = identity.getSubject();
+//                Principal principal = subject.getPrincipals().iterator().next();
+//                SecurityContext sc = SecurityContextFactory.createSecurityContext(principal, null, subject, configName);
+//                SecurityContextAssociation.setSecurityContext(sc);
+//            }
+//        } catch (Exception e1) {
+//            log.error("Not able to set the JAAS security context", e1.getMessage(),e1);
+//        }
     }
 
     @Produces @Named("repository")

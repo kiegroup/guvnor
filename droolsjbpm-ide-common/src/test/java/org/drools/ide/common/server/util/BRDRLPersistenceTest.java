@@ -1496,4 +1496,224 @@ public class BRDRLPersistenceTest {
                       drl );
     }
 
+    @Test
+    public void testCompositeOrConstraints() {
+        RuleModel m = new RuleModel();
+        m.name = "or composite";
+
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
+        p.addConstraint( comp );
+
+        final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldName( "gooField" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc1.setValue( "gooValue" );
+        sfc1.setOperator( "==" );
+        comp.addConstraint( sfc1 );
+
+        final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFieldName( "fooField" );
+        sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc2.setOperator( "!= null" );
+        comp.addConstraint( sfc2 );
+
+        final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
+        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setParent( sfc2 );
+        sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc3.setValue( "barValue" );
+        sfc3.setOperator( "==" );
+        comp.addConstraint( sfc3 );
+
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"or composite\""
+            + "dialect \"mvel\"\n"
+            + "when\n"
+            + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\" )\n"
+            + "then\n"
+            + "insert( new Whee() );\n"
+            + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+
+    @Test
+    public void testCompositeOrConstraintsComplex() {
+        RuleModel m = new RuleModel();
+        m.name = "or composite complex";
+
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_OR;
+        p.addConstraint( comp );
+
+        final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldName( "gooField" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc1.setValue( "gooValue" );
+        sfc1.setOperator( "==" );
+        comp.addConstraint( sfc1 );
+
+        final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFieldName( "fooField" );
+        sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc2.setOperator( "!= null" );
+        comp.addConstraint( sfc2 );
+
+        final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
+        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setParent( sfc2 );
+        sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc3.setValue( "barValue" );
+        sfc3.setOperator( "==" );
+        comp.addConstraint( sfc3 );
+
+        final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
+        sfc4.setFieldName( "zooField" );
+        sfc4.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc4.setValue( "zooValue" );
+        sfc4.setOperator( "==" );
+        p.addConstraint( sfc4 );
+        
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"or composite complex\""
+            + "dialect \"mvel\"\n"
+            + "when\n"
+            + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+            + "then\n"
+            + "insert( new Whee() );\n"
+            + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+    
+    @Test
+    public void testCompositeAndConstraints() {
+        RuleModel m = new RuleModel();
+        m.name = "and composite";
+
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
+        p.addConstraint( comp );
+
+        final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldName( "gooField" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc1.setValue( "gooValue" );
+        sfc1.setOperator( "==" );
+        comp.addConstraint( sfc1 );
+
+        final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFieldName( "fooField" );
+        sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc2.setOperator( "!= null" );
+        comp.addConstraint( sfc2 );
+
+        final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
+        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setParent( sfc2 );
+        sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc3.setValue( "barValue" );
+        sfc3.setOperator( "==" );
+        comp.addConstraint( sfc3 );
+
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"and composite\""
+            + "dialect \"mvel\"\n"
+            + "when\n"
+            + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\" )\n"
+            + "then\n"
+            + "insert( new Whee() );\n"
+            + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+
+    @Test
+    public void testCompositeAndConstraintsComplex() {
+        RuleModel m = new RuleModel();
+        m.name = "and composite complex";
+
+        FactPattern p = new FactPattern( "Goober" );
+        m.addLhsItem( p );
+        CompositeFieldConstraint comp = new CompositeFieldConstraint();
+        comp.compositeJunctionType = CompositeFieldConstraint.COMPOSITE_TYPE_AND;
+        p.addConstraint( comp );
+
+        final SingleFieldConstraint sfc1 = new SingleFieldConstraint();
+        sfc1.setFieldName( "gooField" );
+        sfc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc1.setValue( "gooValue" );
+        sfc1.setOperator( "==" );
+        comp.addConstraint( sfc1 );
+
+        final SingleFieldConstraint sfc2 = new SingleFieldConstraint();
+        sfc2.setFieldName( "fooField" );
+        sfc2.setFieldType( SuggestionCompletionEngine.TYPE_OBJECT );
+        sfc2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc2.setOperator( "!= null" );
+        comp.addConstraint( sfc2 );
+
+        final SingleFieldConstraint sfc3 = new SingleFieldConstraint();
+        sfc3.setFieldName( "Foo.barField" );
+        sfc3.setParent( sfc2 );
+        sfc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc3.setValue( "barValue" );
+        sfc3.setOperator( "==" );
+        comp.addConstraint( sfc3 );
+        
+        final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
+        sfc4.setFieldName( "zooField" );
+        sfc4.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        sfc4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        sfc4.setValue( "zooValue" );
+        sfc4.setOperator( "==" );
+        p.addConstraint( sfc4 );
+
+        ActionInsertFact ass = new ActionInsertFact( "Whee" );
+        m.addRhsItem( ass );
+
+        String actual = BRDRLPersistence.getInstance().marshal( m );
+        String expected = "rule \"and composite complex\""
+            + "dialect \"mvel\"\n"
+            + "when\n"
+            + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+            + "then\n"
+            + "insert( new Whee() );\n"
+            + "end";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      actual );
+    }
+    
 }

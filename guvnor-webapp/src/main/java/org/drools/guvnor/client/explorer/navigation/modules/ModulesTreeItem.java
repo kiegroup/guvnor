@@ -46,6 +46,7 @@ public class ModulesTreeItem extends ModulesTreeItemBase {
                 new RefreshModuleListEventHandler() {
                     public void onRefreshList(RefreshModuleListEvent refreshModuleListEvent) {
                         getView().clearModulesTreeItem();
+                        packageHierarchy.clear();
                         setUpRootItem();
                     }
                 });
