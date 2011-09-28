@@ -275,7 +275,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                     conditionDefinition.setVisible( true );
                     validateConditionHeader();
                     validateConditionOperator();
-                    validateConditionLimitedEntryValue();
                     populateConditionDefinition();
                     enableMoveUpButton();
                     enableMoveDownButton();
@@ -308,7 +307,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
             private void populateConditionDefinition() {
 
-                //Fields common to all table formats
+                // Fields common to all table formats
                 txtColumnHeader.setEnabled( true );
                 txtColumnHeader.setText( chosenConditionsSelection.getHeader() );
 
@@ -321,7 +320,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 criteriaExtendedEntry.setVisible( presenter.getTableFormat() == TableFormat.EXTENDED_ENTRY );
                 criteriaLimitedEntry.setVisible( presenter.getTableFormat() == TableFormat.LIMITED_ENTRY );
 
-                //Fields specific to the table format
+                // Fields specific to the table format
                 switch ( presenter.getTableFormat() ) {
                     case EXTENDED_ENTRY :
                         txtDefaultValue.setEnabled( true );
@@ -364,7 +363,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                         calculationType.setVisible( false );
                         makeLimitedValueWidget();
 
-                        //If operator changes the widget used to populate the value can change
+                        // If operator changes the widget used to populate the
+                        // value can change
                         ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
                             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
@@ -392,9 +392,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                     return;
                 }
                 limitedEntryValueContainer.setVisible( true );
-                limitedEntryValueWidgetContainer.setVisible( doesOperatorNeedValue );
                 if ( lec.getValue() == null ) {
-                    lec.setValue( factory.makeNewValue(chosenConditionsSelection) );
+                    lec.setValue( factory.makeNewValue( chosenConditionsSelection ) );
                 }
                 limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenConditionsSelection,
                                                                                lec.getValue() ) );
@@ -417,17 +416,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
             operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
-        }
-    }
-
-    private void validateConditionLimitedEntryValue() {
-        if ( presenter.getTableFormat() != TableFormat.LIMITED_ENTRY ) {
-            return;
-        }
-        if ( validator.isConditionLimitedEntryValueValid( chosenConditionsSelection ) ) {
-            limitedEntryValueContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
-        } else {
-            limitedEntryValueContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
         }
     }
 
@@ -474,7 +462,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 String expression = txtPredicateExpression.getText();
                 chosenConditionsSelection.setFactField( expression );
 
-                //Redraw list widget that shows Predicate expressions
+                // Redraw list widget that shows Predicate expressions
                 chosenConditionsWidget.redraw();
 
             }
@@ -488,7 +476,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String defaultValue = txtDefaultValue.getText();
                 chosenConditionsSelection.setDefaultValue( defaultValue );
-                //DefaultValue is optional, no need to advise of state change
+                // DefaultValue is optional, no need to advise of state change
             }
 
         } );
@@ -500,7 +488,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String valueList = txtValueList.getText();
                 chosenConditionsSelection.setValueList( valueList );
-                //ValueList is optional, no need to advise of state change
+                // ValueList is optional, no need to advise of state change
             }
 
         } );
@@ -584,7 +572,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         if ( availablePatternsSelection != null ) {
 
-            //If the currently selected pattern is no longer available clear selections
+            // If the currently selected pattern is no longer available clear
+            // selections
             if ( !availablePatterns.contains( availablePatternsSelection ) ) {
                 setAvailableFields( new ArrayList<AvailableField>() );
                 availablePatternsSelection = null;
@@ -595,7 +584,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             }
         } else {
 
-            //If no available pattern is selected clear fields
+            // If no available pattern is selected clear fields
             setAvailableFields( new ArrayList<AvailableField>() );
             setChosenConditions( new ArrayList<ConditionCol52>() );
         }

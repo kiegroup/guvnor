@@ -69,15 +69,24 @@
           <gwt:TextBox ui:field="txtColumnHeader" enabled="false" styleName="{res.style.wizardDTableFields}" />
           <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
         </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
-          <gwt:Label text="{i18n.optionalValueList}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:TextBox ui:field="txtValueList" enabled="false" styleName="{res.style.wizardDTableFields}" />
-          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
-        </gwt:HorizontalPanel>
-        <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
-          <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:TextBox ui:field="txtDefaultValue" enabled="false" styleName="{res.style.wizardDTableFields}" />
-        </gwt:HorizontalPanel>
+        <gwt:VerticalPanel ui:field="criteriaExtendedEntry">
+          <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+            <gwt:Label text="{i18n.optionalValueList}" styleName="{res.style.wizardDTableFields}" />
+            <gwt:TextBox ui:field="txtValueList" enabled="false" styleName="{res.style.wizardDTableFields}" />
+            <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.ValueList}" message="{i18n.ValueListsExplanation}"/>
+          </gwt:HorizontalPanel>
+          <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+            <gwt:Label text="{i18n.DefaultValue}" styleName="{res.style.wizardDTableFields}" />
+            <gwt:TextBox ui:field="txtDefaultValue" enabled="false" styleName="{res.style.wizardDTableFields}" />
+          </gwt:HorizontalPanel>
+        </gwt:VerticalPanel>
+        <gwt:VerticalPanel ui:field="criteriaLimitedEntry">
+          <gwt:HorizontalPanel ui:field="limitedEntryValueContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
+            <gwt:Label text="{i18n.LimitedEntryValue}" styleName="{res.style.wizardDTableFields}" />
+            <gwt:SimplePanel ui:field="limitedEntryValueWidgetContainer" styleName="{res.style.wizardDTableFields}" />
+            <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
+          </gwt:HorizontalPanel>
+        </gwt:VerticalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:CheckBox ui:field="chkUpdateEngine" styleName="{res.style.wizardDTableFields}" text="{i18n.UpdateEngineWithChanges}"/>
           <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.UpdateFact}" message="{i18n.UpdateDescription}"/>

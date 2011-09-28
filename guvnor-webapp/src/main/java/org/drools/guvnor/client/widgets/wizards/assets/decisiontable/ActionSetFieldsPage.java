@@ -29,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -109,6 +110,8 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         }
 
         view.setPresenter( this );
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
         content.setWidget( view );
     }
 
@@ -186,6 +189,10 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
                 dtable.getActionCols().add( af );
             }
         }
+    }
+
+    public TableFormat getTableFormat() {
+        return dtable.getTableFormat();
     }
 
 }
