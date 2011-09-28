@@ -15,10 +15,6 @@
  */
 package org.drools.guvnor.client.explorer.navigation.qa;
 
-import org.drools.guvnor.client.common.SmallLabel;
-import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.util.PercentageBar;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,44 +22,31 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import org.drools.guvnor.client.common.SmallLabel;
+import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.util.PercentageBar;
 
 public class SummaryTableViewImpl extends Composite
-    implements
-    SummaryTableView {
+        implements
+        SummaryTableView {
 
-    private Constants constants         = GWT.create( Constants.class );
+    private Constants constants = GWT.create(Constants.class);
 
-    private FlexTable flexTable         = new FlexTable();
+    private FlexTable flexTable = new FlexTable();
 
     private Presenter presenter;
 
-    private int       summaryTableIndex = 0;
+    private int summaryTableIndex = 0;
 
     public SummaryTableViewImpl() {
-        initWidget( flexTable );
+        initWidget(flexTable);
     }
 
-    public void addRow(int failures,
-                       int total,
-                       String scenarioName,
-                       String uuid) {
-        SummaryTableRow row = new SummaryTableRow( uuid );
-
-        row.setName( scenarioName );
-
-        PercentageBar percentageBar = new PercentageBar();
-        percentageBar.setWidth( SummaryTableRow.BAR_WIDTH );
-        if ( failures > 0 ) {
-            percentageBar.setPercent( failures,
-                                      total );
-        } else {
-            percentageBar.setPercent( 100 );
-        }
-        row.setPercentageBar( percentageBar );
-
-        row.setFailuresOutOfTotalInfo( failures,
-                                       total );
-
+    public void addRow(SummaryTable.Row row) {
+        SummaryTableRow summaryTableRow = new SummaryTableRow(row.getUuid());
+        summaryTableRow.setName(row.getScenarioName());
+        summaryTableRow.setPercentage(row.getPercentage(), row.getBackgroundColor());
+        summaryTableRow.setMessage(row.getMessage());
         summaryTableIndex = summaryTableIndex + 1;
     }
 
@@ -76,48 +59,60 @@ public class SummaryTableViewImpl extends Composite
         final static int BAR_WIDTH = 150;
 
         public SummaryTableRow(String uuid) {
-            addOpenButton( uuid );
+            addOpenButton(uuid);
         }
 
         void setName(String scenarioName) {
-            flexTable.setWidget( summaryTableIndex,
-                                 0,
-                                 new SmallLabel( scenarioName + ":" ) );
-            flexTable.getFlexCellFormatter().setHorizontalAlignment( summaryTableIndex,
-                                                                     0,
-                                                                     HasHorizontalAlignment.ALIGN_RIGHT );
+            flexTable.setWidget(summaryTableIndex,
+                    0,
+                    new SmallLabel(scenarioName + ":"));
+            flexTable.getFlexCellFormatter().setHorizontalAlignment(summaryTableIndex,
+                    0,
+                    HasHorizontalAlignment.ALIGN_RIGHT);
 
         }
 
-        void setPercentageBar(PercentageBar percentageBar) {
-            flexTable.setWidget( summaryTableIndex,
-                                 1,
-                                 percentageBar );
-        }
-
-        void setFailuresOutOfTotalInfo(int failures,
-                                       int total) {
-            flexTable.setWidget( summaryTableIndex,
-                                 2,
-                                 new SmallLabel( constants.TestFailureBulkFailures(failures, total) ) );
+        void setMessage(String message) {
+            flexTable.setWidget(summaryTableIndex,
+                    2,
+                    new SmallLabel(message));
         }
 
         private void addOpenButton(String uuid) {
-            flexTable.setWidget( summaryTableIndex,
-                                 3,
-                                 createOpenButton( uuid ) );
+            flexTable.setWidget(summaryTableIndex,
+                    3,
+                    createOpenButton(uuid));
         }
 
         private Button createOpenButton(final String uuid) {
-            Button open = new Button( constants.Open() );
+            Button open = new Button(constants.Open());
 
-            open.addClickHandler( new ClickHandler() {
+            open.addClickHandler(new ClickHandler() {
                 public void onClick(ClickEvent event) {
-                    presenter.openTestScenario( uuid );
+                    presenter.openTestScenario(uuid);
                 }
-            } );
+            });
 
             return open;
         }
+
+        public void setPercentage(int percentage, String color) {
+            setPercentageBar(createPercentageBar(percentage, color));
+        }
+
+        private PercentageBar createPercentageBar(int percentage, String color) {
+            PercentageBar percentageBar = new PercentageBar();
+            percentageBar.setPercent(percentage);
+            percentageBar.setBackgroundColor(color);
+            percentageBar.setWidth(SummaryTableRow.BAR_WIDTH);
+            return percentageBar;
+        }
+
+        void setPercentageBar(PercentageBar percentageBar) {
+            flexTable.setWidget(summaryTableIndex,
+                    1,
+                    percentageBar);
+        }
+
     }
 }

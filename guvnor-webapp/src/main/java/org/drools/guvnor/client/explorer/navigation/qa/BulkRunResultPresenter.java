@@ -19,26 +19,27 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 import com.google.gwt.user.client.Command;
 import org.drools.guvnor.client.rpc.BulkTestRunResult;
 import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.util.PercentageCalculator;
 
 /**
  * This presents the results of a bulk run.
  */
-public class BulkRunResult
+public class BulkRunResultPresenter
         implements
         BulkRunResultView.Presenter {
 
     private BulkTestRunResult result;
     private Command closeCommand;
 
-    private BulkRunResultView display;
+    private BulkRunResultView view;
 
-    private int grandTotal = 0;
-    private int totalFailures = 0;
+    private int totalAmountOfExpectations = 0;
+    private int totalAmountOfFailedExpectations = 0;
 
-    public BulkRunResult(BulkRunResultView display) {
-        this.display = display;
+    public BulkRunResultPresenter(BulkRunResultView view) {
+        this.view = view;
 
-        display.setPresenter(this);
+        view.setPresenter(this);
     }
 
     private void bind() {
@@ -50,13 +51,13 @@ public class BulkRunResult
     }
 
     private void showErrors() {
-        display.showErrors(result.getResult());
+        view.showErrors(result.getResult());
     }
 
     private void showResult() {
         showSummaries();
 
-        showFailuresOutOfExpetations();
+        showFailuresOutOfExpectations();
 
         showResultPercent();
 
@@ -68,20 +69,21 @@ public class BulkRunResult
     }
 
     private void showRulesCoveredPercent() {
-        display.setRulesCoveredPercent(result.getPercentCovered());
+        view.setRulesCoveredPercent(result.getPercentCovered());
     }
 
     private void showResultPercent() {
-        display.setResultsPercent(calculatePercentage());
+        view.setResultsPercent(calculatePercentage());
     }
 
     private int calculatePercentage() {
-        return (int) (((float) (grandTotal - totalFailures) / (float) grandTotal) * 100);
+        return (int) (((float) (totalAmountOfExpectations - totalAmountOfFailedExpectations) / (float) totalAmountOfExpectations) * 100);
     }
 
-    private void showFailuresOutOfExpetations() {
-        display.setFailuresOutOfExpectation(totalFailures,
-                grandTotal);
+    private void showFailuresOutOfExpectations() {
+        view.setFailuresOutOfExpectation(
+                totalAmountOfFailedExpectations,
+                totalAmountOfExpectations);
     }
 
     private void countTestsAndFailures() {
@@ -89,8 +91,8 @@ public class BulkRunResult
 
         if (scenarioResultSummaries != null) {
             for (ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries) {
-                grandTotal = grandTotal + scenarioResultSummary.getTotal();
-                totalFailures = totalFailures + scenarioResultSummary.getFailures();
+                totalAmountOfExpectations = totalAmountOfExpectations + scenarioResultSummary.getTotal();
+                totalAmountOfFailedExpectations = totalAmountOfFailedExpectations + scenarioResultSummary.getFailures();
             }
         }
     }
@@ -100,28 +102,41 @@ public class BulkRunResult
 
         if (scenarioResultSummaries != null) {
             for (ScenarioResultSummary scenarioResultSummary : scenarioResultSummaries) {
-                display.addSummary(scenarioResultSummary);
+                if (scenarioResultSummary.getTotal() == 0) {
+                    view.addMissingExpectationSummaryTableRow(
+                            scenarioResultSummary.getScenarioName(),
+                            scenarioResultSummary.getUuid());
+                } else {
+                    view.addNormalSummaryTableRow(
+                            scenarioResultSummary.getFailures(),
+                            scenarioResultSummary.getTotal(),
+                            scenarioResultSummary.getScenarioName(),
+                            PercentageCalculator.calculatePercent(
+                                    scenarioResultSummary.getFailures(),
+                                    scenarioResultSummary.getTotal()),
+                            scenarioResultSummary.getUuid());
+                }
             }
         }
     }
 
     private void showOverAllStatus() {
         if (hasFailures()) {
-            display.setFailed();
+            view.setFailed();
         } else {
-            display.setSuccess();
+            view.setSuccess();
         }
     }
 
     private boolean hasFailures() {
-        return totalFailures > 0;
+        return totalAmountOfFailedExpectations > 0;
     }
 
     private void showUncoveredRules() {
         String[] rulesNotCovered = result.getRulesNotCovered();
         if (rulesNotCovered != null) {
             for (String ruleName : rulesNotCovered) {
-                display.addUncoveredRules(ruleName);
+                view.addUncoveredRules(ruleName);
             }
         }
     }
