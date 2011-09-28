@@ -56,6 +56,21 @@ public abstract class GuvnorTestBase {
         return webArchive;
     }
 
+//    @Deployment
+//    public static WebArchive createDeployment() {
+//        WebArchive webArchive = ShrinkWrap.create(WebArchive.class)
+//                .addAsResource(new File("target/classes/"))
+//                .addAsWebInfResource(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/WEB-INF/web.xml"), "web.xml")
+//                .addAsWebInfResource(new File("target/guvnor-webapp-5.3.0-SNAPSHOT/WEB-INF/beans.xml"), "beans.xml")
+//                .addAsLibraries(
+//                        DependencyResolvers.use(MavenDependencyResolver.class)
+//                                .includeDependenciesFromPom("pom.xml")
+//                                .resolveAsFiles(new ScopeFilter("", "compile", "runtime", "test")));
+//
+//        return webArchive;
+//        // TODO use loadMetadataFromPom instead
+//    }
+
     @Inject
     protected RulesRepository rulesRepository;
 
