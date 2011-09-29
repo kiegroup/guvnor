@@ -84,11 +84,16 @@ public class Connectives {
 
                 ConnectiveConstraint con = c.connectives[i];
 
+                String fieldName = c.getFieldName();
+                if ( fieldName.contains( "." ) ) {
+                    fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                }
+
                 hp.add( connectiveOperatorDropDown( con,
-                                                    c.getFieldName() ) );
+                                                    fieldName ) );
                 hp.add( connectiveValueEditor( con,
                                                factClass,
-                                               c.getFieldName() ) );
+                                               fieldName ) );
 
                 if ( !isReadOnly ) {
                     Image clear = new ImageButton( images.deleteItemSmall() );
