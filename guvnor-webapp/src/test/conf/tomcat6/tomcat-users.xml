@@ -5,8 +5,8 @@
   This file changes that.
 -->
 
-  <role rolename="manager"/>
-  <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
-  <user username="admin" password="admin" roles="manager"/>
+  <role rolename="manager-script"/>
+  <!-- Keep username/password in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
+  <user username="admin" password="admin" roles="manager-script"/>
 
 </tomcat-users>
