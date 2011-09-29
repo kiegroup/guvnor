@@ -5,7 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+         xmlns:ns="http://docbook.org/ns/docbook" xml:base="../..">
   <title>Status management</title>
 
   <para>Each asset (and also package) in Guvnor has a status flag set. The
@@ -25,7 +25,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AssetChangeStatus.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" scalefit="1"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -41,7 +41,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/PackageChangeStatus.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+                   format="PNG" scalefit="1"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
