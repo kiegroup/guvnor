@@ -384,7 +384,7 @@
       <version>3.1.0.Beta2</version>
     </dependency>
     <!--<dependency>-->
-      <!--<groupId>org.jboss.seam.remoting</groupId>-->
+      <!--<groupId>org.jboss.seam.rest</groupId>-->
       <!--<artifactId>seam-rest</artifactId>-->
       <!--<version>3.1.0.Beta2</version>-->
     <!--</dependency>-->
