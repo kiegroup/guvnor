@@ -76,11 +76,18 @@ public class Connectives {
             DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
             for ( int i = 0; i < c.connectives.length; i++ ) {
                 ConnectiveConstraint con = c.connectives[i];
+
+                String fieldName = c.getFieldName();
+                if ( fieldName.contains( "." ) ) {
+                    fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                }
+
                 horiz.add( connectiveOperatorDropDown( con,
-                                                       c.getFieldName() ) );
+                                                    fieldName ) );
                 horiz.add( connectiveValueEditor( con,
-                                                  factClass,
-                                                  c.getFieldName() ) );
+                                               factClass,
+                                               fieldName ) );
+
             }
             return horiz;
         } else {

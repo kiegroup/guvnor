@@ -102,9 +102,13 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
-            this.fieldName = cc.getFieldName();
+            fieldName = cc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            this.fieldName = fieldName;
             this.fieldType = cc.getFieldType();
-            this.qualifiedFieldName = this.fieldName;
+            this.qualifiedFieldName = cc.getFieldName();
 
         } else {
             this.qualifiedFieldName = fieldName;
