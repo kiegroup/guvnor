@@ -26,6 +26,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -77,16 +78,11 @@ public class Connectives {
             for ( int i = 0; i < c.connectives.length; i++ ) {
                 ConnectiveConstraint con = c.connectives[i];
 
-                String fieldName = c.getFieldName();
-                if ( fieldName.contains( "." ) ) {
-                    fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
-                }
-
                 horiz.add( connectiveOperatorDropDown( con,
-                                                    fieldName ) );
+                                                       c ) );
                 horiz.add( connectiveValueEditor( con,
-                                               factClass,
-                                               fieldName ) );
+                                                  factClass,
+                                                  c.getFieldName() ) );
 
             }
             return horiz;
@@ -108,24 +104,40 @@ public class Connectives {
                                           false );
     }
 
-    private Widget connectiveOperatorDropDown(final ConnectiveConstraint con,
-                                              String fieldName) {
+    private Widget connectiveOperatorDropDown(final ConnectiveConstraint cc,
+                                              final SingleFieldConstraint sfc) {
 
+        String fieldName = cc.getFieldName();
         String factType = this.pattern.getFactType();
+
+        if ( fieldName.contains( "." ) ) {
+            int index = fieldName.indexOf( "." );
+            factType = fieldName.substring( 0,
+                                            index );
+            fieldName = fieldName.substring( index + 1 );
+        }
+
+        if ( sfc instanceof SingleFieldConstraintEBLeftSide ) {
+            SingleFieldConstraintEBLeftSide sfcex = (SingleFieldConstraintEBLeftSide) sfc;
+            factType = sfcex.getExpressionLeftSide().getPreviousClassType();
+        }
+
         String[] operators = this.getCompletions().getConnectiveOperatorCompletions( factType,
                                                                                      fieldName );
         CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
-                                                           con );
+                                                           cc );
 
         w.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
 
             public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
                 OperatorSelection selection = event.getValue();
                 String selected = selection.getValue();
-                con.setOperator( selected );
+                cc.setOperator( selected );
             }
         } );
 
         return w;
+
     }
+
 }
