@@ -19,12 +19,9 @@ package org.drools.guvnor.server;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.util.BeanManagerUtils;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.jboss.seam.security.AuthorizationException;
 
 import javax.inject.Inject;
@@ -59,53 +56,6 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     @Inject
     private RepositoryCategoryService categoryService;
-
-    @Deprecated // TODO seam3upgrade
-    public static ServiceImplementation getService() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return (ServiceImplementation) BeanManagerUtils.getInstance("org.drools.guvnor.client.rpc.RepositoryService");
-        }
-        //this is only for out of container hosted mode in GWT
-        synchronized (RepositoryServiceServlet.class) {
-            ServiceImplementation serviceImplementation = new ServiceImplementation();
-            serviceImplementation.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-            return serviceImplementation;
-        }
-    }
-
-    @Deprecated ///TODO seam3upgrade
-    public static RepositoryAssetService getAssetService() {
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return (RepositoryAssetService) beanManagerLocator.getBeanManager().getBeans( "org.drools.guvnor.client.rpc.AssetService" );
-        }
-        //this is only for out of container hosted mode in GWT
-        synchronized (RepositoryServiceServlet.class) {
-            RepositoryAssetService repositoryAssetService = new RepositoryAssetService();
-            repositoryAssetService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-
-            return repositoryAssetService;
-        }
-
-    }
-
-    @Deprecated ///TODO seam3upgrade
-    public static RepositoryPackageService getPackageService() {
-        throw new IllegalStateException("Use @Inject RepositoryPackageService packageService instead of this hack.");
-//        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-//        if (beanManagerLocator.isBeanManagerAvailable()) {
-//            return (RepositoryPackageService) BeanManagerUtils.getInstance( "org.drools.guvnor.client.rpc.PackageService" );
-//        }
-        // this is only for out of container hosted mode in GWT - TODO seam 3 upgrade will delete this hack
-//        synchronized (RepositoryServiceServlet.class) {
-//            RepositoryPackageService repositoryPackageService = new RepositoryPackageService();
-//            repositoryPackageService.setRulesRepository( new RulesRepository( TestEnvironmentSessionHelper.getSession( false ) ) );
-//
-//            handleTestListenerInit();
-//            return repositoryPackageService;
-//        }
-    }
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {

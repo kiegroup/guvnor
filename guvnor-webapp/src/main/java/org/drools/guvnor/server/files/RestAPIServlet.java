@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;

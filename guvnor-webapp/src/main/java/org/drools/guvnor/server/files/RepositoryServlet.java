@@ -16,10 +16,7 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.util.BeanManagerUtils;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.solder.beanManager.BeanManagerLocator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,26 +40,6 @@ public class RepositoryServlet extends HttpServlet {
 
     @Inject
     protected AuthorizationHeaderChecker authorizationHeaderChecker;
-
-    @Deprecated
-    public static FileManagerService getFileManager() { // TODO seam3upgrade
-        BeanManagerLocator beanManagerLocator = new BeanManagerLocator();
-        if (beanManagerLocator.isBeanManagerAvailable()) {
-            return (FileManagerService) BeanManagerUtils.getInstance("fileManager");
-        } else {
-            //MN: NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-            //THIS IS ALL THAT IS NEEDED FOR THE SERVLETS.
-//            log.debug("WARNING: RUNNING IN NON SEAM MODE SINGLE USER MODE - ONLY FOR TESTING AND DEBUGGING !!!!!");
-            FileManagerService manager = new FileManagerService();
-            try {
-                manager.setRepository(new RulesRepository(TestEnvironmentSessionHelper.getSession(false)));
-                return manager;
-            } catch (Exception e) {
-                throw new IllegalStateException();
-            }
-
-        }
-    }
 
     /**
      * Here we perform the action in the appropriate security context.
