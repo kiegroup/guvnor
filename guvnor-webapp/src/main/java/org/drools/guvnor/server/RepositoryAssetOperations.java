@@ -67,6 +67,9 @@ public class RepositoryAssetOperations {
     private Credentials credentials;
 
     @Inject
+    private MailboxService mailboxService;
+
+    @Inject
     private AssetLockManager assetLockManager;
 
     private String[]                   registeredFormats;
@@ -653,7 +656,7 @@ public class RepositoryAssetOperations {
         push("discussion",
                 assetId);
 
-        MailboxService.getInstance().recordItemUpdated(asset);
+        mailboxService.recordItemUpdated(asset);
 
         return discussion;
     }

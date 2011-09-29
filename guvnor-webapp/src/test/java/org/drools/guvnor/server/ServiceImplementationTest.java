@@ -96,16 +96,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Inject
     private RepositoryStartupService repositoryStartupService;
 
+    @Inject
+    private MailboxService mailboxService;
+
     @Test
     public void testInboxEvents() throws Exception {
 
         try {
             // TODO seam3upgrade
 //            RepositoryStartupService.registerCheckinListener();
-
-            //Init MailboxService
-            MailboxService service = MailboxService.getInstance();
-            service.init( rulesRepository );
 
             assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
@@ -421,167 +420,158 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testTrackRecentOpenedChanged() throws Exception {
-        try {
-            // TODO seam3upgrade
-//            RepositoryStartupService.registerCheckinListener();
-            UserInbox ib = new UserInbox( rulesRepository );
-            ib.clearAll();
-            rulesRepository.createPackage("testTrackRecentOpenedChanged",
-                    "desc");
-            repositoryCategoryService.createCategory("",
-                    "testTrackRecentOpenedChanged",
-                    "this is a cat");
+        // The wakeUp() method doesn't really matter, it's just to make sure mailboxService is constructed and registered
+        mailboxService.wakeUp();
 
-            String id = serviceImplementation.createNewRule( "myrule",
-                                            "desc",
-                                            "testTrackRecentOpenedChanged",
-                                            "testTrackRecentOpenedChanged",
-                                            "drl" );
+        UserInbox ib = new UserInbox( rulesRepository );
+        ib.clearAll();
+        rulesRepository.createPackage("testTrackRecentOpenedChanged",
+                "desc");
+        repositoryCategoryService.createCategory("",
+                "testTrackRecentOpenedChanged",
+                "this is a cat");
 
-            RuleAsset ass = repositoryAssetService.loadRuleAsset( id );
+        String id = serviceImplementation.createNewRule( "myrule",
+                                        "desc",
+                                        "testTrackRecentOpenedChanged",
+                                        "testTrackRecentOpenedChanged",
+                                        "drl" );
 
-            repositoryAssetService.checkinVersion( ass );
+        RuleAsset ass = repositoryAssetService.loadRuleAsset( id );
 
-            List<InboxEntry> es = ib.loadRecentEdited();
-            assertEquals( 1,
-                          es.size() );
-            assertEquals( ass.getUuid(),
-                          es.get( 0 ).assetUUID );
-            assertEquals( ass.getName(),
-                          es.get( 0 ).note );
+        repositoryAssetService.checkinVersion( ass );
 
-            ib.clearAll();
+        List<InboxEntry> es = ib.loadRecentEdited();
+        assertEquals( 1,
+                      es.size() );
+        assertEquals( ass.getUuid(),
+                      es.get( 0 ).assetUUID );
+        assertEquals( ass.getName(),
+                      es.get( 0 ).note );
 
-            repositoryAssetService.loadRuleAsset( ass.getUuid() );
-            es = ib.loadRecentEdited();
-            assertEquals( 0,
-                          es.size() );
+        ib.clearAll();
 
-            //now check they have it in their opened list...
-            es = ib.loadRecentOpened();
-            assertEquals( 1,
-                          es.size() );
-            assertEquals( ass.getUuid(),
-                          es.get( 0 ).assetUUID );
-            assertEquals( ass.getName(),
-                          es.get( 0 ).note );
+        repositoryAssetService.loadRuleAsset( ass.getUuid() );
+        es = ib.loadRecentEdited();
+        assertEquals( 0,
+                      es.size() );
 
-            assertEquals( 0,
-                          ib.loadRecentEdited().size() );
-        } finally {
-            // TODO seam3upgrade
-//            RepositoryStartupService.removeListeners();
-        }
+        //now check they have it in their opened list...
+        es = ib.loadRecentOpened();
+        assertEquals( 1,
+                      es.size() );
+        assertEquals( ass.getUuid(),
+                      es.get( 0 ).assetUUID );
+        assertEquals( ass.getName(),
+                      es.get( 0 ).note );
+
+        assertEquals( 0,
+                      ib.loadRecentEdited().size() );
     }
 
     @Test
     public void testCheckin() throws Exception {
-        try {
-            // TODO seam3upgrade
-//            RepositoryStartupService.registerCheckinListener();
-            UserInbox ib = new UserInbox( rulesRepository );
-            List<InboxEntry> inbox = ib.loadRecentEdited();
+        // The wakeUp() method doesn't really matter, it's just to make sure mailboxService is constructed and registered
+        mailboxService.wakeUp();
 
-            repositoryPackageService.listPackages();
+        UserInbox ib = new UserInbox( rulesRepository );
+        List<InboxEntry> inbox = ib.loadRecentEdited();
 
-            repositoryCategoryService.createCategory("/",
-                    "testCheckinCategory",
-                    "this is a description");
-            repositoryCategoryService.createCategory( "/",
-                                                      "testCheckinCategory2",
-                                                      "this is a description" );
-            repositoryCategoryService.createCategory( "testCheckinCategory",
-                                                      "deeper",
-                                                      "description" );
+        repositoryPackageService.listPackages();
 
-            String uuid = serviceImplementation.createNewRule( "testChecking",
-                                              "this is a description",
-                                              "testCheckinCategory",
-                                              RulesRepository.DEFAULT_PACKAGE,
-                                              AssetFormats.DRL );
+        repositoryCategoryService.createCategory("/",
+                "testCheckinCategory",
+                "this is a description");
+        repositoryCategoryService.createCategory( "/",
+                                                  "testCheckinCategory2",
+                                                  "this is a description" );
+        repositoryCategoryService.createCategory( "testCheckinCategory",
+                                                  "deeper",
+                                                  "description" );
 
-            RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        String uuid = serviceImplementation.createNewRule( "testChecking",
+                                          "this is a description",
+                                          "testCheckinCategory",
+                                          RulesRepository.DEFAULT_PACKAGE,
+                                          AssetFormats.DRL );
 
-            assertNotNull( asset.getLastModified() );
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
 
-            asset.getMetaData().setCoverage( "boo" );
-            asset.setContent( new RuleContentText() );
-            ((RuleContentText) asset.getContent()).content = "yeah !";
-            asset.setDescription( "Description 1" );
+        assertNotNull( asset.getLastModified() );
 
-            Date start = new Date();
-            Thread.sleep( 100 );
+        asset.getMetaData().setCoverage( "boo" );
+        asset.setContent( new RuleContentText() );
+        ((RuleContentText) asset.getContent()).content = "yeah !";
+        asset.setDescription( "Description 1" );
 
-            String uuid2 = repositoryAssetService.checkinVersion( asset );
-            assertEquals( uuid,
-                          uuid2 );
+        Date start = new Date();
+        Thread.sleep( 100 );
 
-            assertTrue( ib.loadRecentEdited().size() > inbox.size() );
+        String uuid2 = repositoryAssetService.checkinVersion( asset );
+        assertEquals( uuid,
+                      uuid2 );
 
-            RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid );
-            assertNotNull( asset2.getLastModified() );
-            assertTrue( asset2.getLastModified().after( start ) );
+        assertTrue( ib.loadRecentEdited().size() > inbox.size() );
 
-            assertEquals( "boo",
-                          asset2.getMetaData().getCoverage() );
-            assertEquals( 1,
-                          asset2.getVersionNumber() );
+        RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid );
+        assertNotNull( asset2.getLastModified() );
+        assertTrue( asset2.getLastModified().after( start ) );
 
-            assertEquals( "yeah !",
-                          ((RuleContentText) asset2.getContent()).content );
+        assertEquals( "boo",
+                      asset2.getMetaData().getCoverage() );
+        assertEquals( 1,
+                      asset2.getVersionNumber() );
 
-            assertEquals( "Description 1",
-                          asset2.getDescription() );
+        assertEquals( "yeah !",
+                      ((RuleContentText) asset2.getContent()).content );
 
-            asset2.getMetaData().setCoverage( "ya" );
-            asset2.setCheckinComment( "checked in" );
+        assertEquals( "Description 1",
+                      asset2.getDescription() );
 
-            String cat = asset2.getMetaData().getCategories()[0];
-            asset2.getMetaData().setCategories( new String[3] );
-            asset2.getMetaData().getCategories()[0] = cat;
-            asset2.getMetaData().getCategories()[1] = "testCheckinCategory2";
-            asset2.getMetaData().getCategories()[2] = "testCheckinCategory/deeper";
-            asset2.setDescription( "Description 2" );
+        asset2.getMetaData().setCoverage( "ya" );
+        asset2.setCheckinComment( "checked in" );
 
-            repositoryAssetService.checkinVersion( asset2 );
+        String cat = asset2.getMetaData().getCategories()[0];
+        asset2.getMetaData().setCategories( new String[3] );
+        asset2.getMetaData().getCategories()[0] = cat;
+        asset2.getMetaData().getCategories()[1] = "testCheckinCategory2";
+        asset2.getMetaData().getCategories()[2] = "testCheckinCategory/deeper";
+        asset2.setDescription( "Description 2" );
 
-            asset2 = repositoryAssetService.loadRuleAsset( uuid );
-            assertEquals( "ya",
-                          asset2.getMetaData().getCoverage() );
-            assertEquals( 2,
-                          asset2.getVersionNumber() );
-            assertEquals( "checked in",
-                          asset2.getCheckinComment() );
-            assertEquals( 3,
-                          asset2.getMetaData().getCategories().length );
-            assertEquals( "testCheckinCategory",
-                          asset2.getMetaData().getCategories()[0] );
-            assertEquals( "testCheckinCategory2",
-                          asset2.getMetaData().getCategories()[1] );
-            assertEquals( "testCheckinCategory/deeper",
-                          asset2.getMetaData().getCategories()[2] );
-            assertEquals( "Description 2",
-                          asset2.getDescription() );
+        repositoryAssetService.checkinVersion( asset2 );
 
-            // now lets try a concurrent edit of an asset.
-            // asset3 will be loaded and edited, and then asset2 will try to
-            // clobber, it, which should fail.
-            // as it is optimistically locked.
-            RuleAsset asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
-            asset3.getMetaData().setSubject( "new sub" );
-            repositoryAssetService.checkinVersion( asset3 );
+        asset2 = repositoryAssetService.loadRuleAsset( uuid );
+        assertEquals( "ya",
+                      asset2.getMetaData().getCoverage() );
+        assertEquals( 2,
+                      asset2.getVersionNumber() );
+        assertEquals( "checked in",
+                      asset2.getCheckinComment() );
+        assertEquals( 3,
+                      asset2.getMetaData().getCategories().length );
+        assertEquals( "testCheckinCategory",
+                      asset2.getMetaData().getCategories()[0] );
+        assertEquals( "testCheckinCategory2",
+                      asset2.getMetaData().getCategories()[1] );
+        assertEquals( "testCheckinCategory/deeper",
+                      asset2.getMetaData().getCategories()[2] );
+        assertEquals( "Description 2",
+                      asset2.getDescription() );
 
-            asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
-            assertFalse( asset3.getVersionNumber() == asset2.getVersionNumber() );
+        // now lets try a concurrent edit of an asset.
+        // asset3 will be loaded and edited, and then asset2 will try to
+        // clobber, it, which should fail.
+        // as it is optimistically locked.
+        RuleAsset asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
+        asset3.getMetaData().setSubject( "new sub" );
+        repositoryAssetService.checkinVersion( asset3 );
 
-            String result = repositoryAssetService.checkinVersion( asset2 );
-            assertTrue( result.startsWith( "ERR" ) );
-            System.err.println( result.substring( 5 ) );
-        } finally {
-            // TODO seam3upgrade
-//            RepositoryStartupService.removeListeners();
-        }
+        asset3 = repositoryAssetService.loadRuleAsset( asset2.getUuid() );
+        assertFalse( asset3.getVersionNumber() == asset2.getVersionNumber() );
 
+        String result = repositoryAssetService.checkinVersion( asset2 );
+        assertTrue( result.startsWith( "ERR" ) );
+        System.err.println( result.substring( 5 ) );
     }
 
     @Test

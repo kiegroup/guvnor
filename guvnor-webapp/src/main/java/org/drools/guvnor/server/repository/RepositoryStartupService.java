@@ -57,7 +57,6 @@ public class RepositoryStartupService {
 
     private Repository repository;
     private Session sessionForSetup;
-    private RulesRepository mailmanRulesRepository;
 
     public Repository getRepositoryInstance() {
         try {
@@ -79,8 +78,6 @@ public class RepositoryStartupService {
         String adminPassword = guvnorBootstrapConfiguration.extractAdminPassword();
         sessionForSetup = newSession(adminUsername, adminPassword);
         create(sessionForSetup);
-        startMailboxService();
-        registerCheckinListener();
     }
 
     void create(Session sessionForSetup) {
@@ -111,41 +108,9 @@ public class RepositoryStartupService {
         }
     }
 
-    /**
-     * Start up the mailbox, flush out any messages that were left
-     */
-    private void startMailboxService() {
-        String mailmanUsername = guvnorBootstrapConfiguration.extractMailmanUsername();
-        String mailmanPassword = guvnorBootstrapConfiguration.extractMailmanPassword();
-        mailmanRulesRepository = new RulesRepository(newSession(mailmanUsername, mailmanPassword));
-        MailboxService.getInstance().init(mailmanRulesRepository);
-        MailboxService.getInstance().wakeUp();
-        registerCheckinListener();
-    }
-
-    /**
-     * Listen for changes to the repository - for inbox purposes
-     */
-    // TODO seam3upgrade Maybe this was only done during testing?
-    public void registerCheckinListener() {
-        StorageEventManager.registerCheckinEvent(new CheckinEvent() {
-            public void afterCheckin(AssetItem item) {
-                UserInbox.recordUserEditEvent(item);  //to register that she edited...
-                MailboxService.getInstance().recordItemUpdated(item);   //for outgoing...
-                MailboxService.getInstance().wakeUp();
-            }
-        });
-        log.info("CheckinListener registered");
-    }
-
     @PreDestroy
     public void close() {
         sessionForSetup.logout();
-        MailboxService.getInstance().stop();
-        mailmanRulesRepository.logout();
-
-        log.info( "Removing listeners...." );
-        StorageEventManager.removeListeners();
         log.info( "Shutting down repository..." );
         configurator.shutdown();
     }
