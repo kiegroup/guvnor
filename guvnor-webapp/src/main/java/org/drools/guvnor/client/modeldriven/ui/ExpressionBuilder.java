@@ -97,13 +97,13 @@ public class ExpressionBuilder extends RuleModellerWidget
 
         StringBuilder bindingLabel = new StringBuilder();
         String binding = getBoundText();
-        if ( binding !=null && !binding.equals( "" )) {
+        if ( binding != null && !binding.equals( "" ) ) {
             bindingLabel.append( "<b>" );
             bindingLabel.append( getBoundText() );
             bindingLabel.append( "</b>" );
         }
         bindingLabel.append( expression.getText( false ) );
-        
+
         if ( expression == null || expression.isEmpty() ) {
             if ( this.readOnly ) {
                 panel.add( new SmallLabel( "<b>-</b>" ) );
@@ -114,7 +114,7 @@ public class ExpressionBuilder extends RuleModellerWidget
             if ( this.readOnly ) {
                 panel.add( createWidgetForExpression( bindingLabel.toString() ) );
             } else {
-                bindingLabel.append(".");
+                bindingLabel.append( "." );
                 panel.add( createWidgetForExpression( bindingLabel.toString() ) );
                 panel.add( getWidgetForCurrentType() );
             }
@@ -228,7 +228,7 @@ public class ExpressionBuilder extends RuleModellerWidget
                     "" );
         lb.addItem( "<==" + constants.DeleteItem(),
                     DELETE_VALUE );
-        for ( Map.Entry<String, String> entry : getCompletionsForCurrentType().entrySet() ) {
+        for ( Map.Entry<String, String> entry : getCompletionsForCurrentType( expression.getParts().size() > 1 ).entrySet() ) {
             lb.addItem( entry.getKey(),
                         entry.getValue() );
         }
@@ -324,7 +324,7 @@ public class ExpressionBuilder extends RuleModellerWidget
         fireExpressionTypeChangeEvent( oldType );
     }
 
-    private Map<String, String> getCompletionsForCurrentType() {
+    private Map<String, String> getCompletionsForCurrentType(boolean isNested) {
         Map<String, String> completions = new LinkedHashMap<String, String>();
 
         if ( SuggestionCompletionEngine.TYPE_FINAL_OBJECT.equals( getCurrentGenericType() ) ) {
@@ -363,8 +363,10 @@ public class ExpressionBuilder extends RuleModellerWidget
                                                                                  0 );
 
             for ( String field : getCompletionEngine().getFieldCompletions( factName ) ) {
+                
                 //You can't use "this" in a nested accessor
-                if ( !field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                if ( !isNested || !field.equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+                    
                     boolean changed = false;
                     for ( Iterator<String> i = methodNames.iterator(); i.hasNext(); ) {
                         String method = i.next();
@@ -494,7 +496,7 @@ public class ExpressionBuilder extends RuleModellerWidget
     private ClickableLabel createWidgetForExpression(String text) {
         ClickableLabel label = new ClickableLabel( text,
                                                    slch,
-                                                   !this.readOnly);        
+                                                   !this.readOnly );
         return label;
     }
 }
