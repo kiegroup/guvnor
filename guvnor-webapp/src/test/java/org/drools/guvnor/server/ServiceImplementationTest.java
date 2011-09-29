@@ -100,12 +100,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
             //Init MailboxService
             MailboxService service = MailboxService.getInstance();
-            service.init( serviceImplementation.getRulesRepository() );
+            service.init( rulesRepository );
 
             assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
             //this should trigger the fact that the first user edited something
-            AssetItem as = serviceImplementation.getRulesRepository().loadDefaultPackage().addAsset( "testLoadInbox",
+            AssetItem as = rulesRepository.loadDefaultPackage().addAsset( "testLoadInbox",
                                                                                     "" );
             as.checkin( "" );
             RuleAsset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
@@ -195,13 +195,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testDeleteUnversionedRule() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        repo.loadDefaultPackage();
-        repo.createPackage("anotherPackage",
+        rulesRepository.loadDefaultPackage();
+        rulesRepository.createPackage("anotherPackage",
                 "woot");
 
-        CategoryItem cat = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat = rulesRepository.loadCategory("/");
         cat.addCategory( "testDeleteUnversioned",
                          "yeah" );
 
@@ -213,7 +211,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull(uuid);
         assertFalse("".equals(uuid));
 
-        AssetItem localItem = serviceImplementation.getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem localItem = rulesRepository.loadAssetByUUID(uuid);
 
         // String drl = "package org.drools.repository\n\ndialect 'mvel'\n\n" +
         // "rule Rule1 \n when \n AssetItem(description != null) \n then \n
@@ -226,10 +224,10 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       localItem.getName() );
 
         localItem.remove();
-        repo.save();
+        rulesRepository.save();
 
         try {
-            localItem = serviceImplementation.getRulesRepository().loadAssetByUUID( uuid );
+            localItem = rulesRepository.loadAssetByUUID(uuid);
             fail();
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -242,11 +240,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         // RulesRepository(SessionHelper.getSession()));
 
 
-        serviceImplementation.getRulesRepository().loadDefaultPackage();
-        serviceImplementation.getRulesRepository().createPackage( "another",
-                                                 "woot" );
+        rulesRepository.loadDefaultPackage();
+        rulesRepository.createPackage("another",
+                "woot");
 
-        CategoryItem cat = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat = rulesRepository.loadCategory("/");
         cat.addCategory("testAddRule",
                 "yeah");
 
@@ -284,18 +282,18 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                      "testAddRule",
                                      "another",
                                      AssetFormats.DECISION_SPREADSHEET_XLS );
-        AssetItem dtItem = serviceImplementation.getRulesRepository().loadAssetByUUID( result );
+        AssetItem dtItem = rulesRepository.loadAssetByUUID(result);
         assertNotNull( dtItem.getBinaryContentAsBytes() );
         assertTrue( dtItem.getBinaryContentAttachmentFileName().endsWith( ".xls" ) );
     }
 
     @Test
     public void testAttemptDupeRule() throws Exception {
-        CategoryItem cat = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat = rulesRepository.loadCategory("/");
         cat.addCategory("testAttemptDupeRule",
                 "yeah");
 
-        serviceImplementation.getRulesRepository().createPackage("dupes",
+        rulesRepository.createPackage("dupes",
                 "yeah");
 
         serviceImplementation.createNewRule("testAttemptDupeRule",
@@ -316,8 +314,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRule() throws Exception {
-        serviceImplementation.getRulesRepository().createPackage( "testCreateNewRule",
-                                                 "desc" );
+        rulesRepository.createPackage("testCreateNewRule",
+                "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRule",
                                                   "this is a cat" );
@@ -330,7 +328,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull(uuid);
         assertFalse("".equals(uuid));
 
-        AssetItem dtItem = serviceImplementation.getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem dtItem = rulesRepository.loadAssetByUUID(uuid);
         assertEquals( dtItem.getDescription(),
                       "an initial desc" );
     }
@@ -338,8 +336,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
-        serviceImplementation.getRulesRepository().createPackage( "testCreateNewRuleContainsApostrophe",
-                                                 "desc" );
+        rulesRepository.createPackage("testCreateNewRuleContainsApostrophe",
+                "desc");
         repositoryCategoryService.createCategory( "",
                                                   "testCreateNewRuleContainsApostrophe",
                                                   "this is a cat" );
@@ -372,11 +370,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertNotNull(conf.headers);
         assertNotNull( conf.headerTypes );
 
-        CategoryItem cat = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat = rulesRepository.loadCategory("/");
         cat.addCategory( "testRuleTableLoad",
                          "yeah" );
 
-        serviceImplementation.getRulesRepository().createPackage("testRuleTableLoad",
+        rulesRepository.createPackage("testRuleTableLoad",
                 "yeah");
         serviceImplementation.createNewRule("testRuleTableLoad",
                 "ya",
@@ -421,9 +419,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         try {
             // TODO seam3upgrade
 //            RepositoryStartupService.registerCheckinListener();
-            UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
+            UserInbox ib = new UserInbox( rulesRepository );
             ib.clearAll();
-            serviceImplementation.getRulesRepository().createPackage("testTrackRecentOpenedChanged",
+            rulesRepository.createPackage("testTrackRecentOpenedChanged",
                     "desc");
             repositoryCategoryService.createCategory("",
                     "testTrackRecentOpenedChanged",
@@ -476,7 +474,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         try {
             // TODO seam3upgrade
 //            RepositoryStartupService.registerCheckinListener();
-            UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
+            UserInbox ib = new UserInbox( rulesRepository );
             List<InboxEntry> inbox = ib.loadRecentEdited();
 
             repositoryPackageService.listPackages();
@@ -785,8 +783,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     @Deprecated
     public void testSearchMetaData() throws Exception {
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testMetaDataSearch",
-                                                                   "" );
+        PackageItem pkg = rulesRepository.createPackage("testMetaDataSearch",
+                "");
 
         AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset",
                                         "" );
@@ -892,10 +890,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testLoadSuggestionCompletionEngine() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testSILoadSCE",
+        PackageItem pkg = rulesRepository.createPackage( "testSILoadSCE",
                                               "" );
 
         AssetItem model = pkg.addAsset("MyModel",
@@ -933,16 +929,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testDiscussion() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testDiscussionFeature",
+        PackageItem pkg = rulesRepository.createPackage( "testDiscussionFeature",
                                               "" );
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
-        rule1.updateFormat( AssetFormats.DRL );
+        rule1.updateFormat(AssetFormats.DRL);
         rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
-        rule1.checkin( "" );
-        repo.save();
+        rule1.checkin("");
+        rulesRepository.save();
 
         List<DiscussionRecord> dr = repositoryAssetService.loadDiscussionForAsset( rule1.getUUID() );
         assertEquals( 0,
@@ -997,44 +991,40 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testSuggestionCompletionLoading() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testSISuggestionCompletionLoading",
+        PackageItem pkg = rulesRepository.createPackage( "testSISuggestionCompletionLoading",
                                               "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
-                                                  pkg );
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "model_1",
                                         "" );
         rule1.updateFormat( AssetFormats.DRL_MODEL );
-        rule1.updateContent( "declare Whee\n name: String \nend" );
-        rule1.checkin( "" );
-        repo.save();
+        rule1.updateContent("declare Whee\n name: String \nend");
+        rule1.checkin("");
+        rulesRepository.save();
 
     }
 
     @Test
     public void testRuleNameList() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testRuleNameList",
+        PackageItem pkg = rulesRepository.createPackage( "testRuleNameList",
                                               "" );
-        DroolsHeader.updateDroolsHeader( "import org.goo.Ber",
-                                                  pkg );
+        DroolsHeader.updateDroolsHeader("import org.goo.Ber",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "package wee.wee \nrule 'rule1' \n  when p:Person() \n then p.setAge(42); \n end" );
-        rule1.checkin( "" );
-        repo.save();
+        rule1.updateContent("package wee.wee \nrule 'rule1' \n  when p:Person() \n then p.setAge(42); \n end");
+        rule1.checkin("");
+        rulesRepository.save();
 
         AssetItem rule2 = pkg.addAsset( "rule_2",
                                         "" );
-        rule2.updateFormat( AssetFormats.DRL );
+        rule2.updateFormat(AssetFormats.DRL);
         rule2.updateContent( "rule 'rule2' \n ruleflow-group 'whee' \nwhen p:Person() \n then p.setAge(42); \n end" );
-        rule2.checkin( "" );
-        repo.save();
+        rule2.checkin("");
+        rulesRepository.save();
 
         String[] list = repositoryPackageService.listRulesInPackage( pkg.getName() );
         assertEquals( 2,
@@ -1058,30 +1048,28 @@ public class ServiceImplementationTest extends GuvnorTestBase {
      */
     @Test
     public void testBinaryUpToDate() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
         // create our package
-        PackageItem pkg = repo.createPackage( "testBinaryPackageUpToDate",
+        PackageItem pkg = rulesRepository.createPackage( "testBinaryPackageUpToDate",
                                               "" );
-        assertFalse( pkg.isBinaryUpToDate() );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
-                                                  pkg );
+        assertFalse(pkg.isBinaryUpToDate());
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
-        rule1.checkin( "" );
-        repo.save();
+        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.checkin("");
+        rulesRepository.save();
 
-        assertFalse( pkg.isBinaryUpToDate() );
-        assertFalse( RuleBaseCache.getInstance().contains( pkg.getUUID() ) );
-        RuleBaseCache.getInstance().remove( "XXX" );
+        assertFalse(pkg.isBinaryUpToDate());
+        assertFalse( RuleBaseCache.getInstance().contains(pkg.getUUID()) );
+        RuleBaseCache.getInstance().remove("XXX");
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
         assertFalse( results.hasLines() );
 
-        pkg = repo.loadPackage( "testBinaryPackageUpToDate" );
+        pkg = rulesRepository.loadPackage( "testBinaryPackageUpToDate" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1116,16 +1104,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testListFactTypesAvailableInPackage() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
-
-        PackageItem pkg = repo.createPackage( "testAvailableTypes",
+        PackageItem pkg = rulesRepository.createPackage( "testAvailableTypes",
                                               "" );
         AssetItem model = pkg.addAsset( "MyModel",
                                         "" );
-        model.updateFormat( AssetFormats.MODEL );
+        model.updateFormat(AssetFormats.MODEL);
         model.updateBinaryContentAttachment( this.getClass().getResourceAsStream( "/billasurf.jar" ) );
-        model.checkin( "" );
-        repo.save();
+        model.checkin("");
+        rulesRepository.save();
 
         String[] s = repositoryPackageService.listTypesInPackage( pkg.getUUID() );
         assertNotNull( s );
@@ -1152,21 +1138,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testGuidedDTExecute() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
         repositoryCategoryService.createCategory("/",
                 "decisiontables",
                 "");
 
-        PackageItem pkg = repo.createPackage( "testGuidedDTCompile",
+        PackageItem pkg = rulesRepository.createPackage( "testGuidedDTCompile",
                                               "" );
-        DroolsHeader.updateDroolsHeader( "import org.drools.Person",
-                                                  pkg );
+        DroolsHeader.updateDroolsHeader("import org.drools.Person",
+                pkg);
         AssetItem rule1 = pkg.addAsset( "rule_1",
                                         "" );
         rule1.updateFormat( AssetFormats.DRL );
         rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
         rule1.checkin("");
-        repo.save();
+        rulesRepository.save();
 
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
 
@@ -1197,15 +1182,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                          pkg.getName(),
                                          AssetFormats.DECISION_TABLE_GUIDED );
 
-        RuleAsset ass = repositoryAssetService.loadRuleAsset( uid );
+        RuleAsset ass = repositoryAssetService.loadRuleAsset(uid);
         ass.setContent( dt );
-        repositoryAssetService.checkinVersion( ass );
+        repositoryAssetService.checkinVersion(ass);
 
         BuilderResult results = repositoryPackageService.buildPackage( pkg.getUUID(),
                                                                        true );
         assertFalse( results.hasLines() );
 
-        pkg = repo.loadPackage( "testGuidedDTCompile" );
+        pkg = rulesRepository.loadPackage( "testGuidedDTCompile" );
         byte[] binPackage = pkg.getCompiledPackageBytes();
 
         assertNotNull( binPackage );
@@ -1521,14 +1506,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
+        UserInbox ib = new UserInbox( rulesRepository );
         ib.clearAll();
 
         @SuppressWarnings("unused")
         RuleAsset asset;
         String uuid;
-        serviceImplementation.getRulesRepository().createPackage( "testLoadInboxPackage",
-                                                 "testLoadInboxDescription" );
+        rulesRepository.createPackage("testLoadInboxPackage",
+                "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
                 "testLoadInboxCategory",
                 "testLoadInboxCategoryDescription");
@@ -1580,15 +1565,15 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadInboxFullResults() throws Exception {
 
-        UserInbox ib = new UserInbox( serviceImplementation.getRulesRepository() );
+        UserInbox ib = new UserInbox( rulesRepository );
 
         ib.clearAll();
 
         @SuppressWarnings("unused")
         RuleAsset asset;
         String uuid;
-        serviceImplementation.getRulesRepository().createPackage( "testLoadInboxPackage",
-                                                 "testLoadInboxDescription" );
+        rulesRepository.createPackage("testLoadInboxFullResults",
+                "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
                 "testLoadInboxCategory",
                 "testLoadInboxCategoryDescription");
@@ -1596,7 +1581,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         uuid = serviceImplementation.createNewRule( "rule1",
                                    "desc",
                                    "testLoadInboxCategory",
-                                   "testLoadInboxPackage",
+                                   "testLoadInboxFullResults",
                                    AssetFormats.DRL );
 
         asset = repositoryAssetService.loadRuleAsset( uuid );
@@ -1604,14 +1589,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         uuid = serviceImplementation.createNewRule( "rule2",
                                    "desc",
                                    "testLoadInboxCategory",
-                                   "testLoadInboxPackage",
+                                   "testLoadInboxFullResults",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         uuid = serviceImplementation.createNewRule( "rule3",
                                    "desc",
                                    "testLoadInboxCategory",
-                                   "testLoadInboxPackage",
+                                   "testLoadInboxFullResults",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
@@ -1688,8 +1673,8 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //NOTE: Have not figured out the reason, but if we dont create a random package here, 
         //we will get an InvalidItemStateException during impl.installSampleRepository()
-        serviceImplementation.getRulesRepository().createPackage( "testHistoryAfterReImportSampleRepository",
-                                                 "desc" );
+        rulesRepository.createPackage("testHistoryAfterReImportSampleRepository",
+                "desc");
 
         TableDataResult result = repositoryAssetService.loadItemHistory( uuid );
         assertNotNull( result );
