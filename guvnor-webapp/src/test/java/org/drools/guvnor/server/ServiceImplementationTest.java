@@ -31,6 +31,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import org.drools.Person;
 import org.drools.RuleBase;
 import org.drools.StatelessSession;
@@ -62,10 +64,10 @@ import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.TableDataRow;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.MailboxService;
+import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
@@ -90,6 +92,9 @@ import com.google.gwt.user.client.rpc.SerializationException;
  * This is really a collection of integration tests.
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
+
+    @Inject
+    private RepositoryStartupService repositoryStartupService;
 
     @Test
     public void testInboxEvents() throws Exception {
@@ -126,7 +131,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             assertFalse( found );
 
             //Now, the second user comes along, makes a change...
-            RulesRepository repo2 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "seconduser" ) );
+            RulesRepository repo2 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
             AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
             as2.updateContent( "hey" );
             as2.checkin( "here we go again !" );
@@ -157,7 +162,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                           secondUsersInbox.loadRecentEdited().size() );
 
             //ok lets create a third user...
-            RulesRepository repo3 = new RulesRepository( TestEnvironmentSessionHelper.getSessionFor( "fourthuser" ) );
+            RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
             AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
             as3.updateContent( "hey22" );
             as3.checkin( "here we go again 22!" );
@@ -1221,10 +1226,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testLoadDropDown() throws Exception {
-        ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{"f1=x", "f2=2"};
         String expression = "['@{f1}', '@{f2}']";
-        String[] r = serv.loadDropDownExpression( pairs,
+        String[] r = serviceImplementation.loadDropDownExpression( pairs,
                                                   expression );
         assertEquals( 2,
                       r.length );
@@ -1238,10 +1242,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testLoadDropDownNoValuePairs() throws Exception {
-        ServiceImplementation serv = new ServiceImplementation();
         String[] pairs = new String[]{null};
         String expression = "['@{f1}', '@{f2}']";
-        String[] r = serv.loadDropDownExpression( pairs,
+        String[] r = serviceImplementation.loadDropDownExpression( pairs,
                                                   expression );
 
         assertEquals( 0,
