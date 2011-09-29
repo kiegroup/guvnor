@@ -151,7 +151,8 @@ public class PopupCreator {
                     popupCreator.showPatternPopup( w,
                                                    con.getFieldType(),
                                                    con,
-                                                   hasConstraints );
+                                                   hasConstraints,
+                                                   true );
                 }
             } );
         }
@@ -245,7 +246,8 @@ public class PopupCreator {
     public void showPatternPopup(Widget w,
                                  final String factType,
                                  final FieldConstraint con,
-                                 final HasConstraints hasConstraints) {
+                                 final HasConstraints hasConstraints,
+                                 final boolean isNested) {
 
         String title = (con == null) ? constants.ModifyConstraintsFor0( factType ) : constants.AddSubFieldConstraint();
         final FormStylePopup popup = new FormStylePopup( images.newexWiz(),
@@ -257,7 +259,7 @@ public class PopupCreator {
                                                                 factType );
         for ( int i = 0; i < fields.length; i++ ) {
             //You can't use "this" in a nested accessor
-            if ( !fields[i].equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
+            if ( !isNested || !fields[i].equals( SuggestionCompletionEngine.TYPE_THIS ) ) {
                 box.addItem( fields[i] );
             }
         }
