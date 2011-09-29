@@ -17,6 +17,7 @@
 package org.drools.ide.common.client.modeldriven.brl;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class ExpressionFormLine implements IAction, IPattern, Cloneable {
@@ -122,6 +123,10 @@ public class ExpressionFormLine implements IAction, IPattern, Cloneable {
 
     public void setBinding(String binding) {
         this.binding = binding;
+    }
+    
+    public List<ExpressionPart> getParts() {
+        return this.parts;
     }
 
     private static class ToStringVisitor implements ExpressionVisitor {
