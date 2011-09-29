@@ -16,10 +16,12 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 /**
- * This is the config for a condition column that supports Limited Entry, hence it has a value. 
- * Typically many of them have their constraints added.
+ * This is the config for a condition column that supports Limited Entry, hence
+ * it has a value. Typically many of them have their constraints added.
  */
-public class LimitedEntryConditionCol52 extends ConditionCol52 {
+public class LimitedEntryConditionCol52 extends ConditionCol52
+    implements
+    LimitedEntryCol {
 
     private static final long serialVersionUID = 510l;
 

@@ -28,6 +28,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
@@ -207,6 +208,13 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
 
     // Get the Data Type corresponding to a given column
     protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
+
+        //Limited Entry are simply boolean
+        if ( column instanceof LimitedEntryCol ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
+        //Extended Entry...
         return model.getTypeSafeType( column,
                                       sce );
     }

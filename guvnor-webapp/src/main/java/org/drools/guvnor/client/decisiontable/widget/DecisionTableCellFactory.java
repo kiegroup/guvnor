@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
@@ -128,6 +129,12 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     // Make a new Cell for Condition and Actions columns
     private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig52 col) {
 
+        //Limited Entry are simply boolean
+        if ( col instanceof LimitedEntryCol ) {
+            return makeBooleanCell();
+        }
+
+        //Extended Entry...
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();
         String type = model.getType( col,
                                      sce );
@@ -136,7 +143,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         String[] vals = model.getValueList( col,
                                             sce );
         if ( vals.length == 0 ) {
-            
+
             //Null means the field is free-format
             if ( type == null ) {
                 return cell;
@@ -150,7 +157,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
                 cell = makeDateCell();
             }
         } else {
-            
+
             // Columns with lists of values, enums etc are always Text (for now)
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );

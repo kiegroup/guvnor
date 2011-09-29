@@ -47,6 +47,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.GuidedDTDRLOtherwiseHelper.OtherwiseBuilder;
@@ -222,7 +223,17 @@ public class GuidedDTDRLPersistence {
                 int index = allColumns.indexOf( c );
 
                 DTCellValue52 dcv = row.get( index );
-                String cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
+                String cell = "";
+
+                if ( c instanceof LimitedEntryCol ) {
+                    if ( dcv.getBooleanValue() == true ) {
+                        LimitedEntryCol lec = (LimitedEntryCol) c;
+                        cell = GuidedDTDRLUtilities.convertDTCellValueToString( lec.getValue() );
+                    }
+                } else {
+                    cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
+                }
+
                 boolean isOtherwise = dcv.isOtherwise();
                 boolean isValid = isOtherwise;
 
