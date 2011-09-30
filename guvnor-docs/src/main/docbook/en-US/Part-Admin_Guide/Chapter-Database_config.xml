@@ -33,10 +33,10 @@
       </para>
 
       <para>
-      To change the location, unzip the Guvnor WAR file, and locate the <filename>seam-beans.xml</filename> file in
+      To change the location, unzip the Guvnor WAR file, and locate the <filename>beans.xml</filename> file in
       the <filename>WEB-INF/classes/META-INF</filename> directory. This is a JBoss Seam configuration file (Seam 3 is the
       framework used) which allows various parts of the system to be customized. When you have located the
-      <filename>seam-beans.xml</filename> file, you should see something like the following:
+      <filename>beans.xml</filename> file, you should see something like the following:
       </para>
 
       <programlisting language="XML"><![CDATA[  <guvnorRepository:GuvnorBootstrapConfiguration>
@@ -58,9 +58,9 @@
       <para>If you un-comment this key element (as in the example above it is commented
       out), you can set whatever file-system path you need for the repository data to be
       stored in. You can also use this to move the repository around. In that
-      case, when you have set the location in the <filename>seam-beans.xml</filename> you can
+      case, when you have set the location in the <filename>beans.xml</filename> you can
       simply move the <filename>repository.xml</filename> AND the repository directory to the new
-      location that you set in the <filename>seam-beans.xml</filename>.</para>
+      location that you set in the <filename>beans.xml</filename>.</para>
 
       <para>If there is no repository.xml configuration file, or the repository directory at the location 
       specified (or in the default location) then Guvnor will create new empty ones.</para>
