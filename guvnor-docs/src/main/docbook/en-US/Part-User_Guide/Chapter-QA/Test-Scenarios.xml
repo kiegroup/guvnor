@@ -5,6 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
+         xml:base="./"
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Test scenarios</title>
 
@@ -15,7 +16,7 @@
       <imageobject>
         <imagedata align="center"
           fileref="images/Chapter-Guvnor/TestScenariosBeforeExecution.png"
-          format="PNG" scalefit="0" xml:base="../../"></imagedata>
+          format="PNG" scalefit="0" ></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -29,9 +30,10 @@
       <imageobject>
         <imagedata align="center"
           fileref="images/Chapter-Guvnor/TestScenariosAfterExecution.png"
-          format="PNG" scalefit="0" xml:base="../../"></imagedata>
+          format="PNG" scalefit="0" ></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
 
+  <para>After running all the Test Scenarios a report is shown. In a valid knowledge base all tests should pass and rule coverage should be 100%. Passing tests are marked with green, red shows failing tests and yellow notifies about missing rule coverage or missing expectations.</para>
 </section>
