@@ -53,11 +53,13 @@ public abstract class GuvnorTestBase {
                 .importDirectory(explodedWarFile)
                 .as(WebArchive.class)
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
+                // Workaround for https://issues.jboss.org/browse/ARQ-585
+                .addAsWebInfResource(new File("target/test-classes/META-INF/beans.xml"), ArchivePaths.create("beans.xml"))
                 .addAsLibraries(
                         DependencyResolvers.use(MavenDependencyResolver.class)
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
-        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+//        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 

@@ -8,7 +8,6 @@
         http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/beans_1_0.xsd
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
 
-  <!-- TODO this file is ignored, see https://issues.jboss.org/browse/ARQ-585 -->
   <alternatives>
     <class>org.drools.guvnor.server.repository.TestRepositoryStartupService</class>
   </alternatives>
