@@ -23,8 +23,4 @@
   <!-- WARNING: most of the customizable properties are defined in WEB-INF/classes/META-INF/seam-beans.xml -->
   <!-- TODO Move seam-beans.xml under WEB-INF after fixing https://issues.jboss.org/browse/SEAMCONFIG-50 -->
 
-  <!--<security:IdentityImpl>-->
-  <!--<s:modifies/>-->
-  <!--<security:authenticatorName>jaasAuthenticator</security:authenticatorName>-->
-  <!--</security:IdentityImpl>-->
 </beans>
