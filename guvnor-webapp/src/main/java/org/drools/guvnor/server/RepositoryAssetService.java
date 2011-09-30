@@ -77,11 +77,6 @@ public class RepositoryAssetService
     @Inject
     private Identity identity;
 
-    // TODO seam3upgrade
-    public void setRulesRepository(RulesRepository repository) {
-        this.rulesRepository = repository;
-    }
-
     public RulesRepository getRulesRepository() {
         return rulesRepository;
     }
