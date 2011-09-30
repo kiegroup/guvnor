@@ -13,24 +13,24 @@
 		<!--</configuration>-->
 	<!--</container>-->
 
-  <container qualifier="jbossas-remote-7" default="true">
-    <protocol type="jmx-as7">
-      <property name="executionType">REMOTE</property>
-    </protocol>
-    <configuration>
-      <!-- Keep in sync with /guvnor-webapp/pom.xml -->
-      <property name="jbossHome">target/jboss-as-7.0.2.Final/</property>
-    </configuration>
-  </container>
-
-  <!--<container qualifier="tomcat" default="true">-->
+  <!--<container qualifier="jbossas-remote-7" default="true">-->
+    <!--<protocol type="jmx-as7">-->
+      <!--<property name="executionType">REMOTE</property>-->
+    <!--</protocol>-->
     <!--<configuration>-->
       <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/pom.xml &ndash;&gt;-->
-      <!--<property name="catalinaHome">target/apache-tomcat-6.0.33/</property>-->
-      <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/conf/tomcat6/tomcat-users.xml &ndash;&gt;-->
-      <!--<property name="user">admin</property>-->
-      <!--<property name="pass">admin</property>-->
+      <!--<property name="jbossHome">target/jboss-as-7.0.2.Final/</property>-->
     <!--</configuration>-->
   <!--</container>-->
+
+  <container qualifier="tomcat" default="true">
+    <configuration>
+      <!-- Keep in sync with /guvnor-webapp/pom.xml -->
+      <property name="catalinaHome">target/apache-tomcat-6.0.33/</property>
+      <!-- Keep in sync with /guvnor-webapp/src/test/conf/tomcat6/tomcat-users.xml -->
+      <property name="user">admin</property>
+      <property name="pass">admin</property>
+    </configuration>
+  </container>
 
 </arquillian>
