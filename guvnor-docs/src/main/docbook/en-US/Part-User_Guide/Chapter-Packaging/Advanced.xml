@@ -8,13 +8,12 @@
          xmlns:ns4="http://www.w3.org/1998/Math/MathML"
          xmlns:ns3="http://www.w3.org/2000/svg"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Selectors</title>
+  <title>Advanced configuration</title>
 
-  <para>TODO</para>
-
-  <para>It is optional at this stage to enter the name of a "selector" - see
-  the admin section for details on how to configure custom selectors for your
-  system (if you need them - selectors allow you to filter down what you build
-  into a package - if you don't know what they are for, you probably don't
-  need to use them).</para>
+  <para>As drools supports various configuration options for a package (such
+  as adding functions for "accumulate" etc), this can be done by adding a
+  <filename>X.package</filename> or <filename>X.conf</filename> file to the
+  package - files which contain name/value pairs in the "properties" style.
+  These will then be automatically added to the package configuration. See the
+  main drools documentation for all the things you can do.</para>
 </section>

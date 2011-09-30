@@ -1,12 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<section version="5.0"
-         xmlns="http://docbook.org/ns/docbook"
+<section version="5.0" xmlns="http://docbook.org/ns/docbook"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:ns5="http://www.w3.org/1999/xhtml"
+         xmlns:ns4="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns3="http://www.w3.org/2000/svg"
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Packages</title>
 
   <para>TODO</para>
+
+  <para><figure>
+      <title>The package explorer</title>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/PackageExplorer.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>The above picture shows the package explorer. Clicking on an
+  asset type will show a list of matches (for packages with thousands of
+  rules, showing the list may take several seconds - hence the importance of
+  using categories to help you find your way around).</para>
+
+  <para>The package management feature allows you to see a list of packages,
+  and then "expand" them, to show lists of each "type" of asset (there are
+  many assets, so some of them are grouped together):</para>
+
+  <figure>
+    <title>Package configuration</title>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata align="center"
+                   fileref="images/Chapter-Guvnor/PackageConfig.png"
+                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
+      </imageobject>
+    </mediaobject>
+  </figure>
 </section>
