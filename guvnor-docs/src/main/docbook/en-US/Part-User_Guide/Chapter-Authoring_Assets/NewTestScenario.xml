@@ -5,6 +5,7 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
+         xml:base="./"
          xmlns:ns="http://docbook.org/ns/docbook">
 
   <title>Test Scenario</title>
@@ -17,7 +18,7 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/TestScenario.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" scalefit="0" ></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
@@ -29,12 +30,10 @@
         <imageobject>
           <imagedata align="center"
                      fileref="images/Chapter-Guvnor/TestScenarioAfterRunningIt.png"
-                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                     format="PNG" scalefit="0" ></imagedata>
         </imageobject>
       </mediaobject>
     </figure>
-
-    <para> TODO WRITE SOMETHING ABOUT MULTIPLE GIVEN/EXPECT WITH IMAGE</para>
 
     <section>
       <title>Given Section</title>
@@ -45,7 +44,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/GivenSection.png"
-              format="PNG" scalefit="0" xml:base="../../"></imagedata>
+              format="PNG" scalefit="0" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -76,7 +75,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/ExpectSection.png"
-              format="PNG" scalefit="0" xml:base="../../"></imagedata>
+              format="PNG" scalefit="0" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -103,7 +102,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/NewGlobal.png"
-              format="PNG" scalefit="0" xml:base="../../"></imagedata>
+              format="PNG" scalefit="0" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -123,7 +122,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/NewInput.png"
-              format="PNG" scalefit="0" xml:base="../../"></imagedata>
+              format="PNG" scalefit="0" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
@@ -143,7 +142,7 @@
           <imageobject>
             <imagedata align="center"
               fileref="images/Chapter-Guvnor/AuditLog.png"
-              format="PNG" scalefit="0" xml:base="../../"></imagedata>
+              format="PNG" scalefit="0" ></imagedata>
           </imageobject>
         </mediaobject>
       </figure>
