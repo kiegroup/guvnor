@@ -16,6 +16,8 @@
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
   <properties>
+    <weld.version>1.1.3-SNAPSHOT</weld.version>
+    <seam.version>3.1.0-SNAPSHOT</seam.version>
     <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
     <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
     <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
@@ -372,29 +374,29 @@
     <dependency>
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-core</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
+      <version>${weld.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.weld.servlet</groupId>
       <artifactId>weld-servlet-core</artifactId>
-      <version>1.1.3-SNAPSHOT</version>
+      <version>${weld.version}</version>
     </dependency>
     <!-- Seam 3 (goodies in weld) -->
     <dependency>
       <groupId>org.jboss.seam.solder</groupId>
       <artifactId>seam-solder</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.solder</groupId>
       <artifactId>seam-solder-logging</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.config</groupId>
       <artifactId>seam-config-xml</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <!--<dependency>&lt;!&ndash; WORKAROUND because seam-solder doesn't have a transitive dependency on this &ndash;&gt;-->
       <!--<groupId>org.jboss.logging</groupId>-->
@@ -404,32 +406,32 @@
     <dependency>
       <groupId>org.jboss.seam.security</groupId>
       <artifactId>seam-security</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 -->
       <groupId>org.jboss.seam.transaction</groupId>
       <artifactId>seam-transaction</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 -->
       <groupId>org.jboss.seam.international</groupId>
       <artifactId>seam-international</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.servlet</groupId>
       <artifactId>seam-servlet</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.seam.remoting</groupId>
       <artifactId>seam-remoting</artifactId>
-      <version>3.1.0.Beta2</version>
+      <version>${seam.version}</version>
     </dependency>
     <!--<dependency>-->
       <!--<groupId>org.jboss.seam.rest</groupId>-->
       <!--<artifactId>seam-rest</artifactId>-->
-      <!--<version>3.1.0.Beta2</version>-->
+      <!--<version>${seam.version}</version>-->
     <!--</dependency>-->
     <!-- Arquillian (testing for weld) -->
     <!--<dependency>-->
