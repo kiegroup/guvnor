@@ -23,4 +23,7 @@
   <xi:include href="Selectors.xml" xpointer="element(/1)" />
 
   <xi:include href="Snapshots.xml" xpointer="element(/1)" />
+
+  <xi:include href="Advanced.xml" xpointer="element(/1)" />
+
 </chapter>
