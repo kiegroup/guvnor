@@ -36,8 +36,8 @@
           <descriptors>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-5_1.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-6_0.xml</descriptor>
-            <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-7_0.xml</descriptor>
+            <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
           </descriptors>
         </configuration>
       </plugin>
