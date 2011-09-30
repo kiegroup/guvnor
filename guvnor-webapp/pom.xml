@@ -509,7 +509,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.container</groupId>
       <artifactId>arquillian-tomcat-managed-6</artifactId>
-      <version>1.0.0.Final-SNAPSHOT</version>
+      <version>1.0.0.CR2</version>
       <scope>test</scope>
     </dependency>
 
