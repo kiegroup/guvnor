@@ -15,11 +15,15 @@
  */
 package org.drools.guvnor.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.rpc.CategoryPageRequest;
 import org.drools.guvnor.client.rpc.CategoryPageRow;
 import org.drools.guvnor.client.rpc.CategoryService;
 import org.drools.guvnor.client.rpc.PageResponse;
 import org.drools.guvnor.client.rpc.TableDataResult;
+import org.drools.guvnor.server.builder.PageResponseBuilder;
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.annotations.AutoCreate;
@@ -119,7 +123,13 @@ public class RepositoryCategoryService
         // permission to access the particular category when: The user has
         // ANALYST_READ role or higher (i.e., ANALYST) to this category
         if ( !serviceSecurity.isSecurityIsAnalystReadWithTargetObject( new CategoryPathType( request.getCategoryPath() ) ) ) {
-            return new PageResponse<CategoryPageRow>();
+            List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
+            PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
+                    .withStartRowIndex(request.getStartRowIndex())
+                    .withPageRowList(rowList)
+                    .withLastPage(true)
+                    .buildWithTotalRowCount(0);
+            return pageResponse;
         }
 
         return repositoryCategoryOperations.loadRuleListForCategories( request );

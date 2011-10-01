@@ -795,8 +795,6 @@ public class ServiceImplementation
                                                                          request.isSearchArchived() );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        long totalRowsCount = iterator.getSize();
-
         List<QueryPageRow> rowList = new QueryFullTextPageRowBuilder()
                                             .withPageRequest( request )
                                             .withContent( iterator )
@@ -806,7 +804,7 @@ public class ServiceImplementation
                                                       .withStartRowIndex( request.getStartRowIndex() )
                                                       .withPageRowList( rowList )
                                                       .withLastPage( !bHasMoreRows )
-                                                          .buildWithTotalRowCount( totalRowsCount );
+                                                          .buildWithTotalRowCount( -1 );
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Full Text) for (" + request.getSearchText() + ") in " + methodDuration + " ms." );
@@ -834,18 +832,17 @@ public class ServiceImplementation
                                                                  dates );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
-        long totalRowsCount = iterator.getSize();
-
         List<QueryPageRow> rowList = new QueryMetadataPageRowBuilder()
                                             .withPageRequest( request )
                                             .withContent( iterator )
-                                                .build();
+                                            .build();
         boolean bHasMoreRows = iterator.hasNext();
         PageResponse<QueryPageRow> response = new PageResponseBuilder<QueryPageRow>()
                                                 .withStartRowIndex( request.getStartRowIndex() )
                                                 .withPageRowList( rowList )
                                                 .withLastPage( !bHasMoreRows )
-                                                    .buildWithTotalRowCount( totalRowsCount );
+                                                .buildWithTotalRowCount(-1);//its impossible to know the exact selected count until we'v reached
+                                                                            //the end of iterator
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
