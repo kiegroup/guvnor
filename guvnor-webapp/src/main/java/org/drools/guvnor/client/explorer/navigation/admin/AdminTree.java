@@ -40,12 +40,8 @@ public class AdminTree extends Tree {
                 {constants.Archive(), images.backupSmall(), "1"},
                 {constants.EventLog(), images.eventLogSmall(), "4"},
                 {constants.UserPermission(), images.userPermissionsSmall(), "5"},
-                //Commented out for now, as we dont want this feature get into 5.2.
-                //{constants.Workspaces(), images.emptyPackage(), "9"},
                 {constants.ImportExport(), images.saveEdit(), "3"},
-                {constants.RulesVerification(), images.ruleVerification(), "7"},
                 {constants.RepositoryConfiguration(), images.config(), "8"},
-//                {constants.PerspectivesConfiguration(), images.config(), "10"},
                 {constants.About(), images.information(), "6"}
         };
 
