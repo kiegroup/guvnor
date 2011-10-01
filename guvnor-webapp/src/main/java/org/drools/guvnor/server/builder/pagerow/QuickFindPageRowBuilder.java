@@ -22,10 +22,11 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.server.AssetItemFilter;
+import org.drools.guvnor.server.CategoryFilter;
 import org.drools.guvnor.server.security.RoleType;
-import org.drools.guvnor.server.security.RoleTypes;
 import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
+import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryFilter;
 
 public class QuickFindPageRowBuilder implements PageRowBuilder<PageRequest, Iterator<AssetItem>>{
@@ -39,14 +40,15 @@ public class QuickFindPageRowBuilder implements PageRowBuilder<PageRequest, Iter
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
         RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter categoryFilter = new CategoryFilter();
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
-        while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
+        while (iterator.hasNext() && (pageSize == null || rowList.size() < pageSize)) {
             AssetItem assetItem = (AssetItem) iterator.next();
 
             // Filter surplus assets
-            if ( filter.accept( assetItem,
-                                RoleType.PACKAGE_READONLY.getName() ) ) {
+            if ( filter.accept( assetItem, RoleType.PACKAGE_READONLY.getName() ) 
+                    || checkCategoryPermissionHelper(categoryFilter, assetItem, RoleType.ANALYST_READ.getName())) {
 
                 // Cannot use AssetItemIterator.skip() as it skips non-filtered
                 // assets whereas startRowIndex is the index of the
@@ -58,6 +60,20 @@ public class QuickFindPageRowBuilder implements PageRowBuilder<PageRequest, Iter
             }
         }
         return rowList;
+    }
+
+    private boolean checkCategoryPermissionHelper(RepositoryFilter filter,
+                                                  AssetItem item,
+                                                  String roleType) {
+        List<CategoryItem> tempCateList = item.getCategories();
+        for (CategoryItem categoryItem : tempCateList) {
+            if (filter.accept(categoryItem.getFullPath(),
+                    roleType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
     
     public void validate() {
