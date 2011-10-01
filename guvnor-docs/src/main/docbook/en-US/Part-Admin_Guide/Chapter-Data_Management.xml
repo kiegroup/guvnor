@@ -77,31 +77,6 @@ The blog post http://blog.athico.com/2011/03/using-drools-ant-to-migrateback-up.
 a full example on how to use the JackrabbitMigrationAntTask for repository migration.</para>
  </section>
 
- <section>
-   <title>Selectors for package building</title>
-   
-   <para>
-   When building packages using the "Packages" feature you have the option to use a "selector". This selector
-   will filter the list of rules that are built into the package.
-   </para>
-   
-   <para>
-   Guvnor provides several built-in selectors which allow you to choose what assets form part of a package
-   build according to asset's status and category.
-   </para>
-   
-   <para>
-   You can use a custom selector if the built-in selector does not satisfy your requirement. To configure a
-   custom selector, you will need to "explode" the WAR file for Guvnor, and locate the
-   <filename>selectors.properties</filename> file (note you can also put your own
-   <filename>selectors.properties</filename> file in the system classpath if you like). In this file, you will
-   find details on how you can configure a custom selector. The options are to use a DRL file, or the name of
-   a class that you have written (and which is available on the classpath). Classes must implement the
-   <code>AssetSelector</code> interface. DRL files can also be used and there is an example one in the
-   <filename>selectors.properties</filename> file). Each selector you configure has a unique name in this
-   properties file - and this is the name that you can use when building packages.
-   </para>
- </section>
 
  <section>
    <title>Adding your own logos or styles to Guvnor web GUI</title>
