@@ -34,8 +34,6 @@
 
   <xi:include href="NewModel.xml" xpointer="element(/1)" />
 
-  <xi:include href="NewProcess-BPEL.xml" xpointer="element(/1)" />
-
   <xi:include href="NewFunction.xml" xpointer="element(/1)" />
 
   <xi:include href="NewDSL.xml" xpointer="element(/1)" />
