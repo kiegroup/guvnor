@@ -71,4 +71,8 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements Secu
         return securityService.login(userName, password);
     }
 
+    public void logout() {
+        securityService.logout();
+    }
+
 }

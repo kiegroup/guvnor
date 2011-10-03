@@ -30,8 +30,7 @@
               <small>
                 <ui:text from='{i18n.WelcomeUser}'/>
                 <span ui:field="userName"/>
-                <a href='logout.jsp'>[<ui:text from='{i18n.SignOut}'/>]
-                </a>
+                <gwt:Anchor ui:field="logoutAnchor" href="javascript:;">[<ui:text from='{i18n.SignOut}'/>]</gwt:Anchor>
               </small>
             </div>
             <div class='{guvnorResources.headerCss.perspectivesClass}'>

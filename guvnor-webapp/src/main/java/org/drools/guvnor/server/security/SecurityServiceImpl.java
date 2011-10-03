@@ -89,6 +89,10 @@ public class SecurityServiceImpl implements SecurityService {
         return identity.isLoggedIn();
     }
 
+    public void logout() {
+        identity.logout();
+    }
+
     public UserSecurityContext getCurrentUser() {
         tryAutoLoginAsGuest();
         return new UserSecurityContext( identity.isLoggedIn() ? credentials.getUsername() : null );
