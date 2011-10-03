@@ -68,7 +68,7 @@ public class CategoryResource extends Resource {
             String decoded = URLDecoder.decode(encoded, Encoding);
             UriBuilder builder = uriInfo.getAbsolutePathBuilder();
             f.setTitle(encoded);
-            AssetItemPageResult result = repository.findAssetsByCategory(
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(
                     decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             for (AssetItem item : assets) {
@@ -97,7 +97,7 @@ public class CategoryResource extends Resource {
 
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
-            AssetItemPageResult result = repository.findAssetsByCategory(decoded, 0, pageSize);
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             if (assets.size() > 0) {
                 ret = new ArrayList<Asset>();
@@ -153,7 +153,7 @@ public class CategoryResource extends Resource {
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
             int p = new Integer(page);
-            AssetItemPageResult result = repository.findAssetsByCategory(
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(
                     decoded, p, pageSize);
             List<AssetItem> assets = result.assets;
             if (assets.size() > 0) {

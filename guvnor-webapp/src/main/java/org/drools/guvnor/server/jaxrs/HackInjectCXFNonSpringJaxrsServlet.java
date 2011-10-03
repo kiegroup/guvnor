@@ -16,28 +16,21 @@
 
 package org.drools.guvnor.server.jaxrs;
 
+import java.util.List;
+import javax.inject.Inject;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
 
+import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryPackageService;
-import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerService;
-import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.UriInfo;
-
-@RequestScoped
-public abstract class Resource {
-    
-    @Context
-    protected UriInfo uriInfo;
+public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet {
 
     @Inject
     protected ServiceImplementation serviceImplementation;
@@ -50,16 +43,33 @@ public abstract class Resource {
     @Inject
     protected FileManagerService fileManagerService;
 
+    @Inject
+    private Identity identity;
 
-    // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
-    protected void inject(ServiceImplementation serviceImplementation,
-            RepositoryPackageService repositoryPackageService, RepositoryAssetService repositoryAssetService,
-            RulesRepository rulesRepository, FileManagerService fileManagerService) {
-        this.serviceImplementation = serviceImplementation;
-        this.repositoryPackageService = repositoryPackageService;
-        this.repositoryAssetService = repositoryAssetService;
-        this.rulesRepository = rulesRepository;
-        this.fileManagerService = fileManagerService;
+    @Inject
+    private Credentials credentials;
+
+    @Override
+    protected List<?> getProviders(ServletConfig servletConfig) throws ServletException {
+        List<?> providers = super.getProviders(servletConfig);
+        for (Object provider : providers) {
+            if (provider instanceof CXFAuthenticationHandler) {
+                CXFAuthenticationHandler handler = (CXFAuthenticationHandler) provider;
+                handler.inject(identity, credentials);
+            }
+        }
+        return providers;
+    }
+
+    @Override
+    protected Object createSingletonInstance(Class<?> cls, ServletConfig sc) throws ServletException {
+        Object singletonInstance = super.createSingletonInstance(cls, sc);
+        if (singletonInstance instanceof Resource) {
+            Resource resource = (Resource) singletonInstance;
+            resource.inject(serviceImplementation, repositoryPackageService, repositoryAssetService, rulesRepository,
+                    fileManagerService);
+        }
+        return singletonInstance;
     }
 
 }

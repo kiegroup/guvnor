@@ -40,8 +40,7 @@
   <!-- servlets - mostly to do with file management -->
   <servlet>
     <servlet-name>CXFServlet</servlet-name>
-    <servlet-class>org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet</servlet-class>
-    <!-- TODO seam3upgrade these classes need to be injected, see seam remoting REST support -->
+    <servlet-class>org.drools.guvnor.server.jaxrs.HackInjectCXFNonSpringJaxrsServlet</servlet-class>
     <init-param>
       <param-name>jaxrs.serviceClasses</param-name>
       <param-value>
@@ -58,10 +57,11 @@
         </param-value>
     </init-param>
     <!-- Use per-request life-cycle -->
-    <init-param>
-      <param-name>jaxrs.scope</param-name>
-      <param-value>prototype</param-value>
-    </init-param>
+    <!-- Enabling this breaks CDI injection in HackInjectCXFNonSpringJaxrsServlet -->
+    <!--<init-param>-->
+      <!--<param-name>jaxrs.scope</param-name>-->
+      <!--<param-value>prototype</param-value>-->
+    <!--</init-param>-->
   </servlet>
   <servlet>
     <servlet-name>guvnorService</servlet-name>

@@ -35,15 +35,21 @@ import org.jboss.seam.security.Identity;
 @ApplicationScoped
 public class CXFAuthenticationHandler implements RequestHandler {
 
+
     @Inject
     private Identity identity;
 
     @Inject
     private Credentials credentials;
 
+    // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
+    protected void inject(Identity identity, Credentials credentials) {
+        this.identity = identity;
+        this.credentials = credentials;
+    }
+
     public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-        // TODO seam3upgrade this class isn't getting injects, see web.xml
-        //If the request is from same session, the user should be logged already.
+        // If the request is from same session, the user should be logged already.
         if (identity.isLoggedIn()) {
             return null;
         }
