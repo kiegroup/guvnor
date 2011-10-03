@@ -9,6 +9,6 @@
 
   <title>Category rules</title>
 
-  <para>TODO</para>
+  <para>With category rules it is possible to make all the rules in a certain category extend a rule. The condition part of the rule that is extended is added before the conditions of each rule that is in the category that extends the extended rule. The action part of the extended rule is not added to the extending rules.</para>
 
 </section>

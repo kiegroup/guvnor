@@ -10,8 +10,6 @@
          xmlns:ns="http://docbook.org/ns/docbook">
   <title>Building</title>
 
-  <para>TODO</para>
-
   <para>Finally you would "build" a package. Any errors caught are then shown
   at this point. If the build was successful, then you will have the option to
   create a snapshot for deployment. You can also view the DRL that this
