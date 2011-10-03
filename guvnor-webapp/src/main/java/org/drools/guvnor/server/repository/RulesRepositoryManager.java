@@ -16,6 +16,11 @@
 
 package org.drools.guvnor.server.repository;
 
+import java.security.Principal;
+
+import javax.security.auth.Subject;
+
+import org.drools.repository.ClassUtil;
 import org.drools.repository.RulesRepository;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.AutoCreate;
@@ -27,6 +32,11 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.annotations.Unwrap;
 import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
+import org.jboss.security.SecurityContext;
+import org.jboss.security.SecurityContextAssociation;
+import org.jboss.security.SecurityContextFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This enhances the BRMS repository for lifecycle management.
@@ -36,6 +46,8 @@ import org.jboss.seam.security.Identity;
 @Name("repository")
 public class RulesRepositoryManager {
 
+	private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
+	
     @In
     RepositoryStartupService repositoryConfiguration;
 
@@ -50,6 +62,25 @@ public class RulesRepositoryManager {
         String userName = DEFAULT_USER;
         if (Contexts.isApplicationContextActive()) {
             userName = Identity.instance().getCredentials().getUsername();
+            
+            // Also set the JBoss security context if the JAAS realm is found.
+            try {
+                String configName = Identity.instance().getJaasConfigName();
+                boolean isJBoss=true;
+                try {
+                    ClassUtil.forName("org.jboss.security.SecurityContext", this.getClass());
+                } catch (ClassNotFoundException e) {
+                    isJBoss=false;
+                }
+                if (configName!=null && isJBoss==true) {
+                    Subject subject = Identity.instance().getSubject();
+                    Principal principal = subject.getPrincipals().iterator().next();
+                    SecurityContext sc = SecurityContextFactory.createSecurityContext(principal, null, subject, configName); 
+                    SecurityContextAssociation.setSecurityContext(sc);
+                }
+            } catch (Exception e1) {
+            	log.error("Not able to set the JAAS security context", e1.getMessage(),e1);
+            }
         }
         if (userName == null) {
             userName = DEFAULT_USER;

@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
+import org.drools.ide.common.client.modeldriven.brl.HasConstraints;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
@@ -145,7 +146,7 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         layout.setWidget( 0,
                           0,
-                          getPatternLabel() );
+                          getPatternLabel( this.pattern ) );
         FlexCellFormatter formatter = layout.getFlexCellFormatter();
         formatter.setAlignment( 0,
                                 0,
@@ -157,7 +158,8 @@ public class FactPatternWidget extends RuleModellerWidget {
 
         List<FieldConstraint> sortedConst = sortConstraints( pattern.getFieldConstraints() );
         pattern.setFieldConstraints( sortedConst );
-        drawConstraints( sortedConst );
+        drawConstraints( sortedConst,
+                         pattern );
 
         //CEP 'window' widget
         int row = layout.getRowCount() + 1;
@@ -181,14 +183,14 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Render a hierarchy of constraints, hierarchy here means constraints that
      * may themselves depend on members of constraint objects. With this code,
-     * the GUI enables clicking rules of the form:
-     * 
-     * $result = RoutingResult( NerOption.types contains "arzt" )
+     * the GUI enables clicking rules of the form: $result = RoutingResult(
+     * NerOption.types contains "arzt" )
      * 
      * @param sortedConst
      *            a sorted list of constraints to display.
-     * */
-    private void drawConstraints(List<FieldConstraint> sortedConst) {
+     */
+    private void drawConstraints(List<FieldConstraint> sortedConst,
+                                 HasConstraints hasConstraints) {
         final DirtyableFlexTable table = new DirtyableFlexTable();
         layout.setWidget( 1,
                           0,
@@ -199,6 +201,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             traverseSingleFieldConstraints( sortedConst,
                                             table,
                                             parents,
+                                            hasConstraints,
                                             i );
 
             //now the clear icon
@@ -233,6 +236,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private void traverseSingleFieldConstraints(List<FieldConstraint> sortedConst,
                                                 final DirtyableFlexTable table,
                                                 List<FieldConstraint> parents,
+                                                HasConstraints hasConstraints,
                                                 int i) {
         int tabs = -1;
         FieldConstraint current = sortedConst.get( i );
@@ -259,6 +263,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         renderFieldConstraint( table,
                                i,
                                current,
+                               hasConstraints,
                                true,
                                tabs );
     }
@@ -277,7 +282,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @param constraints
      *            the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
-     * */
+     */
     private List<FieldConstraint> sortConstraints(FieldConstraint[] constraints) {
         List<FieldConstraint> sortedConst = new ArrayList<FieldConstraint>( constraints.length );
         for ( int i = 0; i < constraints.length; i++ ) {
@@ -308,7 +313,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      *            the array to fill.
      * @param fieldConst
      *            the constraint to investigate.
-     * */
+     */
     private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst,
                                              List<FieldConstraint> sortedConst) {
         if ( fieldConst.getParent() instanceof SingleFieldConstraint ) {
@@ -325,6 +330,7 @@ public class FactPatternWidget extends RuleModellerWidget {
     private void renderFieldConstraint(final DirtyableFlexTable inner,
                                        int row,
                                        FieldConstraint constraint,
+                                       HasConstraints hasConstraints,
                                        boolean showBinding,
                                        int tabs) {
         //if nesting, or predicate, then it will need to span 5 cols.
@@ -333,6 +339,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                          inner,
                                          row,
                                          (SingleFieldConstraint) constraint,
+                                         hasConstraints,
                                          showBinding,
                                          tabs );
         } else if ( constraint instanceof CompositeFieldConstraint ) {
@@ -387,7 +394,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 this.renderFieldConstraint( inner,
                                             i,
                                             nested[i],
-                                            false,
+                                            constraint,
+                                            true,
                                             0 );
                 //add in remove icon here...
                 final int currentRow = i;
@@ -428,6 +436,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                                              final DirtyableFlexTable inner,
                                              final int row,
                                              final SingleFieldConstraint constraint,
+                                             final HasConstraints hasConstraints,
                                              boolean showBinding,
                                              final int tabs) {
 
@@ -450,6 +459,7 @@ public class FactPatternWidget extends RuleModellerWidget {
                 inner.setWidget( row,
                                  0 + col,
                                  fieldLabel( constraint,
+                                             hasConstraints,
                                              showBinding,
                                              tabs * 20 ) );
             }
@@ -608,14 +618,16 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * This returns the pattern label.
      */
-    private Widget getPatternLabel() {
+    private Widget getPatternLabel(final HasConstraints hasConstraints) {
         ClickHandler click = new ClickHandler() {
 
             public void onClick(ClickEvent event) {
                 String factTypeShortName = (pattern.getFactType().contains( "." ) ? pattern.getFactType().substring( pattern.getFactType().lastIndexOf( "." ) + 1 ) : pattern.getFactType());
                 popupCreator.showPatternPopup( (Widget) event.getSource(),
                                                factTypeShortName,
-                                               null );
+                                               null,
+                                               hasConstraints,
+                                               false );
             }
         };
 
@@ -625,7 +637,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         if ( isAll0WithLabel ) {
             desc = constants.All0with( patternName );
         } else {
-            if ( pattern.constraintList != null && pattern.constraintList.constraints.length > 0 ) {
+            if ( pattern.getNumberOfConstraints() > 0 ) {
                 desc = constants.ThereIsAAn0With( patternName );
             } else {
                 desc = constants.ThereIsAAn0( patternName );
@@ -689,6 +701,18 @@ public class FactPatternWidget extends RuleModellerWidget {
 
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
+
+            if ( fieldName.contains( "." ) ) {
+                int index = fieldName.indexOf( "." );
+                factType = fieldName.substring( 0,
+                                                index );
+                fieldName = fieldName.substring( index + 1 );
+            }
+
+            if ( c instanceof SingleFieldConstraintEBLeftSide ) {
+                SingleFieldConstraintEBLeftSide sfc = (SingleFieldConstraintEBLeftSide) c;
+                factType = sfc.getExpressionLeftSide().getPreviousClassType();
+            }
             String[] operators = connectives.getCompletions().getOperatorCompletions( factType,
                                                                                       fieldName );
             CEPOperatorsDropdown w = new CEPOperatorsDropdown( operators,
@@ -755,37 +779,52 @@ public class FactPatternWidget extends RuleModellerWidget {
      * binding option of showBinding is true.
      */
     private Widget fieldLabel(final SingleFieldConstraint con,
+                              final HasConstraints hasConstraints,
                               boolean showBinding,
                               int padding) {
         HorizontalPanel ab = new HorizontalPanel();
         ab.setStyleName( "modeller-field-Label" );
 
-        if ( !con.isBound() ) {
-            if ( bindable && showBinding && !this.readOnly ) {
-                ClickHandler click = new ClickHandler() {
+        StringBuilder bindingLabel = new StringBuilder();
+        if ( con.isBound() ) {
+            bindingLabel.append( "<b>[" );
+            bindingLabel.append( con.getFieldBinding() );
+            bindingLabel.append( "]</b>&nbsp;" );
+        }
 
-                    public void onClick(ClickEvent event) {
-                        String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
-                        popupCreator.showBindFieldPopup( (Widget) event.getSource(),
-                                                         con,
-                                                         fields,
-                                                         popupCreator );
-                    }
-                };
-                ClickableLabel cl = new ClickableLabel( con.getFieldName(),
-                                                        click,
-                                                        !this.readOnly );
-                DOM.setStyleAttribute( cl.getElement(),
-                                       "marginLeft",
-                                       "" + padding + "pt" ); //NON-NLS
-                ab.add( cl );
-            } else {
-                ab.add( new SmallLabel( con.getFieldName() ) );
+        //If the field is a direct descendant of the Pattern only show the leaf-name
+        //otherwise show the qualified field name which includes the preceding field type 
+        String fieldName = con.getFieldName();
+        if ( fieldName.contains( "." ) ) {
+            String factType = fieldName.substring( 0,
+                                                   fieldName.indexOf( "." ) );
+            if ( factType.equals( this.pattern.getFactType() ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
             }
+        }
+        bindingLabel.append( fieldName );
 
+        if ( bindable && showBinding && !this.readOnly ) {
+            ClickHandler click = new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    String[] fields = connectives.getCompletions().getFieldCompletions( con.getFieldType() );
+                    popupCreator.showBindFieldPopup( (Widget) event.getSource(),
+                                                     con,
+                                                     hasConstraints,
+                                                     fields,
+                                                     popupCreator );
+                }
+            };
+            ClickableLabel cl = new ClickableLabel( bindingLabel.toString(),
+                                                    click,
+                                                    !this.readOnly );
+            DOM.setStyleAttribute( cl.getElement(),
+                                   "marginLeft",
+                                   "" + padding + "pt" );
+            ab.add( cl );
         } else {
-            ab.add( new SmallLabel( con.getFieldName() ) );
-            ab.add( new SmallLabel( " <b>[" + con.getFieldBinding() + "]</b>" ) ); //NON-NLS
+            ab.add( new SmallLabel( bindingLabel.toString() ) );
         }
 
         return ab;

@@ -96,17 +96,17 @@ public class ScenarioPackageScreen extends Composite {
         LoadingPopup.showMessage( constants.BuildingAndRunningScenarios() );
         RepositoryServiceFactory.getPackageService().runScenariosInPackage( uuid,
                 new GenericCallback<BulkTestRunResult>() {
-                    public void onSuccess(BulkTestRunResult d) {
+                    public void onSuccess(BulkTestRunResult bulkTestRunResult) {
                         BulkRunResultViewImpl view = new BulkRunResultViewImpl( clientFactory );
-                        BulkRunResult w = new BulkRunResult( view );
+                        BulkRunResultPresenter bulkRunResultPresenter = new BulkRunResultPresenter( view );
 
-                        w.setBulkTestRunResult( d );
-                        w.setCloseCommand( new Command() {
+                        bulkRunResultPresenter.setBulkTestRunResult(bulkTestRunResult);
+                        bulkRunResultPresenter.setCloseCommand(new Command() {
                             public void execute() {
                                 refreshShowGrid();
                             }
 
-                        } );
+                        });
                         layout.remove( 1 );
                         layout.add( view );
                         LoadingPopup.close();

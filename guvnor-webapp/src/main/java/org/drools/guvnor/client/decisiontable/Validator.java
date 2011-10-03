@@ -13,22 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.decisiontable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.ActionInsertFactFieldsPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 /**
- * Guided Decision Table validator
+ * Guided Decision Table Wizard validator
  */
 public class Validator {
 
@@ -37,16 +39,20 @@ public class Validator {
     private Map<Pattern52, List<ActionSetFieldCol52>>                       patternToActionSetFieldsMap;
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
-    Validator(List<Pattern52> patterns) {
+    public Validator() {
+        this( new ArrayList<Pattern52>() );
+    }
+
+    public Validator(List<Pattern52> patterns) {
         this.patternsConditions = patterns;
         this.patternsActions = new ArrayList<Pattern52>();
     }
 
-    void addActionPattern(Pattern52 pattern) {
+    public void addActionPattern(Pattern52 pattern) {
         this.patternsActions.add( pattern );
     }
 
-    void removeActionPattern(Pattern52 pattern) {
+    public void removeActionPattern(Pattern52 pattern) {
         this.patternsActions.remove( pattern );
     }
 
@@ -118,7 +124,9 @@ public class Validator {
     }
 
     public boolean isConditionValid(ConditionCol52 c) {
-        return isConditionHeaderValid( c ) && isConditionOperatorValid( c );
+        return isConditionHeaderValid( c )
+               && isConditionOperatorValid( c )
+               && isConditionLimitedEntryValueValid( c );
     }
 
     public boolean isConditionHeaderValid(ConditionCol52 c) {
@@ -178,6 +186,40 @@ public class Validator {
             }
         }
         return true;
+    }
+
+    public boolean doesOperatorNeedValue(ConditionCol52 c) {
+        String operator = c.getOperator();
+        if ( operator == null || operator.equals( "" ) ) {
+            return false;
+        }
+        return !(operator.equals( "== null" ) || operator.equals( "!= null" ));
+    }
+
+    public boolean isConditionLimitedEntryValueValid(ConditionCol52 c) {
+        if ( !(c instanceof LimitedEntryConditionCol52) ) {
+            return true;
+        }
+        LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) c;
+        boolean doesOperatorNeedValue = doesOperatorNeedValue( lec );
+        boolean hasValue = hasValue( lec );
+        return (doesOperatorNeedValue && hasValue) || (!doesOperatorNeedValue && !hasValue);
+    }
+
+    private boolean hasValue(LimitedEntryConditionCol52 lec) {
+        if ( lec.getValue() == null ) {
+            return false;
+        }
+        switch ( lec.getValue().getDataType() ) {
+            case BOOLEAN :
+                return lec.getValue().getBooleanValue() != null;
+            case NUMERIC :
+                return lec.getValue().getNumericValue() != null;
+            case DATE :
+                return lec.getValue().getDateValue() != null;
+            default :
+                return true;
+        }
     }
 
 }

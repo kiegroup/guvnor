@@ -26,61 +26,66 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This is a decision table model for a guided editor. It is not template or XLS
  * based. (template could be done relatively easily by taking a template, as a
  * String, and then String[][] data and driving the SheetListener interface in
- * the decision tables module).
- * 
- * This works by taking the column definitions, and combining them with the
- * table of data to produce rule models.
+ * the decision tables module). This works by taking the column definitions, and
+ * combining them with the table of data to produce rule models.
  */
 public class GuidedDecisionTable52
     implements
     PortableObject {
 
-    private static final long         serialVersionUID      = 510l;
+    private static final long    serialVersionUID      = 510l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
-    public static final int           INTERNAL_ELEMENTS     = 2;
+    public static final int      INTERNAL_ELEMENTS     = 2;
 
     /**
      * Various attribute names
      */
-    public static final String        SALIENCE_ATTR         = "salience";
-    public static final String        ENABLED_ATTR          = "enabled";
-    public static final String        DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String        DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String        NO_LOOP_ATTR          = "no-loop";
-    public static final String        AGENDA_GROUP_ATTR     = "agenda-group";
-    public static final String        ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String        DURATION_ATTR         = "duration";
-    public static final String        AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String        LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String        RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String        DIALECT_ATTR          = "dialect";
-    public static final String        NEGATE_RULE_ATTR      = "negate";
+    public static final String   SALIENCE_ATTR         = "salience";
+    public static final String   ENABLED_ATTR          = "enabled";
+    public static final String   DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String   DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String   NO_LOOP_ATTR          = "no-loop";
+    public static final String   AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String   ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String   DURATION_ATTR         = "duration";
+    public static final String   AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String   LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String   RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String   DIALECT_ATTR          = "dialect";
+    public static final String   NEGATE_RULE_ATTR      = "negate";
 
-    private String                    tableName;
+    private String               tableName;
 
-    private String                    parentName;
+    private String               parentName;
 
-    private RowNumberCol52            rowNumberCol          = new RowNumberCol52();
+    private RowNumberCol52       rowNumberCol          = new RowNumberCol52();
 
-    private DescriptionCol52          descriptionCol        = new DescriptionCol52();
+    private DescriptionCol52     descriptionCol        = new DescriptionCol52();
 
-    private List<MetadataCol52>       metadataCols          = new ArrayList<MetadataCol52>();
+    private List<MetadataCol52>  metadataCols          = new ArrayList<MetadataCol52>();
 
-    private List<AttributeCol52>      attributeCols         = new ArrayList<AttributeCol52>();
+    private List<AttributeCol52> attributeCols         = new ArrayList<AttributeCol52>();
 
-    private List<Pattern52>           conditionPatterns     = new ArrayList<Pattern52>();
+    private List<Pattern52>      conditionPatterns     = new ArrayList<Pattern52>();
 
-    private List<ActionCol52>         actionCols            = new ArrayList<ActionCol52>();
+    private List<ActionCol52>    actionCols            = new ArrayList<ActionCol52>();
+
+    private TableFormat          tableFormat           = TableFormat.EXTENDED_ENTRY;
+
+    public enum TableFormat {
+        EXTENDED_ENTRY,
+        LIMITED_ENTRY
+    }
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue52>> data                  = new ArrayList<List<DTCellValue52>>();
+    private List<List<DTCellValue52>> data = new ArrayList<List<DTCellValue52>>();
 
     public GuidedDecisionTable52() {
     }
@@ -237,12 +242,23 @@ public class GuidedDecisionTable52
 
     private String getType(ConditionCol52 col,
                            SuggestionCompletionEngine sce) {
-
         Pattern52 pattern = getPattern( col );
-
         String type = sce.getFieldType( pattern.getFactType(),
                                         col.getFactField() );
-        type = (assertDataType( col,
+        type = (assertDataType( pattern,
+                                col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(Pattern52 pattern,
+                           ConditionCol52 col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( pattern.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( pattern,
+                                col,
                                 sce,
                                 type ) ? type : null);
         return type;
@@ -266,6 +282,126 @@ public class GuidedDecisionTable52
                                     sce,
                                     type ) ? type : null);
         return type;
+    }
+
+    // Get the Data Type corresponding to a given column
+    public DTDataTypes52 getTypeSafeType(DTColumnConfig52 column,
+                                         SuggestionCompletionEngine sce) {
+
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+
+        if ( column instanceof RowNumberCol52 ) {
+            dataType = DTDataTypes52.NUMERIC;
+
+        } else if ( column instanceof AttributeCol52 ) {
+            AttributeCol52 attrCol = (AttributeCol52) column;
+            String attrName = attrCol.getAttribute();
+            if ( attrName.equals( GuidedDecisionTable52.SALIENCE_ATTR ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( attrName.equals( GuidedDecisionTable52.ENABLED_ATTR ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( attrName.equals( GuidedDecisionTable52.NO_LOOP_ATTR ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( attrName.equals( GuidedDecisionTable52.DURATION_ATTR ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( attrName.equals( GuidedDecisionTable52.AUTO_FOCUS_ATTR ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( attrName.equals( GuidedDecisionTable52.LOCK_ON_ACTIVE_ATTR ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( attrName.equals( GuidedDecisionTable52.DATE_EFFECTIVE_ATTR ) ) {
+                dataType = DTDataTypes52.DATE;
+            } else if ( attrName.equals( GuidedDecisionTable52.DATE_EXPIRES_ATTR ) ) {
+                dataType = DTDataTypes52.DATE;
+            } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            }
+
+        } else if ( column instanceof ConditionCol52 ) {
+            dataType = derieveDataType( sce,
+                                        column );
+
+        } else if ( column instanceof ActionSetFieldCol52 ) {
+            dataType = derieveDataType( sce,
+                                        column );
+
+        } else if ( column instanceof ActionInsertFactCol52 ) {
+            dataType = derieveDataType( sce,
+                                        column );
+
+        }
+
+        return dataType;
+
+    }
+
+    // Get the Data Type corresponding to a given column
+    public DTDataTypes52 getTypeSafeType(Pattern52 pattern,
+                                         ConditionCol52 column,
+                                         SuggestionCompletionEngine sce) {
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        dataType = derieveDataType( sce,
+                                    pattern,
+                                    column );
+        return dataType;
+
+    }
+
+    // Derive the Data Type for a Condition or Action column
+    private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
+                                          DTColumnConfig52 col) {
+
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        String type = getType( col,
+                               sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return dataType;
+        }
+
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = getValueList( col,
+                                      sce );
+        if ( vals.length == 0 ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                dataType = DTDataTypes52.DATE;
+            }
+        }
+        return dataType;
+    }
+
+    // Derive the Data Type for a Condition or Action column
+    private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
+                                          Pattern52 pattern,
+                                          ConditionCol52 col) {
+
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        String type = getType( pattern,
+                               col,
+                               sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return dataType;
+        }
+
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = getValueList( col,
+                                      sce );
+        if ( vals.length == 0 ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                dataType = DTDataTypes52.DATE;
+            }
+        }
+        return dataType;
     }
 
     public String[] getValueList(DTColumnConfig52 col,
@@ -297,12 +433,24 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
-
         if ( col.getValueList() != null
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             Pattern52 pattern = getPattern( col );
+            String[] r = sce.getEnumValues( pattern.getFactType(),
+                                            col.getFactField() );
+            return (r != null) ? r : new String[0];
+        }
+    }
+
+    public String[] getValueList(Pattern52 pattern,
+                                 ConditionCol52 col,
+                                 SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
+        } else {
             String[] r = sce.getEnumValues( pattern.getFactType(),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
@@ -316,20 +464,19 @@ public class GuidedDecisionTable52
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
-                                                col.getFactField() );
+                                            col.getFactField() );
             return (r != null) ? r : new String[0];
         }
     }
 
     private String[] getValueList(ActionInsertFactCol52 col,
                                   SuggestionCompletionEngine sce) {
-
         if ( col.getValueList() != null
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( col.getFactType(),
-                                                col.getFactField() );
+                                            col.getFactField() );
             return (r != null) ? r : new String[0];
         }
     }
@@ -414,11 +561,10 @@ public class GuidedDecisionTable52
         return null;
     }
 
-    private boolean assertDataType(ConditionCol52 col,
+    private boolean assertDataType(Pattern52 pattern,
+                                   ConditionCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-
-        Pattern52 pattern = getPattern( col );
 
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {
@@ -453,6 +599,14 @@ public class GuidedDecisionTable52
             return true;
         }
         return false;
+    }
+
+    public TableFormat getTableFormat() {
+        return tableFormat;
+    }
+
+    public void setTableFormat(TableFormat tableFormat) {
+        this.tableFormat = tableFormat;
     }
 
 }

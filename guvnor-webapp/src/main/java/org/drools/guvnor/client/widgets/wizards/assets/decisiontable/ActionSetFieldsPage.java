@@ -20,6 +20,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionSetFieldsDefinedEvent;
@@ -29,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.event.shared.EventBus;
@@ -93,6 +96,9 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         if ( sce == null ) {
             return;
         }
+        view.setPresenter( this );
+        view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
+                                                                        sce ) );
 
         //Existing ActionSetFieldCols (should be empty for a new Decision Table)
         for ( ActionCol52 a : dtable.getActionCols() ) {
@@ -108,7 +114,6 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
             }
         }
 
-        view.setPresenter( this );
         content.setWidget( view );
     }
 
@@ -158,10 +163,12 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = modelNameHelper.getUserFriendlyTypeName( sce.getFieldClassName( type,
-                                                                                               fieldName ) );
+            String fieldType = sce.getFieldClassName( type,
+                                                      fieldName );
+            String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,
+                                                       fieldDisplayType,
                                                        BaseSingleFieldConstraint.TYPE_LITERAL );
             availableFields.add( field );
         }
@@ -184,6 +191,10 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
                 dtable.getActionCols().add( af );
             }
         }
+    }
+
+    public TableFormat getTableFormat() {
+        return dtable.getTableFormat();
     }
 
 }

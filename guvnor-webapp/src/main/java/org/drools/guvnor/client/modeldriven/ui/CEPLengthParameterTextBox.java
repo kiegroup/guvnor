@@ -22,7 +22,7 @@ import com.google.gwt.regexp.shared.RegExp;
 /**
  * A TextBox to handle CEP 'window length' parameters
  */
-public class CEPLengthParameterTextBox extends AbstractRestrictedEntryTextBox {
+public class CEPLengthParameterTextBox extends AbstractCEPRestrictedEntryTextBox {
 
     // A valid Operator parameter expression
     private static final RegExp VALID_LENGTH = RegExp.compile( "^\\d+$" );

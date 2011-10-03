@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
@@ -27,6 +29,8 @@ import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.Actio
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ActionSetFieldPatternCell;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.AvailableFieldCell;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
@@ -44,6 +48,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -73,6 +78,8 @@ public class ActionSetFieldsPageViewImpl extends Composite
     private ActionSetFieldCol52                       chosenFieldsSelection;
     private Set<ActionSetFieldCol52>                  chosenFieldsSelections;
     private MinimumWidthCellList<ActionSetFieldCol52> chosenFieldsWidget;
+
+    private DTCellValueWidgetFactory                  factory;
 
     private static final Constants                    constants = GWT.create( Constants.class );
 
@@ -114,6 +121,18 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     @UiField
     HorizontalPanel                                   msgIncompleteActionSetFields;
+
+    @UiField
+    VerticalPanel                                     criteriaExtendedEntry;
+
+    @UiField
+    VerticalPanel                                     criteriaLimitedEntry;
+
+    @UiField
+    HorizontalPanel                                   limitedEntryValueContainer;
+
+    @UiField
+    SimplePanel                                       limitedEntryValueWidgetContainer;
 
     interface ActionSetFieldPageWidgetBinder
         extends
@@ -209,15 +228,8 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 if ( cws.size() == 1 ) {
                     chosenFieldsSelection = cws.iterator().next();
                     fieldDefinition.setVisible( true );
-                    txtColumnHeader.setEnabled( true );
-                    txtDefaultValue.setEnabled( true );
-                    txtValueList.setEnabled( true );
-                    chkUpdateEngine.setEnabled( true );
-                    txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
-                    txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
-                    txtValueList.setText( chosenFieldsSelection.getValueList() );
-                    chkUpdateEngine.setValue( chosenFieldsSelection.isUpdate() );
                     validateFieldHeader();
+                    populateFieldDefinition();
                 } else {
                     chosenFieldsSelection = null;
                     fieldDefinition.setVisible( false );
@@ -226,6 +238,44 @@ public class ActionSetFieldsPageViewImpl extends Composite
                     txtDefaultValue.setEnabled( false );
                     chkUpdateEngine.setEnabled( false );
                 }
+            }
+
+            private void populateFieldDefinition() {
+
+                // Fields common to all table formats
+                txtColumnHeader.setEnabled( true );
+                chkUpdateEngine.setEnabled( true );
+                txtColumnHeader.setText( chosenFieldsSelection.getHeader() );
+                chkUpdateEngine.setValue( chosenFieldsSelection.isUpdate() );
+
+                criteriaExtendedEntry.setVisible( presenter.getTableFormat() == TableFormat.EXTENDED_ENTRY );
+                criteriaLimitedEntry.setVisible( presenter.getTableFormat() == TableFormat.LIMITED_ENTRY );
+
+                // Fields specific to the table format
+                switch ( presenter.getTableFormat() ) {
+                    case EXTENDED_ENTRY :
+                        txtDefaultValue.setEnabled( true );
+                        txtValueList.setEnabled( true );
+                        txtDefaultValue.setText( chosenFieldsSelection.getDefaultValue() );
+                        txtValueList.setText( chosenFieldsSelection.getValueList() );
+                        break;
+                    case LIMITED_ENTRY :
+                        makeLimitedValueWidget();
+                        limitedEntryValueContainer.setVisible( true );
+                        break;
+                }
+            }
+
+            private void makeLimitedValueWidget() {
+                if ( !(chosenFieldsSelection instanceof LimitedEntryActionSetFieldCol52) ) {
+                    return;
+                }
+                LimitedEntryActionSetFieldCol52 lea = (LimitedEntryActionSetFieldCol52) chosenFieldsSelection;
+                if ( lea.getValue() == null ) {
+                    lea.setValue( factory.makeNewValue( chosenFieldsSelection ) );
+                }
+                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
+                                                                               lea.getValue() ) );
             }
 
         } );
@@ -258,7 +308,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String defaultValue = txtDefaultValue.getText();
                 chosenFieldsSelection.setDefaultValue( defaultValue );
-                //DefaultValue is optional, no need to advise of state change
+                // DefaultValue is optional, no need to advise of state change
             }
 
         } );
@@ -270,7 +320,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String valueList = txtValueList.getText();
                 chosenFieldsSelection.setValueList( valueList );
-                //ValueList is optional, no need to advise of state change
+                // ValueList is optional, no need to advise of state change
             }
 
         } );
@@ -289,6 +339,10 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    public void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory) {
+        this.factory = factory;
     }
 
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
@@ -312,7 +366,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
 
         if ( availablePatternsSelection != null ) {
 
-            //If the currently selected pattern is no longer available clear selections
+            // If the currently selected pattern is no longer available clear selections
             if ( !availablePatterns.contains( availablePatternsSelection ) ) {
                 setAvailableFields( new ArrayList<AvailableField>() );
                 availablePatternsSelection = null;
@@ -323,7 +377,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
             }
         } else {
 
-            //If no available pattern is selected clear fields
+            // If no available pattern is selected clear fields
             setAvailableFields( new ArrayList<AvailableField>() );
             setChosenFields( new ArrayList<ActionSetFieldCol52>() );
         }
@@ -347,14 +401,28 @@ public class ActionSetFieldsPageViewImpl extends Composite
     @UiHandler(value = "btnAdd")
     public void btnAddClick(ClickEvent event) {
         for ( AvailableField f : availableFieldsSelections ) {
+            chosenFields.add( makeNewActionColumn( f ) );
+        }
+        setChosenFields( chosenFields );
+        presenter.stateChanged();
+    }
+
+    private ActionSetFieldCol52 makeNewActionColumn(AvailableField f) {
+        TableFormat format = presenter.getTableFormat();
+        if ( format == TableFormat.EXTENDED_ENTRY ) {
             ActionSetFieldCol52 a = new ActionSetFieldCol52();
             a.setBoundName( availablePatternsSelection.getBoundName() );
             a.setFactField( f.getName() );
             a.setType( f.getType() );
-            chosenFields.add( a );
+            return a;
+        } else {
+            LimitedEntryActionSetFieldCol52 a = new LimitedEntryActionSetFieldCol52();
+            a.setBoundName( availablePatternsSelection.getBoundName() );
+            a.setFactField( f.getName() );
+            a.setType( f.getType() );
+            return a;
         }
-        setChosenFields( chosenFields );
-        presenter.stateChanged();
+
     }
 
     @UiHandler(value = "btnRemove")

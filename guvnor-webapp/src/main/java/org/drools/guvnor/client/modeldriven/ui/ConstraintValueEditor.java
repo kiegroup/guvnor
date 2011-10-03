@@ -69,6 +69,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
 
     private final FactPattern                pattern;
     private String                           fieldName;
+    private String                           qualifiedFieldName;
     private final SuggestionCompletionEngine sce;
     private final BaseSingleFieldConstraint  constraint;
     private final Panel                      panel;
@@ -99,15 +100,29 @@ public class ConstraintValueEditor extends DirtyableComposite {
             SingleFieldConstraintEBLeftSide sfexp = (SingleFieldConstraintEBLeftSide) con;
             this.fieldName = sfexp.getExpressionLeftSide().getFieldName();
             this.fieldType = sfexp.getExpressionLeftSide().getGenericType();
+            this.qualifiedFieldName = this.fieldName;
 
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
-            this.fieldName = cc.getFieldName();
+            fieldName = cc.getFieldName();
+            if ( fieldName.contains( "." ) ) {
+                fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+            }
+            this.fieldName = fieldName;
             this.fieldType = cc.getFieldType();
+            this.qualifiedFieldName = cc.getFieldName();
 
         } else {
+            this.qualifiedFieldName = fieldName;
+            String factType = pattern.getFactType();
+            if ( fieldName.contains( "." ) ) {
+                int index = fieldName.indexOf( "." );
+                factType = fieldName.substring( 0,
+                                                index );
+                fieldName = fieldName.substring( index + 1 );
+            }
             this.fieldName = fieldName;
-            this.fieldType = sce.getFieldType( pattern.getFactType(),
+            this.fieldType = sce.getFieldType( factType,
                                                fieldName );
         }
 
@@ -206,7 +221,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         //Enumeration
         if ( this.dropDownData != null ) {
             EnumDropDownLabel enumDropDown = new EnumDropDownLabel( this.pattern,
-                                                                    this.fieldName,
+                                                                    this.qualifiedFieldName,
                                                                     this.sce,
                                                                     this.constraint,
                                                                     !this.readOnly );

@@ -28,7 +28,7 @@
     transfer of representations of resources. A resource can be essentially
     any coherent and meaningful concept that may be addressed. A
     representation of a resource is typically a document that captures the
-    current or intended state of a resource. the REST protocol is often
+    current or intended state of a resource. The REST protocol is often
     considered as a light protocol versus SOAP</para>
   </section>
 
@@ -48,82 +48,6 @@
     the host name on the server on which Guvnor is deployed, httpPort the port
     number (8080 by default development), drools-guvnor the name of the
     archived deployed (guvnor-webapp-5.3.0 for version 5.3.0).</para>
-
-    <section>
-      <title>Getting rule Assets by Category</title>
-
-      <para>This part of the API uses as entry point the categories defined
-      for each rule asset when it is created by the user in Guvnor</para>
-
-      <table>
-        <title>Accessing Rule Assets by Category</title>
-
-        <tgroup cols="4">
-          <thead>
-            <row>
-              <entry align="center">URL</entry>
-
-              <entry align="center">Mode</entry>
-
-              <entry align="center">MIME-Type</entry>
-
-              <entry align="center">Description</entry>
-            </row>
-          </thead>
-
-          <tbody>
-            <row>
-              <entry>/categories/{categoryName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/atom/xml</entry>
-
-              <entry>Retrieves an Atom feed to all Rule assets that have the
-              category {categoryName}</entry>
-            </row>
-
-            <row>
-              <entry>/categories/{categoryName}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryName}</entry>
-            </row>
-
-            <row>
-              <entry>/{categoryName}/page/{page}</entry>
-
-              <entry>GET</entry>
-
-              <entry>application/json and application/xml</entry>
-
-              <entry>Returns a list of objects of Assets representing a Rule
-              Asset that have the category {categoryName} and retrieves page
-              {page} with is a numeric (1,2, 3, etc..). A page contains 10
-              elements. If the list contains 20 elements then the list will
-              have 2 pages. You first have to call for page 1 and then call
-              for page 2</entry>
-            </row>
-          </tbody>
-        </tgroup>
-      </table>
-
-      <figure>
-        <title>UML representation of the Asset Object</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata align="center"
-                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
-                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
-          </imageobject>
-        </mediaobject>
-      </figure>
-    </section>
 
     <section>
       <title>Accessing Rule Assets by Package</title>
@@ -606,6 +530,84 @@
         </mediaobject>
       </figure>
     </section>
+    
+    <section>
+      <title>Getting rule Assets by Category</title>
+
+      <para>This part of the API uses as entry point the categories defined
+      for each rule asset when it is created by the user in Guvnor</para>
+
+      <table>
+        <title>Accessing Rule Assets by Category</title>
+
+        <tgroup cols="4">
+          <thead>
+            <row>
+              <entry align="center">URL</entry>
+
+              <entry align="center">Mode</entry>
+
+              <entry align="center">MIME-Type</entry>
+
+              <entry align="center">Description</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>/categories/{categoryName}</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/atom/xml</entry>
+
+              <entry>Retrieves an Atom feed to all Rule assets that have the
+              category {categoryName}</entry>
+            </row>
+
+            <row>
+              <entry>/categories/{categoryName}</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>Returns a list of objects of Assets representing a Rule
+              Asset that have the category {categoryName}</entry>
+            </row>
+
+            <row>
+              <entry>/{categoryName}/page/{page}</entry>
+
+              <entry>GET</entry>
+
+              <entry>application/json and application/xml</entry>
+
+              <entry>Returns a list of objects of Assets representing a Rule
+              Asset that have the category {categoryName} and retrieves page
+              {page} with is a numeric (1,2, 3, etc..). A page contains 10
+              elements. If the list contains 20 elements then the list will
+              have 2 pages. You first have to call for page 1 and then call
+              for page 2</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+
+      <figure>
+        <title>UML representation of the Asset Object</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/AssetUMLRepresentation.png"
+                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    
   </section>
 
   <section>

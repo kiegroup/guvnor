@@ -15,8 +15,26 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import org.drools.guvnor.client.rpc.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
+import org.drools.guvnor.client.rpc.AssetPageRow;
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.DiscussionRecord;
+import org.drools.guvnor.client.rpc.PageRequest;
+import org.drools.guvnor.client.rpc.PageResponse;
+import org.drools.guvnor.client.rpc.PushResponse;
+import org.drools.guvnor.client.rpc.QueryPageRequest;
+import org.drools.guvnor.client.rpc.QueryPageRow;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ContentHandler;
 import org.drools.guvnor.server.contenthandler.ContentManager;
@@ -25,21 +43,19 @@ import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.RuleAssetPopulator;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.annotations.AutoCreate;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.remoting.WebRemote;
 import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.security.Identity;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Name("org.drools.guvnor.client.rpc.AssetService")
 @AutoCreate
@@ -554,6 +570,14 @@ public class RepositoryAssetService
     @Restrict("#{identity.loggedIn}")
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName(uuid);
+    }
+    
+    @Restrict("#{identity.loggedIn}")
+    public long getAssetCount(AssetPageRequest request) throws SerializationException {
+        if (request == null) {
+            throw new IllegalArgumentException("request cannot be null");
+        }
+        return repositoryAssetOperations.getAssetCount(request);
     }
 
     private void push(String messageType,

@@ -41,12 +41,12 @@ import java.util.List;
 public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
 
     private static final int PAGE_SIZE = 10;
-    private ClientFactory clientFactory;
-    
-    public AssetPagedTable( String packageUuid,
+    private ClientFactory    clientFactory;
+
+    public AssetPagedTable(String packageUuid,
                             List<String> formatInList,
                             Boolean formatIsRegistered,
-                            ClientFactory clientFactory ) {
+                            ClientFactory clientFactory) {
         this( packageUuid,
                 formatInList,
                 formatIsRegistered,
@@ -54,166 +54,166 @@ public class AssetPagedTable extends AbstractAssetPagedTable<AssetPageRow> {
                 clientFactory );
     }
 
-    public AssetPagedTable( final String packageUuid,
+    public AssetPagedTable(final String packageUuid,
                             final List<String> formatInList,
                             final Boolean formatIsRegistered,
                             String feedURL,
-                            ClientFactory clientFactory ) {
+                            ClientFactory clientFactory) {
         super( PAGE_SIZE,
                 feedURL,
                 clientFactory );
         this.clientFactory = clientFactory;
-        
+
         setDataProvider( new AsyncDataProvider<AssetPageRow>() {
-            protected void onRangeChanged( HasData<AssetPageRow> display ) {
+            protected void onRangeChanged(HasData<AssetPageRow> display) {
                 AssetPageRequest request = new AssetPageRequest( packageUuid,
-                        formatInList,
-                        formatIsRegistered,
-                        pager.getPageStart(),
-                        pageSize );
+                                                                 formatInList,
+                                                                 formatIsRegistered,
+                                                                 pager.getPageStart(),
+                                                                 pageSize );
                 assetService.findAssetPage( request,
-                        new GenericCallback<PageResponse<AssetPageRow>>() {
-                            public void onSuccess( PageResponse<AssetPageRow> response ) {
-                                updateRowCount( response.getTotalRowSize(),
-                                        response.isTotalRowSizeExact() );
-                                updateRowData( response.getStartRowIndex(),
-                                        response.getPageRowList() );
-                            }
-                        } );
+                                            new GenericCallback<PageResponse<AssetPageRow>>() {
+                                                public void onSuccess(PageResponse<AssetPageRow> response) {
+                                                    updateRowCount( response.getTotalRowSize(),
+                                                                    response.isTotalRowSizeExact() );
+                                                    updateRowData( response.getStartRowIndex(),
+                                                                   response.getPageRowList() );
+                                                }
+                                            } );
             }
         } );
 
     }
 
     @Override
-    protected void addAncillaryColumns( ColumnPicker<AssetPageRow> columnPicker,
-                                        SortableHeaderGroup<AssetPageRow> sortableHeaderGroup ) {
+    protected void addAncillaryColumns(ColumnPicker<AssetPageRow> columnPicker,
+                                        SortableHeaderGroup<AssetPageRow> sortableHeaderGroup) {
 
         Column<AssetPageRow, RuleFormatImageResource> formatColumn = new Column<AssetPageRow, RuleFormatImageResource>( new RuleFormatImageResourceCell() ) {
 
-            public RuleFormatImageResource getValue( AssetPageRow row ) {
+            public RuleFormatImageResource getValue(AssetPageRow row) {
                 AssetEditorFactory factory = clientFactory.getAssetEditorFactory();
                 return new RuleFormatImageResource( row.getFormat(),
-                        factory.getAssetEditorIcon( row.getFormat() ) );
+                                                    factory.getAssetEditorIcon( row.getFormat() ) );
             }
         };
         columnPicker.addColumn( formatColumn,
-                new SortableHeader<AssetPageRow, RuleFormatImageResource>( sortableHeaderGroup,
-                        constants.Format(),
-                        formatColumn ),
-                true );
+                                new SortableHeader<AssetPageRow, RuleFormatImageResource>( sortableHeaderGroup,
+                                                                                           constants.Format(),
+                                                                                           formatColumn ),
+                                true );
 
         TitledTextColumn<AssetPageRow> titleColumn = new TitledTextColumn<AssetPageRow>() {
-            public TitledText getValue( AssetPageRow row ) {
+            public TitledText getValue(AssetPageRow row) {
                 TitledText tt = new TitledText( row.getName(),
-                        row.getAbbreviatedDescription() );
+                                                row.getAbbreviatedDescription() );
                 return tt;
             }
         };
         columnPicker.addColumn( titleColumn,
-                new SortableHeader<AssetPageRow, TitledText>( sortableHeaderGroup,
-                        constants.Name(),
-                        titleColumn ),
-                true );
+                                new SortableHeader<AssetPageRow, TitledText>( sortableHeaderGroup,
+                                                                              constants.Name(),
+                                                                              titleColumn ),
+                                true );
 
         TextColumn<AssetPageRow> packageNameColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getPackageName();
             }
         };
         columnPicker.addColumn( packageNameColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.PackageName(),
-                        packageNameColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.PackageName(),
+                                                                          packageNameColumn ),
+                                false );
 
         TextColumn<AssetPageRow> stateNameColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getStateName();
             }
         };
         columnPicker.addColumn( stateNameColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.Status(),
-                        stateNameColumn ),
-                true );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.Status(),
+                                                                          stateNameColumn ),
+                                true );
 
         TextColumn<AssetPageRow> creatorColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getCreator();
             }
         };
         columnPicker.addColumn( creatorColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.Creator(),
-                        creatorColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.Creator(),
+                                                                          creatorColumn ),
+                                false );
 
         Column<AssetPageRow, Date> createdDateColumn = new Column<AssetPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            public Date getValue( AssetPageRow row ) {
+            public Date getValue(AssetPageRow row) {
                 return row.getCreatedDate();
             }
         };
         columnPicker.addColumn( createdDateColumn,
-                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
-                        constants.CreatedDate(),
-                        createdDateColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
+                                                                        constants.CreatedDate(),
+                                                                        createdDateColumn ),
+                                false );
 
         TextColumn<AssetPageRow> lastContributorColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getLastContributor();
             }
         };
         columnPicker.addColumn( lastContributorColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.LastContributor(),
-                        lastContributorColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.LastContributor(),
+                                                                          lastContributorColumn ),
+                                false );
 
         Column<AssetPageRow, Date> lastModifiedColumn = new Column<AssetPageRow, Date>( new DateCell( DateTimeFormat.getFormat( DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM ) ) ) {
-            public Date getValue( AssetPageRow row ) {
+            public Date getValue(AssetPageRow row) {
                 return row.getLastModified();
             }
         };
         columnPicker.addColumn( lastModifiedColumn,
-                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
-                        constants.LastModified(),
-                        lastModifiedColumn ),
-                true );
+                                new SortableHeader<AssetPageRow, Date>( sortableHeaderGroup,
+                                                                        constants.LastModified(),
+                                                                        lastModifiedColumn ),
+                                true );
 
         TextColumn<AssetPageRow> categorySummaryColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getCategorySummary();
             }
         };
         columnPicker.addColumn( categorySummaryColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.Categories(),
-                        categorySummaryColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.Categories(),
+                                                                          categorySummaryColumn ),
+                                false );
 
         TextColumn<AssetPageRow> externalSourceColumn = new TextColumn<AssetPageRow>() {
-            public String getValue( AssetPageRow row ) {
+            public String getValue(AssetPageRow row) {
                 return row.getExternalSource();
             }
         };
         columnPicker.addColumn( externalSourceColumn,
-                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
-                        constants.ExternalSource(),
-                        externalSourceColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, String>( sortableHeaderGroup,
+                                                                          constants.ExternalSource(),
+                                                                          externalSourceColumn ),
+                                false );
 
         Column<AssetPageRow, Boolean> isDisabledColumn = new Column<AssetPageRow, Boolean>( new RuleEnabledStateCell() ) {
-            public Boolean getValue( AssetPageRow row ) {
+            public Boolean getValue(AssetPageRow row) {
                 return row.isDisabled();
             }
         };
         columnPicker.addColumn( isDisabledColumn,
-                new SortableHeader<AssetPageRow, Boolean>( sortableHeaderGroup,
-                        constants.AssetTableIsDisabled(),
-                        isDisabledColumn ),
-                false );
+                                new SortableHeader<AssetPageRow, Boolean>( sortableHeaderGroup,
+                                                                           constants.AssetTableIsDisabled(),
+                                                                           isDisabledColumn ),
+                                false );
 
     }
 

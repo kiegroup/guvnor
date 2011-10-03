@@ -32,8 +32,6 @@ import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
@@ -386,6 +384,7 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                                                dotIndex );
             factField = factAndField.substring( dotIndex + 1,
                                                 factAndField.length() );
+            selectedValue = value;
 
             //ChangeHandler for drop-down; not called when initialising the drop-down
             DropDownValueChanged handler = new DropDownValueChanged() {
@@ -458,9 +457,9 @@ public class DSLSentenceWidget extends RuleModellerWidget {
                 resultWidget.setSelectedIndex( 1 );
             }
 
-            resultWidget.addClickHandler( new ClickHandler() {
+            resultWidget.addChangeHandler( new ChangeHandler() {
 
-                public void onClick(ClickEvent event) {
+                public void onChange(ChangeEvent event) {
                     updateSentence();
                     makeDirty();
                 }

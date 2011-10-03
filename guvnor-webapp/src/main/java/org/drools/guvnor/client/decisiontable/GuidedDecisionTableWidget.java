@@ -50,28 +50,28 @@ public class GuidedDecisionTableWidget extends Composite
         SaveEventListener,
         EditorWidget {
 
-    private Constants constants = GWT.create( Constants.class );
-    private static Images images = GWT.create( Images.class );
+    private Constants                   constants = GWT.create( Constants.class );
+    private static Images               images    = GWT.create( Images.class );
 
-    private GuidedDecisionTable52 guidedDecisionTable;
-    private VerticalPanel layout;
-    private PrettyFormLayout configureColumnsNote;
-    private VerticalPanel attributeConfigWidget;
-    private VerticalPanel conditionsConfigWidget;
-    private String packageName;
-    private VerticalPanel actionsConfigWidget;
-    private SuggestionCompletionEngine sce;
+    private GuidedDecisionTable52       guidedDecisionTable;
+    private VerticalPanel               layout;
+    private PrettyFormLayout            configureColumnsNote;
+    private VerticalPanel               attributeConfigWidget;
+    private VerticalPanel               conditionsConfigWidget;
+    private String                      packageName;
+    private VerticalPanel               actionsConfigWidget;
+    private SuggestionCompletionEngine  sce;
 
     private VerticalDecisionTableWidget dtable;
 
-    public GuidedDecisionTableWidget( RuleAsset asset,
+    public GuidedDecisionTableWidget(RuleAsset asset,
                                       RuleViewer viewer,
                                       ClientFactory clientFactory,
                                       EventBus eventBus) {
         this( asset );
     }
 
-    public GuidedDecisionTableWidget( RuleAsset asset ) {
+    public GuidedDecisionTableWidget(RuleAsset asset) {
 
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.packageName = asset.getMetaData().getPackageName();
@@ -81,9 +81,9 @@ public class GuidedDecisionTableWidget extends Composite
 
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
-        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create(images.information()).getHTML()
-                + "&nbsp;"
-                + constants.ConfigureColumnsNote() ) );
+        configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( images.information() ).getHTML()
+                                               + "&nbsp;"
+                                               + constants.ConfigureColumnsNote() ) );
         configureColumnsNote.endSection();
 
         DecoratedDisclosurePanel disclosurePanel = new DecoratedDisclosurePanel( constants.DecisionTable() );
@@ -128,7 +128,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshActionsWidget() {
         this.actionsConfigWidget.clear();
-        for (ActionCol52 c : guidedDecisionTable.getActionCols()) {
+        for ( ActionCol52 c : guidedDecisionTable.getActionCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
@@ -139,44 +139,44 @@ public class GuidedDecisionTableWidget extends Composite
         setupColumnsNote();
     }
 
-    private Widget editAction( final ActionCol52 c ) {
+    private Widget editAction(final ActionCol52 c) {
         return new ImageButton( images.edit(),
-                constants.EditThisActionColumnConfiguration(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        if ( c instanceof ActionSetFieldCol52 ) {
-                            final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
-                            ActionSetColumn ed = new ActionSetColumn( getSCE(),
-                                    guidedDecisionTable,
-                                    new GenericColumnCommand() {
-                                        public void execute( DTColumnConfig52 column ) {
-                                            dtable.updateColumn( asf,
-                                                    (ActionSetFieldCol52) column );
-                                            refreshActionsWidget();
+                                constants.EditThisActionColumnConfiguration(),
+                                new ClickHandler() {
+                                    public void onClick(ClickEvent w) {
+                                        if ( c instanceof ActionSetFieldCol52 ) {
+                                            final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
+                                            ActionSetColumn ed = new ActionSetColumn( getSCE(),
+                                                                                      guidedDecisionTable,
+                                                                                      new GenericColumnCommand() {
+                                                                                          public void execute(DTColumnConfig52 column) {
+                                                                                              dtable.updateColumn( asf,
+                                                                                                                   (ActionSetFieldCol52) column );
+                                                                                              refreshActionsWidget();
+                                                                                          }
+                                                                                      },
+                                                                                      asf,
+                                                                                      false );
+                                            ed.show();
+                                        } else if ( c instanceof ActionInsertFactCol52 ) {
+                                            final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
+                                            ActionInsertColumn ed = new ActionInsertColumn(
+                                                                                            getSCE(),
+                                                                                            guidedDecisionTable,
+                                                                                            new GenericColumnCommand() {
+                                                                                                public void execute(DTColumnConfig52 column) {
+                                                                                                    dtable.updateColumn( asf,
+                                                                                                                         (ActionInsertFactCol52) column );
+                                                                                                    refreshActionsWidget();
+                                                                                                }
+                                                                                            },
+                                                                                            asf,
+                                                                                            false );
+                                            ed.show();
                                         }
-                                    },
-                                    asf,
-                                    false );
-                            ed.show();
-                        } else if ( c instanceof ActionInsertFactCol52 ) {
-                            final ActionInsertFactCol52 asf = (ActionInsertFactCol52) c;
-                            ActionInsertColumn ed = new ActionInsertColumn(
-                                    getSCE(),
-                                    guidedDecisionTable,
-                                    new GenericColumnCommand() {
-                                        public void execute( DTColumnConfig52 column ) {
-                                            dtable.updateColumn( asf,
-                                                    (ActionInsertFactCol52) column );
-                                            refreshActionsWidget();
-                                        }
-                                    },
-                                    asf,
-                                    false );
-                            ed.show();
-                        }
 
-                    }
-                } );
+                                    }
+                                } );
 
     }
 
@@ -186,18 +186,18 @@ public class GuidedDecisionTableWidget extends Composite
         addButton.setTitle( constants.CreateANewActionColumn() );
 
         addButton.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+            public void onClick(ClickEvent w) {
                 final FormStylePopup pop = new FormStylePopup();
                 pop.setModal( false );
 
                 final ListBox choice = new ListBox();
                 choice.addItem( constants.SetTheValueOfAField(),
-                        "set" );
+                                "set" );
                 choice.addItem( constants.SetTheValueOfAFieldOnANewFact(),
-                        "insert" );
+                                "insert" );
                 Button ok = new Button( "OK" );
                 ok.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
+                    public void onClick(ClickEvent w) {
                         String s = choice.getValue( choice.getSelectedIndex() );
                         if ( s.equals( "set" ) ) {
                             showSet();
@@ -208,44 +208,44 @@ public class GuidedDecisionTableWidget extends Composite
                     }
 
                     private void showInsert() {
-                        final ActionInsertFactCol52 afc = new ActionInsertFactCol52();
+                        final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
                         ActionInsertColumn ins = new ActionInsertColumn(
-                                getSCE(),
-                                guidedDecisionTable,
-                                new GenericColumnCommand() {
-                                    public void execute( DTColumnConfig52 column ) {
-                                        newActionAdded( (ActionCol52) column );
-                                    }
-                                },
-                                afc,
-                                true );
+                                                                         getSCE(),
+                                                                         guidedDecisionTable,
+                                                                         new GenericColumnCommand() {
+                                                                             public void execute(DTColumnConfig52 column) {
+                                                                                 newActionAdded( (ActionCol52) column );
+                                                                             }
+                                                                         },
+                                                                         afc,
+                                                                         true );
                         ins.show();
                     }
 
                     private void showSet() {
-                        final ActionSetFieldCol52 afc = new ActionSetFieldCol52();
+                        final ActionSetFieldCol52 afc = makeNewActionSetColumn();
                         ActionSetColumn set = new ActionSetColumn( getSCE(),
-                                guidedDecisionTable,
-                                new GenericColumnCommand() {
-                                    public void execute( DTColumnConfig52 column ) {
-                                        newActionAdded( (ActionCol52) column );
-                                    }
-                                },
-                                afc,
-                                true );
+                                                                   guidedDecisionTable,
+                                                                   new GenericColumnCommand() {
+                                                                       public void execute(DTColumnConfig52 column) {
+                                                                           newActionAdded( (ActionCol52) column );
+                                                                       }
+                                                                   },
+                                                                   afc,
+                                                                   true );
                         set.show();
                     }
 
-                    private void newActionAdded( ActionCol52 column ) {
+                    private void newActionAdded(ActionCol52 column) {
                         dtable.addColumn( column );
                         dtable.scrapeColumns();
                         refreshActionsWidget();
                     }
                 } );
                 pop.addAttribute( constants.TypeOfActionColumn(),
-                        choice );
+                                  choice );
                 pop.addAttribute( "",
-                        ok );
+                                  ok );
                 pop.show();
             }
 
@@ -254,19 +254,37 @@ public class GuidedDecisionTableWidget extends Composite
         return addButton;
     }
 
-    private Widget removeAction( final ActionCol52 c ) {
+    private ActionInsertFactCol52 makeNewActionInsertColumn() {
+        switch ( guidedDecisionTable.getTableFormat() ) {
+            case LIMITED_ENTRY :
+                return new LimitedEntryActionInsertFactCol52();
+            default :
+                return new ActionInsertFactCol52();
+        }
+    }
+
+    private ActionSetFieldCol52 makeNewActionSetColumn() {
+        switch ( guidedDecisionTable.getTableFormat() ) {
+            case LIMITED_ENTRY :
+                return new LimitedEntryActionSetFieldCol52();
+            default :
+                return new ActionSetFieldCol52();
+        }
+    }
+
+    private Widget removeAction(final ActionCol52 c) {
         Image del = new ImageButton( images.deleteItemSmall(),
-                constants.RemoveThisActionColumn(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        String cm = constants.DeleteActionColumnWarning( c.getHeader() );
-                        if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
-                            dtable.deleteColumn( c );
-                            dtable.scrapeColumns();
-                            refreshActionsWidget();
-                        }
-                    }
-                } );
+                                     constants.RemoveThisActionColumn(),
+                                     new ClickHandler() {
+                                         public void onClick(ClickEvent w) {
+                                             String cm = constants.DeleteActionColumnWarning( c.getHeader() );
+                                             if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                                 dtable.deleteColumn( c );
+                                                 dtable.scrapeColumns();
+                                                 refreshActionsWidget();
+                                             }
+                                         }
+                                     } );
 
         return del;
     }
@@ -279,8 +297,8 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshConditionsWidget() {
         this.conditionsConfigWidget.clear();
-        for (Pattern52 p : guidedDecisionTable.getConditionPatterns()) {
-            for (ConditionCol52 c : p.getConditions()) {
+        for ( Pattern52 p : guidedDecisionTable.getConditionPatterns() ) {
+            for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
                 hp.add( editCondition( c ) );
@@ -293,81 +311,90 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private Widget newCondition() {
-        final ConditionCol52 newCol = new ConditionCol52();
+        final ConditionCol52 newCol = makeNewConditionColumn();
         newCol.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         AddButton addButton = new AddButton();
         addButton.setText( constants.NewColumn() );
         addButton.setTitle( constants.AddANewConditionColumn() );
         addButton.addClickHandler( new ClickHandler() {
-            public void onClick( ClickEvent w ) {
+            public void onClick(ClickEvent w) {
                 GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
-                        getSCE(),
-                        guidedDecisionTable,
-                        new ConditionColumnCommand() {
-                            public void execute( Pattern52 pattern,
-                                                 ConditionCol52 column ) {
+                                                                        getSCE(),
+                                                                        guidedDecisionTable,
+                                                                        new ConditionColumnCommand() {
+                                                                            public void execute(Pattern52 pattern,
+                                                                                                ConditionCol52 column) {
 
-                                //Add pattern to model, if applicable
-                                if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
-                                    guidedDecisionTable.getConditionPatterns().add( pattern );
-                                }
+                                                                                //Add pattern to model, if applicable
+                                                                                if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
+                                                                                    guidedDecisionTable.getConditionPatterns().add( pattern );
+                                                                                }
 
-                                //Add new column to pattern
-                                pattern.getConditions().add( column );
+                                                                                //Add new column to pattern
+                                                                                pattern.getConditions().add( column );
 
-                                //Update UI
-                                dtable.addColumn( column );
-                                refreshConditionsWidget();
-                            }
-                        },
-                        newCol,
-                        true );
+                                                                                //Update UI
+                                                                                dtable.addColumn( column );
+                                                                                refreshConditionsWidget();
+                                                                            }
+                                                                        },
+                                                                        newCol,
+                                                                        true );
                 dialog.show();
             }
         } );
         return addButton;
     }
 
-    private Widget editCondition( final ConditionCol52 origCol ) {
+    private ConditionCol52 makeNewConditionColumn() {
+        switch ( guidedDecisionTable.getTableFormat() ) {
+            case LIMITED_ENTRY :
+                return new LimitedEntryConditionCol52();
+            default :
+                return new ConditionCol52();
+        }
+    }
+
+    private Widget editCondition(final ConditionCol52 origCol) {
         return new ImageButton( images.edit(),
-                constants.EditThisColumnsConfiguration(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
-                                getSCE(),
-                                guidedDecisionTable,
-                                new ConditionColumnCommand() {
-                                    public void execute( Pattern52 pattern,
-                                                         ConditionCol52 column ) {
+                                constants.EditThisColumnsConfiguration(),
+                                new ClickHandler() {
+                                    public void onClick(ClickEvent w) {
+                                        GuidedDTColumnConfig dialog = new GuidedDTColumnConfig(
+                                                                                                getSCE(),
+                                                                                                guidedDecisionTable,
+                                                                                                new ConditionColumnCommand() {
+                                                                                                    public void execute(Pattern52 pattern,
+                                                                                                                        ConditionCol52 column) {
 
-                                        //Add pattern to model, if applicable
-                                        if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
-                                            guidedDecisionTable.getConditionPatterns().add( pattern );
-                                        }
+                                                                                                        //Add pattern to model, if applicable
+                                                                                                        if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
+                                                                                                            guidedDecisionTable.getConditionPatterns().add( pattern );
+                                                                                                        }
 
-                                        //Move column from original pattern to new pattern, if applicable
-                                        Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
-                                        if ( !origPattern.getBoundName().equals( pattern.getBoundName() ) ) {
-                                            origPattern.getConditions().remove( origCol );
-                                            if ( origPattern.getConditions().size() == 0 ) {
-                                                guidedDecisionTable.getConditionPatterns().remove( origPattern );
-                                            }
-                                            pattern.getConditions().add( column );
-                                        }
+                                                                                                        //Move column from original pattern to new pattern, if applicable
+                                                                                                        Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
+                                                                                                        if ( !origPattern.getBoundName().equals( pattern.getBoundName() ) ) {
+                                                                                                            origPattern.getConditions().remove( origCol );
+                                                                                                            if ( origPattern.getConditions().size() == 0 ) {
+                                                                                                                guidedDecisionTable.getConditionPatterns().remove( origPattern );
+                                                                                                            }
+                                                                                                            pattern.getConditions().add( column );
+                                                                                                        }
 
-                                        //Update UI
-                                        dtable.updateColumn( origPattern,
-                                                origCol,
-                                                pattern,
-                                                column );
-                                        refreshConditionsWidget();
+                                                                                                        //Update UI
+                                                                                                        dtable.updateColumn( origPattern,
+                                                                                                                             origCol,
+                                                                                                                             pattern,
+                                                                                                                             column );
+                                                                                                        refreshConditionsWidget();
+                                                                                                    }
+                                                                                                },
+                                                                                                origCol,
+                                                                                                false );
+                                        dialog.show();
                                     }
-                                },
-                                origCol,
-                                false );
-                        dialog.show();
-                    }
-                } );
+                                } );
     }
 
     private SuggestionCompletionEngine getSCE() {
@@ -378,34 +405,34 @@ public class GuidedDecisionTableWidget extends Composite
         return sce;
     }
 
-    private Widget removeCondition( final ConditionCol52 origCol ) {
+    private Widget removeCondition(final ConditionCol52 origCol) {
         Image del = new ImageButton( images.deleteItemSmall(),
-                constants.RemoveThisConditionColumn(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        if ( !canConditionBeDeleted( origCol ) ) {
-                            Window.alert( constants.UnableToDeleteConditionColumn( origCol.getHeader() ) );
-                            return;
-                        }
+                                     constants.RemoveThisConditionColumn(),
+                                     new ClickHandler() {
+                                         public void onClick(ClickEvent w) {
+                                             if ( !canConditionBeDeleted( origCol ) ) {
+                                                 Window.alert( constants.UnableToDeleteConditionColumn( origCol.getHeader() ) );
+                                                 return;
+                                             }
 
-                        String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
-                        if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                             String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
+                                             if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
 
-                            //Remove condition from pattern
-                            Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
-                            origPattern.getConditions().remove( origCol );
+                                                 //Remove condition from pattern
+                                                 Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
+                                                 origPattern.getConditions().remove( origCol );
 
-                            //Remove pattern if it contains zero conditions
-                            if ( origPattern.getConditions().size() == 0 ) {
-                                guidedDecisionTable.getConditionPatterns().remove( origPattern );
-                            }
+                                                 //Remove pattern if it contains zero conditions
+                                                 if ( origPattern.getConditions().size() == 0 ) {
+                                                     guidedDecisionTable.getConditionPatterns().remove( origPattern );
+                                                 }
 
-                            //Update UI
-                            dtable.deleteColumn( origCol );
-                            refreshConditionsWidget();
-                        }
-                    }
-                } );
+                                                 //Update UI
+                                                 dtable.deleteColumn( origCol );
+                                                 refreshConditionsWidget();
+                                             }
+                                         }
+                                     } );
 
         return del;
     }
@@ -425,7 +452,7 @@ public class GuidedDecisionTableWidget extends Composite
             hp.add( new SmallLabel( constants.Metadata1() ) );
             attributeConfigWidget.add( hp );
         }
-        for (MetadataCol52 atc : guidedDecisionTable.getMetadataCols()) {
+        for ( MetadataCol52 atc : guidedDecisionTable.getMetadataCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeMeta( atc ) );
@@ -435,10 +462,10 @@ public class GuidedDecisionTableWidget extends Composite
             final CheckBox hide = new CheckBox();
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent sender ) {
+                public void onClick(ClickEvent sender) {
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
-                            !at.isHideColumn() );
+                                                !at.isHideColumn() );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -454,7 +481,7 @@ public class GuidedDecisionTableWidget extends Composite
             attributeConfigWidget.add( hp );
         }
 
-        for (AttributeCol52 atc : guidedDecisionTable.getAttributeCols()) {
+        for ( AttributeCol52 atc : guidedDecisionTable.getAttributeCols() ) {
             final AttributeCol52 at = atc;
             HorizontalPanel hp = new HorizontalPanel();
 
@@ -465,7 +492,7 @@ public class GuidedDecisionTableWidget extends Composite
             final TextBox defaultValue = new TextBox();
             defaultValue.setText( at.getDefaultValue() );
             defaultValue.addChangeHandler( new ChangeHandler() {
-                public void onChange( ChangeEvent event ) {
+                public void onChange(ChangeEvent event) {
                     at.setDefaultValue( defaultValue.getText() );
                 }
             } );
@@ -483,7 +510,7 @@ public class GuidedDecisionTableWidget extends Composite
                 reverseOrder.setEnabled( at.isUseRowNumber() );
 
                 useRowNumber.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent sender ) {
+                    public void onClick(ClickEvent sender) {
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
@@ -492,7 +519,7 @@ public class GuidedDecisionTableWidget extends Composite
                 } );
 
                 reverseOrder.addClickHandler( new ClickHandler() {
-                    public void onClick( ClickEvent sender ) {
+                    public void onClick(ClickEvent sender) {
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
                         dtable.redrawSystemControlledColumns();
@@ -509,10 +536,10 @@ public class GuidedDecisionTableWidget extends Composite
             final CheckBox hide = new CheckBox();
             hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
-                public void onClick( ClickEvent sender ) {
+                public void onClick(ClickEvent sender) {
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
-                            !at.isHideColumn() );
+                                                !at.isHideColumn() );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
@@ -527,139 +554,139 @@ public class GuidedDecisionTableWidget extends Composite
 
     private Widget newAttr() {
         ImageButton but = new ImageButton( images.newItem(),
-                constants.AddANewAttributeMetadata(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
+                                           constants.AddANewAttributeMetadata(),
+                                           new ClickHandler() {
+                                               public void onClick(ClickEvent w) {
 
-                        // show choice of attributes
-                        final FormStylePopup pop = new FormStylePopup( images.config(),
-                                constants.AddAnOptionToTheRule() );
-                        final ListBox list = RuleAttributeWidget.getAttributeList();
+                                                   // show choice of attributes
+                                                   final FormStylePopup pop = new FormStylePopup( images.config(),
+                                                                                                  constants.AddAnOptionToTheRule() );
+                                                   final ListBox list = RuleAttributeWidget.getAttributeList();
 
-                        //This attribute is only used for Decision Tables
-                        list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
+                                                   //This attribute is only used for Decision Tables
+                                                   list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
 
-                        // Remove any attributes
-                        // already added
-                        for (AttributeCol52 col : guidedDecisionTable.getAttributeCols()) {
-                            for (int iItem = 0; iItem < list.getItemCount(); iItem++) {
-                                if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
-                                    list.removeItem( iItem );
-                                    break;
-                                }
-                            }
-                        }
+                                                   // Remove any attributes
+                                                   // already added
+                                                   for ( AttributeCol52 col : guidedDecisionTable.getAttributeCols() ) {
+                                                       for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
+                                                           if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
+                                                               list.removeItem( iItem );
+                                                               break;
+                                                           }
+                                                       }
+                                                   }
 
-                        final Image addbutton = new ImageButton( images.newItem() );
-                        final TextBox box = new TextBox();
-                        box.setVisibleLength( 15 );
+                                                   final Image addbutton = new ImageButton( images.newItem() );
+                                                   final TextBox box = new TextBox();
+                                                   box.setVisibleLength( 15 );
 
-                        list.setSelectedIndex( 0 );
+                                                   list.setSelectedIndex( 0 );
 
-                        list.addChangeHandler( new ChangeHandler() {
-                            public void onChange( ChangeEvent event ) {
-                                AttributeCol52 attr = new AttributeCol52();
-                                attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
-                                dtable.addColumn( attr );
-                                dtable.scrapeColumns();
-                                refreshAttributeWidget();
-                                pop.hide();
-                            }
-                        } );
+                                                   list.addChangeHandler( new ChangeHandler() {
+                                                       public void onChange(ChangeEvent event) {
+                                                           AttributeCol52 attr = new AttributeCol52();
+                                                           attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
+                                                           dtable.addColumn( attr );
+                                                           dtable.scrapeColumns();
+                                                           refreshAttributeWidget();
+                                                           pop.hide();
+                                                       }
+                                                   } );
 
-                        addbutton.setTitle( constants.AddMetadataToTheRule() );
+                                                   addbutton.setTitle( constants.AddMetadataToTheRule() );
 
-                        addbutton.addClickHandler( new ClickHandler() {
-                            public void onClick( ClickEvent w ) {
+                                                   addbutton.addClickHandler( new ClickHandler() {
+                                                       public void onClick(ClickEvent w) {
 
-                                String metadata = box.getText();
-                                if ( !isUnique( metadata ) ) {
-                                    Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
-                                    return;
-                                }
-                                MetadataCol52 met = new MetadataCol52();
-                                met.setHideColumn( true );
-                                met.setMetadata( metadata );
-                                dtable.addColumn( met );
-                                dtable.scrapeColumns();
-                                refreshAttributeWidget();
-                                pop.hide();
-                            }
+                                                           String metadata = box.getText();
+                                                           if ( !isUnique( metadata ) ) {
+                                                               Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                                                               return;
+                                                           }
+                                                           MetadataCol52 met = new MetadataCol52();
+                                                           met.setHideColumn( true );
+                                                           met.setMetadata( metadata );
+                                                           dtable.addColumn( met );
+                                                           dtable.scrapeColumns();
+                                                           refreshAttributeWidget();
+                                                           pop.hide();
+                                                       }
 
-                            private boolean isUnique( String metadata ) {
-                                for (MetadataCol52 mc : guidedDecisionTable.getMetadataCols()) {
-                                    if ( metadata.equals( mc.getMetadata() ) ) {
-                                        return false;
-                                    }
-                                }
-                                return true;
-                            }
+                                                       private boolean isUnique(String metadata) {
+                                                           for ( MetadataCol52 mc : guidedDecisionTable.getMetadataCols() ) {
+                                                               if ( metadata.equals( mc.getMetadata() ) ) {
+                                                                   return false;
+                                                               }
+                                                           }
+                                                           return true;
+                                                       }
 
-                        } );
-                        DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
-                        horiz.add( box );
-                        horiz.add( addbutton );
+                                                   } );
+                                                   DirtyableHorizontalPane horiz = new DirtyableHorizontalPane();
+                                                   horiz.add( box );
+                                                   horiz.add( addbutton );
 
-                        pop.addAttribute( constants.Metadata1(),
-                                horiz );
-                        pop.addAttribute( constants.Attribute(),
-                                list );
-                        pop.show();
-                    }
+                                                   pop.addAttribute( constants.Metadata1(),
+                                                                     horiz );
+                                                   pop.addAttribute( constants.Attribute(),
+                                                                     list );
+                                                   pop.show();
+                                               }
 
-                } );
+                                           } );
         HorizontalPanel h = new HorizontalPanel();
         h.add( new SmallLabel( constants.AddAttributeMetadata() ) );
         h.add( but );
         return h;
     }
 
-    private Widget removeAttr( final AttributeCol52 at ) {
+    private Widget removeAttr(final AttributeCol52 at) {
         Image del = new ImageButton( images.deleteItemSmall(),
-                constants.RemoveThisAttribute(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
-                        if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
-                            dtable.deleteColumn( at );
-                            dtable.scrapeColumns();
-                            refreshAttributeWidget();
-                        }
-                    }
-                } );
+                                     constants.RemoveThisAttribute(),
+                                     new ClickHandler() {
+                                         public void onClick(ClickEvent w) {
+                                             String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
+                                             if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 dtable.deleteColumn( at );
+                                                 dtable.scrapeColumns();
+                                                 refreshAttributeWidget();
+                                             }
+                                         }
+                                     } );
 
         return del;
     }
 
-    private Widget removeMeta( final MetadataCol52 md ) {
+    private Widget removeMeta(final MetadataCol52 md) {
         Image del = new ImageButton( images.deleteItemSmall(),
-                constants.RemoveThisMetadata(),
-                new ClickHandler() {
-                    public void onClick( ClickEvent w ) {
-                        String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
-                        if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
-                            dtable.deleteColumn( md );
-                            dtable.scrapeColumns();
-                            refreshAttributeWidget();
-                        }
-                    }
-                } );
+                                     constants.RemoveThisMetadata(),
+                                     new ClickHandler() {
+                                         public void onClick(ClickEvent w) {
+                                             String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
+                                             if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 dtable.deleteColumn( md );
+                                                 dtable.scrapeColumns();
+                                                 refreshAttributeWidget();
+                                             }
+                                         }
+                                     } );
 
         return del;
     }
 
     private void setupColumnsNote() {
         configureColumnsNote.setVisible( guidedDecisionTable.getAttributeCols().size() == 0
-                && guidedDecisionTable.getConditionsCount() == 0
-                && guidedDecisionTable.getActionCols().size() == 0 );
+                                         && guidedDecisionTable.getConditionsCount() == 0
+                                         && guidedDecisionTable.getActionCols().size() == 0 );
     }
 
     private void setupDecisionTable() {
         if ( dtable == null ) {
             dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
-                    getSCE() );
+                                                      getSCE() );
             dtable.setPixelSize( 1000,
-                    400 );
+                                 400 );
             dtable.setModel( guidedDecisionTable );
         }
         layout.add( dtable );
@@ -667,12 +694,12 @@ public class GuidedDecisionTableWidget extends Composite
 
     //A Condition column cannot be deleted if it is the only column for a bound pattern 
     //used by an Action. i.e. the dependent Actions should be deleted first.
-    private boolean canConditionBeDeleted( ConditionCol52 col ) {
+    private boolean canConditionBeDeleted(ConditionCol52 col) {
         Pattern52 pattern = guidedDecisionTable.getPattern( col );
         if ( pattern.getConditions().size() > 1 ) {
             return true;
         }
-        for (ActionCol52 ac : guidedDecisionTable.getActionCols()) {
+        for ( ActionCol52 ac : guidedDecisionTable.getActionCols() ) {
             if ( ac instanceof ActionSetFieldCol52 ) {
                 ActionSetFieldCol52 asfc = (ActionSetFieldCol52) ac;
                 if ( asfc.getBoundName().equals( pattern.getBoundName() ) ) {

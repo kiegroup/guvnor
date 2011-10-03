@@ -18,19 +18,15 @@ package org.drools.guvnor.client.explorer.navigation.qa;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface SummaryTableView
-    extends
-    IsWidget {
+        extends
+        IsWidget {
 
     interface Presenter {
 
         void openTestScenario(String string);
-
     }
 
-    void addRow(int failures,
-                int total,
-                String scenarioName,
-                String uuid);
+    void addRow(SummaryTable.Row row);
 
     void setPresenter(Presenter presenter);
 

@@ -321,4 +321,100 @@ public class RepositoryAssetOperationsTest {
         return registeredFormats;
     }
 
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetAssetCountFormatInListAndFormatIsRegisteredIsNotSupported() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  true );
+        repositoryAssetOperations.getAssetCount( assetPageRequest );
+    }
+
+    @Test
+    public void testGetAssetCountFormatInList() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  null );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) ).thenReturn( assetItemIterator );
+        when( assetItemIterator.getSize() ).thenReturn( 0l );
+        
+        long count = repositoryAssetOperations.getAssetCount( assetPageRequest );
+
+        assertEquals( 0,
+                      count );
+        verify( packageItem ).listAssetsByFormat( assetPageRequest.getFormatInList() );
+    }
+
+    @Test
+    public void testGetAssetCountFormatInList2() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  Arrays.asList( "formatInList" ),
+                                                                  null );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+
+        AssetItem a1 = mock( AssetItem.class );
+        when( a1.getFormat() ).thenReturn( "formatInList" );
+        when( a1.getCreatedDate() ).thenReturn( Calendar.getInstance() );
+        when( a1.getLastModified() ).thenReturn( Calendar.getInstance() );
+
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( packageItem.listAssetsByFormat( assetPageRequest.getFormatInList() ) ).thenReturn( assetItemIterator );
+        when( assetItemIterator.getSize() ).thenReturn( 1l );
+
+        long count = repositoryAssetOperations.getAssetCount( assetPageRequest );
+
+        assertEquals( 1,
+                      count );
+
+        verify( packageItem ).listAssetsByFormat( assetPageRequest.getFormatInList() );
+    }
+
+    @Test
+    public void testGetAssetCountFormatInList3() throws SerializationException {
+        RulesRepository rulesRepository = mock( RulesRepository.class );
+        RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
+                                                                  null,
+                                                                  false );
+        PackageItem packageItem = mock( PackageItem.class );
+        when( rulesRepository.loadPackageByUUID( Mockito.anyString() ) ).thenReturn( packageItem );
+
+        AssetItem a1 = mock( AssetItem.class );
+        when( a1.getFormat() ).thenReturn( "formatNotInList" );
+        when( a1.getCreatedDate() ).thenReturn( Calendar.getInstance() );
+        when( a1.getLastModified() ).thenReturn( Calendar.getInstance() );
+
+        AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
+        when( assetItemIterator.hasNext() ).thenReturn( true,
+                                                        false );
+        when( assetItemIterator.next() ).thenReturn( a1 );
+
+        String[] registeredFormats = registeredFormats();
+
+        when( packageItem.listAssetsNotOfFormat( registeredFormats ) ).thenReturn( assetItemIterator );
+        when( assetItemIterator.getSize() ).thenReturn( 0l );
+
+        long count = repositoryAssetOperations.getAssetCount( assetPageRequest );
+
+        assertEquals( 0,
+                      count );
+
+        verify( packageItem ).listAssetsNotOfFormat( registeredFormats );
+    }
+
 }

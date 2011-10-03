@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.HumanReadable;
 import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
@@ -33,6 +35,8 @@ import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.Condi
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ConditionPatternCell;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
@@ -81,6 +85,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     private ConditionCol52                       chosenConditionsSelection;
     private Set<ConditionCol52>                  chosenConditionsSelections;
     private MinimumWidthCellList<ConditionCol52> chosenConditionsWidget;
+
+    private boolean                              isOperatorValid;
+
+    private DTCellValueWidgetFactory             factory;
 
     private static final Constants               constants   = GWT.create( Constants.class );
 
@@ -148,6 +156,18 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     @UiField
     HorizontalPanel                              msgIncompleteConditions;
+
+    @UiField
+    VerticalPanel                                criteriaExtendedEntry;
+
+    @UiField
+    VerticalPanel                                criteriaLimitedEntry;
+
+    @UiField
+    HorizontalPanel                              limitedEntryValueContainer;
+
+    @UiField
+    SimplePanel                                  limitedEntryValueWidgetContainer;
 
     @UiField(provided = true)
     PushButton                                   btnMoveUp   = new PushButton( AbstractImagePrototype.create( images.shuffleUp() ).createImage() );
@@ -258,21 +278,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                     validateConditionHeader();
                     validateConditionOperator();
                     populateConditionDefinition();
-
-                    switch ( chosenConditionsSelection.getConstraintValueType() ) {
-                        case BaseSingleFieldConstraint.TYPE_LITERAL :
-                            optLiteral.setValue( true );
-                            displayCalculationTypes( false );
-                            break;
-                        case BaseSingleFieldConstraint.TYPE_RET_VALUE :
-                            optFormula.setValue( true );
-                            displayCalculationTypes( false );
-                            break;
-                        case BaseSingleFieldConstraint.TYPE_PREDICATE :
-                            optPredicate.setValue( true );
-                            displayCalculationTypes( true );
-                    }
-
                     enableMoveUpButton();
                     enableMoveDownButton();
                 } else {
@@ -296,9 +301,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 optFormula.setEnabled( !isPredicate );
                 optFormula.setVisible( !isPredicate );
                 operatorContainer.setVisible( !isPredicate );
-                txtValueList.setEnabled( true );
-                txtColumnHeader.setEnabled( true );
-                txtDefaultValue.setEnabled( true );
                 optPredicate.setEnabled( isPredicate );
                 optPredicate.setVisible( isPredicate );
                 txtPredicateExpression.setEnabled( isPredicate );
@@ -306,34 +308,97 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             }
 
             private void populateConditionDefinition() {
-                txtColumnHeader.setText( chosenConditionsSelection.getHeader() );
-                txtDefaultValue.setText( chosenConditionsSelection.getDefaultValue() );
-                txtValueList.setText( chosenConditionsSelection.getValueList() );
 
-                if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                    txtPredicateExpression.setText( chosenConditionsSelection.getFactField() );
-                }
+                // Fields common to all table formats
+                txtColumnHeader.setEnabled( true );
+                txtColumnHeader.setText( chosenConditionsSelection.getHeader() );
 
                 String[] ops = presenter.getOperatorCompletions( availablePatternsSelection,
                                                                  chosenConditionsSelection );
                 CEPOperatorsDropdown ddOperator = new CEPOperatorsDropdown( ops,
                                                                             chosenConditionsSelection );
-                ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+                ddOperatorContainer.setWidget( ddOperator );
 
-                    public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
-                        chosenConditionsSelection.setOperator( event.getValue().getValue() );
-                        presenter.stateChanged();
-                        validateConditionOperator();
-                    }
+                criteriaExtendedEntry.setVisible( presenter.getTableFormat() == TableFormat.EXTENDED_ENTRY );
+                criteriaLimitedEntry.setVisible( presenter.getTableFormat() == TableFormat.LIMITED_ENTRY );
 
-                } );
+                // Fields specific to the table format
+                switch ( presenter.getTableFormat() ) {
+                    case EXTENDED_ENTRY :
+                        txtDefaultValue.setEnabled( true );
+                        txtDefaultValue.setText( chosenConditionsSelection.getDefaultValue() );
+                        txtValueList.setEnabled( true );
+                        txtValueList.setText( chosenConditionsSelection.getValueList() );
+                        if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+                            txtPredicateExpression.setText( chosenConditionsSelection.getFactField() );
+                        }
+                        if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
+                            ddOperator.addItem( HumanReadable.getOperatorDisplayName( "in" ),
+                                                "in" );
+                        }
 
-                if ( chosenConditionsSelection.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
-                    ddOperator.addItem( HumanReadable.getOperatorDisplayName( "in" ),
-                                        "in" );
+                        ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+
+                            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                                chosenConditionsSelection.setOperator( event.getValue().getValue() );
+                                presenter.stateChanged();
+                                validateConditionOperator();
+                            }
+
+                        } );
+
+                        switch ( chosenConditionsSelection.getConstraintValueType() ) {
+                            case BaseSingleFieldConstraint.TYPE_LITERAL :
+                                optLiteral.setValue( true );
+                                displayCalculationTypes( false );
+                                break;
+                            case BaseSingleFieldConstraint.TYPE_RET_VALUE :
+                                optFormula.setValue( true );
+                                displayCalculationTypes( false );
+                                break;
+                            case BaseSingleFieldConstraint.TYPE_PREDICATE :
+                                optPredicate.setValue( true );
+                                displayCalculationTypes( true );
+                        }
+                        break;
+                    case LIMITED_ENTRY :
+                        calculationType.setVisible( false );
+                        makeLimitedValueWidget();
+
+                        // If operator changes the widget used to populate the
+                        // value can change
+                        ddOperator.addValueChangeHandler( new ValueChangeHandler<OperatorSelection>() {
+
+                            public void onValueChange(ValueChangeEvent<OperatorSelection> event) {
+                                chosenConditionsSelection.setOperator( event.getValue().getValue() );
+                                validateConditionOperator();
+                                makeLimitedValueWidget();
+                                presenter.stateChanged();
+                            }
+
+                        } );
+                        break;
                 }
 
-                ddOperatorContainer.setWidget( ddOperator );
+            }
+
+            private void makeLimitedValueWidget() {
+                if ( !(chosenConditionsSelection instanceof LimitedEntryConditionCol52) ) {
+                    return;
+                }
+                LimitedEntryConditionCol52 lec = (LimitedEntryConditionCol52) chosenConditionsSelection;
+                boolean doesOperatorNeedValue = validator.doesOperatorNeedValue( chosenConditionsSelection );
+                if ( !doesOperatorNeedValue ) {
+                    limitedEntryValueContainer.setVisible( false );
+                    lec.setValue( null );
+                    return;
+                }
+                limitedEntryValueContainer.setVisible( true );
+                if ( lec.getValue() == null ) {
+                    lec.setValue( factory.makeNewValue( chosenConditionsSelection ) );
+                }
+                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenConditionsSelection,
+                                                                               lec.getValue() ) );
             }
 
         } );
@@ -348,7 +413,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     }
 
     private void validateConditionOperator() {
-        if ( validator.isConditionOperatorValid( chosenConditionsSelection ) ) {
+        isOperatorValid = validator.isConditionOperatorValid( chosenConditionsSelection );
+        if ( isOperatorValid ) {
             operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
             operatorContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
@@ -398,7 +464,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
                 String expression = txtPredicateExpression.getText();
                 chosenConditionsSelection.setFactField( expression );
 
-                //Redraw list widget that shows Predicate expressions
+                // Redraw list widget that shows Predicate expressions
                 chosenConditionsWidget.redraw();
 
             }
@@ -412,7 +478,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String defaultValue = txtDefaultValue.getText();
                 chosenConditionsSelection.setDefaultValue( defaultValue );
-                //DefaultValue is optional, no need to advise of state change
+                // DefaultValue is optional, no need to advise of state change
             }
 
         } );
@@ -424,7 +490,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             public void onValueChange(ValueChangeEvent<String> event) {
                 String valueList = txtValueList.getText();
                 chosenConditionsSelection.setValueList( valueList );
-                //ValueList is optional, no need to advise of state change
+                // ValueList is optional, no need to advise of state change
             }
 
         } );
@@ -480,6 +546,10 @@ public class FactPatternConstraintsPageViewImpl extends Composite
         this.presenter = presenter;
     }
 
+    public void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory) {
+        this.factory = factory;
+    }
+
     public void setAreConditionsDefined(boolean areConditionsDefined) {
         msgIncompleteConditions.setVisible( !areConditionsDefined );
         chosenConditionsWidget.redraw();
@@ -504,7 +574,8 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
         if ( availablePatternsSelection != null ) {
 
-            //If the currently selected pattern is no longer available clear selections
+            // If the currently selected pattern is no longer available clear
+            // selections
             if ( !availablePatterns.contains( availablePatternsSelection ) ) {
                 setAvailableFields( new ArrayList<AvailableField>() );
                 availablePatternsSelection = null;
@@ -515,7 +586,7 @@ public class FactPatternConstraintsPageViewImpl extends Composite
             }
         } else {
 
-            //If no available pattern is selected clear fields
+            // If no available pattern is selected clear fields
             setAvailableFields( new ArrayList<AvailableField>() );
             setChosenConditions( new ArrayList<ConditionCol52>() );
         }
@@ -541,15 +612,29 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     @UiHandler(value = "btnAdd")
     public void btnAddClick(ClickEvent event) {
         for ( AvailableField f : availableFieldsSelections ) {
-            ConditionCol52 c = new ConditionCol52();
-            c.setFactField( f.getName() );
-            c.setFieldType( f.getType() );
-            c.setConstraintValueType( f.getCalculationType() );
-            chosenConditions.add( c );
+            chosenConditions.add( makeNewConditionColumn( f ) );
         }
         setChosenConditions( chosenConditions );
         availablePatternsSelection.setConditions( chosenConditions );
         presenter.stateChanged();
+    }
+
+    private ConditionCol52 makeNewConditionColumn(AvailableField f) {
+        TableFormat format = presenter.getTableFormat();
+        if ( format == TableFormat.EXTENDED_ENTRY ) {
+            ConditionCol52 c = new ConditionCol52();
+            c.setFactField( f.getName() );
+            c.setFieldType( f.getType() );
+            c.setConstraintValueType( f.getCalculationType() );
+            return c;
+        } else {
+            LimitedEntryConditionCol52 c = new LimitedEntryConditionCol52();
+            c.setFactField( f.getName() );
+            c.setFieldType( f.getType() );
+            c.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+            return c;
+        }
+
     }
 
     @UiHandler(value = "btnRemove")

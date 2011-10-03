@@ -44,6 +44,38 @@ public class DTCellValue52
     public DTCellValue52() {
     }
 
+    public DTCellValue52(Object value) {
+        if ( value instanceof String ) {
+            setStringValue( (String) value );
+            return;
+        }
+        if ( value instanceof Boolean ) {
+            setBooleanValue( (Boolean) value );
+            return;
+        }
+        if ( value instanceof Date ) {
+            setDateValue( (Date) value );
+            return;
+        }
+        if ( value instanceof BigDecimal ) {
+            setNumericValue( (BigDecimal) value );
+            return;
+        }
+        if ( value instanceof Double ) {
+            setNumericValue( new BigDecimal( (Double) value ) );
+            return;
+        }
+        if ( value instanceof Integer ) {
+            setNumericValue( new BigDecimal( (Integer) value ) );
+            return;
+        }
+        if ( value instanceof Long ) {
+            setNumericValue( new BigDecimal( (Long) value ) );
+            return;
+        }
+        setStringValue( null );
+    }
+
     public DTCellValue52(BigDecimal value) {
         setNumericValue( value );
     }
@@ -54,18 +86,6 @@ public class DTCellValue52
 
     public DTCellValue52(Date value) {
         setDateValue( value );
-    }
-
-    public DTCellValue52(double value) {
-        setNumericValue( new BigDecimal( value ) );
-    }
-
-    public DTCellValue52(int value) {
-        setNumericValue( new BigDecimal( value ) );
-    }
-
-    public DTCellValue52(long value) {
-        setNumericValue( new BigDecimal( value ) );
     }
 
     public DTCellValue52(String value) {

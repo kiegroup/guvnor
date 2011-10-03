@@ -17,10 +17,13 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
-public interface AssetService extends RemoteService{
+public interface AssetService
+    extends
+    RemoteService {
 
     /**
      * This will quickly return a list of assets
@@ -132,7 +135,6 @@ public interface AssetService extends RemoteService{
 
     public RuleAsset[] loadRuleAssets(String[] UUIDs) throws SerializationException;
 
-
     /**
      * This checks in a new version of an asset.
      * 
@@ -148,7 +150,7 @@ public interface AssetService extends RemoteService{
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment);
-    
+
     /**
      * This will load the history of the given asset or package, in a summary format
      * suitable for display in a table.
@@ -159,7 +161,8 @@ public interface AssetService extends RemoteService{
      * This will load the history of the given asset, in a summary format
      * suitable for display in a table.
      */
-    public TableDataResult loadAssetHistory(String packageUUID, String assetName) throws SerializationException;
+    public TableDataResult loadAssetHistory(String packageUUID,
+                                            String assetName) throws SerializationException;
 
     /**
      * This will load all archived assets, in a summary format suitable for
@@ -174,7 +177,7 @@ public interface AssetService extends RemoteService{
      * This will load all archived assets, in a summary format suitable for
      * display in a table.
      */
-    
+
     public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException;
 
     /**
@@ -261,7 +264,7 @@ public interface AssetService extends RemoteService{
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment);
-    
+
     /**
      * Return a list of discussion items for a given asset...
      */
@@ -272,11 +275,10 @@ public interface AssetService extends RemoteService{
      */
     public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                           String comment);
-    
 
     /** Only for admins, they can nuke it from orbit to clear it out */
     public void clearAllDiscussionsForAsset(String assetId);
-    
+
     /**
      * This will change the state of an asset.
      * 
@@ -287,7 +289,7 @@ public interface AssetService extends RemoteService{
      */
     public void changeState(String uuid,
                             String newState);
-    
+
     /**
      * This will change the state of package.
      * 
@@ -297,5 +299,13 @@ public interface AssetService extends RemoteService{
      *            The new state to set. It must be valid in the repo.
      */
     public void changePackageState(String uuid,
-                            String newStatee);
+                                   String newStatee);
+
+    /**
+     * This will return the number of Assets matching the given criteria
+     * 
+     * @param request
+     * @return
+     */
+    public long getAssetCount(AssetPageRequest request) throws SerializationException;
 }

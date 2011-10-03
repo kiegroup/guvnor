@@ -257,7 +257,7 @@ public class SuggestionCompletionEngineBuilder {
 
                 fields.add( new ModelField(
                                             fieldName,
-                                            fieldClazz == null ? null : fieldClazz.getName(),
+                                            fieldClazz == null ? fieldType : fieldClazz.getName(),
                                             this.factTypes.get( typeEntry.getKey() ),
                                             fieldType ) );
             }

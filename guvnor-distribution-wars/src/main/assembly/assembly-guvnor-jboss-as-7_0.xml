@@ -2,7 +2,7 @@
 <assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-  <!-- Note: This does NOT work on jboss-as-web-7.0 -->
+  <!-- Note: This works on jboss-as-web-7.0 and jboss-as-7.0 -->
   <id>jboss-as-7.0</id>
   <formats>
     <format>war</format>
@@ -18,15 +18,6 @@
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>
       <unpackOptions>
-        <excludes>
-          <!-- Exclude all CXF jars except cxf-rt-frontend-jaxrs-->
-          <exclude>WEB-INF/lib/cxf-api-*.jar</exclude>
-          <exclude>WEB-INF/lib/cxf-common-schemas-*.jar</exclude>
-          <exclude>WEB-INF/lib/cxf-common-utilities-*.jar</exclude>
-          <exclude>WEB-INF/lib/cxf-rt-bindings-xml-*.jar</exclude>
-          <exclude>WEB-INF/lib/cxf-rt-core-*.jar</exclude>
-          <exclude>WEB-INF/lib/cxf-rt-transports-http-*.jar</exclude> 
-        </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
     </dependencySet>

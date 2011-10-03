@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>guvnor</artifactId>
-    <version>5.3.0-SNAPSHOT</version>
+    <version>5.4.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>guvnor-webapp</artifactId>
@@ -308,46 +308,20 @@
       <version>1.1.1</version>
       <type>jar</type>
     </dependency>
-    <!-- Do not change this version as this is the CXF version used by JBOSS AS 6.0 Final -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-      <version>2.3.1</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.cxf</groupId>
-          <artifactId>cxf-rt-databinding-aegis</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-server</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.apache.geronimo.specs</groupId>
-          <artifactId>geronimo-servlet_3.0_spec</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-core</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.springframework</groupId>
-          <artifactId>spring-web</artifactId>
-        </exclusion>        
-      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.cxf</groupId>
+      <artifactId>cxf-testutils</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- This is needed by CXF to work with JBoss AS -->
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-annotation_1.0_spec</artifactId>
       <version>1.1.1</version>
-    </dependency>  
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-testutils</artifactId>
-      <!-- TODO JBRULES-3028 overwrites the droolsjbpm-parent version of 2.2.9 used by drools-camel -->
-      <version>2.3.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.abdera</groupId>
@@ -408,6 +382,13 @@
       <artifactId>jetty-webapp</artifactId>
       <version>7.2.2.v20101205</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+    	<groupId>org.jboss.security</groupId>
+    	<artifactId>jboss-security-spi</artifactId>
+    	<version>2.0.3.SP1</version>
+    	<type>jar</type>
+    	<scope>provided</scope>
     </dependency>
   </dependencies>
 </project>

@@ -44,6 +44,10 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
@@ -1404,7 +1408,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Without provided value #1
         data = new String[][]{
-               new String[]{"1", "desc", null},
+                new String[]{"1", "desc", null},
         };
         dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
@@ -1414,7 +1418,7 @@ public class GuidedDTDRLPersistenceTest {
 
         //Without provided value #2
         data = new String[][]{
-               new String[]{"1", "desc", ""},
+                new String[]{"1", "desc", ""},
         };
         dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
 
@@ -1423,5 +1427,283 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "$c : CheeseLover( favouriteCheese == \"cheddar\" )" ) == -1 );
 
     }
-    
+
+    @Test
+    public void testLimitedEntryAttributes() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        AttributeCol52 attr = new AttributeCol52();
+        attr.setAttribute( "salience" );
+        dt.getAttributeCols().add( attr );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+                                                                          new String[]{"1", "desc", "100"},
+                                                                          new String[]{"2", "desc", "200"}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        assertTrue( drl.indexOf( "salience 100" ) > -1 );
+        assertTrue( drl.indexOf( "salience 200" ) > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryMetadata() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        MetadataCol52 md = new MetadataCol52();
+        md.setMetadata( "metadata" );
+        dt.getMetadataCols().add( md );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+                                                                          new String[]{"1", "desc", "md1"},
+                                                                          new String[]{"2", "desc", "md2"}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        assertTrue( drl.indexOf( "@metadata(md1)" ) > -1 );
+        assertTrue( drl.indexOf( "@metadata(md2)" ) > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsNoConstraints() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        // This is a hack consistent with how the Expanded Form decision table 
+        // works. I wouldn't be too surprised if this changes at some time, but 
+        // GuidedDTDRLPersistence.marshal does not support empty patterns at
+        // present.
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setValue( new DTCellValue52( "y" ) );
+        p1.getConditions().add( cc1 );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
+                                                                          new Object[]{1l, "desc", true},
+                                                                          new Object[]{2l, "desc", false}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsConstraints1() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "Pupa" ) );
+        p1.getConditions().add( cc1 );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
+                                                                          new Object[]{1l, "desc", true},
+                                                                          new Object[]{2l, "desc", false}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == \"Pupa\" )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( name == \"Pupa\" )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsConstraints2() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "Pupa" ) );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc2.setFactField( "name" );
+        cc2.setOperator( "==" );
+        cc2.setValue( new DTCellValue52( "Smurfette" ) );
+        p1.getConditions().add( cc2 );
+
+        LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc3.setFactField( "colour" );
+        cc3.setOperator( "==" );
+        cc3.setValue( new DTCellValue52( "Blue" ) );
+        p1.getConditions().add( cc3 );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
+                                                                          new Object[]{1l, "desc", true, false, true},
+                                                                          new Object[]{2l, "desc", false, true, true},
+                                                                          new Object[]{3l, "desc", false, false, true}
+        } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == \"Pupa\" , colour == \"Blue\" )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( name == \"Smurfette\" , colour == \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( colour == \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryActionSet() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        cc1.setFactField( "isSmurf" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "true" ) );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryActionSetFieldCol52 asf1 = new LimitedEntryActionSetFieldCol52();
+        asf1.setBoundName( "p1" );
+        asf1.setFactField( "colour" );
+        asf1.setValue( new DTCellValue52( "Blue" ) );
+
+        dt.getActionCols().add( asf1 );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
+                                                                          new Object[]{1l, "desc", true, true},
+                                                                          new Object[]{2l, "desc", true, false}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( isSmurf == true )" );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "p1.setColour( \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( isSmurf == true )",
+                             index + 1 );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "p1.setColour( \"Blue\" )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryActionInsert() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryActionInsertFactCol52 asf1 = new LimitedEntryActionInsertFactCol52();
+        asf1.setFactType( "Smurf" );
+        asf1.setBoundName( "s1" );
+        asf1.setFactField( "colour" );
+        asf1.setValue( new DTCellValue52( "Blue" ) );
+
+        dt.getActionCols().add( asf1 );
+
+        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
+                                                                          new Object[]{1l, "desc", true},
+                                                                          new Object[]{2l, "desc", false}
+                                                                  } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf s1 = new Smurf();" );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "s1.setColour( \"Blue\" );",
+                             index + 1 );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "insert(s1 );",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        int indexRule2 = index;
+        indexRule2 = drl.indexOf( "Smurf s1 = new Smurf();",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+        indexRule2 = drl.indexOf( "s1.setColour( \"Blue\" );",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+        indexRule2 = drl.indexOf( "insert(s1 );",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+    }
+
 }

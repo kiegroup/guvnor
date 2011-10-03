@@ -6,7 +6,30 @@
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>RSS feed</title>
+  <title>Feed</title>
 
-  <para>TODO</para>
+  <para>Feeds make it easier for users to keep track of Guvnor content. Following Guvnor content are published in Atom Feed:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Package version history</para>
+      </listitem>
+
+      <listitem>
+        <para>Asset version history</para>
+      </listitem>
+
+      <listitem>
+        <para>Asset Discussion</para>
+      </listitem>
+
+      <listitem>
+        <para>Categories</para>
+      </listitem>
+
+      <listitem>
+        <para>Package assets</para>
+      </listitem>
+    </itemizedlist>
+
 </section>

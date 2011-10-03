@@ -65,6 +65,7 @@ public class JBRMSEntryPoint
     private void loadStyles() {
         GuvnorResources.INSTANCE.headerCss().ensureInjected();
         GuvnorResources.INSTANCE.titledTextCellCss().ensureInjected();
+        GuvnorResources.INSTANCE.guvnorCss().ensureInjected();
         RoundedCornersResource.INSTANCE.roundCornersCss().ensureInjected();
         OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
         WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();

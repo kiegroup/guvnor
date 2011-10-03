@@ -45,6 +45,11 @@
         <gwt:Label text="{i18n.CreateInPackage}" styleName="{res.style.wizardDTableFields}" />
         <gwt:TextBox ui:field="txtPackageName" enabled="false" styleName="{res.style.wizardDTableFields}" />
       </gwt:HorizontalPanel>
+      <gwt:VerticalPanel spacing="5">
+        <gwt:Label text="{i18n.TableFormat}" styleName="{res.style.wizardDTableFields}" />
+        <gwt:RadioButton name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true" styleName="{res.style.wizardDTableFields}" />
+        <gwt:RadioButton name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry" styleName="{res.style.wizardDTableFields}" />
+      </gwt:VerticalPanel>
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 

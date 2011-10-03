@@ -16,19 +16,21 @@
 
 package org.drools.guvnor.client.widgets.assetviewer;
 
-import com.google.gwt.event.shared.EventBus;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
+import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
-import org.drools.guvnor.client.widgets.tables.AssetPagedTable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.resources.client.ImageResource;
 
 /**
  * An Activity to view a Module's assets
@@ -47,26 +49,25 @@ public class AssetViewerActivity extends Activity
         this.uuid = uuid;
         this.clientFactory = clientFactory;
         this.view = clientFactory.getAssetViewerActivityView();
-        view.setPresenter( this );
     }
 
     @Override
     public void start(final AcceptItem acceptTabItem,
-                       EventBus eventBus) {
+                      EventBus eventBus) {
 
         view.showLoadingPackageInformationMessage();
+
         // title is not used.
-        acceptTabItem.add(null, view);
+        acceptTabItem.add( null,
+                           view );
         clientFactory.getPackageService().loadPackageConfig( uuid,
                                                              new GenericCallback<PackageConfigData>() {
                                                                  public void onSuccess(PackageConfigData conf) {
                                                                      packageConfigData = conf;
                                                                      RulePackageSelector.currentlySelectedPackage = packageConfigData.getName();
 
-
                                                                      fillModuleItemStructure();
 
-                                                                     view.setPackageConfigData( packageConfigData );
                                                                      view.closeLoadingPackageInformationMessage();
                                                                  }
                                                              } );
@@ -79,7 +80,7 @@ public class AssetViewerActivity extends Activity
     private void fillModuleItemStructure() {
         //If two or more asset editors (that are associated with different formats) have same titles,
         //we group them together and display them as one node on the package tree.
-        String[] registeredFormats = clientFactory.getPerspectiveFactory().getRegisteredAssetEditorFormats(packageConfigData.getFormat());
+        String[] registeredFormats = clientFactory.getPerspectiveFactory().getRegisteredAssetEditorFormats( packageConfigData.getFormat() );
 
         //Use list to preserve the order of asset editors defined in configuration.
         List<FormatList> formatListGroupedByTitles = new ArrayList<FormatList>();
@@ -102,38 +103,96 @@ public class AssetViewerActivity extends Activity
         addTitleItems( formatListGroupedByTitles );
     }
 
-    private String getTitle(String format) {
+    private void addTitleItems(List<FormatList> formatListGroupedByTitles) {
+
+        //Record the number of groups expected to have assets, if all are found to be empty we show a warning
+        final AssetGroupSemaphore s = new AssetGroupSemaphore( formatListGroupedByTitles.size() );
+
+        for ( final FormatList formatList : formatListGroupedByTitles ) {
+
+            //Only add a section to the view if the Format Group contains Format Types
+            if ( formatList.size() == 0 ) {
+                continue;
+            }
+
+            final List<String> formatsInList = getFormatsInList( formatList );
+            final Boolean formatIsRegistered = getFormatIsRegistered( formatList );
+
+            //Check if there are any assets for the group
+            AssetPageRequest request = new AssetPageRequest( packageConfigData.getUuid(),
+                                                             formatsInList,
+                                                             formatIsRegistered );
+            clientFactory.getAssetService().getAssetCount( request,
+                                                           new GenericCallback<Long>() {
+                                                               public void onSuccess(Long count) {
+
+                                                                   if ( count > 0 ) {
+
+                                                                       //If the group contains assets add a section
+                                                                       String title = getGroupTitle( formatList.getFirst() );
+                                                                       ImageResource icon = getGroupIcon( formatList.getFirst() );
+                                                                       view.addAssetFormat( formatsInList,
+                                                                                            formatIsRegistered,
+                                                                                            title,
+                                                                                            icon,
+                                                                                            packageConfigData,
+                                                                                            clientFactory );
+                                                                   } else {
+
+                                                                       //Otherwise record empty group and show warning, if applicable
+                                                                       s.recordEmptyGroup();
+                                                                       if ( s.areAllGroupsEmpty() ) {
+                                                                           view.showHasNoAssetsWarning( true );
+                                                                       }
+                                                                   }
+                                                               }
+                                                           } );
+        }
+    }
+
+    //A wrapper for the number of Asset Groups to be shown for this Activity. The number of
+    //Assets in each Group is determined with asynchronous GWT-RPC calls. Since we cannot
+    //control when the responses are received we keep a running total of the number of
+    //Groups containing Assets. If this reaches zero we know to show a warning.
+    private static class AssetGroupSemaphore {
+
+        int numberOfGroups = 0;
+
+        AssetGroupSemaphore(int numberOfGroups) {
+            this.numberOfGroups = numberOfGroups;
+        }
+
+        synchronized void recordEmptyGroup() {
+            numberOfGroups--;
+        }
+
+        synchronized boolean areAllGroupsEmpty() {
+            return this.numberOfGroups == 0;
+        }
+    }
+
+    private List<String> getFormatsInList(FormatList formatList) {
+        List<String> formatsInList = null;
+        if ( formatList.getFormats() != null && formatList.getFormats().length > 0 ) {
+            formatsInList = Arrays.asList( formatList.getFormats() );
+        }
+        return formatsInList;
+    }
+
+    private Boolean getFormatIsRegistered(FormatList formatList) {
+        Boolean formatIsRegistered = null;
+        if ( formatList.getFormats() == null || formatList.getFormats().length == 0 ) {
+            formatIsRegistered = false;
+        }
+        return formatIsRegistered;
+    }
+
+    private String getGroupTitle(String format) {
         return clientFactory.getAssetEditorFactory().getAssetEditorTitle( format );
     }
 
-    private void addTitleItems(List<FormatList> formatListGroupedByTitles) {
-        for ( FormatList formatList : formatListGroupedByTitles ) {
-
-            //Don't add a section for anything we don't have assets for
-            if ( formatList.size() > 0 ) {
-                view.addAssetFormat( clientFactory.getAssetEditorFactory().getAssetEditorIcon( formatList.getFirst() ),
-                                     getTitle( formatList.getFirst() ),
-                                     packageConfigData.getName(),
-                                     makeTable( formatList ) );
-            }
-        }
-    }
-
-    private AssetPagedTable makeTable(FormatList formatList) {
-
-        List<String> formatsInList = null;
-        Boolean formatIsRegistered = null;
-        if ( formatList.getFormats() != null && formatList.getFormats().length > 0 ) {
-            formatsInList = Arrays.asList( formatList.getFormats() );
-        } else {
-            formatIsRegistered = false;
-        }
-        return new AssetPagedTable(
-                                    packageConfigData.getUuid(),
-                                    formatsInList,
-                                    formatIsRegistered,
-                                    view.getFeedUrl( packageConfigData.getName() ),
-                                    clientFactory );
+    private ImageResource getGroupIcon(String format) {
+        return clientFactory.getAssetEditorFactory().getAssetEditorIcon( format );
     }
 
     class FormatList {
@@ -152,8 +211,8 @@ public class AssetViewerActivity extends Activity
         }
 
         private boolean hasSameTitle(String format,
-                                      String addedFormat) {
-            return getTitle( addedFormat ).equals( getTitle( format ) );
+                                     String addedFormat) {
+            return getGroupTitle( addedFormat ).equals( getGroupTitle( format ) );
         }
 
         String[] getFormats() {

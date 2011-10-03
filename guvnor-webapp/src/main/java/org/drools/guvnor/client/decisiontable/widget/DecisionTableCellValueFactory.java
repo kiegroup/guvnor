@@ -23,14 +23,12 @@ import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 /**
@@ -208,77 +206,17 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
 
     }
 
-    // Derive the Data Type for a Condition or Action column
-    private DTDataTypes52 derieveDataType(DTColumnConfig52 col) {
-
-        DTDataTypes52 dataType = DTDataTypes52.STRING;
-        String type = model.getType( col,
-                                     sce );
-
-        //Null means the field is free-format
-        if ( type == null ) {
-            return dataType;
-        }
-
-        // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = model.getValueList( col,
-                                            sce );
-        if ( vals.length == 0 ) {
-            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                dataType = DTDataTypes52.DATE;
-            }
-        }
-        return dataType;
-    }
-
     // Get the Data Type corresponding to a given column
     protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
 
-        DTDataTypes52 dataType = DTDataTypes52.STRING;
-
-        if ( column instanceof RowNumberCol52 ) {
-            dataType = DTDataTypes52.NUMERIC;
-
-        } else if ( column instanceof AttributeCol52 ) {
-            AttributeCol52 attrCol = (AttributeCol52) column;
-            String attrName = attrCol.getAttribute();
-            if ( attrName.equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( attrName.equals( RuleAttributeWidget.ENABLED_ATTR ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( attrName.equals( RuleAttributeWidget.NO_LOOP_ATTR ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( attrName.equals( RuleAttributeWidget.DURATION_ATTR ) ) {
-                dataType = DTDataTypes52.NUMERIC;
-            } else if ( attrName.equals( RuleAttributeWidget.AUTO_FOCUS_ATTR ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( attrName.equals( RuleAttributeWidget.LOCK_ON_ACTIVE_ATTR ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            } else if ( attrName.equals( RuleAttributeWidget.DATE_EFFECTIVE_ATTR ) ) {
-                dataType = DTDataTypes52.DATE;
-            } else if ( attrName.equals( RuleAttributeWidget.DATE_EXPIRES_ATTR ) ) {
-                dataType = DTDataTypes52.DATE;
-            } else if ( attrName.equals( GuidedDecisionTable52.NEGATE_RULE_ATTR ) ) {
-                dataType = DTDataTypes52.BOOLEAN;
-            }
-
-        } else if ( column instanceof ConditionCol52 ) {
-            dataType = derieveDataType( column );
-
-        } else if ( column instanceof ActionSetFieldCol52 ) {
-            dataType = derieveDataType( column );
-
-        } else if ( column instanceof ActionInsertFactCol52 ) {
-            dataType = derieveDataType( column );
-
+        //Limited Entry are simply boolean
+        if ( column instanceof LimitedEntryCol ) {
+            return DTDataTypes52.BOOLEAN;
         }
 
-        return dataType;
-
+        //Extended Entry...
+        return model.getTypeSafeType( column,
+                                      sce );
     }
 
     protected CellValue<BigDecimal> makeNewRowNumberCellValue(int iRow,

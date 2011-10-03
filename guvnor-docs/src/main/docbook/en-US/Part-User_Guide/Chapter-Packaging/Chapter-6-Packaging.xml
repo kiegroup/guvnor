@@ -12,9 +12,7 @@
 
   <xi:include href="Packaging.xml" xpointer="element(/1)" />
 
-  <xi:include href="Imports.xml" xpointer="element(/1)" />
-
-  <xi:include href="Globals.xml" xpointer="element(/1)" />
+  <xi:include href="ImportsAndGlobals.xml" xpointer="element(/1)" />
 
   <xi:include href="Category-Rules.xml" xpointer="element(/1)" />
 
@@ -23,4 +21,6 @@
   <xi:include href="Selectors.xml" xpointer="element(/1)" />
 
   <xi:include href="Snapshots.xml" xpointer="element(/1)" />
+
+  <xi:include href="Advanced.xml" xpointer="element(/1)" />
 </chapter>

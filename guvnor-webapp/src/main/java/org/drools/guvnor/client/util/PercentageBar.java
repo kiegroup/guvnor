@@ -14,97 +14,92 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PercentageBar extends Composite
-    implements
-    HasValue<Integer> {
+        implements
+        HasValue<Integer> {
 
-    public static final String FAILURE          = "#CC0000";
+    public static final String FAILURE = "#CC0000";
     public static final String COMPLETE_SUCCESS = "GREEN";
-    public static final String INCOMPLETE       = "YELLOW";
+    public static final String INCOMPLETE = "YELLOW";
 
     interface PercentageBarBinder
-        extends
-        UiBinder<Widget, PercentageBar> {
+            extends
+            UiBinder<Widget, PercentageBar> {
+
     }
 
-    private static PercentageBarBinder uiBinder           = GWT.create( PercentageBarBinder.class );
+    private static PercentageBarBinder uiBinder = GWT.create(PercentageBarBinder.class);
 
     @UiField
-    Label                              percentage;
+    Label percentage;
 
     @UiField
-    DivElement                         wrapper;
+    DivElement wrapper;
 
     @UiField
-    DivElement                         text;
+    DivElement text;
 
     @UiField
-    DivElement                         bar;
+    DivElement bar;
 
-    private int                        percent            = 0;
-    private String                     inCompleteBarColor = FAILURE;
+    private int percent = 0;
+
+    private String inCompleteBarColor = FAILURE;
 
     public PercentageBar() {
-        initWidget( uiBinder.createAndBindUi( this ) );
+        initWidget(uiBinder.createAndBindUi(this));
     }
 
     public PercentageBar(String color,
-                         int width,
-                         float percent) {
+            int width,
+            float percent) {
         this();
-        setColor( color );
-        setWidth( width );
-        setPercent( (int) percent );
+        setColor(color);
+        setWidth(width);
+        setPercent((int) percent);
     }
 
     public PercentageBar(String color,
-                         int width,
-                         int numerator,
-                         int denominator) {
-        this( color,
-              width,
-              calculatePercent( numerator,
-                                denominator ) );
-    }
-
-    private static int calculatePercent(int numerator,
-                                        int denominator) {
-        int percent = 0;
-
-        if ( denominator != 0 ) {
-            percent = (int) ((((float) denominator - (float) numerator) / (float) denominator) * 100);
-        }
-
-        return percent;
+            int width,
+            int numerator,
+            int denominator) {
+        this(color,
+                width,
+                PercentageCalculator.calculatePercent(numerator,
+                        denominator));
     }
 
     private void setColor(String color) {
-        bar.getStyle().setBackgroundColor( color );
+        bar.getStyle().setBackgroundColor(color);
+    }
+
+    public void setBackgroundColor(String color) {
+        wrapper.getStyle().setBackgroundColor(color);
     }
 
     public void setWidth(String width) {
-        setWidth( Integer.parseInt( width ) );
+        setWidth(Integer.parseInt(width));
     }
 
     public void setWidth(int width) {
-        text.getStyle().setWidth( width,
-                                  Unit.PX );
-        wrapper.getStyle().setWidth( width,
-                                     Unit.PX );
+        text.getStyle().setWidth(width,
+                Unit.PX);
+        wrapper.getStyle().setWidth(width,
+                Unit.PX);
     }
 
     public void setPercent(int percent) {
-        setValue( percent );
+        setValue(percent);
     }
 
     public void setPercent(int numerator,
-                           int denominator) {
-        setPercent( calculatePercent( numerator,
-                                      denominator ) );
+            int denominator) {
+        setPercent(PercentageCalculator.calculatePercent(numerator,
+                denominator));
     }
 
     public HandlerRegistration addValueChangeHandler(ValueChangeHandler<Integer> handler) {
-        return addHandler( handler,
-                           ValueChangeEvent.getType() );
+        return addHandler(handler,
+                ValueChangeEvent.getType());
     }
 
     public Integer getValue() {
@@ -112,33 +107,33 @@ public class PercentageBar extends Composite
     }
 
     public void setValue(Integer value) {
-        setValue( value,
-                  false );
+        setValue(value,
+                false);
     }
 
     public void setValue(Integer value,
-                         boolean fireEvents) {
+            boolean fireEvents) {
 
         percent = value;
 
         setColor();
 
-        percentage.setText( Integer.toString( value ) + " %" );
-        bar.getStyle().setWidth( value,
-                                 Unit.PCT );
+        percentage.setText(Integer.toString(value) + " %");
+        bar.getStyle().setWidth(value,
+                Unit.PCT);
 
-        if ( fireEvents ) {
-            ValueChangeEvent.fire( this,
-                                   value );
+        if (fireEvents) {
+            ValueChangeEvent.fire(this,
+                    value);
         }
 
     }
 
     private void setColor() {
-        if ( percent < 100 ) {
-            setColor( inCompleteBarColor );
+        if (percent < 100) {
+            setColor(inCompleteBarColor);
         } else {
-            setColor( COMPLETE_SUCCESS );
+            setColor(COMPLETE_SUCCESS);
         }
     }
 

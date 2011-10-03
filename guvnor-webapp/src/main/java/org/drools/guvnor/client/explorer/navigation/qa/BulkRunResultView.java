@@ -1,17 +1,26 @@
 package org.drools.guvnor.client.explorer.navigation.qa;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
-import org.drools.guvnor.client.rpc.ScenarioResultSummary;
 
 interface BulkRunResultView {
 
     interface Presenter {
+
         void onClose();
     }
 
     void showErrors(BuilderResult errors);
 
-    void addSummary(ScenarioResultSummary scenarioResultSummary);
+    public void addNormalSummaryTableRow(
+            int totalFailures,
+            int grandTotal,
+            String scenarioName,
+            int percentage,
+            String uuid);
+
+    public void addMissingExpectationSummaryTableRow(
+            String scenarioName,
+            String uuid);
 
     void setPresenter(Presenter presenter);
 
@@ -19,8 +28,9 @@ interface BulkRunResultView {
 
     void setSuccess();
 
-    void setFailuresOutOfExpectation(int i,
-                                     int j);
+    void setFailuresOutOfExpectation(
+            int i,
+            int j);
 
     void setResultsPercent(int i);
 

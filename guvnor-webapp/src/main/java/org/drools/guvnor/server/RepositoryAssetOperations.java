@@ -457,22 +457,7 @@ public class RepositoryAssetOperations {
                 + request.getPackageUuid() + ")");
         long start = System.currentTimeMillis();
 
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID(request.getPackageUuid());
-
-        AssetItemIterator iterator;
-        if (request.getFormatInList() != null) {
-            if (request.getFormatIsRegistered() != null) {
-                throw new IllegalArgumentException("Combining formatInList and formatIsRegistered is not yet supported.");
-            }
-            iterator = packageItem.listAssetsByFormat(request.getFormatInList());
-
-        } else {
-            if (request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals(Boolean.FALSE)) {
-                iterator = packageItem.listAssetsNotOfFormat(registeredFormats);
-            } else {
-                iterator = packageItem.queryAssets("");
-            }
-        }
+        AssetItemIterator iterator = getAssetIterator( request );
 
         // Populate response
         long totalRowsCount = iterator.getSize();
@@ -487,6 +472,7 @@ public class RepositoryAssetOperations {
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
                 .buildWithTotalRowCount(totalRowsCount);
+        
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Found asset page of packageUuid ("
                 + request.getPackageUuid() + ") in " + methodDuration + " ms.");
@@ -512,8 +498,6 @@ public class RepositoryAssetOperations {
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
-        long totalRowsCount = iterator.getSize();
-
         List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
                 .withPageRequest(request)
                 .withContent(iterator)
@@ -523,7 +507,8 @@ public class RepositoryAssetOperations {
                 .withStartRowIndex(request.getStartRowIndex())
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
-                .buildWithTotalRowCount(totalRowsCount);
+                .buildWithTotalRowCount(-1);//its impossible to know the exact count selected until we'v reached
+                                            //the end of iterator
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");
@@ -664,6 +649,38 @@ public class RepositoryAssetOperations {
         MailboxService.getInstance().recordItemUpdated(asset);
 
         return discussion;
+    }
+    
+    protected long getAssetCount(AssetPageRequest request) {
+        log.debug( "Counting assets in packageUuid (" + request.getPackageUuid() + ")" );
+        long start = System.currentTimeMillis();
+
+        AssetItemIterator iterator = getAssetIterator( request );
+
+        long methodDuration = System.currentTimeMillis() - start;
+        log.debug( "Counted assets in packageUuid ("
+                   + request.getPackageUuid() + ") in " + methodDuration + " ms." );
+        return iterator.getSize();
+    }
+    
+    private AssetItemIterator getAssetIterator(AssetPageRequest request) {
+        PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
+
+        AssetItemIterator iterator;
+        if ( request.getFormatInList() != null ) {
+            if ( request.getFormatIsRegistered() != null ) {
+                throw new IllegalArgumentException( "Combining formatInList and formatIsRegistered is not yet supported." );
+            }
+            iterator = packageItem.listAssetsByFormat( request.getFormatInList() );
+
+        } else {
+            if ( request.getFormatIsRegistered() != null && request.getFormatIsRegistered().equals( Boolean.FALSE ) ) {
+                iterator = packageItem.listAssetsNotOfFormat( registeredFormats );
+            } else {
+                iterator = packageItem.queryAssets( "" );
+            }
+        }
+        return iterator;
     }
 
     private void push(String messageType,

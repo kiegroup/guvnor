@@ -7,7 +7,7 @@
          xmlns:ns5="http://www.w3.org/1999/xhtml"
          xmlns:ns4="http://www.w3.org/2000/svg"
          xmlns:ns3="http://www.w3.org/1998/Math/MathML"
-         xmlns:ns="http://docbook.org/ns/docbook">
+         xmlns:ns="http://docbook.org/ns/docbook"  xml:base="../..">
   <title>Categories</title>
 
   <figure>
@@ -16,7 +16,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/CatZoom.png"
-                   format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                   format="PNG" scalefit="0"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -42,7 +42,7 @@
     <mediaobject>
       <imageobject>
         <imagedata align="center" fileref="images/Chapter-Guvnor/CatEdit.png"
-                   format="PNG" scalefit="0" xml:base="../../"></imagedata>
+                   format="PNG" scalefit="0"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
@@ -75,7 +75,7 @@
       <imageobject>
         <imagedata align="center"
                    fileref="images/Chapter-Guvnor/AdminCats.png" format="PNG"
-                   scalefit="1" xml:base="../../"></imagedata>
+                   scalefit="1"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>

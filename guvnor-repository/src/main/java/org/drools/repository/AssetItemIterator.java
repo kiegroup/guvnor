@@ -71,6 +71,9 @@ public class AssetItemIterator
      *         May be -1 if not known.
      */
     //NOTE this may return -1 as per JCR2.0 when precise count is not available due to performance reasons. 
+    //See http://markmail.org/message/mxmk5hkxrdtcc3hl to understand how an actual row count can be ensured
+    //All queries have had the explicit "order by" added, however if you find something somewhere that 
+    //still returns -1 you'll need to add the "order by" if required.
     public long getSize() {
         return it.getSize();
     }

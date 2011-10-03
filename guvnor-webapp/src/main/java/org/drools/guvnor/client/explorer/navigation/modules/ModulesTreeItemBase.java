@@ -30,11 +30,11 @@ public abstract class ModulesTreeItemBase
     IsWidget,
     Presenter {
 
-    protected PackageView        packageHierarchy = new PackageHierarchicalView();
+    protected PackageView             packageHierarchy = new PackageHierarchicalView();
     protected ClientFactory           clientFactory;
     protected ModulesTreeItemBaseView view;
-    protected String perspectiveTypes;
-    
+    protected String                  perspectiveTypes;
+
     public ModulesTreeItemBase(ClientFactory clientFactory,
                                ModulesTreeItemBaseView view,
                                String perspectiveTypes) {
@@ -56,14 +56,14 @@ public abstract class ModulesTreeItemBase
             clientFactory.getPlaceController().goTo( (Place) userObject );
         }
     }
-    
+
     public SafeHtml getModuleTreeRootNodeHeader() {
-       return clientFactory.getNavigationViewFactory().getModulesTreeRootNodeHeader(perspectiveTypes);
+        return clientFactory.getNavigationViewFactory().getModulesTreeRootNodeHeader( perspectiveTypes );
     }
-    
+
     protected void addModules(PackageConfigData[] packageConfigDatas,
                               IsTreeItem treeItem) {
-        
+
         for ( PackageConfigData packageConfigData : packageConfigDatas ) {
             packageHierarchy.addPackage( packageConfigData );
         }

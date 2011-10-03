@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
@@ -29,9 +30,12 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
@@ -51,6 +55,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -66,6 +71,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class VerticalDecisionTableHeaderWidget extends
         DecoratedGridHeaderWidget<DTColumnConfig52> {
+
+    private static final String         DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+
+    private static final DateTimeFormat format      = DateTimeFormat.getFormat( DATE_FORMAT );
 
     /**
      * This is the guts of the widget.
@@ -375,8 +384,7 @@ public class VerticalDecisionTableHeaderWidget extends
                     break;
 
                 case 1 :
-                    // Splitter between "general" and "technical" condition
-                    // details
+                    // Splitter between "general" and "technical" condition details
                     if ( visibleConditionCols.size() > 0 ) {
                         splitter.setRowHeaders( rowHeaders );
                         tce = DOM.createTD();
@@ -452,7 +460,10 @@ public class VerticalDecisionTableHeaderWidget extends
                             label.append( factField );
                         }
                         if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
-                            label.append( " [" + cc.getOperator() + "]" );
+                            label.append( " [" );
+                            label.append( cc.getOperator() );
+                            label.append( getLimitedEntryValue( cc ) );
+                            label.append( "]" );
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
@@ -491,6 +502,25 @@ public class VerticalDecisionTableHeaderWidget extends
             getBody().replaceChild( tre,
                                     rowHeaders[iRow] );
             rowHeaders[iRow] = tre;
+        }
+
+        private String getLimitedEntryValue(ConditionCol52 c) {
+            if ( !(c instanceof LimitedEntryCol) ) {
+                return "";
+            }
+            LimitedEntryCol lec = (LimitedEntryCol) c;
+            DTCellValue52 cv = lec.getValue();
+            DTDataTypes52 type = cv.getDataType();
+            switch ( type ) {
+                case BOOLEAN :
+                    return cv.getBooleanValue().toString();
+                case NUMERIC :
+                    return cv.getNumericValue().toPlainString();
+                case DATE :
+                    return format.format( cv.getDateValue() );
+                default :
+                    return cv.getStringValue();
+            }
         }
 
         // Update sort order. The column clicked becomes the primary sort column

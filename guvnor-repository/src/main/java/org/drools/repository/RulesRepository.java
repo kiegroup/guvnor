@@ -1577,6 +1577,10 @@ public class RulesRepository {
                     .append(" WHERE ").append(" jcr:path LIKE '/").append(RULES_REPOSITORY_NAME).append("/").append(RULE_PACKAGE_AREA).append("/%'")
                     .append(" AND ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'true'");
 
+            //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
+            //See http://markmail.org/message/mxmk5hkxrdtcc3hl
+            stringBuilder.append(" ORDER BY jcr:score DESC");
+            
             Query q = this.session.getWorkspace().getQueryManager().createQuery(stringBuilder.toString(),
                     Query.SQL);
 
@@ -1649,6 +1653,10 @@ public class RulesRepository {
                 sb.append(" = 'false'");
             }
 
+            //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
+            //See http://markmail.org/message/mxmk5hkxrdtcc3hl
+            sb.append(" ORDER BY jcr:score DESC");
+
             Query q = this.session.getWorkspace().getQueryManager().createQuery(sb.toString(),
                     Query.SQL);
 
@@ -1674,6 +1682,11 @@ public class RulesRepository {
             } else {
                 stringBuilder.append("[jcr:contains(., '").append(qry).append("') and ").append(AssetItem.CONTENT_PROPERTY_ARCHIVE_FLAG).append(" = 'false']");
             }
+            
+            //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
+            //See http://markmail.org/message/mxmk5hkxrdtcc3hl
+            stringBuilder.append(" ORDER BY [jcr:score] DESC");
+
             Query q = this.session.getWorkspace().getQueryManager().createQuery(stringBuilder.toString(),
                     Query.XPATH);
             QueryResult res = q.execute();
@@ -1736,6 +1749,10 @@ public class RulesRepository {
                     }
                 }
             }
+            
+            //Adding this explicit order by ensures NodeIterator.getSize() returns a value other than -1.
+            //See http://markmail.org/message/mxmk5hkxrdtcc3hl
+            sql.append(" ORDER BY jcr:score DESC");
 
             Query q = this.session.getWorkspace().getQueryManager().createQuery(sql.toString(),
                     Query.SQL);

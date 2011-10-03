@@ -19,6 +19,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;

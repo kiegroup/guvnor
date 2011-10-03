@@ -18,7 +18,9 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.user.client.ui.IsWidget;
@@ -36,6 +38,8 @@ public interface ActionSetFieldsPageView
 
         void stateChanged();
 
+        TableFormat getTableFormat();
+
     }
 
     /**
@@ -44,6 +48,8 @@ public interface ActionSetFieldsPageView
      * @param presenter
      */
     void setPresenter(Presenter presenter);
+
+    void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory);
 
     void setAvailablePatterns(List<Pattern52> patterns);
 

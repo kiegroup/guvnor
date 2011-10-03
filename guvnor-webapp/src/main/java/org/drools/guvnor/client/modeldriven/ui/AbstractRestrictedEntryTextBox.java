@@ -15,13 +15,6 @@
  */
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.resources.OperatorsCss;
-import org.drools.guvnor.client.resources.OperatorsResource;
-import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
@@ -32,28 +25,13 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public abstract class AbstractRestrictedEntryTextBox extends TextBox {
 
-    private static final OperatorsResource resources = GWT.create( OperatorsResource.class );
-    private static final OperatorsCss      css       = resources.operatorsCss();
-
-    protected HasParameterizedOperator     hop;
-
-    public AbstractRestrictedEntryTextBox(HasParameterizedOperator hop,
-                                          int index) {
-        this.hop = hop;
-        setup( index );
+    public AbstractRestrictedEntryTextBox() {
+        setup();
     }
 
-    private void setup(final int index) {
+    protected void setup() {
         final TextBox me = this;
-        this.setStyleName( css.parameter() );
-        this.addChangeHandler( new ChangeHandler() {
 
-            public void onChange(ChangeEvent event) {
-                hop.setParameter( Integer.toString( index ),
-                                  me.getText() );
-            }
-
-        } );
         this.addKeyPressHandler( new KeyPressHandler() {
 
             public void onKeyPress(KeyPressEvent event) {
