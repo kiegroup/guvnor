@@ -179,10 +179,10 @@ public class RepositoryUpgradeHelper {
      * @param oldData
      * @return New data
      */
-    public static List<List<DTCellValue52>> makeDataLists(String[][] oldData) {
+    public static List<List<DTCellValue52>> makeDataLists(Object[][] oldData) {
         List<List<DTCellValue52>> newData = new ArrayList<List<DTCellValue52>>();
         for ( int iRow = 0; iRow < oldData.length; iRow++ ) {
-            String[] oldRow = oldData[iRow];
+            Object[] oldRow = oldData[iRow];
             List<DTCellValue52> newRow = makeDataRowList( oldRow );
             newData.add( newRow );
         }
@@ -196,11 +196,20 @@ public class RepositoryUpgradeHelper {
      * @param oldRow
      * @return New row
      */
-    public static List<DTCellValue52> makeDataRowList(String[] oldRow) {
+    public static List<DTCellValue52> makeDataRowList(Object[] oldRow) {
         List<DTCellValue52> row = new ArrayList<DTCellValue52>();
 
-        DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( oldRow[0] ) );
-        row.add( rowDcv );
+        //Row numbers are numerical
+        if ( oldRow[0] instanceof String ) {
+            DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( (String) oldRow[0] ) );
+            row.add( rowDcv );
+        } else if ( oldRow[0] instanceof Long ) {
+            DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( (Long) oldRow[0] ) );
+            row.add( rowDcv );
+        } else {
+            DTCellValue52 rowDcv = new DTCellValue52( oldRow[0] );
+            row.add( rowDcv );
+        }
 
         for ( int iCol = 1; iCol < oldRow.length; iCol++ ) {
 
