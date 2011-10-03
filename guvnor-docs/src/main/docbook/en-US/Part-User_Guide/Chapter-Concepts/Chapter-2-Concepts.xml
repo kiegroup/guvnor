@@ -14,7 +14,5 @@
 
   <xi:include href="Packages.xml" xpointer="element(/1)" />
 
-  <xi:include href="Perspectives.xml" xpointer="element(/1)" />
-
   <xi:include href="Business-User-View.xml" xpointer="element(/1)" />
 </chapter>
