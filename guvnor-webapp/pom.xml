@@ -274,7 +274,7 @@
       <dependency>
         <groupId>org.jboss.arquillian</groupId>
         <artifactId>arquillian-bom</artifactId>
-        <version>1.0.0.CR4</version>
+        <version>1.0.0.CR5</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -447,7 +447,7 @@
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
-      <version>1.0.0.CR4</version>
+      <version>1.0.0.CR5</version>
       <scope>test</scope>
     </dependency>
     <!--<dependency>&lt;!&ndash; Override the version specified by arquillian-tomcat/jetty &ndash;&gt;-->
