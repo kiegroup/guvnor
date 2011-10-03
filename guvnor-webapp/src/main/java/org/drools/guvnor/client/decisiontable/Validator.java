@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.decisiontable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.ActionInsertFactFieldsPattern;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -38,16 +39,20 @@ public class Validator {
     private Map<Pattern52, List<ActionSetFieldCol52>>                       patternToActionSetFieldsMap;
     private Map<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> patternToActionInsertFactFieldsMap;
 
-    Validator(List<Pattern52> patterns) {
+    public Validator() {
+        this( new ArrayList<Pattern52>() );
+    }
+
+    public Validator(List<Pattern52> patterns) {
         this.patternsConditions = patterns;
         this.patternsActions = new ArrayList<Pattern52>();
     }
 
-    void addActionPattern(Pattern52 pattern) {
+    public void addActionPattern(Pattern52 pattern) {
         this.patternsActions.add( pattern );
     }
 
-    void removeActionPattern(Pattern52 pattern) {
+    public void removeActionPattern(Pattern52 pattern) {
         this.patternsActions.remove( pattern );
     }
 

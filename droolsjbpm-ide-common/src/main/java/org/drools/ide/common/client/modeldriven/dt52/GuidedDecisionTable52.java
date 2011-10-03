@@ -26,10 +26,8 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * This is a decision table model for a guided editor. It is not template or XLS
  * based. (template could be done relatively easily by taking a template, as a
  * String, and then String[][] data and driving the SheetListener interface in
- * the decision tables module).
- * 
- * This works by taking the column definitions, and combining them with the
- * table of data to produce rule models.
+ * the decision tables module). This works by taking the column definitions, and
+ * combining them with the table of data to produce rule models.
  */
 public class GuidedDecisionTable52
     implements
@@ -244,12 +242,23 @@ public class GuidedDecisionTable52
 
     private String getType(ConditionCol52 col,
                            SuggestionCompletionEngine sce) {
-
         Pattern52 pattern = getPattern( col );
-
         String type = sce.getFieldType( pattern.getFactType(),
                                         col.getFactField() );
-        type = (assertDataType( col,
+        type = (assertDataType( pattern,
+                                col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
+    private String getType(Pattern52 pattern,
+                           ConditionCol52 col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( pattern.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( pattern,
+                                col,
                                 sce,
                                 type ) ? type : null);
         return type;
@@ -325,12 +334,54 @@ public class GuidedDecisionTable52
 
     }
 
+    // Get the Data Type corresponding to a given column
+    public DTDataTypes52 getTypeSafeType(Pattern52 pattern,
+                                         ConditionCol52 column,
+                                         SuggestionCompletionEngine sce) {
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        dataType = derieveDataType( sce,
+                                    pattern,
+                                    column );
+        return dataType;
+
+    }
+
     // Derive the Data Type for a Condition or Action column
     private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
                                           DTColumnConfig52 col) {
 
         DTDataTypes52 dataType = DTDataTypes52.STRING;
         String type = getType( col,
+                               sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return dataType;
+        }
+
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = getValueList( col,
+                                      sce );
+        if ( vals.length == 0 ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                dataType = DTDataTypes52.DATE;
+            }
+        }
+        return dataType;
+    }
+
+    // Derive the Data Type for a Condition or Action column
+    private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
+                                          Pattern52 pattern,
+                                          ConditionCol52 col) {
+
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        String type = getType( pattern,
+                               col,
                                sce );
 
         //Null means the field is free-format
@@ -382,12 +433,24 @@ public class GuidedDecisionTable52
 
     private String[] getValueList(ConditionCol52 col,
                                   SuggestionCompletionEngine sce) {
-
         if ( col.getValueList() != null
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             Pattern52 pattern = getPattern( col );
+            String[] r = sce.getEnumValues( pattern.getFactType(),
+                                            col.getFactField() );
+            return (r != null) ? r : new String[0];
+        }
+    }
+
+    public String[] getValueList(Pattern52 pattern,
+                                 ConditionCol52 col,
+                                 SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
+        } else {
             String[] r = sce.getEnumValues( pattern.getFactType(),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
@@ -401,20 +464,19 @@ public class GuidedDecisionTable52
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
-                                                col.getFactField() );
+                                            col.getFactField() );
             return (r != null) ? r : new String[0];
         }
     }
 
     private String[] getValueList(ActionInsertFactCol52 col,
                                   SuggestionCompletionEngine sce) {
-
         if ( col.getValueList() != null
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( col.getFactType(),
-                                                col.getFactField() );
+                                            col.getFactField() );
             return (r != null) ? r : new String[0];
         }
     }
@@ -499,11 +561,10 @@ public class GuidedDecisionTable52
         return null;
     }
 
-    private boolean assertDataType(ConditionCol52 col,
+    private boolean assertDataType(Pattern52 pattern,
+                                   ConditionCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-
-        Pattern52 pattern = getPattern( col );
 
         if ( col.getConstraintValueType() == BaseSingleFieldConstraint.TYPE_LITERAL ) {
             if ( col.getOperator() == null || "".equals( col.getOperator() ) ) {

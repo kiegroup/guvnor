@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
+package org.drools.guvnor.client.decisiontable;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -21,16 +21,21 @@ import java.util.Date;
 import org.drools.guvnor.client.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.modeldriven.ui.PopupDatePicker;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -84,6 +89,74 @@ public class DTCellValueWidgetFactory {
         DTDataTypes52 type = dtable.getTypeSafeType( c,
                                                      sce );
         String[] completions = dtable.getValueList( c,
+                                                    sce );
+
+        if ( completions != null && completions.length > 0 ) {
+            return makeListBox( completions,
+                                value );
+        }
+
+        switch ( type ) {
+            case NUMERIC :
+                return makeNumericTextBox( value );
+            case BOOLEAN :
+                return makeBooleanSelector( value );
+            case DATE :
+                return makeDateSelector( value );
+            default :
+                return makeTextBox( value );
+        }
+    }
+
+    /**
+     * Make a DTCellValue for a column. This overloaded method takes a Pattern52
+     * object as well since the pattern may be different to that to which the
+     * column has been bound in the Decision Table model, i.e. when adding or
+     * editing a column
+     * 
+     * @param p
+     * @param c
+     * @return
+     */
+    public DTCellValue52 makeNewValue(Pattern52 p,
+                                      ConditionCol52 c) {
+        DTDataTypes52 type = dtable.getTypeSafeType( p,
+                                                     c,
+                                                     sce );
+        switch ( type ) {
+            case BOOLEAN :
+                return new DTCellValue52( false );
+            case DATE :
+                return new DTCellValue52( new Date() );
+            case NUMERIC :
+                return new DTCellValue52( 0 );
+            default :
+                return new DTCellValue52( "" );
+        }
+    }
+
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List"). This overloaded method takes a
+     * Pattern52 object as well since the pattern may be different to that to
+     * which the column has been bound in the Decision Table model, i.e. when
+     * adding or editing a column
+     * 
+     * @param pattern
+     * @param column
+     * @param value
+     * @return
+     */
+    public Widget getWidget(Pattern52 pattern,
+                            ConditionCol52 column,
+                            DTCellValue52 value) {
+
+        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
+                                                     column,
+                                                     sce );
+        String[] completions = dtable.getValueList( pattern,
+                                                    column,
                                                     sce );
 
         if ( completions != null && completions.length > 0 ) {
@@ -205,6 +278,41 @@ public class DTCellValueWidgetFactory {
 
         } );
         return dp;
+    }
+
+    /**
+     * An editor for 'Default Value'
+     * 
+     * @param col
+     * @return
+     */
+    public static TextBox getDefaultEditor(final DTColumnConfig52 col) {
+        final TextBox txtDefaultValue = new TextBox();
+        txtDefaultValue.setText( col.getDefaultValue() );
+        txtDefaultValue.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                col.setDefaultValue( txtDefaultValue.getText() );
+            }
+        } );
+        return txtDefaultValue;
+    }
+
+    /**
+     * An editor for whether the column is hidden or not
+     * 
+     * @param col
+     * @return
+     */
+    public static CheckBox getHideColumnIndicator(final DTColumnConfig52 col) {
+        final CheckBox chkHide = new CheckBox();
+        chkHide.setValue( col.isHideColumn() );
+        chkHide.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent sender) {
+                col.setHideColumn( chkHide.getValue() );
+            }
+        } );
+        return chkHide;
     }
 
 }

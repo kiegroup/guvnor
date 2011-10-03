@@ -117,11 +117,21 @@ public class GuidedDTDRLPersistence {
                    List<DTCellValue52> row,
                    RuleModel rm) {
         List<LabelledAction> actions = new ArrayList<LabelledAction>();
-        for ( int i = 0; i < actionCols.size(); i++ ) {
-            ActionCol52 c = actionCols.get( i );
+        for ( ActionCol52 c : actionCols ) {
+
             int index = allColumns.indexOf( c );
 
-            String cell = GuidedDTDRLUtilities.convertDTCellValueToString( row.get( index ) );
+            DTCellValue52 dcv = row.get( index );
+            String cell = "";
+
+            if ( c instanceof LimitedEntryCol ) {
+                if ( dcv.getBooleanValue() == true ) {
+                    LimitedEntryCol lec = (LimitedEntryCol) c;
+                    cell = GuidedDTDRLUtilities.convertDTCellValueToString( lec.getValue() );
+                }
+            } else {
+                cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
+            }
 
             if ( !validCell( cell ) ) {
                 cell = c.getDefaultValue();

@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
