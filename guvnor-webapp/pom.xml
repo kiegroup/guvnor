@@ -412,16 +412,21 @@
       <artifactId>seam-security</artifactId>
       <version>${seam.version}</version>
     </dependency>
-    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 -->
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 fixed in 3.1.0.CR1 -->
       <groupId>org.jboss.seam.transaction</groupId>
       <artifactId>seam-transaction</artifactId>
       <version>${seam.version}</version>
     </dependency>
-    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 -->
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 fixed in 3.1.0.CR1 -->
       <groupId>org.jboss.seam.international</groupId>
       <artifactId>seam-international</artifactId>
       <version>${seam.version}</version>
     </dependency>
+   <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
+     <groupId>joda-time</groupId>
+     <artifactId>joda-time</artifactId>
+     <version>1.6</version>
+   </dependency>
     <dependency>
       <groupId>org.jboss.seam.servlet</groupId>
       <artifactId>seam-servlet</artifactId>
