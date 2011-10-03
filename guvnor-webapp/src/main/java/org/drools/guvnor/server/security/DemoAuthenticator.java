@@ -71,7 +71,7 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
     }
 
     private void upgradeGuestToAdmin() {
-        if (credentials.getUsername().equals("guest")) {
+        if (credentials.getUsername() != null && credentials.getUsername().equals("guest")) {
             credentials.setUsername("admin");
             credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential("admin"));
         }
