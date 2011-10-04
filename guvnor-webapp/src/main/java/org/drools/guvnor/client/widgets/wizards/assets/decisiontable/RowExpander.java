@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.ui.ConstraintValueEditorHelper;
 
 /**
  * A utility class to expand Condition column definitions into rows. Action
@@ -115,12 +116,23 @@ public class RowExpander {
     private void addColumn(ConditionCol52 c) {
         String[] values = dtable.getValueList( c,
                                                sce );
+        values = getValues( values );
         ColumnValues cv = new ColumnValues( columns,
                                             values,
                                             c.getDefaultValue() );
         this.expandedColumns.put( c,
                                   cv );
         this.columns.add( cv );
+    }
+
+    private String[] getValues(String[] values) {
+        String[] splitValues = new String[values.length];
+        for ( int i = 0; i < values.length; i++ ) {
+            String v = values[i];
+            String[] splut = ConstraintValueEditorHelper.splitValue( v );
+            splitValues[i] = splut[0];
+        }
+        return splitValues;
     }
 
     private void addColumn(ActionSetFieldCol52 a) {
