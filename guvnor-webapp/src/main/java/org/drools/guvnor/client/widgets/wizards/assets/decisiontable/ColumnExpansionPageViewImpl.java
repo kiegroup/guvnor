@@ -170,7 +170,6 @@ public class ColumnExpansionPageViewImpl extends Composite
     public void setAvailableColumns(List<ConditionCol52> columns) {
         availableColumns = columns;
         availableColumns.removeAll( chosenColumns );
-        presenter.setColumnsToExpand( getColumnsToExpand() );
         availableColumnsWidget.setRowCount( columns.size(),
                                             true );
         availableColumnsWidget.setRowData( columns );
