@@ -16,21 +16,48 @@
 
 package org.drools.ide.common.server.util;
 
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
+import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
+import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
+import org.drools.ide.common.client.modeldriven.brl.DSLSentence;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionCollection;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionCollectionIndex;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionField;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionFormLine;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionGlobalVariable;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionMethod;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionText;
+import org.drools.ide.common.client.modeldriven.brl.ExpressionVariable;
+import org.drools.ide.common.client.modeldriven.brl.FactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FreeFormLine;
+import org.drools.ide.common.client.modeldriven.brl.FromAccumulateCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCollectCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.FromCompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
+import org.drools.ide.common.client.modeldriven.brl.RuleMetadata;
+import org.drools.ide.common.client.modeldriven.brl.RuleModel;
+import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import org.drools.ide.common.client.modeldriven.brl.*;
 
 /**
- * This class persists the rule model to XML and back.
- *
- * This is the 'brl' xml format (Business Rule Language).
+ * This class persists the rule model to XML and back. This is the 'brl' xml
+ * format (Business Rule Language).
  */
 public class BRXMLPersistence
     implements
     BRLPersistence {
 
     private XStream                     xt;
+    private RuleModelUpgradeHelper      upgrader = new RuleModelUpgradeHelper();
     private static final BRLPersistence INSTANCE = new BRXMLPersistence();
 
     protected BRXMLPersistence() {
@@ -82,32 +109,33 @@ public class BRXMLPersistence
                        ActionGlobalCollectionAdd.class );
         //Begin ExpressionFormLine
         this.xt.alias( "expression",
-                ExpressionFormLine.class );
-        
+                       ExpressionFormLine.class );
+
         this.xt.alias( "field",
-                ExpressionField.class );
-        
+                       ExpressionField.class );
+
         this.xt.alias( "method",
-                ExpressionMethod.class );
-        
+                       ExpressionMethod.class );
+
         this.xt.alias( "collection",
-                ExpressionCollection.class );
-        
+                       ExpressionCollection.class );
+
         this.xt.alias( "collectionIndex",
-                ExpressionCollectionIndex.class );
-        
+                       ExpressionCollectionIndex.class );
+
         this.xt.alias( "text",
-                ExpressionText.class );
+                       ExpressionText.class );
 
         this.xt.alias( "global",
-                ExpressionGlobalVariable.class );
-        
+                       ExpressionGlobalVariable.class );
+
         this.xt.alias( "variable",
-                ExpressionVariable.class );
+                       ExpressionVariable.class );
         //end ExpressionFormLine
-        
+
         //See https://issues.jboss.org/browse/GUVNOR-1115
-        this.xt.aliasPackage( "org.drools.guvnor.client", "org.drools.ide.common.client" );
+        this.xt.aliasPackage( "org.drools.guvnor.client",
+                              "org.drools.ide.common.client" );
 
     }
 
@@ -115,60 +143,36 @@ public class BRXMLPersistence
         return INSTANCE;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.server.util.BRLPersistence#toXML(org.drools.guvnor.client.modeldriven.brl.RuleModel)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.server.util.BRLPersistence#toXML(org.drools.guvnor
+     * .client.modeldriven.brl.RuleModel)
      */
     public String marshal(final RuleModel model) {
         return this.xt.toXML( model );
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.server.util.BRLPersistence#toModel(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.server.util.BRLPersistence#toModel(java.lang.String
+     * )
      */
     public RuleModel unmarshal(final String xml) {
-        if ( xml == null || xml.trim().length() == 0) {
+        if ( xml == null || xml.trim().length() == 0 ) {
             return createEmptyModel();
         }
         RuleModel rm = (RuleModel) this.xt.fromXML( xml );
-        //Fixme , hack for a upgrade to add Metadata
-        if ( rm.metadataList == null ) {
-            rm.metadataList = new RuleMetadata[0];
-        }
-        
-        updateMethodCall( rm );
-        
+
+        //Upgrade model changes to legacy artifacts
+        upgrader.upgrade( rm );
+
         return rm;
     }
 
     protected RuleModel createEmptyModel() {
         return new RuleModel();
-    }
-
-    /**
-     * 
-     * The way method calls are done changed after 5.0.0.CR1 so every rule done before that needs to be updated.
-     * 
-     * @param model
-     * @return Updated model
-     */
-    private RuleModel updateMethodCall(RuleModel model) {
-
-        for ( int i = 0; i < model.rhs.length; i++ ) {
-            if ( model.rhs[i] instanceof ActionCallMethod ) {
-                ActionCallMethod action = (ActionCallMethod) model.rhs[i];
-                // Check if method name is filled, if not this was made with an older Guvnor version
-                if ( action.methodName == null || "".equals( action.methodName ) ) {
-                    if ( action.fieldValues != null && action.fieldValues.length >= 1 ) {
-                        action.methodName = action.fieldValues[0].field;
-                        
-                        action.fieldValues = new ActionFieldValue[0];
-                        action.state = ActionCallMethod.TYPE_DEFINED;
-                    }
-                }
-            }
-        }
-
-        return model;
     }
 
 }

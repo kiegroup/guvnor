@@ -40,6 +40,8 @@ import org.junit.Test;
 @SuppressWarnings("deprecation")
 public class GuidedDTModelConversionTest {
 
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    
     @Test
     public void testConversion() {
 
@@ -120,7 +122,7 @@ public class GuidedDTModelConversionTest {
                 new String[]{"2", "desc", "metar2", "saliencer2", "c1r2", "c2r2", "c3r2", "c4r2", "a1r2", "a2r2", "a3r2", "a4r2"}
         };
 
-        GuidedDecisionTable52 tsdt = RepositoryUpgradeHelper.convertGuidedDTModel( dt );
+        GuidedDecisionTable52 tsdt = upgrader.upgrade( dt );
 
         assertEquals( "michael",
                       tsdt.getTableName() );
@@ -324,7 +326,7 @@ public class GuidedDTModelConversionTest {
                 new String[]{"2", "desc", "metar2", "saliencer2", "f1c1r2", "f2c1r2", "f1c2r2", "f2c2r2", "a1r2", "a2r2", "a3r2", "a4r2"}
         };
 
-        GuidedDecisionTable52 tsdt = RepositoryUpgradeHelper.convertGuidedDTModel( dt );
+        GuidedDecisionTable52 tsdt = upgrader.upgrade( dt );
 
         assertEquals( "michael",
                       tsdt.getTableName() );
