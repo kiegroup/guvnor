@@ -38,6 +38,7 @@ public class SafeWeldListener implements ServletContextListener, HttpSessionList
     private void checkOnJBoss(String serverInfo) {
         onJBoss7 = serverInfo.startsWith("JBoss Web/7.");
         if (!onJBoss7) {
+            // Note that weldListener is not a global variable to avoid a ClassNotFoundException on JBoss 7
             Listener weldListener = new Listener();
             servletContextListener = weldListener;
             httpSessionListener = weldListener;
