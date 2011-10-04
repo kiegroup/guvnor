@@ -163,8 +163,8 @@ public class ActionSetFieldsPage extends AbstractGuidedDecisionTableWizardPage
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = sce.getFieldClassName( type,
-                                                      fieldName );
+            String fieldType = sce.getFieldType( type,
+                                                 fieldName );
             String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,
