@@ -110,6 +110,7 @@ public class RuleModelUpgradeHelper
         for ( ConnectiveConstraint cc : sfc.connectives ) {
             if ( cc.getFieldName() == null ) {
                 cc.setFieldName( sfc.getFieldName() );
+                cc.setFieldType( sfc.getFieldType() );
             }
         }
     }
