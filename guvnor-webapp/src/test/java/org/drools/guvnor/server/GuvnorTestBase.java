@@ -44,12 +44,12 @@ public abstract class GuvnorTestBase {
     @Deployment
     public static WebArchive createDeployment() {
         // TODO FIXME do not hardcode the version number
-        File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT/");
+        File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT");
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
-        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, "guvnor-webapp-5.4.0-SNAPSHOT.war")
+        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, explodedWarFile.getName() + ".war")
                 .importDirectory(explodedWarFile)
                 .as(WebArchive.class)
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
@@ -59,8 +59,20 @@ public abstract class GuvnorTestBase {
                         DependencyResolvers.use(MavenDependencyResolver.class)
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
-//        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+        removeWeldJars(webArchive, explodedWarFile);
+        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
+    }
+
+    private static void removeWeldJars(WebArchive webArchive, File explodedWarFile) {
+        // Workaround for JBoss 7 https://issues.jboss.org/browse/WELD-983
+        File libDir = new File(explodedWarFile, "WEB-INF/lib");
+        for (File file : libDir.listFiles()) {
+            String fileName = file.getName();
+            if (fileName.startsWith("weld-") && fileName.endsWith(".jar")) {
+                webArchive.delete(ArchivePaths.create("WEB-INF/lib/" + fileName));
+            }
+        }
     }
 
 //    @Deployment
