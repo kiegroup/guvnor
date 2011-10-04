@@ -78,16 +78,10 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
         List<ConditionCol52> availableColumns = new ArrayList<ConditionCol52>();
         for ( Pattern52 p : dtable.getConditionPatterns() ) {
             for ( ConditionCol52 c : p.getConditions() ) {
-                switch ( dtable.getTableFormat() ) {
-                    case EXTENDED_ENTRY :
-                        String[] values = dtable.getValueList( c,
-                                                               sce );
-                        if ( values != null && values.length > 1 ) {
-                            availableColumns.add( c );
-                        }
-                        break;
-                    case LIMITED_ENTRY :
-                        availableColumns.add( c );
+                String[] values = dtable.getValueList( c,
+                                                       sce );
+                if ( values != null && values.length > 1 ) {
+                    availableColumns.add( c );
                 }
             }
         }
