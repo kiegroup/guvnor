@@ -2521,4 +2521,6 @@ public interface Constants
     String NoAssetsDefinedInPackage();
 
     String MissingExpectations();
+
+    String CouldNotFindTheTypeForVariable0(String variableName);
 }

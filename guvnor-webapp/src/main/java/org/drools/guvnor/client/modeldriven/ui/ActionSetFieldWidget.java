@@ -18,6 +18,7 @@ package org.drools.guvnor.client.modeldriven.ui;
 
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
+import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -99,7 +100,8 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         }
 
         if ( this.variableClass == null ) {
-            throw new IllegalStateException( "couldn't find type for variable: " + set.variable );
+            readOnly = true;
+            ErrorPopup.showMessage( constants.CouldNotFindTheTypeForVariable0( set.variable ) );
         }
 
         if ( readOnly == null ) {
@@ -239,13 +241,13 @@ public class ActionSetFieldWidget extends RuleModellerWidget {
         SuggestionCompletionEngine completions = this.getModeller().getSuggestionCompletions();
         String type = "";
         if ( completions.isGlobalVariable( this.model.variable ) ) {
-            type = (String) completions.getGlobalVariable( this.model.variable );
+            type = completions.getGlobalVariable( this.model.variable );
         } else {
             type = this.getModeller().getModel().getLHSBindingType( this.model.variable );
             /*
              * to take in account if the using a rhs bound variable
              */
-            if ( type == null ) {
+            if ( type == null && !this.readOnly ) {
                 type = this.getModeller().getModel().getRHSBoundFact( this.model.variable ).factType;
             }
         }
