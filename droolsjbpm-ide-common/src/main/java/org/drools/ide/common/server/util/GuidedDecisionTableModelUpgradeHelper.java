@@ -48,7 +48,9 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
  * Helper class to upgrade model used for Guided Decision Table
  */
 @SuppressWarnings("deprecation")
-public class RepositoryUpgradeHelper {
+public class GuidedDecisionTableModelUpgradeHelper
+    implements
+    IUpgradeHelper<GuidedDecisionTable52, GuidedDecisionTable> {
 
     /**
      * Convert the legacy Decision Table model to the new
@@ -56,7 +58,7 @@ public class RepositoryUpgradeHelper {
      * @param legacyDTModel
      * @return The new DTModel
      */
-    public static GuidedDecisionTable52 convertGuidedDTModel(GuidedDecisionTable legacyDTModel) {
+    public GuidedDecisionTable52 upgrade(GuidedDecisionTable legacyDTModel) {
 
         assertConditionColumnPatternGrouping( legacyDTModel );
 
@@ -118,7 +120,7 @@ public class RepositoryUpgradeHelper {
     // therefore should be called before the Decision Table's internal data
     // representation (i.e. DynamicData, DynamicDataRow and CellValue) is
     // populated
-    private static void assertConditionColumnPatternGrouping(GuidedDecisionTable model) {
+    private void assertConditionColumnPatternGrouping(GuidedDecisionTable model) {
 
         class ConditionColData {
             ConditionCol col;
@@ -179,7 +181,7 @@ public class RepositoryUpgradeHelper {
      * @param oldData
      * @return New data
      */
-    public static List<List<DTCellValue52>> makeDataLists(String[][] oldData) {
+    public List<List<DTCellValue52>> makeDataLists(String[][] oldData) {
         List<List<DTCellValue52>> newData = new ArrayList<List<DTCellValue52>>();
         for ( int iRow = 0; iRow < oldData.length; iRow++ ) {
             String[] oldRow = oldData[iRow];
@@ -196,7 +198,7 @@ public class RepositoryUpgradeHelper {
      * @param oldRow
      * @return New row
      */
-    public static List<DTCellValue52> makeDataRowList(String[] oldRow) {
+    public List<DTCellValue52> makeDataRowList(String[] oldRow) {
         List<DTCellValue52> row = new ArrayList<DTCellValue52>();
 
         DTCellValue52 rowDcv = new DTCellValue52( new BigDecimal( oldRow[0] ) );
@@ -215,7 +217,7 @@ public class RepositoryUpgradeHelper {
         return row;
     }
 
-    private static AttributeCol52 makeNewColumn(AttributeCol c) {
+    private AttributeCol52 makeNewColumn(AttributeCol c) {
         AttributeCol52 nc = new AttributeCol52();
         nc.setAttribute( c.attr );
         nc.setDefaultValue( c.defaultValue );
@@ -226,7 +228,7 @@ public class RepositoryUpgradeHelper {
         return nc;
     }
 
-    private static MetadataCol52 makeNewColumn(MetadataCol c) {
+    private MetadataCol52 makeNewColumn(MetadataCol c) {
         MetadataCol52 nc = new MetadataCol52();
         nc.setDefaultValue( c.defaultValue );
         nc.setHideColumn( c.hideColumn );
@@ -235,7 +237,7 @@ public class RepositoryUpgradeHelper {
         return nc;
     }
 
-    private static ConditionCol52 makeNewColumn(ConditionCol c) {
+    private ConditionCol52 makeNewColumn(ConditionCol c) {
         ConditionCol52 nc = new ConditionCol52();
         nc.setConstraintValueType( c.constraintValueType );
         nc.setDefaultValue( c.defaultValue );
@@ -249,7 +251,7 @@ public class RepositoryUpgradeHelper {
         return nc;
     }
 
-    private static ActionCol52 makeNewColumn(ActionCol c) {
+    private ActionCol52 makeNewColumn(ActionCol c) {
         if ( c instanceof ActionInsertFactCol ) {
             return makeNewColumn( (ActionInsertFactCol) c );
         } else if ( c instanceof ActionRetractFactCol ) {
@@ -265,7 +267,7 @@ public class RepositoryUpgradeHelper {
         return nc;
     }
 
-    private static ActionInsertFactCol52 makeNewColumn(ActionInsertFactCol c) {
+    private ActionInsertFactCol52 makeNewColumn(ActionInsertFactCol c) {
         ActionInsertFactCol52 nc = new ActionInsertFactCol52();
         nc.setBoundName( c.boundName );
         nc.setDefaultValue( c.defaultValue );
@@ -279,7 +281,7 @@ public class RepositoryUpgradeHelper {
         return nc;
     }
 
-    private static ActionRetractFactCol52 makeNewColumn(ActionRetractFactCol c) {
+    private ActionRetractFactCol52 makeNewColumn(ActionRetractFactCol c) {
         ActionRetractFactCol52 nc = new ActionRetractFactCol52();
         nc.setBoundName( c.boundName );
         nc.setDefaultValue( c.defaultValue );
@@ -290,7 +292,7 @@ public class RepositoryUpgradeHelper {
 
     }
 
-    private static ActionSetFieldCol52 makeNewColumn(ActionSetFieldCol c) {
+    private ActionSetFieldCol52 makeNewColumn(ActionSetFieldCol c) {
         ActionSetFieldCol52 nc = new ActionSetFieldCol52();
         nc.setBoundName( c.boundName );
         nc.setDefaultValue( c.defaultValue );
