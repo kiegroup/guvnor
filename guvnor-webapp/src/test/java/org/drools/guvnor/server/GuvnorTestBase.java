@@ -154,16 +154,4 @@ public abstract class GuvnorTestBase {
     // Helper methods
     // ************************************************************************
 
-    // TODO seam3upgrade
-    @Deprecated
-    public ServiceImplementation getServiceImplementation() {
-        throw new UnsupportedOperationException("Use injection instead");
-    }
-
-    // TODO seam3upgrade
-    @Deprecated
-    public RepositoryCategoryService getRepositoryCategoryService() {
-        throw new UnsupportedOperationException("Use injection instead");
-    }
-
 }

@@ -103,99 +103,89 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testInboxEvents() throws Exception {
+        assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
 
-        try {
-            // TODO seam3upgrade
-//            RepositoryStartupService.registerCheckinListener();
+        //this should trigger the fact that the first user edited something
+        AssetItem as = rulesRepository.loadDefaultPackage().addAsset( "testLoadInbox",
+                                                                                "" );
+        as.checkin( "" );
+        RuleAsset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
 
-            assertNotNull( serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID ) );
-
-            //this should trigger the fact that the first user edited something
-            AssetItem as = rulesRepository.loadDefaultPackage().addAsset( "testLoadInbox",
-                                                                                    "" );
-            as.checkin( "" );
-            RuleAsset ras = repositoryAssetService.loadRuleAsset( as.getUUID() );
-
-            TableDataResult res = serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
-            boolean found = false;
-            for ( TableDataRow row : res.data ) {
-                if ( row.id.equals( ras.getUuid() ) ) found = true;
-            }
-            assertTrue( found );
-
-            //but should not be in "incoming" yet
-            found = false;
-            res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-            for ( TableDataRow row : res.data ) {
-                if ( row.id.equals( as.getUUID() ) ) found = true;
-            }
-            assertFalse( found );
-
-            //Now, the second user comes along, makes a change...
-            RulesRepository repo2 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
-            AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
-            as2.updateContent( "hey" );
-            as2.checkin( "here we go again !" );
-
-            Thread.sleep( 200 );
-
-            //now check that it is in the first users inbox
-            TableDataRow rowMatch = null;
-            res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-            for ( TableDataRow row : res.data ) {
-                if ( row.id.equals( as.getUUID() ) ) {
-                    rowMatch = row;
-                    break;
-                }
-            }
-            assertNotNull( rowMatch );
-            assertEquals( as.getName(),
-                          rowMatch.values[0] );
-            assertEquals( "seconduser",
-                          rowMatch.values[2] ); //should be "from" that user name...
-
-            //shouldn't be in second user's inbox
-            UserInbox secondUsersInbox = new UserInbox( repo2 );
-            secondUsersInbox.loadIncoming();
-            assertEquals( 0,
-                          secondUsersInbox.loadIncoming().size() );
-            assertEquals( 1,
-                          secondUsersInbox.loadRecentEdited().size() );
-
-            //ok lets create a third user...
-            RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
-            AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
-            as3.updateContent( "hey22" );
-            as3.checkin( "here we go again 22!" );
-
-            Thread.sleep( 250 );
-
-            //so should be in second user's inbox
-            assertEquals( 1,
-                          secondUsersInbox.loadIncoming().size() );
-
-            //and also still in the first user's...
-            found = false;
-            res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-            for ( TableDataRow row : res.data ) {
-                if ( row.id.equals( as.getUUID() ) ) found = true;
-            }
-            assertTrue( found );
-
-
-            //now lets open it with first user, and check that it disappears from the incoming...
-            repositoryAssetService.loadRuleAsset( as.getUUID() );
-            found = false;
-            res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
-            for ( TableDataRow row : res.data ) {
-                if ( row.id.equals( as.getUUID() ) ) found = true;
-            }
-            assertFalse( found );
-        } finally {
-            // TODO seam3upgrade
-//            RepositoryStartupService.removeListeners();
+        TableDataResult res = serviceImplementation.loadInbox( ExplorerNodeConfig.RECENT_EDITED_ID );
+        boolean found = false;
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( ras.getUuid() ) ) found = true;
         }
+        assertTrue( found );
 
+        //but should not be in "incoming" yet
+        found = false;
+        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertFalse( found );
+
+        //Now, the second user comes along, makes a change...
+        RulesRepository repo2 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
+        AssetItem as2 = repo2.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        as2.updateContent( "hey" );
+        as2.checkin( "here we go again !" );
+
+        Thread.sleep( 200 );
+
+        //now check that it is in the first users inbox
+        TableDataRow rowMatch = null;
+        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) {
+                rowMatch = row;
+                break;
+            }
+        }
+        assertNotNull( rowMatch );
+        assertEquals( as.getName(),
+                      rowMatch.values[0] );
+        assertEquals( "seconduser",
+                      rowMatch.values[2] ); //should be "from" that user name...
+
+        //shouldn't be in second user's inbox
+        UserInbox secondUsersInbox = new UserInbox( repo2 );
+        secondUsersInbox.loadIncoming();
+        assertEquals( 0,
+                      secondUsersInbox.loadIncoming().size() );
+        assertEquals( 1,
+                      secondUsersInbox.loadRecentEdited().size() );
+
+        //ok lets create a third user...
+        RulesRepository repo3 = new RulesRepository( repositoryStartupService.newSession( "seconduser" ) );
+        AssetItem as3 = repo3.loadDefaultPackage().loadAsset( "testLoadInbox" );
+        as3.updateContent( "hey22" );
+        as3.checkin( "here we go again 22!" );
+
+        Thread.sleep( 250 );
+
+        //so should be in second user's inbox
+        assertEquals( 1,
+                      secondUsersInbox.loadIncoming().size() );
+
+        //and also still in the first user's...
+        found = false;
+        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertTrue( found );
+
+
+        //now lets open it with first user, and check that it disappears from the incoming...
+        repositoryAssetService.loadRuleAsset( as.getUUID() );
+        found = false;
+        res = serviceImplementation.loadInbox( ExplorerNodeConfig.INCOMING_ID );
+        for ( TableDataRow row : res.data ) {
+            if ( row.id.equals( as.getUUID() ) ) found = true;
+        }
+        assertFalse( found );
     }
 
     @Test

@@ -919,7 +919,6 @@ public class PackageAssemblerTest extends GuvnorTestBase {
     
     @Test
     public void testBuiltInSelector() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
         RulesRepository repo = rulesRepository;
 
         CategoryItem rootCat = repo.loadCategory( "/" );

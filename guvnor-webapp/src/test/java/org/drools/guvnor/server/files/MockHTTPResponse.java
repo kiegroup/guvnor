@@ -33,7 +33,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 
-// TODO seam3upgrade
 @Alternative
 public class MockHTTPResponse implements HttpServletResponse {
 

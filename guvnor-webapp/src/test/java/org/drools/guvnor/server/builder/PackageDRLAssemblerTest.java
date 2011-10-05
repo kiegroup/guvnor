@@ -440,8 +440,6 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-
         //first, setup the package correctly:
         PackageItem pkg = rulesRepository.createPackage("testBuildPackageWithEmptyHeader",
                 "");
