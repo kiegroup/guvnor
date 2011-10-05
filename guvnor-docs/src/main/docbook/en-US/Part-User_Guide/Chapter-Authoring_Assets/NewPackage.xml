@@ -8,7 +8,7 @@
          xmlns:ns4="http://www.w3.org/2000/svg"
          xmlns:ns3="http://www.w3.org/1998/Math/MathML"
          xmlns:ns="http://docbook.org/ns/docbook">
-  <title>Package management</title>
+  <title>Creating a package</title>
 
   <para>Configuring packages is generally something that is done once, and by
   someone with some experience with rules/models. Generally speaking, very few
@@ -21,21 +21,6 @@
   live in. Rules in particular need to know what the fact model is, what the
   namespace is etc.</para>
 
-  <para><figure>
-      <title>The package explorer</title>
-
-      <mediaobject>
-        <imageobject>
-          <imagedata align="center"
-                     fileref="images/Chapter-Guvnor/PackageExplorer.png"
-                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
-        </imageobject>
-      </mediaobject>
-    </figure>The above picture shows the package explorer. Clicking on an
-  asset type will show a list of matches (for packages with thousands of
-  rules, showing the list may take several seconds - hence the importance of
-  using categories to help you find your way around).</para>
-
   <para>So while rules (and assets in general) can appear in any number of
   categories, they only live in one package. If you think of the Guvnor as a
   file system, then each package is a folder, and the assets live in that
@@ -43,109 +28,39 @@
   snapshot of a package, you are effectively copying all the assets in that
   "folder" into another special "folder".</para>
 
-  <para>The package management feature allows you to see a list of packages,
-  and then "expand" them, to show lists of each "type" of asset (there are
-  many assets, so some of them are grouped together):</para>
-
-  <para>The asset types:</para>
-
-  <itemizedlist>
-    <listitem>
-      <para>Business assets: this shows a list of all "business rule" types,
-      which include decision tables, business rules etc. etc.</para>
-    </listitem>
-
-    <listitem>
-      <para>Technical assets: this is a list of items that would be considered
-      technical (e.g. DRL rules, data enumerations and rule flows).</para>
-    </listitem>
-
-    <listitem>
-      <para>Functions: In the Guvnor you can also have functions defined
-      (optionally of course).</para>
-    </listitem>
-
-    <listitem>
-      <para>DSL: Domain Specific Languages can also be stored as an asset. If
-      they exist (generally there is only one), then they will be used in the
-      appropriate editor GUIs.</para>
-    </listitem>
-
-    <listitem>
-      <para>Model: A package requires at least one model - for the
-      rules.</para>
-    </listitem>
-
-    <listitem>
-      <para>WorkingSets: Working Sets let you create subsets of package's Fact
-      Types and apply constraints to their fields.</para>
-    </listitem>
-  </itemizedlist>
+  <para>To create an empty package select "New Package" from the "Create new"
+  (asset) menu.</para>
 
   <figure>
-    <title>Creating new assets</title>
+    <title>New Package</title>
 
     <mediaobject>
       <imageobject>
         <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/PackageNewItemTooltip.png"
+                   fileref="images/Chapter-Guvnor/NewPackage1.png"
                    format="PNG" scalefit="0" xml:base="../../"></imagedata>
       </imageobject>
     </mediaobject>
   </figure>
 
-  <para>From the package explorer you can create new rules, or new assets.
-  Some assets you can only create from the package explorer. The above picture
-  shows the icons which launch wizards for this purpose. If you hover the
-  mouse over them, a tooltip will tell you what they do.</para>
+  <section>
+    <title>Empty package</title>
 
-  <figure>
-    <title>Package configuration</title>
+    <para>An empty package can be created by simply specifying a name and
+    optional description.</para>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/PackageConfig.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
+    <figure>
+      <title>New empty Package</title>
 
-  <para>One of the most critical things you need to do is configure packages.
-  This is mostly importing the classes used by the rules, and globals
-  variables. Once you make a change, you need to save it, and that package is
-  then configured and ready to be built. For example, you may add a model
-  which has a class called <code>com.something.Hello</code>, you would then
-  add <code>import com.something.Hello</code> in your package configuration
-  and save the change.</para>
-
-  <figure>
-    <title>Package building</title>
-
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/PackageBuild.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
-
-  <para>Finally you would "build" a package. Any errors caught are then shown
-  at this point. If the build was successful, then you will have the option to
-  create a snapshot for deployment. You can also view the DRL that this
-  package results in.</para>
-
-  <warning>
-    <para>In cases of large numbers of rules, all these operations can take
-    some time.</para>
-  </warning>
-
-  <para>It is optional at this stage to enter the name of a "selector" - see
-  the admin section for details on how to configure custom selectors for your
-  system (if you need them - selectors allow you to filter down what you build
-  into a package - if you don't know what they are for, you probably don't
-  need to use them).</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/NewPackage2.png"
+                     format="PNG" scalefit="0" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
 
   <section>
     <title>Importing DRL packages</title>
@@ -157,16 +72,17 @@
     be stored as individual assets (but still as DRL text content). Note that
     to actually build the package, you will need to upload an appropriate
     model (as a JAR) to validate against, as a separate step.</para>
-  </section>
 
-  <section>
-    <title>Advanced config options in a rule package</title>
+    <figure>
+      <title>Importing DRL packages</title>
 
-    <para>As drools supports various configuration options for a package (such
-    as adding functions for "accumulate" etc), this can be done by adding a
-    <filename>X.package</filename> or <filename>X.conf</filename> file to the
-    package - files which contain name/value pairs in the "properties" style.
-    These will then be automatically added to the package configuration. See
-    the main drools documentation for all the things you can do.</para>
+      <mediaobject>
+        <imageobject>
+          <imagedata align="center"
+                     fileref="images/Chapter-Guvnor/NewPackage3.png"
+                     format="PNG" scalefit="1" xml:base="../../"></imagedata>
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 </section>

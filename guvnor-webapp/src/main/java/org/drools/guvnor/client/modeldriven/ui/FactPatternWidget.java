@@ -183,13 +183,12 @@ public class FactPatternWidget extends RuleModellerWidget {
     /**
      * Render a hierarchy of constraints, hierarchy here means constraints that
      * may themselves depend on members of constraint objects. With this code,
-     * the GUI enables clicking rules of the form:
-     * 
-     * $result = RoutingResult( NerOption.types contains "arzt" )
+     * the GUI enables clicking rules of the form: $result = RoutingResult(
+     * NerOption.types contains "arzt" )
      * 
      * @param sortedConst
      *            a sorted list of constraints to display.
-     * */
+     */
     private void drawConstraints(List<FieldConstraint> sortedConst,
                                  HasConstraints hasConstraints) {
         final DirtyableFlexTable table = new DirtyableFlexTable();
@@ -283,7 +282,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      * @param constraints
      *            the list of inheriting constraints to sort.
      * @return a sorted list of constraints ready for display.
-     * */
+     */
     private List<FieldConstraint> sortConstraints(FieldConstraint[] constraints) {
         List<FieldConstraint> sortedConst = new ArrayList<FieldConstraint>( constraints.length );
         for ( int i = 0; i < constraints.length; i++ ) {
@@ -314,7 +313,7 @@ public class FactPatternWidget extends RuleModellerWidget {
      *            the array to fill.
      * @param fieldConst
      *            the constraint to investigate.
-     * */
+     */
     private void insertSingleFieldConstraint(SingleFieldConstraint fieldConst,
                                              List<FieldConstraint> sortedConst) {
         if ( fieldConst.getParent() instanceof SingleFieldConstraint ) {
@@ -627,7 +626,8 @@ public class FactPatternWidget extends RuleModellerWidget {
                 popupCreator.showPatternPopup( (Widget) event.getSource(),
                                                factTypeShortName,
                                                null,
-                                               hasConstraints );
+                                               hasConstraints,
+                                               false );
             }
         };
 
@@ -791,13 +791,14 @@ public class FactPatternWidget extends RuleModellerWidget {
             bindingLabel.append( con.getFieldBinding() );
             bindingLabel.append( "]</b>&nbsp;" );
         }
-        
+
         //If the field is a direct descendant of the Pattern only show the leaf-name
         //otherwise show the qualified field name which includes the preceding field type 
         String fieldName = con.getFieldName();
         if ( fieldName.contains( "." ) ) {
-            String factType = fieldName.substring( 0, fieldName.indexOf(".") );
-            if(factType.equals( this.pattern.getFactType() )) {
+            String factType = fieldName.substring( 0,
+                                                   fieldName.indexOf( "." ) );
+            if ( factType.equals( this.pattern.getFactType() ) ) {
                 fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
             }
         }

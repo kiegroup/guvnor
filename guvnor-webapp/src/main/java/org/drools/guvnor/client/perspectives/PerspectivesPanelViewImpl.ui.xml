@@ -34,7 +34,7 @@
               </small>
             </div>
             <div class='{guvnorResources.headerCss.perspectivesClass}'>
-              <gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1" visible="false"/>
+              <gwt:ListBox ui:field="perspectives" multipleSelect="false" visibleItemCount="1"/>
             </div>
           </div>
           <div style="clear:both;"></div>

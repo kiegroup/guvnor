@@ -74,7 +74,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-import org.drools.ide.common.server.util.RepositoryUpgradeHelper;
+import org.drools.ide.common.server.util.GuidedDecisionTableModelUpgradeHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -93,6 +93,8 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class ServiceImplementationTest extends GuvnorTestBase {
 
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+ 
     @Inject
     private RepositoryStartupService repositoryStartupService;
 
@@ -1169,7 +1171,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         ac.setType(SuggestionCompletionEngine.TYPE_STRING);
         dt.getActionCols().add(ac);
 
-        dt.setData(RepositoryUpgradeHelper.makeDataLists(new String[][]{new String[]{"1", "descrip", "pink", "cheese"}}));
+        dt.setData(upgrader.makeDataLists(new String[][]{new String[]{"1", "descrip", "pink", "cheese"}}));
 
         String uid = serviceImplementation.createNewRule( "decTable",
                                          "",

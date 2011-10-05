@@ -29,6 +29,8 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
 import com.google.gwt.core.client.GWT;
@@ -42,41 +44,42 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ActionSetColumn extends FormStylePopup {
 
-    private Constants                  constants    = GWT.create( Constants.class );
-    private static Images              images       = (Images) GWT.create( Images.class );
+    private static Constants           constants                        = GWT.create( Constants.class );
+    private static Images              images                           = (Images) GWT.create( Images.class );
+
+    private SmallLabel                 bindingLabel                     = new SmallLabel();
+    private TextBox                    fieldLabel                       = getFieldLabel();
+    private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
+    private int                        limitedEntryValueAttributeIndex  = 0;
 
     private ActionSetFieldCol52        editingCol;
-    private SmallLabel                 bindingLabel = new SmallLabel();
-    private TextBox                    fieldLabel   = getFieldLabel();
     private GuidedDecisionTable52      model;
     private SuggestionCompletionEngine sce;
+    private DTCellValueWidgetFactory   factory;
 
     public ActionSetColumn(SuggestionCompletionEngine sce,
                            final GuidedDecisionTable52 model,
                            final GenericColumnCommand refreshGrid,
                            final ActionSetFieldCol52 col,
                            final boolean isNew) {
-        this.editingCol = new ActionSetFieldCol52();
+        this.editingCol = cloneActionSetColumn( col );
         this.model = model;
         this.sce = sce;
 
-        editingCol.setBoundName( col.getBoundName() );
-        editingCol.setFactField( col.getFactField() );
-        editingCol.setHeader( col.getHeader() );
-        editingCol.setType( col.getType() );
-        editingCol.setValueList( col.getValueList() );
-        editingCol.setUpdate( col.isUpdate() );
-        editingCol.setDefaultValue( col.getDefaultValue() );
-        editingCol.setHideColumn( col.isHideColumn() );
+        //Set-up factory for common widgets
+        factory = new DTCellValueWidgetFactory( model,
+                                                sce );
 
-        super.setModal( false );
         setTitle( constants.ColumnConfigurationSetAFieldOnAFact() );
+        setModal( false );
 
+        //Fact on which field will be set
         HorizontalPanel pattern = new HorizontalPanel();
         pattern.add( bindingLabel );
         doBindingLabel();
@@ -92,6 +95,7 @@ public class ActionSetColumn extends FormStylePopup {
         addAttribute( constants.Fact(),
                       pattern );
 
+        //Fact Field being set
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
         Image editField = new ImageButton( images.edit(),
@@ -106,21 +110,7 @@ public class ActionSetColumn extends FormStylePopup {
                       field );
         doFieldLabel();
 
-        final TextBox valueList = new TextBox();
-        valueList.setText( editingCol.getValueList() );
-        valueList.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setValueList( valueList.getText() );
-            }
-        } );
-        HorizontalPanel vl = new HorizontalPanel();
-        vl.add( valueList );
-        vl.add( new InfoPopup( constants.ValueList(),
-                               constants
-                                       .ValueListsExplanation() ) );
-        addAttribute( constants.optionalValueList(),
-                      vl );
-
+        //Column header
         final TextBox header = new TextBox();
         header.setText( col.getHeader() );
         header.addChangeHandler( new ChangeHandler() {
@@ -131,11 +121,41 @@ public class ActionSetColumn extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
+        //Optional value list
+        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            final TextBox valueList = new TextBox();
+            valueList.setText( editingCol.getValueList() );
+            valueList.addChangeHandler( new ChangeHandler() {
+                public void onChange(ChangeEvent event) {
+                    editingCol.setValueList( valueList.getText() );
+                }
+            } );
+            HorizontalPanel vl = new HorizontalPanel();
+            vl.add( valueList );
+            vl.add( new InfoPopup( constants.ValueList(),
+                                   constants.ValueListsExplanation() ) );
+            addAttribute( constants.optionalValueList(),
+                          vl );
+        }
+
+        //Default Value
+        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
+            addAttribute( constants.DefaultValue(),
+                          DTCellValueWidgetFactory.getDefaultEditor( editingCol ) );
+        }
+
+        //Limited entry value widget
+        limitedEntryValueAttributeIndex = addAttribute( constants.LimitedEntryValue(),
+                                                        limitedEntryValueWidgetContainer );
+        makeLimitedValueWidget();
+
+        //Update Engine with changes
         addAttribute( constants.UpdateEngineWithChanges(),
                       doUpdate() );
 
-        addAttribute( constants.DefaultValue(),
-                      GuidedDTColumnConfig.getDefaultEditor( editingCol ) );
+        //Hide column tick-box
+        addAttribute( constants.HideThisColumn(),
+                      DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
 
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
@@ -173,10 +193,49 @@ public class ActionSetColumn extends FormStylePopup {
 
     }
 
+    private ActionSetFieldCol52 cloneActionSetColumn(ActionSetFieldCol52 col) {
+        ActionSetFieldCol52 clone = null;
+        if ( col instanceof LimitedEntryActionSetFieldCol52 ) {
+            clone = new LimitedEntryActionSetFieldCol52();
+            ((LimitedEntryActionSetFieldCol52) clone).setValue( ((LimitedEntryActionSetFieldCol52) col).getValue() );
+        } else {
+            clone = new ActionSetFieldCol52();
+        }
+        clone.setBoundName( col.getBoundName() );
+        clone.setFactField( col.getFactField() );
+        clone.setHeader( col.getHeader() );
+        clone.setType( col.getType() );
+        clone.setValueList( col.getValueList() );
+        clone.setUpdate( col.isUpdate() );
+        clone.setDefaultValue( col.getDefaultValue() );
+        clone.setHideColumn( col.isHideColumn() );
+        return clone;
+    }
+
+    private void makeLimitedValueWidget() {
+        if ( !(editingCol instanceof LimitedEntryActionSetFieldCol52) ) {
+            setAttributeVisibility( limitedEntryValueAttributeIndex,
+                                    false );
+            return;
+        }
+        if ( nil( editingCol.getFactField() ) ) {
+            setAttributeVisibility( limitedEntryValueAttributeIndex,
+                                    false );
+            return;
+        }
+        LimitedEntryActionSetFieldCol52 lea = (LimitedEntryActionSetFieldCol52) editingCol;
+        setAttributeVisibility( limitedEntryValueAttributeIndex,
+                                true );
+        if ( lea.getValue() == null ) {
+            lea.setValue( factory.makeNewValue( editingCol ) );
+        }
+        limitedEntryValueWidgetContainer.setWidget( factory.getWidget( editingCol,
+                                                                       lea.getValue() ) );
+    }
+
     private void doBindingLabel() {
         if ( this.editingCol.getBoundName() != null ) {
-            this.bindingLabel.setText( ""
-                                       + this.editingCol.getBoundName() );
+            this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
         } else {
             this.bindingLabel.setText( constants
                     .pleaseChooseABoundFactForThisColumn() );
@@ -262,6 +321,10 @@ public class ActionSetColumn extends FormStylePopup {
         return box;
     }
 
+    private boolean nil(String s) {
+        return s == null || s.equals( "" );
+    }
+
     private void showChangeFact(ClickEvent w) {
         final FormStylePopup pop = new FormStylePopup();
 
@@ -277,6 +340,7 @@ public class ActionSetColumn extends FormStylePopup {
                 String val = pats.getValue( pats.getSelectedIndex() );
                 editingCol.setBoundName( val );
                 editingCol.setFactField( null );
+                makeLimitedValueWidget();
                 doBindingLabel();
                 doFieldLabel();
                 pop.hide();
@@ -307,6 +371,7 @@ public class ActionSetColumn extends FormStylePopup {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
                 editingCol.setType( sce.getFieldType( factType,
                                                       editingCol.getFactField() ) );
+                makeLimitedValueWidget();
                 doFieldLabel();
                 pop.hide();
             }

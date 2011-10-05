@@ -18,7 +18,9 @@ package org.drools.ide.common.client.modeldriven.dt52;
 /**
  * A column that sets a field on a new fact.
  */
-public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52 {
+public class LimitedEntryActionInsertFactCol52 extends ActionInsertFactCol52
+    implements
+    LimitedEntryCol {
 
     private static final long serialVersionUID = 510l;
 

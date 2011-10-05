@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -37,7 +38,7 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
 
     private ColumnExpansionPageView view;
 
-    private List<ConditionCol52>    columnsToExpand = new ArrayList<ConditionCol52>();
+    private List<ConditionCol52>    columnsToExpand;
 
     public ColumnExpansionPage(NewAssetWizardContext context,
                                GuidedDecisionTable52 dtable,
@@ -69,18 +70,29 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
 
     public void prepareView() {
         //Setup the available columns, that could have changed each time this page is visited
+        List<ConditionCol52> availableColumns = findAvailableColumnsToExpand();
+        view.setAvailableColumns( availableColumns );
+        columnsToExpand = availableColumns;
+    }
+
+    private List<ConditionCol52> findAvailableColumnsToExpand() {
         List<ConditionCol52> availableColumns = new ArrayList<ConditionCol52>();
         for ( Pattern52 p : dtable.getConditionPatterns() ) {
             for ( ConditionCol52 c : p.getConditions() ) {
-                String[] values = dtable.getValueList( c,
-                                                       sce );
-                if ( values != null && values.length > 1 ) {
-                    availableColumns.add( c );
+                switch ( dtable.getTableFormat() ) {
+                    case EXTENDED_ENTRY :
+                        String[] values = dtable.getValueList( c,
+                                                               sce );
+                        if ( values != null && values.length > 1 ) {
+                            availableColumns.add( c );
+                        }
+                        break;
+                    case LIMITED_ENTRY :
+                        availableColumns.add( c );
                 }
             }
         }
-
-        view.setAvailableColumns( availableColumns );
+        return availableColumns;
     }
 
     public boolean isComplete() {
@@ -97,6 +109,12 @@ public class ColumnExpansionPage extends AbstractGuidedDecisionTableWizardPage
     }
 
     public List<ConditionCol52> getColumnsToExpand() {
+        //If the page has not been viewed the default setting is to use all columns
+        if ( this.columnsToExpand == null ) {
+            return findAvailableColumnsToExpand();
+        }
+
+        //Otherwise return those chosen in the UI
         return this.columnsToExpand;
     }
 

@@ -21,6 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactFieldsDefinedEvent;
@@ -199,8 +201,8 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         String[] fieldNames = sce.getFieldCompletions( type );
         List<AvailableField> availableFields = new ArrayList<AvailableField>();
         for ( String fieldName : fieldNames ) {
-            String fieldType = sce.getFieldClassName( type,
-                                                      fieldName );
+            String fieldType = sce.getFieldType( type,
+                                                 fieldName );
             String fieldDisplayType = modelNameHelper.getUserFriendlyTypeName( fieldType );
             AvailableField field = new AvailableField( fieldName,
                                                        fieldType,

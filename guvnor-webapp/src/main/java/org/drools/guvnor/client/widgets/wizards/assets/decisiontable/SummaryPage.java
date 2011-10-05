@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;

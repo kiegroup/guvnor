@@ -44,12 +44,18 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
+
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
 
     @Test
     public void test2Rules() throws Exception {
@@ -124,7 +130,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
         } ) );
@@ -155,7 +161,7 @@ public class GuidedDTDRLPersistenceTest {
         RuleAttribute[] orig = rm.attributes;
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
 
         assertSame( orig,
@@ -171,7 +177,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
 
         assertEquals( 1,
@@ -184,7 +190,7 @@ public class GuidedDTDRLPersistenceTest {
         row = new String[]{"1", "desc", "a", "b"};
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
         assertEquals( 2,
                       rm.attributes.length );
@@ -290,7 +296,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
         } ) );
@@ -375,7 +381,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", ""}
         } ) );
@@ -447,8 +453,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
         assertEquals( 2,
                       rm.lhs.length );
@@ -562,8 +568,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
@@ -643,11 +649,11 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[2][];
         String[][] data = new String[2][];
         row[0] = new String[]{"1", "desc1", "true", "false"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         rowDTModel1.get( 2 ).setOtherwise( true );
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[1] = row[1];
@@ -688,7 +694,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -709,7 +715,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -735,15 +741,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "01-Jan-1980", "20-Jun-1985"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "01-Feb-1981", "21-Jun-1986"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -784,7 +790,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -805,7 +811,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -826,7 +832,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -852,15 +858,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "1", "1"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "2", "2"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -901,7 +907,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -922,7 +928,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -943,7 +949,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -969,15 +975,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "Michael1", "Michael1"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "Michael2", "Michael2"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -1018,7 +1024,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1039,7 +1045,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1060,7 +1066,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1095,7 +1101,7 @@ public class GuidedDTDRLPersistenceTest {
         // RuleAttribute[] orig = rm.attributes;
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         // p.doAttribs(allColumns, metadataCols, row, rm);
 
@@ -1112,7 +1118,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         // p.doAttribs(allColumns, metadataCols, row, rm);
 
@@ -1126,7 +1132,7 @@ public class GuidedDTDRLPersistenceTest {
         row = new String[]{"1", "desc", "bar1", "bar2"};
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         assertEquals( 2,
                       rm.metadataList.length );
@@ -1176,7 +1182,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1184,7 +1190,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
         assertFalse( drl.indexOf( "update( x );" ) > -1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
             } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
@@ -1222,8 +1228,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
@@ -1280,7 +1286,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doActions( allColumns,
                      cols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
         assertEquals( 3,
                       rm.rhs.length );
@@ -1358,14 +1364,14 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
         assertTrue( drl.indexOf( "Context( )" ) > -1 );
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
             } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
@@ -1396,7 +1402,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "edam"},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1404,9 +1410,9 @@ public class GuidedDTDRLPersistenceTest {
 
         //Without provided value #1
         data = new String[][]{
-               new String[]{"1", "desc", null},
+                new String[]{"1", "desc", null},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1414,14 +1420,292 @@ public class GuidedDTDRLPersistenceTest {
 
         //Without provided value #2
         data = new String[][]{
-               new String[]{"1", "desc", ""},
+                new String[]{"1", "desc", ""},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
         assertTrue( drl.indexOf( "$c : CheeseLover( favouriteCheese == \"cheddar\" )" ) == -1 );
 
     }
-    
+
+    @Test
+    public void testLimitedEntryAttributes() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        AttributeCol52 attr = new AttributeCol52();
+        attr.setAttribute( "salience" );
+        dt.getAttributeCols().add( attr );
+
+        dt.setData( upgrader.makeDataLists( new String[][]{
+                                                           new String[]{"1", "desc", "100"},
+                                                           new String[]{"2", "desc", "200"}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        assertTrue( drl.indexOf( "salience 100" ) > -1 );
+        assertTrue( drl.indexOf( "salience 200" ) > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryMetadata() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        MetadataCol52 md = new MetadataCol52();
+        md.setMetadata( "metadata" );
+        dt.getMetadataCols().add( md );
+
+        dt.setData( upgrader.makeDataLists( new String[][]{
+                                                           new String[]{"1", "desc", "md1"},
+                                                           new String[]{"2", "desc", "md2"}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        assertTrue( drl.indexOf( "@metadata(md1)" ) > -1 );
+        assertTrue( drl.indexOf( "@metadata(md2)" ) > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsNoConstraints() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        // This is a hack consistent with how the Expanded Form decision table 
+        // works. I wouldn't be too surprised if this changes at some time, but 
+        // GuidedDTDRLPersistence.marshal does not support empty patterns at
+        // present.
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setValue( new DTCellValue52( "y" ) );
+        p1.getConditions().add( cc1 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsConstraints1() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "Pupa" ) );
+        p1.getConditions().add( cc1 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == \"Pupa\" )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( name == \"Pupa\" )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryConditionsConstraints2() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "Pupa" ) );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc2.setFactField( "name" );
+        cc2.setOperator( "==" );
+        cc2.setValue( new DTCellValue52( "Smurfette" ) );
+        p1.getConditions().add( cc2 );
+
+        LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc3.setFactField( "colour" );
+        cc3.setOperator( "==" );
+        cc3.setValue( new DTCellValue52( "Blue" ) );
+        p1.getConditions().add( cc3 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, false, true},
+                                                           new Object[]{2l, "desc", false, true, true},
+                                                           new Object[]{3l, "desc", false, false, true}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == \"Pupa\" , colour == \"Blue\" )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( name == \"Smurfette\" , colour == \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( colour == \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryActionSet() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        cc1.setFactField( "isSmurf" );
+        cc1.setOperator( "==" );
+        cc1.setValue( new DTCellValue52( "true" ) );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryActionSetFieldCol52 asf1 = new LimitedEntryActionSetFieldCol52();
+        asf1.setBoundName( "p1" );
+        asf1.setFactField( "colour" );
+        asf1.setValue( new DTCellValue52( "Blue" ) );
+
+        dt.getActionCols().add( asf1 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true},
+                                                           new Object[]{2l, "desc", true, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( isSmurf == true )" );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "p1.setColour( \"Blue\" )",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( isSmurf == true )",
+                             index + 1 );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "p1.setColour( \"Blue\" )",
+                             index + 1 );
+        assertFalse( index > -1 );
+
+    }
+
+    @Test
+    public void testLimitedEntryActionInsert() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryActionInsertFactCol52 asf1 = new LimitedEntryActionInsertFactCol52();
+        asf1.setFactType( "Smurf" );
+        asf1.setBoundName( "s1" );
+        asf1.setFactField( "colour" );
+        asf1.setValue( new DTCellValue52( "Blue" ) );
+
+        dt.getActionCols().add( asf1 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf s1 = new Smurf();" );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "s1.setColour( \"Blue\" );",
+                             index + 1 );
+        assertTrue( index > -1 );
+        index = drl.indexOf( "insert(s1 );",
+                             index + 1 );
+        assertTrue( index > -1 );
+
+        int indexRule2 = index;
+        indexRule2 = drl.indexOf( "Smurf s1 = new Smurf();",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+        indexRule2 = drl.indexOf( "s1.setColour( \"Blue\" );",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+        indexRule2 = drl.indexOf( "insert(s1 );",
+                                  index + 1 );
+        assertFalse( indexRule2 > -1 );
+    }
+
 }

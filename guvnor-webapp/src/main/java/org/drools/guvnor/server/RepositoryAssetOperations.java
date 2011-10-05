@@ -516,8 +516,6 @@ public class RepositoryAssetOperations {
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
-        long totalRowsCount = iterator.getSize();
-
         List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
                 .withPageRequest(request)
                 .withIdentity(identity)
@@ -528,7 +526,8 @@ public class RepositoryAssetOperations {
                 .withStartRowIndex(request.getStartRowIndex())
                 .withPageRowList(rowList)
                 .withLastPage(!iterator.hasNext())
-                .buildWithTotalRowCount(totalRowsCount);
+                .buildWithTotalRowCount(-1);//its impossible to know the exact count selected until we'v reached
+                                            //the end of iterator
 
         long methodDuration = System.currentTimeMillis() - start;
         log.debug("Queried repository (Quick Find) for (" + search + ") in " + methodDuration + " ms.");

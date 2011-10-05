@@ -14,7 +14,7 @@
 
   <xi:include href="Statuses.xml" xpointer="element(/1)" />
 
-  <xi:include href="Archive.xml" xpointer="element(/1)" />
+  <xi:include href="ArchivedItems.xml" xpointer="element(/1)" />
 
   <xi:include href="EventLog.xml" xpointer="element(/1)" />
 
@@ -22,7 +22,7 @@
 
   <xi:include href="RepositoryImportExport.xml" xpointer="element(/1)" />
 
-  <xi:include href="RuleVerification.xml" xpointer="element(/1)" />
+  <!--xi:include href="RuleVerification.xml" xpointer="element(/1)" /-->
 
   <xi:include href="RepositoryConfiguration.xml" xpointer="element(/1)" />
 </chapter>

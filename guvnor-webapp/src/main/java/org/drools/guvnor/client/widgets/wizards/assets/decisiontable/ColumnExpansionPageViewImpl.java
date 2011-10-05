@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells.ConditionCell;
@@ -169,7 +170,6 @@ public class ColumnExpansionPageViewImpl extends Composite
     public void setAvailableColumns(List<ConditionCol52> columns) {
         availableColumns = columns;
         availableColumns.removeAll( chosenColumns );
-        presenter.setColumnsToExpand( getColumnsToExpand() );
         availableColumnsWidget.setRowCount( columns.size(),
                                             true );
         availableColumnsWidget.setRowData( columns );

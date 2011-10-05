@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable.cells;
 
+import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.resources.WizardResources;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.Validator;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 

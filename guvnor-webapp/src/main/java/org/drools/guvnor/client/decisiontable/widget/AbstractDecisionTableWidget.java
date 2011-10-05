@@ -758,6 +758,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
             // Delete old column and redraw
             widget.deleteColumn( origCol );
+            origColIndex = Math.min( widget.getGridWidget().getColumns().size() - 1,
+                                     origColIndex );
             editColIndex = Math.min( widget.getGridWidget().getColumns().size() - 1,
                                      editColIndex );
             if ( editColIndex > origColIndex ) {

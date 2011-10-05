@@ -60,7 +60,7 @@ public class QueryMetadataPageRowBuilder
                                                   String roleType) {
         List<CategoryItem> tempCateList = item.getCategories();
         for (CategoryItem categoryItem : tempCateList) {
-            if (filter.accept(categoryItem.getName(),
+            if (filter.accept(categoryItem.getFullPath(),
                     roleType)) {
                 return true;
             }

@@ -134,7 +134,7 @@ public class RepositoryCategoryOperationsTest {
                       true );
 
     }
-
+    
     @Test
     public void testRemoveCategory() throws SerializationException {
         initSession();
@@ -151,4 +151,5 @@ public class RepositoryCategoryOperationsTest {
         Session session = mock( Session.class );
         when( this.rulesRepository.getSession() ).thenReturn( session );
     }
+
 }

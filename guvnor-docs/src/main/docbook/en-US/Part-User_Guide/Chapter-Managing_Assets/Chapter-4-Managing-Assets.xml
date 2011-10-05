@@ -10,13 +10,8 @@
          xmlns:db="http://docbook.org/ns/docbook">
   <title>Managing Assets</title>
 
-  <xi:include href="KnowledgeBases.xml" xpointer="element(/1)" />
-
-  <xi:include href="Browse.xml" xpointer="element(/1)" />
-
   <xi:include href="Find.xml" xpointer="element(/1)" />
 
-  <xi:include href="Inbox.xml" xpointer="element(/1)" />
-
   <xi:include href="RSS-Feed.xml" xpointer="element(/1)" />
+
 </chapter>

@@ -35,10 +35,12 @@ import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+@SuppressWarnings("deprecation")
 public class GuidedDTXMLPersistence {
 
-    private XStream                       xt;
-    private static GuidedDTXMLPersistence INSTANCE = new GuidedDTXMLPersistence();
+    private XStream                               xt;
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    private static GuidedDTXMLPersistence         INSTANCE = new GuidedDTXMLPersistence();
 
     private GuidedDTXMLPersistence() {
         xt = new XStream( new DomDriver() );
@@ -100,7 +102,7 @@ public class GuidedDTXMLPersistence {
         GuidedDecisionTable52 newDTModel;
         if ( model instanceof GuidedDecisionTable ) {
             GuidedDecisionTable legacyDTModel = (GuidedDecisionTable) model;
-            newDTModel = RepositoryUpgradeHelper.convertGuidedDTModel( legacyDTModel );
+            newDTModel = upgrader.upgrade( legacyDTModel );
         } else {
             newDTModel = (GuidedDecisionTable52) model;
         }

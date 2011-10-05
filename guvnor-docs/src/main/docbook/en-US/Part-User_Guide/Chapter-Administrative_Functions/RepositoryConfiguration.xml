@@ -5,10 +5,10 @@
          xmlns:xs="http://www.w3.org/2001/XMLSchema"
          xmlns:xlink="http://www.w3.org/1999/xlink"
          xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:ns="http://docbook.org/ns/docbook">
+         xmlns:ns="http://docbook.org/ns/docbook" xml:base="../..">
 
   <title>Repository Configuration</title>
 
-  <para>TODO</para>
+  <para>Check Chapter "Configuring Guvnor to use an external RDBMS" for more information.</para>
 
 </section>

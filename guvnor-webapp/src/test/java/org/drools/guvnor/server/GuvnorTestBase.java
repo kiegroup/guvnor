@@ -41,6 +41,8 @@ import org.picketlink.idm.impl.api.PasswordCredential;
 @RunWith(Arquillian.class)
 public abstract class GuvnorTestBase {
 
+    public static final String ADMIN_USERNAME = "admin";
+
     @Deployment
     public static WebArchive createDeployment() {
         // TODO FIXME do not hardcode the version number
@@ -126,14 +128,14 @@ public abstract class GuvnorTestBase {
     public void autoLoginAsAdmin() {
         // TODO this method seems to be called after the request and the rulesRepository therefor is created...
         if (autoLoginAsAdmin) {
-            loginAs("admin");
+            loginAs(ADMIN_USERNAME);
         }
     }
 
     @After
     public void autoLogoutAsAdmin() {
         if (autoLoginAsAdmin) {
-            logoutAs("admin");
+            logoutAs(ADMIN_USERNAME);
         }
     }
 
