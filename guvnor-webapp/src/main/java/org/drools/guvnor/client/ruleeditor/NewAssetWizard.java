@@ -35,6 +35,7 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -45,7 +46,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
@@ -62,27 +62,27 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class NewAssetWizard extends FormStylePopup {
 
-    private static Constants                 constants               = GWT.create( Constants.class );
-    private static Images                    images                  = GWT.create( Images.class );
+    private static Constants                 constants                  = GWT.create( Constants.class );
+    private static Images                    images                     = GWT.create( Images.class );
 
-    private TextBox                          name                    = new TextBox();
-    private TextArea                         description             = new TextArea();
-    private CheckBox                         chkUseWizard            = null;
+    private TextBox                          name                       = new TextBox();
+    private TextArea                         description                = new TextArea();
+    private GuidedDecisionTableOptions       guidedDecisionTableOptions = new GuidedDecisionTableOptions();
     private String                           initialCategory;
 
-    private ListBox                          formatChooser           = getFormatChooser();
-    private RadioButton                      createInPackageButton   = new RadioButton( "creatinpackagegroup",
-                                                                                        constants.CreateInPackage() );
-    private RadioButton                      createInGlobalButton    = new RadioButton( "creatinpackagegroup",
-                                                                                        constants.CreateInGlobalArea() );
+    private ListBox                          formatChooser              = getFormatChooser();
+    private RadioButton                      createInPackageButton      = new RadioButton( "creatinpackagegroup",
+                                                                                           constants.CreateInPackage() );
+    private RadioButton                      createInGlobalButton       = new RadioButton( "creatinpackagegroup",
+                                                                                           constants.CreateInGlobalArea() );
 
-    private RulePackageSelector              packageSelector         = new RulePackageSelector();
-    private RulePackageSelector              importedPackageSelector = new RulePackageSelector();
+    private RulePackageSelector              packageSelector            = new RulePackageSelector();
+    private RulePackageSelector              importedPackageSelector    = new RulePackageSelector();
     private GlobalAreaAssetSelector          globalAreaAssetSelector;
     private String                           format;
 
-    private final NewAssetFormStyleLayout    newAssetLayout          = new NewAssetFormStyleLayout();
-    private final ImportAssetFormStyleLayout importAssetLayout       = new ImportAssetFormStyleLayout();
+    private final NewAssetFormStyleLayout    newAssetLayout             = new NewAssetFormStyleLayout();
+    private final ImportAssetFormStyleLayout importAssetLayout          = new ImportAssetFormStyleLayout();
     private final ClientFactory              clientFactory;
     private final EventBus                   eventBus;
 
@@ -137,12 +137,13 @@ public class NewAssetWizard extends FormStylePopup {
 
     }
 
-    private static String getTitle(String format, ClientFactory cf) {
+    private static String getTitle(String format,
+                                   ClientFactory cf) {
         //Just a quick temporary fix. 
-        if(format == null) {
-            return  constants.NewRule();
+        if ( format == null ) {
+            return constants.NewRule();
         }
-        String title = cf.getAssetEditorFactory().getAssetEditorTitle(format);
+        String title = cf.getAssetEditorFactory().getAssetEditorTitle( format );
         return constants.New() + " " + title;
     }
 
@@ -221,9 +222,8 @@ public class NewAssetWizard extends FormStylePopup {
                                          this.formatChooser );
 
             //Add additional widget (when creating a new rule) to allow for use of a Wizard
-            chkUseWizard = new CheckBox();
-            final int useWizardRowIndex = newAssetLayout.addAttribute( constants.UseWizardToBuildAsset(),
-                                                                       chkUseWizard );
+            final int useWizardRowIndex = newAssetLayout.addAttribute( constants.NewAssetWizardGuidedDecisionTableOptions(),
+                                                                       guidedDecisionTableOptions );
             newAssetLayout.setAttributeVisibility( useWizardRowIndex,
                                                    false );
 
@@ -238,10 +238,7 @@ public class NewAssetWizard extends FormStylePopup {
                         isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
                     }
                     newAssetLayout.setAttributeVisibility( useWizardRowIndex,
-                                                                       isVisible );
-                    if ( chkUseWizard != null ) {
-                        chkUseWizard.setValue( false );
-                    }
+                                                           isVisible );
                 }
 
             } );
@@ -352,9 +349,10 @@ public class NewAssetWizard extends FormStylePopup {
 
         //If using a Wizard we don't attempt to create and save the asset until the Wizard is completed. Using commands make this simpler
         Command cmd = null;
-        if ( usingWizard() ) {
+        if (guidedDecisionTableOptions.isUsingWizard()) {
             cmd = makeWizardSaveCommand( assetName,
                                          packageName,
+                                         guidedDecisionTableOptions.getTableFormat(),
                                          packageSelector.getSelectedPackageUUID(),
                                          description.getText(),
                                          initialCategory,
@@ -374,6 +372,7 @@ public class NewAssetWizard extends FormStylePopup {
     //Construct a chain of commands to handle saving the new asset, depending on whether the asset is constructed with a Wizard or not
     private Command makeWizardSaveCommand(final String assetName,
                                           final String packageName,
+                                          final TableFormat tableFormat,
                                           final String packageUUID,
                                           final String description,
                                           final String initialCategory,
@@ -385,6 +384,7 @@ public class NewAssetWizard extends FormStylePopup {
                 NewAssetWizardContext config = new NewAssetWizardContext( assetName,
                                                                           packageName,
                                                                           packageUUID,
+                                                                          tableFormat,
                                                                           description,
                                                                           initialCategory,
                                                                           format );
@@ -445,10 +445,6 @@ public class NewAssetWizard extends FormStylePopup {
             }
         };
         return cmdSave;
-    }
-
-    private boolean usingWizard() {
-        return chkUseWizard == null ? false : chkUseWizard.getValue();
     }
 
     /**

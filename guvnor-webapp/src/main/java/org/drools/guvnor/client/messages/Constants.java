@@ -2531,4 +2531,7 @@ public interface Constants
     String LimitedEntryValue();
 
     String CouldNotFindTheTypeForVariable0(String variableName);
+    
+    String NewAssetWizardGuidedDecisionTableOptions();
+    
 }

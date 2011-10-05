@@ -90,6 +90,8 @@ public class NewGuidedDecisionTableWizard
                                                    eventBus,
                                                    validator ) );
         pages.add( columnExpansionPage );
+        
+        dtable.setTableFormat( context.getTableFormat() );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
                                                                  new Command() {
