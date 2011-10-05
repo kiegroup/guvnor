@@ -23,6 +23,7 @@ public interface PerspectivesPanelView extends IsWidget {
 
     interface Presenter {        
         void onChangePerspective(String perspectiveType);
+        void onLogout();
     }
 
     void setPresenter(Presenter presenter);

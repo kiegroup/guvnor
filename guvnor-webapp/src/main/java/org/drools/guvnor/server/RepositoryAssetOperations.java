@@ -35,9 +35,12 @@ import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.contexts.Contexts;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
 import java.text.DateFormat;
@@ -46,15 +49,30 @@ import java.util.*;
 /**
  * Handles operations for Assets
  */
-@Name("org.drools.guvnor.server.RepositoryAssetOperations")
-@AutoCreate
+@ApplicationScoped
 public class RepositoryAssetOperations {
-
-    private RulesRepository repository;
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetOperations.class);
 
-    private final String[] registeredFormats;
+    @Inject
+    private RulesRepository rulesRepository;
+
+    @Inject
+    private Backchannel backchannel;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private Credentials credentials;
+
+    @Inject
+    private MailboxService mailboxService;
+
+    @Inject
+    private AssetLockManager assetLockManager;
+
+    private String[]                   registeredFormats;
 
     public RepositoryAssetOperations() {
         //Load recognised formats from configuration file
@@ -67,17 +85,15 @@ public class RepositoryAssetOperations {
         }
     }
 
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-    }
-
-    public RulesRepository getRulesRepository() {
-        return repository;
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
+        this.rulesRepository = repository;
     }
 
     public String renameAsset(String uuid,
                               String newName) {
-        return getRulesRepository().renameAsset(uuid,
+        return rulesRepository.renameAsset(uuid,
                 newName);
     }
 
@@ -85,7 +101,7 @@ public class RepositoryAssetOperations {
         try {
             ContentHandler handler = ContentManager
                     .getHandler(asset.getFormat());
-            AssetItem item = getRulesRepository().loadAssetByUUID(asset.uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(asset.uuid);
 
             handler.storeAssetContent(asset,
                     item);
@@ -113,7 +129,7 @@ public class RepositoryAssetOperations {
     }
 
     public String checkinVersion(RuleAsset asset) throws SerializationException {
-        AssetItem repoAsset = getRulesRepository().loadAssetByUUID(asset.getUuid());
+        AssetItem repoAsset = rulesRepository.loadAssetByUUID(asset.getUuid());
         if (isAssetUpdatedInRepository(asset,
                 repoAsset)) {
             return "ERR: Unable to save this asset, as it has been recently updated by [" + repoAsset.getLastContributor() + "]";
@@ -160,12 +176,12 @@ public class RepositoryAssetOperations {
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
-        AssetItem old = getRulesRepository().loadAssetByUUID(versionUUID);
-        AssetItem head = getRulesRepository().loadAssetByUUID(assetUUID);
+        AssetItem old = rulesRepository.loadAssetByUUID(versionUUID);
+        AssetItem head = rulesRepository.loadAssetByUUID(assetUUID);
 
         log.info("USER:" + getCurrentUserName() + " RESTORE of asset: [" + head.getName() + "] UUID: [" + head.getUUID() + "] with historical version number: [" + old.getVersionNumber());
 
-        getRulesRepository().restoreHistoricalAsset(old,
+        rulesRepository.restoreHistoricalAsset(old,
                 head,
                 comment);
     }
@@ -236,9 +252,9 @@ public class RepositoryAssetOperations {
     protected TableDataResult loadArchivedAssets(int skip,
                                                  int numRows) {
         List<TableDataRow> result = new ArrayList<TableDataRow>();
-        RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter filter = new AssetItemFilter(identity);
 
-        AssetItemIterator it = getRulesRepository().findArchivedAssets();
+        AssetItemIterator it = rulesRepository.findArchivedAssets();
         it.skip(skip);
         int count = 0;
         while (it.hasNext()) {
@@ -285,7 +301,7 @@ public class RepositoryAssetOperations {
     protected PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) {
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().findArchivedAssets();
+        AssetItemIterator iterator = rulesRepository.findArchivedAssets();
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
         // Populate response
@@ -293,6 +309,7 @@ public class RepositoryAssetOperations {
 
         List<AdminArchivedPageRow> rowList = new ArchivedAssetPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -323,7 +340,7 @@ public class RepositoryAssetOperations {
                                          int numRows,
                                          String tableConfig) {
         long start = System.currentTimeMillis();
-        PackageItem pkg = getRulesRepository().loadPackageByUUID(packageUuid);
+        PackageItem pkg = rulesRepository.loadPackageByUUID(packageUuid);
         AssetItemIterator it;
         if (formats.length > 0) {
             it = pkg.listAssetsByFormat(formats);
@@ -363,11 +380,11 @@ public class RepositoryAssetOperations {
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
         long start = System.currentTimeMillis();
-        AssetItemIterator it = getRulesRepository().findAssetsByName(search,
+        AssetItemIterator it = rulesRepository.findAssetsByName(search,
                 searchArchived);
         log.debug("Search time: " + (System.currentTimeMillis() - start));
 
-        RepositoryFilter filter = new AssetItemFilter();
+        RepositoryFilter filter = new AssetItemFilter(identity);
 
         while (it.hasNext()) {
             AssetItem ai = it.next();
@@ -398,9 +415,9 @@ public class RepositoryAssetOperations {
                                             int numRows) throws SerializationException {
 
         List<AssetItem> resultList = new ArrayList<AssetItem>();
-        RepositoryFilter filter = new PackageFilter();
+        RepositoryFilter filter = new PackageFilter(identity);
 
-        AssetItemIterator assetItemIterator = getRulesRepository().queryFullText(text,
+        AssetItemIterator assetItemIterator = rulesRepository.queryFullText(text,
                 seekArchived);
         while (assetItemIterator.hasNext()) {
             AssetItem assetItem = assetItemIterator.next();
@@ -426,10 +443,10 @@ public class RepositoryAssetOperations {
         if (handler.isRuleAsset()) {
             BRMSPackageBuilder builder = new BRMSPackageBuilder();
             // now we load up the DSL files
-            PackageItem packageItem = getRulesRepository().loadPackage(asset.getMetaData().getPackageName());
+            PackageItem packageItem = rulesRepository.loadPackage(asset.getMetaData().getPackageName());
             builder.setDSLFiles(DSLLoader.loadDSLMappingFiles(packageItem));
             if (asset.getMetaData().isBinary()) {
-                AssetItem item = getRulesRepository().loadAssetByUUID(
+                AssetItem item = rulesRepository.loadAssetByUUID(
                         asset.getUuid());
 
                 handler.storeAssetContent(asset,
@@ -464,6 +481,7 @@ public class RepositoryAssetOperations {
 
         List<AssetPageRow> rowList = new AssetPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -492,7 +510,7 @@ public class RepositoryAssetOperations {
 
         // Do query
         long start = System.currentTimeMillis();
-        AssetItemIterator iterator = getRulesRepository().findAssetsByName(search,
+        AssetItemIterator iterator = rulesRepository.findAssetsByName(search,
                 request.isSearchArchived(),
                 request.isCaseSensitive());
         log.debug("Search time: " + (System.currentTimeMillis() - start));
@@ -500,6 +518,7 @@ public class RepositoryAssetOperations {
         // Populate response
         List<QueryPageRow> rowList = new QuickFindPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(iterator)
                 .build();
 
@@ -516,31 +535,22 @@ public class RepositoryAssetOperations {
     }
 
     protected void lockAsset(String uuid) {
-        AssetLockManager lockManager = AssetLockManager.instance();
-
-        String userName;
-        if (Contexts.isApplicationContextActive()) {
-            userName = Identity.instance().getCredentials().getUsername();
-        } else {
-            userName = "anonymous";
-        }
+        String userName = credentials.getUsername();
 
         log.info("Locking asset uuid=" + uuid + " for user [" + userName + "]");
 
-        lockManager.lockAsset(uuid,
+        assetLockManager.lockAsset(uuid,
                 userName);
     }
 
     protected void unLockAsset(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
         log.info("Unlocking asset [" + uuid + "]");
-        alm.unLockAsset(uuid);
+        assetLockManager.unLockAsset(uuid);
     }
 
     protected String getAssetLockerUserName(String uuid) {
-        AssetLockManager alm = AssetLockManager.instance();
 
-        String userName = alm.getAssetLockerUserName(uuid);
+        String userName = assetLockManager.getAssetLockerUserName(uuid);
 
         log.info("Asset locked by [" + userName + "]");
 
@@ -620,7 +630,7 @@ public class RepositoryAssetOperations {
     }
 
     protected void clearAllDiscussionsForAsset(final String assetId) {
-        RulesRepository repo = getRulesRepository();
+        RulesRepository repo = rulesRepository;
         AssetItem asset = repo.loadAssetByUUID(assetId);
         asset.updateStringProperty("",
                 "discussion");
@@ -632,21 +642,20 @@ public class RepositoryAssetOperations {
 
     protected List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                              String comment) {
-        RulesRepository repository = getRulesRepository();
-        AssetItem asset = repository.loadAssetByUUID(assetId);
+        AssetItem asset = rulesRepository.loadAssetByUUID(assetId);
         Discussion dp = new Discussion();
         List<DiscussionRecord> discussion = dp.fromString(asset.getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
-        discussion.add(new DiscussionRecord(repository.getSession().getUserID(),
+        discussion.add(new DiscussionRecord(rulesRepository.getSession().getUserID(),
                 StringEscapeUtils.escapeXml(comment)));
         asset.updateStringProperty(dp.toString(discussion),
                 Discussion.DISCUSSION_PROPERTY_KEY,
                 false);
-        repository.save();
+        rulesRepository.save();
 
         push("discussion",
                 assetId);
 
-        MailboxService.getInstance().recordItemUpdated(asset);
+        mailboxService.recordItemUpdated(asset);
 
         return discussion;
     }
@@ -664,7 +673,7 @@ public class RepositoryAssetOperations {
     }
     
     private AssetItemIterator getAssetIterator(AssetPageRequest request) {
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID( request.getPackageUuid() );
+        PackageItem packageItem = rulesRepository.loadPackageByUUID( request.getPackageUuid() );
 
         AssetItemIterator iterator;
         if ( request.getFormatInList() != null ) {
@@ -685,11 +694,11 @@ public class RepositoryAssetOperations {
 
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish(new PushResponse(messageType,
+        backchannel.publish(new PushResponse(messageType,
                 message));
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 }

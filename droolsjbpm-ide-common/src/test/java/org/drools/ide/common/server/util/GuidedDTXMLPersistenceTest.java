@@ -32,6 +32,8 @@ import org.junit.Test;
 
 public class GuidedDTXMLPersistenceTest {
 
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+    
     @Before
     public void setUp() throws Exception {
         GuidedDTXMLPersistence.getInstance();
@@ -56,7 +58,7 @@ public class GuidedDTXMLPersistenceTest {
         p.getConditions().add( c );
         dt.getConditionPatterns().add( p );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{new String[]{"1", "hola"}} ) );
+        dt.setData( upgrader.makeDataLists( new String[][]{new String[]{"1", "hola"}} ) );
         dt.setTableName( "blah" );
 
         String xml = GuidedDTXMLPersistence.getInstance().marshal( dt );

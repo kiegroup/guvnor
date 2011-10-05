@@ -30,8 +30,11 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.*;
 import org.drools.repository.*;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -46,33 +49,33 @@ import static org.drools.guvnor.server.util.ClassicDRLImporter.getRuleName;
 /**
  * Handles operations for packages
  */
-@Name("org.drools.guvnor.server.RepositoryPackageOperations")
-@AutoCreate
+@ApplicationScoped
 public class RepositoryPackageOperations {
+
+    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryPackageOperations.class );
 
     /**
      * Maximum number of rules to display in "list rules in package" method
      */
     private static final int MAX_RULES_TO_SHOW_IN_PACKAGE_LIST = 5000;
 
-    private RulesRepository repository;
+    @Inject
+    private RulesRepository rulesRepository;
 
-    private static final LoggingHelper log = LoggingHelper
-            .getLogger( RepositoryPackageOperations.class );
+    @Inject
+    private Identity identity;
 
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-    }
-
-    public RulesRepository getRulesRepository() {
-        return repository;
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
+        this.rulesRepository = repository;
     }
 
     protected PackageConfigData[] listPackages(boolean archive,
                                                String workspace,
                                                RepositoryFilter filter) {
         List<PackageConfigData> result = new ArrayList<PackageConfigData>();
-        PackageIterator pkgs = getRulesRepository().listPackages();
+        PackageIterator pkgs = rulesRepository.listPackages();
         handleIteratePackages( archive,
                 workspace,
                 filter,
@@ -167,7 +170,7 @@ public class RepositoryPackageOperations {
     }
 
     protected PackageConfigData loadGlobalPackage() {
-        PackageItem item = getRulesRepository().loadGlobalArea();
+        PackageItem item = rulesRepository.loadGlobalArea();
 
         PackageConfigData data = PackageConfigDataFactory.createPackageConfigDataWithOutDependencies( item );
 
@@ -184,7 +187,7 @@ public class RepositoryPackageOperations {
         try {
             log.info( "USER:" + getCurrentUserName() + " COPYING package [" + sourcePackageName + "] to  package [" + destPackageName + "]" );
 
-            return getRulesRepository().copyPackage( sourcePackageName,
+            return rulesRepository.copyPackage( sourcePackageName,
                     destPackageName );
         } catch (RulesRepositoryException e) {
             log.error( "Unable to copy package.",
@@ -196,10 +199,10 @@ public class RepositoryPackageOperations {
     protected void removePackage(String uuid) {
 
         try {
-            PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+            PackageItem item = rulesRepository.loadPackageByUUID( uuid );
             log.info( "USER:" + getCurrentUserName() + " REMOVEING package [" + item.getName() + "]" );
             item.remove();
-            getRulesRepository().save();
+            rulesRepository.save();
         } catch (RulesRepositoryException e) {
             log.error( "Unable to remove package.",
                     e );
@@ -211,7 +214,7 @@ public class RepositoryPackageOperations {
                                    String newName) {
         log.info( "USER:" + getCurrentUserName() + " RENAMING package [UUID: " + uuid + "] to package [" + newName + "]" );
 
-        return getRulesRepository().renamePackage( uuid,
+        return rulesRepository.renamePackage( uuid,
                 newName );
     }
 
@@ -219,7 +222,7 @@ public class RepositoryPackageOperations {
         log.info( "USER:" + getCurrentUserName() + " export package [name: " + packageName + "] " );
 
         try {
-            return getRulesRepository().dumpPackageFromRepositoryXml( packageName );
+            return rulesRepository.dumpPackageFromRepositoryXml( packageName );
         } catch (PathNotFoundException e) {
             throw new RulesRepositoryException( e );
         } catch (IOException e) {
@@ -232,7 +235,7 @@ public class RepositoryPackageOperations {
     // TODO: Not working. GUVNOR-475
     protected void importPackages(byte[] byteArray,
                                   boolean importAsNew) {
-        getRulesRepository().importPackageToRepository( byteArray,
+        rulesRepository.importPackageToRepository( byteArray,
                 importAsNew );
     }
 
@@ -241,7 +244,7 @@ public class RepositoryPackageOperations {
 
         log.info("USER: " + getCurrentUserName() + " CREATING package [" + name
                 + "]");
-        PackageItem item = getRulesRepository().createPackage(name,
+        PackageItem item = rulesRepository.createPackage(name,
                 description, format);
 
         return item.getUUID();
@@ -253,7 +256,7 @@ public class RepositoryPackageOperations {
                                    String[] workspace) throws RulesRepositoryException {
 
         log.info( "USER: " + getCurrentUserName() + " CREATING package [" + name + "]" );
-        PackageItem item = getRulesRepository().createPackage( name,
+        PackageItem item = rulesRepository.createPackage( name,
                 description,
                 format,
                 workspace );
@@ -265,7 +268,7 @@ public class RepositoryPackageOperations {
                                       String description,
                                       String parentNode) throws SerializationException {
         log.info( "USER: " + getCurrentUserName() + " CREATING subPackage [" + name + "], parent [" + parentNode + "]" );
-        PackageItem item = getRulesRepository().createSubPackage( name,
+        PackageItem item = rulesRepository.createSubPackage( name,
                 description,
                 parentNode );
         return item.getUUID();
@@ -284,7 +287,7 @@ public class RepositoryPackageOperations {
 
         RuleBaseCache.getInstance().remove( data.getUuid() );
         BRMSSuggestionCompletionLoader loader = createBRMSSuggestionCompletionLoader();
-        loader.getSuggestionEngine( getRulesRepository().loadPackage( data.getName() ),
+        loader.getSuggestionEngine( rulesRepository.loadPackage( data.getName() ),
                 data.getHeader() );
 
         return validateBRMSSuggestionCompletionLoaderResponse( loader );
@@ -293,7 +296,7 @@ public class RepositoryPackageOperations {
     public void savePackage(PackageConfigData data) throws SerializationException {
         log.info( "USER:" + getCurrentUserName() + " SAVING package [" + data.getName() + "]" );
 
-        PackageItem item = getRulesRepository().loadPackage( data.getName() );
+        PackageItem item = rulesRepository.loadPackage( data.getName() );
 
         // If package is being unarchived.
         boolean unarchived = (!data.isArchived() && item.isArchived());
@@ -424,16 +427,16 @@ public class RepositoryPackageOperations {
         log.info( "USER:" + getCurrentUserName() + " CREATING PACKAGE SNAPSHOT for package: [" + packageName + "] snapshot name: [" + snapshotName );
 
         if ( replaceExisting ) {
-            getRulesRepository().removePackageSnapshot( packageName,
+            rulesRepository.removePackageSnapshot( packageName,
                     snapshotName );
         }
 
-        getRulesRepository().createPackageSnapshot( packageName,
+        rulesRepository.createPackageSnapshot( packageName,
                 snapshotName );
-        PackageItem item = getRulesRepository().loadPackageSnapshot( packageName,
+        PackageItem item = rulesRepository.loadPackageSnapshot( packageName,
                 snapshotName );
         item.updateCheckinComment( comment );
-        getRulesRepository().save();
+        rulesRepository.save();
 
     }
 
@@ -444,7 +447,7 @@ public class RepositoryPackageOperations {
 
         if ( delete ) {
             log.info( "USER:" + getCurrentUserName() + " REMOVING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "]" );
-            getRulesRepository().removePackageSnapshot( packageName,
+            rulesRepository.removePackageSnapshot( packageName,
                     snapshotName );
         } else {
             if ( newSnapshotName.equals( "" ) ) {
@@ -452,7 +455,7 @@ public class RepositoryPackageOperations {
             }
             log.info( "USER:" + getCurrentUserName() + " COPYING SNAPSHOT for package: [" + packageName + "] snapshot: [" + snapshotName + "] to [" + newSnapshotName + "]" );
 
-            getRulesRepository().copyPackageSnapshot( packageName,
+            rulesRepository.copyPackageSnapshot( packageName,
                     snapshotName,
                     newSnapshotName );
         }
@@ -470,7 +473,7 @@ public class RepositoryPackageOperations {
                                       boolean enableCategorySelector,
                                       String customSelectorName) throws SerializationException {
 
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem item = rulesRepository.loadPackageByUUID( packageUUID );
         try {
             return buildPackage( item,
                     force,
@@ -532,7 +535,7 @@ public class RepositoryPackageOperations {
             );
             ruleBase.addPackage( packageAssembler.getBinaryPackage() );
 
-            getRulesRepository().save();
+            rulesRepository.save();
         } catch (Exception e) {
             e.printStackTrace();
             log.error( "An error occurred building the package [" + item.getName() + "]: " + e.getMessage() );
@@ -560,7 +563,7 @@ public class RepositoryPackageOperations {
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 
     protected BuilderResult buildPackage(PackageItem item,
@@ -580,14 +583,14 @@ public class RepositoryPackageOperations {
 
     protected String buildPackageSource(String packageUUID) throws SerializationException {
 
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem item = rulesRepository.loadPackageByUUID( packageUUID );
         PackageDRLAssembler asm = new PackageDRLAssembler( item );
         return asm.getDRL();
     }
 
     protected String[] listRulesInPackage(String packageName) throws SerializationException {
         // load package
-        PackageItem item = getRulesRepository().loadPackage( packageName );
+        PackageItem item = rulesRepository.loadPackage( packageName );
 
         PackageDRLAssembler assembler = createPackageDRLAssembler( item );
 
@@ -612,7 +615,7 @@ public class RepositoryPackageOperations {
 
     protected String[] listImagesInPackage(String packageName) throws SerializationException {
         // load package
-        PackageItem item = getRulesRepository().loadPackage( packageName );
+        PackageItem item = rulesRepository.loadPackage( packageName );
         List<String> retList = new ArrayList<String>();
         Iterator<AssetItem> iter = item.getAssets();
         while (iter.hasNext()) {
@@ -656,9 +659,9 @@ public class RepositoryPackageOperations {
         SnapshotDiffs diffs = new SnapshotDiffs();
         List<SnapshotDiff> list = new ArrayList<SnapshotDiff>();
 
-        PackageItem leftPackage = getRulesRepository().loadPackageSnapshot( packageName,
+        PackageItem leftPackage = rulesRepository.loadPackageSnapshot( packageName,
                 firstSnapshotName );
-        PackageItem rightPackage = getRulesRepository().loadPackageSnapshot( packageName,
+        PackageItem rightPackage = rulesRepository.loadPackageSnapshot( packageName,
                 secondSnapshotName );
 
         // Older one has to be on the left.
@@ -781,6 +784,7 @@ public class RepositoryPackageOperations {
 
         List<SnapshotComparisonPageRow> rowList = new SnapshotComparisonPageRowBuilder()
                 .withPageRequest( request )
+                .withIdentity(identity)
                 .withContent( diffs )
                 .build();
 

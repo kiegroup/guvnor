@@ -68,8 +68,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
     @Ignore("MVEL error")
     public void testValidating() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testValidatingEnum",
@@ -95,8 +94,7 @@ public class ContentHandlerTest extends GuvnorTestBase {
     @Test
     public void testEmptyDT() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testEmptyDT",

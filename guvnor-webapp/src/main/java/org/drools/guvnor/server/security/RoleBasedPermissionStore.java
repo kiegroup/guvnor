@@ -18,29 +18,30 @@ package org.drools.guvnor.server.security;
 
 import org.drools.repository.RulesRepository;
 import org.drools.repository.security.PermissionManager;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Name("org.drools.guvnor.server.security.RoleBasedPermissionStore")
-@AutoCreate
-public class RoleBasedPermissionStore {
+@RequestScoped
+public class RoleBasedPermissionStore implements Serializable {
 
-    @In
-    public RulesRepository repository;
+    @Inject
+    private RulesRepository rulesRepository;
 
 
     public RoleBasedPermissionStore() {
     }
 
-
     public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
             String userName) {
-        PermissionManager permissionManager = new PermissionManager(repository);
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
         List<RoleBasedPermission> permissions = new ArrayList<RoleBasedPermission>();
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
@@ -52,7 +53,6 @@ public class RoleBasedPermissionStore {
 
         return permissions;
     }
-
 
     private void resolvePermissionsAndAdd(String userName,
                                           List<RoleBasedPermission> permissions,
@@ -79,33 +79,28 @@ public class RoleBasedPermissionStore {
         }
     }
 
-
     @SuppressWarnings("unchecked")
     public void addRoleBasedPermissionForTesting(String userName, RoleBasedPermission rbp) {
-        PermissionManager permissionManager = new PermissionManager(repository);
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
         Map<String, List<String>> perms = permissionManager
                 .retrieveUserPermissions(userName);
         Object permissionsPerRole = perms.get(rbp.getRole());
-        if (permissionsPerRole != null) {
-            if (rbp.getPackageName() != null) {
-                ((List<String>) permissionsPerRole).add("package="
-                        + rbp.getPackageName());
-            } else if (rbp.getCategoryPath() != null) {
-                ((List<String>) permissionsPerRole).add("category="
-                        + rbp.getPackageName());
-            }
-
-        } else {
-            List<String> perm = new ArrayList<String>();
-            if (rbp.getPackageName() != null) {
-                perm.add("package=" + rbp.getPackageName());
-            } else if (rbp.getCategoryPath() != null) {
-                perm.add("category=" + rbp.getCategoryPath());
-            }
-            perms.put(rbp.getRole(), perm);
+        List<String> permissionsPerRoleList = (List<String>) permissionsPerRole;
+        if (permissionsPerRoleList == null) {
+            permissionsPerRoleList = new ArrayList<String>();
         }
-
+        if (rbp.getPackageName() != null) {
+            permissionsPerRoleList.add("package=" + rbp.getPackageName());
+        } else if (rbp.getCategoryPath() != null) {
+            permissionsPerRoleList.add("category=" + rbp.getCategoryPath());
+        }
+        perms.put(rbp.getRole(), permissionsPerRoleList);
         permissionManager.updateUserPermissions(userName, perms);
+    }
+
+    public void clearAllRoleBasedPermissionsForTesting(String userName) {
+        PermissionManager permissionManager = new PermissionManager(rulesRepository);
+        permissionManager.updateUserPermissions(userName, new HashMap<String, List<String>>());
     }
 
 }

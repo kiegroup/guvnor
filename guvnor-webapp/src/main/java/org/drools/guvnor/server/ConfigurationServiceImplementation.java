@@ -22,10 +22,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesInitializer;
 import org.drools.guvnor.server.configurations.ApplicationPreferencesLoader;
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
-import org.drools.repository.RulesRepository;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
 
 public class ConfigurationServiceImplementation
         extends RemoteServiceServlet
@@ -37,16 +33,4 @@ public class ConfigurationServiceImplementation
         return preferences;
     }
 
-    protected RulesRepository getRepository() {
-        if (Contexts.isApplicationContextActive()) {
-            return (RulesRepository) Component.getInstance("repository");
-        } else {
-            try {
-                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get repo to run tests", e);
-            }
-
-        }
-    }
 }

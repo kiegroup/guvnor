@@ -38,8 +38,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testLoader() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoader",
                                                "to test the loader" );
@@ -58,8 +57,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testLoaderWithComplexFields() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoaderWithComplexFields",
                                                "to test the loader" );
@@ -127,8 +125,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Ignore("Needs fixing")
     public void testFactTemplates() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoader2",
                                                "to test the loader for fact templates" );
@@ -169,8 +166,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testDeclaredTypes() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoaderDeclaredTypes",
                                                "to test the loader for declared types" );
@@ -214,8 +210,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     public void testLoadDSLs() throws Exception {
         String dsl = "[when]The agents rating is {rating}=doNothing()\n[then]Send a notification to manufacturing '{message}'=foo()";
         
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoadDSLs",
                                                "to test the loader for DSLs" );
@@ -247,8 +242,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     public void testLoadEnumerations() throws Exception {
         String enumeration = "'Person.sex' : ['M', 'F']";
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testLoadEnums",
                                                "to test the loader for enums" );
@@ -278,8 +272,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
     @Test
     public void testErrors() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testErrorsInPackage",
                                                "to test error handling" );
@@ -309,8 +302,7 @@ public class BRMSSuggestionCompletionLoaderTest extends GuvnorTestBase {
      */
     public void testModelWithNoAttachment() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem item = repo.createPackage( "testmodelWithNoAttachment",
                                                "to test model loading" );

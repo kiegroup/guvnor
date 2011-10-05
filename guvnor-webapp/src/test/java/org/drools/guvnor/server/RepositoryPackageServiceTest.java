@@ -39,7 +39,6 @@ import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
@@ -72,47 +71,43 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testSnapshotDiff() throws Exception {
-        RepositoryService impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         // Lets make a package and a rule into tit.
-        repositoryCategoryService.createCategory( "/",
-                                                  "snapshotDiffTesting",
-                                                  "y" );
+        repositoryCategoryService.createCategory("/",
+                "snapshotDiffTesting",
+                "y");
         String packageUuid = repositoryPackageService.createPackage( "testSnapshotDiff",
                                                                      "d",
                                                                      "package" );
 
-        assertNotNull( packageUuid );
+        assertNotNull(packageUuid);
 
         // Create two rules
-        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                      "",
                                                      "snapshotDiffTesting",
                                                      "testSnapshotDiff",
                                                      AssetFormats.DRL );
-        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                       "",
                                                       "snapshotDiffTesting",
                                                       "testSnapshotDiff",
                                                       AssetFormats.DRL );
-        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                      "",
                                                      "snapshotDiffTesting",
                                                      "testSnapshotDiff",
                                                      AssetFormats.DRL );
-        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                       "",
                                                       "snapshotDiffTesting",
                                                       "testSnapshotDiff",
                                                       AssetFormats.DRL );
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                        "",
                                                        "snapshotDiffTesting",
                                                        "testSnapshotDiff",
                                                        AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         // Create a snapshot called FIRST for the package
@@ -120,8 +115,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                         "FIRST",
                                                         false,
                                                         "ya" );
-        assertEquals( 1,
-                      repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
+        assertEquals(1,
+                repositoryPackageService.listSnapshots("testSnapshotDiff").length);
         assertEquals( 4,
                       repositoryPackageService.listRulesInPackage( "testSnapshotDiff" ).length );
 
@@ -135,21 +130,21 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryAssetService.archiveAsset( archiveRuleUuid );
 
         @SuppressWarnings("unused")
-        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                    "",
                                                    "snapshotDiffTesting",
                                                    "testSnapshotDiff",
                                                    AssetFormats.DRL );
 
-        repositoryAssetService.unArchiveAsset( restoredRuleUuid );
+        repositoryAssetService.unArchiveAsset(restoredRuleUuid);
 
         // Create a snapshot called SECOND for the package
         repositoryPackageService.createPackageSnapshot( "testSnapshotDiff",
                                                         "SECOND",
                                                         false,
                                                         "we" );
-        assertEquals( 2,
-                      repositoryPackageService.listSnapshots( "testSnapshotDiff" ).length );
+        assertEquals(2,
+                repositoryPackageService.listSnapshots("testSnapshotDiff").length);
         assertEquals( 4,
                       repositoryPackageService.listRulesInPackage( "testSnapshotDiff" ).length );
 
@@ -202,9 +197,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testPackageBinaryUpdatedResetWhenDeletingAnAsset() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
-        PackageItem packageItem = serviceImplementation.getRulesRepository().createPackage( "testPackageBinaryUpdatedResetWhenDeletingAnAsset",
+        PackageItem packageItem = rulesRepository.createPackage( "testPackageBinaryUpdatedResetWhenDeletingAnAsset",
                                                                                             "" );
 
         AssetItem assetItem = packageItem.addAsset( "temp",
@@ -216,7 +210,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         serviceImplementation.deleteUncheckedRule( assetItem.getUUID() );
 
-        PackageItem reloadedPackage = serviceImplementation.getRulesRepository().loadPackage( packageItem.getName() );
+        PackageItem reloadedPackage = rulesRepository.loadPackage( packageItem.getName() );
 
         assertEquals( packageItem.getName(),
                       reloadedPackage.getName() );
@@ -225,9 +219,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testGetHistoryPackageBinary() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testGetHistoryPackageBinary",
@@ -262,43 +254,42 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testDependencyHistoryPackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         //Package version 1
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testDependencyHistoryPackage",
+        PackageItem pkg = rulesRepository.createPackage( "testDependencyHistoryPackage",
                                                                    "" );
 
         AssetItem func = pkg.addAsset( "func",
                                        "" );
-        func.updateFormat( AssetFormats.FUNCTION );
+        func.updateFormat(AssetFormats.FUNCTION);
         func.updateContent( "function void foo() { System.out.println(version 1); }" );
-        func.checkin( "func version 1" );
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "func version 2" );
+        func.checkin("func version 1");
+        func.updateContent("function void foo() { System.out.println(version 2); }");
+        func.checkin("func version 2");
 
         //Package version 2     
         pkg.checkout();
         pkg.checkin( "package version 2" );
 
         //calling updateDependency creates package version 3
-        pkg.updateDependency( "func?version=1" );
+        pkg.updateDependency("func?version=1");
         pkg.checkin( "package version 3" );
 
-        func.updateContent( "function void foo() { System.out.println(version 2); }" );
-        func.checkin( "func version 3" );
+        func.updateContent("function void foo() { System.out.println(version 2); }");
+        func.checkin("func version 3");
 
         //Package version 4     
         pkg.checkout();
         pkg.checkin( "package version 4" );
 
         //Verify the latest version
-        PackageItem item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage" );
+        PackageItem item = rulesRepository.loadPackage( "testDependencyHistoryPackage" );
         assertEquals( "package version 4",
                       item.getCheckinComment() );
         assertEquals( "func?version=1",
                       item.getDependencies()[0] );
 
         //Verify version 2
-        item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage",
+        item = rulesRepository.loadPackage( "testDependencyHistoryPackage",
                                                       2 );
         assertEquals( "package version 2",
                       item.getCheckinComment() );
@@ -306,7 +297,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                       item.getDependencies()[0] );
 
         //Verify version 3
-        item = impl.getRulesRepository().loadPackage( "testDependencyHistoryPackage",
+        item = rulesRepository.loadPackage( "testDependencyHistoryPackage",
                                                       3 );
         assertEquals( "package version 3",
                       item.getCheckinComment() );
@@ -316,9 +307,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testMovePackage() throws Exception {
-        RepositoryService impl = getServiceImplementation();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String[] cats = repositoryCategoryService.loadChildCategories( "/" );
         if ( cats.length == 0 ) {
             repositoryCategoryService.createCategory( "/",
@@ -334,12 +322,12 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         String cat = repositoryCategoryService.loadChildCategories( "/" )[0];
 
-        String uuid = impl.createNewRule( "testMovePackage",
+        String uuid = serviceImplementation.createNewRule( "testMovePackage",
                                           "desc",
                                           cat,
                                           "sourcePackage",
                                           AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         TableDataResult res = repositoryAssetService.listAssets( destPkgId,
                                                                  new String[]{"drl"},
                                                                  0,
@@ -373,9 +361,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testSnapshot() throws Exception {
-        RepositoryService impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         repositoryCategoryService.createCategory( "/",
                                                   "snapshotTesting",
                                                   "y" );
@@ -383,7 +368,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
                                                 "d",
                                                 "package" );
         @SuppressWarnings("unused")
-        String uuid = impl.createNewRule( "testSnapshotRule",
+        String uuid = serviceImplementation.createNewRule( "testSnapshotRule",
                                           "",
                                           "snapshotTesting",
                                           "testSnapshot",
@@ -447,9 +432,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotRebuild() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RulesRepository repo = rulesRepository;
 
         // get rid of other snapshot crap
         Iterator< ? > pkit = repo.listPackages();
@@ -517,10 +500,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testPackageRebuild() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
 
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         final PackageItem pkg = repo.createPackage( "testPackageRebuild",
                                                     "" );
@@ -552,9 +533,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testExportPackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
         int n = repositoryPackageService.listPackages().length;
         repositoryCategoryService.createCategory( "/",
                                                   "testExportPackageCat1",
@@ -562,16 +540,16 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         repositoryCategoryService.createCategory( "/",
                                                   "testExportPackageCat2",
                                                   "desc" );
-        PackageItem p = impl.getRulesRepository().createPackage( "testExportPackage",
+        PackageItem p = rulesRepository.createPackage( "testExportPackage",
                                                                  "" );
 
-        String uuid1 = impl.createNewRule( "testExportPackageAsset1",
+        String uuid1 = serviceImplementation.createNewRule( "testExportPackageAsset1",
                                            "desc",
                                            "testExportPackageCat1",
                                            "testExportPackage",
                                            "dsl" );
 
-        String uuid2 = impl.createNewRule( "testExportPackageAsset2",
+        String uuid2 = serviceImplementation.createNewRule( "testExportPackageAsset2",
                                            "desc",
                                            "testExportPackageCat2",
                                            "testExportPackage",
@@ -593,8 +571,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchivePackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         PackageConfigData[] pkgs = repositoryPackageService.listPackages();
 
         PackageConfigData[] arch = repositoryPackageService.listArchivedPackages();
@@ -603,8 +579,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         String uuid = repositoryPackageService.createPackage( "testCreateArchivedPackage",
                                                               "this is a new package",
                                                               "package" );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
-        PackageItem item = impl.getRulesRepository().loadPackage( "testCreateArchivedPackage" );
+
+        PackageItem item = rulesRepository.loadPackage( "testCreateArchivedPackage" );
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
 
@@ -630,15 +606,13 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testCreatePackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         PackageConfigData[] pkgs = repositoryPackageService.listPackages();
         String uuid = repositoryPackageService.createPackage( "testCreatePackage",
                                                               "this is a new package",
                                                               "package" );
         assertNotNull( uuid );
 
-        PackageItem item = impl.getRulesRepository().loadPackage( "testCreatePackage" );
+        PackageItem item = rulesRepository.loadPackage( "testCreatePackage" );
         assertNotNull( item );
         assertEquals( "this is a new package",
                       item.getDescription() );
@@ -668,39 +642,37 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadPackageConfig() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        PackageItem it = impl.getRulesRepository().loadDefaultPackage();
+        PackageItem it = rulesRepository.loadDefaultPackage();
         String uuid = it.getUUID();
-        it.updateCoverage( "xyz" );
+        it.updateCoverage("xyz");
         it.updateExternalURI( "ext" );
-        DroolsHeader.updateDroolsHeader( "header",
-                                                  it );
-        impl.getRulesRepository().save();
+        DroolsHeader.updateDroolsHeader("header",
+                it);
+        rulesRepository.save();
 
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
-        assertNotNull( data );
+        assertNotNull(data);
 
         assertEquals( RulesRepository.DEFAULT_PACKAGE,
                       data.getName() );
-        assertEquals( "header",
-                      data.getHeader() );
+        assertEquals("header",
+                data.getHeader());
         assertEquals( "ext",
                       data.getExternalURI() );
 
-        assertNotNull( data.getUuid() );
-        assertFalse( data.isSnapshot() );
+        assertNotNull(data.getUuid());
+        assertFalse(data.isSnapshot());
 
-        assertNotNull( data.getDateCreated() );
+        assertNotNull(data.getDateCreated());
         Date original = data.getLastModified();
 
-        Thread.sleep( 100 );
+        Thread.sleep(100);
 
         repositoryPackageService.createPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                         "TEST SNAP 2.0",
                                                         false,
                                                         "ya" );
-        PackageItem loaded = impl.getRulesRepository().loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
+        PackageItem loaded = rulesRepository.loadPackageSnapshot( RulesRepository.DEFAULT_PACKAGE,
                                                                             "TEST SNAP 2.0" );
 
         data = repositoryPackageService.loadPackageConfig( loaded.getUUID() );
@@ -714,44 +686,42 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAndUnarchivePackageAndHeader() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testArchiveAndUnarchivePackageAndHeader",
                                                               "a desc",
                                                               "package" );
         PackageConfigData data = repositoryPackageService.loadPackageConfig( uuid );
-        PackageItem it = impl.getRulesRepository().loadPackageByUUID( uuid );
-        data.setArchived( true );
+        PackageItem it = rulesRepository.loadPackageByUUID( uuid );
+        data.setArchived(true);
 
         AssetItem rule1 = it.addAsset( "rule_1",
                                        "" );
         rule1.updateFormat( AssetFormats.DRL );
-        rule1.updateContent( "rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end" );
-        rule1.archiveItem( true );
-        rule1.checkin( "" );
-        impl.getRulesRepository().save();
+        rule1.updateContent("rule 'rule1' \n when \np : Person() \n then \np.setAge(42); \n end");
+        rule1.archiveItem(true);
+        rule1.checkin("");
+        rulesRepository.save();
 
-        repositoryPackageService.savePackage( data );
+        repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.getName() );
+        it = rulesRepository.loadPackage(data.getName());
         assertTrue( data.isArchived() );
-        assertTrue( it.loadAsset( "drools" ).isArchived() );
+        assertTrue(it.loadAsset("drools").isArchived());
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
 
-        data.setArchived( false );
+        data.setArchived(false);
 
-        repositoryPackageService.savePackage( data );
+        repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.getName() );
+        it = rulesRepository.loadPackage( data.getName() );
         assertFalse( data.isArchived() );
         assertFalse( it.loadAsset( "drools" ).isArchived() );
-        assertTrue( it.loadAsset( "rule_1" ).isArchived() );
+        assertTrue(it.loadAsset("rule_1").isArchived());
 
-        data.setArchived( true );
+        data.setArchived(true);
 
-        repositoryPackageService.savePackage( data );
+        repositoryPackageService.savePackage(data);
         data = repositoryPackageService.loadPackageConfig( uuid );
-        it = impl.getRulesRepository().loadPackage( data.getName() );
+        it = rulesRepository.loadPackage( data.getName() );
         assertTrue( data.isArchived() );
         assertTrue( it.loadAsset( "drools" ).isArchived() );
         assertTrue( it.loadAsset( "rule_1" ).isArchived() );
@@ -760,8 +730,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testPackageConfSave() throws Exception {
-        RepositoryService impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testPackageConfSave",
                                                               "a desc",
                                                               "package" );
@@ -799,8 +767,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     
     @Test
     public void testUpdateModuleFormat() throws Exception {
-        RepositoryService impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         String uuid = repositoryPackageService.createPackage( "testUpdateModuleFormat",
                                                               "a desc",
                                                               "package" );
@@ -820,10 +786,8 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     
     @Test
     public void testRemovePackage() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
         int n = repositoryPackageService.listPackages().length;
-        PackageItem p = impl.getRulesRepository().createPackage( "testRemovePackage",
+        PackageItem p = rulesRepository.createPackage( "testRemovePackage",
                                                                  "" );
         assertNotNull( repositoryPackageService.loadPackageConfig( p.getUUID() ) );
 
@@ -837,9 +801,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",
@@ -851,31 +812,31 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNotNull( packageUuid );
 
         // Create some rules
-        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                      "testRuleArchivedDescription",
                                                      "snapshotDiffTestingCategory",
                                                      "snapshotDiffTestingPackage",
                                                      AssetFormats.DRL );
-        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                       "testRuleModifiedDescription",
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                      "testRuleDeletedDescription",
                                                      "snapshotDiffTestingCategory",
                                                      "snapshotDiffTestingPackage",
                                                      AssetFormats.DRL );
-        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                       "testRuleRestoredDescription",
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                        "testRuleNoChangesDescription",
                                                        "snapshotDiffTestingCategory",
                                                        "snapshotDiffTestingPackage",
@@ -904,7 +865,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         //...create a new one...
         @SuppressWarnings("unused")
-        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                    "testRuleAddedDescription",
                                                    "snapshotDiffTestingCategory",
                                                    "snapshotDiffTestingPackage",
@@ -965,9 +926,6 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     @Test
     public void testSnapshotDiffFullResults() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RepositoryCategoryService repositoryCategoryService = getRepositoryCategoryService();
 
         // Lets make a package and put a rule into it
         repositoryCategoryService.createCategory( "/",
@@ -979,31 +937,31 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
         assertNotNull( packageUuid );
 
         // Create some rules
-        String archiveRuleUuid = impl.createNewRule( "testRuleArchived",
+        String archiveRuleUuid = serviceImplementation.createNewRule( "testRuleArchived",
                                                      "testRuleArchivedDescription",
                                                      "snapshotDiffTestingCategory",
                                                      "snapshotDiffTestingPackage",
                                                      AssetFormats.DRL );
-        String modifiedRuleUuid = impl.createNewRule( "testRuleModified",
+        String modifiedRuleUuid = serviceImplementation.createNewRule( "testRuleModified",
                                                       "testRuleModifiedDescription",
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        String deletedRuleUuid = impl.createNewRule( "testRuleDeleted",
+        String deletedRuleUuid = serviceImplementation.createNewRule( "testRuleDeleted",
                                                      "testRuleDeletedDescription",
                                                      "snapshotDiffTestingCategory",
                                                      "snapshotDiffTestingPackage",
                                                      AssetFormats.DRL );
-        String restoredRuleUuid = impl.createNewRule( "testRuleRestored",
+        String restoredRuleUuid = serviceImplementation.createNewRule( "testRuleRestored",
                                                       "testRuleRestoredDescription",
                                                       "snapshotDiffTestingCategory",
                                                       "snapshotDiffTestingPackage",
                                                       AssetFormats.DRL );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         repositoryAssetService.archiveAsset( restoredRuleUuid );
 
         @SuppressWarnings("unused")
-        String noChangesRuleUuid = impl.createNewRule( "testRuleNoChanges",
+        String noChangesRuleUuid = serviceImplementation.createNewRule( "testRuleNoChanges",
                                                        "testRuleNoChangesDescription",
                                                        "snapshotDiffTestingCategory",
                                                        "snapshotDiffTestingPackage",
@@ -1032,7 +990,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         //...create a new one...
         @SuppressWarnings("unused")
-        String addedRuleUuid = impl.createNewRule( "testRuleAdded",
+        String addedRuleUuid = serviceImplementation.createNewRule( "testRuleAdded",
                                                    "testRuleAddedDescription",
                                                    "snapshotDiffTestingCategory",
                                                    "snapshotDiffTestingPackage",
@@ -1111,9 +1069,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBinaryPackageCompileAndExecute() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompile",
@@ -1192,9 +1148,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
     @Test
     public void testBinaryPackageCompileAndExecuteWithBRXML() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         // create our package
         PackageItem pkg = repo.createPackage( "testBinaryPackageCompileBRL",
@@ -1306,7 +1260,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
 
         RuleModel model2 = new RuleModel();
         assertNull( model2.name );
-        RepositoryAssetService repositoryAssetService = getRepositoryAssetService();
+
         RuleAsset asset = repositoryAssetService.loadRuleAsset( asset2.getUUID() );
         asset.setContent( (PortableObject) model2 );
 
@@ -1342,9 +1296,7 @@ public class RepositoryPackageServiceTest extends GuvnorTestBase {
     
     @Test
     public void testPackageSource() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
-        RepositoryPackageService repositoryPackageService = getRepositoryPackageService();
+        RulesRepository repo = rulesRepository;
         // create our package
         PackageItem pkg = repo.createPackage( "testPackageSource",
                                               "" );

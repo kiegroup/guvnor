@@ -33,19 +33,25 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
     private final String assetName;
     private final String assetFormat;
 
-    public NewRuleAssetProvider(String packageName, String categoryName, String assetName, String assetFormat) {
+    private final ServiceImplementation serviceImplementation;
+    private final RepositoryAssetService repositoryAssetService;
+
+    public NewRuleAssetProvider(String packageName, String categoryName, String assetName, String assetFormat,
+            ServiceImplementation serviceImplementation, RepositoryAssetService repositoryAssetService) {
         this.packageName = packageName;
         this.categoryName = categoryName;
         this.assetName = assetName;
         this.assetFormat = assetFormat != null ? assetFormat : AssetFormats.BUSINESS_RULE;
+        this.serviceImplementation = serviceImplementation;
+        this.repositoryAssetService = repositoryAssetService;
     }
 
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
         try {
             //creates a new empty asset with the given name and format in the
             //given package.
-            String ruleUUID = this.getService().createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
-            RuleAsset newRule = this.getAssetService().loadRuleAsset(ruleUUID);
+            String ruleUUID = serviceImplementation.createNewRule(assetName, "created by standalone editor", categoryName, packageName, this.assetFormat);
+            RuleAsset newRule = repositoryAssetService.loadRuleAsset(ruleUUID);
 
             return new RuleAsset[]{newRule};
         } catch (SerializationException ex) {
@@ -54,11 +60,4 @@ public class NewRuleAssetProvider implements RuleAssetProvider {
 
     }
 
-    private ServiceImplementation getService() {
-        return RepositoryServiceServlet.getService();
-    }
-
-    private RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
-    }
 }

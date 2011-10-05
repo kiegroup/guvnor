@@ -55,6 +55,8 @@ import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
 
+    private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
+
     @Test
     public void test2Rules() throws Exception {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
@@ -128,7 +130,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
         } ) );
@@ -159,7 +161,7 @@ public class GuidedDTDRLPersistenceTest {
         RuleAttribute[] orig = rm.attributes;
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
 
         assertSame( orig,
@@ -175,7 +177,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
 
         assertEquals( 1,
@@ -188,7 +190,7 @@ public class GuidedDTDRLPersistenceTest {
         row = new String[]{"1", "desc", "a", "b"};
         p.doAttribs( allColumns,
                      attributeCols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
         assertEquals( 2,
                       rm.attributes.length );
@@ -294,7 +296,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
         } ) );
@@ -379,7 +381,7 @@ public class GuidedDTDRLPersistenceTest {
         set2.setType( SuggestionCompletionEngine.TYPE_STRING );
         dt.getActionCols().add( set2 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", null},
                 new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", ""}
         } ) );
@@ -451,8 +453,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
         assertEquals( 2,
                       rm.lhs.length );
@@ -566,8 +568,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
@@ -647,11 +649,11 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[2][];
         String[][] data = new String[2][];
         row[0] = new String[]{"1", "desc1", "true", "false"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         rowDTModel1.get( 2 ).setOtherwise( true );
         rowDTModel1.get( 3 ).setOtherwise( true );
         data[1] = row[1];
@@ -692,7 +694,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -713,7 +715,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -739,15 +741,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "01-Jan-1980", "20-Jun-1985"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "01-Feb-1981", "21-Jun-1986"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -788,7 +790,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -809,7 +811,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -830,7 +832,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -856,15 +858,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "1", "1"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "2", "2"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -905,7 +907,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -926,7 +928,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -947,7 +949,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -973,15 +975,15 @@ public class GuidedDTDRLPersistenceTest {
         String[][] row = new String[3][];
         String[][] data = new String[3][];
         row[0] = new String[]{"1", "desc1", "Michael1", "Michael1"};
-        List<DTCellValue52> rowDTModel0 = RepositoryUpgradeHelper.makeDataRowList( row[0] );
+        List<DTCellValue52> rowDTModel0 = upgrader.makeDataRowList( row[0] );
         data[0] = row[0];
 
         row[1] = new String[]{"2", "desc2", "Michael2", "Michael2"};
-        List<DTCellValue52> rowDTModel1 = RepositoryUpgradeHelper.makeDataRowList( row[1] );
+        List<DTCellValue52> rowDTModel1 = upgrader.makeDataRowList( row[1] );
         data[1] = row[1];
 
         row[2] = new String[]{"3", "desc3", null, null};
-        List<DTCellValue52> rowDTModel2 = RepositoryUpgradeHelper.makeDataRowList( row[2] );
+        List<DTCellValue52> rowDTModel2 = upgrader.makeDataRowList( row[2] );
         rowDTModel2.get( 2 ).setOtherwise( true );
         rowDTModel2.get( 3 ).setOtherwise( true );
         data[2] = row[2];
@@ -1022,7 +1024,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel0,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl0 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1043,7 +1045,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel1,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl1 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1064,7 +1066,7 @@ public class GuidedDTDRLPersistenceTest {
         p.doConditions( allColumns,
                         allPatterns,
                         rowDTModel2,
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataLists( data ),
                         rm );
         String drl2 = BRDRLPersistence.getInstance().marshal( rm );
 
@@ -1099,7 +1101,7 @@ public class GuidedDTDRLPersistenceTest {
         // RuleAttribute[] orig = rm.attributes;
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         // p.doAttribs(allColumns, metadataCols, row, rm);
 
@@ -1116,7 +1118,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         // p.doAttribs(allColumns, metadataCols, row, rm);
 
@@ -1130,7 +1132,7 @@ public class GuidedDTDRLPersistenceTest {
         row = new String[]{"1", "desc", "bar1", "bar2"};
         p.doMetadata( allColumns,
                       metadataCols,
-                      RepositoryUpgradeHelper.makeDataRowList( row ),
+                      upgrader.makeDataRowList( row ),
                       rm );
         assertEquals( 2,
                       rm.metadataList.length );
@@ -1180,7 +1182,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1188,7 +1190,7 @@ public class GuidedDTDRLPersistenceTest {
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
         assertFalse( drl.indexOf( "update( x );" ) > -1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
             } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
@@ -1226,8 +1228,8 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doConditions( allColumns,
                         allPatterns,
-                        RepositoryUpgradeHelper.makeDataRowList( row ),
-                        RepositoryUpgradeHelper.makeDataLists( data ),
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
                         rm );
 
         String drl = BRDRLPersistence.getInstance().marshal( rm );
@@ -1284,7 +1286,7 @@ public class GuidedDTDRLPersistenceTest {
 
         p.doActions( allColumns,
                      cols,
-                     RepositoryUpgradeHelper.makeDataRowList( row ),
+                     upgrader.makeDataRowList( row ),
                      rm );
         assertEquals( 3,
                       rm.rhs.length );
@@ -1362,14 +1364,14 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "y", "old"}
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
         assertTrue( drl.indexOf( "Context( )" ) > -1 );
         assertTrue( drl.indexOf( "x.setAge" ) > drl.indexOf( "Context( )" ) );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
+        dt.setData( upgrader.makeDataLists( new String[][]{
                 new String[]{"1", "desc", "", "old"}
             } ) );
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
@@ -1400,7 +1402,7 @@ public class GuidedDTDRLPersistenceTest {
         String[][] data = new String[][]{
                 new String[]{"1", "desc", "edam"},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         String drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1410,7 +1412,7 @@ public class GuidedDTDRLPersistenceTest {
         data = new String[][]{
                 new String[]{"1", "desc", null},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1420,7 +1422,7 @@ public class GuidedDTDRLPersistenceTest {
         data = new String[][]{
                 new String[]{"1", "desc", ""},
         };
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( data ) );
+        dt.setData( upgrader.makeDataLists( data ) );
 
         drl = GuidedDTDRLPersistence.getInstance().marshal( dt );
 
@@ -1438,10 +1440,10 @@ public class GuidedDTDRLPersistenceTest {
         attr.setAttribute( "salience" );
         dt.getAttributeCols().add( attr );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
-                                                                          new String[]{"1", "desc", "100"},
-                                                                          new String[]{"2", "desc", "200"}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new String[][]{
+                                                           new String[]{"1", "desc", "100"},
+                                                           new String[]{"2", "desc", "200"}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1461,10 +1463,10 @@ public class GuidedDTDRLPersistenceTest {
         md.setMetadata( "metadata" );
         dt.getMetadataCols().add( md );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new String[][]{
-                                                                          new String[]{"1", "desc", "md1"},
-                                                                          new String[]{"2", "desc", "md2"}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new String[][]{
+                                                           new String[]{"1", "desc", "md1"},
+                                                           new String[]{"2", "desc", "md2"}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1494,10 +1496,10 @@ public class GuidedDTDRLPersistenceTest {
         cc1.setValue( new DTCellValue52( "y" ) );
         p1.getConditions().add( cc1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
-                                                                          new Object[]{1l, "desc", true},
-                                                                          new Object[]{2l, "desc", false}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1531,10 +1533,10 @@ public class GuidedDTDRLPersistenceTest {
         cc1.setValue( new DTCellValue52( "Pupa" ) );
         p1.getConditions().add( cc1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
-                                                                          new Object[]{1l, "desc", true},
-                                                                          new Object[]{2l, "desc", false}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1584,11 +1586,11 @@ public class GuidedDTDRLPersistenceTest {
         cc3.setValue( new DTCellValue52( "Blue" ) );
         p1.getConditions().add( cc3 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
-                                                                          new Object[]{1l, "desc", true, false, true},
-                                                                          new Object[]{2l, "desc", false, true, true},
-                                                                          new Object[]{3l, "desc", false, false, true}
-        } ) );
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, false, true},
+                                                           new Object[]{2l, "desc", false, true, true},
+                                                           new Object[]{3l, "desc", false, false, true}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1633,10 +1635,10 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getActionCols().add( asf1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
-                                                                          new Object[]{1l, "desc", true, true},
-                                                                          new Object[]{2l, "desc", true, false}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true},
+                                                           new Object[]{2l, "desc", true, false}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );
@@ -1676,10 +1678,10 @@ public class GuidedDTDRLPersistenceTest {
 
         dt.getActionCols().add( asf1 );
 
-        dt.setData( RepositoryUpgradeHelper.makeDataLists( new Object[][]{
-                                                                          new Object[]{1l, "desc", true},
-                                                                          new Object[]{2l, "desc", false}
-                                                                  } ) );
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true},
+                                                           new Object[]{2l, "desc", false}
+                                                           } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal( dt );

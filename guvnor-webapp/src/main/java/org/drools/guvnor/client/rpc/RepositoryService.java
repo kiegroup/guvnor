@@ -323,8 +323,6 @@ public interface RepositoryService
     public String processTemplate(String name,
                                   Map<String, Object> data);
 
-    public Boolean isHostedMode();
-
     /**
      * Load the data for a given inbox for the currently logged in user.
      */

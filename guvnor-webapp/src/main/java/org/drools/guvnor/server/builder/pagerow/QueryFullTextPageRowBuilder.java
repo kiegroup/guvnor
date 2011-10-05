@@ -29,6 +29,7 @@ import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryFilter;
+import org.jboss.seam.security.Identity;
 
 public class QueryFullTextPageRowBuilder
     implements
@@ -36,14 +37,15 @@ public class QueryFullTextPageRowBuilder
 
     private QueryPageRequest    pageRequest;
     private Iterator<AssetItem> iterator;
+    private Identity identity;
 
     public List<QueryPageRow> build() {
         validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
-        RepositoryFilter filter = new PackageFilter();
-        RepositoryFilter categoryFilter = new CategoryFilter();
+        RepositoryFilter filter = new PackageFilter(identity);
+        RepositoryFilter categoryFilter = new CategoryFilter(identity);
 
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
@@ -105,6 +107,11 @@ public class QueryFullTextPageRowBuilder
 
     public QueryFullTextPageRowBuilder withPageRequest(QueryPageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public QueryFullTextPageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 

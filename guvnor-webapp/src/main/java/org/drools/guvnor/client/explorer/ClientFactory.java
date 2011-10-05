@@ -64,6 +64,8 @@ public interface ClientFactory {
 
     AssetServiceAsync getAssetService();
 
+    SecurityServiceAsync getSecurityService();
+
     ActivityMapper getActivityMapper();
     
     AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand);

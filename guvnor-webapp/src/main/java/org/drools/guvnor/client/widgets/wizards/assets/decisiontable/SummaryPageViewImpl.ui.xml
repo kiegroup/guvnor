@@ -34,22 +34,21 @@
     <gwt:VerticalPanel styleName="{res.style.wizardDTableSummaryContainer}">
       <gwt:HorizontalPanel ui:field="assetNameContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
         <gwt:Label text="{i18n.NameColon}" styleName="{res.style.wizardDTableFields}" />
-        <gwt:TextBox ui:field="txtAssetName" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+        <gwt:TextBox ui:field="txtAssetName" styleName="{res.style.wizardDTableFields}" />
         <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
       </gwt:HorizontalPanel>
       <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
         <gwt:Label text="{i18n.InitialDescription}" styleName="{res.style.wizardDTableFields}" />
-        <gwt:TextBox ui:field="txtAssetDescription" enabled="false" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Label ui:field="lblAssetDescription" styleName="{res.style.wizardDTableFields}" />
       </gwt:HorizontalPanel>
       <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
         <gwt:Label text="{i18n.CreateInPackage}" styleName="{res.style.wizardDTableFields}" />
-        <gwt:TextBox ui:field="txtPackageName" enabled="false" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Label ui:field="lblPackageName" styleName="{res.style.wizardDTableFields}" />
       </gwt:HorizontalPanel>
-      <gwt:VerticalPanel spacing="5">
+      <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
         <gwt:Label text="{i18n.TableFormat}" styleName="{res.style.wizardDTableFields}" />
-        <gwt:RadioButton name="tableFormat" text="{i18n.TableFormatExtendedEntry}" ui:field="optExtendedEntry" value="true" styleName="{res.style.wizardDTableFields}" />
-        <gwt:RadioButton name="tableFormat" text="{i18n.TableFormatLimitedEntry}" ui:field="optLimitedEntry" styleName="{res.style.wizardDTableFields}" />
-      </gwt:VerticalPanel>
+        <gwt:Label ui:field="lblTableFormat" styleName="{res.style.wizardDTableFields}" />
+      </gwt:HorizontalPanel>
     </gwt:VerticalPanel>
   </gwt:VerticalPanel>
 

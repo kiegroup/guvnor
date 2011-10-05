@@ -2533,5 +2533,9 @@ public interface Constants
     String TableFormatLimitedEntry();
     
     String LimitedEntryValue();
+
+    String CouldNotFindTheTypeForVariable0(String variableName);
+    
+    String NewAssetWizardGuidedDecisionTableOptions();
     
 }

@@ -196,20 +196,17 @@ public class DTCellValueWidgetFactory {
 
     private ListBox makeListBox(final String[] completions,
                                 final DTCellValue52 value) {
+        int selectedIndex = -1;
         final ListBox lb = new ListBox();
         String currentItem = value.getStringValue();
         for ( int i = 0; i < completions.length; i++ ) {
             String item = completions[i].trim();
-            if ( item.equals( currentItem ) ) {
+            String[] splut = ConstraintValueEditorHelper.splitValue( item );
+            lb.addItem( splut[1],
+                        splut[0] );
+            if ( splut[0].equals( currentItem ) ) {
                 lb.setSelectedIndex( i );
-            }
-            if ( item.indexOf( '=' ) > 0 ) {
-                String[] splut = ConstraintValueEditorHelper.splitValue( item );
-                lb.addItem( splut[1],
-                            splut[0] );
-            } else {
-                lb.addItem( item,
-                            item );
+                selectedIndex = i;
             }
         }
 
@@ -226,6 +223,13 @@ public class DTCellValueWidgetFactory {
             }
 
         } );
+
+        //If nothing has been selected, select the first value
+        if ( selectedIndex == -1 ) {
+            lb.setSelectedIndex( 0 );
+            value.setStringValue( lb.getValue( 0 ) );
+        }
+
         return lb;
     }
 

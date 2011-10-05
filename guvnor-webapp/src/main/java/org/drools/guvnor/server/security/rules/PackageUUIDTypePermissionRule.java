@@ -17,16 +17,22 @@ package org.drools.guvnor.server.security.rules;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.security.PackageUUIDType;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.Component;
 
+@ApplicationScoped
 public class PackageUUIDTypePermissionRule
     implements
     PermissionRule {
+
+    @Inject
+    private RulesRepository rulesRepository;
 
     public boolean hasPermission(Object requestedObject,
                                  String requestedPermission,
@@ -34,7 +40,7 @@ public class PackageUUIDTypePermissionRule
         String targetName;
         String targetUUID = ((PackageUUIDType) requestedObject).getUUID();
         try {
-            targetName = fetchRulesRepository().loadPackageByUUID( targetUUID ).getName();
+            targetName = rulesRepository.loadPackageByUUID( targetUUID ).getName();
         } catch ( RulesRepositoryException e ) {
             return false;
         }
@@ -42,10 +48,6 @@ public class PackageUUIDTypePermissionRule
         return new PackagePermissionRule().hasPermission( targetName,
                                                           requestedPermission,
                                                           permissions );
-    }
-
-    private RulesRepository fetchRulesRepository() {
-        return ((ServiceImplementation) Component.getInstance( "org.drools.guvnor.client.rpc.RepositoryService" )).getRulesRepository();
     }
 
 }

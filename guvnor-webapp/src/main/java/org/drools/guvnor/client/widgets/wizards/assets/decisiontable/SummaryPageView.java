@@ -30,8 +30,6 @@ public interface SummaryPageView
     interface Presenter {
 
         void stateChanged();
-        
-        void setTableFormat( TableFormat format );
 
     }
 
@@ -47,6 +45,8 @@ public interface SummaryPageView
     void setAssetDescription(String assetDescription);
 
     void setPackageName(String packageName);
+
+    void setTableFormat(TableFormat tableFormat);
 
     String getAssetName();
 

@@ -10,6 +10,7 @@ import org.drools.guvnor.server.util.QueryPageRowCreator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RepositoryFilter;
+import org.jboss.seam.security.Identity;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,14 +22,15 @@ public class QueryMetadataPageRowBuilder
 
     private QueryMetadataPageRequest pageRequest;
     private Iterator<AssetItem> iterator;
+    private Identity identity;
 
     public List<QueryPageRow> build() {
         validate();
         int skipped = 0;
         Integer pageSize = pageRequest.getPageSize();
         int startRowIndex = pageRequest.getStartRowIndex();
-        RepositoryFilter packageFilter = new PackageFilter();
-        RepositoryFilter categoryFilter = new CategoryFilter();
+        RepositoryFilter packageFilter = new PackageFilter(identity);
+        RepositoryFilter categoryFilter = new CategoryFilter(identity);
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
         while (iterator.hasNext() && (pageSize == null || rowList.size() < pageSize)) {
@@ -93,6 +95,11 @@ public class QueryMetadataPageRowBuilder
 
     public QueryMetadataPageRowBuilder withPageRequest(QueryMetadataPageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public QueryMetadataPageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 

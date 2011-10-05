@@ -26,11 +26,14 @@ import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.abdera.protocol.client.RequestOptions;
 import org.apache.abdera.Abdera;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.*;
 
 import javax.ws.rs.core.MediaType;
@@ -41,33 +44,32 @@ import java.net.URLEncoder;
 //import static org.jboss.resteasy.test.TestPortProvider.generateBaseUrl;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
 
-public class CategoryResourceTest extends AbstractBusClientServerTestBase {
-    private Abdera abdera = new Abdera();   
+import static org.junit.Assert.*;
 
-    private static RestTestingBase restTestingBase;
+public class CategoryResourceTest extends GuvnorTestBase {
+
+    private Abdera abdera = new Abdera();
     
     private String category = "Home Mortgage";
+
+    public CategoryResourceTest() {
+        autoLoginAsAdmin = false;
+    }
     
-    @BeforeClass
-    public static void startServers() throws Exception {
-       	restTestingBase = new RestTestingBase();
-       	restTestingBase.setup();       	
-        
-        assertTrue("server did not launch correctly",
-                   launchServer(CXFJAXRSServer.class, true));
+//    @BeforeClass
+    // Unreliable HACK
+    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    @Test
+    public void startServers() throws Exception {
         
         //Create 2 categories
-        RepositoryCategoryService repositoryCategoryService = restTestingBase.getRepositoryCategoryService();
         repositoryCategoryService.createCategory(null, "Category 1", "Category 1");
         repositoryCategoryService.createCategory(null, "Category 2", "Category 2");
         
         
         //create a new package
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
-        
-        PackageItem pkg = impl.getRulesRepository().createPackage( "categoriesPackage1",
+        PackageItem pkg = rulesRepository.createPackage( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
         //Create rule1 with 'category 1'
         AssetItem rule = pkg.addAsset( "rule1",
@@ -94,20 +96,15 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         rule.checkin( "version 1" );
         
     }
-    
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
 
-    @Test
-    public void testGetAssetsByCategoryAsAtom() throws Exception {
+    @Test @RunAsClient
+    public void testGetAssetsByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Get assets from category 1
         AbderaClient client = new AbderaClient(abdera);
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 1", "UTF-8"));
+        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/" + URLEncoder.encode("Category 1", "UTF-8")).toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -135,7 +132,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 2", "UTF-8"));
+        resp = client.get(new URL(baseURL, "rest/categories/" + URLEncoder.encode("Category 2", "UTF-8")).toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -164,8 +161,8 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
      * in this way is correctly stored in the repository. See GUVNOR-1599
      * @throws Exception 
      */
-    @Test
-    public void testGetAssetsCreatedByAtomByCategoryAsAtom() throws Exception {
+    @Test @RunAsClient
+    public void testGetAssetsCreatedByAtomByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Create 2 new assets, one in each category
         AbderaClient client = new AbderaClient(abdera);
             
@@ -176,7 +173,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setContentType("application/atom+xml");
 
-        ClientResponse resp = client.post(generateBaseUrl()+"/packages/categoriesPackage1/assets", processEntry, options);
+        ClientResponse resp = client.post(new URL(baseURL, "rest/packages/categoriesPackage1/assets").toExternalForm(), processEntry, options);
 
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error creating process asset: "+resp.getStatusText());
@@ -191,7 +188,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setContentType("application/atom+xml");
 
-        resp = client.post(generateBaseUrl()+"/packages/categoriesPackage1/assets", processEntry, options);
+        resp = client.post(new URL(baseURL, "rest/packages/categoriesPackage1/assets").toExternalForm(), processEntry, options);
 
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error creating process asset: "+resp.getStatusText());
@@ -206,7 +203,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 1", "UTF-8"));
+        resp = client.get(new URL(baseURL, "rest/categories/" + URLEncoder.encode("Category 1", "UTF-8")).toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -231,13 +228,13 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         //------------------------------------------------------------------
                 
         //clean up
-        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process1", "UTF-8"));
+        resp = client.delete(new URL(baseURL, "rest/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process1", "UTF-8")).toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error deleting 'Process1'");
         }
         
-        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process2", "UTF-8"));
+        resp = client.delete(new URL(baseURL, "rest/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process2", "UTF-8")).toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error deleting 'Process2'");
@@ -245,70 +242,66 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         
     }
 
-    @Test @Ignore
-    public void testGetAssetsByCategoryAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
+    @Test @RunAsClient @Ignore
+    public void testGetAssetsByCategoryAsJson(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
-    @Test @Ignore
-    public void testGetAssetsByCategoryAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
+    @Test @RunAsClient @Ignore
+    public void testGetAssetsByCategoryAsJaxb(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @Ignore
-    public void testGetAssetsByCategoryAndPageAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+    @Test @RunAsClient @Ignore
+    public void testGetAssetsByCategoryAndPageAsAtom(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @Ignore
-    public void testGetAssetsByCategoryAndPageAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+    @Test @RunAsClient @Ignore
+    public void testGetAssetsByCategoryAndPageAsJson(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
 
     }
 
-    @Test @Ignore
-    public void testGetAssetsByCategoryAndPageAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+    @Test @RunAsClient @Ignore
+    public void testGetAssetsByCategoryAndPageAsJaxb(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
-    }
-    
-    public String generateBaseUrl() {
-    	return "http://localhost:9080";
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
     
     private Entry createProcessEntry(String title, String summary, List<String> categories){
@@ -331,6 +324,6 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         categoriesExtension.addSimpleExtension(new QName("", "value"), categories.get(0));
         
         return processEntry;
-        
     }
+
 }

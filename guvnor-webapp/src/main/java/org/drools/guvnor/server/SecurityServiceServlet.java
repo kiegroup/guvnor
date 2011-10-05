@@ -24,6 +24,7 @@ import org.drools.guvnor.server.security.SecurityServiceImpl;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.jboss.seam.security.AuthorizationException;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -31,11 +32,12 @@ import java.util.List;
 /**
  * Wrapper for GWT RPC.
  */
-public class SecurityServiceServlet extends RemoteServiceServlet implements
-        SecurityService {
+public class SecurityServiceServlet extends RemoteServiceServlet implements SecurityService {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(SecurityServiceServlet.class);
-    private final SecurityService service = new SecurityServiceImpl();
+
+    @Inject
+    private SecurityServiceImpl securityService;
 
     @Override
     protected void doUnexpectedFailure(Throwable e) {
@@ -58,15 +60,26 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements
     }
 
     public UserSecurityContext getCurrentUser() {
-        return service.getCurrentUser();
+        if (securityService == null) {
+            // This is the first method called by the client.
+            // If CDI hasn't kicked in (theoretically impossible...), throw a readable exception
+            throw new IllegalStateException("CDI hasn't been properly started.\n" +
+                    "  Make sure your IDE classpath is in sync with the real maven classpath.\n" +
+                    "  The classpath should include weld-servlet.");
+        }
+        return securityService.getCurrentUser();
     }
 
     public List<Capability> getUserCapabilities() {
-        return service.getUserCapabilities();
+        return securityService.getUserCapabilities();
     }
 
     public boolean login(String userName, String password) {
-        return service.login(userName, password);
+        return securityService.login(userName, password);
+    }
+
+    public void logout() {
+        securityService.logout();
     }
 
 }

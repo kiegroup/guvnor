@@ -23,44 +23,77 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.AssetItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.UserInfo;
 import org.drools.repository.UserInfo.InboxEntry;
+import org.drools.repository.events.CheckinEvent;
+import org.drools.repository.events.StorageEventManager;
 
 /**
  * This service the "delivery" of messages to users inboxes for events.
  * Ideally only one instance of this running at a time (at least on a node) to avoid doubling up.
  */
+@ApplicationScoped
 public class MailboxService {
 
     private static final LoggingHelper log  = LoggingHelper.getLogger( MailboxService.class );
-    private static final String MAILMAN      = "mailman";
-    private static ExecutorService executor = null;
-    private static MailboxService INSTANCE  = null;
+
+    private ExecutorService executor = null;
+    private String mailmanUsername = null;
+
+    @Inject
+    private RepositoryStartupService repositoryStartupService;
+
+    @Inject
+    protected GuvnorBootstrapConfiguration guvnorBootstrapConfiguration;
+
     /**
      * Should be the for the "mailman" user.
      */
-    private RulesRepository repository;
+    private RulesRepository mailmanRulesRepository;
 
-    public static MailboxService getInstance() {
-        if (INSTANCE==null) {
-            INSTANCE = new MailboxService();
-            executor = Executors.newSingleThreadExecutor();
-        }
-        return INSTANCE;
+    @PostConstruct
+    public void setup() {
+        mailmanUsername = guvnorBootstrapConfiguration.extractMailmanUsername();
+        String mailmanPassword = guvnorBootstrapConfiguration.extractMailmanPassword();
+        mailmanRulesRepository = new RulesRepository(repositoryStartupService.newSession(mailmanUsername, mailmanPassword));
+        executor = Executors.newSingleThreadExecutor();
+        log.info("mailbox service is up");
+        registerCheckinListener();
+        wakeUp();
     }
 
-    private MailboxService() {}
+    /**
+     * Listen for changes to the repository - for inbox purposes
+     */
+    public void registerCheckinListener() {
+        StorageEventManager.registerCheckinEvent(new CheckinEvent() {
+            public void afterCheckin(AssetItem item) {
+                UserInbox.recordUserEditEvent(item);  //to register that she edited...
+                recordItemUpdated(item);   //for outgoing...
+                wakeUp();
+            }
+        });
+        log.info("CheckinListener registered");
+    }
 
-    public void init(RulesRepository systemRepo) {
-        log.info("Starting mailbox service");
-        this.repository = systemRepo;
-        log.info("mailbox service is up");
+    @PreDestroy
+    public void destroy() {
+        stopExecutor();
+        mailmanRulesRepository.logout();
+
+        log.info( "Removing listeners...." );
+        StorageEventManager.removeListeners();
     }
     
-    public void stop() {
+    public void stopExecutor() {
         log.info("Shutting down mailbox service");
         executor.shutdown();
 
@@ -75,10 +108,7 @@ public class MailboxService {
             executor.shutdownNow();
             Thread.currentThread().interrupt();
         }
-        
-        INSTANCE=null;
         log.info( "Mailbox service is shutdown.");
-
     }
 
     public void wakeUp() {
@@ -92,29 +122,28 @@ public class MailboxService {
 
     /** Process any waiting messages */
     void processOutgoing()  {
-            if (repository != null) {
-                UserInbox mailman = new UserInbox(repository, MAILMAN);
-                final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
-                log.debug("Outgoing messages size " + es.size());
-                //wipe out inbox for mailman here...
-                UserInfo.eachUser(this.repository, new UserInfo.Command() {
-                    public void process(final String toUser) {
-                        log.debug("Processing any inbound messages for " + toUser);
-                        if (toUser.equals(MAILMAN)) return;
-                        UserInbox inbox = new UserInbox(repository, toUser);
-                        Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
-                        for (UserInfo.InboxEntry e : es) {
-                            //the user who edited the item wont receive a message in inbox.
-                            if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
-                                inbox.addToIncoming(e.assetUUID, e.note, e.from);
-                            }
+        if (mailmanRulesRepository != null) {
+            UserInbox mailman = new UserInbox(mailmanRulesRepository, mailmanUsername);
+            final List<UserInfo.InboxEntry> es  = mailman.loadIncoming();
+            log.debug("Outgoing messages size " + es.size());
+            //wipe out inbox for mailman here...
+            UserInfo.eachUser(this.mailmanRulesRepository, new UserInfo.Command() {
+                public void process(final String toUser) {
+                    log.debug("Processing any inbound messages for " + toUser);
+                    if (toUser.equals(mailmanUsername)) return;
+                    UserInbox inbox = new UserInbox(mailmanRulesRepository, toUser);
+                    Set<String> recentEdited = makeSetOf(inbox.loadRecentEdited());
+                    for (UserInfo.InboxEntry e : es) {
+                        //the user who edited the item wont receive a message in inbox.
+                        if (!e.from.equals(toUser) && recentEdited.contains(e.assetUUID)) {
+                            inbox.addToIncoming(e.assetUUID, e.note, e.from);
                         }
                     }
-                });
-                mailman.clearIncoming();
-                repository.save();
-            }
-
+                }
+            });
+            mailman.clearIncoming();
+            mailmanRulesRepository.save();
+        }
     }
 
     private Set<String> makeSetOf(List<InboxEntry> inboxEntries) {
@@ -135,13 +164,13 @@ public class MailboxService {
         final String from = item.getRulesRepository().getSession().getUserID();
         executor.execute(new Runnable() {
             public void run() {
-                if (repository!=null) {
+                if (mailmanRulesRepository !=null) {
                     // write the message to the admins outbox
-                    UserInbox inbox = new UserInbox(repository, MAILMAN);
+                    UserInbox inbox = new UserInbox(mailmanRulesRepository, mailmanUsername);
                     inbox.addToIncoming(id, name, from);
                     processOutgoing();
 
-                    repository.save();
+                    mailmanRulesRepository.save();
                 }
             }
         });

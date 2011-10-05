@@ -16,19 +16,18 @@
 
 package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -51,16 +50,13 @@ public class SummaryPageViewImpl extends Composite
     HorizontalPanel   assetNameContainer;
 
     @UiField
-    TextBox           txtAssetDescription;
+    Label             lblAssetDescription;
 
     @UiField
-    TextBox           txtPackageName;
+    Label             lblPackageName;
 
     @UiField
-    RadioButton       optExtendedEntry;
-
-    @UiField
-    RadioButton       optLimitedEntry;
+    Label             lblTableFormat;
 
     private String    assetName;
 
@@ -69,12 +65,13 @@ public class SummaryPageViewImpl extends Composite
         UiBinder<Widget, SummaryPageViewImpl> {
     }
 
-    private static SummaryPageWidgetBinder uiBinder = GWT.create( SummaryPageWidgetBinder.class );
+    private static SummaryPageWidgetBinder uiBinder  = GWT.create( SummaryPageWidgetBinder.class );
+
+    private static Constants               constants = GWT.create( Constants.class );
 
     public SummaryPageViewImpl() {
         initWidget( uiBinder.createAndBindUi( this ) );
         initialiseAssetName();
-        initialiseTableFormat();
     }
 
     private void initialiseAssetName() {
@@ -84,23 +81,6 @@ public class SummaryPageViewImpl extends Composite
                 assetName = txtAssetName.getText();
                 presenter.stateChanged();
                 validateAssetName();
-            }
-
-        } );
-    }
-
-    private void initialiseTableFormat() {
-        optExtendedEntry.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                presenter.setTableFormat( TableFormat.EXTENDED_ENTRY );
-            }
-
-        } );
-        optLimitedEntry.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                presenter.setTableFormat( TableFormat.LIMITED_ENTRY );
             }
 
         } );
@@ -125,11 +105,22 @@ public class SummaryPageViewImpl extends Composite
     }
 
     public void setAssetDescription(String assetDescription) {
-        txtAssetDescription.setText( assetDescription );
+        lblAssetDescription.setText( assetDescription );
     }
 
     public void setPackageName(String packageName) {
-        txtPackageName.setText( packageName );
+        lblPackageName.setText( packageName );
+    }
+
+    public void setTableFormat(TableFormat tableFormat) {
+        switch ( tableFormat ) {
+            case EXTENDED_ENTRY :
+                lblTableFormat.setText( constants.TableFormatExtendedEntry() );
+                break;
+            case LIMITED_ENTRY :
+                lblTableFormat.setText( constants.TableFormatLimitedEntry() );
+                break;
+        }
     }
 
     public String getAssetName() {

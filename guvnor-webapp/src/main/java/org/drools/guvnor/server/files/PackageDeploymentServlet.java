@@ -29,8 +29,10 @@ import org.drools.guvnor.server.util.FormData;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,14 +54,24 @@ public class PackageDeploymentServlet extends RepositoryServlet {
     private static final String RFC822DATEFORMAT = "EEE', 'dd' 'MMM' 'yyyy' 'HH:mm:ss' 'Z";
     private static final Locale HEADER_LOCALE = Locale.US;
 
+    @Inject
+    private RulesRepository rulesRepository;
+
+    @Inject
+    private ServiceImplementation serviceImplementation;
+
+    @Inject
+    private RepositoryPackageService repositoryPackageService;
+
+    @Inject
+    private FileManagerService fileManagerService;
 
     @Override
     protected long getLastModified(HttpServletRequest request) {
         PackageDeploymentURIHelper helper = null;
         try {
             helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerUtils fm = getFileManager();
-            return fm.getLastModified(helper.getPackageName(),
+            return fileManagerService.getLastModified(helper.getPackageName(),
                     helper.getVersion());
         } catch (UnsupportedEncodingException e) {
             return super.getLastModified(request);
@@ -73,8 +85,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
         if (request.getMethod().equals("HEAD")) {
             SimpleDateFormat dateFormat = new SimpleDateFormat(RFC822DATEFORMAT, HEADER_LOCALE);
             PackageDeploymentURIHelper helper = new PackageDeploymentURIHelper(request.getRequestURI());
-            FileManagerUtils fm = getFileManager();
-            long mod = fm.getLastModified(helper.getPackageName(),
+            long mod = fileManagerService.getLastModified(helper.getPackageName(),
                     helper.getVersion());
             response.addHeader("lastModified",
                     "" + mod);
@@ -95,10 +106,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
             IOException {
         response.setContentType("text/html");
         String packageName = request.getParameter("packageName");
-        FormData data = FileManagerUtils.getFormData(request);
+        FormData data = FileManagerService.getFormData(request);
 
         try {
-            getFileManager().importClassicDRL(data.getFile().getInputStream(),
+            fileManagerService.importClassicDRL(data.getFile().getInputStream(),
                     packageName);
             response.getWriter().write("OK");
         } catch (IllegalArgumentException e) {
@@ -137,24 +148,23 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                 log.info("PackageIsSource: " + helper.isSource());
 
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                FileManagerUtils fm = getFileManager();
                 String fileName = null;
                 if (helper.isSource()) {
                     if (helper.isAsset()) {
-                        fileName = fm.loadSourceAsset(helper.getPackageName(),
+                        fileName = fileManagerService.loadSourceAsset(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 helper.getAssetName(),
                                 out);
                     } else {
-                        fileName = fm.loadSourcePackage(helper.getPackageName(),
+                        fileName = fileManagerService.loadSourcePackage(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 out);
                     }
                 } else if (helper.isDocumentation()) {
 
-                    PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
 
                     GuvnorDroolsDocsBuilder builder;
                     try {
@@ -169,10 +179,10 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                     builder.writePDF(out);
 
                 } else if (helper.isPng()) {
-                    PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                    PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                     AssetItem asset = pkg.loadAsset(helper.getAssetName());
 
-                    fileName = getFileManager().loadFileAttachmentByUUID(asset.getUUID(),
+                    fileName = fileManagerService.loadFileAttachmentByUUID(asset.getUUID(),
                             out);
                 } else {
                     if (req.getRequestURI().endsWith("SCENARIOS")) {
@@ -193,7 +203,7 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         xml += "</change-set>";
                         out.write(xml.getBytes());
                     } else if (req.getRequestURI().endsWith("MODEL")) {
-                        PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                         AssetItemIterator it = pkg.listAssetsByFormat(AssetFormats.MODEL);
                         BufferedInputStream inputFile = null;
                         byte[] data = new byte[1000];
@@ -244,12 +254,12 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                         String assetName = uri.substring(lastIndexOfSlash + 1);
                         fileName = assetName + ".xml";
 
-                        PackageItem pkg = fm.getRepository().loadPackage(helper.getPackageName());
+                        PackageItem pkg = rulesRepository.loadPackage(helper.getPackageName());
                         AssetItem asset = pkg.loadAsset(assetName);
                         out.write(asset.getBinaryContentAsBytes());
 
                     } else {
-                        fileName = fm.loadBinaryPackage(helper.getPackageName(),
+                        fileName = fileManagerService.loadBinaryPackage(helper.getPackageName(),
                                 helper.getVersion(),
                                 helper.isLatest(),
                                 out);
@@ -269,17 +279,15 @@ public class PackageDeploymentServlet extends RepositoryServlet {
 
     private void doRunScenarios(PackageDeploymentURIHelper helper,
                                 ByteArrayOutputStream out) throws IOException {
-        ServiceImplementation serv = RepositoryServiceServlet.getService();
-        RepositoryPackageService packageService = RepositoryServiceServlet.getPackageService();
         PackageItem pkg;
         if (helper.isLatest()) {
-            pkg = serv.getRulesRepository().loadPackage(helper.getPackageName());
+            pkg = rulesRepository.loadPackage(helper.getPackageName());
         } else {
-            pkg = serv.getRulesRepository().loadPackageSnapshot(helper.getPackageName(),
+            pkg = rulesRepository.loadPackageSnapshot(helper.getPackageName(),
                     helper.getVersion());
         }
         try {
-            BulkTestRunResult result = packageService.runScenariosInPackage(pkg);
+            BulkTestRunResult result = repositoryPackageService.runScenariosInPackage(pkg);
             out.write(result.toString().getBytes());
         } catch (DetailedSerializationException e) {
             log.error("Unable to run scenarios.", e);

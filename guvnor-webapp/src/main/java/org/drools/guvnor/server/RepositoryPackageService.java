@@ -40,50 +40,40 @@ import org.drools.rule.Package;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.annotations.LoggedIn;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 
-@Name("org.drools.guvnor.client.rpc.PackageService")
-@AutoCreate
+@Named("org.drools.guvnor.client.rpc.PackageService")
 public class RepositoryPackageService
         implements
         PackageService {
-    @In
-    private RulesRepository repository;
+    @Inject
+    private RulesRepository rulesRepository;
 
     private static final long serialVersionUID = 901123;
 
     private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetService.class );
 
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
+    @Inject
+    private ServiceSecurity serviceSecurity;
 
-    private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
-    private final RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+    @Inject
+    private Identity identity;
 
-    @Create
-    public void create() {
-        repositoryPackageOperations.setRulesRepository( getRulesRepository() );
-        repositoryAssetOperations.setRulesRepository( getRulesRepository() );
-    }
+    @Inject
+    private RepositoryPackageOperations repositoryPackageOperations;
 
-    /* This is called in hosted mode when creating "by hand" */
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-        create();
-    }
-
-    public RulesRepository getRulesRepository() {
-        return repository;
-    }
+    @Inject
+    private RepositoryAssetOperations repositoryAssetOperations;
 
     /**
      * Role-based Authorization check: This method only returns packages that
@@ -92,15 +82,15 @@ public class RepositoryPackageService
      * (i.e., package.admin, package.developer) to this package.
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PackageConfigData[] listPackages() {
         return listPackages( null );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter();
+        RepositoryFilter pf = new PackageFilter(identity);
         return repositoryPackageOperations.listPackages(
                 false,
                 workspace,
@@ -108,18 +98,18 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PackageConfigData[] listArchivedPackages() {
         return listArchivedPackages( null );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PackageConfigData[] listArchivedPackages(String workspace) {
         return repositoryPackageOperations.listPackages(
                 true,
                 workspace,
-                new PackageFilter() );
+                new PackageFilter(identity) );
     }
 
     public PackageConfigData loadGlobalPackage() {
@@ -127,9 +117,9 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void rebuildPackages() throws SerializationException {
-        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
+        Iterator<PackageItem> pkit = rulesRepository.listPackages();
         StringBuilder errs = new StringBuilder();
         while (pkit.hasNext()) {
             PackageItem pkg = pkit.next();
@@ -159,7 +149,7 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String buildPackageSource(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         return repositoryPackageOperations.buildPackageSource( packageUUID );
@@ -174,14 +164,14 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removePackage(String uuid) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
         repositoryPackageOperations.removePackage( uuid );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String renamePackage(String uuid,
                                 String newName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
@@ -191,14 +181,14 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public byte[] exportPackages(String packageName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         return repositoryPackageOperations.exportPackages( packageName );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     // TODO: Not working. GUVNOR-475
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
@@ -258,9 +248,9 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PackageConfigData loadPackageConfig(String uuid) {
-        PackageItem packageItem = getRulesRepository().loadPackageByUUID( uuid );
+        PackageItem packageItem = rulesRepository.loadPackageByUUID( uuid );
         // the uuid passed in is the uuid of that deployment bundle, not the
         // package uudi.
         // we have to figure out the package name.
@@ -269,21 +259,21 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public ValidatedResponse validatePackageConfiguration(PackageConfigData data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         return repositoryPackageOperations.validatePackageConfiguration( data );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void savePackage(PackageConfigData data) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( data.getUuid() );
         repositoryPackageOperations.savePackage( data );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force) throws SerializationException {
         return buildPackage( packageUUID,
@@ -299,7 +289,7 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force,
                                       String buildMode,
@@ -324,7 +314,7 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void createPackageSnapshot(String packageName,
                                       String snapshotName,
                                       boolean replaceExisting,
@@ -338,7 +328,7 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void copyOrRemoveSnapshot(String packageName,
                                      String snapshotName,
                                      boolean delete,
@@ -351,14 +341,14 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listRulesInPackage(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         return repositoryPackageOperations.listRulesInPackage( packageName );
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listImagesInPackage(String packageName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( packageName );
         return repositoryPackageOperations.listImagesInPackage( packageName );
@@ -368,12 +358,12 @@ public class RepositoryPackageService
     public void rebuildSnapshots() throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
 
-        Iterator<PackageItem> pkit = getRulesRepository().listPackages();
+        Iterator<PackageItem> pkit = rulesRepository.listPackages();
         while (pkit.hasNext()) {
             PackageItem pkg = pkit.next();
-            String[] snaps = getRulesRepository().listPackageSnapshots( pkg.getName() );
+            String[] snaps = rulesRepository.listPackageSnapshots( pkg.getName() );
             for (String snapName : snaps) {
-                PackageItem snap = getRulesRepository().loadPackageSnapshot( pkg.getName(),
+                PackageItem snap = rulesRepository.loadPackageSnapshot( pkg.getName(),
                         snapName );
                 BuilderResult builderResult = this.buildPackage( snap.getUUID(),
                         true );
@@ -387,27 +377,27 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public SnapshotInfo[] listSnapshots(String packageName) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
 
-        String[] snaps = getRulesRepository().listPackageSnapshots( packageName );
+        String[] snaps = rulesRepository.listPackageSnapshots( packageName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
         for (int i = 0; i < snaps.length; i++) {
-            PackageItem packageItem = getRulesRepository().loadPackageSnapshot( packageName,
+            PackageItem packageItem = rulesRepository.loadPackageSnapshot( packageName,
                     snaps[i] );
             snapshotInfos[i] = packageItemToSnapshotItem( snaps[i], packageItem );
         }
         return snapshotInfos;
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public SnapshotInfo loadSnapshotInfo(String packageName, String snapshotName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
 
         return packageItemToSnapshotItem(
                 snapshotName,
-                getRulesRepository().loadPackageSnapshot(
+                rulesRepository.loadPackageSnapshot(
                         packageName,
                         snapshotName ) );
     }
@@ -421,11 +411,11 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String[] listTypesInPackage(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid( packageUUID );
 
-        PackageItem pkg = this.getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem pkg = this.rulesRepository.loadPackageByUUID( packageUUID );
         List<String> res = new ArrayList<String>();
         AssetItemIterator it = pkg.listAssetsByFormat( AssetFormats.MODEL,
                 AssetFormats.DRL_MODEL );
@@ -458,16 +448,16 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void updateDependency(String uuid,
                                  String dependencyPath) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        PackageItem item = rulesRepository.loadPackageByUUID( uuid );
         item.updateDependency( dependencyPath );
         item.checkin( "Update dependency" );
     }
 
     public String[] getDependencies(String uuid) {
-        PackageItem item = getRulesRepository().loadPackageByUUID( uuid );
+        PackageItem item = rulesRepository.loadPackageByUUID( uuid );
         return item.getDependencies();
     }
 
@@ -502,9 +492,9 @@ public class RepositoryPackageService
         }
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void installSampleRepository() throws SerializationException {
-        getRulesRepository().importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
+        rulesRepository.importRepository( this.getClass().getResourceAsStream( "/mortgage-sample-repository.xml" ) );
         this.rebuildPackages();
         this.rebuildSnapshots();
     }
@@ -532,7 +522,7 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public SingleScenarioResult runScenario(String packageName,
                                             Scenario scenario) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
@@ -546,7 +536,7 @@ public class RepositoryPackageService
     private SingleScenarioResult runScenario(String packageName,
                                              Scenario scenario,
                                              RuleCoverageListener coverage) throws SerializationException {
-        PackageItem item = this.getRulesRepository().loadPackage( packageName );
+        PackageItem item = this.rulesRepository.loadPackage( packageName );
         SingleScenarioResult result = null;
         // nasty classloader needed to make sure we use the same tree the whole
         // time.
@@ -726,10 +716,10 @@ public class RepositoryPackageService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public BulkTestRunResult runScenariosInPackage(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
-        PackageItem item = getRulesRepository().loadPackageByUUID( packageUUID );
+        PackageItem item = rulesRepository.loadPackageByUUID( packageUUID );
         return runScenariosInPackage( item );
     }
 

@@ -17,34 +17,40 @@
 package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.servlet.http.HttpSessionStatus;
 import org.jboss.seam.security.Identity;
-import org.jboss.seam.web.Session;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 
 /**
  * This is the backchannel to send "push" messages to the browser.
  * Here be dragons. Would like to convert this to using actors one day.
  * TODO: convert to executor architecture. Only one instance needed.
  */
+@ApplicationScoped
 public class Backchannel {
-    private static final Backchannel instance = new Backchannel();
-
-    public static Backchannel getInstance() {
-        return instance;
-    }
 
     private final List<CountDownLatch> waiting = Collections.synchronizedList(new ArrayList<CountDownLatch>());
     private final Map<String, List<PushResponse>> mailbox = Collections.synchronizedMap(new HashMap<String, List<PushResponse>>());
 
-    private final Timer timer;
+    private final Timer timer = new Timer(true);
 
-    private Backchannel() {
+    @Inject
+    private Credentials credentials;
+
+    @Inject
+    private HttpSessionStatus sessionStatus;
+
+    @PostConstruct
+    public void postConstruct() {
         //using a timer to make sure awaiting subs are flushed every now and then, otherwise web threads could be consumed.
-        timer = new Timer(true);
         timer.schedule(new TimerTask() {
                     public void run() {
                         unlatchAllWaiting();
@@ -55,10 +61,9 @@ public class Backchannel {
     }
 
     public List<PushResponse> subscribe() {
-
-        if (Contexts.isApplicationContextActive() && !Session.instance().isInvalid()) {
+        if (sessionStatus.isActive()) {
             try {
-                return await(Identity.instance().getCredentials().getUsername());
+                return await(credentials.getUsername());
             } catch (InterruptedException e) {
                 return new ArrayList<PushResponse>();
             }

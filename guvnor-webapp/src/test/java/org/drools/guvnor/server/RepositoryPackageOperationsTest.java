@@ -40,12 +40,14 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryPackageOperationsTest {
 
+    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+
     private final RulesRepository             rulesRepository             = mock( RulesRepository.class );
     private final RepositoryPackageOperations repositoryPackageOperations = new RepositoryPackageOperations();
 
     @Before
     public void setUp() {
-        repositoryPackageOperations.setRulesRepository( rulesRepository );
+        repositoryPackageOperations.setRulesRepositoryForTest(rulesRepository);
     }
 
     @Test
@@ -403,7 +405,7 @@ public class RepositoryPackageOperationsTest {
     private RepositoryPackageOperations initSpyingOnRealRepositoryPackageOperations() {
         RepositoryPackageOperations localRepositoryPackageOperations;
         localRepositoryPackageOperations = spy( this.repositoryPackageOperations );
-        localRepositoryPackageOperations.setRulesRepository( rulesRepository );
+        localRepositoryPackageOperations.setRulesRepositoryForTest(rulesRepository);
         initSession();
         return localRepositoryPackageOperations;
     }

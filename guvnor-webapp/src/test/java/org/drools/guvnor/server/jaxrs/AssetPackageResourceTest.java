@@ -22,14 +22,17 @@ import org.apache.abdera.model.Document;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.parser.Parser;
-import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.utils.IOUtils;
+import org.drools.util.codec.Base64;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.*;
 import org.mvel2.util.StringAppender;
 
@@ -52,30 +55,30 @@ import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.abdera.protocol.client.RequestOptions;
 
+import static org.junit.Assert.*;
 
-public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
+public class AssetPackageResourceTest extends GuvnorTestBase {
+
     private static int totalAssets;
+
     private Abdera abdera = new Abdera();
-    private static RestTestingBase restTestingBase;
 
-    @BeforeClass
-    public static void startServers() throws Exception {
-       	restTestingBase = new RestTestingBase();
-       	restTestingBase.setup();       	
+    public AssetPackageResourceTest() {
+        autoLoginAsAdmin = false;
+    }
 
-        assertTrue("server did not launch correctly",
-                   launchServer(CXFJAXRSServer.class, true));
-
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
-        
-
-        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
-        cat.addCategory( "AssetPackageResourceTestCategory",
-                         "yeah" );
+//    @BeforeClass
+    // Unreliable HACK
+    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    @Test
+    public void startServers() throws Exception {
+        CategoryItem cat = rulesRepository.loadCategory("/");
+        cat.addCategory("AssetPackageResourceTestCategory",
+                "yeah");
         
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
-                                                                   "this is package restPackage1" );
+        PackageItem pkg = rulesRepository.createPackage("restPackage1",
+                "this is package restPackage1");
 
         //Package version 2	
         DroolsHeader.updateDroolsHeader( "import com.billasurf.Board\n global com.billasurf.Person customer1",
@@ -145,20 +148,18 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
             assets.next();
         }
     }
-    
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
 
-    @Test
-    public void testGetAssetsAsAtom() throws Exception {
+    @Test @RunAsClient
+    public void testGetAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
-        
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets",options);
+        options.setAuthorization("BASIC " + new String( new Base64().encode( "admin:admin".getBytes() ) ));
+
+        System.out.println("Checking: " + new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm());
+
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -168,41 +169,40 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         Document<Feed> document = resp.getDocument();
         
         assertEquals(totalAssets, document.getRoot().getEntries().size());
-        
     }
 
-    @Test
-    public void testGetAssetsAsJaxB() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+    @Test @RunAsClient
+    public void testGetAssetsAsJaxB(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, getContent(connection));
     }
 
-    @Test
-     public void testGetAssetsAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+    @Test @RunAsClient
+     public void testGetAssetsAsJson(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, getContent(connection));
     }
     
-    @Test
-    public void testGetDRLAssetsAsAtom() throws Exception {
+    @Test @RunAsClient
+    public void testGetDRLAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
         
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl", options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -224,8 +224,8 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(assetNames.contains("rule4"));
     }
     
-    @Test
-    public void testGetDRLAssetsAsJSON() throws Exception {
+    @Test @RunAsClient
+    public void testGetDRLAssetsAsJSON(@ArquillianResource URL baseURL) throws Exception {
         
         //Use abdera for connection only
         AbderaClient client = new AbderaClient(abdera);
@@ -233,7 +233,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
         
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl",options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -246,14 +246,14 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
     }
     
     
-    @Test
-    public void testGetDRLAndDSLAssetsAsAtom() throws Exception {
+    @Test @RunAsClient
+    public void testGetDRLAndDSLAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
         
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl&format=dsl", options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(), options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -276,8 +276,8 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(assetNames.contains("myDSL"));
     }
     
-    @Test
-    public void testGetDRLAndDSLAssetsAsJSON() throws Exception {
+    @Test @RunAsClient
+    public void testGetDRLAndDSLAssetsAsJSON(@ArquillianResource URL baseURL) throws Exception {
         
         //Use abdera for connection only
         AbderaClient client = new AbderaClient(abdera);
@@ -285,7 +285,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
         
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets?format=drl&format=dsl",options);
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets?format=drl&format=dsl").toExternalForm(),options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve DRL and DSL assets-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -297,16 +297,16 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         
     }
 
-    @Test
-    public void testGetAssetAsAtom() throws Exception {   	
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+    @Test @RunAsClient
+    public void testGetAssetAsAtom(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(getContent(connection));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -333,65 +333,65 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));		
     }
 
-    @Test
-    public void testGetAssetAsJaxB() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+    @Test @RunAsClient
+    public void testGetAssetAsJaxB(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test
-    public void testGetAssetAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+    @Test @RunAsClient
+    public void testGetAssetAsJson(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, getContent(connection));
     }
 
-    @Test
-    public void testGetAssetSource() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/source");
+    @Test @RunAsClient
+    public void testGetAssetSource(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/source");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertTrue(result.indexOf("declare Album2")>=0);
         assertTrue(result.indexOf("genre2: String")>=0);
     }
 
-    @Test
-    public void testGetAssetBinary() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/binary");
+    @Test @RunAsClient
+    public void testGetAssetBinary(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, getContent(connection));
     }
 
-    @Test
-    public void testCreateAssetFromAtom() throws Exception {
+    @Test @RunAsClient
+    public void testCreateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {
         
         //Check there is no model1-New asset
         AbderaClient client = new AbderaClient(abdera);
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1-New");
+        ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
         //If the asset doesn't exist, an HTTP 500 Error is expected. :S
         if (resp.getType() != ResponseType.SERVER_ERROR){
@@ -409,7 +409,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+        resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve 'model1' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -432,7 +432,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setContentType(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.post(generateBaseUrl() + "/packages/restPackage1/assets", entry, options);
+        resp = client.post(new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm(), entry, options);
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't store 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -447,7 +447,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/packages/restPackage1/assets/model1-New");
+        resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets/model1-New").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Couldn't retrieve 'model1-New' asset-> "+resp.getStatus()+": "+resp.getStatusText());
@@ -461,9 +461,9 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(entry.getTitle(),"model1-New");
     }
     
-    @Test
-    public void testUpdateAssetFromAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+    @Test @RunAsClient
+    public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -478,7 +478,7 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         Entry e = document.getRoot();
         e.addAuthor("Tester X McTestness");
 
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
@@ -489,10 +489,10 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         conn.disconnect();
     }
 
-    @Test
+    @Test @RunAsClient
     @Ignore
-    public void testUpdateAssetFromJaxB() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+    public void testUpdateAssetFromJaxB(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -520,35 +520,10 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         conn2.disconnect();
     }
 
-    @Test
+    @Test @RunAsClient
     @Ignore
-    public void testUpdateAssetFromJson() throws Exception {
+    public void testUpdateAssetFromJson(@ArquillianResource URL baseURL) throws Exception {
         //TODO: implement test
     }
-    
-    public String generateBaseUrl() {
-    	return "http://localhost:9080";
-    }
-    public static String GetContent (InputStream is) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }
-    
-    public static String GetContent (HttpURLConnection connection) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }    
 
 }

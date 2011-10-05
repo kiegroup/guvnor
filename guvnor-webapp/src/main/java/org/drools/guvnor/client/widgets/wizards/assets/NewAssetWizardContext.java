@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.wizards.assets;
 
 import org.drools.guvnor.client.widgets.wizards.WizardContext;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.place.shared.PlaceTokenizer;
 
@@ -27,22 +28,25 @@ public class NewAssetWizardContext
     implements
     WizardContext {
 
-    private final String assetName;
-    private final String packageName;
-    private final String packageUUID;
-    private final String format;
-    private final String description;
-    private final String initialCategory;
+    private final String      assetName;
+    private final String      packageName;
+    private final TableFormat tableFormat;
+    private final String      packageUUID;
+    private final String      format;
+    private final String      description;
+    private final String      initialCategory;
 
     public NewAssetWizardContext(String assetName,
                                  String packageName,
                                  String packageUUID,
+                                 TableFormat tableFormat,
                                  String description,
                                  String initialCategory,
                                  String format) {
         this.assetName = assetName;
         this.packageName = packageName;
         this.packageUUID = packageUUID;
+        this.tableFormat = tableFormat;
         this.description = description;
         this.initialCategory = initialCategory;
         this.format = format;
@@ -58,6 +62,10 @@ public class NewAssetWizardContext
 
     public String getPackageUUID() {
         return this.packageUUID;
+    }
+
+    public TableFormat getTableFormat() {
+        return this.tableFormat;
     }
 
     public String getFormat() {
@@ -78,6 +86,7 @@ public class NewAssetWizardContext
         hash = hash + 31 * (assetName == null ? 0 : assetName.hashCode());
         hash = hash + 31 * (packageName == null ? 0 : packageName.hashCode());
         hash = hash + 31 * (packageUUID == null ? 0 : packageUUID.hashCode());
+        hash = hash + 31 * tableFormat.hashCode();
         hash = hash + 31 * (format == null ? 0 : format.hashCode());
         hash = hash + 31 * (description == null ? 0 : description.hashCode());
         hash = hash + 31 * (initialCategory == null ? 0 : initialCategory.hashCode());
@@ -94,6 +103,7 @@ public class NewAssetWizardContext
         if ( assetName != null ? !assetName.equals( that.assetName ) : that.assetName != null ) return false;
         if ( packageName != null ? !packageName.equals( that.packageName ) : that.packageName != null ) return false;
         if ( packageUUID != null ? !packageUUID.equals( that.packageUUID ) : that.packageUUID != null ) return false;
+        if ( !tableFormat.equals( that.tableFormat ) ) return false;
         if ( format != null ? !assetName.equals( that.format ) : that.format != null ) return false;
         if ( description != null ? !description.equals( that.description ) : that.description != null ) return false;
         if ( initialCategory != null ? !initialCategory.equals( that.initialCategory ) : that.initialCategory != null ) return false;
@@ -112,6 +122,8 @@ public class NewAssetWizardContext
             sb.append( "|" );
             sb.append( nullSafe( place.getContext().getPackageUUID() ) );
             sb.append( "|" );
+            sb.append( place.getContext().getTableFormat().toString() );
+            sb.append( "|" );
             sb.append( nullSafe( place.getContext().getDescription() ) );
             sb.append( "|" );
             sb.append( nullSafe( place.getContext().getInitialCategory() ) );
@@ -126,15 +138,16 @@ public class NewAssetWizardContext
 
         public WizardPlace<NewAssetWizardContext> getPlace(String token) {
             String[] parts = token.split( "\\|" );
-            if ( parts.length != 6 ) {
-                throw new IllegalArgumentException( "WizardPlace token is not structured correctly. Expecting 'assetName|packageName|packageUUID|format|description|initialCategory'" );
+            if ( parts.length != 7 ) {
+                throw new IllegalArgumentException( "WizardPlace token is not structured correctly. Expecting 'assetName|packageName|packageUUID|tableFormat|format|description|initialCategory'" );
             }
             NewAssetWizardContext config = new NewAssetWizardContext( parts[0],
                                                                       parts[1],
                                                                       parts[2],
-                                                                      parts[3],
+                                                                      TableFormat.valueOf( parts[3] ),
                                                                       parts[4],
-                                                                      parts[5] );
+                                                                      parts[5],
+                                                                      parts[6] );
             return new WizardPlace<NewAssetWizardContext>( config );
         }
     }

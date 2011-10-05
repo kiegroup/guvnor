@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.server.security;
 
-import static org.jboss.seam.ScopeType.APPLICATION;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -31,13 +29,11 @@ import org.drools.guvnor.server.security.rules.PackageUUIDTypePermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRule;
 import org.drools.guvnor.server.security.rules.PermissionRuleObjectConverter;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.Component;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Install;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Startup;
-import org.jboss.seam.annotations.intercept.BypassInterceptors;
+import javax.annotation.PostConstruct;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.jboss.seam.security.permission.PermissionResolver;
 
 /**
@@ -57,18 +53,13 @@ import org.jboss.seam.security.permission.PermissionResolver;
  * 2. The user has one of the following roles package.admin|package.developer|package.readonly on the requested
  * package, and requested role requires lower privilege than assigned role(I.e., package.admin>package.developer>package.readonly)
  *
- *
-
  */
-@Name("org.jboss.seam.security.roleBasedPermissionResolver")
-@Scope(APPLICATION)
-@BypassInterceptors
-@Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
-@Startup
+@ApplicationScoped
+//@BypassInterceptors
+//@Install(precedence = org.jboss.seam.annotations.Install.APPLICATION)
+//@Startup
 public class RoleBasedPermissionResolver
-    implements
-    PermissionResolver,
-    Serializable {
+        implements PermissionResolver, Serializable {
     private static final LoggingHelper                     log                            = LoggingHelper.getLogger( RoleBasedPermissionResolver.class );
 
     private boolean                                        enableRoleBasedAuthorization   = false;
@@ -76,23 +67,35 @@ public class RoleBasedPermissionResolver
     private final Map<Class< ? >, PermissionRule>                permissionRules                = new HashMap<Class< ? >, PermissionRule>();
     private final Map<Class< ? >, PermissionRuleObjectConverter> permissionRuleObjectConverters = new HashMap<Class< ? >, PermissionRuleObjectConverter>();
 
-    public RoleBasedPermissionResolver() {
-        permissionRules.put( CategoryPathType.class,
-                             new CategoryPathTypePermissionRule() );
-        permissionRules.put( PackageUUIDType.class,
-                             new PackageUUIDTypePermissionRule() );
-        permissionRules.put( PackageNameType.class,
-                             new PackagePermissionRule() );
-        permissionRules.put( WebDavPackageNameType.class,
-                             new PackagePermissionRule() );
-        permissionRuleObjectConverters.put( PackageNameType.class,
-                                            new PackageNameTypeConverter() );
-        permissionRuleObjectConverters.put( WebDavPackageNameType.class,
-                                            new PackageNameTypeConverter() );
-    }
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
 
-    @Create
-    public void create() {
+    @Inject
+    private CategoryPathTypePermissionRule categoryPathTypePermissionRule;
+
+    @Inject
+    private PackageUUIDTypePermissionRule packageUUIDTypePermissionRule;
+
+    @Inject
+    private PackagePermissionRule packagePermissionRule;
+
+    @Inject
+    private PackageNameTypeConverter packageNameTypeConverter;
+
+    @PostConstruct
+    public void setupPermissionRules() {
+        permissionRules.put( CategoryPathType.class,
+                             categoryPathTypePermissionRule );
+        permissionRules.put( PackageUUIDType.class,
+                             packageUUIDTypePermissionRule );
+        permissionRules.put( PackageNameType.class,
+                             packagePermissionRule );
+        permissionRules.put( WebDavPackageNameType.class,
+                             packagePermissionRule );
+        permissionRuleObjectConverters.put( PackageNameType.class,
+                                            packageNameTypeConverter );
+        permissionRuleObjectConverters.put( WebDavPackageNameType.class,
+                                            packageNameTypeConverter );
     }
 
     /**
@@ -122,8 +125,9 @@ public class RoleBasedPermissionResolver
 
         List<RoleBasedPermission> permissions = fetchAllRoleBasedPermissionsForCurrentUser();
 
-        if ( hasAdminPermission( permissions ) || RoleType.ADMIN.getName().equals( requestedPermission ) ) {
-            return hasAdminPermission( permissions );
+        boolean hasAdminPermission = hasAdminPermission( permissions );
+        if ( hasAdminPermission || RoleType.ADMIN.getName().equals( requestedPermission ) ) {
+            return hasAdminPermission;
         }
 
         return getPermissionRuleFor( requestedObject ).hasPermission( convertFor( requestedObject ),
@@ -141,7 +145,7 @@ public class RoleBasedPermissionResolver
     }
 
     private List<RoleBasedPermission> fetchAllRoleBasedPermissionsForCurrentUser() {
-        return ((RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" )).getRoleBasedPermission();
+        return roleBasedPermissionManager.getRoleBasedPermission();
     }
 
     private boolean isInvalidInstance(Object requestedObject) {

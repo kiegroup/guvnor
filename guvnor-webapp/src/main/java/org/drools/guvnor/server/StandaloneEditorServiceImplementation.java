@@ -29,7 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.server.util.BRLPersistence;
 import org.drools.ide.common.server.util.BRXMLPersistence;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.annotations.In;
+import javax.inject.Inject;
 
 import javax.servlet.http.HttpSession;
 import java.util.Map;
@@ -41,18 +41,15 @@ import java.util.Map;
 public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         implements
         StandaloneEditorService {
-
-    @In
-    public RulesRepository repository;
     private static final long serialVersionUID = 520l;
 
-    public RulesRepository getRulesRepository() {
-        return this.repository;
-    }
+    @Inject
+    public RulesRepository repository;
 
-    private RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
-    }
+    @Inject
+    private ServiceImplementation serviceImplementation;
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
 
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
@@ -159,14 +156,14 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             provider = new NewRuleAssetProvider(packageName,
                     categoryName,
                     assetName,
-                    assetFormat);
+                    assetFormat, serviceImplementation, repositoryAssetService);
             invocationParameters.setTemporalAssets(false);
         } else if (assetsUUIDs != null) {
-            provider = new UUIDRuleAssetProvider(assetsUUIDs);
+            provider = new UUIDRuleAssetProvider(assetsUUIDs, repositoryAssetService);
             invocationParameters.setTemporalAssets(false);
         } else if (initialBRL != null) {
             provider = new BRLRuleAssetProvider(packageName,
-                    initialBRL);
+                    initialBRL, repositoryAssetService);
             invocationParameters.setTemporalAssets(true);
         } else {
             throw new IllegalStateException();
@@ -221,7 +218,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
         String[] sources = new String[assets.length];
 
         for (int i = 0; i < assets.length; i++) {
-            sources[i] = this.getAssetService().buildAssetSource(assets[i]);
+            sources[i] = repositoryAssetService.buildAssetSource(assets[i]);
         }
 
         return sources;

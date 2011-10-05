@@ -28,13 +28,17 @@ import org.drools.guvnor.server.verification.AssetVerifier;
 import org.drools.guvnor.server.verification.PackageVerifier;
 import org.drools.guvnor.server.verification.VerifierConfigurationFactory;
 import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.drools.verifier.Verifier;
 import org.drools.verifier.VerifierConfiguration;
 import org.drools.verifier.builder.VerifierBuilderFactory;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
+import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.annotations.LoggedIn;
+import org.jboss.seam.security.Identity;
 
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
 
@@ -43,21 +47,24 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private static final LoggingHelper log = LoggingHelper.getLogger(ServiceImplementation.class);
 
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
-
-    protected RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
-    }
+    
+    @Inject
+    protected ServiceSecurity serviceSecurity;
+    
+    @Inject
+    protected RulesRepository rulesRepository;
+    
+    @Inject
+    protected RepositoryAssetService repositoryAssetService;
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport analysePackage(String packageUUID) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
 
-
         AnalysisReport report = new PackageVerifier(
                 defaultVerifier,
-                getAssetService().getRulesRepository().loadPackageByUUID(packageUUID)
+                rulesRepository.loadPackageByUUID(packageUUID)
         ).verify();
 
         defaultVerifier.flushKnowledgeSession();
@@ -66,7 +73,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport verifyAsset(RuleAsset asset,
                                       Set<String> activeWorkingSetIds) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
@@ -78,7 +85,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
                                                            Set<String> activeWorkingIds) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst( asset );
@@ -93,7 +100,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
         if (activeWorkingSets == null) {
             return new RuleAsset[0];
         } else {
-            return getAssetService().loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
+            return repositoryAssetService.loadRuleAssets(activeWorkingSets.toArray(new String[activeWorkingSets.size()]));
         }
     }
 
@@ -112,7 +119,7 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
 
 
     private AssetItem getAssetItem(RuleAsset asset) throws SerializationException {
-        AssetItem assetItem = getAssetService().getRulesRepository().loadAssetByUUID(asset.uuid);
+        AssetItem assetItem = rulesRepository.loadAssetByUUID(asset.uuid);
         ContentHandler contentHandler = ContentManager.getHandler(asset.getFormat());
         contentHandler.storeAssetContent(asset, assetItem);
         return assetItem;

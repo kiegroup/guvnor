@@ -33,9 +33,8 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypes() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSimplePackageWithDeclaredTypes2",
+        PackageItem pkg = rulesRepository.createPackage("testSimplePackageWithDeclaredTypes2",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -54,7 +53,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         model.updateContent("declare Album\n genre: String \n end");
         model.checkin("");
 
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         PackageDRLAssembler asm = new PackageDRLAssembler(pkg);
         String drl = asm.getDRL();
@@ -64,9 +63,8 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSimplePackageWithDeclaredTypesUsingDependency() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
+        PackageItem pkg = rulesRepository.createPackage("testSimplePackageWithDeclaredTypesUsingDependency",
                 "");
 
         DroolsHeader.updateDroolsHeader("import java.util.HashMap",
@@ -88,7 +86,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         model.checkin("version 1");
         model.updateContent("declare Album\n genre3: String \n end");
         model.checkin("version 2");
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         PackageDRLAssembler asm = new PackageDRLAssembler(pkg);
         assertFalse(asm.getErrors().toString(),
@@ -117,9 +115,8 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testGetHistoryPackageSource() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage("testGetHistoryPackageSource",
+        PackageItem pkg = rulesRepository.createPackage("testGetHistoryPackageSource",
                 "");
 
         //Package version 2
@@ -175,7 +172,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         pkg.checkin("version3");
 
         //Verify the latest version
-        PackageItem item = impl.getRulesRepository().loadPackage("testGetHistoryPackageSource");
+        PackageItem item = rulesRepository.loadPackage("testGetHistoryPackageSource");
         PackageDRLAssembler asm = new PackageDRLAssembler(item);
         String drl = asm.getDRL();
 
@@ -192,7 +189,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         //assertEquals(12, item.getCompiledPackageBytes().length);
 
         //Verify version 2
-        PackageItem item2 = impl.getRulesRepository().loadPackage("testGetHistoryPackageSource",
+        PackageItem item2 = rulesRepository.loadPackage("testGetHistoryPackageSource",
                 2);
         PackageDRLAssembler asm2 = new PackageDRLAssembler(item2);
         String drl2 = asm2.getDRL();
@@ -211,15 +208,14 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSource() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         //first, setup the package correctly:
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSource",
+        PackageItem pkg = rulesRepository.createPackage("testShowSource",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
                 pkg);
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         AssetItem func = pkg.addAsset("func",
                 "");
@@ -278,15 +274,13 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSourceUsingSpecifiedDependencies() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-
         //first, setup the package correctly:
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSourceUsingSpecifiedDependencies",
+        PackageItem pkg = rulesRepository.createPackage("testShowSourceUsingSpecifiedDependencies",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
                 pkg);
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         AssetItem func = pkg.addAsset("func",
                 "");
@@ -329,7 +323,7 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         rule3.updateContent("declare Album\n genre1: String \n end");
         rule3.checkin("version 2");
 
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         //NOTE: dont use version=0. Version 0 is the root node.
         pkg.updateDependency("func?version=1");
@@ -365,13 +359,12 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testShowSourceForHistoricalPackage() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testShowSourceForHistoricalPackage",
+        PackageItem pkg = rulesRepository.createPackage("testShowSourceForHistoricalPackage",
                 "");
 
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\n global com.billasurf.Person customer",
                 pkg);
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         AssetItem func = pkg.addAsset("func",
                 "");
@@ -414,12 +407,12 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
         rule3.updateContent("declare Album\n genre1: String \n end");
         rule3.checkin("version 2");
 
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
         pkg.checkin("Version 2");
         pkg.checkout();
         pkg.checkin("Version 3");
 
-        PackageItem historicalPackage = serviceImplementation.getRulesRepository().loadPackage("testShowSourceForHistoricalPackage",
+        PackageItem historicalPackage = rulesRepository.loadPackage("testShowSourceForHistoricalPackage",
                 2);
 
         PackageDRLAssembler asm = new PackageDRLAssembler(historicalPackage);
@@ -447,15 +440,13 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testBuildPackageWithEmptyHeader() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-
         //first, setup the package correctly:
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testBuildPackageWithEmptyHeader",
+        PackageItem pkg = rulesRepository.createPackage("testBuildPackageWithEmptyHeader",
                 "");
 
         DroolsHeader.updateDroolsHeader("\n",
                 pkg);
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         PackageDRLAssembler asm = null;
         try {
@@ -474,12 +465,11 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
 
     @Test
     public void testSkipDisabledAssets() throws Exception {
-        ServiceImplementation serviceImplementation = getServiceImplementation();
 
         //first, setup the package correctly:
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testSkipDisabledAssets",
+        PackageItem pkg = rulesRepository.createPackage("testSkipDisabledAssets",
                 "");
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         AssetItem assertRule1 = pkg.addAsset("rule1",
                 "");
@@ -520,13 +510,11 @@ public class PackageDRLAssemblerTest extends GuvnorTestBase {
     @Test
     public void testSkipDisabledImports() throws Exception {
 
-        ServiceImplementation serviceImplementation = getServiceImplementation();
-
         //first, setup the package correctly:
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage("testXLSDecisionTableIgnoreImports",
+        PackageItem pkg = rulesRepository.createPackage("testXLSDecisionTableIgnoreImports",
                 "");
 
-        serviceImplementation.getRulesRepository().save();
+        rulesRepository.save();
 
         InputStream xls = this.getClass().getResourceAsStream("/Sample.xls");
         assertNotNull(xls);

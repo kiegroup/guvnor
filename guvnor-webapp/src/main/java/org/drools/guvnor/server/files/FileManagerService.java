@@ -24,6 +24,8 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
@@ -53,40 +55,38 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.security.Restrict;
-import org.jboss.seam.contexts.Contexts;
+import javax.annotation.PreDestroy;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.jboss.seam.security.annotations.LoggedIn;
 import org.jboss.seam.security.Identity;
 
 /**
  * This assists the file manager servlets.
  */
-@Name("fileManager")
-@Scope(ScopeType.EVENT)
-@AutoCreate
-public class FileManagerUtils {
+@Named("fileManager")
+@ApplicationScoped
+public class FileManagerService {
 
-    @In
+    @Inject
     private RulesRepository repository;
+
+    @Inject
+    private Identity identity;
 
     /**
      * This attach a file to an asset.
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void attachFile(FormData uploadItem) throws IOException {
 
         String uuid = uploadItem.getUuid();
         InputStream fileData = uploadItem.getFile().getInputStream();
         String fileName = uploadItem.getFile().getName();
 
-        attachFileToAsset( uuid,
-                           fileData,
-                           fileName );
+        attachFileToAsset(uuid,
+                fileData,
+                fileName);
         uploadItem.getFile().getInputStream().close();
 
     }
@@ -95,7 +95,7 @@ public class FileManagerUtils {
      * This utility method attaches a file to an asset.
      * @throws IOException
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void attachFileToAsset(String uuid,
                                   InputStream fileData,
                                   String fileName) throws IOException {
@@ -117,10 +117,6 @@ public class FileManagerUtils {
 
     }
 
-    public RulesRepository getRepository() {
-        return this.repository;
-    }
-
     public void setRepository(RulesRepository repository) {
         this.repository = repository;
     }
@@ -128,7 +124,7 @@ public class FileManagerUtils {
     /**
      * The get returns files based on UUID of an asset.
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String loadFileAttachmentByUUID(String uuid,
                                            OutputStream out) throws IOException {
 
@@ -251,12 +247,10 @@ public class FileManagerUtils {
         this.repository.exportRulesRepositoryToStream( out );
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void importRulesRepository(InputStream in) {
-        if ( Contexts.isSessionContextActive() ) {
-            Identity.instance().checkPermission( new AdminType(),
+        identity.checkPermission( new AdminType(),
                                                  RoleType.ADMIN.getName() );
-        }
         repository.importRulesRepositoryFromStream( in );
 
         //
@@ -275,7 +269,7 @@ public class FileManagerUtils {
         }
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void importPackageToRepository(byte[] data,
                                           boolean importAsNew) {
         try {
@@ -306,7 +300,7 @@ public class FileManagerUtils {
      * 
      * @param packageName Name for this package. Overrides the one in the DRL.
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String importClassicDRL(InputStream drlStream,
                                    String packageName) throws IOException,
                                                       DroolsParserException {
@@ -422,8 +416,4 @@ public class FileManagerUtils {
 
     }
 
-    @Destroy
-    public void close() {
-        repository.logout();
-    }
 }
