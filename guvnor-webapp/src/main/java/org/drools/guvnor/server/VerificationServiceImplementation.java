@@ -37,6 +37,7 @@ import org.jboss.seam.security.annotations.LoggedIn;
 import org.jboss.seam.security.Identity;
 
 import java.util.Set;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 public class VerificationServiceImplementation extends RemoteServiceServlet implements VerificationService {
@@ -48,13 +49,13 @@ public class VerificationServiceImplementation extends RemoteServiceServlet impl
     private final Verifier defaultVerifier = VerifierBuilderFactory.newVerifierBuilder().newVerifier();
     
     @Inject
-    private ServiceSecurity serviceSecurity;
+    protected ServiceSecurity serviceSecurity;
     
     @Inject
-    private RulesRepository rulesRepository;
+    protected RulesRepository rulesRepository;
     
     @Inject
-    private RepositoryAssetService repositoryAssetService;
+    protected RepositoryAssetService repositoryAssetService;
 
     @WebRemote
     @LoggedIn

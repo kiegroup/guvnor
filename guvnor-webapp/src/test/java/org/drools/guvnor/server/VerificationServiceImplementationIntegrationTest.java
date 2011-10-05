@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.server;
 
+import javax.inject.Inject;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,18 +34,13 @@ import org.junit.Test;
 
 public class VerificationServiceImplementationIntegrationTest extends GuvnorTestBase {
 
-    // TODO seam3upgrade this should probably be injected and managed
-    private VerificationService   verificationService;
-
-    @Before
-    public void setUp() {
-        verificationService = new VerificationServiceImplementation();
-    }
+    @Inject
+    private VerificationServiceImplementation verificationService;
 
     @Test
     public void testVerifierCauseTrace() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testVerifierCauseTrace",
-                                                                                    "" );
+        PackageItem pkg = rulesRepository.createPackage("testVerifierCauseTrace",
+                "");
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );
         asset.updateFormat( AssetFormats.DRL );
@@ -60,8 +57,8 @@ public class VerificationServiceImplementationIntegrationTest extends GuvnorTest
 
     @Test
     public void testVerifier() throws Exception {
-        PackageItem pkg = rulesRepository.createPackage( "testVerifier",
-                                                                          "" );
+        PackageItem pkg = rulesRepository.createPackage("testVerifier",
+                "");
         AssetItem asset = pkg.addAsset( "SomeDRL",
                                         "" );
         asset.updateFormat( AssetFormats.DRL );

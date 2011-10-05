@@ -63,19 +63,19 @@ public class RepositoryAssetService
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetService.class);
 
     @Inject
-    private RulesRepository rulesRepository;
+    protected RulesRepository rulesRepository;
 
     @Inject
-    private RepositoryAssetOperations repositoryAssetOperations;
+    protected RepositoryAssetOperations repositoryAssetOperations;
 
     @Inject
-    private ServiceSecurity serviceSecurity;
+    protected ServiceSecurity serviceSecurity;
 
     @Inject
-    private Backchannel backchannel;
+    protected Backchannel backchannel;
 
     @Inject
-    private Identity identity;
+    protected Identity identity;
 
     public RulesRepository getRulesRepository() {
         return rulesRepository;
