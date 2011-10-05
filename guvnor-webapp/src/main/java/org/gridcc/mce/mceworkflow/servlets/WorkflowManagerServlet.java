@@ -29,11 +29,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.drools.guvnor.server.files.AssetFileServlet;
 import org.drools.repository.AssetItem;
+import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
 
 /**
@@ -61,7 +63,11 @@ import org.drools.repository.RulesRepositoryException;
  *            specified file on the server
  */
 public class WorkflowManagerServlet extends AssetFileServlet {
+
     private static final long serialVersionUID = 510l;
+
+    @Inject
+    private RulesRepository rulesRepository;
 
     public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
@@ -163,7 +169,7 @@ public class WorkflowManagerServlet extends AssetFileServlet {
 
         try {
 
-            AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
 
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -225,7 +231,7 @@ public class WorkflowManagerServlet extends AssetFileServlet {
                 extension, fileName);
         fullPath = fullPathToFolder + "/" + fileName;
 
-        AssetItem item = getFileManager().getRepository().loadAssetByUUID(uuid);
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
 
         InputStream in = item.getBinaryContentAttachment();
 

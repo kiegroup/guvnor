@@ -21,60 +21,50 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.repository.RulesRepository;
 import org.junit.Test;
 
 public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
 
-    private RoleBasedPermissionStore getStore() throws Exception {
-        RoleBasedPermissionStore store = new RoleBasedPermissionStore();
-
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
-        
-        store.repository = repo;
-        
-        return store;
-    }
+    @Inject
+    private RoleBasedPermissionStore roleBasedPermissionStore;
 
     @Test
     public void testGetRoleBasedPermissionsByUserName() throws Exception {
-        RoleBasedPermissionStore store = getStore();
-
-        store.addRoleBasedPermissionForTesting( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
                                                                          RoleType.PACKAGE_ADMIN.getName(),
                                                                          "package1Name",
                                                                          null ) );
-        store.addRoleBasedPermissionForTesting( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
                                                                          RoleType.PACKAGE_READONLY.getName(),
                                                                          "package2Name",
                                                                          null ) );
-        store.addRoleBasedPermissionForTesting( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
                                                                          RoleType.PACKAGE_READONLY.getName(),
                                                                          "package3Name",
                                                                          null ) );
-        store.addRoleBasedPermissionForTesting( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "jervis",
                                                 new RoleBasedPermission( "jervis",
                                                                          RoleType.ANALYST.getName(),
                                                                          null,
                                                                          "category1" ) );
-        store.addRoleBasedPermissionForTesting( "john",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "john",
                                                 new RoleBasedPermission( "john",
                                                                          RoleType.ANALYST.getName(),
                                                                          null,
                                                                          "category2" ) );
-        store.addRoleBasedPermissionForTesting( "johnson",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting( "johnson",
                                                 new RoleBasedPermission( "johnson",
                                                                          RoleType.ADMIN.getName(),
                                                                          null,
                                                                          null ) );
 
-        List<RoleBasedPermission> perms = store.getRoleBasedPermissionsByUserName( "jervis" );
+        List<RoleBasedPermission> perms = roleBasedPermissionStore.getRoleBasedPermissionsByUserName( "jervis" );
         assertTrue( perms.size() == 4 );
         List<RoleBasedPermission> expectedPerms = new ArrayList<RoleBasedPermission>();
         expectedPerms.add( new RoleBasedPermission( "jervis",
@@ -106,12 +96,12 @@ public class RoleBasedPermissionStoreTest extends GuvnorTestBase {
         }
         assertTrue( expectedPerms.size() == 0 );
 
-        perms = store.getRoleBasedPermissionsByUserName( "john" );
+        perms = roleBasedPermissionStore.getRoleBasedPermissionsByUserName( "john" );
         assertTrue( perms.size() == 1 );
         assertTrue( perms.get( 0 ).getRole().equals( RoleType.ANALYST.getName() ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "john" ) );
 
-        perms = store.getRoleBasedPermissionsByUserName( "johnson" );
+        perms = roleBasedPermissionStore.getRoleBasedPermissionsByUserName( "johnson" );
         assertTrue( perms.size() == 1 );
         assertTrue( perms.get( 0 ).getRole().equals( RoleType.ADMIN.getName() ) );
         assertTrue( perms.get( 0 ).getUserName().equals( "johnson" ) );

@@ -45,11 +45,13 @@ import com.google.gwt.user.client.rpc.SerializationException;
 
 public class RepositoryAssetOperationsTest {
 
+    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+
     @Test
     public void testRenameAsset() {
         RulesRepository rulesRepository = Mockito.mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         when( rulesRepository.renameAsset( "uuid",
                                            "newname" ) ).thenReturn( "uuid" );
         assertEquals( repositoryAssetOperations.renameAsset( "uuid",
@@ -61,7 +63,7 @@ public class RepositoryAssetOperationsTest {
     public void testLoadAssetHistoryIsNull() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
 
         AssetItem assetItem = mock( AssetItem.class );
 
@@ -81,7 +83,7 @@ public class RepositoryAssetOperationsTest {
                                                                               throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
 
         AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
@@ -103,7 +105,7 @@ public class RepositoryAssetOperationsTest {
                                                       throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
 
         AssetItem assetItem = initializeAssetItemMockForLoadAssetHistory();
 
@@ -151,7 +153,7 @@ public class RepositoryAssetOperationsTest {
                                                       assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
 
         TableDataResult loadArchivedAssets = repositoryAssetOperations
                 .loadArchivedAssets( 0,
@@ -166,15 +168,15 @@ public class RepositoryAssetOperationsTest {
         RulesRepository rulesRepository = mock( RulesRepository.class );
 
         AssetItemIterator assetItemIterator = mock( AssetItemIterator.class );
-        when( assetItemIterator.hasNext() ).thenReturn( true,
-                                                        true,
-                                                        true,
-                                                        false );
+        when( assetItemIterator.hasNext() ).thenReturn(true,
+                true,
+                true,
+                false);
         initializeAssetItemMockForLoadArchivedAssets( rulesRepository,
                                                       assetItemIterator );
 
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
 
         TableDataResult loadArchivedAssets = repositoryAssetOperations
                 .loadArchivedAssets( 0,
@@ -199,7 +201,7 @@ public class RepositoryAssetOperationsTest {
                                                                                   throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   true,
@@ -212,7 +214,7 @@ public class RepositoryAssetOperationsTest {
     public void testFindAssetPageFormatInList() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
@@ -238,7 +240,7 @@ public class RepositoryAssetOperationsTest {
     public void testFindAssetPageFormatInList2() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null,
@@ -275,7 +277,7 @@ public class RepositoryAssetOperationsTest {
     public void testFindAssetPageFormatInList3() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   null,
                                                                   false,
@@ -326,7 +328,7 @@ public class RepositoryAssetOperationsTest {
     public void testGetAssetCountFormatInListAndFormatIsRegisteredIsNotSupported() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   true );
@@ -337,7 +339,7 @@ public class RepositoryAssetOperationsTest {
     public void testGetAssetCountFormatInList() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
@@ -359,7 +361,7 @@ public class RepositoryAssetOperationsTest {
     public void testGetAssetCountFormatInList2() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   Arrays.asList( "formatInList" ),
                                                                   null );
@@ -387,7 +389,7 @@ public class RepositoryAssetOperationsTest {
     public void testGetAssetCountFormatInList3() throws SerializationException {
         RulesRepository rulesRepository = mock( RulesRepository.class );
         RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
-        repositoryAssetOperations.setRulesRepository( rulesRepository );
+        repositoryAssetOperations.setRulesRepositoryForTest(rulesRepository);
         AssetPageRequest assetPageRequest = new AssetPageRequest( "uuid",
                                                                   null,
                                                                   false );

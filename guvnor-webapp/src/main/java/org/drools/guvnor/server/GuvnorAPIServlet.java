@@ -28,6 +28,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -65,6 +66,9 @@ public class GuvnorAPIServlet extends HttpServlet {
     private static final String        LOAD    = "load";
     private static final LoggingHelper log     = LoggingHelper.getLogger( GuvnorAPIServlet.class );
 
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
+
     public void service(HttpServletRequest request,
                         HttpServletResponse response) throws ServletException,
                                                      IOException {
@@ -78,7 +82,7 @@ public class GuvnorAPIServlet extends HttpServlet {
             ServletOutputStream outputStream = response.getOutputStream();
 
             try {
-                RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset( uuid );
+                RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
                 if ( asset.getContent() != null ) {
                     response.setContentType( "application/json" );
                     String content = null;

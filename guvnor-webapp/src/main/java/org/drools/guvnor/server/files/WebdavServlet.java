@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,17 +34,16 @@ import net.sf.webdav.WebDavServletBean;
  * of writing was included as source as it was easier - needed some fixes).
  */
 public class WebdavServlet extends WebDavServletBean {
+
     private static final long serialVersionUID = 510l;
 
+    @Inject
+    protected AuthorizationHeaderChecker authorizationHeaderChecker;
+
+    @Inject
+    protected WebDAVImpl webDAV;
+
     public void init() throws ServletException {
-
-        // Parameters from web.xml
-        String clazzName = WebDAVImpl.class.getName();
-
-        File root = new File( "" );// getFileRoot();
-
-        IWebdavStore webdavStore = constructStore( clazzName,
-                                                   root );
 
         String lazyFolderCreationOnPutValue = getInitParameter( "lazyFolderCreationOnPut" );
         boolean lazyFolderCreationOnPut = lazyFolderCreationOnPutValue != null && lazyFolderCreationOnPutValue.equals( "1" );
@@ -53,7 +53,7 @@ public class WebdavServlet extends WebDavServletBean {
 
         int noContentLengthHeader = 0;
 
-        super.init( webdavStore,
+        super.init( webDAV,
                     dftIndexFile,
                     insteadOf404,
                     noContentLengthHeader,
@@ -65,7 +65,7 @@ public class WebdavServlet extends WebDavServletBean {
                            HttpServletResponse resp) throws ServletException,
                                                     IOException {
         String auth = req.getHeader( "Authorization" );
-        if ( !RestAPIServlet.allowUser( auth ) ) {
+        if ( !authorizationHeaderChecker.loginByHeader(auth) ) {
             resp.setHeader( "WWW-Authenticate",
                             "BASIC realm=\"users\"" );
             resp.sendError( HttpServletResponse.SC_UNAUTHORIZED );
@@ -73,23 +73,6 @@ public class WebdavServlet extends WebDavServletBean {
             super.service( req,
                            resp );
         }
-    }
-
-    protected IWebdavStore constructStore(String clazzName,
-                                          File root) {
-        IWebdavStore webdavStore;
-        try {
-            Class clazz = WebdavServlet.class.getClassLoader().loadClass( clazzName );
-
-            Constructor ctor = clazz.getConstructor( new Class[]{File.class} );
-
-            webdavStore = (IWebdavStore) ctor.newInstance( new Object[]{root} );
-        } catch ( Exception e ) {
-            e.printStackTrace();
-            throw new RuntimeException( "some problem making store component",
-                                        e );
-        }
-        return webdavStore;
     }
 
 }

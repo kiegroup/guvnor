@@ -103,8 +103,8 @@
 
     <para>The main interface is <code>RepositoryService</code>, which is implemented in
     <code>ServiceImplementation</code>. The GWT ajax front end talks to this interface using the asynchronous callback
-    mechanism that GWT uses. The Seam configuration file is <filename>components.xml</filename>. Refer to the Seam
-    documentation, and the <filename>components.xml</filename> file for details.</para>
+    mechanism that GWT uses. The Seam configuration file is <filename>beans.xml</filename>. Refer to the Seam
+    documentation, and the <filename>beans.xml</filename> file for details.</para>
 
     <para>This service interface may be re-used by alternative components or front ends.</para>
 

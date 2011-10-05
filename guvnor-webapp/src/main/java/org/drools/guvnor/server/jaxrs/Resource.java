@@ -21,24 +21,45 @@ import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.files.FileManagerService;
+import org.drools.guvnor.server.files.RepositoryServlet;
 import org.drools.repository.RulesRepository;
+import org.jboss.seam.security.Credentials;
+import org.jboss.seam.security.Identity;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 
-public class Resource {
+@RequestScoped
+public abstract class Resource {
+    
     @Context
-    UriInfo uriInfo;
+    protected UriInfo uriInfo;
 
-    final ServiceImplementation service;
-    final RepositoryPackageService packageService;
-    final RepositoryAssetService assetService;
-    final RulesRepository repository;
+    @Inject
+    protected ServiceImplementation serviceImplementation;
+    @Inject
+    protected RepositoryPackageService repositoryPackageService;
+    @Inject
+    protected RepositoryAssetService repositoryAssetService;
+    @Inject
+    protected RulesRepository rulesRepository;
+    @Inject
+    protected FileManagerService fileManagerService;
 
-    public Resource() {
-        service = RepositoryServiceServlet.getService();
-        packageService = RepositoryServiceServlet.getPackageService();
-        assetService = RepositoryServiceServlet.getAssetService();
-        repository = service.getRulesRepository();
+
+    // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
+    protected void inject(ServiceImplementation serviceImplementation,
+            RepositoryPackageService repositoryPackageService, RepositoryAssetService repositoryAssetService,
+            RulesRepository rulesRepository, FileManagerService fileManagerService) {
+        this.serviceImplementation = serviceImplementation;
+        this.repositoryPackageService = repositoryPackageService;
+        this.repositoryAssetService = repositoryAssetService;
+        this.rulesRepository = rulesRepository;
+        this.fileManagerService = fileManagerService;
     }
+
 }

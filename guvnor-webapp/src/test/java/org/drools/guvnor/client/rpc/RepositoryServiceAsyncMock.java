@@ -203,10 +203,6 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
         
     }
 
-    public void isHostedMode(AsyncCallback<Boolean> cb) {
-        
-    }
-
     public void loadSpringContextElementData(AsyncCallback cb) {
         
     }

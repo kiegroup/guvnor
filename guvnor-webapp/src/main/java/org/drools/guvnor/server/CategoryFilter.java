@@ -18,29 +18,34 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.repository.RepositoryFilter;
-import org.jboss.seam.contexts.Contexts;
 import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {
+
+    private Identity identity;
+
+    public CategoryFilter(Identity identity) {
+        this.identity = identity;
+    }
 
     public boolean accept(Object artifact, String action) {
         if ( !(artifact instanceof String) ){
             return false;
         }
-        // for GWT hosted mode - debug only
-        if ( !Contexts.isSessionContextActive() ) {
+        if (identity == null) {
+            // TODO for tests only ... Behaves like the pre-seam3 code: tests should be fixed to not require this!
             return true;
         }
-        return Identity.instance().hasPermission( new CategoryPathType( (String) artifact ), action );
+        return identity.hasPermission( new CategoryPathType( (String) artifact ), action );
 
     }
 
     public boolean acceptNavigate(String parentPath, String child) {
-        // for GWT hosted mode - debug only
-        if ( !Contexts.isSessionContextActive() ) {
+        if (identity == null) {
+            // TODO for tests only ... Behaves like the pre-seam3 code: tests should be fixed to not require this!
             return true;
         }
-        return Identity.instance().hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
+        return identity.hasPermission( new CategoryPathType( makePath( parentPath, child ) ), "navigate" );
 
     }
 

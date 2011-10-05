@@ -21,6 +21,7 @@ import org.drools.RuntimeDroolsException;
 import org.drools.guvnor.server.util.FormData;
 import org.drools.guvnor.server.util.LoggingHelper;
 
+import javax.inject.Inject;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
@@ -44,6 +45,9 @@ public class RepositoryBackupServlet extends RepositoryServlet {
     private static final long serialVersionUID = 510l;
 
     private static final List<String> zipMimeTypes = new ArrayList<String>();
+
+    @Inject
+    private FileManagerService fileManagerService;
 
     static {
         zipMimeTypes.add("application/zip");
@@ -77,7 +81,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                                     repoConfig);
                         } else {
                             response.setContentType("text/html");
-                            FormData uploadItem = FileManagerUtils.getFormData(request);
+                            FormData uploadItem = FileManagerService.getFormData(request);
 
                             String packageImport = request.getParameter("packageImport");
 
@@ -130,7 +134,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                             if (packageName == null) {
                                 processExportRepositoryDownload(res);
                             } else {
-                                if(getFileManager().isPackageExist(packageName)) {
+                                if(fileManagerService.isPackageExist(packageName)) {
                                     processExportPackageFromRepositoryDownload(res,
                                         packageName);
                                 } else {
@@ -172,7 +176,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
         log.debug("Starting to process export");
         ZipOutputStream zout = new ZipOutputStream(res.getOutputStream());
         zout.putNextEntry(new ZipEntry("repository_export.xml"));
-        getFileManager().exportRulesRepository(zout);
+        fileManagerService.exportRulesRepository(zout);
         zout.closeEntry();
         zout.finish();
         res.getOutputStream().flush();
@@ -191,12 +195,12 @@ public class RepositoryBackupServlet extends RepositoryServlet {
                         + ".zip;");
 
         res.getOutputStream().write(
-                getFileManager().exportPackageFromRepository(packageName));
+                fileManagerService.exportPackageFromRepository(packageName));
         res.getOutputStream().flush();
     }
 
     private String processImportRepository(InputStream file) throws IOException {
-        getFileManager().importRulesRepository(file);
+        fileManagerService.importRulesRepository(file);
         return "OK";
     }
 
@@ -205,7 +209,7 @@ public class RepositoryBackupServlet extends RepositoryServlet {
             throws IOException {
         byte[] byteArray = new byte[file.available()];
         file.read(byteArray);
-        getFileManager().importPackageToRepository(byteArray,
+        fileManagerService.importPackageToRepository(byteArray,
                 importAsNew);
         return "OK";
     }

@@ -22,6 +22,7 @@ import org.drools.repository.RulesRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,20 +38,20 @@ public class ActionsAPIServlet extends RepositoryServlet {
     public static final Logger log = LoggerFactory.getLogger(
             ActionsAPIServlet.class);
 
+    @Inject
+    protected RepositoryPackageService packageService;
+
     @Override
     protected void doPost(final HttpServletRequest req,
-                          final HttpServletResponse res) throws ServletException,
-            IOException {
-        final RulesRepository repository = RestAPIServlet.getRepository();
-        final RepositoryPackageService service = RepositoryServiceServlet.getPackageService();
+                          final HttpServletResponse res) throws ServletException, IOException {
 
         doAuthorizedAction(req,
                 res,
                 new Command() {
                     public void execute() throws Exception {
                         ActionsAPI api = new ActionsAPI();
-                        api.post(service,
-                                repository,
+                        api.post(packageService,
+                                rulesRepository,
                                 req,
                                 res);
                     }

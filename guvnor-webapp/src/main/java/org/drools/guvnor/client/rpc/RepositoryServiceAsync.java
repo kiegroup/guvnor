@@ -71,7 +71,6 @@ public interface RepositoryServiceAsync {
     public void loadInbox(java.lang.String p0, AsyncCallback<org.drools.guvnor.client.rpc.TableDataResult> cb);
     public void loadInbox(org.drools.guvnor.client.rpc.InboxPageRequest p0, AsyncCallback<org.drools.guvnor.client.rpc.PageResponse<org.drools.guvnor.client.rpc.InboxPageRow>> cb);
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
-    public void isHostedMode(AsyncCallback<java.lang.Boolean> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
     public void loadWorkitemDefinitionElementData(AsyncCallback cb);
     

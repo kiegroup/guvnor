@@ -22,15 +22,13 @@ import javax.security.auth.Subject;
 
 import org.drools.repository.ClassUtil;
 import org.drools.repository.RulesRepository;
-import org.jboss.seam.ScopeType;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.Destroy;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.Scope;
-import org.jboss.seam.annotations.Unwrap;
-import org.jboss.seam.contexts.Contexts;
+import javax.annotation.PostConstruct;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.inject.Produces;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityContext;
 import org.jboss.security.SecurityContextAssociation;
@@ -39,63 +37,64 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This enhances the BRMS repository for lifecycle management.
+ * Request scoped bean that produces the RulesRepository
  */
-@Scope(ScopeType.EVENT)
-@AutoCreate
-@Name("repository")
+@RequestScoped
 public class RulesRepositoryManager {
 
-	private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
-	
-    @In
-    RepositoryStartupService repositoryConfiguration;
+    private static final String DEFAULT_USERNAME = "guest";
+    
+    private static final Logger log = LoggerFactory.getLogger(RulesRepositoryManager.class);
 
-    private RulesRepository repository;
+    @Inject
+    private RepositoryStartupService repositoryStartupService;
 
-    @Create
-    public void create() {
-        //Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
-        //with limited privileges. In Guvnor, access control is done in a higher level. 
-        String DEFAULT_USER = "guest";
-        //String READ_ONLY_USER = "anonymous";
-        String userName = DEFAULT_USER;
-        if (Contexts.isApplicationContextActive()) {
-            userName = Identity.instance().getCredentials().getUsername();
-            
-            // Also set the JBoss security context if the JAAS realm is found.
-            try {
-                String configName = Identity.instance().getJaasConfigName();
-                boolean isJBoss=true;
-                try {
-                    ClassUtil.forName("org.jboss.security.SecurityContext", this.getClass());
-                } catch (ClassNotFoundException e) {
-                    isJBoss=false;
-                }
-                if (configName!=null && isJBoss==true) {
-                    Subject subject = Identity.instance().getSubject();
-                    Principal principal = subject.getPrincipals().iterator().next();
-                    SecurityContext sc = SecurityContextFactory.createSecurityContext(principal, null, subject, configName); 
-                    SecurityContextAssociation.setSecurityContext(sc);
-                }
-            } catch (Exception e1) {
-            	log.error("Not able to set the JAAS security context", e1.getMessage(),e1);
-            }
+    @Inject
+    private Identity identity;
+    
+    @Inject
+    private Credentials credentials;
+
+    // Not @Inject: here it is created and outjected
+    private RulesRepository rulesRepository;
+
+    @PostConstruct
+    public void createRulesRepository() {
+        String username = credentials.getUsername();
+        if (username == null) {
+            // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
+            // with limited privileges. In Guvnor, access control is done in a higher level.
+            username = DEFAULT_USERNAME;
         }
-        if (userName == null) {
-            userName = DEFAULT_USER;
-        }
-        repository = new RulesRepository(repositoryConfiguration.newSession(userName));
+        doSecurityContextAssociation();
+        rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));
     }
 
-    @Unwrap
-    public RulesRepository getRepository() {
-        return repository;
+    private void doSecurityContextAssociation() {
+        // TODO seam3upgrade seam3 uses PicketLink, not JAAS. If JaasAuthenticator is configured, we can extract the jaasConfigName there
+//        // Also set the JBoss security context if the JAAS realm is found.
+//        try {
+//            String configName = jaasAuthenticator.getJaasConfigName();
+//            boolean isJBoss = true;
+//            try {
+//                ClassUtil.forName("org.jboss.security.SecurityContext", this.getClass());
+//            } catch (ClassNotFoundException e) {
+//                isJBoss = false;
+//            }
+//            if (isJBoss && configName != null) {
+//                Subject subject = identity.getSubject();
+//                Principal principal = subject.getPrincipals().iterator().next();
+//                SecurityContext sc = SecurityContextFactory.createSecurityContext(principal, null, subject, configName);
+//                SecurityContextAssociation.setSecurityContext(sc);
+//            }
+//        } catch (Exception e1) {
+//            log.error("Not able to set the JAAS security context", e1.getMessage(),e1);
+//        }
     }
 
-    @Destroy
-    public void close() {
-        repository.logout();
+    @Produces @Named("repository")
+    public RulesRepository getRulesRepository() {
+        return rulesRepository;
     }
 
 }

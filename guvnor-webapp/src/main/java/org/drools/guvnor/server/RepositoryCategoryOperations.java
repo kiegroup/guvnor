@@ -26,34 +26,41 @@ import org.drools.repository.AssetItemPageResult;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Name;
+import org.jboss.seam.security.Identity;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Name("org.drools.guvnor.server.RepositoryCategoryOperations")
-@AutoCreate
+@ApplicationScoped
 public class RepositoryCategoryOperations {
-    private RulesRepository repository;
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryCategoryOperations.class);
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
 
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-    }
+    @Inject
+    private RulesRepository rulesRepository;
 
-    public RulesRepository getRulesRepository() {
-        return repository;
+    @Inject
+    private ServiceSecurity serviceSecurity;
+
+    @Inject
+    private Identity identity;
+
+    @Deprecated
+    public void setRulesRepositoryForTest(RulesRepository repository) {
+        // TODO use GuvnorTestBase with a real RepositoryAssetOperations instead
+        this.rulesRepository = repository;
     }
 
     @SuppressWarnings("rawtypes")
     protected String[] loadChildCategories(String categoryPath) {
         List<String> resultList = new ArrayList<String>();
-        CategoryFilter filter = new CategoryFilter();
+        CategoryFilter filter = new CategoryFilter(identity);
 
-        CategoryItem item = getRulesRepository().loadCategory(categoryPath);
+        CategoryItem item = rulesRepository.loadCategory(categoryPath);
         List children = item.getChildTags();
         for (Object aChildren : children) {
             String childCategoryName = ((CategoryItem) aChildren).getName();
@@ -70,22 +77,22 @@ public class RepositoryCategoryOperations {
                                      String name,
                                      String description) {
 
-        log.info("USER:" + getCurrentUserName() + " CREATING cateogory: [" + name + "] in path [" + path + "]");
+        log.info("USER:" + getCurrentUserName() + " CREATING category: [" + name + "] in path [" + path + "]");
 
         if (path == null || "".equals(path)) {
             path = "/";
         }
         path = HtmlCleaner.cleanHTML(path);
 
-        getRulesRepository().loadCategory(path).addCategory(name,
+        rulesRepository.loadCategory(path).addCategory(name,
                 description);
-        getRulesRepository().save();
+        rulesRepository.save();
         return Boolean.TRUE;
     }
 
     protected void renameCategory(String fullPathAndName,
                                   String newName) {
-        getRulesRepository().renameCategory(fullPathAndName,
+        rulesRepository.renameCategory(fullPathAndName,
                 newName);
     }
 
@@ -106,7 +113,7 @@ public class RepositoryCategoryOperations {
 
         }
 
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory(categoryPath,
+        AssetItemPageResult result = rulesRepository.findAssetsByCategory(categoryPath,
                 false,
                 skip,
                 numRows);
@@ -122,7 +129,7 @@ public class RepositoryCategoryOperations {
 
         // NOTE: Filtering is handled in repository.findAssetsByCategory()
         int numRowsToReturn = (request.getPageSize() == null ? -1 : request.getPageSize());
-        AssetItemPageResult result = getRulesRepository().findAssetsByCategory(request.getCategoryPath(),
+        AssetItemPageResult result = rulesRepository.findAssetsByCategory(request.getCategoryPath(),
                 false,
                 request.getStartRowIndex(),
                 numRowsToReturn);
@@ -133,6 +140,7 @@ public class RepositoryCategoryOperations {
 
         List<CategoryPageRow> rowList = new CategoryRuleListPageRowBuilder()
                 .withPageRequest(request)
+                .withIdentity(identity)
                 .withContent(result.assets.iterator())
                 .build();
 
@@ -151,8 +159,8 @@ public class RepositoryCategoryOperations {
         log.info("USER:" + getCurrentUserName() + " REMOVING CATEGORY path: [" + categoryPath + "]");
 
         try {
-            getRulesRepository().loadCategory(categoryPath).remove();
-            getRulesRepository().save();
+            rulesRepository.loadCategory(categoryPath).remove();
+            rulesRepository.save();
         } catch (RulesRepositoryException e) {
             log.info("Unable to remove category [" + categoryPath + "]. It is probably still used: " + e.getMessage());
 
@@ -162,6 +170,7 @@ public class RepositoryCategoryOperations {
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
+
 }

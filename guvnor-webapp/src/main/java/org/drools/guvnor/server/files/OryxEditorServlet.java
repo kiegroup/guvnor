@@ -2,11 +2,13 @@ package org.drools.guvnor.server.files;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
+import org.drools.guvnor.server.RepositoryAssetService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
+import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,15 +20,20 @@ public class OryxEditorServlet extends HttpServlet {
 
     private static final LoggingHelper log = LoggingHelper.getLogger(OryxEditorServlet.class);
 
+    @Inject
+    private Credentials credentials;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private RepositoryAssetService repositoryAssetService;
+
     public void service(HttpServletRequest request,
                         HttpServletResponse response)
             throws ServletException,
             IOException {
         log.debug("Incoming request from Oryx Designer:" + request.getRequestURL());
-
-        if (!Contexts.isApplicationContextActive()) {
-            throw new ServletException("No application context active.");
-        }
 
         //action never used. Why? - JT
         String action = request.getParameter("action");
@@ -43,20 +50,17 @@ public class OryxEditorServlet extends HttpServlet {
         } */
 
         // log in
-        Identity ids = Identity.instance();
-        ids.getCredentials().setUsername(usr);
-        ids.getCredentials().setPassword(pwd);
+        credentials.setUsername(usr);
+        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(pwd));
 
-        try {
-            ids.authenticate();
-        } catch (LoginException e) {
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
             throw new ServletException(new IllegalArgumentException("Unable to authenticate user."));
         }
-
         log.debug("Successful login");
 
         try {
-            RuleAsset asset = RepositoryServiceServlet.getAssetService().loadRuleAsset(uuid);
+            RuleAsset asset = repositoryAssetService.loadRuleAsset(uuid);
             if (asset.getContent() != null) {
                 response.setContentType("application/xml");
                 response.setCharacterEncoding("UTF-8");

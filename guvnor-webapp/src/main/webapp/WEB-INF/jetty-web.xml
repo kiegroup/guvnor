@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Configure PUBLIC "-//Mort Bay Consulting//DTD Configure//EN"
+    "http://jetty.mortbay.org/configure.dtd">
+<!-- Workaround for servlet injection in Jetty 6 and GWT hosted mode -->
+<Configure id="webAppCtx" class="org.mortbay.jetty.webapp.WebAppContext">
+  <Call class="org.jboss.weld.environment.jetty.WeldServletHandler" name="process">
+    <Arg>
+      <Ref id="webAppCtx"/>
+    </Arg>
+  </Call>
+</Configure>

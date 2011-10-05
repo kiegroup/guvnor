@@ -16,9 +16,11 @@
 
 package org.drools.guvnor.client.perspectives;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -30,6 +32,7 @@ import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
 import org.drools.guvnor.client.perspectives.soa.SOAPerspective;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.util.TabbedPanel;
 
@@ -68,7 +71,15 @@ public class PerspectivesPanel implements Presenter {
         updateGlobalAreaType(perspectiveType);
         setPerspective(clientFactory.getPerspectiveFactory().getPerspective(perspectiveType));        
     }
-    
+
+    public void onLogout() {
+        clientFactory.getSecurityService().logout(new GenericCallback() {
+            public void onSuccess(Object result) {
+                Window.open(GWT.getModuleBaseURL() + "Guvnor.jsp", "_self", "");
+            }
+        });
+    }
+
     public TabbedPanel getTabbedPanel() {
         return view.getTabbedPanel();
     }

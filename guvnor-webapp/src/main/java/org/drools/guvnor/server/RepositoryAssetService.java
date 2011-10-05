@@ -43,50 +43,42 @@ import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.RuleAssetPopulator;
-import org.drools.repository.AssetItem;
-import org.drools.repository.PackageItem;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
-import org.drools.repository.VersionableItem;
-import org.jboss.seam.annotations.AutoCreate;
-import org.jboss.seam.annotations.Create;
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Name;
-import org.jboss.seam.annotations.remoting.WebRemote;
-import org.jboss.seam.annotations.security.Restrict;
+import org.drools.repository.*;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import org.jboss.seam.remoting.annotations.WebRemote;
+import org.jboss.seam.security.annotations.LoggedIn;
+import org.jboss.seam.security.Identity;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
-@Name("org.drools.guvnor.client.rpc.AssetService")
-@AutoCreate
+@Named("org.drools.guvnor.client.rpc.AssetService")
 public class RepositoryAssetService
         implements
         AssetService {
-
-    @In
-    private RulesRepository repository;
 
     private static final long serialVersionUID = 90111;
 
     private static final LoggingHelper log = LoggingHelper.getLogger(RepositoryAssetService.class);
 
-    private final ServiceSecurity serviceSecurity = new ServiceSecurity();
+    @Inject
+    protected RulesRepository rulesRepository;
 
-    private final RepositoryAssetOperations repositoryAssetOperations = new RepositoryAssetOperations();
+    @Inject
+    protected RepositoryAssetOperations repositoryAssetOperations;
 
-    @Create
-    public void create() {
-        repositoryAssetOperations.setRulesRepository(getRulesRepository());
-    }
+    @Inject
+    protected ServiceSecurity serviceSecurity;
 
-    /* This is called in hosted mode when creating "by hand" */
-    public void setRulesRepository(RulesRepository repository) {
-        this.repository = repository;
-        create();
-    }
+    @Inject
+    protected Backchannel backchannel;
+
+    @Inject
+    protected Identity identity;
 
     public RulesRepository getRulesRepository() {
-        return repository;
+        return rulesRepository;
     }
 
     /**
@@ -101,18 +93,17 @@ public class RepositoryAssetService
      * permission to access the package which the asset belongs to.
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public RuleAsset loadRuleAsset(String uuid) throws SerializationException {
 
         long time = System.currentTimeMillis();
 
-        AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
         RuleAsset asset = new RuleAssetPopulator().populateFrom(item);
 
         asset.setMetaData(repositoryAssetOperations.populateMetaData(item));
 
         serviceSecurity.checkIsPackageReadOnlyOrAnalystReadOnly(asset);
-
         PackageItem pkgItem = handlePackageItem(item,
                 asset);
 
@@ -139,13 +130,13 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public RuleAsset[] loadRuleAssets(String[] uuids) throws SerializationException {
         return loadRuleAssets(Arrays.asList(uuids));
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String checkinVersion(RuleAsset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
@@ -154,7 +145,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void restoreVersion(String versionUUID,
                                String assetUUID,
                                String comment) {
@@ -164,10 +155,10 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult loadItemHistory(String uuid) throws SerializationException {
-        //VersionableItem assetItem = getRulesRepository().loadAssetByUUID( uuid );
-        VersionableItem assetItem = getRulesRepository().loadItemByUUID(uuid);
+        //VersionableItem assetItem = rulesRepository.loadAssetByUUID( uuid );
+        VersionableItem assetItem = rulesRepository.loadItemByUUID(uuid);
 
         //serviceSecurity.checkSecurityAssetPackagePackageReadOnly( assetItem );
         return repositoryAssetOperations.loadItemHistory(assetItem);
@@ -177,10 +168,10 @@ public class RepositoryAssetService
      * @deprecated in favour of {@link #loadArchivedAssets(PageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult loadAssetHistory(String packageUUID,
                                             String assetName) throws SerializationException {
-        PackageItem pi = getRulesRepository().loadPackageByUUID(packageUUID);
+        PackageItem pi = rulesRepository.loadPackageByUUID(packageUUID);
         AssetItem assetItem = pi.loadAsset(assetName);
         serviceSecurity.checkSecurityPackageReadOnlyWithPackageUuid(assetItem.getPackage().getUUID());
 
@@ -188,7 +179,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     @Deprecated
     public TableDataResult loadArchivedAssets(int skip,
                                               int numRows) throws SerializationException {
@@ -197,7 +188,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<AdminArchivedPageRow> loadArchivedAssets(PageRequest request) throws SerializationException {
         if (request == null) {
             throw new IllegalArgumentException("request cannot be null");
@@ -213,13 +204,13 @@ public class RepositoryAssetService
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult listAssetsWithPackageName(String packageName,
                                                      String formats[],
                                                      int skip,
                                                      int numRows,
                                                      String tableConfig) throws SerializationException {
-        PackageItem pkg = getRulesRepository().loadPackage(packageName);
+        PackageItem pkg = rulesRepository.loadPackage(packageName);
         return listAssets(pkg.getUUID(),
                 formats,
                 skip,
@@ -231,7 +222,7 @@ public class RepositoryAssetService
      * @deprecated in favour of {@link #findAssetPage(AssetPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult listAssets(String packageUuid,
                                       String formats[],
                                       int skip,
@@ -250,56 +241,56 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String copyAsset(String assetUUID,
                             String newPackage,
                             String newName) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
 
         log.info("USER:" + getCurrentUserName() + " COPYING asset: [" + assetUUID + "] to [" + newName + "] in PACKAGE [" + newPackage + "]");
-        return getRulesRepository().copyAsset(assetUUID,
+        return rulesRepository.copyAsset(assetUUID,
                 newPackage,
                 newName);
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void changeAssetPackage(String uuid,
                                    String newPackage,
                                    String comment) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
-        getRulesRepository().moveRuleItemPackage(newPackage,
+        rulesRepository.moveRuleItemPackage(newPackage,
                 uuid,
                 comment);
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void promoteAssetToGlobalArea(String uuid) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
-        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getPackageName());
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
-        getRulesRepository().moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
+        rulesRepository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String buildAssetSource(RuleAsset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.buildAssetSource(asset);
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String renameAsset(String uuid,
                               String newName) {
-        AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
 
         return repositoryAssetOperations.renameAsset(uuid,
@@ -307,14 +298,14 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void archiveAsset(String uuid) {
         archiveOrUnarchiveAsset(uuid,
                 true);
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public BuilderResult validateAsset(RuleAsset asset) throws SerializationException {
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
         return repositoryAssetOperations.validateAsset(asset);
@@ -326,7 +317,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void archiveAssets(String[] uuids,
                               boolean value) {
         for (String uuid : uuids) {
@@ -336,14 +327,14 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removeAsset(String uuid) {
         try {
-            AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
             serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(item.getPackage().getUUID());
 
             item.remove();
-            getRulesRepository().save();
+            rulesRepository.save();
         } catch (RulesRepositoryException e) {
             log.error("Unable to remove asset.",
                     e);
@@ -352,7 +343,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void removeAssets(String[] uuids) {
         for (String uuid : uuids) {
             removeAsset(uuid);
@@ -360,7 +351,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<AssetPageRow> findAssetPage(AssetPageRequest request) throws SerializationException {
         if (request == null) {
             throw new IllegalArgumentException("request cannot be null");
@@ -373,7 +364,7 @@ public class RepositoryAssetService
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public PageResponse<QueryPageRow> quickFindAsset(QueryPageRequest request) throws SerializationException {
         if (request == null) {
             throw new IllegalArgumentException("request cannot be null");
@@ -389,7 +380,7 @@ public class RepositoryAssetService
      * @deprecated in favour of {@link #quickFindAsset(QueryPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult quickFindAsset(String searchText,
                                           boolean searchArchived,
                                           int skip,
@@ -407,7 +398,7 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#lockAsset(java.lang.String
      * )
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void lockAsset(String uuid) {
         repositoryAssetOperations.lockAsset(uuid);
     }
@@ -419,7 +410,7 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#unLockAsset(java.lang.
      * String)
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void unLockAsset(String uuid) {
         repositoryAssetOperations.unLockAsset(uuid);
     }
@@ -428,7 +419,7 @@ public class RepositoryAssetService
      * @deprecated in favour of {@link ServiceImplementation#queryFullText(QueryPageRequest)}
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public TableDataResult queryFullText(String text,
                                          boolean seekArchived,
                                          int skip,
@@ -459,7 +450,7 @@ public class RepositoryAssetService
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
         try {
-            AssetItem item = getRulesRepository().loadAssetByUUID(uuid);
+            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
             serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
 
             if (item.getPackage().isArchived()) {
@@ -492,28 +483,26 @@ public class RepositoryAssetService
                     pkg.getName());
 
         } catch (RulesRepositoryException e) {
-            log.error("Unable to get item format.",
-                    e);
             throw e;
         }
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public List<DiscussionRecord> addToDiscussionForAsset(String assetId,
                                                           String comment) {
         return repositoryAssetOperations.addToDiscussionForAsset(assetId,
                 comment);
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void clearAllDiscussionsForAsset(final String assetId) {
         serviceSecurity.checkSecurityIsAdmin();
         repositoryAssetOperations.clearAllDiscussionsForAsset(assetId);
     }
 
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public List<DiscussionRecord> loadDiscussionForAsset(String assetId) {
-        return new Discussion().fromString(getRulesRepository().loadAssetByUUID(assetId).getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
+        return new Discussion().fromString(rulesRepository.loadAssetByUUID(assetId).getStringProperty(Discussion.DISCUSSION_PROPERTY_KEY));
     }
 
     /**
@@ -525,10 +514,10 @@ public class RepositoryAssetService
      * to.
      */
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void changeState(String uuid,
                             String newState) {
-        AssetItem asset = getRulesRepository().loadAssetByUUID(uuid);
+        AssetItem asset = rulesRepository.loadAssetByUUID(uuid);
         serviceSecurity.checkIsPackageDeveloperOrAnalyst(asset);
 
         log.info("USER:" + getCurrentUserName() + " CHANGING ASSET STATUS. Asset name, uuid: " + "[" + asset.getName() + ", " + asset.getUUID() + "]" + " to [" + newState + "]");
@@ -543,21 +532,21 @@ public class RepositoryAssetService
         addToDiscussionForAsset(asset.getUUID(),
                 oldState + " -> " + newState);
 
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     @WebRemote
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public void changePackageState(String uuid,
                                    String newState) {
 
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid(uuid);
 
-        PackageItem pkg = getRulesRepository().loadPackageByUUID(uuid);
+        PackageItem pkg = rulesRepository.loadPackageByUUID(uuid);
         log.info("USER:" + getCurrentUserName() + " CHANGING Package STATUS. Asset name, uuid: " + "[" + pkg.getName() + ", " + pkg.getUUID() + "]" + " to [" + newState + "]");
         pkg.changeStatus(newState);
 
-        getRulesRepository().save();
+        rulesRepository.save();
     }
 
     /*
@@ -567,12 +556,12 @@ public class RepositoryAssetService
      * org.drools.guvnor.client.rpc.RepositoryService#getAssetLockerUserName
      * (java.lang.String)
      */
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public String getAssetLockerUserName(String uuid) {
         return repositoryAssetOperations.getAssetLockerUserName(uuid);
     }
     
-    @Restrict("#{identity.loggedIn}")
+    @LoggedIn
     public long getAssetCount(AssetPageRequest request) throws SerializationException {
         if (request == null) {
             throw new IllegalArgumentException("request cannot be null");
@@ -582,7 +571,7 @@ public class RepositoryAssetService
 
     private void push(String messageType,
                       String message) {
-        Backchannel.getInstance().publish(new PushResponse(messageType,
+        backchannel.publish(new PushResponse(messageType,
                 message));
     }
 
@@ -591,7 +580,7 @@ public class RepositoryAssetService
     }
 
     private String getCurrentUserName() {
-        return getRulesRepository().getSession().getUserID();
+        return rulesRepository.getSession().getUserID();
     }
 
 }

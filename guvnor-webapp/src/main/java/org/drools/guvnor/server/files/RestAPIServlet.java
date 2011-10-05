@@ -16,12 +16,9 @@
 
 package org.drools.guvnor.server.files;
 
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
 import org.drools.repository.RulesRepository;
 import org.drools.repository.remoteapi.Response;
 import org.drools.repository.remoteapi.RestAPI;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,28 +136,8 @@ public class RestAPIServlet extends RepositoryServlet {
                 });
     }
 
-    /**
-     * Get a repository instance.
-     * This will use the Seam identity component, or it will just
-     * return a repo for test puposes if seam is not active.
-     */
-    static RulesRepository getRepository() {
-        if (Contexts.isApplicationContextActive()) {
-            return (RulesRepository) Component.getInstance("repository");
-        } else {
-            try {
-                return new RulesRepository(TestEnvironmentSessionHelper.getSession(false));
-            } catch (Exception e) {
-                throw new IllegalStateException("Unable to get repo to run tests",
-                        e);
-            }
-
-        }
-
-    }
-
     RestAPI getAPI() {
-        return new RestAPI(getRepository());
+        return new RestAPI(rulesRepository);
     }
 
 }

@@ -29,28 +29,17 @@ import static org.mockito.Mockito.*;
 public class ConfigurationServiceImplementationTest extends GuvnorTestBase {
 
     private ConfigurationService configurationService;
-    private RulesRepository rulesRepository;
 
     @Before
-    public void setUpGuvnorTestBase() {
-        setUpSeam();
-        setUpRepository();
-        ServiceImplementation impl = getServiceImplementation();
-        rulesRepository = spy(impl.getRulesRepository());
-        createConfigurationService();
-    }
-
-    private void createConfigurationService() {
-        ConfigurationServiceImplementation configurationServiceImplementation = spy(new ConfigurationServiceImplementation());
-        when(configurationServiceImplementation.getRepository()).thenReturn(rulesRepository);
-        configurationService = configurationServiceImplementation;
+    public void setUpConfigurationService() {
+        configurationService = new ConfigurationServiceImplementation();
     }
 
     @Test
     public void testLoadApplicationPreferences() throws Exception {
-        setUpMockIdentity();
         Map<String, String> preferences = configurationService.loadPreferences();
 
         assertNotNull(preferences);
     }
+
 }

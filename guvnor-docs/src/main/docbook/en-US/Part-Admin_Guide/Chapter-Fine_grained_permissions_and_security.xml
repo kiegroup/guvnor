@@ -58,7 +58,7 @@
   There are really two system wide roles: Users who are Administrators and users who are not. Administrators
   can see and do anything. Out of the box, the permission system is turned off, and every user is an
   administrator (this is pretty much how things used to work). There is also a system setting in
-  <filename>components.xml</filename> that can turn the permissions system on and off (so people can manually
+  <filename>beans.xml</filename> that can turn the permissions system on and off (so people can manually
   override if needs be). A administrator can also give other users admin rights, regardless of their roles in
   the external directory service.
   </para>
@@ -110,12 +110,13 @@
       <title>Enabling fine grained authorization</title>
 
       <para>
-      By default authorization is not enabled. To enable it, edit the <filename>components.xml</filename> file
+      By default authorization is NOT enabled. To enable it, edit the <filename>beans.xml</filename> file
       in the <filename>WEB-INF</filename> directory:
       </para>
 
     <programlisting language="XML"><![CDATA[<component name="org.jboss.seam.security.roleBasedPermissionResolver">;
-   <property name="enableRoleBasedAuthorization">false</property>
+  <s:modifies/>
+  <property name="enableRoleBasedAuthorization">true</property>
 </component>]]></programlisting>
 
   </section>

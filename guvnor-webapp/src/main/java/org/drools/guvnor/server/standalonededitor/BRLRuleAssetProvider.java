@@ -41,10 +41,13 @@ public class BRLRuleAssetProvider
     private final String packageName;
     private final String[] initialBRLs;
 
+    private final RepositoryAssetService repositoryAssetService;
+
     public BRLRuleAssetProvider(String packageName,
-                                String[] initialBRLs) {
+                                String[] initialBRLs, RepositoryAssetService repositoryAssetService) {
         this.packageName = packageName;
         this.initialBRLs = initialBRLs;
+        this.repositoryAssetService = repositoryAssetService;
     }
 
     public RuleAsset[] getRuleAssets() throws DetailedSerializationException {
@@ -67,7 +70,7 @@ public class BRLRuleAssetProvider
         } catch (Exception e) {
             //if something failed, delete the generated assets
             for (RuleAsset ruleAsset : assets) {
-                this.getAssetService().removeAsset(ruleAsset.getUuid());
+                repositoryAssetService.removeAsset(ruleAsset.getUuid());
             }
 
             if (e instanceof DetailedSerializationException) {
@@ -84,7 +87,7 @@ public class BRLRuleAssetProvider
     private RuleAsset createAsset(RuleModel ruleModel) {
         RuleAsset asset = new RuleAsset();
 
-        asset.setUuid("mock-"+UUID.randomUUID().toString());
+        asset.setUuid("mock-" + UUID.randomUUID().toString());
         asset.setContent(ruleModel);
         asset.setName(ruleModel.name);
         asset.setFormat(AssetFormats.BUSINESS_RULE);
@@ -101,10 +104,6 @@ public class BRLRuleAssetProvider
         metaData.setPackageUUID("mock");
 
         return metaData;
-    }
-
-    private RepositoryAssetService getAssetService() {
-        return RepositoryServiceServlet.getAssetService();
     }
 
 }

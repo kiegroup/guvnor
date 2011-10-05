@@ -24,7 +24,9 @@ import org.apache.abdera.model.Link;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemPageResult;
-import org.jboss.seam.annotations.Name;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -46,8 +48,9 @@ import static org.drools.guvnor.server.jaxrs.Translator.toAssetEntryAbdera;
 import org.jboss.resteasy.plugins.providers.atom.Feed;
 import org.jboss.resteasy.plugins.providers.atom.Link;*/
 
-@Name("CategoryResource")
 @Path("/categories")
+@RequestScoped
+@Named
 public class CategoryResource extends Resource {
 
     private static final String Encoding = "UTF-8";
@@ -65,7 +68,7 @@ public class CategoryResource extends Resource {
             String decoded = URLDecoder.decode(encoded, Encoding);
             UriBuilder builder = uriInfo.getAbsolutePathBuilder();
             f.setTitle(encoded);
-            AssetItemPageResult result = repository.findAssetsByCategory(
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(
                     decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             for (AssetItem item : assets) {
@@ -94,7 +97,7 @@ public class CategoryResource extends Resource {
 
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
-            AssetItemPageResult result = repository.findAssetsByCategory(decoded, 0, pageSize);
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(decoded, 0, pageSize);
             List<AssetItem> assets = result.assets;
             if (assets.size() > 0) {
                 ret = new ArrayList<Asset>();
@@ -150,7 +153,7 @@ public class CategoryResource extends Resource {
         try {
             String decoded = URLDecoder.decode(encoded, Encoding);
             int p = new Integer(page);
-            AssetItemPageResult result = repository.findAssetsByCategory(
+            AssetItemPageResult result = rulesRepository.findAssetsByCategory(
                     decoded, p, pageSize);
             List<AssetItem> assets = result.assets;
             if (assets.size() > 0) {

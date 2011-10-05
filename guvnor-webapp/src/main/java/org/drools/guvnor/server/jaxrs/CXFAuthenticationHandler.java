@@ -17,6 +17,8 @@
 package org.drools.guvnor.server.jaxrs;
 
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
@@ -26,51 +28,48 @@ import org.apache.cxf.configuration.security.AuthorizationPolicy;
 import org.apache.cxf.jaxrs.ext.RequestHandler;
 import org.apache.cxf.jaxrs.model.ClassResourceInfo;
 import org.apache.cxf.message.Message;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.Identity;
 
 @Provider
+@ApplicationScoped
 public class CXFAuthenticationHandler implements RequestHandler {
 
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private Credentials credentials;
+
+    // TODO HACK: the @Inject stuff doesn't actually work, but is faked in HackInjectCXFNonSpringJaxrsServlet
+    protected void inject(Identity identity, Credentials credentials) {
+        this.identity = identity;
+        this.credentials = credentials;
+    }
+
     public Response handleRequest(Message m, ClassResourceInfo resourceClass) {
-        if (Contexts.isApplicationContextActive()) {
-            //If the request is from same session, the user should be logged already.
-            Identity ids = Identity.instance();
-            if (ids.isLoggedIn()) {
-                return null;
-            }
-
-            AuthorizationPolicy policy = (AuthorizationPolicy) m
-                    .get(AuthorizationPolicy.class);
-
-            // The policy can be null when the user did not specify credentials
-            if (policy != null) {
-                String username = policy.getUserName();
-                String password = policy.getPassword();
-
-                ids.getCredentials().setUsername(username);
-                ids.getCredentials().setPassword(password);
-            }
-
-            try {
-                ids.authenticate();
-                return null;
-            } catch (LoginException e) {
-                e.printStackTrace();
-                throw new WebApplicationException(getErrorResponse());
-            }
-        } else {
-            // NOTE THIS IS MY HACKERY TO GET IT WORKING IN GWT HOSTED MODE.
-            AuthorizationPolicy policy = (AuthorizationPolicy) m
-                    .get(AuthorizationPolicy.class);
-
-            if (policy == null || (("test").equals(policy.getUserName())
-                    && ("password").equals(policy.getPassword()))) {
-                return null;
-            } else {
-                throw new WebApplicationException(getErrorResponse());
-            }
+        // If the request is from same session, the user should be logged already.
+        if (identity.isLoggedIn()) {
+            return null;
         }
+
+        AuthorizationPolicy policy = (AuthorizationPolicy) m.get(AuthorizationPolicy.class);
+
+        // The policy can be null when the user did not specify credentials
+        if (policy != null) {
+            String username = policy.getUserName();
+            String password = policy.getPassword();
+
+            credentials.setUsername(username);
+            credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
+        }
+
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
+            throw new WebApplicationException(getErrorResponse());
+        }
+        return null;
     }
     
     private Response getErrorResponse() {

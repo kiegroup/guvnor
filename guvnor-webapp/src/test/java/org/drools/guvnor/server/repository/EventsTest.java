@@ -34,9 +34,7 @@ public class EventsTest extends GuvnorTestBase {
         System.setProperty( "guvnor.saveEventListener",
                             "org.drools.guvnor.server.repository.SampleSaveEvent" );
 
-        ServiceImplementation impl = getServiceImplementation();
-
-        PackageItem pkg = impl.getRulesRepository().createPackage( "testLoadSaveEvents",
+        PackageItem pkg = rulesRepository.createPackage( "testLoadSaveEvents",
                                                                    "" );
         AssetItem asset = pkg.addAsset( "testLoadSaveEvent",
                                         "" );

@@ -36,6 +36,8 @@ public interface SecurityService extends RemoteService {
      */
     public boolean login(String userName, String password);
 
+    public void logout();
+
     /**
      * @return This returns the current user's name if they are logged in. If not
      *         then null is returned (inside a context). Will also return some other handy stuff for
@@ -49,4 +51,5 @@ public interface SecurityService extends RemoteService {
      * Based on the users roles and permissions.
      */
     public List<Capability> getUserCapabilities();
+
 }

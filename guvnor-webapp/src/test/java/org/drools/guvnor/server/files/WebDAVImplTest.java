@@ -29,6 +29,8 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.inject.Inject;
+
 import net.sf.webdav.ITransaction;
 
 import org.apache.commons.io.IOUtils;
@@ -41,28 +43,30 @@ import org.junit.Test;
 
 public class WebDAVImplTest extends GuvnorTestBase {
 
+    @Inject
+    protected WebDAVImpl webDAV;
+
     @Test
     public void testPath() {
-        WebDAVImpl imp = new WebDAVImpl( new File( "" ) );
-        String[] path = imp.getPath( "http://goober/whee/webdav/packages/packagename/resource.drl",
+        String[] path = webDAV.getPath( "http://goober/whee/webdav/packages/packagename/resource.drl",
                                      true );
-        assertEquals( "packages",
-                      path[0] );
+        assertEquals("packages",
+                path[0]);
         assertEquals( "packagename",
                       path[1] );
         assertEquals( "resource.drl",
                       path[2] );
 
-        path = imp.getPath( "foo/webdav",
+        path = webDAV.getPath( "foo/webdav",
                             true );
         assertEquals( 0,
                       path.length );
 
-        path = imp.getPath( "/" );
+        path = webDAV.getPath( "/" );
         assertEquals( 0,
                       path.length );
 
-        path = imp.getPath( "/packages/packagename/resource.drl" );
+        path = webDAV.getPath( "/packages/packagename/resource.drl" );
         assertEquals( "packages",
                       path[0] );
         assertEquals( "packagename",
@@ -74,34 +78,33 @@ public class WebDAVImplTest extends GuvnorTestBase {
     //GUVNOR-669
     @Test
     public void testPathContainsWebdav() {
-        WebDAVImpl imp = new WebDAVImpl( new File( "" ) );
-        String[] path = imp.getPath( "http://goober/whee/webdav/packages/ssswebdavss/resource.drl",
+        String[] path = webDAV.getPath( "http://goober/whee/webdav/packages/ssswebdavss/resource.drl",
                                      true );
-        assertEquals( "packages",
-                      path[0] );
+        assertEquals("packages",
+                path[0]);
         assertEquals( "ssswebdavss",
                       path[1] );
         assertEquals( "resource.drl",
                       path[2] );
 
-        path = imp.getPath( "foo/webdav",
+        path = webDAV.getPath( "foo/webdav",
                             true );
         assertEquals( 0,
                       path.length );
 
-        path = imp.getPath( "/" );
+        path = webDAV.getPath( "/" );
         assertEquals( 0,
                       path.length );
 
-        path = imp.getPath( "/packages/ssswebdavss/resource.drl" );
-        assertEquals( "packages",
-                      path[0] );
+        path = webDAV.getPath( "/packages/ssswebdavss/resource.drl" );
+        assertEquals("packages",
+                path[0]);
         assertEquals( "ssswebdavss",
                       path[1] );
         assertEquals( "resource.drl",
                       path[2] );
 
-        path = imp.getPath( "http://goober/whee/webdav/packages/webdav/resource.drl",
+        path = webDAV.getPath( "http://goober/whee/webdav/packages/webdav/resource.drl",
                             true );
         assertEquals( "packages",
                       path[0] );
@@ -110,7 +113,7 @@ public class WebDAVImplTest extends GuvnorTestBase {
         assertEquals( "resource.drl",
                       path[2] );
 
-        path = imp.getPath( "/packages/webdav/resource.drl" );
+        path = webDAV.getPath( "/packages/webdav/resource.drl" );
         assertEquals( "packages",
                       path[0] );
         assertEquals( "webdav",
@@ -124,9 +127,8 @@ public class WebDAVImplTest extends GuvnorTestBase {
         //OSX does stupid shit when copying in the same directory
         //for instance, it creates the copy as foobar.x copy - totally hosing
         //the file extension.
-        WebDAVImpl imp = new WebDAVImpl( new File( "" ) );
         try {
-            imp.objectExists( "/foo/webdav/packages/foobar/Something.drl copy 42" );
+            webDAV.objectExists("/foo/webdav/packages/foobar/Something.drl copy 42");
             fail( "should not be allowed" );
         } catch ( IllegalArgumentException e ) {
             assertNotNull( e.getMessage() );
@@ -136,97 +138,77 @@ public class WebDAVImplTest extends GuvnorTestBase {
 
     @Test
     public void testChildrenNames() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            RulesRepository repo = imp.getRepo();
-            String[] children = imp.getChildrenNames( new TransactionMock(),
-                                                      "/packages" );
-            assertTrue( children.length > 0 );
-            int packageCount = children.length;
+        String[] children = webDAV.getChildrenNames( new TransactionMock(),
+                                                  "/packages" );
+        assertTrue(children.length > 0);
+        int packageCount = children.length;
 
-            PackageItem pkg = repo.createPackage( "testWebDavChildNames1",
-                                                  "" );
-            repo.createPackage( "testWebDavChildNames2",
-                                "" );
-            repo.save();
-            children = imp.getChildrenNames( new TransactionMock(),
-                                             "/packages" );
-            assertEquals( packageCount + 2,
-                          children.length );
-            assertContains( "testWebDavChildNames1",
-                            children );
-            assertContains( "testWebDavChildNames2",
-                            children );
+        PackageItem pkg = rulesRepository.createPackage( "testWebDavChildNames1",
+                                              "" );
+        rulesRepository.createPackage("testWebDavChildNames2",
+                "");
+        rulesRepository.save();
+        children = webDAV.getChildrenNames( new TransactionMock(),
+                                         "/packages" );
+        assertEquals( packageCount + 2,
+                      children.length );
+        assertContains("testWebDavChildNames1",
+                children);
+        assertContains("testWebDavChildNames2",
+                children);
 
-            AssetItem asset = pkg.addAsset( "asset1",
-                                            "something" );
-            asset.updateFormat( "drl" );
-            asset.checkin( "" );
-            asset = pkg.addAsset( "asset2",
-                                  "something" );
-            asset.updateFormat( "dsl" );
-            asset.checkin( "" );
+        AssetItem asset = pkg.addAsset( "asset1",
+                                        "something" );
+        asset.updateFormat("drl");
+        asset.checkin("");
+        asset = pkg.addAsset( "asset2",
+                              "something" );
+        asset.updateFormat("dsl");
+        asset.checkin( "" );
 
-            children = imp.getChildrenNames( new TransactionMock(),
-                                             "/packages/testWebDavChildNames1" );
-            assertEquals( 2,
-                          children.length );
-            assertEquals( "asset1.drl",
-                          children[0] );
-            assertEquals( "asset2.dsl",
-                          children[1] );
+        children = webDAV.getChildrenNames( new TransactionMock(),
+                                         "/packages/testWebDavChildNames1" );
+        assertEquals(2,
+                children.length);
+        assertEquals( "asset1.drl",
+                      children[0] );
+        assertEquals("asset2.dsl",
+                children[1]);
 
-            children = imp.getChildrenNames( new TransactionMock(),
-                                             "/packages/testWebDavChildNames1/asset1.drl" );
-            assertNull( children );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        children = webDAV.getChildrenNames( new TransactionMock(),
+                                         "/packages/testWebDavChildNames1/asset1.drl" );
+        assertNull( children );
     }
 
     @Test
     public void testCreateFolder() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
+        String[] children = webDAV.getChildrenNames( new TransactionMock(),
+                                                  "/packages" );
+        int packageCount = children.length;
+
+        webDAV.createFolder(new TransactionMock(),
+                "/packages/testCreateWebDavFolder");
+        children = webDAV.getChildrenNames( new TransactionMock(),
+                                         "/packages" );
+
+        assertEquals( packageCount + 1,
+                      children.length );
+        assertContains("testCreateWebDavFolder",
+                children);
+
+        PackageItem pkg = rulesRepository.loadPackage( "testCreateWebDavFolder" );
+        assertNotNull( pkg );
+
+        pkg.addAsset( "someAsset",
+                      "" );
+
         try {
-            RulesRepository repo = imp.getRepo();
-            String[] children = imp.getChildrenNames( new TransactionMock(),
-                                                      "/packages" );
-            int packageCount = children.length;
-
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testCreateWebDavFolder" );
-            children = imp.getChildrenNames( new TransactionMock(),
-                                             "/packages" );
-
-            assertEquals( packageCount + 1,
-                          children.length );
-            assertContains( "testCreateWebDavFolder",
-                            children );
-
-            PackageItem pkg = repo.loadPackage( "testCreateWebDavFolder" );
-            assertNotNull( pkg );
-
-            pkg.addAsset( "someAsset",
-                          "" );
-
-            try {
-                imp.createFolder( new TransactionMock(),
-                                  "/somethingElse" );
-                fail( "this should not work !" );
-            } catch ( UnsupportedOperationException e ) {
-                assertNotNull( e.getMessage() );
-            }
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
+            webDAV.createFolder(new TransactionMock(),
+                    "/somethingElse");
+            fail( "this should not work !" );
+        } catch ( UnsupportedOperationException e ) {
+            assertNotNull( e.getMessage() );
         }
-
     }
 
     @Test
@@ -237,270 +219,197 @@ public class WebDAVImplTest extends GuvnorTestBase {
                 assertNotNull( imp.getLastModified( uri ) );*/
 
         String uri = "/packages";
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertNotNull( imp.getCreationDate( uri ) );
-            assertNotNull( imp.getLastModified( uri ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        assertNotNull(webDAV.getCreationDate(uri));
+        assertNotNull( webDAV.getLastModified( uri ) );
     }
 
     @Test
     public void testCreateResourceAndCreatedDate() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testCreateResourceAndCreatedDate" );
+
+        Thread.sleep( 100 );
+
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/testCreateResourceAndCreatedDate/asset.drl" );
+
+        String[] resources = webDAV.getChildrenNames( new TransactionMock(),
+                                                   "/packages/testCreateResourceAndCreatedDate" );
+        assertEquals( 1,
+                      resources.length );
+        assertEquals( "asset.drl",
+                      resources[0] );
+
+        //should be ignored
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/testCreateResourceAndCreatedDate/._asset.drl" );
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/.DS_Store" );
+
+        PackageItem pkg = rulesRepository.loadPackage( "testCreateResourceAndCreatedDate" );
+        assertFalse( pkg.containsAsset( "._asset" ) );
+        assertTrue( pkg.containsAsset( "asset" ) );
+
+        Iterator<AssetItem> it = pkg.getAssets();
+        AssetItem ass = it.next();
+        assertEquals( "asset",
+                      ass.getName() );
+        assertEquals( "drl",
+                      ass.getFormat() );
+
+        Date create = webDAV.getCreationDate( "/packages/testCreateResourceAndCreatedDate" );
+        assertNotNull( create );
+        assertTrue( create.after( new Date( "10-Jul-1974" ) ) );
+
+        Date assetCreate = webDAV.getCreationDate( "/packages/testCreateResourceAndCreatedDate/asset.drl" );
+        assertTrue( assetCreate.after( create ) );
+
+        Date lm = webDAV.getLastModified( "/packages/testCreateResourceAndCreatedDate" );
+        assertNotNull( lm );
+        assertTrue( lm.after( new Date( "10-Jul-1974" ) ) );
+
+        Date alm = webDAV.getLastModified( "/packages/testCreateResourceAndCreatedDate/asset.drl" );
+        assertTrue( alm.after( lm ) );
+
         try {
-            RulesRepository repo = imp.getRepo();
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testCreateResourceDAVFolder" );
-
-            Thread.sleep( 100 );
-
-            imp.createResource( new TransactionMock(),
-                                "/packages/testCreateResourceDAVFolder/asset.drl" );
-
-            String[] resources = imp.getChildrenNames( new TransactionMock(),
-                                                       "/packages/testCreateResourceDAVFolder" );
-            assertEquals( 1,
-                          resources.length );
-            assertEquals( "asset.drl",
-                          resources[0] );
-
-            //should be ignored
-            imp.createResource( new TransactionMock(),
-                                "/packages/testCreateResourceDAVFolder/._asset.drl" );
-            imp.createResource( new TransactionMock(),
-                                "/packages/.DS_Store" );
-
-            PackageItem pkg = repo.loadPackage( "testCreateResourceDAVFolder" );
-            assertFalse( pkg.containsAsset( "._asset" ) );
-            assertTrue( pkg.containsAsset( "asset" ) );
-
-            Iterator<AssetItem> it = pkg.getAssets();
-            AssetItem ass = it.next();
-            assertEquals( "asset",
-                          ass.getName() );
-            assertEquals( "drl",
-                          ass.getFormat() );
-
-            Date create = imp.getCreationDate( "/packages/testCreateResourceDAVFolder" );
-            assertNotNull( create );
-            assertTrue( create.after( new Date( "10-Jul-1974" ) ) );
-
-            Date assetCreate = imp.getCreationDate( "/packages/testCreateResourceDAVFolder/asset.drl" );
-            assertTrue( assetCreate.after( create ) );
-
-            Date lm = imp.getLastModified( "/packages/testCreateResourceDAVFolder" );
-            assertNotNull( lm );
-            assertTrue( lm.after( new Date( "10-Jul-1974" ) ) );
-
-            Date alm = imp.getLastModified( "/packages/testCreateResourceDAVFolder/asset.drl" );
-            assertTrue( alm.after( lm ) );
-
-            try {
-                imp.createResource( new TransactionMock(),
-                                    "/hummer.drl" );
-                fail( "Shouldn't be able to do this" );
-            } catch ( UnsupportedOperationException e ) {
-                assertNotNull( e.getMessage() );
-            }
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
+            webDAV.createResource( new TransactionMock(),
+                                "/hummer.drl" );
+            fail( "Shouldn't be able to do this" );
+        } catch ( UnsupportedOperationException e ) {
+            assertNotNull( e.getMessage() );
         }
-
     }
 
     @Test
     public void testResourceContent() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            RulesRepository repo = imp.getRepo();
-            PackageItem pkg = repo.createPackage( "testWebDAVContent",
-                                                  "" );
+        PackageItem pkg = rulesRepository.createPackage( "testWebDAVContent",
+                                              "" );
 
-            AssetItem asset = pkg.addAsset( "asset",
-                                            "something" );
-            asset.updateFormat( "drl" );
-            asset.updateContent( "Some content" );
-            asset.checkin( "" );
-            InputStream data = imp.getResourceContent( new TransactionMock(),
-                                                       "/packages/testWebDAVContent/asset.drl" );
-            assertEquals( "Some content",
-                          IOUtils.toString( data ) );
+        AssetItem asset = pkg.addAsset("asset",
+                "something");
+        asset.updateFormat( "drl" );
+        asset.updateContent("Some content");
+        asset.checkin("");
+        InputStream data = webDAV.getResourceContent( new TransactionMock(),
+                                                   "/packages/testWebDAVContent/asset.drl" );
+        assertEquals( "Some content",
+                      IOUtils.toString( data ) );
 
-            asset = pkg.addAsset( "asset2",
-                                  "something" );
-            asset.updateFormat( "xls" );
-            asset.updateBinaryContentAttachment( IOUtils.toInputStream( "This is binary" ) );
-            asset.checkin( "" );
+        asset = pkg.addAsset( "asset2",
+                              "something" );
+        asset.updateFormat("xls");
+        asset.updateBinaryContentAttachment( IOUtils.toInputStream( "This is binary" ) );
+        asset.checkin("");
 
-            data = imp.getResourceContent( new TransactionMock(),
-                                           "/packages/testWebDAVContent/asset2.xls" );
-            assertEquals( "This is binary",
-                          IOUtils.toString( data ) );
+        data = webDAV.getResourceContent( new TransactionMock(),
+                                       "/packages/testWebDAVContent/asset2.xls" );
+        assertEquals("This is binary",
+                IOUtils.toString(data));
 
-            AssetItem asset_ = pkg.addAsset( "somethingelse",
-                                             "" );
-            asset_.updateFormat( "drl" );
-            asset_.checkin( "" );
+        AssetItem asset_ = pkg.addAsset( "somethingelse",
+                                         "" );
+        asset_.updateFormat("drl");
+        asset_.checkin("");
 
-            data = imp.getResourceContent( new TransactionMock(),
-                                           "/packages/testWebDAVContent/somethingelse.drl" );
-            assertEquals( "",
-                          IOUtils.toString( data ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        data = webDAV.getResourceContent( new TransactionMock(),
+                                       "/packages/testWebDAVContent/somethingelse.drl" );
+        assertEquals( "",
+                      IOUtils.toString( data ) );
     }
 
     @Test
     public void testIsFolder() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertTrue( imp.isFolder( "/packages" ) );
-            assertTrue( imp.isFolder( "/packages/" ) );
-            assertFalse( imp.isFolder( "/packages/somePackage" ) );
+        assertTrue(webDAV.isFolder("/packages"));
+        assertTrue( webDAV.isFolder( "/packages/" ) );
+        assertFalse(webDAV.isFolder("/packages/somePackage"));
 
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDAVIsFolder" );
-            assertTrue( imp.isFolder( "/packages/testDAVIsFolder" ) );
-            assertFalse( imp.isFolder( "/packages/somePackage/SomeFile.drl" ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDAVIsFolder" );
+        assertTrue(webDAV.isFolder("/packages/testDAVIsFolder"));
+        assertFalse( webDAV.isFolder( "/packages/somePackage/SomeFile.drl" ) );
     }
 
     @Test
     public void testIsResource() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertFalse( imp.isResource( "/packages" ) );
-            assertFalse( imp.isResource( "/packages/somePackage" ) );
-            assertFalse( imp.isResource( "/packages/somePackage/SomeFile.drl" ) );
+        assertFalse(webDAV.isResource("/packages"));
+        assertFalse( webDAV.isResource( "/packages/somePackage" ) );
+        assertFalse(webDAV.isResource("/packages/somePackage/SomeFile.drl"));
 
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDAVIsResource" );
-            imp.createResource( new TransactionMock(),
-                                "/packages/testDAVIsResource/SomeFile.drl" );
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDAVIsResource" );
+        webDAV.createResource(new TransactionMock(),
+                "/packages/testDAVIsResource/SomeFile.drl");
 
-            assertTrue( imp.isResource( "/packages/testDAVIsResource/SomeFile.drl" ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        assertTrue( webDAV.isResource( "/packages/testDAVIsResource/SomeFile.drl" ) );
     }
 
     @Test
     public void testResourceLength() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertEquals( 0,
-                          imp.getResourceLength( new TransactionMock(),
-                                                 "/webdav/packages" ) );
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testResourceLengthDAV" );
-            imp.createResource( new TransactionMock(),
-                                "/packages/testResourceLengthDAV/testResourceLength" );
-            assertEquals( 0,
-                          imp.getResourceLength( new TransactionMock(),
-                                                 "/packages/testResourceLengthDAV/testResourceLength" ) );
-            imp.setResourceContent( new TransactionMock(),
-                                    "/packages/testResourceLengthDAV/testResourceLength",
-                                    IOUtils.toInputStream( "some input" ),
-                                    null,
-                                    null );
-            assertEquals( "some input".getBytes().length,
-                          imp.getResourceLength( new TransactionMock(),
-                                                 "/packages/testResourceLengthDAV/testResourceLength" ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        assertEquals(0,
+                webDAV.getResourceLength(new TransactionMock(),
+                        "/webdav/packages"));
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testResourceLengthDAV" );
+        webDAV.createResource(new TransactionMock(),
+                "/packages/testResourceLengthDAV/testResourceLength");
+        assertEquals(0,
+                webDAV.getResourceLength(new TransactionMock(),
+                        "/packages/testResourceLengthDAV/testResourceLength"));
+        webDAV.setResourceContent(new TransactionMock(),
+                "/packages/testResourceLengthDAV/testResourceLength",
+                IOUtils.toInputStream("some input"),
+                null,
+                null);
+        assertEquals( "some input".getBytes().length,
+                      webDAV.getResourceLength( new TransactionMock(),
+                                             "/packages/testResourceLengthDAV/testResourceLength" ) );
     }
 
     @Test
     public void testObjectExists() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertTrue( imp.objectExists( "/packages" ) );
+        assertTrue(webDAV.objectExists("/packages"));
 
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavObjectExists" );
-            assertTrue( imp.objectExists( "/packages/testDavObjectExists" ) );
-            assertFalse( imp.objectExists( "/packages/testDavObjectExistsXXXX" ) );
-            assertFalse( imp.objectExists( "/packages/testDavObjectExists/foobar.drl" ) );
-            assertFalse( imp.objectExists( "/packages/testDavObjectExistsXXXX/foobar.drl" ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDavObjectExists" );
+        assertTrue(webDAV.objectExists("/packages/testDavObjectExists"));
+        assertFalse(webDAV.objectExists("/packages/testDavObjectExistsXXXX"));
+        assertFalse( webDAV.objectExists( "/packages/testDavObjectExists/foobar.drl" ) );
+        assertFalse(webDAV.objectExists("/packages/testDavObjectExistsXXXX/foobar.drl"));
     }
 
     @Test
     public void testRemoveObject() throws Exception {
-        WebDAVImpl imp = getWebDAVImpl();
-        try {
-            assertFalse( imp.objectExists( "/packages/testDavRemoveObjectFolder" ) );
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavRemoveObjectFolder" );
-            assertTrue( imp.objectExists( "/packages/testDavRemoveObjectFolder" ) );
-            imp.removeObject( new TransactionMock(),
-                              "/packages/testDavRemoveObjectFolder" );
-            assertFalse( imp.objectExists( "/packages/testDavRemoveObjectFolder" ) );
+        assertFalse( webDAV.objectExists( "/packages/testDavRemoveObjectFolder" ) );
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDavRemoveObjectFolder" );
+        assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectFolder" ) );
+        webDAV.removeObject( new TransactionMock(),
+                          "/packages/testDavRemoveObjectFolder" );
+        assertFalse( webDAV.objectExists( "/packages/testDavRemoveObjectFolder" ) );
 
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavRemoveObjectAsset" );
-            imp.createResource( new TransactionMock(),
-                                "/packages/testDavRemoveObjectAsset/asset.drl" );
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDavRemoveObjectAsset" );
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/testDavRemoveObjectAsset/asset.drl" );
 
-            AssetItem as = imp.getRepo().loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
-            long origVer = as.getVersionNumber();
+        AssetItem as = rulesRepository.loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
+        long origVer = as.getVersionNumber();
 
-            assertTrue( imp.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
-            imp.removeObject( new TransactionMock(),
-                              "/packages/testDavRemoveObjectAsset/asset.drl" );
-            assertFalse( imp.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
-            assertTrue( imp.objectExists( "/packages/testDavRemoveObjectAsset" ) );
+        assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
+        webDAV.removeObject( new TransactionMock(),
+                          "/packages/testDavRemoveObjectAsset/asset.drl" );
+        assertFalse( webDAV.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
+        assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectAsset" ) );
 
-            imp.createResource( new TransactionMock(),
-                                "/packages/testDavRemoveObjectAsset/asset.drl" );
-            assertTrue( imp.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/testDavRemoveObjectAsset/asset.drl" );
+        assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectAsset/asset.drl" ) );
 
-            as = imp.getRepo().loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
-            assertTrue( as.getVersionNumber() > origVer );
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavRemoveObjectFolder" );
-            assertTrue( imp.objectExists( "/packages/testDavRemoveObjectFolder" ) );
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
-        }
-
+        as = rulesRepository.loadPackage( "testDavRemoveObjectAsset" ).loadAsset( "asset" );
+        assertTrue( as.getVersionNumber() > origVer );
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDavRemoveObjectFolder" );
+        assertTrue( webDAV.objectExists( "/packages/testDavRemoveObjectFolder" ) );
     }
 
     @Test
@@ -513,85 +422,80 @@ public class WebDAVImplTest extends GuvnorTestBase {
         final String CONTENT2 = "some more input";
         final String EXPECTED_CONTENT2 = CONTENT2 + "\n";
 
-        WebDAVImpl imp = getWebDAVImpl();
         try {
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testSetDavContent" );
+            webDAV.createFolder(new TransactionMock(),
+                    "/packages/testSetDavContent");
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            imp.createResource( new TransactionMock(),
+            webDAV.createResource( new TransactionMock(),
                                 "/packages/testSetDavContent/Something.drl" );
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            imp.setResourceContent( new TransactionMock(),
+            webDAV.setResourceContent( new TransactionMock(),
                                     "/packages/testSetDavContent/Something.drl",
                                     IOUtils.toInputStream( CONTENT1 ),
                                     null,
                                     null );
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            imp.getResourceContent( new TransactionMock(),
-                                    "/packages/testSetDavContent/Something.drl" );
+            webDAV.getResourceContent(new TransactionMock(),
+                    "/packages/testSetDavContent/Something.drl");
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            AssetItem as = imp.getRepo().loadPackage( "testSetDavContent" ).loadAsset( "Something" );
-            assertTrue( as.isBinary() );
+            AssetItem as = rulesRepository.loadPackage("testSetDavContent").loadAsset( "Something" );
+            assertTrue(as.isBinary());
 
-            String result = IOUtils.toString( imp.getResourceContent( new TransactionMock(),
+            String result = IOUtils.toString( webDAV.getResourceContent( new TransactionMock(),
                                                                       "/packages/testSetDavContent/Something.drl" ) );
             assertEquals( EXPECTED_CONTENT1,
                           result );
 
-            PackageItem pkg = imp.getRepo().loadPackage( "testSetDavContent" );
+            PackageItem pkg = rulesRepository.loadPackage( "testSetDavContent" );
             AssetItem asset = pkg.loadAsset( "Something" );
             assertEquals( "drl",
                           asset.getFormat() );
-            assertEquals( EXPECTED_CONTENT1,
-                          asset.getContent() );
+            assertEquals(EXPECTED_CONTENT1,
+                    asset.getContent());
             assertEquals( EXPECTED_CONTENT1,
                           IOUtils.toString( asset.getBinaryContentAttachment() ) );
 
-            imp.setResourceContent( new TransactionMock(),
-                                    "/packages/testSetDavContent/Something.drl",
-                                    IOUtils.toInputStream( CONTENT2 ),
-                                    null,
-                                    null );
-            result = IOUtils.toString( imp.getResourceContent( new TransactionMock(),
+            webDAV.setResourceContent(new TransactionMock(),
+                    "/packages/testSetDavContent/Something.drl",
+                    IOUtils.toInputStream(CONTENT2),
+                    null,
+                    null);
+            result = IOUtils.toString( webDAV.getResourceContent( new TransactionMock(),
                                                                "/packages/testSetDavContent/Something.drl" ) );
             assertEquals( EXPECTED_CONTENT2,
                           result );
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
@@ -600,55 +504,51 @@ public class WebDAVImplTest extends GuvnorTestBase {
     @Test
     public void testNewAsset() throws Exception {
         //simulating a full lifecycle of a new asset from webdav
-        WebDAVImpl imp = getWebDAVImpl();
         try {
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavNewAsset" );
+            webDAV.createFolder(new TransactionMock(),
+                    "/packages/testDavNewAsset");
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            assertFalse( imp.objectExists( "/packages/testDavNewAsset/Blah.drl" ) );
+            assertFalse( webDAV.objectExists( "/packages/testDavNewAsset/Blah.drl" ) );
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            imp.isFolder( "/packages/testDavNewAsset" );
-            imp.isFolder( "/packages/testDavNewAsset/Blah.drl" );
-            assertFalse( imp.objectExists( "/packages/testDavNewAsset/Blah.drl" ) );
-            imp.createResource( new TransactionMock(),
+            webDAV.isFolder( "/packages/testDavNewAsset" );
+            webDAV.isFolder( "/packages/testDavNewAsset/Blah.drl" );
+            assertFalse( webDAV.objectExists( "/packages/testDavNewAsset/Blah.drl" ) );
+            webDAV.createResource( new TransactionMock(),
                                 "/packages/testDavNewAsset/Blah.drl" );
-            imp.setResourceContent( new TransactionMock(),
+            webDAV.setResourceContent( new TransactionMock(),
                                     "/packages/testDavNewAsset/Blah.drl",
                                     IOUtils.toInputStream( "blah blah" ),
                                     null,
                                     null );
-            imp.getResourceLength( new TransactionMock(),
+            webDAV.getResourceLength( new TransactionMock(),
                                    "/packages/testDavNewAsset/Blah.drl" );
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
-        imp = getWebDAVImpl();
         try {
-            assertTrue( imp.objectExists( "/packages/testDavNewAsset/Blah.drl" ) );
+            assertTrue(webDAV.objectExists("/packages/testDavNewAsset/Blah.drl"));
         } finally {
-            if ( imp != null ) {
+            if ( webDAV != null ) {
                 //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
+                webDAV.commit( new TransactionMock() );
             }
         }
 
@@ -661,202 +561,165 @@ public class WebDAVImplTest extends GuvnorTestBase {
         final String CONTENT = "some input";
         final String EXPECTED_CONTENT = CONTENT + "\n";
 
-        WebDAVImpl imp = getWebDAVImpl();
+        webDAV.createFolder( new TransactionMock(),
+                          "/packages/testDavSnapshot" );
+        webDAV.createResource( new TransactionMock(),
+                            "/packages/testDavSnapshot/Something.drl" );
+        webDAV.setResourceContent( new TransactionMock(),
+                                "/packages/testDavSnapshot/Something.drl",
+                                IOUtils.toInputStream( CONTENT ),
+                                null,
+                                null );
+
+
+        rulesRepository.createPackageSnapshot("testDavSnapshot",
+                "SNAP1");
+        rulesRepository.createPackageSnapshot("testDavSnapshot",
+                "SNAP2");
+
+        String[] packages = webDAV.getChildrenNames( new TransactionMock(),
+                                                  "/snapshots" );
+        assertTrue( packages.length > 0 );
+        assertContains( "testDavSnapshot",
+                        packages );
+
+        String[] snaps = webDAV.getChildrenNames( new TransactionMock(),
+                                               "/snapshots/testDavSnapshot" );
+        assertEquals( 2,
+                      snaps.length );
+
+        assertEquals( "SNAP1",
+                      snaps[0] );
+        assertEquals( "SNAP2",
+                      snaps[1] );
+
+        String[] list = webDAV.getChildrenNames( new TransactionMock(),
+                                              "/snapshots/testDavSnapshot/SNAP1" );
+        assertEquals( 1,
+                      list.length );
+        assertEquals( "Something.drl",
+                      list[0] );
+
+        list = webDAV.getChildrenNames( new TransactionMock(),
+                                     "/snapshots/testDavSnapshot/SNAP2" );
+        assertEquals( 1,
+                      list.length );
+        assertEquals( "Something.drl",
+                      list[0] );
+
+        assertNotNull( webDAV.getCreationDate( "/snapshots" ) );
+        assertNotNull( webDAV.getCreationDate( "/snapshots/testDavSnapshot" ) );
+        assertNotNull( webDAV.getCreationDate( "/snapshots/testDavSnapshot/SNAP1" ) );
+        assertNotNull( webDAV.getCreationDate( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
+
+        assertNotNull( webDAV.getLastModified( "/snapshots" ) );
+        assertNotNull( webDAV.getLastModified( "/snapshots/testDavSnapshot" ) );
+        assertNotNull( webDAV.getLastModified( "/snapshots/testDavSnapshot/SNAP1" ) );
+        assertNotNull( webDAV.getLastModified( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
+
+        createFolderTry( webDAV,
+                         "/snapshots/randomAss" );
+        createFolderTry( webDAV,
+                         "/snapshots/testDavSnapshot/SNAPX" );
+        createFolderTry( webDAV,
+                         "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
+        createFolderTry( webDAV,
+                         "/snapshots/testDavSnapshot/SNAP1/Another.drl" );
+
+        createResourceTry( webDAV,
+                           "/snapshots/randomAss" );
+        createResourceTry( webDAV,
+                           "/snapshots/testDavSnapshot/SNAPX" );
+        createResourceTry( webDAV,
+                           "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
+        createResourceTry( webDAV,
+                           "/snapshots/testDavSnapshot/SNAP1/Another.drl" );
+
+        InputStream in = webDAV.getResourceContent( new TransactionMock(),
+                                                 "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
+        assertEquals( EXPECTED_CONTENT,
+                      IOUtils.toString( in ) );
+
+        assertEquals( 0,
+                      webDAV.getResourceLength( new TransactionMock(),
+                                             "/snapshots/testDavSnapshot/SNAP1" ) );
+        assertEquals( EXPECTED_CONTENT.getBytes().length,
+                      webDAV.getResourceLength( new TransactionMock(),
+                                             "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
+
+        assertTrue( webDAV.isFolder( "/snapshots" ) );
+        assertTrue( webDAV.isFolder( "/snapshots/testDavSnapshot" ) );
+        assertTrue( webDAV.isFolder( "/snapshots/testDavSnapshot/SNAP2" ) );
+        assertFalse( webDAV.isFolder( "/snapshots/testDavSnapshot/SNAP2/Something.drl" ) );
+
+        assertFalse( webDAV.isResource( "/snapshots" ) );
+        assertFalse( webDAV.isResource( "/snapshots/testDavSnapshot" ) );
+        assertFalse( webDAV.isResource( "/snapshots/testDavSnapshot/SNAP2" ) );
+        assertTrue( webDAV.isResource( "/snapshots/testDavSnapshot/SNAP2/Something.drl" ) );
+
+        assertFalse( webDAV.isResource( "/snapshots/testDavSnapshot/SNAP2/DoesNotExist.drl" ) );
+
+        assertTrue( webDAV.objectExists( "/snapshots" ) );
+        assertFalse( webDAV.objectExists( "/snapshots/testDavSnapshotXX" ) );
+        assertTrue( webDAV.objectExists( "/snapshots/testDavSnapshot" ) );
+        assertTrue( webDAV.objectExists( "/snapshots/testDavSnapshot/SNAP1" ) );
+        assertFalse( webDAV.objectExists( "/snapshots/testDavSnapshot/SNAPX" ) );
+
+        assertFalse( webDAV.objectExists( "/snapshots/testDavSnapshot/SNAP1/Foo.drl" ) );
+        assertTrue( webDAV.objectExists( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
+
+        assertNull( webDAV.getChildrenNames( new TransactionMock(),
+                                          "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
+
         try {
-            imp.createFolder( new TransactionMock(),
-                              "/packages/testDavSnapshot" );
-            imp.createResource( new TransactionMock(),
-                                "/packages/testDavSnapshot/Something.drl" );
-            imp.setResourceContent( new TransactionMock(),
-                                    "/packages/testDavSnapshot/Something.drl",
-                                    IOUtils.toInputStream( CONTENT ),
+            webDAV.removeObject( new TransactionMock(),
+                              "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
+            fail( "Should not delete files from snapshots" );
+        } catch ( Exception e ) {
+            assertNotNull( e.getMessage() );
+        }
+
+        try {
+            webDAV.setResourceContent( new TransactionMock(),
+                                    "/snapshots/testDavSnapshot/SNAP1/Something.drl",
+                                    null,
                                     null,
                                     null );
+            fail( "should not be allowed to update content in snapshots." );
+        } catch ( Exception e ) {
+            assertNotNull( e.getMessage() );
+        }
 
-            RulesRepository repo = imp.getRepo();
-
-            repo.createPackageSnapshot( "testDavSnapshot",
-                                        "SNAP1" );
-            repo.createPackageSnapshot( "testDavSnapshot",
-                                        "SNAP2" );
-
-            String[] packages = imp.getChildrenNames( new TransactionMock(),
-                                                      "/snapshots" );
-            assertTrue( packages.length > 0 );
-            assertContains( "testDavSnapshot",
-                            packages );
-
-            String[] snaps = imp.getChildrenNames( new TransactionMock(),
-                                                   "/snapshots/testDavSnapshot" );
-            assertEquals( 2,
-                          snaps.length );
-
-            assertEquals( "SNAP1",
-                          snaps[0] );
-            assertEquals( "SNAP2",
-                          snaps[1] );
-
-            String[] list = imp.getChildrenNames( new TransactionMock(),
-                                                  "/snapshots/testDavSnapshot/SNAP1" );
-            assertEquals( 1,
-                          list.length );
-            assertEquals( "Something.drl",
-                          list[0] );
-
-            list = imp.getChildrenNames( new TransactionMock(),
-                                         "/snapshots/testDavSnapshot/SNAP2" );
-            assertEquals( 1,
-                          list.length );
-            assertEquals( "Something.drl",
-                          list[0] );
-
-            assertNotNull( imp.getCreationDate( "/snapshots" ) );
-            assertNotNull( imp.getCreationDate( "/snapshots/testDavSnapshot" ) );
-            assertNotNull( imp.getCreationDate( "/snapshots/testDavSnapshot/SNAP1" ) );
-            assertNotNull( imp.getCreationDate( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
-
-            assertNotNull( imp.getLastModified( "/snapshots" ) );
-            assertNotNull( imp.getLastModified( "/snapshots/testDavSnapshot" ) );
-            assertNotNull( imp.getLastModified( "/snapshots/testDavSnapshot/SNAP1" ) );
-            assertNotNull( imp.getLastModified( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
-
-            createFolderTry( imp,
-                             "/snapshots/randomAss" );
-            createFolderTry( imp,
-                             "/snapshots/testDavSnapshot/SNAPX" );
-            createFolderTry( imp,
-                             "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
-            createFolderTry( imp,
-                             "/snapshots/testDavSnapshot/SNAP1/Another.drl" );
-
-            createResourceTry( imp,
-                               "/snapshots/randomAss" );
-            createResourceTry( imp,
-                               "/snapshots/testDavSnapshot/SNAPX" );
-            createResourceTry( imp,
-                               "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
-            createResourceTry( imp,
-                               "/snapshots/testDavSnapshot/SNAP1/Another.drl" );
-
-            InputStream in = imp.getResourceContent( new TransactionMock(),
-                                                     "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
-            assertEquals( EXPECTED_CONTENT,
-                          IOUtils.toString( in ) );
-
-            assertEquals( 0,
-                          imp.getResourceLength( new TransactionMock(),
-                                                 "/snapshots/testDavSnapshot/SNAP1" ) );
-            assertEquals( EXPECTED_CONTENT.getBytes().length,
-                          imp.getResourceLength( new TransactionMock(),
-                                                 "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
-
-            assertTrue( imp.isFolder( "/snapshots" ) );
-            assertTrue( imp.isFolder( "/snapshots/testDavSnapshot" ) );
-            assertTrue( imp.isFolder( "/snapshots/testDavSnapshot/SNAP2" ) );
-            assertFalse( imp.isFolder( "/snapshots/testDavSnapshot/SNAP2/Something.drl" ) );
-
-            assertFalse( imp.isResource( "/snapshots" ) );
-            assertFalse( imp.isResource( "/snapshots/testDavSnapshot" ) );
-            assertFalse( imp.isResource( "/snapshots/testDavSnapshot/SNAP2" ) );
-            assertTrue( imp.isResource( "/snapshots/testDavSnapshot/SNAP2/Something.drl" ) );
-
-            assertFalse( imp.isResource( "/snapshots/testDavSnapshot/SNAP2/DoesNotExist.drl" ) );
-
-            assertTrue( imp.objectExists( "/snapshots" ) );
-            assertFalse( imp.objectExists( "/snapshots/testDavSnapshotXX" ) );
-            assertTrue( imp.objectExists( "/snapshots/testDavSnapshot" ) );
-            assertTrue( imp.objectExists( "/snapshots/testDavSnapshot/SNAP1" ) );
-            assertFalse( imp.objectExists( "/snapshots/testDavSnapshot/SNAPX" ) );
-
-            assertFalse( imp.objectExists( "/snapshots/testDavSnapshot/SNAP1/Foo.drl" ) );
-            assertTrue( imp.objectExists( "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
-
-            assertNull( imp.getChildrenNames( new TransactionMock(),
-                                              "/snapshots/testDavSnapshot/SNAP1/Something.drl" ) );
-
-            try {
-                imp.removeObject( new TransactionMock(),
-                                  "/snapshots/testDavSnapshot/SNAP1/Something.drl" );
-                fail( "Should not delete files from snapshots" );
-            } catch ( Exception e ) {
-                assertNotNull( e.getMessage() );
-            }
-
-            try {
-                imp.setResourceContent( new TransactionMock(),
-                                        "/snapshots/testDavSnapshot/SNAP1/Something.drl",
-                                        null,
-                                        null,
-                                        null );
-                fail( "should not be allowed to update content in snapshots." );
-            } catch ( Exception e ) {
-                assertNotNull( e.getMessage() );
-            }
-
-            assertFalse( imp.objectExists( "/snapshots/defaultPackage/new file" ) );
-            try {
-                imp.createResource( new TransactionMock(),
-                                    "/snapshots/defaultPackage/new file" );
-                fail( "can't touch this" );
-            } catch ( UnsupportedOperationException e ) {
-                assertNotNull( e.getMessage() );
-            }
-        } finally {
-            if ( imp != null ) {
-                //This clears the ThreadLocal reference to Repository
-                imp.commit( new TransactionMock() );
-            }
+        assertFalse( webDAV.objectExists( "/snapshots/defaultPackage/new file" ) );
+        try {
+            webDAV.createResource( new TransactionMock(),
+                                "/snapshots/defaultPackage/new file" );
+            fail( "can't touch this" );
+        } catch ( UnsupportedOperationException e ) {
+            assertNotNull( e.getMessage() );
         }
     }
 
-    private void createResourceTry(WebDAVImpl imp,
+    private void createResourceTry(WebDAVImpl webDAV,
                                    String path) {
         try {
-            imp.createResource( new TransactionMock(),
-                                path );
+            webDAV.createResource(new TransactionMock(),
+                    path);
             fail( "Should not be allowed" );
         } catch ( UnsupportedOperationException e ) {
             assertNotNull( e.getMessage() );
         }
     }
 
-    private void createFolderTry(WebDAVImpl imp,
+    private void createFolderTry(WebDAVImpl webDAV,
                                  String path) {
         try {
-            imp.createFolder( new TransactionMock(),
-                              path );
+            webDAV.createFolder(new TransactionMock(),
+                    path);
             fail( "should not be allowed" );
         } catch ( UnsupportedOperationException e ) {
             assertNotNull( e.getMessage() );
         }
-    }
-
-    @Test
-    public void testThreadLocal() throws Exception {
-
-        ServiceImplementation impl = getServiceImplementation();
-        final RulesRepository repo = impl.getRulesRepository();
-
-        Thread t = new Thread( new Runnable() {
-            public void run() {
-                WebDAVImpl i = new WebDAVImpl( repo );
-                ITransaction txn = null;
-                assertNotNull( i.getRepo() );
-                try {
-                    txn = i.begin( null );
-                } catch ( Exception e ) {
-                    e.fillInStackTrace();
-                    e.printStackTrace();
-                    fail( "should not happen" );
-                } finally {
-                    i.commit( txn );
-                }
-                assertNull( i.getRepo() );
-            }
-        } );
-        t.start();
-        t.join();
-        System.out.println( "h" );
     }
 
     private void assertContains(String string,

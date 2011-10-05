@@ -33,6 +33,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.rpc.SecurityServiceAsync;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityViewImpl;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
@@ -147,6 +148,9 @@ public class ClientFactoryImpl
 
     public AssetServiceAsync getAssetService() {
         return RepositoryServiceFactory.getAssetService();
+    }
+    public SecurityServiceAsync getSecurityService() {
+        return RepositoryServiceFactory.getSecurityService();
     }
 
     //TODO: return ModuleEditor from configuration
