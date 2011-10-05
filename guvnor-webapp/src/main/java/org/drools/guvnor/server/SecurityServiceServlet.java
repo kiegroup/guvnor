@@ -60,6 +60,13 @@ public class SecurityServiceServlet extends RemoteServiceServlet implements Secu
     }
 
     public UserSecurityContext getCurrentUser() {
+        if (securityService == null) {
+            // This is the first method called by the client.
+            // If CDI hasn't kicked in (theoretically impossible...), throw a readable exception
+            throw new IllegalStateException("CDI hasn't been properly started.\n" +
+                    "  Make sure your IDE classpath is in sync with the real maven classpath.\n" +
+                    "  The classpath should include weld-servlet.");
+        }
         return securityService.getCurrentUser();
     }
 
