@@ -63,5 +63,4 @@ public class RoleBasedPermission implements Serializable {
         this.categoryPath = categoryPath;
     }
 
-
 }

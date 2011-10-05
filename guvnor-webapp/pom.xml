@@ -15,6 +15,17 @@
   <name>Guvnor web application</name>
   <description>The web application to create, edit and deploy Drools and jBPM assets.</description>
 
+  <properties>
+    <weld.version>1.1.2.Final</weld.version>
+    <seam.version>3.1.0.Beta2</seam.version>
+    <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
+    <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
+    <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
+    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml &ndash;&gt;-->
+    <!--<managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>-->
+    <!--<managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home>-->
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -82,24 +93,70 @@
               <goal>run</goal>
             </goals>
           </execution>
+          <!--<execution>-->
+            <!--<id>download-and-unzip-managed-tomcat6</id>-->
+            <!--<phase>generate-test-resources</phase>-->
+            <!--<configuration>-->
+              <!--<tasks>-->
+                <!--<mkdir dir="${managed-appserver.download.dir}"/>-->
+                <!--<get-->
+                    <!--src="http://archive.apache.org/dist/tomcat/tomcat-6/v${managed-appserver.tomcat6.version}/bin/apache-tomcat-${managed-appserver.tomcat6.version}.zip"-->
+                    <!--dest="${managed-appserver.download.dir}" verbose="true" skipexisting="true"/>-->
+                <!--<unzip src="${managed-appserver.download.dir}/apache-tomcat-${managed-appserver.tomcat6.version}.zip"-->
+                       <!--dest="${project.build.directory}"/>-->
+              <!--</tasks>-->
+            <!--</configuration>-->
+            <!--<goals>-->
+              <!--<goal>run</goal>-->
+            <!--</goals>-->
+          <!--</execution>-->
         </executions>
       </plugin>
+      <!--<plugin>-->
+        <!--<artifactId>maven-resources-plugin</artifactId>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>copy-tomcat6-conf</id>-->
+            <!--<phase>process-test-resources</phase>-->
+            <!--<goals>-->
+              <!--<goal>copy-resources</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<outputDirectory>${managed-appserver.tomcat6.home}/conf</outputDirectory>-->
+              <!--<overwrite>true</overwrite>-->
+              <!--<resources>-->
+                <!--<resource>-->
+                  <!--<directory>${basedir}/src/test/conf/tomcat6</directory>-->
+                <!--</resource>-->
+              <!--</resources>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
       <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <inherited>false</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>clean gwtutil classes</id>
-            <phase>prepare-package</phase>
+            <!-- Download JBoss AS and unpack it to have it available during tests -->
+            <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
+            <id>unpack</id>
+            <phase>process-test-classes</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
             <configuration>
-              <tasks>
-                <delete
-                  dir="${project.build.directory}/classes/org/drools/guvnor/gwtutil" />
-              </tasks>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jboss.as</groupId>
+                  <artifactId>jboss-as-dist</artifactId>
+                  <version>${managed-appserver.jboss7.version}</version>
+                  <type>zip</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
             </configuration>
-          <goals>
-            <goal>run</goal>
-          </goals>
           </execution>
         </executions>
       </plugin>
@@ -116,7 +173,27 @@
               <filtering>true</filtering>
             </resource>
           </webResources>
+          <!-- Only excludes them from the war file, not from the exploded directory -->
+          <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
+          <archive>
+            <!-- Workaround for bug in seam 3.1.0.Beta2 (fixed in next) https://issues.jboss.org/browse/SOLDER-119 -->
+            <manifestFile>${project.basedir}/src/main/webapp/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
         </configuration>
+      </plugin>
+      <plugin>
+        <!-- Overwrite the surefire plugin to run after instead of before the package phase -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -192,6 +269,18 @@
     </profile>
   </profiles>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jboss.arquillian</groupId>
+        <artifactId>arquillian-bom</artifactId>
+        <version>1.0.0.CR5</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- Internal dependencies -->
     <dependency>
@@ -251,12 +340,7 @@
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
     </dependency>
-    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <version>${gwt.version}</version>      
-      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
-    </dependency>    
+    <!-- Note the gwt-dev dependency is on the bottom of this file because it shades other jars -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
@@ -278,15 +362,199 @@
       <groupId>org.freemarker</groupId>
       <artifactId>freemarker</artifactId>
     </dependency>
-    <!-- seam follows -->
+
+    <!-- Weld (Context and Dependency Injection) -->
     <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam-remoting</artifactId>
+      <groupId>org.jboss.weld</groupId>
+      <artifactId>weld-core</artifactId>
+      <version>${weld.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jboss.seam</groupId>
-      <artifactId>jboss-seam</artifactId>
+      <groupId>org.jboss.weld.servlet</groupId>
+      <artifactId>weld-servlet-core</artifactId>
+      <version>${weld.version}</version>
     </dependency>
+    <!-- Seam 3 (goodies in weld) -->
+    <dependency>
+      <groupId>org.jboss.seam.solder</groupId>
+      <artifactId>seam-solder</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.seam.solder</groupId>
+      <artifactId>seam-solder-logging</artifactId>
+      <version>${seam.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.seam.config</groupId>
+      <artifactId>seam-config-xml</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <!--<dependency>&lt;!&ndash; WORKAROUND because seam-solder doesn't have a transitive dependency on this &ndash;&gt;-->
+      <!--<groupId>org.jboss.logging</groupId>-->
+      <!--<artifactId>jboss-logging</artifactId>-->
+      <!--<version>3.0.0.Beta5</version>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.seam.security</groupId>
+      <artifactId>seam-security</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 fixed in 3.1.0.CR1 -->
+      <groupId>org.jboss.seam.transaction</groupId>
+      <artifactId>seam-transaction</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 fixed in 3.1.0.CR1 -->
+      <groupId>org.jboss.seam.international</groupId>
+      <artifactId>seam-international</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+   <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
+     <groupId>joda-time</groupId>
+     <artifactId>joda-time</artifactId>
+     <version>1.6</version>
+   </dependency>
+    <dependency>
+      <groupId>org.jboss.seam.servlet</groupId>
+      <artifactId>seam-servlet</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.seam.remoting</groupId>
+      <artifactId>seam-remoting</artifactId>
+      <version>${seam.version}</version>
+    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.seam.rest</groupId>-->
+      <!--<artifactId>seam-rest</artifactId>-->
+      <!--<version>${seam.version}</version>-->
+    <!--</dependency>-->
+    <!-- Arquillian (testing for weld) -->
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.junit</groupId>-->
+      <!--<artifactId>arquillian-junit-standalone</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.shrinkwrap.resolver</groupId>
+      <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+      <version>1.0.0-beta-5</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.junit</groupId>
+      <artifactId>arquillian-junit-container</artifactId>
+      <version>1.0.0.CR5</version>
+      <scope>test</scope>
+    </dependency>
+    <!--<dependency>&lt;!&ndash; Override the version specified by arquillian-tomcat/jetty &ndash;&gt;-->
+      <!--<groupId>org.jboss.arquillian.protocol</groupId>-->
+      <!--<artifactId>arquillian-protocol-servlet</artifactId>-->
+      <!--<version>1.0.0.CR4</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-weld-ee-embedded-1.1</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>&lt;!&ndash; Workaround for https://issues.jboss.org/browse/ARQ-328 &ndash;&gt;-->
+        <!--<groupId>org.jboss.ejb3</groupId>-->
+        <!--<artifactId>jboss-ejb3-api</artifactId>-->
+        <!--<version>3.1.0</version>-->
+        <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>&lt;!&ndash; Workaround for https://issues.jboss.org/browse/ARQ-328 &ndash;&gt;-->
+        <!--<groupId>javax.validation</groupId>-->
+        <!--<artifactId>validation-api</artifactId>-->
+        <!--<version>1.0.0.GA</version>-->
+        <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-jetty-embedded-6.1</artifactId>-->
+      <!--<version>1.0.0.CR1</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.mortbay.jetty</groupId>-->
+      <!--<artifactId>jetty</artifactId>-->
+      <!--<version>6.1.12</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--&lt;!&ndash; plus and naming requires for using JNDI &ndash;&gt;-->
+    <!--<dependency>-->
+      <!--<groupId>org.mortbay.jetty</groupId>-->
+      <!--<artifactId>jetty-plus</artifactId>-->
+      <!--<version>6.1.12</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.mortbay.jetty</groupId>-->
+      <!--<artifactId>jetty-naming</artifactId>-->
+      <!--<version>6.1.12</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
+    
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-jetty-embedded-7</artifactId>-->
+      <!--<version>1.0.0.CR1</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-tomcat-embedded-6</artifactId>-->
+      <!--<version>1.0.0.Final-SNAPSHOT</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.apache.tomcat</groupId>-->
+      <!--<artifactId>catalina</artifactId>-->
+      <!--<version>6.0.32</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+       <!--<groupId>org.apache.tomcat</groupId>-->
+       <!--<artifactId>coyote</artifactId>-->
+      <!--<version>6.0.32</version>-->
+       <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+       <!--<groupId>org.apache.tomcat</groupId>-->
+       <!--<artifactId>jasper</artifactId>-->
+      <!--<version>6.0.32</version>-->
+       <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.arquillian.container</groupId>-->
+      <!--<artifactId>arquillian-tomcat-managed-6</artifactId>-->
+      <!--<version>1.0.0.CR2</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+
+    <!--<dependency>-->
+      <!--<groupId>org.jboss.as</groupId>-->
+      <!--<artifactId>jboss-as-arquillian-container-embedded</artifactId>-->
+      <!--<version>7.0.0.Beta3</version>-->
+      <!--<scope>test</scope>-->
+    <!--</dependency>-->
+    <dependency>
+      <groupId>org.jboss.as</groupId>
+      <artifactId>jboss-as-arquillian-container-managed</artifactId>
+      <version>${managed-appserver.jboss7.version}</version>
+      <scope>test</scope>
+    </dependency>
+
     <dependency>
       <groupId>javax.ejb</groupId>
       <artifactId>ejb-api</artifactId>
@@ -301,6 +569,7 @@
       <artifactId>el-api</artifactId>
       <scope>provided</scope><!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
     </dependency>
+
     <!-- REST dependencies -->
     <dependency>
       <groupId>javax.ws.rs</groupId>
@@ -365,23 +634,13 @@
       <artifactId>commons-httpclient</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-server</artifactId>
-      <version>7.2.2.v20101205</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>servlet-api</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.jetty</groupId>
-      <artifactId>jetty-webapp</artifactId>
-      <version>7.2.2.v20101205</version>
-      <scope>test</scope>
+
+    <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
+    <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <version>${gwt.version}</version>
+      <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
     </dependency>
     <dependency>
     	<groupId>org.jboss.security</groupId>

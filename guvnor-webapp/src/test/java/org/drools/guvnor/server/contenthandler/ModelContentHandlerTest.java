@@ -34,8 +34,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
     @Test
     public void testModelAttached() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pacakge = repo.createPackage( "testModelAttachedPack",
                                                   "for test" );
@@ -55,8 +54,7 @@ public class ModelContentHandlerTest extends GuvnorTestBase {
     @Test
     public void testModelRemoved() throws Exception {
 
-        ServiceImplementation impl = getServiceImplementation();
-        RulesRepository repo = impl.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.createPackage( "testModelRemovedPackage",
                                               "for test" );

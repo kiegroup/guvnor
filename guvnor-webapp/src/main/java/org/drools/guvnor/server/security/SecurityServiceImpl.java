@@ -16,21 +16,16 @@
 
 package org.drools.guvnor.server.security;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.security.auth.login.LoginException;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
-import org.drools.core.util.DateUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.rpc.SecurityService;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.jboss.seam.Component;
-import org.jboss.seam.contexts.Contexts;
+import org.jboss.seam.security.Credentials;
 import org.jboss.seam.security.AuthorizationException;
 import org.jboss.seam.security.Identity;
 import org.slf4j.Logger;
@@ -39,9 +34,8 @@ import org.slf4j.LoggerFactory;
 /**
  * This implements security related services.
  */
-public class SecurityServiceImpl
-    implements
-    SecurityService {
+@ApplicationScoped
+public class SecurityServiceImpl implements SecurityService {
 
     public static final String GUEST_LOGIN = "guest";
     private static final Logger log = LoggerFactory.getLogger(SecurityServiceImpl.class);
@@ -54,6 +48,18 @@ public class SecurityServiceImpl
             KeyStoreHelper.PROP_PUB_KS_PWD
     };
 
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
+
+    @Inject
+    private RoleBasedPermissionResolver roleBasedPermissionResolver;
+
+    @Inject
+    private Identity identity;
+
+    @Inject
+    private Credentials credentials;
+
     public boolean login(String userName,
                          String password) {
 
@@ -62,110 +68,69 @@ public class SecurityServiceImpl
         }
 
         log.info( "Logging in user [" + userName + "]" );
-        if ( Contexts.isApplicationContextActive() ) {
 
-            // Check for banned characters in user name
-            // These will cause the session to jam if you let them go further
-            char[] bannedChars = {'\'', '*', '[', ']'};
-            for (char bannedChar : bannedChars) {
-                if (userName.indexOf(bannedChar) >= 0) {
-                    log.error("Not a valid name character " + bannedChar);
-                    return false;
-                }
-            }
-
-            Identity.instance().getCredentials().setUsername( userName );
-            Identity.instance().getCredentials().setPassword( password );
-
-            try {
-                Identity.instance().authenticate();
-            } catch ( LoginException e ) {
-                log.error( "Unable to login.",
-                           e );
+        // Check for banned characters in user name
+        // These will cause the session to jam if you let them go further
+        char[] bannedChars = {'\'', '*', '[', ']'};
+        for (char bannedChar : bannedChars) {
+            if (userName.indexOf(bannedChar) >= 0) {
+                log.error("Not a valid name character " + bannedChar);
                 return false;
             }
-            return Identity.instance().isLoggedIn();
         }
-        return true;
 
+        credentials.setUsername(userName);
+        credentials.setCredential(new org.picketlink.idm.impl.api.PasswordCredential(password));
+
+        identity.login();
+        if ( !identity.isLoggedIn() ) {
+            log.error( "Unable to login.");
+        }
+        return identity.isLoggedIn();
+    }
+
+    public void logout() {
+        identity.logout();
     }
 
     public UserSecurityContext getCurrentUser() {
-        if ( Contexts.isApplicationContextActive() ) {
-            if ( !Identity.instance().isLoggedIn() ) {
-                //check to see if we can autologin
-                return new UserSecurityContext( checkAutoLogin() );
-            }
-            return new UserSecurityContext( Identity.instance().getCredentials().getUsername() );
-        } else {
-            //            HashSet<String> disabled = new HashSet<String>();
-            //return new UserSecurityContext(null);
-            return new UserSecurityContext( "SINGLE USER MODE (DEBUG) USE ONLY" );
-        }
+        tryAutoLoginAsGuest();
+        return new UserSecurityContext( identity.isLoggedIn() ? credentials.getUsername() : null );
     }
 
-    /**
-     * This will return a auto login user name if it has been configured.
-     * Autologin means that its not really logged in, but a generic username will be used.
-     * Basically means security is bypassed.
-     */
-    private String checkAutoLogin() {
-        Identity id = Identity.instance();
-        id.getCredentials().setUsername( GUEST_LOGIN );
-        try {
-            id.authenticate();
-        } catch ( LoginException e ) {
-            return null;
+    private void tryAutoLoginAsGuest() {
+        if ( !identity.isLoggedIn() ) {
+            // Note: the DemoAuthenticator upgrades guest to admin
+            credentials.setUsername(GUEST_LOGIN);
+            identity.login();
         }
-        if ( id.isLoggedIn() ) {
-            return id.getCredentials().getUsername();
-        } else {
-            return null;
-        }
-
     }
 
     public List<Capability> getUserCapabilities() {
-
-        if ( Contexts.isApplicationContextActive() ) {
-            if ( Identity.instance().hasRole( RoleType.ADMIN.getName() ) ) { 
-                return CapabilityCalculator.grantAllCapabilities();
-            }
-
-            if ( !createRoleBasedPermissionResolver().isEnableRoleBasedAuthorization() ) {
-                return CapabilityCalculator.grantAllCapabilities();
-            }
-            
-            List<RoleBasedPermission> permissions = createRoleBasedPermissionManager().getRoleBasedPermission();
-            if ( permissions.size() == 0 ) {
-                Identity.instance().logout();
-                throw new AuthorizationException( "This user has no permissions setup." );
-            }
-
-            if ( invalidSecuritySerilizationSetup() ) {
-                Identity.instance().logout();
-                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
-            }
-            return new CapabilityCalculator().calcCapabilities( permissions );
-        } else {
-            if ( invalidSecuritySerilizationSetup() ) {
-                throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
-            }
+        if ( identity.hasRole( RoleType.ADMIN.getName(), null, null ) ) {
             return CapabilityCalculator.grantAllCapabilities();
         }
+
+        if ( !roleBasedPermissionResolver.isEnableRoleBasedAuthorization() ) {
+            return CapabilityCalculator.grantAllCapabilities();
+        }
+        
+        List<RoleBasedPermission> permissions = roleBasedPermissionManager.getRoleBasedPermission();
+        if ( permissions.size() == 0 ) {
+            identity.logout();
+            throw new AuthorizationException( "This user has no permissions setup." );
+        }
+
+        if ( invalidSecuritySerializationSetup() ) {
+            identity.logout();
+            throw new AuthorizationException( " Configuration error - Please refer to the Administration Guide section on installation. You must configure a key store before proceding.  " );
+        }
+        return new CapabilityCalculator().calcCapabilities( permissions );
     }
 
-    private RoleBasedPermissionManager createRoleBasedPermissionManager() {
-        return (RoleBasedPermissionManager) Component.getInstance( "roleBasedPermissionManager" );
-    }
-
-    private RoleBasedPermissionResolver createRoleBasedPermissionResolver() {
-        return (RoleBasedPermissionResolver) Component.getInstance( "org.jboss.seam.security.roleBasedPermissionResolver" );
-    }
-
-    private boolean invalidSecuritySerilizationSetup() {
-        String ssecurity = System.getProperty( "drools.serialization.sign" );
-        if ( ssecurity != null && ssecurity.equalsIgnoreCase( "true" ) ) {
+    private boolean invalidSecuritySerializationSetup() {
+        String serializationSign = System.getProperty( "drools.serialization.sign" );
+        if ( serializationSign != null && serializationSign.equalsIgnoreCase( "true" ) ) {
             for ( String nextProp : serializationProperties ) {
                 String nextPropVal = System.getProperty( nextProp );
                 if ( nextPropVal == null || nextPropVal.trim().equals( "" ) ) {
@@ -175,4 +140,5 @@ public class SecurityServiceImpl
         }
         return false;
     }
+
 }

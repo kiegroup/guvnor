@@ -22,7 +22,7 @@ import org.drools.repository.utils.NodeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import javax.jcr.*;
+import javax.annotation.PreDestroy;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemExistsException;
@@ -194,6 +194,7 @@ public class RulesRepository {
     /**
      * Explicitly logout of the underlying JCR repository.
      */
+    @PreDestroy
     public void logout() {
         this.session.logout();
     }

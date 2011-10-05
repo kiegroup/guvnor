@@ -22,11 +22,40 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.drools.guvnor.server.GuvnorTestBase;
-import org.jboss.seam.contexts.Contexts;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.picketlink.idm.impl.api.PasswordCredential;
 
 public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
+
+    private static final String USER_NAME = "roleBasedPermissionResolverUser";
+
+    @Inject
+    private RoleBasedPermissionStore roleBasedPermissionStore;
+
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
+
+    @Inject
+    private RoleBasedPermissionResolver roleBasedPermissionResolver;
+
+    public RoleBasedPermissionResolverTest() {
+        autoLoginAsAdmin = false;
+    }
+
+    @Before
+    public void loginAsSpecificUser() {
+        loginAs(USER_NAME);
+    }
+
+    @After
+    public void logoutAsSpecificUser() {
+        logoutAs(USER_NAME);
+    }
 
     @Test
     public void testCategoryBasedPermissionAnalyst() throws Exception {
@@ -36,55 +65,48 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String package1Name = "testCategoryBasedPermissionAnalystPackageName1";
         String package2Name = "testCategoryBasedPermissionAnalystPackageName2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                                            RoleType.PACKAGE_ADMIN.getName(),
                                            package1Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            package2Name,
                                            null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            "category1" ) );
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
                                            RoleType.ANALYST.getName(),
                                            null,
                                            "category2" ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                null ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2" ),
+                                                null ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category3/category3" ),
+                                                 null ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "/category1/category2" ),
+                                                null ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2" ),
+                                                RoleType.ANALYST.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2" ),
+                                                RoleType.ANALYST_READ.getName() ) );
 
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                            null ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            null ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             null ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "/category1/category2" ),
-                                            null ) );
-
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            RoleType.ANALYST.getName() ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            RoleType.ANALYST_READ.getName() ) );
-
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             RoleType.ANALYST.getName() ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             RoleType.ANALYST_READ.getName() ) );
-
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category3/category3" ),
+                                                 RoleType.ANALYST.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category3/category3" ),
+                                                 RoleType.ANALYST_READ.getName() ) );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -95,52 +117,45 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String categoryPath = "category1";
         String categoryPath2 = "category2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_ADMIN.getName(),
-                                           package1Name,
-                                           null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_READONLY.getName(),
-                                           package2Name,
-                                           null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST_READ.getName(),
-                                           null,
-                                           categoryPath ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST.getName(),
-                                           null,
-                                           categoryPath2 ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_ADMIN.getName(),
+                package1Name,
+                null));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_READONLY.getName(),
+                package2Name,
+                null));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST_READ.getName(),
+                null,
+                categoryPath));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST.getName(),
+                null,
+                categoryPath2));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath ),
+                                                 null ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath2 ),
+                                                null ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category3/category3" ),
+                                                 null ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath ),
+                                                RoleType.ANALYST_READ.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath ),
+                                                 RoleType.ANALYST.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-
-        assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                             null ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
-                                            null ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category3/category3" ),
-                                             null ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                            RoleType.ANALYST_READ.getName() ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                             RoleType.ANALYST.getName() ) );
-
-        assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
-                                            RoleType.ANALYST.getName() ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath2 ),
-                                            RoleType.ANALYST_READ.getName() ) );
-
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath2 ),
+                                                RoleType.ANALYST.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath2 ),
+                                                RoleType.ANALYST_READ.getName() ) );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -148,29 +163,22 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
 
         String categoryPath = "category1";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST_READ.getName(),
-                                           null,
-                                           categoryPath ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST_READ.getName(),
+                null,
+                categoryPath));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-
-        assertTrue( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                            RoleType.ANALYST_READ.getName() ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( categoryPath ),
-                                             RoleType.ANALYST.getName() ) );
-
+        try {
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath ),
+                                                RoleType.ANALYST_READ.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( categoryPath ),
+                                                 RoleType.ANALYST.getName() ) );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -206,65 +214,58 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
     @Test
     public void testCategoryBasedSubPerms() throws Exception {
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST_READ.getName(),
-                                           null,
-                                           "category1/sub1" ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST.getName(),
-                                           null,
-                                           "category2/sub1/sub2" ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST.getName(),
-                                           null,
-                                           "category4" ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST_READ.getName(),
+                null,
+                "category1/sub1"));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST.getName(),
+                null,
+                "category2/sub1/sub2"));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST.getName(),
+                null,
+                "category4"));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                 null ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2" ),
+                                                 null ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                 RoleType.ANALYST_READ.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2/sub1" ),
+                                                 RoleType.ANALYST_READ.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                 RoleType.ANALYST.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1/sub1" ),
+                                                RoleType.ANALYST_READ.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
+                                                RoleType.ANALYST.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
+                                                null ) );
 
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                             null ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                             null ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                             RoleType.ANALYST_READ.getName() ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category2/sub1" ),
-                                             RoleType.ANALYST_READ.getName() ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                             RoleType.ANALYST.getName() ) );
-
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1/sub1" ),
-                                            RoleType.ANALYST_READ.getName() ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
-                                            RoleType.ANALYST.getName() ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2/sub1/sub2" ),
-                                            null ) );
-
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category4" ),
-                                            "navigate" ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                            "navigate" ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2" ),
-                                            "navigate" ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1/sub1" ),
-                                            "navigate" ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category2/sub1" ),
-                                            "navigate" ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1/sub1/sub2" ),
-                                            "navigate" ) );
-        assertFalse( resolver.hasPermission( new CategoryPathType( "category3" ),
-                                             "navigate" ) );
-
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category4" ),
+                                                "navigate" ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                "navigate" ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2" ),
+                                                "navigate" ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1/sub1" ),
+                                                "navigate" ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category2/sub1" ),
+                                                "navigate" ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1/sub1/sub2" ),
+                                                "navigate" ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category3" ),
+                                                 "navigate" ) );
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //admin: everything
@@ -273,33 +274,27 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String package1Name = "testPackageBasedPermissionAdminPackageName1";
         String package2Name = "testPackageBasedPermissionAdminPackageName2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ADMIN.getName(),
-                                           package1Name,
-                                           null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_READONLY.getName(),
-                                           package2Name,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ADMIN.getName(),
+                package1Name,
+                null));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_READONLY.getName(),
+                package2Name,
+                null));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                RoleType.ADMIN.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package2Name ),
+                                                RoleType.ADMIN.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-
-        assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleType.ADMIN.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( package2Name ),
-                                            RoleType.ADMIN.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
@@ -307,34 +302,28 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
     public void testPackageBasedPermissionPackageAdmin() throws Exception {
         String packageName = "testPackageBasedPermissionPackageAdminPackageName";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_ADMIN.getName(),
-                                           packageName,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_ADMIN.getName(),
+                packageName,
+                null));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+                                                RoleType.PACKAGE_ADMIN.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+                                                RoleType.PACKAGE_DEVELOPER.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( packageName ),
+                                                RoleType.PACKAGE_READONLY.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
+            assertFalse( roleBasedPermissionResolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
+                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
-        assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleType.PACKAGE_ADMIN.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleType.PACKAGE_DEVELOPER.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( packageName ),
-                                            RoleType.PACKAGE_READONLY.getName() ) );
-
-        assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
-                                             RoleType.PACKAGE_READONLY.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //Package.admin: everything for that package, including creating snapshots for that package.
@@ -342,31 +331,26 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
     public void testPackageBasedWebDavPermissionPackageAdmin() throws Exception {
         String packageName = "testPackageBasedWebDavPermissionPackageAdmin";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "analyst",
-                                           RoleType.ANALYST.getName(),
-                                           packageName,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission("analyst",
+                RoleType.ANALYST.getName(),
+                packageName,
+                null));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new WebDavPackageNameType( packageName ),
+                                                 RoleType.ANALYST.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new WebDavPackageNameType( packageName ),
+                                                 RoleType.ANALYST_READ.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        assertFalse( resolver.hasPermission( new WebDavPackageNameType( packageName ),
-                                             RoleType.ANALYST.getName() ) );
-        assertFalse( resolver.hasPermission( new WebDavPackageNameType( packageName ),
-                                             RoleType.ANALYST_READ.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
+                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
-        assertFalse( resolver.hasPermission( "47982482-7912-4881-97ec-e852494383d7",
-                                             RoleType.PACKAGE_READONLY.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //Package.developer:  everything for that package, NOT snapshots (can view snapshots of that package only)
@@ -375,34 +359,28 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String package1Name = "testPackageBasedPermissionPackageDeveloperPackageName1";
         String package2Name = "testPackageBasedPermissionPackageDeveloperPackageName2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_DEVELOPER.getName(),
-                                           package1Name,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_DEVELOPER.getName(),
+                package1Name,
+                null));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                 RoleType.PACKAGE_ADMIN.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                RoleType.PACKAGE_DEVELOPER.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                RoleType.PACKAGE_READONLY.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
+            assertFalse( roleBasedPermissionResolver.hasPermission( package2Name,
+                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
-        assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleType.PACKAGE_ADMIN.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleType.PACKAGE_DEVELOPER.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleType.PACKAGE_READONLY.getName() ) );
-
-        assertFalse( resolver.hasPermission( package2Name,
-                                             RoleType.PACKAGE_READONLY.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     //Package.readonly: read only as the name suggested
@@ -411,34 +389,28 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String package1Name = "testPackageBasedPermissionPackageReadOnlyPackageName1";
         String package2Name = "testPackageBasedPermissionPackageReadOnlyPackageName2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_READONLY.getName(),
-                                           package1Name,
-                                           null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_READONLY.getName(),
+                package1Name,
+                null));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                 RoleType.PACKAGE_DEVELOPER.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                 RoleType.PACKAGE_DEVELOPER.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                RoleType.PACKAGE_READONLY.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
+            assertFalse( roleBasedPermissionResolver.hasPermission( package2Name,
+                                                 RoleType.PACKAGE_READONLY.getName() ) );
 
-        assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleType.PACKAGE_DEVELOPER.getName() ) );
-        assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleType.PACKAGE_DEVELOPER.getName() ) );
-        assertTrue( resolver.hasPermission( new PackageNameType( package1Name ),
-                                            RoleType.PACKAGE_READONLY.getName() ) );
-
-        assertFalse( resolver.hasPermission( package2Name,
-                                             RoleType.PACKAGE_READONLY.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
     @Test
@@ -446,35 +418,29 @@ public class RoleBasedPermissionResolverTest extends GuvnorTestBase {
         String package1Name = "testPackageBasedPermissionAnalystPackageName1";
         String package2Name = "testPackageBasedPermissionAnalystPackageName2";
 
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.PACKAGE_READONLY.getName(),
-                                           package1Name,
-                                           null ) );
-        pbps.add( new RoleBasedPermission( "jervis",
-                                           RoleType.ANALYST.getName(),
-                                           null,
-                                           "category1" ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.PACKAGE_READONLY.getName(),
+                package1Name,
+                null));
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission(USER_NAME,
+                RoleType.ANALYST.getName(),
+                null,
+                "category1"));
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
+        try {
+            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package1Name ),
+                                                 RoleType.ANALYST.getName() ) );
+            assertFalse( roleBasedPermissionResolver.hasPermission( new PackageNameType( package2Name ),
+                                                 RoleType.ANALYST.getName() ) );
+            assertTrue( roleBasedPermissionResolver.hasPermission( new CategoryPathType( "category1" ),
+                                                RoleType.ANALYST.getName() ) );
 
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-
-        assertFalse( resolver.hasPermission( new PackageNameType( package1Name ),
-                                             RoleType.ANALYST.getName() ) );
-        assertFalse( resolver.hasPermission( new PackageNameType( package2Name ),
-                                             RoleType.ANALYST.getName() ) );
-        assertTrue( resolver.hasPermission( new CategoryPathType( "category1" ),
-                                            RoleType.ANALYST.getName() ) );
-
+        } finally {
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+        }
     }
 
 }

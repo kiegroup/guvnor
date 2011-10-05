@@ -34,6 +34,8 @@ import static org.mockito.Mockito.*;
 
 public class VerificationServiceImplementationTest {
 
+    // TODO this entire test must be rewritten to extend GuvnorTestBase and test it for real
+
     private VerificationService verificationService;
     private PackageItem packageItem;
     private RulesRepository rulesRepository;
@@ -41,14 +43,11 @@ public class VerificationServiceImplementationTest {
     @Before
     public void setUp() {
         final RepositoryAssetService repositoryAssetService = mock(RepositoryAssetService.class);
-        VerificationServiceImplementation verificationServiceImplementation = new VerificationServiceImplementation() {
-            public RepositoryAssetService getAssetService() {
-                return repositoryAssetService;
-            }
-        };
+        VerificationServiceImplementation verificationServiceImplementation = new VerificationServiceImplementation() ;
+        verificationServiceImplementation.repositoryAssetService = repositoryAssetService;
 
         rulesRepository = mock(RulesRepository.class);
-        when(repositoryAssetService.getRulesRepository()).thenReturn(rulesRepository);
+        repositoryAssetService.rulesRepository = rulesRepository;
         packageItem = createPackage();
 
         AssetItemIterator assetItemIterator = mock(AssetItemIterator.class);

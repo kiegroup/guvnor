@@ -29,46 +29,45 @@ public class BuiltInSelectorTest extends GuvnorTestBase {
 
     @Test
     public void testBuiltInSelector() throws Exception {
-        ServiceImplementation impl = getServiceImplementation();
-        impl.getRulesRepository().loadDefaultPackage();
-        impl.getRulesRepository().createPackage( "testBuiltInSelectorPackage",
+        rulesRepository.loadDefaultPackage();
+        rulesRepository.createPackage( "testBuiltInSelectorPackage",
                                                  "woot" );
-        impl.getRulesRepository().createState( "Dev" );
-        impl.getRulesRepository().createState( "QA" );
+        rulesRepository.createState( "Dev" );
+        rulesRepository.createState( "QA" );
 
-        CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
+        CategoryItem cat = rulesRepository.loadCategory( "/" );
         cat.addCategory( "testBuiltInSelectorCat1",
                          "yeah" );
         cat.addCategory( "testBuiltInSelectorCat2",
                          "yeah" );
 
-        String uuid1 = impl.createNewRule( "test AddRule1",
+        String uuid1 = serviceImplementation.createNewRule( "test AddRule1",
                                            "a description",
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item1 = impl.getRulesRepository().loadAssetByUUID( uuid1 );
+        AssetItem item1 = rulesRepository.loadAssetByUUID( uuid1 );
         item1.updateState( "Dev" );
-        String uuid2 = impl.createNewRule( "test AddRule2",
+        String uuid2 = serviceImplementation.createNewRule( "test AddRule2",
                                            "a description",
                                            "testBuiltInSelectorCat1",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item2 = impl.getRulesRepository().loadAssetByUUID( uuid2 );
+        AssetItem item2 = rulesRepository.loadAssetByUUID( uuid2 );
         item2.updateState( "QA" );
-        String uuid3 = impl.createNewRule( "test AddRule3",
+        String uuid3 = serviceImplementation.createNewRule( "test AddRule3",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item3 = impl.getRulesRepository().loadAssetByUUID( uuid3 );
+        AssetItem item3 = rulesRepository.loadAssetByUUID( uuid3 );
         item3.updateState( "Dev" );
-        String uuid4 = impl.createNewRule( "test AddRule4",
+        String uuid4 = serviceImplementation.createNewRule( "test AddRule4",
                                            "a description",
                                            "testBuiltInSelectorCat2",
                                            "testBuiltInSelectorPackage",
                                            "txt" );
-        AssetItem item4 = impl.getRulesRepository().loadAssetByUUID( uuid4 );
+        AssetItem item4 = rulesRepository.loadAssetByUUID( uuid4 );
         item4.updateState( "QA" );
 
         //Select asset using "category =" 

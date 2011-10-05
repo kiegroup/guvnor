@@ -23,6 +23,7 @@ import org.apache.abdera.protocol.client.AbderaClient;
 import org.apache.abdera.protocol.client.ClientResponse;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.jaxrs.jaxb.Category;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
@@ -30,7 +31,10 @@ import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
+import org.drools.repository.utils.IOUtils;
 import org.drools.util.codec.Base64;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -49,22 +53,23 @@ import java.net.URI;
 import java.net.URL;
 import java.util.*;
 
-public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
+import static org.junit.Assert.*;
+
+public class BasicPackageResourceTest extends GuvnorTestBase {
+    
     private Abdera abdera = new Abdera();
-    private static RestTestingBase restTestingBase;
 
-    @BeforeClass
-    public static void startServers() throws Exception {
-       	restTestingBase = new RestTestingBase();
-       	restTestingBase.setup();       	
+    public BasicPackageResourceTest() {
+        autoLoginAsAdmin = false;
+    }
 
-        assertTrue("server did not launch correctly",
-                   launchServer(CXFJAXRSServer.class, true));
-
-        
-        ServiceImplementation impl = restTestingBase.getServiceImplementation();
+//    @BeforeClass
+    // Unreliable HACK
+    // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
+    @Test
+    public void startServers() throws Exception {
         //Package version 1(Initial version)
-        PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
+        PackageItem pkg = rulesRepository.createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
 
         //Package version 2	
@@ -125,88 +130,83 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         pkg.checkin( "version3" );               
     }
     
-    @AfterClass
-    public static void tearDown() {
-    	restTestingBase.tearDownGuvnorTestBase();
-    }
-    
-    @Test
-    public void testBasicAuthentication() throws MalformedURLException, IOException {
+    @Test @RunAsClient
+    public void testBasicAuthenticationInvalidPassword(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         //Test with invalid user name and pwd
-        URL url = new URL(generateBaseUrl() + "/packages");
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "invalidPwd";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword
+        byte[] authEncBytes = Base64.encodeBase64("admin:invalidPassword"
                 .getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
         assertEquals (401, connection.getResponseCode());
         //assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        
+    }
+
+    @Test @RunAsClient
+    public void testBasicAuthentication(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         //Test with valid user name and pwd
-        url = new URL(generateBaseUrl() + "/packages");
-        connection = (HttpURLConnection)url.openConnection();
+        URL url = new URL(baseURL, "rest/packages");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        userpassword = "test" + ":" + "password";
-        authEncBytes = Base64.encodeBase64(userpassword
-                .getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));        
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test 
-    public void testGetPackagesForJSON() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient 
+    public void testGetPackagesForJSON(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();        
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());        
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         //TODO: verify
      }
 
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
-    public void testGetPackagesForXML() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient
+    public void testGetPackagesForXML(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         //TODO: verify
     }
 
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test
-    public void testGetPackagesForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient
+    public void testGetPackagesForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -234,35 +234,35 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test 
-    public void testGetPackageForJSON() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
+    @Test @RunAsClient 
+    public void testGetPackageForJSON(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log (LogLevel, GetContent(connection));
+        //logger.log (LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test 
-    public void testGetPackageForXML() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
+    @Test @RunAsClient 
+    public void testGetPackageForXML(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         Package p = unmarshalPackageXML(connection.getInputStream());
         assertEquals("restPackage1", p.getTitle());
         assertEquals("this is package restPackage1", p.getDescription());
         assertEquals("version3", p.getCheckInComment());
         assertEquals(3, p.getVersion());
-        assertEquals("http://localhost:9080/packages/restPackage1/source", p.getSourceLink().toString());
-        assertEquals("http://localhost:9080/packages/restPackage1/binary", p.getBinaryLink().toString());
+        assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
+        assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
         assertEquals("alan_parsons", pm.getLastContributor());
         assertNotNull(pm.getCreated());
@@ -271,28 +271,28 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         Set<URI> assetsURI = p.getAssets();
         
         assertEquals(7, assetsURI.size());
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/drools")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/func")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/myDSL")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule1")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule2")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/rule4")));		
-    	assertTrue(assetsURI.contains(new URI("http://localhost:9080/packages/restPackage1/assets/model1")));		
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/drools").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/func").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/myDSL").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule1").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule2").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/rule4").toURI()));
+    	assertTrue(assetsURI.contains(new URL(baseURL, "rest/packages/restPackage1/assets/model1").toURI()));
     }
 
     /**
      * Test of getPackagesAsFeed method, of class PackageService.
      */
-    @Test 
-    public void testGetPackageForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1");
+    @Test @RunAsClient 
+    public void testGetPackageForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -329,15 +329,15 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     /* Package Creation */
-    @Test
-    public void testCreatePackageFromJAXB() throws Exception {
+    @Test @RunAsClient
+    public void testCreatePackageFromJAXB(@ArquillianResource URL baseURL) throws Exception {
         Package p = createTestPackage("TestCreatePackageFromJAXB");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
         Marshaller marshaller = context.createMarshaller();
         StringWriter sw = new StringWriter();
         marshaller.marshal(p, sw);
         String xml = sw.toString();
-        URL url = new URL(generateBaseUrl() + "/packages");
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
@@ -357,9 +357,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     }
 
     /* Package Creation */
-    @Test  @Ignore
-    public void testCreatePackageFromDRLAsEntry() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient  @Ignore
+    public void testCreatePackageFromDRLAsEntry(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -378,7 +378,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         /* Retry with a -1 from the connection */
         if (connection.getResponseCode() == -1) {
-            url = new URL(generateBaseUrl() + "/packages");
+            url = new URL(baseURL, "rest/packages");
             connection = (HttpURLConnection)url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -398,12 +398,12 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @Ignore
-    public void testCreatePackageFromDRLAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient @Ignore
+    public void testCreatePackageFromDRLAsJson(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -422,12 +422,12 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_JSON, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @Ignore
-    public void testCreatePackageFromDRLAsJaxB() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages");
+    @Test @RunAsClient @Ignore
+    public void testCreatePackageFromDRLAsJaxB(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -446,11 +446,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals (MediaType.APPLICATION_XML, connection.getContentType());
-        //logger.log(LogLevel, GetContent(connection));
+        //logger.log(LogLevel, IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test
-    public void testCreateAndUpdateAndDeletePackageFromAtom() throws Exception {
+    @Test @RunAsClient
+    public void testCreateAndUpdateAndDeletePackageFromAtom(@ArquillianResource URL baseURL) throws Exception {
     	//Test create
     	Abdera abdera = new Abdera();
     	AbderaClient client = new AbderaClient(abdera);
@@ -458,7 +458,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
     	entry.setTitle("testCreatePackageFromAtom");
     	entry.setSummary("desc for testCreatePackageFromAtom");
     	
-    	ClientResponse resp = client.post(generateBaseUrl() + "/packages", entry);
+    	ClientResponse resp = client.post(new URL(baseURL, "rest/packages").toExternalForm(), entry);
         //System.out.println(GetContent(resp.getInputStream()));
 
 		assertEquals(ResponseType.SUCCESS, resp.getType());
@@ -473,17 +473,17 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         Entry e = abdera.newEntry();
         e.setTitle("testUpdatePackageFromAtom");
         org.apache.abdera.model.Link l = Abdera.getNewFactory().newLink();
-        l.setHref(generateBaseUrl() + "/packages/" + "testCreatePackageFromAtom");
+        l.setHref(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm());
         l.setRel("self");
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
-        resp = client.put(generateBaseUrl() + "/packages/testCreatePackageFromAtom", e);
+        resp = client.put(new URL(baseURL, "packages/testCreatePackageFromAtom").toExternalForm(), e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
         assertEquals(204, resp.getStatus());
 
         //NOTE: could not figure out why the code below always returns -1 as the ResponseCode.
-/*        URL url = new URL(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+/*        URL url = new URL(baseURL, "packages/testCreatePackageFromAtom");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
@@ -493,7 +493,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(204, conn.getResponseCode());
         conn.disconnect(); */
  
-        URL url1 = new URL(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+        URL url1 = new URL(baseURL, "rest/packages/testCreatePackageFromAtom");
         HttpURLConnection conn1 = (HttpURLConnection)url1.openConnection();
         conn1.setRequestMethod("GET");
         conn1.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -512,27 +512,27 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
         
 		//Roll back changes. 
-		resp = client.delete(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+		resp = client.delete(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm());
 		assertEquals(ResponseType.SUCCESS, resp.getType());
 
 		//Verify the package is indeed deleted
-		URL url2 = new URL(generateBaseUrl() + "/packages/testCreatePackageFromAtom");
+		URL url2 = new URL(baseURL, "rest/packages/testCreatePackageFromAtom");
 		HttpURLConnection conn2 = (HttpURLConnection)url2.openConnection();
         conn2.setRequestMethod("GET");
         conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn2.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (500, conn2.getResponseCode());
     }
 
-    @Ignore @Test
-    public void testCreatePackageFromJson() {
+    @Ignore @Test @RunAsClient
+    public void testCreatePackageFromJson(@ArquillianResource URL baseURL) {
         //TODO: implement test
     }
 
-    @Test
-    public void testGetPackageSource() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/source");
+    @Test @RunAsClient
+    public void testGetPackageSource(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
@@ -540,7 +540,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);        
+        String result = IOUtils.toString(connection.getInputStream());
   
         assertEquals("attachment; filename=restPackage1", connection.getHeaderField("Content-Disposition"));
         assertTrue( result.indexOf( "package restPackage1" ) >= 0 );
@@ -550,11 +550,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue( result.indexOf( "declare Album2" ) >= 0 );
     }
 
-    @Test
+    @Test @RunAsClient
     @Ignore
-    public void testGetPackageBinary () throws Exception {
+    public void testGetPackageBinary (@ArquillianResource URL baseURL) throws Exception {
         /* Tests package compilation in addition to byte retrieval */
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/binary");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -562,11 +562,11 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
     }
 
-    @Test @Ignore
-    public void testUpdatePackageFromJAXB() throws Exception {
+    @Test @RunAsClient @Ignore
+    public void testUpdatePackageFromJAXB(@ArquillianResource URL baseURL) throws Exception {
         Package p = createTestPackage("TestCreatePackageFromJAXB");
         p.setDescription("Updated description.");
         JAXBContext context = JAXBContext.newInstance(p.getClass());
@@ -574,7 +574,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         StringWriter sw = new StringWriter();
         marshaller.marshal(p, sw);
         String xml = sw.toString();
-        URL url = new URL(generateBaseUrl() + "/packages/TestCreatePackageFromJAXB");
+        URL url = new URL(baseURL, "rest/packages/TestCreatePackageFromJAXB");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
@@ -593,21 +593,21 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(204, connection.getResponseCode());
     }
 
-    @Ignore @Test
-    public void testUpdatePackageFromJson() {
+    @Ignore @Test @RunAsClient
+    public void testUpdatePackageFromJson(@ArquillianResource URL baseURL) {
         //TODO:  implement test
     }
 
-    @Test
-    public void testGetPackageVersionsForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions");
+    @Test @RunAsClient
+    public void testGetPackageVersionsForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -631,16 +631,16 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertTrue(entriesMap.get("3").getUpdated() != null);		
     }
     
-    @Test
-    public void testGetHistoricalPackageForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2");
+    @Test @RunAsClient
+    public void testGetHistoricalPackageForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -667,9 +667,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 		assertEquals("/packages/restPackage1/versions/2/assets/model1", linksMap.get("model1").getHref().getPath());   
 	}    
 
-    @Test
-    public void testGetHistoricalPackageSource() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2/source");
+    @Test @RunAsClient
+    public void testGetHistoricalPackageSource(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
@@ -677,7 +677,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
        
         assertTrue(result.indexOf( "package restPackage1" ) >= 0 );
@@ -687,9 +687,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
     }
     
-    @Test 
-    public void testGetHistoricalPackageBinary () throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/versions/2/binary");
+    @Test @RunAsClient 
+    public void testGetHistoricalPackageBinary(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -697,16 +697,16 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         //TODO:
         //assertEquals (500, connection.getResponseCode());
-        //String result = GetContent(connection);
+        //String result = IOUtils.toString(connection.getInputStream());
         //System.out.println(result);
     }
 
-    @Test
-    public void testUpdateAndGetAssetSource() throws Exception {
+    @Test @RunAsClient
+    public void testUpdateAndGetAssetSource(@ArquillianResource URL baseURL) throws Exception {
         /*
          *  Get the content of rule4
          */
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection1 = (HttpURLConnection) url.openConnection();
         connection1.setRequestMethod("GET");
         connection1.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
@@ -717,7 +717,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
           /*
            * update the content
            */
-        URL url2 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        URL url2 = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
         connection2.setDoOutput(true);
         connection2.setRequestMethod("PUT");
@@ -730,7 +730,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         /*
          * get the content again and verify it was modified
          */
-        URL url3 = new URL(generateBaseUrl() + "/packages/restPackage1/assets/rule4/source");
+        URL url3 = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection3 = (HttpURLConnection) url3.openConnection();
         connection3.setRequestMethod("GET");
         connection3.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
@@ -738,19 +738,18 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals(200, connection3.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection3.getContentType());
-        String result = GetContent(connection3);
+        String result = IOUtils.toString(connection3.getInputStream());
         assertEquals(result,newContent+"\n");
     }
     
-    @Test
-    public void testCreateAndUpdateAndGetBinaryAsset() throws Exception {      
+    @Test @RunAsClient
+    public void testCreateAndUpdateAndGetBinaryAsset(@ArquillianResource URL baseURL) throws Exception {
         //Query if the asset exist
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "password";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
@@ -758,7 +757,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(500, connection.getResponseCode());
 
         //Create the asset from binary
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -780,14 +779,14 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(200, connection.getResponseCode());
         
         //Get the asset meta data and verify
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
         InputStream in = connection.getInputStream();
@@ -802,21 +801,21 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(entry.getPublished() != null);
         
         //Get the asset binary and verify
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image/binary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image/binary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
         in = connection.getInputStream();
         assertNotNull(in);
                 
         //Update asset binary
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image/binary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image/binary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
@@ -835,17 +834,17 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(204, connection.getResponseCode());
         
         //Roll back changes. 
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -855,10 +854,10 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(500, connection.getResponseCode());
     }
     
-    @Test
-    public void testGetSourceContentFromBinaryAsset() throws Exception {      
+    @Test @RunAsClient
+    public void testGetSourceContentFromBinaryAsset(@ArquillianResource URL baseURL) throws Exception {
         //Query if the asset exist
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -867,7 +866,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(500, connection.getResponseCode());
 
         //Create the asset from binary
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -887,26 +886,26 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(200, connection.getResponseCode());
         
         //Get the asset source. this will return the binary data as a byte array.
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new/source");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new/source");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertNotNull(result);
          
         //Roll back changes. 
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/Error-image-new");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -914,31 +913,31 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(500, connection.getResponseCode());
     }
     
-    @Test
-    public void testGetBinaryContentFromNonBinaryAsset() throws Exception {    
+    @Test @RunAsClient
+    public void testGetBinaryContentFromNonBinaryAsset(@ArquillianResource URL baseURL) throws Exception {
         //Get the asset binary. If this asset has no binary content, this will return its 
         //source content instead
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/binary");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         assertTrue(result.indexOf("declare Album2") > -1);
     }
     
-    @Test
-    public void testGetAssetVersionsForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions");
+    @Test @RunAsClient
+    public void testGetAssetVersionsForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         
         InputStream in = connection.getInputStream();
         assertNotNull(in);
@@ -960,16 +959,16 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertTrue(entriesMap.get("2").getUpdated() != null);     
     }
     
-    @Test
-    public void testGetHistoricalAssetForAtom() throws MalformedURLException, IOException {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/1");
+    @Test @RunAsClient
+    public void testGetHistoricalAssetForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         InputStream in = connection.getInputStream();
         
         assertNotNull(in);
@@ -988,14 +987,14 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE)); 
         
         
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/2");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/2");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
         assertEquals (200, connection.getResponseCode());
         assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
-        //System.out.println(GetContent(connection));
+        //System.out.println(IOUtils.toString(connection.getInputStream()));
         in = connection.getInputStream();
         
         assertNotNull(in);
@@ -1015,9 +1014,9 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
   
     }
     
-    @Test
-    public void testGetHistoricalAssetSource() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/1/source");
+    @Test @RunAsClient
+    public void testGetHistoricalAssetSource(@ArquillianResource URL baseURL) throws Exception {
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/1/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
@@ -1025,13 +1024,13 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        String result = GetContent(connection);
+        String result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
 
         assertTrue(result.indexOf( "declare Album1" ) >= 0 );
         assertTrue(result.indexOf( "genre1: String" ) >= 0 );
         
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1/versions/2/source");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/2/source");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
@@ -1039,22 +1038,21 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
 
         assertEquals(200, connection.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection.getContentType());
-        result = GetContent(connection);
+        result = IOUtils.toString(connection.getInputStream());
         System.out.println(result);
 
         assertTrue(result.indexOf( "declare Album2" ) >= 0 );
         assertTrue(result.indexOf( "genre2: String" ) >= 0 );
     }  
     
-    @Test
-    public void testGetHistoricalAssetBinary() throws Exception {
+    @Test @RunAsClient
+    public void testGetHistoricalAssetBinary(@ArquillianResource URL baseURL) throws Exception {
         //Query if the asset exist
-        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        URL url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
-        String userpassword = "test" + ":" + "password";
-        byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+        byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
@@ -1062,7 +1060,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(500, connection.getResponseCode());
 
         //Create the asset from binary
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
@@ -1084,7 +1082,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(200, connection.getResponseCode());
         
         //Update asset binary
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/binary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/binary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
@@ -1103,7 +1101,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertEquals(204, connection.getResponseCode());
                 
         //Get the asset binary version 1 and verify
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/1/binary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/1/binary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -1116,7 +1114,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertNotNull(in);
         
         //Get the asset binary version 2 and verify
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/2/binary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/2/binary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
@@ -1129,17 +1127,17 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
         assertNotNull(in);
         
         //Roll back changes. 
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         connection = (HttpURLConnection)url.openConnection();
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
         connection.connect();
-        System.out.println(GetContent(connection));
+        System.out.println(IOUtils.toString(connection.getInputStream()));
         assertEquals(204, connection.getResponseCode());
 
         //Verify the package is indeed deleted
-        url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/testGetHistoricalAssetBinary");
+        url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -1147,32 +1145,7 @@ public class BasicPackageResourceTest extends AbstractBusClientServerTestBase {
                 + new String(authEncBytes));
         connection.connect();
         assertEquals(500, connection.getResponseCode());
-    } 
-    
-    public String generateBaseUrl() {
-    	return "http://localhost:9080";
     }
-    public static String GetContent (InputStream is) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }
-    
-    public static String GetContent (HttpURLConnection connection) throws IOException {
-        StringAppender ret = new StringAppender();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            ret.append(line + "\n");
-        }
-
-        return ret.toString();
-    }    
 
     protected Package createTestPackage(String title) {
         Category c = new Category();

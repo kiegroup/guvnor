@@ -27,32 +27,65 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.configurations.Capability;
-import org.jboss.seam.contexts.Contexts;
-import org.jboss.seam.contexts.Lifecycle;
-import org.jboss.seam.security.AuthorizationException;
-import org.junit.Test;
+import javax.inject.Inject;
 
-public class SecurityServiceImplTest {
+import org.drools.guvnor.client.configurations.Capability;
+import org.drools.guvnor.server.GuvnorTestBase;
+import org.jboss.seam.security.AuthorizationException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.picketlink.idm.impl.api.PasswordCredential;
+
+public class SecurityServiceImplTest extends GuvnorTestBase {
+
+    private static final String USER_NAME = "securityServiceImplUser";
+
+    @Inject
+    private SecurityServiceImpl securityService;
+
+    @Inject
+    private RoleBasedPermissionStore roleBasedPermissionStore;
+
+    @Inject
+    private RoleBasedPermissionManager roleBasedPermissionManager;
+
+    @Inject
+    private RoleBasedPermissionResolver roleBasedPermissionResolver;
+
+    public SecurityServiceImplTest() {
+        autoLoginAsAdmin = false;
+    }
+
+    @Before
+    public void loginAsSpecificUser() {
+        loginAs(USER_NAME);
+    }
+
+    @After
+    public void logoutAsSpecificUser() {
+        logoutAs(USER_NAME);
+    }
 
     @Test
     public void testLogin() throws Exception {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-        assertTrue( impl.login( "XXX",
-                                null ) );
+        logoutAsSpecificUser();
+        try {
+            assertTrue( securityService.login( USER_NAME,
+                                    USER_NAME ) );
+        } finally {
+            loginAsSpecificUser();
+        }
     }
 
     @Test
     public void testUser() throws Exception {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-        assertNotNull( impl.getCurrentUser() );
+        assertNotNull( securityService.getCurrentUser() );
     }
 
     @Test
     public void testCapabilities() {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-
-        List<Capability> userCapabilities = impl.getUserCapabilities();
+        List<Capability> userCapabilities = securityService.getUserCapabilities();
 
         assertTrue(userCapabilities.contains(Capability.SHOW_ADMIN));
         assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_ASSET));
@@ -65,84 +98,31 @@ public class SecurityServiceImplTest {
 
     @Test
     public void testCapabilitiesWithContext() {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        RoleBasedPermissionResolver resolver = new RoleBasedPermissionResolver();
-        resolver.setEnableRoleBasedAuthorization( true );
-        midentity.addPermissionResolver( resolver );
-
-        Contexts.getSessionContext().set( "org.jboss.seam.security.roleBasedPermissionResolver",
-                                          resolver );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-        Contexts.getSessionContext().set( "org.drools.guvnor.client.rpc.RepositoryService",
-                                          impl );
-
-        List<RoleBasedPermission> pbps = new ArrayList<RoleBasedPermission>();
-        pbps.add( new RoleBasedPermission( "jervis",
+        roleBasedPermissionResolver.setEnableRoleBasedAuthorization(true);
+        roleBasedPermissionStore.addRoleBasedPermissionForTesting(USER_NAME, new RoleBasedPermission( USER_NAME,
                                            RoleType.PACKAGE_READONLY.getName(),
                                            "packagename",
                                            null ) );
-        MockRoleBasedPermissionStore store = new MockRoleBasedPermissionStore( pbps );
-        Contexts.getSessionContext().set( "org.drools.guvnor.server.security.RoleBasedPermissionStore",
-                                          store );
+        roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
-        // Put permission list in session.
-        RoleBasedPermissionManager testManager = new RoleBasedPermissionManager();
-        testManager.create();
-        Contexts.getSessionContext().set( "roleBasedPermissionManager",
-                                          testManager );
-
-        List<Capability> c = impl.getUserCapabilities();
-        assertTrue(c.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
-
-        //now lets give them no permissions
-        pbps.clear();
         try {
-            impl.getUserCapabilities();
-            fail( "should not be allowed as there are no permissions" );
-        } catch ( AuthorizationException e ) {
-            assertNotNull( e.getMessage() );
-            assertTrue( midentity.loggoutCalled );
+            List<Capability> c = securityService.getUserCapabilities();
+            assertTrue(c.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
+
+            //now lets give them no permissions
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
+            roleBasedPermissionManager.create(); // HACK flushes the permission cache
+            try {
+                securityService.getUserCapabilities();
+                fail( "should not be allowed as there are no permissions" );
+            } catch ( AuthorizationException e ) {
+                assertNotNull( e.getMessage() );
+            }
+        } finally {
+            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USER_NAME);
         }
-
-        //now lets turn off the role based stuff
-        resolver.setEnableRoleBasedAuthorization( false );
-        impl.getUserCapabilities(); // should not blow up !
-
-        Lifecycle.endApplication();
-    }
-
-    @Test
-    public void testCapabilitiesContext() throws Exception {
-        SecurityServiceImpl impl = new SecurityServiceImpl();
-
-        // Mock up SEAM contexts
-        Map<String, Object> application = new HashMap<String, Object>();
-        Lifecycle.beginApplication( application );
-        Lifecycle.beginCall();
-        MockIdentity midentity = new MockIdentity();
-        midentity.addRole( RoleType.ADMIN.getName() );
-        Contexts.getSessionContext().set( "org.jboss.seam.security.identity",
-                                          midentity );
-
-        List<Capability> userCapabilities = impl.getUserCapabilities();
-
-        assertTrue(userCapabilities.contains(Capability.SHOW_ADMIN));
-        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_ASSET));
-        assertTrue(userCapabilities.contains(Capability.SHOW_CREATE_NEW_PACKAGE));
-        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT));
-        assertTrue(userCapabilities.contains(Capability.SHOW_DEPLOYMENT_NEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_KNOWLEDGE_BASES_VIEW));
-        assertTrue(userCapabilities.contains(Capability.SHOW_QA));
-
-        Lifecycle.endApplication();
-
+        securityService.getUserCapabilities(); // should not blow up !
     }
 
 }

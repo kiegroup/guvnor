@@ -17,12 +17,15 @@ package org.drools.guvnor.server.security.rules;
 
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import org.drools.guvnor.server.security.CategoryPathType;
 import org.drools.guvnor.server.security.PathHelper;
 import org.drools.guvnor.server.security.RoleBasedPermission;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.util.LoggingHelper;
 
+@ApplicationScoped
 public class CategoryPathTypePermissionRule
     implements
     PermissionRule {

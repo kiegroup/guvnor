@@ -31,6 +31,9 @@ public interface SecurityServiceAsync {
 
     public void login(String userName, String password, AsyncCallback cb);
 
+
+    public void logout(AsyncCallback cb);
+
     public void getCurrentUser(AsyncCallback<UserSecurityContext> cb);
 
     public void getUserCapabilities(AsyncCallback<List<Capability>> capabilities);

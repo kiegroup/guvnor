@@ -19,6 +19,7 @@ package org.drools.guvnor.server.files;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,6 +34,9 @@ public class AssetFileServlet extends RepositoryServlet {
 
     private static final long serialVersionUID = 510l;
 
+    @Inject
+    private FileManagerService fileManagerService;
+
     /**
      * Posting accepts content of various types -
      * may be an attachement for an asset, or perhaps a repository import to process.
@@ -42,7 +46,7 @@ public class AssetFileServlet extends RepositoryServlet {
                                                        IOException {
 
         response.setContentType( "text/html" );
-        FormData uploadItem = FileManagerUtils.getFormData( request );
+        FormData uploadItem = FileManagerService.getFormData(request);
 
         if ( uploadItem.getFile() != null && uploadItem.getUuid() != null ) {
             //attaching to an asset.
@@ -74,7 +78,7 @@ public class AssetFileServlet extends RepositoryServlet {
     protected void processAttachmentDownload(String uuid,
                                              HttpServletResponse response) throws IOException {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
-        String filename = getFileManager().loadFileAttachmentByUUID( uuid,
+        String filename = fileManagerService.loadFileAttachmentByUUID( uuid,
                                                                      output );
 
         response.setContentType( "application/x-download" );
@@ -87,14 +91,12 @@ public class AssetFileServlet extends RepositoryServlet {
 
     private String processAttachFileToAsset(FormData uploadItem) throws IOException {
 
-        FileManagerUtils manager = getFileManager();
-
         // If the file it doesn't exist.
         if ( "".equals( uploadItem.getFile().getName() ) ) {
             throw new IOException( "No file selected." );
         }
 
-        manager.attachFile( uploadItem );
+        fileManagerService.attachFile( uploadItem );
         uploadItem.getFile().getInputStream().close();
 
         return "OK";

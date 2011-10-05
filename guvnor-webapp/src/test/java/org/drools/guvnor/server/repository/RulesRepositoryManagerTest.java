@@ -22,37 +22,20 @@ import static org.junit.Assert.assertFalse;
 
 import javax.jcr.Repository;
 
-import org.drools.guvnor.server.util.TestEnvironmentSessionHelper;
+import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.repository.RulesRepositoryConfigurator;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 
-public class RulesRepositoryManagerTest {
+public class RulesRepositoryManagerTest extends GuvnorTestBase {
 
     @Test
     public void testDecorator() {
-        RulesRepositoryManager dec = new RulesRepositoryManager();
-        RepositoryStartupService config = new RepositoryStartupService();
-        config.properties.put( RulesRepositoryConfigurator.CONFIGURATOR_CLASS,
-                               "org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator" );
-        Repository repo = config.getRepositoryInstance();
-        config.repository = repo;
-        dec.repositoryConfiguration = config;
+        assertNotNull( rulesRepository.getSession() );
+        assertTrue( rulesRepository.getSession().isLive() );
 
-        dec.create();
-
-        assertNotNull( dec.getRepository().getSession() );
-
-        assertTrue( dec.getRepository().getSession().isLive() );
-        dec.close();
-        assertFalse( dec.getRepository().getSession().isLive() );
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        TestEnvironmentSessionHelper.shutdown();
+        // TODO somehow close the request and asset the session is closed too
+        // assertFalse( dec.createRulesRepository().getSession().isLive() );
     }
 
 }

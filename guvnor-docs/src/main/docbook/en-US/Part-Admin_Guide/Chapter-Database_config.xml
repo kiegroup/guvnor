@@ -33,32 +33,34 @@
       </para>
 
       <para>
-      To change the location, unzip the Guvnor WAR file, and locate the <filename>components.xml</filename> file in
-      the <filename>WEB-INF</filename> directory. This is a JBoss Seam configuration file (Seam 2 is the
+      To change the location, unzip the Guvnor WAR file, and locate the <filename>beans.xml</filename> file in
+      the <filename>WEB-INF/classes/META-INF</filename> directory. This is a JBoss Seam configuration file (Seam 3 is the
       framework used) which allows various parts of the system to be customized. When you have located the
-      <filename>components.xml</filename> file, you should see something like the following:
+      <filename>beans.xml</filename> file, you should see something like the following:
       </para>
 
-      <programlisting language="XML"><![CDATA[
-<component name="repositoryConfiguration">
-   <!-- JackRabbit  -->
-      <property name="properties">
-         <key>org.drools.repository.configurator</key><value>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</value>
-         <!--  the root directory for the repo storage the directory must exist. -->
-         <!--  <key>repository.root.directory</key><value>/opt/yourpath</value>  -->
-      </property>
-      ...
-</component>]]></programlisting>
+      <programlisting language="XML"><![CDATA[  <guvnorRepository:GuvnorBootstrapConfiguration>
+    <s:modifies/>
 
-      <para>Find the component with a name of <literal>repositoryConfiguration</literal> and its section for JackRabbit configuration,
+    <!-- JackRabbit  -->
+    <guvnorRepository:properties>
+      <s:entry><s:key>org.drools.repository.configurator</s:key><s:value>org.drools.repository.jackrabbit.JackrabbitRepositoryConfigurator</s:value></s:entry>
+      <!--  the root directory for the repo storage the directory must exist. -->
+      <!--<s:entry><s:key>repository.root.directory</s:key><s:value>/opt/yourpath</s:value></s:entry>-->
+    </guvnorRepository:properties>
+
+    ...
+  </guvnorRepository:GuvnorBootstrapConfiguration>]]></programlisting>
+
+      <para>Find the component with a name of <literal>GuvnorBootstrapConfiguration</literal> and its section for JackRabbit configuration,
       then the key property with the name of <literal>repository.root.directory</literal>.</para>
 
       <para>If you un-comment this key element (as in the example above it is commented
       out), you can set whatever file-system path you need for the repository data to be
       stored in. You can also use this to move the repository around. In that
-      case, when you have set the location in the <filename>components.xml</filename> you can
+      case, when you have set the location in the <filename>beans.xml</filename> you can
       simply move the <filename>repository.xml</filename> AND the repository directory to the new
-      location that you set in the <filename>components.xml</filename>.</para>
+      location that you set in the <filename>beans.xml</filename>.</para>
 
       <para>If there is no repository.xml configuration file, or the repository directory at the location 
       specified (or in the default location) then Guvnor will create new empty ones.</para>

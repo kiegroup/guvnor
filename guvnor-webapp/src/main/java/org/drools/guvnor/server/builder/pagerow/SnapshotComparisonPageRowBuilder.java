@@ -21,12 +21,14 @@ import java.util.List;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
 import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.jboss.seam.security.Identity;
 
 public class SnapshotComparisonPageRowBuilder
     implements
     PageRowBuilder<PageRequest, SnapshotDiffs> {
     private SnapshotDiffs diffs;
     private PageRequest   pageRequest;
+    private Identity identity;
 
     public List<SnapshotComparisonPageRow> build() {
         validate();
@@ -58,6 +60,11 @@ public class SnapshotComparisonPageRowBuilder
 
     public SnapshotComparisonPageRowBuilder withPageRequest(PageRequest pageRequest) {
         this.pageRequest = pageRequest;
+        return this;
+    }
+
+    public SnapshotComparisonPageRowBuilder withIdentity(Identity identity) {
+        this.identity = identity;
         return this;
     }
 
