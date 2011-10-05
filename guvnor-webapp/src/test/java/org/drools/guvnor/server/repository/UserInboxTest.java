@@ -34,7 +34,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testInboxen() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
@@ -97,7 +97,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testLoadEntriesRecentlyOpened() {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
@@ -113,7 +113,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testLoadEntriesRecentlyEdited() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
@@ -131,7 +131,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testLoadEntriesIncoming() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
                                                               "" );
@@ -152,7 +152,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testRead() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
@@ -172,7 +172,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testDupes() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox inb = new UserInbox( repo );
         inb.clearAll();
@@ -216,7 +216,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testHelper() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         UserInbox ib = new UserInbox( repo );
         ib.clearAll();
@@ -243,7 +243,7 @@ public class UserInboxTest extends GuvnorTestBase {
     @Test
     public void testIncoming() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         AssetItem asset = repo.loadDefaultPackage().addAsset( "testIncomingMarkedRead",
                                                               "" );

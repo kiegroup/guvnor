@@ -69,7 +69,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
         
         //create a new package
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "categoriesPackage1",
+        PackageItem pkg = rulesRepository.createPackage( "categoriesPackage1",
                                                                    "this is package categoriesPackage1" );
         //Create rule1 with 'category 1'
         AssetItem rule = pkg.addAsset( "rule1",

@@ -281,9 +281,9 @@ public class PackageDeploymentServlet extends RepositoryServlet {
                                 ByteArrayOutputStream out) throws IOException {
         PackageItem pkg;
         if (helper.isLatest()) {
-            pkg = serviceImplementation.getRulesRepository().loadPackage(helper.getPackageName());
+            pkg = rulesRepository.loadPackage(helper.getPackageName());
         } else {
-            pkg = serviceImplementation.getRulesRepository().loadPackageSnapshot(helper.getPackageName(),
+            pkg = rulesRepository.loadPackageSnapshot(helper.getPackageName(),
                     helper.getVersion());
         }
         try {

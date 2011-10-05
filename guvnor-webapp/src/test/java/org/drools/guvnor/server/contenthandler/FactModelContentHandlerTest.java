@@ -162,7 +162,7 @@ public class FactModelContentHandlerTest extends GuvnorTestBase {
     public void testStore() throws Exception {
         FactModelContentHandler ch = new FactModelContentHandler();
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.loadDefaultPackage();
         AssetItem asset = pkg.addAsset( "testDeclaredTypeStore",

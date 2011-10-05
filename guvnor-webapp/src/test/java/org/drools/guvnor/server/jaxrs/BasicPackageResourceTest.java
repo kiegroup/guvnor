@@ -69,7 +69,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     @Test
     public void startServers() throws Exception {
         //Package version 1(Initial version)
-        PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "restPackage1",
+        PackageItem pkg = rulesRepository.createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
 
         //Package version 2	

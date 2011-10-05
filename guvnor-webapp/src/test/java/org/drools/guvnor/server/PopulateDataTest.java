@@ -93,7 +93,6 @@ public class PopulateDataTest extends GuvnorTestBase {
     }
 
     private void createModel() throws Exception {
-        RulesRepository repo = serviceImplementation.getRulesRepository();
         String uuid = serviceImplementation.createNewRule( "DomainModel",
                                           "This is the business object model",
                                           null,
@@ -106,12 +105,12 @@ public class PopulateDataTest extends GuvnorTestBase {
                 file,
                 "billasurf.jar");
 
-        AssetItem item = repo.loadAssetByUUID( uuid );
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
         assertNotNull(item.getBinaryContentAsBytes());
-        assertEquals( item.getBinaryContentAttachmentFileName(),
-                      "billasurf.jar" );
+        assertEquals(item.getBinaryContentAttachmentFileName(),
+                "billasurf.jar");
 
-        PackageItem pkg = repo.loadPackage( "com.billasurf.manufacturing.plant" );
+        PackageItem pkg = rulesRepository.loadPackage( "com.billasurf.manufacturing.plant" );
         DroolsHeader.updateDroolsHeader("import com.billasurf.Board\nimport com.billasurf.Person" + "\n\nglobal com.billasurf.Person prs",
                 pkg);
         pkg.checkin( "added imports" );

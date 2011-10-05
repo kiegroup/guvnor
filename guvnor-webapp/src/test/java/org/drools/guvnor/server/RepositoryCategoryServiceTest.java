@@ -226,7 +226,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleListForCategoriesWithAnalystPermission() throws SerializationException {
-        CategoryItem rootCategory = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem rootCategory = rulesRepository.loadCategory( "/" );
         CategoryItem cat = rootCategory.addCategory("testLoadRuleListForCategoriesWithAnalystPermissionRootCat", "description");
         cat.addCategory( "testLoadRuleListForCategoriesWithAnalystPermissionCat1",
                          "yeah");
@@ -246,7 +246,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
         try {
             //Create assets for test
-            PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
+            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
             "" );
 
             AssetItem asset = pkg
@@ -336,7 +336,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleListForCategoriesWithAnalystNoRootCatPermission() throws SerializationException {
-        CategoryItem rootCategory = serviceImplementation.getRulesRepository().loadCategory( "/" );
+        CategoryItem rootCategory = rulesRepository.loadCategory( "/" );
         CategoryItem cat = rootCategory.addCategory("testLoadRuleListForCategoriesWithAnalystNoRootCatPermission", "description");
         cat.addCategory( "testLoadRuleListForCategoriesWithAnalystPermissionCat1",
                          "yeah");
@@ -356,7 +356,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
         try {
             //Create asset for test
-            PackageItem pkg = serviceImplementation.getRulesRepository().createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
+            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
             "" );
 
             AssetItem asset = pkg

@@ -75,7 +75,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testAttachModel() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.createPackage( "testAttachModelImports",
                                               "heh" );
@@ -118,7 +118,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testGetFilebyUUID() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
@@ -144,7 +144,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
@@ -479,7 +479,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     //purpose of this test is to detect memory leak?)
     public void testHeadOOME() throws Exception {
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.createPackage( "testHeadOOME",
                                               "" );
@@ -510,7 +510,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
 
-        RulesRepository repo = serviceImplementation.getRulesRepository();
+        RulesRepository repo = rulesRepository;
 
         PackageItem pkg = repo.loadPackage( nm );
         pkg.updateDescription( System.currentTimeMillis() + "" );

@@ -129,15 +129,6 @@ public class ServiceImplementation
     @Inject
     private Identity identity;
 
-    // TODO seam3upgrade
-    public void setRulesRepository(RulesRepository repository) { // TODO seam3upgrade
-        this.rulesRepository = repository;
-    }
-
-    public RulesRepository getRulesRepository() {
-        return rulesRepository;
-    }
-
     @WebRemote
     @LoggedIn
     public String[] listWorkspaces() {
