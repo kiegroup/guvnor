@@ -634,25 +634,6 @@
       <artifactId>commons-httpclient</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- TODO seam3upgrade these jetty test compile time dependencies should be obsolete througha arquillian -->
-    <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-server</artifactId>-->
-      <!--<version>7.2.2.v20101205</version>-->
-      <!--<exclusions>-->
-        <!--<exclusion>-->
-          <!--<groupId>javax.servlet</groupId>-->
-          <!--<artifactId>servlet-api</artifactId>-->
-        <!--</exclusion>-->
-      <!--</exclusions>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-      <!--<groupId>org.eclipse.jetty</groupId>-->
-      <!--<artifactId>jetty-webapp</artifactId>-->
-      <!--<version>7.2.2.v20101205</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
 
     <!-- gwt-dev is EVIL: it shades classes. It should be dead last on the classpath to cause the least havoc -->
     <dependency><!-- Not needed at runtime, only at compile time, should be a dependency on gwt-maven-plugin -->
