@@ -114,20 +114,29 @@ public class NewAssetWizardContext
         implements
         PlaceTokenizer<WizardPlace<NewAssetWizardContext>> {
 
+        private final String ASSET_NAME   = "ASSET_NAME=";
+        private final String PACKAGE_NAME = "?PACKAGE_NAME=";
+        private final String PACKAGE_UUID = "?PACKAGE_UUID=";
+        private final String TABLE_FORMAT = "?TABLE_FORMAT=";
+        private final String DESCRIPTION  = "?DESCRIPTION=";
+        private final String CATEGORY     = "?CATEGORY=";
+        private final String FORMAT       = "?FORMAT=";
+
         public String getToken(WizardPlace<NewAssetWizardContext> place) {
             StringBuilder sb = new StringBuilder();
+            sb.append( ASSET_NAME );
             sb.append( nullSafe( place.getContext().getAssetName() ) );
-            sb.append( "|" );
+            sb.append( PACKAGE_NAME );
             sb.append( nullSafe( place.getContext().getPackageName() ) );
-            sb.append( "|" );
+            sb.append( PACKAGE_UUID );
             sb.append( nullSafe( place.getContext().getPackageUUID() ) );
-            sb.append( "|" );
+            sb.append( TABLE_FORMAT );
             sb.append( place.getContext().getTableFormat().toString() );
-            sb.append( "|" );
+            sb.append( DESCRIPTION );
             sb.append( nullSafe( place.getContext().getDescription() ) );
-            sb.append( "|" );
+            sb.append( CATEGORY );
             sb.append( nullSafe( place.getContext().getInitialCategory() ) );
-            sb.append( "|" );
+            sb.append( FORMAT );
             sb.append( nullSafe( place.getContext().getFormat() ) );
             return sb.toString();
         }
@@ -137,19 +146,59 @@ public class NewAssetWizardContext
         }
 
         public WizardPlace<NewAssetWizardContext> getPlace(String token) {
-            String[] parts = token.split( "\\|" );
-            if ( parts.length != 7 ) {
-                throw new IllegalArgumentException( "WizardPlace token is not structured correctly. Expecting 'assetName|packageName|packageUUID|tableFormat|format|description|initialCategory'" );
-            }
-            NewAssetWizardContext config = new NewAssetWizardContext( parts[0],
-                                                                      parts[1],
-                                                                      parts[2],
-                                                                      TableFormat.valueOf( parts[3] ),
-                                                                      parts[4],
-                                                                      parts[5],
-                                                                      parts[6] );
+            String assetName = getAssetName( token );
+            String packageName = getPackageName( token );
+            String packageUUID = getPackageUUID( token );
+            TableFormat tableFormat = getTableFormat( token );
+            String description = getDescription( token );
+            String category = getCategory( token );
+            String format = getFormat( token );
+
+            NewAssetWizardContext config = new NewAssetWizardContext( assetName,
+                                                                      packageName,
+                                                                      packageUUID,
+                                                                      tableFormat,
+                                                                      description,
+                                                                      category,
+                                                                      format );
             return new WizardPlace<NewAssetWizardContext>( config );
         }
+
+        private String getAssetName(String token) {
+            return token.substring( token.indexOf( ASSET_NAME ) + ASSET_NAME.length(),
+                                    token.indexOf( PACKAGE_NAME ) );
+        }
+
+        private String getPackageName(String token) {
+            return token.substring( token.indexOf( PACKAGE_NAME ) + PACKAGE_NAME.length(),
+                                    token.indexOf( PACKAGE_UUID ) );
+        }
+
+        private String getPackageUUID(String token) {
+            return token.substring( token.indexOf( PACKAGE_UUID ) + PACKAGE_UUID.length(),
+                                    token.indexOf( TABLE_FORMAT ) );
+        }
+
+        private TableFormat getTableFormat(String token) {
+            String tableFormat = token.substring( token.indexOf( TABLE_FORMAT ) + TABLE_FORMAT.length(),
+                                                  token.indexOf( DESCRIPTION ) );
+            return TableFormat.valueOf( tableFormat );
+        }
+
+        private String getDescription(String token) {
+            return token.substring( token.indexOf( DESCRIPTION ) + DESCRIPTION.length(),
+                                    token.indexOf( CATEGORY ) );
+        }
+
+        private String getCategory(String token) {
+            return token.substring( token.indexOf( CATEGORY ) + CATEGORY.length(),
+                                    token.indexOf( FORMAT ) );
+        }
+
+        private String getFormat(String token) {
+            return token.substring( token.indexOf( FORMAT ) + FORMAT.length() );
+        }
+
     }
 
 }
