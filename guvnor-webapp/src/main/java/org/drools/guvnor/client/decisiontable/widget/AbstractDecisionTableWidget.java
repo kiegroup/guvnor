@@ -45,6 +45,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
@@ -539,6 +540,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                  || !isEqualOrNull( origColumn.getFactField(),
                                     editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
+                bRedrawHeader = true;
                 bUpdateCellsForDataType = true;
             }
 
@@ -547,6 +549,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
+            bRedrawHeader = true;
             bUpdateCellsForDataType = true;
         }
 
@@ -560,6 +563,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -627,12 +644,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( !isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
+                bRedrawHeader = true;
                 bUpdateCellsForDataType = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
+            bRedrawHeader = true;
             bUpdateCellsForDataType = true;
         }
 
@@ -646,6 +665,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -802,6 +835,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column field in Header Widget
         if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -1110,6 +1152,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setHideColumn( editingCol.isHideColumn() );
         col.setFactType( editingCol.getFactType() );
         col.setInsertLogical( editingCol.isInsertLogical() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     // Copy values from one (transient) model column into another
@@ -1123,6 +1168,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setUpdate( editingCol.isUpdate() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     // Copy values from one (transient) model column into another
@@ -1137,6 +1185,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setParameters( editingCol.getParameters() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     //Remove Otherwise state from column cells
