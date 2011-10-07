@@ -138,7 +138,9 @@ public class AssetViewerActivity extends Activity
                                                                        String title = getGroupTitle( formatList.getFirst() );
                                                                        ImageResource icon = getGroupIcon( formatList.getFirst() );
                                                                        AssetViewerSection section = new AssetViewerSection( title,
-                                                                                                                            icon );
+                                                                                                                            icon,
+                                                                                                                            formatsInList,
+                                                                                                                            formatIsRegistered );
                                                                        sections[sectionIndex] = section;
                                                                    } else {
 
@@ -155,8 +157,8 @@ public class AssetViewerActivity extends Activity
                                                                        for ( int i = 0; i < sections.length; i++ ) {
                                                                            AssetViewerSection section = sections[i];
                                                                            if ( section != null ) {
-                                                                               view.addAssetFormat( formatsInList,
-                                                                                                    formatIsRegistered,
+                                                                               view.addAssetFormat( section.formatsInList,
+                                                                                                    section.formatIsRegistered,
                                                                                                     section.title,
                                                                                                     section.icon,
                                                                                                     packageConfigData,
@@ -205,14 +207,22 @@ public class AssetViewerActivity extends Activity
     private static class AssetViewerSection {
 
         AssetViewerSection(String title,
-                           ImageResource icon) {
+                           ImageResource icon,
+                           List<String> formatsInList,
+                           Boolean formatIsRegistered) {
             this.title = title;
             this.icon = icon;
+            this.formatsInList = formatsInList;
+            this.formatIsRegistered = formatIsRegistered;
         }
 
         String        title;
 
         ImageResource icon;
+
+        List<String>  formatsInList;
+
+        Boolean       formatIsRegistered;
 
     }
 
