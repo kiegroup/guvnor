@@ -21,6 +21,7 @@ import java.util.Date;
 import org.drools.guvnor.client.modeldriven.ui.NumericTextBox;
 import org.drools.guvnor.client.modeldriven.ui.PopupDatePicker;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -150,6 +151,72 @@ public class DTCellValueWidgetFactory {
      */
     public Widget getWidget(Pattern52 pattern,
                             ConditionCol52 column,
+                            DTCellValue52 value) {
+
+        DTDataTypes52 type = dtable.getTypeSafeType( pattern,
+                                                     column,
+                                                     sce );
+        String[] completions = dtable.getValueList( pattern,
+                                                    column,
+                                                    sce );
+
+        if ( completions != null && completions.length > 0 ) {
+            return makeListBox( completions,
+                                value );
+        }
+
+        switch ( type ) {
+            case NUMERIC :
+                return makeNumericTextBox( value );
+            case BOOLEAN :
+                return makeBooleanSelector( value );
+            case DATE :
+                return makeDateSelector( value );
+            default :
+                return makeTextBox( value );
+        }
+    }
+
+    /**
+     * Make a DTCellValue for a column. This overloaded method takes a Pattern52
+     * object as well since the ActionSetFieldCol52 column may be associated
+     * with an unbound Pattern
+     * 
+     * @param p
+     * @param c
+     * @return
+     */
+    public DTCellValue52 makeNewValue(Pattern52 p,
+                                      ActionSetFieldCol52 c) {
+        DTDataTypes52 type = dtable.getTypeSafeType( p,
+                                                     c,
+                                                     sce );
+        switch ( type ) {
+            case BOOLEAN :
+                return new DTCellValue52( false );
+            case DATE :
+                return new DTCellValue52( new Date() );
+            case NUMERIC :
+                return new DTCellValue52( 0 );
+            default :
+                return new DTCellValue52( "" );
+        }
+    }
+
+    /**
+     * Get a Widget to edit a DTCellValue. A value is explicitly provided as
+     * some columns (in the future) will have multiple DTCellValues (for
+     * "Default Value" and "Option List"). This overloaded method takes a
+     * Pattern52 object as well since the ActionSetFieldCol52 column may be
+     * associated with an unbound Pattern
+     * 
+     * @param pattern
+     * @param column
+     * @param value
+     * @return
+     */
+    public Widget getWidget(Pattern52 pattern,
+                            ActionSetFieldCol52 column,
                             DTCellValue52 value) {
 
         DTDataTypes52 type = dtable.getTypeSafeType( pattern,

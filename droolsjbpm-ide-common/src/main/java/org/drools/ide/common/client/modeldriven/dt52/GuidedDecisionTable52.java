@@ -264,6 +264,18 @@ public class GuidedDecisionTable52
         return type;
     }
 
+    private String getType(Pattern52 pattern,
+                           ActionSetFieldCol52 col,
+                           SuggestionCompletionEngine sce) {
+        String type = sce.getFieldType( pattern.getFactType(),
+                                        col.getFactField() );
+        type = (assertDataType( pattern,
+                                col,
+                                sce,
+                                type ) ? type : null);
+        return type;
+    }
+
     private String getType(ActionSetFieldCol52 col,
                            SuggestionCompletionEngine sce) {
         String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
@@ -317,16 +329,16 @@ public class GuidedDecisionTable52
             }
 
         } else if ( column instanceof ConditionCol52 ) {
-            dataType = derieveDataType( sce,
-                                        column );
+            dataType = derieveDataType( column,
+                                        sce );
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
-            dataType = derieveDataType( sce,
-                                        column );
+            dataType = derieveDataType( column,
+                                        sce );
 
         } else if ( column instanceof ActionInsertFactCol52 ) {
-            dataType = derieveDataType( sce,
-                                        column );
+            dataType = derieveDataType( column,
+                                        sce );
 
         }
 
@@ -339,16 +351,28 @@ public class GuidedDecisionTable52
                                          ConditionCol52 column,
                                          SuggestionCompletionEngine sce) {
         DTDataTypes52 dataType = DTDataTypes52.STRING;
-        dataType = derieveDataType( sce,
-                                    pattern,
-                                    column );
+        dataType = derieveDataType( pattern,
+                                    column,
+                                    sce );
+        return dataType;
+
+    }
+
+    // Get the Data Type corresponding to a given column
+    public DTDataTypes52 getTypeSafeType(Pattern52 pattern,
+                                         ActionSetFieldCol52 column,
+                                         SuggestionCompletionEngine sce) {
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        dataType = derieveDataType( pattern,
+                                    column,
+                                    sce );
         return dataType;
 
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
-                                          DTColumnConfig52 col) {
+    private DTDataTypes52 derieveDataType(DTColumnConfig52 col,
+                                          SuggestionCompletionEngine sce) {
 
         DTDataTypes52 dataType = DTDataTypes52.STRING;
         String type = getType( col,
@@ -375,9 +399,9 @@ public class GuidedDecisionTable52
     }
 
     // Derive the Data Type for a Condition or Action column
-    private DTDataTypes52 derieveDataType(SuggestionCompletionEngine sce,
-                                          Pattern52 pattern,
-                                          ConditionCol52 col) {
+    private DTDataTypes52 derieveDataType(Pattern52 pattern,
+                                          ConditionCol52 col,
+                                          SuggestionCompletionEngine sce) {
 
         DTDataTypes52 dataType = DTDataTypes52.STRING;
         String type = getType( pattern,
@@ -391,6 +415,37 @@ public class GuidedDecisionTable52
 
         // Columns with lists of values, enums etc are always Text (for now)
         String[] vals = getValueList( col,
+                                      sce );
+        if ( vals.length == 0 ) {
+            if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+                dataType = DTDataTypes52.NUMERIC;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+                dataType = DTDataTypes52.BOOLEAN;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+                dataType = DTDataTypes52.DATE;
+            }
+        }
+        return dataType;
+    }
+
+    // Derive the Data Type for a Condition or Action column
+    private DTDataTypes52 derieveDataType(Pattern52 pattern,
+                                          ActionSetFieldCol52 col,
+                                          SuggestionCompletionEngine sce) {
+
+        DTDataTypes52 dataType = DTDataTypes52.STRING;
+        String type = getType( pattern,
+                               col,
+                               sce );
+
+        //Null means the field is free-format
+        if ( type == null ) {
+            return dataType;
+        }
+
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = getValueList( pattern,
+                                      col,
                                       sce );
         if ( vals.length == 0 ) {
             if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
@@ -464,6 +519,19 @@ public class GuidedDecisionTable52
             return col.getValueList().split( "," );
         } else {
             String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
+                                            col.getFactField() );
+            return (r != null) ? r : new String[0];
+        }
+    }
+
+    public String[] getValueList(Pattern52 pattern,
+                                 ActionSetFieldCol52 col,
+                                 SuggestionCompletionEngine sce) {
+        if ( col.getValueList() != null
+                 && !"".equals( col.getValueList() ) ) {
+            return col.getValueList().split( "," );
+        } else {
+            String[] r = sce.getEnumValues( pattern.getFactType(),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
         }
@@ -583,6 +651,18 @@ public class GuidedDecisionTable52
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
         String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+                                      col.getFactField() );
+        if ( ft != null && ft.equals( dataType ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean assertDataType(Pattern52 pattern,
+                                   ActionSetFieldCol52 col,
+                                   SuggestionCompletionEngine sce,
+                                   String dataType) {
+        String ft = sce.getFieldType( pattern.getFactType(),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;
