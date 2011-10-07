@@ -152,9 +152,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
     HorizontalPanel                              msgDuplicateBindings;
 
     @UiField
-    HorizontalPanel                              msgIncompletePatterns;
-
-    @UiField
     HorizontalPanel                              msgIncompleteConditions;
 
     @UiField
@@ -558,11 +555,6 @@ public class FactPatternConstraintsPageViewImpl extends Composite
 
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
-        availablePatternsWidget.redraw();
-    }
-
-    public void setAreFactPatternsDefined(boolean areFactPatternsDefined) {
-        msgIncompletePatterns.setVisible( !areFactPatternsDefined );
         availablePatternsWidget.redraw();
     }
 

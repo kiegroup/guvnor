@@ -165,7 +165,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 180 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableBoundPatterns() );
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 

@@ -2460,13 +2460,9 @@ public interface Constants
     
     String DecisionTableWizardActionInsertFacts();
     
-    String DecisionTableWizardNoAvailableBoundPatterns();
-    
     String DecisionTableWizardIncompleteActions();
 
     String DecisionTableWizardSummaryNameMissing();
-    
-    String DecisionTableWizardIncompletePatterns();
     
     String XMLSchemas();
     
@@ -2533,5 +2529,9 @@ public interface Constants
     String CouldNotFindTheTypeForVariable0(String variableName);
     
     String NewAssetWizardGuidedDecisionTableOptions();
+    
+    String BindingFact();
+    
+    String BindingDescription();
     
 }

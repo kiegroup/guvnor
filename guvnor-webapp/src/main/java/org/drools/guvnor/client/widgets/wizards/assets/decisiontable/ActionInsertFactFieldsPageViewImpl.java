@@ -142,9 +142,6 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     HorizontalPanel                                             msgDuplicateBindings;
 
     @UiField
-    HorizontalPanel                                             msgIncompletePatterns;
-
-    @UiField
     HorizontalPanel                                             msgIncompleteActions;
 
     @UiField
@@ -194,7 +191,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         availableFactTypesWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availableFactTypesWidget.setMinimumWidth( 155 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableBoundPatterns() );
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availableFactTypesWidget.setEmptyListWidget( lstEmpty );
 
@@ -379,7 +376,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         if ( chosenPatternsSelection == null ) {
             return;
         }
-        if ( validator.isPatternBindingUnique( chosenPatternsSelection ) && validator.isPatternValid( chosenPatternsSelection ) ) {
+        if ( validator.isPatternBindingUnique( chosenPatternsSelection ) ) {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
@@ -454,11 +451,6 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
         chosenPatternsWidget.redraw();
         validateBinding();
-    }
-
-    public void setAreActionInsertFactPatternsDefined(boolean areActionInsertFactPatternsDefined) {
-        msgIncompletePatterns.setVisible( !areActionInsertFactPatternsDefined );
-        chosenPatternsWidget.redraw();
     }
 
     public void setAreActionInsertFactFieldsDefined(boolean areActionInsertFactFieldsDefined) {

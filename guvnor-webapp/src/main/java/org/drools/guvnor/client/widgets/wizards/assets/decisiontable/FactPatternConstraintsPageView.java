@@ -65,8 +65,6 @@ public interface FactPatternConstraintsPageView
 
     void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
 
-    void setAreFactPatternsDefined(boolean areFactPatternsDefined);
-
     void setAreConditionsDefined(boolean areConditionsDefined);
 
 }

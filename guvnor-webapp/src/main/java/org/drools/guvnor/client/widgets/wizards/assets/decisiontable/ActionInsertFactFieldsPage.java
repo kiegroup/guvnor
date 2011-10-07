@@ -26,13 +26,11 @@ import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactFieldsDefinedEvent;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ActionInsertFactPatternsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.event.shared.EventBus;
@@ -46,7 +44,6 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
     implements
     ActionInsertFactFieldsPageView.Presenter,
     DuplicatePatternsEvent.Handler,
-    ActionInsertFactPatternsDefinedEvent.Handler,
     ActionInsertFactFieldsDefinedEvent.Handler {
 
     private final ModelNameHelper                                           modelNameHelper     = new ModelNameHelper();
@@ -80,8 +77,6 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
                              this );
         eventBus.addHandler( ActionInsertFactFieldsDefinedEvent.TYPE,
                              this );
-        eventBus.addHandler( ActionInsertFactPatternsDefinedEvent.TYPE,
-                             this );
     }
 
     public String getTitle() {
@@ -95,7 +90,7 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         view.setPresenter( this );
         view.setDTCellValueWidgetFactory( new DTCellValueWidgetFactory( dtable,
                                                                         sce ) );
-        
+
         //Available types
         List<String> availableTypes = Arrays.asList( sce.getFactTypes() );
         view.setAvailableFactTypes( availableTypes );
@@ -140,19 +135,6 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
         eventBus.fireEvent( event );
 
-        //Are all Patterns defined?
-        boolean areActionInsertPatternsDefined = true;
-        for ( Pattern52 p : patternToActionsMap.keySet() ) {
-            if ( !getValidator().isPatternValid( p ) ) {
-                areActionInsertPatternsDefined = false;
-                break;
-            }
-        }
-
-        //Signal Action Insert Fact Patterns to other pages
-        ActionInsertFactPatternsDefinedEvent eventFactPatterns = new ActionInsertFactPatternsDefinedEvent( areActionInsertPatternsDefined );
-        eventBus.fireEvent( eventFactPatterns );
-
         //Are all Actions defined?
         boolean areActionInsertFieldsDefined = true;
         for ( List<ActionInsertFactCol52> actions : patternToActionsMap.values() ) {
@@ -168,15 +150,11 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
         ActionInsertFactFieldsDefinedEvent eventFactFields = new ActionInsertFactFieldsDefinedEvent( areActionInsertFieldsDefined );
         eventBus.fireEvent( eventFactFields );
 
-        return arePatternBindingsUnique && areActionInsertPatternsDefined && areActionInsertFieldsDefined;
+        return arePatternBindingsUnique && areActionInsertFieldsDefined;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
-    }
-
-    public void onActionInsertFactPatternsDefined(ActionInsertFactPatternsDefinedEvent event) {
-        view.setAreActionInsertFactPatternsDefined( event.getAreActionInsertFactPatternsDefined() );
     }
 
     public void onActionInsertFactFieldsDefined(ActionInsertFactFieldsDefinedEvent event) {
@@ -224,20 +202,33 @@ public class ActionInsertFactFieldsPage extends AbstractGuidedDecisionTableWizar
 
     @Override
     public void makeResult(GuidedDecisionTable52 dtable) {
-        for ( ActionInsertFactFieldsPattern p : patternToActionsMap.keySet() ) {
+        //Copy actions to decision table model
+        int fi = 1;
+        for ( Map.Entry<ActionInsertFactFieldsPattern, List<ActionInsertFactCol52>> ps : patternToActionsMap.entrySet() ) {
+            ActionInsertFactFieldsPattern p = ps.getKey();
+            if ( !getValidator().isPatternValid( p ) ) {
+                String binding = NEW_FACT_PREFIX + (fi++);
+                p.setBoundName( binding );
+                while ( !getValidator().isPatternBindingUnique( p ) ) {
+                    binding = NEW_FACT_PREFIX + (fi++);
+                    p.setBoundName( binding );
+                }
+            }
+
             String factType = p.getFactType();
             String boundName = p.getBoundName();
             boolean isLogicalInsert = p.isInsertedLogically();
 
-            for ( ActionInsertFactCol52 aif : patternToActionsMap.get( p ) ) {
+            for ( ActionInsertFactCol52 aif : ps.getValue() ) {
                 aif.setFactType( factType );
                 aif.setBoundName( boundName );
                 aif.setInsertLogical( isLogicalInsert );
                 dtable.getActionCols().add( aif );
             }
         }
+
     }
-    
+
     public TableFormat getTableFormat() {
         return dtable.getTableFormat();
     }
