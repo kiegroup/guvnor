@@ -28,6 +28,8 @@ import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -72,9 +74,18 @@ import com.google.gwt.user.client.ui.Widget;
 public class VerticalDecisionTableHeaderWidget extends
         DecoratedGridHeaderWidget<DTColumnConfig52> {
 
-    private static final String         DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final String         DATE_FORMAT                 = ApplicationPreferences.getDroolsDateFormat();
 
-    private static final DateTimeFormat format      = DateTimeFormat.getFormat( DATE_FORMAT );
+    private static final DateTimeFormat format                      = DateTimeFormat.getFormat( DATE_FORMAT );
+
+    // UI Components
+    private HeaderWidget                widget;
+
+    private GuidedDecisionTable52       model;
+
+    //Offsets from the left most column
+    private int                         multiRowColumnOffset        = -1;
+    private int                         multiRowColumnActionsOffset = -1;
 
     /**
      * This is the guts of the widget.
@@ -263,6 +274,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
         private List<DynamicColumn<DTColumnConfig52>> visibleCols          = new ArrayList<DynamicColumn<DTColumnConfig52>>();
         private List<DynamicColumn<DTColumnConfig52>> visibleConditionCols = new ArrayList<DynamicColumn<DTColumnConfig52>>();
+        private List<DynamicColumn<DTColumnConfig52>> visibleActionCols    = new ArrayList<DynamicColumn<DTColumnConfig52>>();
 
         // Constructor
         private HeaderWidget() {
@@ -325,8 +337,6 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.appendChild( makeLabel( ((ActionCol52) modelCol).getHeader(),
                                             col.getWidth(),
                                             style.rowHeaderHeight() ) );
-                tce.<TableCellElement> cast().setRowSpan( 4 );
-                tce.addClassName( style.headerRowIntermediate() );
             }
 
         }
@@ -346,13 +356,28 @@ public class VerticalDecisionTableHeaderWidget extends
             // Extracting visible columns makes life easier
             visibleCols.clear();
             visibleConditionCols.clear();
+            visibleActionCols.clear();
+            multiRowColumnOffset = -1;
+            multiRowColumnActionsOffset = -1;
             for ( int iCol = 0; iCol < grid.getGridWidget().getColumns().size(); iCol++ ) {
                 DynamicColumn<DTColumnConfig52> col = grid.getGridWidget().getColumns().get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig52 modelCol = col.getModelColumn();
                     if ( modelCol instanceof ConditionCol52 ) {
+                        if ( multiRowColumnOffset == -1 ) {
+                            multiRowColumnOffset = iCol;
+                        }
                         visibleConditionCols.add( col );
+                    }
+                    if ( modelCol instanceof ActionCol52 ) {
+                        if ( multiRowColumnOffset == -1 ) {
+                            multiRowColumnOffset = iCol;
+                        }
+                        if ( multiRowColumnActionsOffset == -1 ) {
+                            multiRowColumnActionsOffset = iCol;
+                        }
+                        visibleActionCols.add( col );
                     }
                 }
             }
@@ -385,10 +410,10 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 1 :
                     // Splitter between "general" and "technical" condition details
-                    if ( visibleConditionCols.size() > 0 ) {
+                    if ( visibleConditionCols.size() > 0 || visibleActionCols.size() > 0 ) {
                         splitter.setRowHeaders( rowHeaders );
                         tce = DOM.createTD();
-                        tce.<TableCellElement> cast().setColSpan( visibleConditionCols.size() );
+                        tce.<TableCellElement> cast().setColSpan( visibleConditionCols.size() + visibleActionCols.size() );
                         tce.addClassName( style.headerSplitter() );
                         tre.appendChild( tce );
                         add( splitter,
@@ -444,10 +469,41 @@ public class VerticalDecisionTableHeaderWidget extends
                         tce.<TableCellElement> cast().setColSpan( colSpan );
 
                     }
+
+                    //Action FactType
+                    for ( int iCol = 0; iCol < visibleActionCols.size(); iCol++ ) {
+                        tce = DOM.createTD();
+                        tce.addClassName( style.headerText() );
+                        tre.appendChild( tce );
+
+                        DynamicColumn<DTColumnConfig52> col = visibleActionCols.get( iCol );
+                        ActionCol52 ac = (ActionCol52) col.getModelColumn();
+                        String factType = "";
+                        String binding = null;
+                        if ( ac instanceof ActionInsertFactCol52 ) {
+                            ActionInsertFactCol52 aifc = (ActionInsertFactCol52) ac;
+                            factType = aifc.getFactType();
+                            binding = aifc.getBoundName();
+                        } else if ( ac instanceof ActionSetFieldCol52 ) {
+                            factType = ((ActionSetFieldCol52) ac).getBoundName();
+                        }
+
+                        tce.addClassName( style.headerRowIntermediate() );
+                        StringBuilder label = new StringBuilder();
+                        if ( factType != null && factType.length() > 0 ) {
+                            label.append( factType );
+                            if ( binding != null ) {
+                                label.append( " [" + binding + "]" );
+                            }
+                        }
+                        tce.appendChild( makeLabel( label.toString(),
+                                                    col.getWidth(),
+                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                    }
                     break;
 
                 case 3 :
-                    // Condition FactField
+                    // Condition Fact Fields
                     for ( DynamicColumn<DTColumnConfig52> col : visibleConditionCols ) {
                         tce = DOM.createTD();
                         tce.addClassName( style.headerText() );
@@ -460,10 +516,44 @@ public class VerticalDecisionTableHeaderWidget extends
                             label.append( factField );
                         }
                         if ( cc.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_PREDICATE ) {
+                            String lev = getLimitedEntryValue( cc );
                             label.append( " [" );
                             label.append( cc.getOperator() );
-                            label.append( getLimitedEntryValue( cc ) );
+                            if ( lev != null ) {
+                                label.append( lev );
+                            }
                             label.append( "]" );
+                        }
+                        tce.appendChild( makeLabel( label.toString(),
+                                                    col.getWidth(),
+                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                    }
+
+                    // Action Fact Fields
+                    for ( DynamicColumn<DTColumnConfig52> col : visibleActionCols ) {
+                        tce = DOM.createTD();
+                        tce.addClassName( style.headerText() );
+                        tce.addClassName( style.headerRowIntermediate() );
+                        tre.appendChild( tce );
+                        ActionCol52 ac = (ActionCol52) col.getModelColumn();
+                        StringBuilder label = new StringBuilder();
+
+                        String factField = "";
+                        if ( ac instanceof ActionInsertFactCol52 ) {
+                            ActionInsertFactCol52 aifc = (ActionInsertFactCol52) ac;
+                            factField = aifc.getFactField();
+                        } else if ( ac instanceof ActionSetFieldCol52 ) {
+                            factField = ((ActionSetFieldCol52) ac).getFactField();
+                        }
+
+                        if ( factField != null && factField.length() > 0 ) {
+                            String lev = getLimitedEntryValue( ac );
+                            label.append( factField );
+                            if ( lev != null ) {
+                                label.append( " [" );
+                                label.append( lev );
+                                label.append( "]" );
+                            }
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
@@ -504,12 +594,15 @@ public class VerticalDecisionTableHeaderWidget extends
             rowHeaders[iRow] = tre;
         }
 
-        private String getLimitedEntryValue(ConditionCol52 c) {
+        private String getLimitedEntryValue(DTColumnConfig52 c) {
             if ( !(c instanceof LimitedEntryCol) ) {
-                return "";
+                return null;
             }
             LimitedEntryCol lec = (LimitedEntryCol) c;
             DTCellValue52 cv = lec.getValue();
+            if ( cv == null ) {
+                return null;
+            }
             DTDataTypes52 type = cv.getDataType();
             switch ( type ) {
                 case BOOLEAN :
@@ -593,11 +686,6 @@ public class VerticalDecisionTableHeaderWidget extends
 
     }
 
-    // UI Components
-    private HeaderWidget          widget;
-
-    private GuidedDecisionTable52 model;
-
     /**
      * Construct a "Header" for the provided DecisionTable
      * 
@@ -651,8 +739,7 @@ public class VerticalDecisionTableHeaderWidget extends
     // row
     private void setCursorType(Cursor cursor) {
         for ( int iRow = 0; iRow < widget.rowHeaders.length; iRow++ ) {
-            TableRowElement tre = widget.rowHeaders[iRow]
-                        .<TableRowElement> cast();
+            TableRowElement tre = widget.rowHeaders[iRow].<TableRowElement> cast();
             for ( int iCol = 0; iCol < tre.getCells().getLength(); iCol++ ) {
                 TableCellElement tce = tre.getCells().getItem( iCol );
                 tce.getStyle().setCursor( cursor );
@@ -696,9 +783,10 @@ public class VerticalDecisionTableHeaderWidget extends
     // Resize the inner DIV in each table cell
     protected void resizeColumn(DynamicColumn<DTColumnConfig52> resizeColumn,
                                 int resizeColumnWidth) {
+
         DivElement div;
         TableCellElement tce;
-        int conditionColsWidth = 0;
+        int colOffsetIndex;
 
         // This is also set in the ColumnResizeEvent handler, however it makes
         // resizing columns in the header more simple too
@@ -711,19 +799,25 @@ public class VerticalDecisionTableHeaderWidget extends
         div.getStyle().setWidth( resizeColumnWidth,
                                  Unit.PX );
 
-        // Row 3 (Fact Fields). This column is resized before row 1
-        // as it depends on the total width of all Condition Columns
-        for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
-            DynamicColumn<DTColumnConfig52> col = widget.visibleConditionCols.get( iCol );
-            int colWidth = col.getWidth();
-            conditionColsWidth = conditionColsWidth + colWidth;
-            tce = widget.rowHeaders[3].getChild( iCol ).<TableCellElement> cast();
-            div = tce.getFirstChild().<DivElement> cast();
-            div.getStyle().setWidth( colWidth,
-                                     Unit.PX );
+        // Row 4 (Sorters)
+        tce = widget.rowHeaders[4].getChild( resizeColumnIndex ).<TableCellElement> cast();
+        div = tce.getFirstChild().<DivElement> cast();
+        div.getStyle().setWidth( resizeColumnWidth,
+                                 Unit.PX );
+
+        // Row 3 (Fact Fields)
+        if ( multiRowColumnOffset != -1 ) {
+            colOffsetIndex = resizeColumnIndex - multiRowColumnOffset;
+            if ( colOffsetIndex >= 0 ) {
+                DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
+                tce = widget.rowHeaders[3].getChild( colOffsetIndex ).<TableCellElement> cast();
+                div = tce.getFirstChild().<DivElement> cast();
+                div.getStyle().setWidth( col.getWidth(),
+                                         Unit.PX );
+            }
         }
 
-        // Row 2 (Fact Types)
+        // Row 2 (Fact Types) - Condition Columns
         int iColColumn = 0;
         for ( int iCol = 0; iCol < widget.visibleConditionCols.size(); iCol++ ) {
             DynamicColumn<DTColumnConfig52> col = widget.visibleConditionCols.get( iCol );
@@ -760,11 +854,18 @@ public class VerticalDecisionTableHeaderWidget extends
             iColColumn++;
         }
 
-        // Row 4 (Sorters)
-        tce = widget.rowHeaders[4].getChild( resizeColumnIndex ).<TableCellElement> cast();
-        div = tce.getFirstChild().<DivElement> cast();
-        div.getStyle().setWidth( resizeColumnWidth,
-                                 Unit.PX );
+        // Row 2 (Fact Types) - Action Columns
+        if ( multiRowColumnActionsOffset != -1 ) {
+            colOffsetIndex = resizeColumnIndex - multiRowColumnActionsOffset;
+            if ( colOffsetIndex >= 0 ) {
+                colOffsetIndex = colOffsetIndex + iColColumn;
+                DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
+                tce = widget.rowHeaders[2].getChild( colOffsetIndex ).<TableCellElement> cast();
+                div = tce.getFirstChild().<DivElement> cast();
+                div.getStyle().setWidth( col.getWidth(),
+                                         Unit.PX );
+            }
+        }
 
         // Fire event to any interested consumers
         ColumnResizeEvent.fire( this,
