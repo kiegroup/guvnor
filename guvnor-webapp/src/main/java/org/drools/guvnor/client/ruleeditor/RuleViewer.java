@@ -151,7 +151,7 @@ public class RuleViewer extends GuvnorEditor {
             } else {
                 // normal dimensions inside guvnor
                 editor.setWidth( "100%" );
-                editor.setHeight( "500px" );
+                editor.setHeight( "580px" );
             }
         }
 
