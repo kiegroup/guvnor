@@ -75,6 +75,8 @@ public interface DecisionTableResources
         String conditionColumn();
 
         String actionColumn();
+        
+        String templateColumn();
 
     };
 

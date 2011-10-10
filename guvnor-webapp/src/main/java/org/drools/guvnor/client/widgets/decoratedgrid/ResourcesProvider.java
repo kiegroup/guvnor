@@ -22,8 +22,6 @@ import com.google.gwt.resources.client.ImageResource;
  */
 public interface ResourcesProvider<T> {
 
-    static final String NO_STYLE = "";
-
     int rowHeight();
 
     int rowHeaderHeight();

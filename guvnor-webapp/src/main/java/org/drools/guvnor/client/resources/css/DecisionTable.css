@@ -138,8 +138,11 @@
 .conditionColumn {
 	background-color: #ADD8E6;
 }
-	
+
 .actionColumn {
+}
+
+.templateColumn {
 }
 
 .cellTableEvenRow .conditionColumn {

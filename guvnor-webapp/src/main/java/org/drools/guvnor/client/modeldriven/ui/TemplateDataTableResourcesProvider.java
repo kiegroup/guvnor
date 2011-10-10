@@ -59,7 +59,7 @@ public class TemplateDataTableResourcesProvider
     }
 
     public String cellTableColumn(TemplateDataColumn column) {
-        return NO_STYLE;
+        return resources.style().templateColumn();
     }
 
     public String cellTable() {
