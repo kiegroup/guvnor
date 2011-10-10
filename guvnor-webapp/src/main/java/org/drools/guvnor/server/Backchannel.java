@@ -60,6 +60,10 @@ public class Backchannel {
                 30000);
     }
 
+    /**
+     * Called on the original thread.
+     * @return never null, an empty list if there's nothing to tell
+     */
     public List<PushResponse> subscribe() {
         if (sessionStatus.isActive()) {
             try {
@@ -118,7 +122,6 @@ public class Backchannel {
         }
 
         unlatchAllWaiting();
-
     }
 
     /**
@@ -126,7 +129,9 @@ public class Backchannel {
      */
     public synchronized void publish(PushResponse message) {
         for (Map.Entry<String, List<PushResponse>> e : mailbox.entrySet()) {
-            if (e.getValue() == null) e.setValue(new ArrayList<PushResponse>());
+            if (e.getValue() == null) {
+                e.setValue(new ArrayList<PushResponse>());
+            }
             e.getValue().add(message);
         }
         unlatchAllWaiting();
