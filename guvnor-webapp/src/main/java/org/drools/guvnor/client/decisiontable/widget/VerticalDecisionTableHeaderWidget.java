@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -104,7 +105,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-                hp.setHeight( style.rowHeaderSorterHeight() + "px" );
+                hp.setHeight( resources.rowHeaderSorterHeight() + "px" );
                 hp.setWidth( "100%" );
                 setIconImage();
                 add( hp );
@@ -126,23 +127,23 @@ public class VerticalDecisionTableHeaderWidget extends
                     case ASCENDING :
                         switch ( col.getSortIndex() ) {
                             case 0 :
-                                hp.add( new Image( resource.upArrow() ) );
+                                hp.add( new Image( resources.upArrowIcon() ) );
                                 break;
                             default :
-                                hp.add( new Image( resource.smallUpArrow() ) );
+                                hp.add( new Image( resources.smallUpArrowIcon() ) );
                         }
                         break;
                     case DESCENDING :
                         switch ( col.getSortIndex() ) {
                             case 0 :
-                                hp.add( new Image( resource.downArrow() ) );
+                                hp.add( new Image( resources.downArrowIcon() ) );
                                 break;
                             default :
-                                hp.add( new Image( resource.smallDownArrow() ) );
+                                hp.add( new Image( resources.smallDownArrowIcon() ) );
                         }
                         break;
                     default :
-                        hp.add( new Image( resource.emptyArrow() ) );
+                        hp.add( new Image( resources.arrowSpacerIcon() ) );
                 }
             }
 
@@ -232,7 +233,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 }
                 TableRowElement tre = rowHeaders[iRow].<TableRowElement> cast();
                 HeaderRowAnimation anim = new HeaderRowAnimation( tre,
-                                                                  style.rowHeaderHeight(),
+                                                                  resources.rowHeaderHeight(),
                                                                   0 );
                 anim.run( 250 );
             }
@@ -240,9 +241,9 @@ public class VerticalDecisionTableHeaderWidget extends
             // Set icon's resource accordingly
             private void setIconImage() {
                 if ( isCollapsed ) {
-                    icon.setResource( resource.smallUpArrow() );
+                    icon.setResource( resources.smallDownArrowIcon() );
                 } else {
-                    icon.setResource( resource.smallDownArrow() );
+                    icon.setResource( resources.smallUpArrowIcon() );
                 }
             }
 
@@ -259,7 +260,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 TableRowElement tre = rowHeaders[iRow].<TableRowElement> cast();
                 HeaderRowAnimation anim = new HeaderRowAnimation( tre,
                                                                   0,
-                                                                  style.rowHeaderHeight() );
+                                                                  resources.rowHeaderHeight() );
                 anim.run( 250 );
             }
 
@@ -308,35 +309,41 @@ public class VerticalDecisionTableHeaderWidget extends
             if ( modelCol instanceof RowNumberCol52 ) {
                 tce.appendChild( makeLabel( "#",
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
-                tce.addClassName( style.headerRowIntermediate() );
+                tce.addClassName( resources.headerRowIntermediate() );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof DescriptionCol52 ) {
                 tce.appendChild( makeLabel( constants.Description(),
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
-                tce.addClassName( style.headerRowIntermediate() );
+                tce.addClassName( resources.headerRowIntermediate() );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof MetadataCol52 ) {
                 tce.appendChild( makeLabel( ((MetadataCol52) modelCol).getMetadata(),
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
-                tce.addClassName( style.headerRowIntermediate() );
+                tce.addClassName( resources.headerRowIntermediate() );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof AttributeCol52 ) {
                 tce.appendChild( makeLabel( ((AttributeCol52) modelCol).getAttribute(),
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
                 tce.<TableCellElement> cast().setRowSpan( 4 );
-                tce.addClassName( style.headerRowIntermediate() );
+                tce.addClassName( resources.headerRowIntermediate() );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof ConditionCol52 ) {
                 tce.appendChild( makeLabel( ((ConditionCol52) modelCol).getHeader(),
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof ActionCol52 ) {
                 tce.appendChild( makeLabel( ((ActionCol52) modelCol).getHeader(),
                                             col.getWidth(),
-                                            style.rowHeaderHeight() ) );
+                                            resources.rowHeaderHeight() ) );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             }
 
         }
@@ -400,7 +407,7 @@ public class VerticalDecisionTableHeaderWidget extends
                     for ( DynamicColumn<DTColumnConfig52> col : grid.getGridWidget().getColumns() ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
-                            tce.addClassName( style.headerText() );
+                            tce.addClassName( resources.headerText() );
                             tre.appendChild( tce );
                             populateTableCellElement( col,
                                                       tce );
@@ -414,7 +421,7 @@ public class VerticalDecisionTableHeaderWidget extends
                         splitter.setRowHeaders( rowHeaders );
                         tce = DOM.createTD();
                         tce.<TableCellElement> cast().setColSpan( visibleConditionCols.size() + visibleActionCols.size() );
-                        tce.addClassName( style.headerSplitter() );
+                        tce.addClassName( resources.headerSplitter() );
                         tre.appendChild( tce );
                         add( splitter,
                              tce );
@@ -424,13 +431,15 @@ public class VerticalDecisionTableHeaderWidget extends
                 case 2 :
                     // Condition FactType, merged between identical
                     for ( int iCol = 0; iCol < visibleConditionCols.size(); iCol++ ) {
-                        tce = DOM.createTD();
-                        tce.addClassName( style.headerText() );
-                        tre.appendChild( tce );
-
                         DynamicColumn<DTColumnConfig52> col = visibleConditionCols.get( iCol );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
                         Pattern52 ccPattern = model.getPattern( cc );
+
+                        tce = DOM.createTD();
+                        tce.addClassName( resources.headerText() );
+                        tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
+                        tce.addClassName( resources.headerRowIntermediate() );
+                        tre.appendChild( tce );
 
                         // Merging
                         int colSpan = 1;
@@ -455,7 +464,6 @@ public class VerticalDecisionTableHeaderWidget extends
 
                         // Make cell
                         iCol = iCol + colSpan - 1;
-                        tce.addClassName( style.headerRowIntermediate() );
                         StringBuilder label = new StringBuilder();
                         String factType = ccPattern.getFactType();
                         if ( factType != null && factType.length() > 0 ) {
@@ -465,19 +473,21 @@ public class VerticalDecisionTableHeaderWidget extends
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     width,
-                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                                                    (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                         tce.<TableCellElement> cast().setColSpan( colSpan );
 
                     }
 
                     //Action FactType
                     for ( int iCol = 0; iCol < visibleActionCols.size(); iCol++ ) {
-                        tce = DOM.createTD();
-                        tce.addClassName( style.headerText() );
-                        tre.appendChild( tce );
-
                         DynamicColumn<DTColumnConfig52> col = visibleActionCols.get( iCol );
                         ActionCol52 ac = (ActionCol52) col.getModelColumn();
+
+                        tce = DOM.createTD();
+                        tce.addClassName( resources.headerText() );
+                        tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
+                        tre.appendChild( tce );
+
                         String factType = "";
                         String binding = null;
                         if ( ac instanceof ActionInsertFactCol52 ) {
@@ -488,7 +498,7 @@ public class VerticalDecisionTableHeaderWidget extends
                             factType = ((ActionSetFieldCol52) ac).getBoundName();
                         }
 
-                        tce.addClassName( style.headerRowIntermediate() );
+                        tce.addClassName( resources.headerRowIntermediate() );
                         StringBuilder label = new StringBuilder();
                         if ( factType != null && factType.length() > 0 ) {
                             label.append( factType );
@@ -498,7 +508,7 @@ public class VerticalDecisionTableHeaderWidget extends
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
-                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                                                    (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                     }
                     break;
 
@@ -506,8 +516,9 @@ public class VerticalDecisionTableHeaderWidget extends
                     // Condition Fact Fields
                     for ( DynamicColumn<DTColumnConfig52> col : visibleConditionCols ) {
                         tce = DOM.createTD();
-                        tce.addClassName( style.headerText() );
-                        tce.addClassName( style.headerRowIntermediate() );
+                        tce.addClassName( resources.headerText() );
+                        tce.addClassName( resources.headerRowIntermediate() );
+                        tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
                         tre.appendChild( tce );
                         ConditionCol52 cc = (ConditionCol52) col.getModelColumn();
                         StringBuilder label = new StringBuilder();
@@ -526,14 +537,15 @@ public class VerticalDecisionTableHeaderWidget extends
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
-                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                                                    (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                     }
 
                     // Action Fact Fields
                     for ( DynamicColumn<DTColumnConfig52> col : visibleActionCols ) {
                         tce = DOM.createTD();
-                        tce.addClassName( style.headerText() );
-                        tce.addClassName( style.headerRowIntermediate() );
+                        tce.addClassName( resources.headerText() );
+                        tce.addClassName( resources.headerRowIntermediate() );
+                        tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
                         tre.appendChild( tce );
                         ActionCol52 ac = (ActionCol52) col.getModelColumn();
                         StringBuilder label = new StringBuilder();
@@ -557,7 +569,7 @@ public class VerticalDecisionTableHeaderWidget extends
                         }
                         tce.appendChild( makeLabel( label.toString(),
                                                     col.getWidth(),
-                                                    (splitter.isCollapsed ? 0 : style.rowHeaderHeight()) ) );
+                                                    (splitter.isCollapsed ? 0 : resources.rowHeaderHeight()) ) );
                     }
                     break;
 
@@ -580,7 +592,8 @@ public class VerticalDecisionTableHeaderWidget extends
                             sorters.add( shp );
 
                             tce = DOM.createTD();
-                            tce.addClassName( style.headerRowBottom() );
+                            tce.addClassName( resources.headerRowBottom() );
+                            tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
                             tre.appendChild( tce );
                             add( shp,
                                  tce );
@@ -691,8 +704,10 @@ public class VerticalDecisionTableHeaderWidget extends
      * 
      * @param decisionTable
      */
-    public VerticalDecisionTableHeaderWidget(final DecoratedGridWidget<DTColumnConfig52> grid) {
-        super( grid );
+    public VerticalDecisionTableHeaderWidget(final ResourcesProvider<DTColumnConfig52> resources,
+                                             final DecoratedGridWidget<DTColumnConfig52> grid) {
+        super( resources,
+               grid );
     }
 
     /**

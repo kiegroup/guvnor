@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
@@ -129,7 +127,7 @@ public abstract class MergableGridWidget<T> extends Widget
     // merged cells). So a merged cell spanning 2 rows is stored as 2
     // selections. Selections are ordered by row number so we can
     // iterate top to bottom.
-    protected TreeSet<CellValue< ? extends Comparable< ? >>> selections                 = new TreeSet<CellValue< ? extends Comparable< ? >>>(
+    protected TreeSet<CellValue< ? extends Comparable< ? >>> selections = new TreeSet<CellValue< ? extends Comparable< ? >>>(
                                                                                                                                               new Comparator<CellValue< ? extends Comparable< ? >>>() {
 
                                                                                                                                                   public int compare(CellValue< ? extends Comparable< ? >> o1,
@@ -146,14 +144,11 @@ public abstract class MergableGridWidget<T> extends Widget
     protected TableSectionElement                            tbody;
 
     // Resources
-    protected static final Constants                         messages                   = GWT.create( Constants.class );
-    protected static final DecisionTableResources            resource                   = GWT.create( DecisionTableResources.class );
-    protected static final DecisionTableStyle                style                      = resource.cellTableStyle();
+    protected static final Constants                         messages   = GWT.create( Constants.class );
+    protected ResourcesProvider<T>                           resources;
 
-    private static final ImageResource                       selectorGroupedCells       = resource.collapse();
-    private static final ImageResource                       selectorUngroupedCells     = resource.expand();
-    protected static final String                            selectorGroupedCellsHtml   = makeImageHtml( selectorGroupedCells );
-    protected static final String                            selectorUngroupedCellsHtml = makeImageHtml( selectorUngroupedCells );
+    protected String                                         selectorGroupedCellsHtml;
+    protected String                                         selectorUngroupedCellsHtml;
 
     private static String makeImageHtml(ImageResource image) {
         return AbstractImagePrototype.create( image ).getHTML();
@@ -173,13 +168,18 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * A grid of cells.
      */
-    public MergableGridWidget() {
-        style.ensureInjected();
+    public MergableGridWidget(ResourcesProvider<T> resources) {
+        this.resources = resources;
+
+        ImageResource selectorGroupedCells = resources.collapseCellsIcon();
+        ImageResource selectorUngroupedCells = resources.expandCellsIcon();
+        this.selectorGroupedCellsHtml = makeImageHtml( selectorGroupedCells );
+        this.selectorUngroupedCellsHtml = makeImageHtml( selectorUngroupedCells );
 
         // Create some elements to contain the grid
         table = Document.get().createTableElement();
         tbody = Document.get().createTBodyElement();
-        table.setClassName( style.cellTable() );
+        table.setClassName( resources.cellTable() );
         table.setCellPadding( 0 );
         table.setCellSpacing( 0 );
         setElement( table );
@@ -421,8 +421,7 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( rowBefore != null ) {
             index = data.indexOf( rowBefore );
             if ( index == -1 ) {
-                throw new IllegalArgumentException(
-                                                    "rowBefore does not exist in table data." );
+                throw new IllegalArgumentException( "rowBefore does not exist in table data." );
             }
         }
 
@@ -505,7 +504,6 @@ public abstract class MergableGridWidget<T> extends Widget
 
     /*
      * (non-Javadoc)
-     * 
      * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
      */
     public void update(Object value) {

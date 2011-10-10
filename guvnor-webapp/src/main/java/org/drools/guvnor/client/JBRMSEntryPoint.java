@@ -21,6 +21,7 @@ import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
 import org.drools.guvnor.client.resources.RoundedCornersResource;
@@ -70,6 +71,7 @@ public class JBRMSEntryPoint
         OperatorsResource.INSTANCE.operatorsCss().ensureInjected();
         WizardCellListResources.INSTANCE.cellListStyle().ensureInjected();
         WizardResources.INSTANCE.style().ensureInjected();
+        DecisionTableResources.INSTANCE.style().ensureInjected();
     }
 
     /**

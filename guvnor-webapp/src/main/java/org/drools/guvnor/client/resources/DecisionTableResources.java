@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.resources;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.resources.client.ImageResource;
@@ -10,6 +11,8 @@ import com.google.gwt.resources.client.ImageResource;
 public interface DecisionTableResources
     extends
     ClientBundle {
+
+    DecisionTableResources INSTANCE = GWT.create( DecisionTableResources.class );
 
     public interface DecisionTableStyle
         extends
@@ -26,7 +29,7 @@ public interface DecisionTableResources
         int sidebarWidth();
 
         int borderWidth();
-        
+
         int borderWidthThick();
 
         String cellTable();
@@ -40,7 +43,7 @@ public interface DecisionTableResources
         String cellTableCellSelected();
 
         String cellTableCellMultipleValues();
-        
+
         String cellTableCellOtherwise();
 
         String cellTableCellDiv();
@@ -60,49 +63,55 @@ public interface DecisionTableResources
         String headerResizer();
 
         String selectorSpacer();
-        
+
         String selectorSpacerOuterDiv();
 
         String selectorSpacerInnerDiv();
 
         String selectorCell();
 
+        String metaColumn();
+
+        String conditionColumn();
+
+        String actionColumn();
+
     };
 
     @Source("../resources/images/emptyArrow.png")
-    ImageResource emptyArrow();
-    
+    ImageResource arrowSpacerIcon();
+
     @Source("../resources/images/downArrow.png")
-    ImageResource downArrow();
+    ImageResource downArrowIcon();
 
     @Source("../resources/images/smallDownArrow.png")
-    ImageResource smallDownArrow();
+    ImageResource smallDownArrowIcon();
 
     @Source("../resources/images/upArrow.png")
-    ImageResource upArrow();
+    ImageResource upArrowIcon();
 
     @Source("../resources/images/smallUpArrow.png")
-    ImageResource smallUpArrow();
+    ImageResource smallUpArrowIcon();
 
     @Source("../resources/images/icon-unmerge.png")
-    ImageResource toggleUnmerge();
+    ImageResource toggleUnmergeIcon();
 
     @Source("../resources/images/icon-merge.png")
-    ImageResource toggleMerge();
+    ImageResource toggleMergeIcon();
 
     @Source("../resources/images/new_item.gif")
-    ImageResource selectorAdd();
+    ImageResource selectorAddIcon();
 
     @Source("../resources/images/delete_item_small.gif")
-    ImageResource selectorDelete();
+    ImageResource selectorDeleteIcon();
 
     @Source("../resources/images/collapse.gif")
-    ImageResource collapse();
+    ImageResource collapseCellsIcon();
 
     @Source("../resources/images/expand.gif")
-    ImageResource expand();
-    
+    ImageResource expandCellsIcon();
+
     @Source({"css/DecisionTable.css"})
-    DecisionTableStyle cellTableStyle();
+    DecisionTableStyle style();
 
 };

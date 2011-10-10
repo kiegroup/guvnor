@@ -29,6 +29,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
 
+    public VerticalDecoratedGridWidget(ResourcesProvider<T> resources) {
+        super( resources );
+    }
+
     /**
      * BodyPanel is a VerticalPanel in which Header and Grid are inserted
      */
@@ -46,7 +50,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
     @Override
     public MergableGridWidget<T> getGridWidget() {
         if ( this.gridWidget == null ) {
-            this.gridWidget = new VerticalMergableGridWidget<T>();
+            this.gridWidget = new VerticalMergableGridWidget<T>( resources );
         }
         return this.gridWidget;
     }

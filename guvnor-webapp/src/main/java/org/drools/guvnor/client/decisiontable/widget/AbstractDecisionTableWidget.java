@@ -67,12 +67,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasSystemControlledColumns {
 
     // Decision Table data
-    protected GuidedDecisionTable52                 model;
-    protected DecoratedGridWidget<DTColumnConfig52> widget;
-    protected SuggestionCompletionEngine            sce;
-    protected DecisionTableCellFactory              cellFactory;
-    protected DecisionTableCellValueFactory         cellValueFactory;
-    protected DecisionTableControlsWidget           dtableCtrls;
+    protected GuidedDecisionTable52                       model;
+    protected DecoratedGridWidget<DTColumnConfig52>       widget;
+    protected SuggestionCompletionEngine                  sce;
+    protected DecisionTableCellFactory                    cellFactory;
+    protected DecisionTableCellValueFactory               cellValueFactory;
+    protected DecisionTableControlsWidget                 dtableCtrls;
+
+    protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
 
     /**
      * Constructor

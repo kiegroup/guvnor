@@ -42,9 +42,11 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         VerticalPanel vp = new VerticalPanel();
 
         // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>();
-        header = new VerticalDecisionTableHeaderWidget( widget );
-        DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( widget,
+        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>( resources );
+        header = new VerticalDecisionTableHeaderWidget( resources,
+                                                        widget );
+        DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( resources,
+                                                                                                                         widget,
                                                                                                                          this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );

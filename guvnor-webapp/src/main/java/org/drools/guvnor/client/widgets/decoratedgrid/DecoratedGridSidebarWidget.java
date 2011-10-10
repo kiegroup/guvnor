@@ -15,11 +15,8 @@
  */
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -30,33 +27,36 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class DecoratedGridSidebarWidget<T> extends Composite {
 
-    protected DecoratedGridWidget<T>              grid;
-    protected HasRows                             hasRows;
+    protected DecoratedGridWidget<T> grid;
+    protected HasRows                hasRows;
 
     // Resources
-    protected static final DecisionTableResources resource = GWT.create( DecisionTableResources.class );
-    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
+    protected ResourcesProvider<T>   resources;
 
     /**
      * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar
      * will call upon the <code>HasRows</code> to facilitate addition and
      * removal of rows.
      * 
+     * @param resources
      * @param grid
      * @param hasRows
      */
-    public DecoratedGridSidebarWidget(DecoratedGridWidget<T> grid,
+    public DecoratedGridSidebarWidget(ResourcesProvider<T> resources,
+                                      DecoratedGridWidget<T> grid,
                                       HasRows hasRows) {
+        if ( resources == null ) {
+            throw new IllegalArgumentException( "resources cannot be null" );
+        }
         if ( grid == null ) {
             throw new IllegalArgumentException( "grid cannot be null" );
         }
         if ( hasRows == null ) {
             throw new IllegalArgumentException( "hasRows cannot be null" );
         }
+        this.resources = resources;
         this.grid = grid;
         this.hasRows = hasRows;
-        style.ensureInjected();
-
     }
 
     /**
