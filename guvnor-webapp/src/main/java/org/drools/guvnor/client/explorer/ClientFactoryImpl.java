@@ -89,7 +89,7 @@ public class ClientFactoryImpl
     }
 
     public MultiActivityManager getActivityManager() {
-        return new MultiActivityManager( this,
+        return new MultiActivityManager( getActivityMapper(),
                                          eventBus );
     }
 

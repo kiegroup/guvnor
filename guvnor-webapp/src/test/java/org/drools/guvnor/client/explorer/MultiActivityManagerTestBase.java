@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 public abstract class MultiActivityManagerTestBase {
 
     private ActivityMapper activityMapper;
-    private PlaceHistoryMapper placeHistoryMapper;
     protected EventBus eventBus;
     protected MultiActivityManager multiActivityManager;
     protected TabbedPanel tabbedPanel;
@@ -39,24 +38,10 @@ public abstract class MultiActivityManagerTestBase {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(MultiActivityManagerTestBase.class);
         activityMapper = mock(ActivityMapper.class);
-        placeHistoryMapper = mock(PlaceHistoryMapper.class);
         eventBus = setUpEventBus();
         tabbedPanel = mock(TabbedPanel.class);
 
-        ClientFactory clientFactory = mock(ClientFactory.class);
-
-        when(
-                clientFactory.getActivityMapper()
-        ).thenReturn(
-                activityMapper
-        );
-        when(
-                clientFactory.getPlaceHistoryMapper()
-        ).thenReturn(
-                placeHistoryMapper
-        );
-
-        multiActivityManager = new MultiActivityManager(clientFactory, eventBus);
+        multiActivityManager = new MultiActivityManager(activityMapper, eventBus);
     }
 
     protected EventBus setUpEventBus() {

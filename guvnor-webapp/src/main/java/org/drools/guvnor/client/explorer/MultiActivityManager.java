@@ -41,8 +41,8 @@ public class MultiActivityManager implements
     private final EventBus eventBus;
     private final Map<Place, Pair> activeActivities = new HashMap<Place, Pair>();
 
-    public MultiActivityManager(ClientFactory clientFactory, EventBus eventBus) {
-        this.activityMapper = clientFactory.getActivityMapper();
+    public MultiActivityManager(ActivityMapper activityMapper, EventBus eventBus) {
+        this.activityMapper = activityMapper;
         this.eventBus = eventBus;
 
         eventBus.addHandler(

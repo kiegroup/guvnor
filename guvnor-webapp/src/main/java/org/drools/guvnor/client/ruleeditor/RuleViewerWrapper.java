@@ -34,7 +34,8 @@ import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigura
 /**
  * The main layout parent/controller the rule viewer.
  */
-public class RuleViewerWrapper extends GuvnorEditor {
+public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEditorEvent.Handler {
+
     private Constants constants = GWT.create(Constants.class);
 
     private RuleAsset asset;
@@ -48,22 +49,20 @@ public class RuleViewerWrapper extends GuvnorEditor {
     private final EventBus eventBus;
 
     public RuleViewerWrapper(ClientFactory clientFactory,
-                             EventBus eventBus,
-                             RuleAsset asset) {
+            EventBus eventBus,
+            RuleAsset asset) {
         this(clientFactory,
                 eventBus,
                 asset,
                 false,
-                null,
                 null);
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
-                             EventBus eventBus,
-                             final RuleAsset asset,
-                             boolean isHistoricalReadOnly,
-                             ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                             RuleViewerSettings ruleViewerSettings) {
+            EventBus eventBus,
+            final RuleAsset asset,
+            boolean isHistoricalReadOnly,
+            RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
@@ -72,13 +71,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
         eventBus.addHandler(
                 RefreshAssetEditorEvent.TYPE,
-                new RefreshAssetEditorEvent.Handler() {
-                    public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-                        if (refreshAssetEditorEvent.getUuid().equals(asset.getUuid())) {
-                            refresh();
-                        }
-                    }
-                });
+                this);
 
         initWidget(layout);
         render();
@@ -104,34 +97,32 @@ public class RuleViewerWrapper extends GuvnorEditor {
         layout.clear();
         layout.add(actionToolBar);
 
-        TabPanel tPanel = new TabPanel();
-        tPanel.setWidth("100%");
+        TabPanel tabPanel = new TabPanel();
+        tabPanel.setWidth("100%");
 
-        ScrollPanel pnl = new ScrollPanel();
-        pnl.add(artifactEditor);
-        tPanel.add(pnl,
-                "Attributes");
-        // tPanel.selectTab(0);
+        ScrollPanel scrollPanel = new ScrollPanel();
+        scrollPanel.add(artifactEditor);
+        tabPanel.add(scrollPanel, constants.Attributes());
 
-        pnl = new ScrollPanel();
-        // pnl1.setWidth("100%");
-        pnl.add(ruleViewer);
-        tPanel.add(pnl,
-                "Edit");
-        tPanel.selectTab(1);
+        scrollPanel = new ScrollPanel();
+        scrollPanel.add(ruleViewer);
+        tabPanel.add(scrollPanel, constants.Edit());
+        tabPanel.selectTab(1);
 
-        layout.add(tPanel);
+        layout.add(tabPanel);
     }
 
-    public void refresh() {
-        LoadingPopup.showMessage(constants.RefreshingItem());
-        RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
-                new GenericCallback<RuleAsset>() {
-                    public void onSuccess(RuleAsset a) {
-                        asset = a;
-                        render();
-                        LoadingPopup.close();
-                    }
-                });
+    public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
+        if (refreshAssetEditorEvent.getUuid().equals(asset.getUuid())) {
+            LoadingPopup.showMessage(constants.RefreshingItem());
+            RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
+                    new GenericCallback<RuleAsset>() {
+                        public void onSuccess(RuleAsset a) {
+                            asset = a;
+                            render();
+                            LoadingPopup.close();
+                        }
+                    });
+        }
     }
 }

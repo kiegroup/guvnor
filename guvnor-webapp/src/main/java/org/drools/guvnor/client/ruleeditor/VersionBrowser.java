@@ -256,7 +256,6 @@ public class VersionBrowser extends Composite {
                                     eventBus,
                                     asset,
                                     true,
-                                    null,
                                     null );
                             viewer.setWidth( "100%" );
                             viewer.setHeight( "100%" );

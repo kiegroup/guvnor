@@ -415,13 +415,6 @@ public class RuleViewer extends GuvnorEditor {
         return false;
     }
 
-    /**
-     * closes itself
-     */
-    private void close() {
-        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
-    }
-
     void doDelete() {
         readOnly = true; // set to not cause the extra confirm popup
         RepositoryServiceFactory.getService().deleteUncheckedRule( this.asset.getUuid(),
@@ -493,7 +486,7 @@ public class RuleViewer extends GuvnorEditor {
             SuggestionCompletionCache.getInstance().refreshPackage( packageName,
                     new Command() {
                         public void execute() {
-                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
+                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the
                             //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
                             eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
                             LoadingPopup.close();
@@ -604,7 +597,7 @@ public class RuleViewer extends GuvnorEditor {
                             public void onSuccess(String data) {
                                 Window.alert( constants.ItemHasBeenRenamed() );
                                 eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                                closeAndReopen( data );
+                                eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                                 pop.hide();
                             }
 
@@ -637,7 +630,7 @@ public class RuleViewer extends GuvnorEditor {
                             flushSuggestionCompletionCache(asset.getMetaData().getPackageName());
                             flushSuggestionCompletionCache("globalArea");
                             eventBus.fireEvent( new RefreshModuleEditorEvent( asset.getMetaData().getPackageUUID() ) );
-                            closeAndReopen( asset.getUuid() );
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
 
                         @Override
@@ -648,10 +641,11 @@ public class RuleViewer extends GuvnorEditor {
         }
     }
 
-    private void closeAndReopen(String newAssetUUID) {
-        close();
-
-        clientFactory.getPlaceController().goTo( new AssetEditorPlace( newAssetUUID ) );
+    /**
+     * closes itself
+     */
+    private void close() {
+        eventBus.fireEvent( new ClosePlaceEvent( new AssetEditorPlace( asset.uuid ) ) );
     }
 
     private void completedCopying(String name,
@@ -669,7 +663,7 @@ public class RuleViewer extends GuvnorEditor {
                             RefreshSuggestionCompletionEngineEvent refreshSuggestionCompletionEngineEvent) {
                         String moduleName = refreshSuggestionCompletionEngineEvent.getModuleName();
                         if(moduleName!=null && moduleName.equals(asset.getMetaData().getPackageName())) {
-                            closeAndReopen(asset.getUuid());                                
+                            eventBus.fireEvent(new RefreshAssetEditorEvent(asset.getUuid()));
                         }
                     
                     }
