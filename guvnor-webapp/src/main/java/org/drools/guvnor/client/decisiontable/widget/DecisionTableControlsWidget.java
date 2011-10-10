@@ -29,7 +29,7 @@ import org.drools.guvnor.client.messages.Constants;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Button btnOtherwise;
+    private Button otherwiseButton;
     private AbstractDecisionTableWidget dtable;
 
     // Resources
@@ -38,7 +38,7 @@ public class DecisionTableControlsWidget extends Composite {
     public DecisionTableControlsWidget() {
 
         // Add row button
-        Button btnAddRow = new Button(messages.AddRow(),
+        Button addRowButton = new Button(messages.AddRow(),
                 new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
@@ -48,9 +48,9 @@ public class DecisionTableControlsWidget extends Composite {
                     }
                 });
         Panel panel = new HorizontalPanel();
-        panel.add(btnAddRow);
+        panel.add(addRowButton);
 
-        btnOtherwise = new Button("Otherwise",
+        otherwiseButton = new Button("Otherwise",
                 new ClickHandler() {
 
                     public void onClick(ClickEvent event) {
@@ -59,9 +59,9 @@ public class DecisionTableControlsWidget extends Composite {
                         }
                     }
                 });
-        btnOtherwise.setEnabled(false);
+        otherwiseButton.setEnabled(false);
 
-        panel.add(btnOtherwise);
+        panel.add(otherwiseButton);
 
         initWidget(panel);
 
@@ -73,7 +73,7 @@ public class DecisionTableControlsWidget extends Composite {
      * @return
      */
     Button getOtherwiseButton() {
-        return this.btnOtherwise;
+        return this.otherwiseButton;
     }
 
     /**
