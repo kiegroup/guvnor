@@ -658,6 +658,10 @@ public interface Constants
 
     String AddRow();
 
+    String Otherwise();
+
+    String Analyze();
+
     String RemoveSelectedRowS();
 
     String AreYouSureYouWantToDeleteTheSelectedRowS();

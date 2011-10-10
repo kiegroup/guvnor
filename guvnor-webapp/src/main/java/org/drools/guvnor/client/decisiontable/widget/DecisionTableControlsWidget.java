@@ -29,30 +29,30 @@ import org.drools.guvnor.client.messages.Constants;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Button otherwiseButton;
-    private AbstractDecisionTableWidget dtable;
-
-    // Resources
     protected static final Constants messages = GWT.create(Constants.class);
 
+    private AbstractDecisionTableWidget dtable;
+
+    private Button addRowButton;
+    private Button otherwiseButton;
+    private Button analyzeButton;
+
     public DecisionTableControlsWidget() {
+        Panel panel = new HorizontalPanel();
 
         // Add row button
-        Button addRowButton = new Button(messages.AddRow(),
+        addRowButton = new Button(messages.AddRow(),
                 new ClickHandler() {
-
                     public void onClick(ClickEvent event) {
                         if (dtable != null) {
                             dtable.appendRow();
                         }
                     }
                 });
-        Panel panel = new HorizontalPanel();
         panel.add(addRowButton);
 
-        otherwiseButton = new Button("Otherwise",
+        otherwiseButton = new Button(messages.Otherwise(),
                 new ClickHandler() {
-
                     public void onClick(ClickEvent event) {
                         if (dtable != null) {
                             dtable.makeOtherwiseCell();
@@ -60,11 +60,18 @@ public class DecisionTableControlsWidget extends Composite {
                     }
                 });
         otherwiseButton.setEnabled(false);
-
         panel.add(otherwiseButton);
 
-        initWidget(panel);
+        // Add row button
+        analyzeButton = new Button(messages.Analyze(),
+                new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        // TODO
+                    }
+                });
+        panel.add(analyzeButton);
 
+        initWidget(panel);
     }
 
     /**
