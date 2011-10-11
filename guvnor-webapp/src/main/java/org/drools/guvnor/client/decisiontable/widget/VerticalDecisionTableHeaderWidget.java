@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -343,6 +344,13 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.appendChild( makeLabel( ((ActionCol52) modelCol).getHeader(),
                                             col.getWidth(),
                                             resources.rowHeaderHeight() ) );
+                tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
+            } else if ( modelCol instanceof AnalysisCol52) {
+                tce.appendChild( makeLabel( constants.Analysis(),
+                                            col.getWidth(),
+                                            resources.rowHeaderHeight() ) );
+                tce.<TableCellElement> cast().setRowSpan( 4 );
+                tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             }
 

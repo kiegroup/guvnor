@@ -74,6 +74,7 @@ public class GuidedDecisionTableWidget extends Composite
     public GuidedDecisionTableWidget(RuleAsset asset) {
 
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
+        guidedDecisionTable.initAnalysisColumn();
         this.packageName = asset.getMetaData().getPackageName();
         this.guidedDecisionTable.setTableName( asset.getName() );
 

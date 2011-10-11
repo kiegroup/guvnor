@@ -66,7 +66,9 @@ public class DecisionTableControlsWidget extends Composite {
         analyzeButton = new Button(messages.Analyze(),
                 new ClickHandler() {
                     public void onClick(ClickEvent event) {
-                        // TODO
+                        if (dtable != null) {
+                            dtable.analyze();
+                        }
                     }
                 });
         panel.add(analyzeButton);

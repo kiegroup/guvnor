@@ -23,6 +23,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -226,6 +227,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                                                               iRow,
                                                               iCol );
         return cv;
+    }
+
+    public CellValue<Analysis> makeNewAnalysisCellValue(int iRow, int iCol) {
+        Analysis analysis = new Analysis(iRow);
+        return new CellValue<Analysis>(analysis, iRow, iCol );
     }
 
 }

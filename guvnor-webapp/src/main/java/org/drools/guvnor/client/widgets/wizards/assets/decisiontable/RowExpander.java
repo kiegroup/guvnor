@@ -63,6 +63,7 @@ public class RowExpander {
         addRowDescriptionColumn();
         addConditionColumns();
         addActionColumns();
+        addAnalysisColumn();
     }
 
     List<ColumnValues> getColumns() {
@@ -105,6 +106,16 @@ public class RowExpander {
                 addColumn( aif );
             }
         }
+    }
+
+    private void addAnalysisColumn() {
+        ColumnValues cv = new ColumnValues( columns,
+                                            EMPTY_VALUES,
+                                            null );
+        cv.setExpandColumn( false );
+        this.expandedColumns.put( dtable.getAnalysisCol(),
+                                  cv );
+        this.columns.add( cv );
     }
 
     private void addColumn(Pattern52 p) {

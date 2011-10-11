@@ -17,6 +17,8 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
 
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
+import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
@@ -26,6 +28,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -119,6 +122,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveNewCellFromModel( column );
 
+        } else if ( column instanceof AnalysisCol52) {
+            cell = makeRowAnalysisCell();
         }
 
         cell.setMergableGridWidget( grid );
@@ -176,6 +181,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     // Make a new Cell for Row Number columns
     private DecoratedGridCellValueAdaptor<BigDecimal> makeRowNumberCell() {
         return new DecoratedGridCellValueAdaptor<BigDecimal>( new RowNumberCell() );
+    }
+
+    private DecoratedGridCellValueAdaptor<Analysis> makeRowAnalysisCell() {
+        return new DecoratedGridCellValueAdaptor<Analysis>( new AnalysisCell() );
     }
 
 }

@@ -28,6 +28,7 @@ import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.RowExpander.RowIterator;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
@@ -168,10 +169,13 @@ public class NewGuidedDecisionTableWizard
         }
 
         //Slurp out expanded rows and construct decision table data
+        int rowIndex = 0;
         RowIterator ri = re.iterator();
         while ( ri.hasNext() ) {
             List<String> row = ri.next();
             dtable.getData().add( makeRow( row ) );
+            dtable.getAnalysisData().add(new Analysis(rowIndex));
+            rowIndex++;
         }
 
         //Save it!

@@ -73,12 +73,10 @@ public class GuidedDecisionTable52
 
     private List<ActionCol52>    actionCols            = new ArrayList<ActionCol52>();
 
-    private TableFormat          tableFormat           = TableFormat.EXTENDED_ENTRY;
+    // TODO verify that it's not stored in the repository, else add @XStreamOmitField
+    private transient AnalysisCol52 analysisCol;
 
-    public enum TableFormat {
-        EXTENDED_ENTRY,
-        LIMITED_ENTRY
-    }
+    private TableFormat          tableFormat           = TableFormat.EXTENDED_ENTRY;
 
     /**
      * First column is always row number. Second column is description.
@@ -87,7 +85,12 @@ public class GuidedDecisionTable52
      */
     private List<List<DTCellValue52>> data = new ArrayList<List<DTCellValue52>>();
 
+    // TODO verify that it's not stored in the repository, else add @XStreamOmitField
+    private transient List<Analysis> analysisData;
+
     public GuidedDecisionTable52() {
+        analysisCol = new AnalysisCol52();
+        analysisCol.setHideColumn(true);
     }
 
     public List<ActionCol52> getActionCols() {
@@ -113,7 +116,7 @@ public class GuidedDecisionTable52
 
     public Pattern52 getPattern(ConditionCol52 col) {
         for ( Pattern52 p : conditionPatterns ) {
-            if ( p.getConditions().contains( col ) ) {
+            if ( p.getConditions().contains(col) ) {
                 return p;
             }
         }
@@ -132,6 +135,10 @@ public class GuidedDecisionTable52
         return data;
     }
 
+    public List<Analysis> getAnalysisData() {
+        return analysisData;
+    }
+
     public List<DTColumnConfig52> getAllColumns() {
         List<DTColumnConfig52> columns = new ArrayList<DTColumnConfig52>();
         columns.add( rowNumberCol );
@@ -144,6 +151,7 @@ public class GuidedDecisionTable52
             }
         }
         columns.addAll( actionCols );
+        columns.add( analysisCol );
         return columns;
     }
 
@@ -172,6 +180,19 @@ public class GuidedDecisionTable52
             this.rowNumberCol = new RowNumberCol52();
         }
         return this.rowNumberCol;
+    }
+
+    public void initAnalysisColumn() {
+        analysisData = new ArrayList<Analysis>(data.size());
+        int rowIndex = 0;
+        for (List<DTCellValue52> row : data) {
+            analysisData.add(new Analysis(rowIndex));
+            rowIndex++;
+        }
+    }
+
+    public AnalysisCol52 getAnalysisCol() {
+        return analysisCol;
     }
 
     public String getTableName() {
@@ -278,7 +299,7 @@ public class GuidedDecisionTable52
 
     private String getType(ActionSetFieldCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+        String type = sce.getFieldType( getBoundFactType(col.getBoundName()),
                                         col.getFactField() );
         type = (assertDataType( col,
                                 sce,
@@ -340,6 +361,8 @@ public class GuidedDecisionTable52
             dataType = derieveDataType( column,
                                         sce );
 
+        } else if ( column instanceof AnalysisCol52 ) {
+            dataType = DTDataTypes52.STRING;
         }
 
         return dataType;
@@ -518,7 +541,7 @@ public class GuidedDecisionTable52
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
-            String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
+            String[] r = sce.getEnumValues( getBoundFactType(col.getBoundName()),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
         }
@@ -650,7 +673,7 @@ public class GuidedDecisionTable52
     private boolean assertDataType(ActionSetFieldCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-        String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
+        String ft = sce.getFieldType( getBoundFactType(col.getBoundName()),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;
@@ -687,6 +710,11 @@ public class GuidedDecisionTable52
 
     public void setTableFormat(TableFormat tableFormat) {
         this.tableFormat = tableFormat;
+    }
+
+    public enum TableFormat {
+        EXTENDED_ENTRY,
+        LIMITED_ENTRY
     }
 
 }
