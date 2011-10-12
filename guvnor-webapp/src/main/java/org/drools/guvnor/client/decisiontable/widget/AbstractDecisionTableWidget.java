@@ -178,7 +178,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            table
      */
     public void insertRowBefore(DynamicDataRow rowBefore) {
-        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
+        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData(0); // TODO FIXME the 0 is incorrect
         widget.insertRowBefore( rowBefore,
                                 rowData );
         redrawSystemControlledColumns();
@@ -1153,18 +1153,18 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Construct a new row for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
+    private List<CellValue< ? extends Comparable< ? >>> makeRowData(int rowIndex) {
         List<CellValue< ? extends Comparable< ? >>> rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig52 col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv;
             if ( col instanceof AnalysisCol52 ) {
-                cv = cellValueFactory.makeNewAnalysisCellValue(0, iCol);
+                cv = cellValueFactory.makeNewAnalysisCellValue(rowIndex, iCol);
             } else {
                 DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
                 cv = cellValueFactory.makeCellValue(col,
-                        0,
+                        rowIndex,
                         iCol,
                         dcv);
             }
