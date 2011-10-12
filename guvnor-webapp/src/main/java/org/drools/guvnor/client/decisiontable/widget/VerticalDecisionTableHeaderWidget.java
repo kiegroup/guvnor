@@ -831,7 +831,7 @@ public class VerticalDecisionTableHeaderWidget extends
         // Row 3 (Fact Fields)
         if ( multiRowColumnOffset != -1 ) {
             colOffsetIndex = resizeColumnIndex - multiRowColumnOffset;
-            if ( colOffsetIndex >= 0 ) {
+            if ( colOffsetIndex >= 0 && !(resizeColumn.getModelColumn() instanceof AnalysisCol52) ) {
                 DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[3].getChild( colOffsetIndex ).<TableCellElement> cast();
                 div = tce.getFirstChild().<DivElement> cast();
@@ -880,7 +880,7 @@ public class VerticalDecisionTableHeaderWidget extends
         // Row 2 (Fact Types) - Action Columns
         if ( multiRowColumnActionsOffset != -1 ) {
             colOffsetIndex = resizeColumnIndex - multiRowColumnActionsOffset;
-            if ( colOffsetIndex >= 0 ) {
+            if ( colOffsetIndex >= 0 && !(resizeColumn.getModelColumn() instanceof AnalysisCol52) ) {
                 colOffsetIndex = colOffsetIndex + iColColumn;
                 DynamicColumn<DTColumnConfig52> col = widget.visibleCols.get( resizeColumnIndex );
                 tce = widget.rowHeaders[2].getChild( colOffsetIndex ).<TableCellElement> cast();
