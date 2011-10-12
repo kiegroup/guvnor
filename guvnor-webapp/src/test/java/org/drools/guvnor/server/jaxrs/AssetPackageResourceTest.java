@@ -72,6 +72,8 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         CategoryItem cat = impl.getRulesRepository().loadCategory( "/" );
         cat.addCategory( "AssetPackageResourceTestCategory",
                          "yeah" );
+        cat.addCategory( "AssetPackageResourceTestCategory2",
+        "yeah" );
         
         //Package version 1(Initial version)
         PackageItem pkg = impl.getRulesRepository().createPackage( "restPackage1",
@@ -330,9 +332,71 @@ public class AssetPackageResourceTest extends AbstractBusClientServerTestBase {
         ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
 		assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
         ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
-        assertNotNull(categoryExtension.getSimpleExtension(Translator.VALUE));		
+        assertEquals("AssetPackageResourceTestCategory", categoryExtension.getSimpleExtension(Translator.VALUE));		
     }
 
+    @Test
+    @Ignore//GUVNOR-1705
+    public void testUpdateAssetAsAtom() throws Exception {     
+        URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        assertEquals(MediaType.APPLICATION_ATOM_XML, connection.getContentType());
+        //System.out.println(GetContent(connection));
+        
+        InputStream in = connection.getInputStream();
+        assertNotNull(in);
+        Document<Entry> doc = abdera.getParser().parse(in);
+        Entry entry = doc.getRoot();
+        assertEquals("/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());     
+        assertEquals("model1", entry.getTitle());
+        assertNotNull(entry.getPublished());
+        assertNotNull(entry.getAuthor().getName());
+        assertEquals("desc for model1", entry.getSummary());
+        //assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
+        assertEquals("/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
+        
+        ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
+        ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
+        assertEquals("false", archivedExtension.getSimpleExtension(Translator.VALUE));      
+        ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);     
+        assertEquals("Draft", stateExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
+        assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
+        ExtensibleElement uuidExtension = metadataExtension.getExtension(Translator.UUID);     
+        assertNotNull(uuidExtension.getSimpleExtension(Translator.VALUE));         
+        ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+        assertEquals("AssetPackageResourceTestCategory", categoryExtension.getSimpleExtension(Translator.VALUE));   
+        
+        //Update
+        categoryExtension.addSimpleExtension(Translator.VALUE, "AssetPackageResourceTestCategory2");
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("PUT");
+        connection.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
+        connection.setDoOutput(true);
+        entry.writeTo(connection.getOutputStream());
+        
+        //Verify again
+        connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
+        connection.connect();
+        assertEquals (200, connection.getResponseCode());
+        System.out.println(GetContent(connection));
+
+        in = connection.getInputStream();
+        assertNotNull(in);
+        doc = abdera.getParser().parse(in);
+        entry = doc.getRoot();
+        
+        metadataExtension  = entry.getExtension(Translator.METADATA);   
+        categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);     
+        assertEquals("AssetPackageResourceTestCategory", categoryExtension.getSimpleExtension(Translator.VALUE)); 
+    }
+    
     @Test
     public void testGetAssetAsJaxB() throws Exception {
         URL url = new URL(generateBaseUrl() + "/packages/restPackage1/assets/model1");

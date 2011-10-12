@@ -575,7 +575,7 @@ public class PackageResource extends Resource {
                 ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
                 format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
                 ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                initialCategory = formatExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;
+                initialCategory = categoryExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;
             }
 
             //Throws RulesRepositoryException if the package or asset does not exist
