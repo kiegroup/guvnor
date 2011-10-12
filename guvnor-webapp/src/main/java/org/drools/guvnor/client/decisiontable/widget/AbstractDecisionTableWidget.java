@@ -331,10 +331,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 //Values put back into the Model are type-safe
                 CellValue< ? > cv = dataRow.get( iCol );
                 DTColumnConfig52 column = columns.get( iCol ).getModelColumn();
-                DTCellValue52 dcv = cellValueFactory.convertToDTModelCell( column,
-                                                                              cv );
-                dcv.setOtherwise( cv.isOtherwise() );
-                row.add( dcv );
+                if (!(column instanceof AnalysisCol52)) {
+                    DTCellValue52 dcv = cellValueFactory.convertToDTModelCell( column,
+                                                                                  cv );
+                    dcv.setOtherwise( cv.isOtherwise() );
+                    row.add( dcv );
+                }
             }
             grid.add( row );
         }
