@@ -204,12 +204,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
     }
 
-    public void analyze() {
-        AnalysisCol52 analysisCol = model.getAnalysisCol();
-        analysisCol.setHideColumn( false );
-        setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );
-    }
-
     /**
      * Force the system controlled columns to be redrawn
      */
@@ -1357,6 +1351,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
         MergableGridWidget<DTColumnConfig52> grid = widget.getGridWidget();
         DynamicColumn<DTColumnConfig52> column = grid.getColumns().get( c.getCol() );
         return canAcceptOtherwiseValues( column.getModelColumn() );
+    }
+
+    public void analyze() {
+        AnalysisCol52 analysisCol = model.getAnalysisCol();
+        analysisCol.setHideColumn( false );
+        setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );
     }
 
 }
