@@ -205,8 +205,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     public void analyze() {
-        model.getAnalysisCol().setHideColumn(false);
-        widget.getGridWidget().redraw();
+        AnalysisCol52 analysisCol = model.getAnalysisCol();
+        analysisCol.setHideColumn( false );
+        setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );
     }
 
     /**
@@ -478,7 +479,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                             colIndex,
                                                             true,
                                                             false  );
-        analysisColumn.setVisible( true );
+        analysisColumn.setVisible( !analysisCol.isHideColumn() );
         widget.appendColumn( analysisColumn,
                              makeAnalysisColumnData( analysisCol,
                                              colIndex++ ),
