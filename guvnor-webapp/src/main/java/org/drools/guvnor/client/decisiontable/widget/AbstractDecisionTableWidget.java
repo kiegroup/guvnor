@@ -1158,11 +1158,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig52 col = columns.get( iCol ).getModelColumn();
-            DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                       0,
-                                                                                       iCol,
-                                                                                       dcv );
+            CellValue< ? extends Comparable< ? >> cv;
+            if ( col instanceof AnalysisCol52 ) {
+                cv = cellValueFactory.makeNewAnalysisCellValue(0, iCol);
+            } else {
+                DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
+                cv = cellValueFactory.makeCellValue(col,
+                        0,
+                        iCol,
+                        dcv);
+            }
             rowData.add( cv );
         }
         return rowData;
@@ -1188,14 +1193,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Copy values from one (transient) model column into another
     private void populateModelColumn(final ActionSetFieldCol52 col,
                                      final ActionSetFieldCol52 editingCol) {
-        col.setBoundName( editingCol.getBoundName() );
-        col.setType( editingCol.getType() );
-        col.setFactField( editingCol.getFactField() );
-        col.setHeader( editingCol.getHeader() );
-        col.setValueList( editingCol.getValueList() );
-        col.setDefaultValue( editingCol.getDefaultValue() );
-        col.setHideColumn( editingCol.isHideColumn() );
-        col.setUpdate( editingCol.isUpdate() );
+        col.setBoundName(editingCol.getBoundName());
+        col.setType(editingCol.getType());
+        col.setFactField(editingCol.getFactField());
+        col.setHeader(editingCol.getHeader());
+        col.setValueList(editingCol.getValueList());
+        col.setDefaultValue(editingCol.getDefaultValue());
+        col.setHideColumn(editingCol.isHideColumn());
+        col.setUpdate(editingCol.isUpdate());
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
@@ -1205,14 +1210,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private void populateModelColumn(final ConditionCol52 col,
                                      final ConditionCol52 editingCol) {
         col.setConstraintValueType( editingCol.getConstraintValueType() );
-        col.setFactField( editingCol.getFactField() );
-        col.setFieldType( editingCol.getFieldType() );
-        col.setHeader( editingCol.getHeader() );
-        col.setOperator( editingCol.getOperator() );
+        col.setFactField(editingCol.getFactField());
+        col.setFieldType(editingCol.getFieldType());
+        col.setHeader(editingCol.getHeader());
+        col.setOperator(editingCol.getOperator());
         col.setValueList( editingCol.getValueList() );
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
-        col.setParameters( editingCol.getParameters() );
+        col.setParameters(editingCol.getParameters());
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
@@ -1248,10 +1253,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         column.setCell( cellFactory.getCell( editColumn ) );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DynamicDataRow row = data.get( iRow );
-            row.set( column.getColumnIndex(),
-                     cellValueFactory.makeCellValue( editColumn,
-                                                     iRow,
-                                                     column.getColumnIndex() ) );
+            row.set(column.getColumnIndex(),
+                    cellValueFactory.makeCellValue(editColumn,
+                            iRow,
+                            column.getColumnIndex()));
         }
 
     }
@@ -1261,8 +1266,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                   final DynamicColumn<DTColumnConfig52> column) {
         boolean bRedrawRequired = false;
         DynamicData data = widget.getGridWidget().getData();
-        List<String> vals = Arrays.asList( model.getValueList( editColumn,
-                                                               sce ) );
+        List<String> vals = Arrays.asList(model.getValueList(editColumn,
+                sce));
         column.setCell( cellFactory.getCell( editColumn ) );
         int iCol = column.getColumnIndex();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
