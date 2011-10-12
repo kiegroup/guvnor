@@ -973,7 +973,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     // Find the right-most index for an Action column
     private int findActionColumnIndex() {
-        int index = widget.getGridWidget().getColumns().size() - 1;
+        int analysisColumnsSize = 1;
+        int index = widget.getGridWidget().getColumns().size() - 1 - analysisColumnsSize;
         return index;
     }
 
