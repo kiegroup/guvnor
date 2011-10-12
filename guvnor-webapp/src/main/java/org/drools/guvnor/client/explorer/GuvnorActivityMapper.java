@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.place.shared.Place;
-import com.google.web.bindery.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;
@@ -50,6 +48,8 @@ import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 import org.drools.guvnor.client.widgets.wizards.WizardActivity;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
+
+import com.google.gwt.place.shared.Place;
 
 public class GuvnorActivityMapper
         implements
