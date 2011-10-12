@@ -39,16 +39,20 @@ public class EnumDropDown extends ListBox
         implements
         IDirtyable {
 
-    private static final Constants constants = GWT.create( Constants.class );
+    private static final Constants     constants = GWT.create( Constants.class );
+
+    private final DropDownValueChanged valueChangedCommand;
 
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
 
+        this.valueChangedCommand = valueChanged;
+
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                valueChanged.valueChanged( getItemText( getSelectedIndex() ),
-                                           getValue( getSelectedIndex() ) );
+                valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
+                                                  getValue( getSelectedIndex() ) );
             }
         } );
 
@@ -110,7 +114,7 @@ public class EnumDropDown extends ListBox
     private void fillDropDown(final String currentValue,
                               final String[] enumeratedValues) {
         clear();
-//        addItem( constants.Choose() );
+        //        addItem( constants.Choose() );
         boolean selected = false;
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
@@ -130,13 +134,15 @@ public class EnumDropDown extends ListBox
             }
             if ( currentValue != null && currentValue.equals( val ) ) {
                 setSelectedIndex( i );
-//                setSelectedIndex( i + 1 );
+                //                setSelectedIndex( i + 1 );
                 selected = true;
             }
         }
 
         if ( !selected ) {
             setSelectedIndex( 0 );
+            valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
+                                              getValue( getSelectedIndex() ) );
         }
     }
 }
