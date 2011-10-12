@@ -51,149 +51,160 @@ import org.drools.guvnor.client.util.TabbedPanel;
 /**
  * This is the tab panel manager.
  */
-public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
+public class ExplorerViewCenterPanel extends Composite
+    implements
+    TabbedPanel {
 
-    private final ScrollTabLayoutPanel tabLayoutPanel;
+    private final ScrollTabLayoutPanel       tabLayoutPanel;
 
-    private PanelMap openedTabs = new PanelMap();
+    private PanelMap                         openedTabs          = new PanelMap();
 
     private Map<String, ModuleEditorWrapper> openedModuleEditors = new HashMap<String, ModuleEditorWrapper>();
 
-    private ClientFactory clientFactory;
-    private final EventBus eventBus;
+    private ClientFactory                    clientFactory;
+    private final EventBus                   eventBus;
 
-    public ExplorerViewCenterPanel(final ClientFactory clientFactory, final EventBus eventBus) {
+    public ExplorerViewCenterPanel(final ClientFactory clientFactory,
+                                   final EventBus eventBus) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         tabLayoutPanel = new ScrollTabLayoutPanel();
 
         addBeforeSelectionHandler();
 
-        initWidget(createLayout());
+        initWidget( createLayout() );
     }
 
     private DockLayoutPanel createLayout() {
-        DockLayoutPanel layoutPanel = new DockLayoutPanel(Style.Unit.EM);
+        DockLayoutPanel layoutPanel = new DockLayoutPanel( Style.Unit.EM );
 
-        layoutPanel.addSouth(createBottomPanel(), 2);
-        layoutPanel.add(tabLayoutPanel);
+        layoutPanel.addSouth( createBottomPanel(),
+                              2 );
+        layoutPanel.add( tabLayoutPanel );
         return layoutPanel;
     }
 
     private HorizontalPanel createBottomPanel() {
         HorizontalPanel bottomPanel = new HorizontalPanel();
-        bottomPanel.setWidth("100%");
-        bottomPanel.setStyleName("bottom-panel");
-        bottomPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-        bottomPanel.add(createCloseAllButton());
+        bottomPanel.setWidth( "100%" );
+        bottomPanel.setStyleName( "bottom-panel" );
+        bottomPanel.setHorizontalAlignment( HasHorizontalAlignment.ALIGN_RIGHT );
+        bottomPanel.add( createCloseAllButton() );
         return bottomPanel;
     }
 
     private Button createCloseAllButton() {
-        Constants constants = GWT.create(Constants.class);
-        Button button = new Button(constants.CloseAllItems());
-        button.addClickHandler(new ClickHandler() {
+        Constants constants = GWT.create( Constants.class );
+        Button button = new Button( constants.CloseAllItems() );
+        button.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent event) {
-                eventBus.fireEvent(new CloseAllPlacesEvent());
+                eventBus.fireEvent( new CloseAllPlacesEvent() );
             }
-        });
+        } );
         return button;
     }
 
     private void addBeforeSelectionHandler() {
-        tabLayoutPanel.addBeforeSelectionHandler(new BeforeSelectionHandler<Integer>() {
+        tabLayoutPanel.addBeforeSelectionHandler( new BeforeSelectionHandler<Integer>() {
             public void onBeforeSelection(BeforeSelectionEvent<Integer> integerBeforeSelectionEvent) {
-                if (!tabLayoutPanel.isCanSelectTabToggle()) {
+                if ( !tabLayoutPanel.isCanSelectTabToggle() ) {
                     integerBeforeSelectionEvent.cancel();
-                    clientFactory.getPlaceController().goTo(openedTabs.getKey(integerBeforeSelectionEvent.getItem()));
+                    clientFactory.getPlaceController().goTo( openedTabs.getKey( integerBeforeSelectionEvent.getItem() ) );
                 }
             }
-        });
+        } );
     }
 
     public boolean contains(Place key) {
-        return openedTabs.contains(key);
+        return openedTabs.contains( key );
     }
 
     public void show(Place key) {
-        if (openedTabs.contains(key)) {
+        if ( openedTabs.contains( key ) ) {
             LoadingPopup.close();
-            tabLayoutPanel.selectTab(openedTabs.get(key));
+            tabLayoutPanel.selectTab( openedTabs.get( key ) );
         }
     }
 
     /**
-     * Add a new tab. Should only do this if have checked showIfOpen to avoid dupes being opened.
-     * @param tabname The displayed tab name.
-     * @param widget The contents.
-     * @param place A place which is unique.
+     * Add a new tab. Should only do this if have checked showIfOpen to avoid
+     * dupes being opened.
+     * 
+     * @param tabname
+     *            The displayed tab name.
+     * @param widget
+     *            The contents.
+     * @param place
+     *            A place which is unique.
      */
     public void addTab(final String tabname,
-            IsWidget widget,
-            final Place place) {
+                       IsWidget widget,
+                       final Place place) {
 
         ScrollPanel localTP = new ScrollPanel();
-        localTP.add(widget);
-        tabLayoutPanel.add(localTP,
-                newClosableLabel(
-                        tabname,
-                        place
-                ));
-        tabLayoutPanel.selectTab(localTP);
+        localTP.add( widget );
+        tabLayoutPanel.add( localTP,
+                            newClosableLabel(
+                                              tabname,
+                                              place
+                            ) );
+        tabLayoutPanel.selectTab( localTP );
 
-        if (widget instanceof ModuleEditorWrapper) {
-            this.getOpenedModuleEditors().put(tabname,
-                    (ModuleEditorWrapper) widget);
+        if ( widget instanceof ModuleEditorWrapper ) {
+            this.getOpenedModuleEditors().put( tabname,
+                                               (ModuleEditorWrapper) widget );
         }
 
-        openedTabs.put(place,
-                localTP);
+        openedTabs.put( place,
+                        localTP );
     }
 
     private Widget newClosableLabel(final String title,
-            final Place place) {
-        ClosableLabel closableLabel = new ClosableLabel(title);
+                                    final Place place) {
+        ClosableLabel closableLabel = new ClosableLabel( title );
 
-        closableLabel.addCloseHandler(new CloseHandler<ClosableLabel>() {
+        closableLabel.addCloseHandler( new CloseHandler<ClosableLabel>() {
             public void onClose(CloseEvent<ClosableLabel> event) {
-                eventBus.fireEvent(new ClosePlaceEvent(place));
+                eventBus.fireEvent( new ClosePlaceEvent( place ) );
             }
 
-        });
+        } );
 
         return closableLabel;
     }
 
     public void close(Place key) {
 
-        int widgetIndex = openedTabs.getIndex(key);
+        int widgetIndex = openedTabs.getIndex( key );
 
-        Place nextPlace = getPlace(widgetIndex);
+        Place nextPlace = getPlace( widgetIndex );
 
-        tabLayoutPanel.remove(openedTabs.get(key));
-        openedTabs.remove(key);
+        tabLayoutPanel.remove( openedTabs.get( key ) );
+        openedTabs.remove( key );
 
-        if (nextPlace != null) {
-            goTo(nextPlace);
+        if ( nextPlace != null ) {
+            goTo( nextPlace );
+        } else {
+            goTo( Place.NOWHERE );
         }
     }
 
     private Place getPlace(int widgetIndex) {
-        if (isOnlyOneTabLeft()) {
+        if ( isOnlyOneTabLeft() ) {
             return Place.NOWHERE;
-        } else if (isSelectedTabIndex(widgetIndex)) {
-            return getNeighbour(widgetIndex);
+        } else if ( isSelectedTabIndex( widgetIndex ) ) {
+            return getNeighbour( widgetIndex );
         } else {
             return null;
         }
     }
 
     private void goTo(Place place) {
-        clientFactory.getPlaceController().goTo(place);
+        clientFactory.getPlaceController().goTo( place );
     }
 
     private Place getNeighbour(int widgetIndex) {
-        if (isLeftMost(widgetIndex)) {
+        if ( isLeftMost( widgetIndex ) ) {
             return getNextPlace();
         } else {
             return getPreviousPlace();
@@ -209,11 +220,14 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     }
 
     private Place getPreviousPlace() {
-        return openedTabs.getKey(tabLayoutPanel.getSelectedIndex() - 1);
+        if ( tabLayoutPanel.getSelectedIndex() > 0 ) {
+            return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() - 1 );
+        }
+        return null;
     }
 
     private Place getNextPlace() {
-        return openedTabs.getKey(tabLayoutPanel.getSelectedIndex() + 1);
+        return openedTabs.getKey( tabLayoutPanel.getSelectedIndex() + 1 );
     }
 
     private boolean isOnlyOneTabLeft() {
@@ -227,32 +241,34 @@ public class ExplorerViewCenterPanel extends Composite implements TabbedPanel {
     private class PanelMap {
 
         private final Map<Place, Panel> keysToPanel = new HashMap<Place, Panel>();
-        private final List<Place> keys = new ArrayList<Place>();
+        private final List<Place>       keys        = new ArrayList<Place>();
 
         Panel get(Place key) {
-            return keysToPanel.get(key);
+            return keysToPanel.get( key );
         }
 
         Place getKey(int index) {
-            return keys.get(index);
+            return keys.get( index );
         }
 
         void remove(Place key) {
-            keys.remove(key);
-            keysToPanel.remove(key);
+            keys.remove( key );
+            keysToPanel.remove( key );
         }
 
         public boolean contains(Place key) {
-            return keysToPanel.containsKey(key);
+            return keysToPanel.containsKey( key );
         }
 
-        public void put(Place key, Panel panel) {
-            keys.add(key);
-            keysToPanel.put(key, panel);
+        public void put(Place key,
+                        Panel panel) {
+            keys.add( key );
+            keysToPanel.put( key,
+                             panel );
         }
 
         public int getIndex(Place key) {
-            return keys.indexOf(key);
+            return keys.indexOf( key );
         }
     }
 }
