@@ -65,9 +65,9 @@ public class EnumDropDownLabel extends Composite {
         this.sce = sce;
         this.enabled = enabled;
 
+        textWidget = createTextLabel();
         enumDropDown = createEnumDropDown();
         okButton = new Button( constants.OK() );
-        textWidget = createTextLabel();
         panel.add( textWidget );
 
         updateTextWidget();

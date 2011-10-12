@@ -18,7 +18,6 @@ package org.drools.ide.common.client.modeldriven;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -336,23 +335,31 @@ public class SuggestionCompletionEngine
         Map<String, String> currentValueMap = new HashMap<String, String>();
 
         if ( pattern.constraintList != null && pattern.constraintList.constraints != null ) {
-            for (FieldConstraint con : pattern.constraintList.constraints) {
+            for ( FieldConstraint con : pattern.constraintList.constraints ) {
                 if ( con instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) con;
-                    currentValueMap.put(sfc.getFieldName(), sfc.getValue());
+                    String fieldName = sfc.getFieldName();
+                    if ( fieldName.contains( "." ) ) {
+                        fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
+                    }
+                    currentValueMap.put( fieldName,
+                                         sfc.getValue() );
                 }
             }
         }
-        return getEnums(type, field, currentValueMap);
+        return getEnums( type,
+                         field,
+                         currentValueMap );
     }
 
     /**
      * Similar to the one above - but this one is for RHS.
      */
     public DropDownData getEnums(String type,
-            String field, FieldNature[] currentFieldNatures) {
+                                 String field, 
+                                 FieldNature[] currentFieldNatures) {
         Map<String, String> currentValueMap = new HashMap<String, String>();
-
+        
         if ( currentFieldNatures != null ) {
             for (FieldNature currentFieldNature : currentFieldNatures) {
                 currentValueMap.put(currentFieldNature.getField(), currentFieldNature.getValue());
