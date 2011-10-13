@@ -40,6 +40,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -481,6 +482,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                             true,
                                                             false  );
         analysisColumn.setVisible( !analysisCol.isHideColumn() );
+        analysisColumn.setWidth(200);
         widget.appendColumn( analysisColumn,
                              makeAnalysisColumnData( analysisCol,
                                              colIndex++ ),
@@ -1368,10 +1370,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
         // Workaround design the real model isn't up to date with the GWT model
         List<List<DTCellValue52>> data = scrapeData();
-        analyzer.analyze(model, data);
+        List<Analysis> analysisData = analyzer.analyze(model, data);
+        showAnalysis(analysisData);
+    }
+
+    private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
+        int analysisColumnIndex = model.getAllColumns().indexOf(analysisCol);
+        DynamicData dynamicData = widget.getGridWidget().getData();
+        for (int i = 0; i < analysisData.size(); i++) {
+            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get(i).get(analysisColumnIndex);
+            Analysis analysis = analysisData.get(i);
+            cellValue.setValue(analysis);
+        }
         analysisCol.setHideColumn( false );
         setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );
+        widget.getGridWidget().redrawColumn(analysisColumnIndex);
     }
 
 }

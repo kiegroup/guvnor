@@ -174,7 +174,7 @@ public class NewGuidedDecisionTableWizard
         while ( ri.hasNext() ) {
             List<String> row = ri.next();
             dtable.getData().add( makeRow( row ) );
-            dtable.getAnalysisData().add(new Analysis(rowIndex));
+            dtable.getAnalysisData().add(new Analysis());
             rowIndex++;
         }
 

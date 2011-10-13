@@ -24,20 +24,28 @@ import java.util.List;
  */
 public class Analysis implements Comparable<Analysis> {
 
-    private int rowIndex;
+    private List<String> warningHtmlList = new ArrayList<String>();
 
-    private List<String> impossibleMatchList = new ArrayList<String>();
-
-    public Analysis(int rowIndex) {
-        this.rowIndex = rowIndex;
+    public void addWarning(String htmlEntry) {
+        warningHtmlList.add(htmlEntry);
     }
 
     public String toHtmlString() {
-        return "TODO";
+        StringBuilder htmlBuilder = new StringBuilder("<span>");
+        boolean first = true;
+        for (String htmlEntry : warningHtmlList) {
+            if (!first) {
+                htmlBuilder.append(", ");
+                first = false;
+            }
+            htmlBuilder.append(htmlEntry);
+        }
+        htmlBuilder.append("</span>");
+        return htmlBuilder.toString();
     }
 
     public int getWarningSize() {
-        return impossibleMatchList.size();
+        return warningHtmlList.size();
     }
 
     public int compareTo(Analysis other) {

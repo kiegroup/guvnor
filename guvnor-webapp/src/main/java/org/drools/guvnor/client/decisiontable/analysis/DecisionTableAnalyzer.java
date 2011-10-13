@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -38,12 +40,16 @@ public class DecisionTableAnalyzer {
         this.sce = sce;
     }
 
-    public void analyze(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
-        detectImpossibleMatches(modelWithWrongData, data);
+    public List<Analysis> analyze(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
+        return detectImpossibleMatches(modelWithWrongData, data);
     }
 
-    private void detectImpossibleMatches(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
+    private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
+        List<Analysis> analysisData = new ArrayList<Analysis>(data.size());
         for (List<DTCellValue52> row : data) {
+            long rowIndex = row.get(0).getNumericValue().longValue();
+            Analysis analysis = new Analysis();
+            analysisData.add(analysis);
             for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
                 List<ConditionCol52> conditions = pattern.getConditions();
                 Map<String, DisjointDetector> detectorMap = new HashMap<String, DisjointDetector>(
@@ -60,10 +66,10 @@ public class DecisionTableAnalyzer {
                                 detector = newDetector;
                                 detectorMap.put(factField, detector);
                             } else {
+                                boolean previousImpossibleMatch = detector.isImpossibleMatch();
                                 detector.merge(newDetector);
-                                if (detector.isImpossibleMatch()) {
-                                    // TODO
-                                    System.out.println("Impossible match <==============" + factField);
+                                if (!previousImpossibleMatch && detector.isImpossibleMatch()) {
+                                    analysis.addWarning("Impossible match on " + factField);
                                 }
                             }
                         }
@@ -71,6 +77,7 @@ public class DecisionTableAnalyzer {
                 }
             }
         }
+        return analysisData;
     }
 
     private DisjointDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,

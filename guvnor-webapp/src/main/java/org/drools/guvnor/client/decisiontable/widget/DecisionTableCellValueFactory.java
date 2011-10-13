@@ -230,7 +230,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     public CellValue<Analysis> makeNewAnalysisCellValue(int iRow, int iCol) {
-        Analysis analysis = new Analysis(iRow);
+        Analysis analysis = new Analysis();
         return new CellValue<Analysis>(analysis, iRow, iCol );
     }
 
