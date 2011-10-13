@@ -269,8 +269,8 @@ public class GuidedDecisionTableWidget extends Composite
                     }
 
                     private void newActionAdded(ActionCol52 column) {
+                        guidedDecisionTable.getActionCols().add( column );
                         dtable.addColumn( column );
-                        dtable.scrapeColumns();
                         refreshActionsWidget();
                     }
                 } );
@@ -311,8 +311,8 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String cm = constants.DeleteActionColumnWarning( c.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                                 guidedDecisionTable.getActionCols().remove( c );
                                                  dtable.deleteColumn( c );
-                                                 dtable.scrapeColumns();
                                                  refreshActionsWidget();
                                              }
                                          }
@@ -334,7 +334,7 @@ public class GuidedDecisionTableWidget extends Composite
 
             Pattern52 p = guidedDecisionTable.getConditionPatterns().get( iPattern );
 
-            //TODO Move to helper method (or new Widget)
+            //TODO Move to new Widget
             HorizontalPanel patternPanel = new HorizontalPanel();
             patternPanel.add( makePatternLabel( p ) );
             patternPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
@@ -368,8 +368,8 @@ public class GuidedDecisionTableWidget extends Composite
             if ( iPattern < numberOfPatterns - 1 ) {
                 shufflersPanel.add( makePatternMoveDownWidget( p ) );
             }
-
             //End of new Widget code
+            
             conditionsConfigWidget.add( patternPanel );
 
             for ( ConditionCol52 c : p.getConditions() ) {
@@ -385,6 +385,7 @@ public class GuidedDecisionTableWidget extends Composite
         setupColumnsNote();
     }
 
+    //TODO Move to new Widget
     private Label makePatternLabel(Pattern52 p) {
         StringBuilder sb = new StringBuilder();
         if ( p.getBoundName() != null && !p.getBoundName().equals( "" ) ) {
@@ -395,6 +396,7 @@ public class GuidedDecisionTableWidget extends Composite
         return new Label( sb.toString() );
     }
 
+    //TODO Move to new Widget
     private Image makePatternMoveUpWidget(final Pattern52 p) {
         Image icon = new Image( images.shuffleUp() );
         icon.addClickHandler( new ClickHandler() {
@@ -413,6 +415,7 @@ public class GuidedDecisionTableWidget extends Composite
         return icon;
     }
 
+    //TODO Move to new Widget
     private Image makePatternMoveDownWidget(final Pattern52 p) {
         Image icon = new Image( images.shuffleDown() );
         icon.addClickHandler( new ClickHandler() {
@@ -708,8 +711,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                        public void onChange(ChangeEvent event) {
                                                            AttributeCol52 attr = new AttributeCol52();
                                                            attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
+                                                           guidedDecisionTable.getAttributeCols().add( attr );
                                                            dtable.addColumn( attr );
-                                                           dtable.scrapeColumns();
                                                            refreshAttributeWidget();
                                                            pop.hide();
                                                        }
@@ -728,8 +731,8 @@ public class GuidedDecisionTableWidget extends Composite
                                                            MetadataCol52 met = new MetadataCol52();
                                                            met.setHideColumn( true );
                                                            met.setMetadata( metadata );
+                                                           guidedDecisionTable.getMetadataCols().add( met );
                                                            dtable.addColumn( met );
-                                                           dtable.scrapeColumns();
                                                            refreshAttributeWidget();
                                                            pop.hide();
                                                        }
@@ -769,8 +772,8 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 guidedDecisionTable.getAttributeCols().remove( at );
                                                  dtable.deleteColumn( at );
-                                                 dtable.scrapeColumns();
                                                  refreshAttributeWidget();
                                              }
                                          }
@@ -786,8 +789,8 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 guidedDecisionTable.getMetadataCols().remove( md );
                                                  dtable.deleteColumn( md );
-                                                 dtable.scrapeColumns();
                                                  refreshAttributeWidget();
                                              }
                                          }

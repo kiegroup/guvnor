@@ -133,7 +133,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             throw new IllegalArgumentException( "Column cannot be null." );
         }
         gridWidget.deleteColumn( column,
-                                 true );
+                                 bRedraw );
         if ( bRedraw ) {
             headerWidget.redraw();
             assertDimensions();

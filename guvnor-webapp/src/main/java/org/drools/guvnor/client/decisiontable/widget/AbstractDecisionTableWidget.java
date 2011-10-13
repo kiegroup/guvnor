@@ -53,6 +53,8 @@ import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Command;
@@ -217,98 +219,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void redrawSystemControlledColumns() {
         widget.redrawSystemControlledColumns();
-    }
-
-    /**
-     * Update the Decision Table model with the columns contained in the grid.
-     * The Decision Table controls indexing of new columns to preserve grouping
-     * of column types. If the order of columns is important to client-code this
-     * can be called to ensure columns within the model are synchronised with
-     * the Decision Table.
-     */
-    public void scrapeColumns() {
-
-        RowNumberCol52 rnCol = null;
-        DescriptionCol52 descCol = null;
-        List<MetadataCol52> newMetaColumns = new ArrayList<MetadataCol52>();
-        List<AttributeCol52> newAttributeColumns = new ArrayList<AttributeCol52>();
-        List<Pattern52> newPatterns = new ArrayList<Pattern52>();
-        List<ActionCol52> newActionColumns = new ArrayList<ActionCol52>();
-
-        // Extract column information
-        for ( DynamicColumn<DTColumnConfig52> column : widget.getGridWidget().getColumns() ) {
-            DTColumnConfig52 modelCol = column.getModelColumn();
-            if ( modelCol instanceof RowNumberCol52 ) {
-                rnCol = (RowNumberCol52) modelCol;
-                rnCol.setWidth( column.getWidth() );
-                rnCol.setHideColumn( !column.isVisible() );
-                model.setRowNumberCol( rnCol );
-
-            } else if ( modelCol instanceof DescriptionCol52 ) {
-                descCol = (DescriptionCol52) modelCol;
-                descCol.setWidth( column.getWidth() );
-                descCol.setHideColumn( !column.isVisible() );
-                model.setDescriptionCol( descCol );
-
-            } else if ( modelCol instanceof MetadataCol52 ) {
-                MetadataCol52 tc = (MetadataCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newMetaColumns.add( tc );
-
-            } else if ( modelCol instanceof AttributeCol52 ) {
-                AttributeCol52 tc = (AttributeCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newAttributeColumns.add( tc );
-
-            } else if ( modelCol instanceof ConditionCol52 ) {
-                ConditionCol52 tc = (ConditionCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-
-                Pattern52 p = model.getPattern( tc );
-                Pattern52 newPattern = getExistingNewPattern( newPatterns,
-                                                              p );
-                if ( newPattern == null ) {
-                    newPattern = clonePatternExcludingConditions( p );
-                    newPatterns.add( newPattern );
-                }
-                newPattern.getConditions().add( tc );
-
-            } else if ( modelCol instanceof ActionCol52 ) {
-                ActionCol52 tc = (ActionCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newActionColumns.add( tc );
-            }
-
-        }
-        model.setMetadataCols( newMetaColumns );
-        model.setAttributeCols( newAttributeColumns );
-        model.setConditionPatterns( newPatterns );
-        model.setActionCols( newActionColumns );
-
-    }
-
-    private Pattern52 clonePatternExcludingConditions(Pattern52 p) {
-        Pattern52 newPattern = new Pattern52();
-        newPattern.setBoundName( p.getBoundName() );
-        newPattern.setEntryPointName( p.getEntryPointName() );
-        newPattern.setFactType( p.getFactType() );
-        newPattern.setNegated( p.isNegated() );
-        newPattern.setWindow( p.getWindow() );
-        return newPattern;
-    }
-
-    private Pattern52 getExistingNewPattern(List<Pattern52> newPatterns,
-                                            Pattern52 pattern) {
-        for ( Pattern52 p : newPatterns ) {
-            if ( p.getBoundName().equals( pattern.getBoundName() ) ) {
-                return p;
-            }
-        }
-        return null;
     }
 
     /**
@@ -488,7 +398,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                                                                               true,
                                                                                               false );
         analysisColumn.setVisible( !analysisCol.isHideColumn() );
-        analysisColumn.setWidth(200);
+        analysisColumn.setWidth( 200 );
         widget.appendColumn( analysisColumn,
                              makeAnalysisColumnData( analysisCol,
                                                      colIndex++ ),
@@ -1078,13 +988,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                     int index,
                                     boolean bRedraw) {
 
-        // Create new column for grid
-        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( modelColumn,
-                                                                                      cellFactory.getCell( modelColumn ),
-                                                                                      index );
-        column.setVisible( !modelColumn.isHideColumn() );
-        DynamicColumn<DTColumnConfig52> columnBefore = widget.getGridWidget().getColumns().get( index );
-
         // Create column data
         DynamicData data = widget.getGridWidget().getData();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
@@ -1097,12 +1000,41 @@ public abstract class AbstractDecisionTableWidget extends Composite
             columnData.add( cell );
         }
 
+        insertColumnBefore( modelColumn,
+                            columnData,
+                            index,
+                            bRedraw );
+    }
+
+    // Insert a new model column at the specified index with the specified column data
+    private void insertColumnBefore(DTColumnConfig52 modelColumn,
+                                    List<CellValue< ? extends Comparable< ? >>> columnData,
+                                    int index,
+                                    boolean bRedraw) {
+
+        // Create new column for grid
+        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( modelColumn,
+                                                                                      cellFactory.getCell( modelColumn ),
+                                                                                      index );
+        column.setVisible( !modelColumn.isHideColumn() );
+        DynamicColumn<DTColumnConfig52> columnBefore = widget.getGridWidget().getColumns().get( index );
+
         // Add column and data to grid
         widget.insertColumnBefore( columnBefore,
                                    column,
                                    columnData,
                                    bRedraw );
+    }
 
+    // Retrieve the data for a particular column
+    private List<CellValue< ? extends Comparable< ? >>> getColumnData(int index) {
+        DynamicData data = widget.getGridWidget().getData();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            columnData.add( row.get( index ) );
+        }
+        return columnData;
     }
 
     // Check whether two Strings are equal or both null
@@ -1375,40 +1307,63 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     public void analyze() {
-        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( sce );
         // Workaround design the real model isn't up to date with the GWT model
         List<List<DTCellValue52>> data = scrapeData();
-        List<Analysis> analysisData = analyzer.analyze(model, data);
-        showAnalysis(analysisData);
+        List<Analysis> analysisData = analyzer.analyze( model,
+                                                        data );
+        showAnalysis( analysisData );
     }
 
     private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
-        int analysisColumnIndex = model.getAllColumns().indexOf(analysisCol);
+        int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
         DynamicData dynamicData = widget.getGridWidget().getData();
-        for (int i = 0; i < analysisData.size(); i++) {
-            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get(i).get(analysisColumnIndex);
-            Analysis analysis = analysisData.get(i);
-            cellValue.setValue(analysis);
+        for ( int i = 0; i < analysisData.size(); i++ ) {
+            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get( i ).get( analysisColumnIndex );
+            Analysis analysis = analysisData.get( i );
+            cellValue.setValue( analysis );
         }
         analysisCol.setHideColumn( false );
-        setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );
-        widget.getGridWidget().redrawColumn(analysisColumnIndex);
         setColumnVisibility( analysisCol,
                              !analysisCol.isHideColumn() );
+        widget.getGridWidget().redrawColumn( analysisColumnIndex );
     }
 
+    /**
+     * Move a Pattern, or more accurately the group of columns relating to a
+     * pattern, upwards in the order that the Patterns are added to a rule's DRL
+     * (i.e. moving a Pattern upwards results in the corresponding DRL being
+     * added to the rule sooner).
+     * 
+     * @param pattern
+     *            The Pattern being moved
+     * @param beforePattern
+     *            The Pattern before which the pattern will be moved
+     */
     public void movePatternUp(Pattern52 pattern,
                               Pattern52 beforePattern) {
         if ( beforePattern == null ) {
             throw new IllegalArgumentException( "beforePattern cannot be null" );
         }
+
+        //Find the index of the first column of the pattern after the one being moved.
+        //Columns of the Pattern being moved will be inserted *before* this column.
         DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( 0 );
+        int beforeColumnIndex = getColumnIndex( beforeColumn );
+
+        //Move columns
         for ( ConditionCol52 cc : pattern.getConditions() ) {
-            int beforeColumnIndex = getColumnIndex( beforeColumn );
-            moveColumn( cc,
-                        beforeColumnIndex );
+            int columnIndex = getColumnIndex( cc );
+            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+            deleteColumn( cc,
+                          false );
+            insertColumnBefore( cc,
+                                columnData,
+                                beforeColumnIndex++,
+                                false );
         }
+
         //Partial redraw
         int startRedrawIndex = getColumnIndex( pattern.getConditions().get( 0 ) );
         int endRedrawIndex = getColumnIndex( beforePattern.getConditions().get( beforePattern.getConditions().size() - 1 ) );
@@ -1417,36 +1372,66 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.getHeaderWidget().redraw();
     }
 
+    /**
+     * Move a Pattern, or more accurately the group of columns relating to a
+     * pattern, downwards in the order that the Patterns are added to a rule's
+     * DRL (i.e. moving a Pattern downwards results in the corresponding DRL
+     * being added to the rule later).
+     * 
+     * @param pattern
+     *            The Pattern being moved
+     * @param beforePattern
+     *            The Pattern before which the pattern will be moved
+     */
     public void movePatternDown(Pattern52 pattern,
                                 Pattern52 beforePattern) {
         if ( beforePattern == null ) {
             throw new IllegalArgumentException( "beforePattern cannot be null" );
         }
+
+        //Find the index of the last column of the pattern before the one being moved.
+        //Columns of the Pattern being moved will be inserted *before* this column.
         DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( beforePattern.getConditions().size() - 1 );
         int beforeColumnIndex = getColumnIndex( beforeColumn );
+
+        //Move columns
         for ( ConditionCol52 cc : pattern.getConditions() ) {
-            moveColumn( cc,
-                        beforeColumnIndex );
+            int columnIndex = getColumnIndex( cc );
+            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+            deleteColumn( cc,
+                          false );
+            insertColumnBefore( cc,
+                                columnData,
+                                beforeColumnIndex,
+                                false );
         }
-        //TODO Partial redraw, minCol = source pattern first col, maxCol= destination last column
-        widget.getGridWidget().redraw();
+
+        //Partial redraw
+        int startRedrawIndex = getColumnIndex( beforePattern.getConditions().get( 0 ) );
+        int endRedrawIndex = getColumnIndex( pattern.getConditions().get( pattern.getConditions().size() - 1 ) );
+        widget.getGridWidget().redrawColumns( startRedrawIndex,
+                                              endRedrawIndex );
         widget.getHeaderWidget().redraw();
     }
 
     public void moveCondition(ConditionCol52 column,
                               ConditionCol52 beforeCondition) {
+        //TODO Not tried or tested yet
         if ( beforeCondition == null ) {
             throw new IllegalArgumentException( "beforeCondition cannot be null" );
         }
-        int beforeColumnIndex = getColumnIndex( beforeCondition );
-        moveColumn( column,
-                    beforeColumnIndex );
 
-        //TODO Partial redraw, minCol = source pattern first col, maxCol= destination last column
-        widget.getGridWidget().redraw();
-        widget.getHeaderWidget().redraw();
+        int columnIndex = getColumnIndex( column );
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+        int beforeColumnIndex = getColumnIndex( beforeCondition );
+        deleteColumn( column );
+        insertColumnBefore( column,
+                            columnData,
+                            beforeColumnIndex,
+                            true );
     }
 
+    //Get the (UI-) column index of a Model column
     private int getColumnIndex(DTColumnConfig52 column) {
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
@@ -1456,16 +1441,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
         return 0;
-    }
-
-    private void moveColumn(DTColumnConfig52 column,
-                            int beforeColumnIndex) {
-        //TODO Need to extract data for columns being moved
-        deleteColumn( column,
-                      false );
-        insertColumnBefore( column,
-                            beforeColumnIndex,
-                            false );
     }
 
 }
