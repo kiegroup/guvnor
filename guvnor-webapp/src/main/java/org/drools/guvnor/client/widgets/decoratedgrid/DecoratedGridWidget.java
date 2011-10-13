@@ -125,16 +125,19 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * Delete the given column
      * 
      * @param column
+     * @param bRedraw
      */
-    public void deleteColumn(DynamicColumn<T> column) {
+    public void deleteColumn(DynamicColumn<T> column,
+                             boolean bRedraw) {
         if ( column == null ) {
-            throw new IllegalArgumentException(
-                                                "Column cannot be null." );
+            throw new IllegalArgumentException( "Column cannot be null." );
         }
         gridWidget.deleteColumn( column,
                                  true );
-        headerWidget.redraw();
-        assertDimensions();
+        if ( bRedraw ) {
+            headerWidget.redraw();
+            assertDimensions();
+        }
     }
 
     /**

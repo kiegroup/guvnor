@@ -77,6 +77,10 @@ public interface DecisionTableResources
         String actionColumn();
         
         String templateColumn();
+        
+        String patternSectionHeader();
+        
+        String patternSectionHeaderShufflersContainer();
 
     };
 

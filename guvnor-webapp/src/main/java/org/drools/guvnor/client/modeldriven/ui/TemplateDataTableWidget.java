@@ -89,8 +89,7 @@ public class TemplateDataTableWidget extends Composite
      */
     public void addColumn(TemplateDataColumn modelColumn) {
         if ( modelColumn == null ) {
-            throw new IllegalArgumentException(
-                                                "modelColumn cannot be null." );
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
         addColumn( modelColumn,
                    true );
@@ -115,7 +114,8 @@ public class TemplateDataTableWidget extends Composite
         }
 
         DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
-        widget.deleteColumn( col );
+        widget.deleteColumn( col,
+                             true );
     }
 
     /**

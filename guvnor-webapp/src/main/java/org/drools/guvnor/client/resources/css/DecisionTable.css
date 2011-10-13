@@ -190,3 +190,14 @@
     border-bottom: borderWidth solid #e09090;
     background-color: #e09090;
 }
+
+.patternSectionHeader {
+	padding: 2px 2px 2px 2px;
+	margin: 2px 2px 2px 2px;
+	background-color: #d0d0d0;
+	width: 200px;
+}
+
+.patternSectionHeaderShufflersContainer {
+	float: right;
+}

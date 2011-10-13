@@ -239,7 +239,7 @@ public abstract class MergableGridWidget<T> extends Widget
                                                 "Column not found in declared columns." );
         }
 
-        //Expand any merged cells in colum
+        //Expand any merged cells in column
         boolean bRedrawSidebar = false;
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             CellValue< ? > cv = data.get( iRow ).get( index );
@@ -372,10 +372,8 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( columnBefore != null ) {
             index = columns.indexOf( columnBefore );
             if ( index == -1 ) {
-                throw new IllegalArgumentException(
-                                                    "columnBefore does not exist in table data." );
+                throw new IllegalArgumentException( "columnBefore does not exist in table data." );
             }
-            index++;
         }
 
         // Clear any selections

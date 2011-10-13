@@ -15,22 +15,18 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.*;
-
-import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.common.DirtyableHorizontalPane;
+import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.ImageButton;
+import org.drools.guvnor.client.common.PrettyFormLayout;
+import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.EditorWidget;
@@ -40,7 +36,42 @@ import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
-import org.drools.ide.common.client.modeldriven.dt52.*;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * This is the new guided decision table editor for the web.
@@ -298,7 +329,49 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshConditionsWidget() {
         this.conditionsConfigWidget.clear();
-        for ( Pattern52 p : guidedDecisionTable.getConditionPatterns() ) {
+        int numberOfPatterns = guidedDecisionTable.getConditionPatterns().size();
+        for ( int iPattern = 0; iPattern < numberOfPatterns; iPattern++ ) {
+
+            Pattern52 p = guidedDecisionTable.getConditionPatterns().get( iPattern );
+
+            //TODO Move to helper method (or new Widget)
+            HorizontalPanel patternPanel = new HorizontalPanel();
+            patternPanel.add( makePatternLabel( p ) );
+            patternPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
+
+            final HorizontalPanel shufflersPanel = new HorizontalPanel();
+            shufflersPanel.setVisible( false );
+            shufflersPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeaderShufflersContainer() );
+            patternPanel.add( shufflersPanel );
+
+            patternPanel.addDomHandler( new MouseOverHandler() {
+
+                                            public void onMouseOver(MouseOverEvent event) {
+                                                shufflersPanel.setVisible( true );
+                                            }
+
+                                        },
+                                        MouseOverEvent.getType() );
+
+            patternPanel.addDomHandler( new MouseOutHandler() {
+
+                                            public void onMouseOut(MouseOutEvent event) {
+                                                shufflersPanel.setVisible( false );
+                                            }
+
+                                        },
+                                        MouseOutEvent.getType() );
+
+            if ( iPattern > 0 ) {
+                shufflersPanel.add( makePatternMoveUpWidget( p ) );
+            }
+            if ( iPattern < numberOfPatterns - 1 ) {
+                shufflersPanel.add( makePatternMoveDownWidget( p ) );
+            }
+
+            //End of new Widget code
+            conditionsConfigWidget.add( patternPanel );
+
             for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
@@ -306,9 +379,56 @@ public class GuidedDecisionTableWidget extends Composite
                 hp.add( new SmallLabel( c.getHeader() ) );
                 conditionsConfigWidget.add( hp );
             }
+
         }
         conditionsConfigWidget.add( newCondition() );
         setupColumnsNote();
+    }
+
+    private Label makePatternLabel(Pattern52 p) {
+        StringBuilder sb = new StringBuilder();
+        if ( p.getBoundName() != null && !p.getBoundName().equals( "" ) ) {
+            sb.append( p.getBoundName() );
+            sb.append( " : " );
+        }
+        sb.append( p.getFactType() );
+        return new Label( sb.toString() );
+    }
+
+    private Image makePatternMoveUpWidget(final Pattern52 p) {
+        Image icon = new Image( images.shuffleUp() );
+        icon.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                int iPattern = guidedDecisionTable.getConditionPatterns().indexOf( p );
+                dtable.movePatternUp( p,
+                                      guidedDecisionTable.getConditionPatterns().get( iPattern - 1 ) );
+                guidedDecisionTable.getConditionPatterns().remove( iPattern );
+                guidedDecisionTable.getConditionPatterns().add( iPattern - 1,
+                                                                p );
+                refreshConditionsWidget();
+            }
+
+        } );
+        return icon;
+    }
+
+    private Image makePatternMoveDownWidget(final Pattern52 p) {
+        Image icon = new Image( images.shuffleDown() );
+        icon.addClickHandler( new ClickHandler() {
+
+            public void onClick(ClickEvent event) {
+                int iPattern = guidedDecisionTable.getConditionPatterns().indexOf( p );
+                dtable.movePatternDown( p,
+                                        guidedDecisionTable.getConditionPatterns().get( iPattern + 1 ) );
+                guidedDecisionTable.getConditionPatterns().remove( iPattern );
+                guidedDecisionTable.getConditionPatterns().add( iPattern + 1,
+                                                                p );
+                refreshConditionsWidget();
+            }
+
+        } );
+        return icon;
     }
 
     private Widget newCondition() {
