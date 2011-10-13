@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
@@ -309,7 +310,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * interaction with the UI. Consequentially this should be called to refresh
      * the Model with the UI when needed.
      */
-    public void scrapeData() {
+    public List<List<DTCellValue52>> scrapeData() {
 
         // Copy data
         final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
@@ -334,7 +335,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
             grid.add( row );
         }
-        this.model.setData( grid );
+        return grid;
+    }
+
+    public void scrapeDataToModel() {
+        this.model.setData( scrapeData() );
     }
 
     public void setColumnVisibility(DTColumnConfig52 modelColumn,
@@ -1360,6 +1365,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     public void analyze() {
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        // Workaround design the real model isn't up to date with the GWT model
+        List<List<DTCellValue52>> data = scrapeData();
+        analyzer.analyze(model, data);
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         analysisCol.setHideColumn( false );
         setColumnVisibility( analysisCol, !analysisCol.isHideColumn() );

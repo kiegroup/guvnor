@@ -715,7 +715,7 @@ public class GuidedDecisionTableWidget extends Composite
      * Need to copy the data from the Decision Table
      */
     public void onSave() {
-        dtable.scrapeData();
+        dtable.scrapeDataToModel();
     }
 
     public void onAfterSave() {

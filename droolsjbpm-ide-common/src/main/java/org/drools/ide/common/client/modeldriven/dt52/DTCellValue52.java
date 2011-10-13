@@ -151,6 +151,10 @@ public class DTCellValue52
         this.valueString = null;
     }
 
+    public boolean hasValue() {
+        return valueBoolean != null || valueDate != null || valueNumeric != null || valueString != null || isOtherwise;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
