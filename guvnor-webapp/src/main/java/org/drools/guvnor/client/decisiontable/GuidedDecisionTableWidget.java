@@ -49,22 +49,26 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
+import com.allen_sauer.gwt.dnd.client.DragEndEvent;
+import com.allen_sauer.gwt.dnd.client.DragHandler;
+import com.allen_sauer.gwt.dnd.client.DragStartEvent;
+import com.allen_sauer.gwt.dnd.client.PickupDragController;
+import com.allen_sauer.gwt.dnd.client.VetoDragException;
+import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -164,11 +168,19 @@ public class GuidedDecisionTableWidget extends Composite
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
-            hp.add( new SmallLabel( c.getHeader() ) );
+            hp.add( makeColumnLabel( c ) );
             actionsConfigWidget.add( hp );
         }
         actionsConfigWidget.add( newAction() );
         setupColumnsNote();
+    }
+
+    private SmallLabel makeColumnLabel(ActionCol52 ac) {
+        SmallLabel label = new SmallLabel( ac.getHeader() );
+        if ( ac.isHideColumn() ) {
+            label.setStylePrimaryName( DecisionTableResources.INSTANCE.style().columnLabelHidden() );
+        }
+        return label;
     }
 
     private Widget editAction(final ActionCol52 c) {
@@ -329,60 +341,107 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshConditionsWidget() {
         this.conditionsConfigWidget.clear();
-        int numberOfPatterns = guidedDecisionTable.getConditionPatterns().size();
-        for ( int iPattern = 0; iPattern < numberOfPatterns; iPattern++ ) {
 
-            Pattern52 p = guidedDecisionTable.getConditionPatterns().get( iPattern );
+        //Each Pattern is a row in a vertical panel
+        final VerticalPanel patternsPanel = new VerticalPanel();
+
+        //Wire-up DnD for Patterns. All DnD related widgets must be contained in the AbsolutePanel
+        AbsolutePanel patternsBoundaryPanel = new AbsolutePanel();
+        PickupDragController dragController = new PickupDragController( patternsBoundaryPanel,
+                                                                        false );
+        dragController.setBehaviorConstrainedToBoundaryPanel( false );
+        VerticalPanelDropController widgetDropController = new VerticalPanelDropController( patternsPanel );
+        dragController.registerDropController( widgetDropController );
+
+        //Add DnD container to main Conditions container
+        conditionsConfigWidget.add( patternsBoundaryPanel );
+        patternsBoundaryPanel.add( patternsPanel );
+
+        //Add a DragHandler to handle the actions resulting from the drag operation
+        dragController.addDragHandler( new DragHandler() {
+
+            private int startIndex = -1;
+            private int endIndex   = -1;
+
+            public void onDragStart(DragStartEvent event) {
+                startIndex = patternsPanel.getWidgetIndex( event.getContext().draggable );
+            }
+
+            public void onDragEnd(DragEndEvent event) {
+                endIndex = patternsPanel.getWidgetIndex( event.getContext().draggable );
+                if ( endIndex == startIndex ) {
+                    return;
+                }
+                Pattern52 patternBeingMoved = guidedDecisionTable.getConditionPatterns().get( startIndex );
+                if ( endIndex > startIndex ) {
+                    //Move down (after)
+                    Pattern52 patternBeingMovedAfter = guidedDecisionTable.getConditionPatterns().get( endIndex );
+                    guidedDecisionTable.getConditionPatterns().remove( patternBeingMoved );
+                    if ( endIndex > guidedDecisionTable.getConditionPatterns().size() - 1 ) {
+                        guidedDecisionTable.getConditionPatterns().add( patternBeingMoved );
+                    } else {
+                        guidedDecisionTable.getConditionPatterns().add( endIndex,
+                                                                        patternBeingMoved );
+                    }
+                    dtable.movePatternAfter( patternBeingMoved,
+                                             patternBeingMovedAfter );
+                } else {
+                    //Move up (before)
+                    Pattern52 patternBeingMovedBefore = guidedDecisionTable.getConditionPatterns().get( endIndex );
+                    guidedDecisionTable.getConditionPatterns().remove( patternBeingMoved );
+                    guidedDecisionTable.getConditionPatterns().add( endIndex,
+                                                                    patternBeingMoved );
+                    dtable.movePatternBefore( patternBeingMoved,
+                                              patternBeingMovedBefore );
+                }
+            }
+
+            public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
+                //Do nothing
+            }
+
+            public void onPreviewDragStart(DragStartEvent event) throws VetoDragException {
+                //Do nothing
+            }
+
+        } );
+
+        for ( Pattern52 p : guidedDecisionTable.getConditionPatterns() ) {
 
             //TODO Move to new Widget
-            HorizontalPanel patternPanel = new HorizontalPanel();
-            patternPanel.add( makePatternLabel( p ) );
-            patternPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
-
-            final HorizontalPanel shufflersPanel = new HorizontalPanel();
-            shufflersPanel.setVisible( false );
-            shufflersPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeaderShufflersContainer() );
-            patternPanel.add( shufflersPanel );
-
-            patternPanel.addDomHandler( new MouseOverHandler() {
-
-                                            public void onMouseOver(MouseOverEvent event) {
-                                                shufflersPanel.setVisible( true );
-                                            }
-
-                                        },
-                                        MouseOverEvent.getType() );
-
-            patternPanel.addDomHandler( new MouseOutHandler() {
-
-                                            public void onMouseOut(MouseOutEvent event) {
-                                                shufflersPanel.setVisible( false );
-                                            }
-
-                                        },
-                                        MouseOutEvent.getType() );
-
-            if ( iPattern > 0 ) {
-                shufflersPanel.add( makePatternMoveUpWidget( p ) );
-            }
-            if ( iPattern < numberOfPatterns - 1 ) {
-                shufflersPanel.add( makePatternMoveDownWidget( p ) );
-            }
-            //End of new Widget code
-            
-            conditionsConfigWidget.add( patternPanel );
+            VerticalPanel patternPanel = new VerticalPanel();
+            VerticalPanel conditionsPanel = new VerticalPanel();
+            HorizontalPanel patternHeaderPanel = new HorizontalPanel();
+            Label patternLabel = makePatternLabel( p );
+            patternHeaderPanel.add( patternLabel );
+            patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
+            patternPanel.add( patternHeaderPanel );
+            patternPanel.add( conditionsPanel );
+            patternsPanel.add( patternPanel );
 
             for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
                 hp.add( editCondition( c ) );
-                hp.add( new SmallLabel( c.getHeader() ) );
-                conditionsConfigWidget.add( hp );
+                hp.add( makeColumnLabel( c ) );
+                conditionsPanel.add( hp );
             }
+
+            dragController.makeDraggable( patternPanel,
+                                          patternLabel );
+            //End of new Widget code
 
         }
         conditionsConfigWidget.add( newCondition() );
         setupColumnsNote();
+    }
+
+    private SmallLabel makeColumnLabel(ConditionCol52 cc) {
+        SmallLabel label = new SmallLabel( cc.getHeader() );
+        if ( cc.isHideColumn() ) {
+            label.setStylePrimaryName( DecisionTableResources.INSTANCE.style().columnLabelHidden() );
+        }
+        return label;
     }
 
     //TODO Move to new Widget
@@ -394,44 +453,6 @@ public class GuidedDecisionTableWidget extends Composite
         }
         sb.append( p.getFactType() );
         return new Label( sb.toString() );
-    }
-
-    //TODO Move to new Widget
-    private Image makePatternMoveUpWidget(final Pattern52 p) {
-        Image icon = new Image( images.shuffleUp() );
-        icon.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                int iPattern = guidedDecisionTable.getConditionPatterns().indexOf( p );
-                dtable.movePatternUp( p,
-                                      guidedDecisionTable.getConditionPatterns().get( iPattern - 1 ) );
-                guidedDecisionTable.getConditionPatterns().remove( iPattern );
-                guidedDecisionTable.getConditionPatterns().add( iPattern - 1,
-                                                                p );
-                refreshConditionsWidget();
-            }
-
-        } );
-        return icon;
-    }
-
-    //TODO Move to new Widget
-    private Image makePatternMoveDownWidget(final Pattern52 p) {
-        Image icon = new Image( images.shuffleDown() );
-        icon.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                int iPattern = guidedDecisionTable.getConditionPatterns().indexOf( p );
-                dtable.movePatternDown( p,
-                                        guidedDecisionTable.getConditionPatterns().get( iPattern + 1 ) );
-                guidedDecisionTable.getConditionPatterns().remove( iPattern );
-                guidedDecisionTable.getConditionPatterns().add( iPattern + 1,
-                                                                p );
-                refreshConditionsWidget();
-            }
-
-        } );
-        return icon;
     }
 
     private Widget newCondition() {
@@ -578,23 +599,27 @@ public class GuidedDecisionTableWidget extends Composite
         }
         for ( MetadataCol52 atc : guidedDecisionTable.getMetadataCols() ) {
             HorizontalPanel hp = new HorizontalPanel();
+            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeMeta( atc ) );
-            hp.add( new SmallLabel( atc.getMetadata() ) );
+            final SmallLabel label = makeColumnLabel( atc );
+            hp.add( label );
 
             final MetadataCol52 at = atc;
-            final CheckBox hide = new CheckBox();
+            final CheckBox hide = new CheckBox( constants.HideThisColumn() );
+            hide.setStyleName( "form-field" );
             hide.setValue( atc.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
                                                 !at.isHideColumn() );
+                    setColumnLabelStyleWhenHidden( label,
+                                                   hide.getValue() );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
             hp.add( hide );
-            hp.add( new SmallLabel( constants.HideThisColumn() ) );
 
             attributeConfigWidget.add( hp );
         }
@@ -608,12 +633,15 @@ public class GuidedDecisionTableWidget extends Composite
         for ( AttributeCol52 atc : guidedDecisionTable.getAttributeCols() ) {
             final AttributeCol52 at = atc;
             HorizontalPanel hp = new HorizontalPanel();
+            hp.setVerticalAlignment( HasVerticalAlignment.ALIGN_MIDDLE );
 
             hp.add( new HTML( "&nbsp;&nbsp;&nbsp;&nbsp;" ) );
             hp.add( removeAttr( at ) );
-            hp.add( new SmallLabel( at.getAttribute() ) );
+            final SmallLabel label = makeColumnLabel( atc );
+            hp.add( label );
 
             final TextBox defaultValue = new TextBox();
+            defaultValue.setStyleName( "form-field" );
             defaultValue.setText( at.getDefaultValue() );
             defaultValue.addChangeHandler( new ChangeHandler() {
                 public void onChange(ChangeEvent event) {
@@ -623,13 +651,14 @@ public class GuidedDecisionTableWidget extends Composite
 
             if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                 hp.add( new HTML( "&nbsp;&nbsp;" ) );
-                final CheckBox useRowNumber = new CheckBox();
+                final CheckBox useRowNumber = new CheckBox( constants.UseRowNumber() );
+                useRowNumber.setStyleName( "form-field" );
                 useRowNumber.setValue( at.isUseRowNumber() );
-
                 hp.add( useRowNumber );
-                hp.add( new SmallLabel( constants.UseRowNumber() ) );
+
                 hp.add( new SmallLabel( "(" ) );
-                final CheckBox reverseOrder = new CheckBox();
+                final CheckBox reverseOrder = new CheckBox( constants.ReverseOrder() );
+                reverseOrder.setStyleName( "form-field" );
                 reverseOrder.setValue( at.isReverseOrder() );
                 reverseOrder.setEnabled( at.isUseRowNumber() );
 
@@ -650,30 +679,54 @@ public class GuidedDecisionTableWidget extends Composite
                     }
                 } );
                 hp.add( reverseOrder );
-                hp.add( new SmallLabel( constants.ReverseOrder() ) );
                 hp.add( new SmallLabel( ")" ) );
             }
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
             hp.add( new SmallLabel( constants.DefaultValue() ) );
             hp.add( defaultValue );
 
-            final CheckBox hide = new CheckBox();
+            final CheckBox hide = new CheckBox( constants.HideThisColumn() );
+            hide.setStyleName( "form-field" );
             hide.setValue( at.isHideColumn() );
             hide.addClickHandler( new ClickHandler() {
                 public void onClick(ClickEvent sender) {
                     at.setHideColumn( hide.getValue() );
                     dtable.setColumnVisibility( at,
                                                 !at.isHideColumn() );
+                    setColumnLabelStyleWhenHidden( label,
+                                                   hide.getValue() );
                 }
             } );
             hp.add( new HTML( "&nbsp;&nbsp;" ) );
             hp.add( hide );
-            hp.add( new SmallLabel( constants.HideThisColumn() ) );
 
             attributeConfigWidget.add( hp );
             setupColumnsNote();
         }
 
+    }
+
+    private SmallLabel makeColumnLabel(MetadataCol52 mdc) {
+        SmallLabel label = new SmallLabel( mdc.getMetadata() );
+        setColumnLabelStyleWhenHidden( label,
+                                       mdc.isHideColumn() );
+        return label;
+    }
+
+    private SmallLabel makeColumnLabel(AttributeCol52 ac) {
+        SmallLabel label = new SmallLabel( ac.getAttribute() );
+        setColumnLabelStyleWhenHidden( label,
+                                       ac.isHideColumn() );
+        return label;
+    }
+
+    private void setColumnLabelStyleWhenHidden(SmallLabel label,
+                                               boolean isHidden) {
+        if ( isHidden ) {
+            label.addStyleName( DecisionTableResources.INSTANCE.style().columnLabelHidden() );
+        } else {
+            label.removeStyleName( DecisionTableResources.INSTANCE.style().columnLabelHidden() );
+        }
     }
 
     private Widget newAttr() {

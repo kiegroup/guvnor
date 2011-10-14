@@ -649,5 +649,13 @@
     	<type>jar</type>
     	<scope>provided</scope>
     </dependency>
+
+    <!--  Drag and Drop support -->    
+    <dependency>
+      <groupId>code.google.com</groupId>
+      <artifactId>gwt-dnd</artifactId>
+      <version>3.1.0</version>
+    </dependency>
+
   </dependencies>
 </project>

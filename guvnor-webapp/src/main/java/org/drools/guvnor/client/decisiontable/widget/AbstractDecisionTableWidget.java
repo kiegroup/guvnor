@@ -53,8 +53,6 @@ import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.Command;
@@ -1332,23 +1330,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     /**
      * Move a Pattern, or more accurately the group of columns relating to a
-     * pattern, upwards in the order that the Patterns are added to a rule's DRL
-     * (i.e. moving a Pattern upwards results in the corresponding DRL being
-     * added to the rule sooner).
+     * pattern, before another Pattern in the order in which they are added to a
+     * rule's DRL
      * 
      * @param pattern
      *            The Pattern being moved
      * @param beforePattern
      *            The Pattern before which the pattern will be moved
      */
-    public void movePatternUp(Pattern52 pattern,
-                              Pattern52 beforePattern) {
+    public void movePatternBefore(Pattern52 pattern,
+                                  Pattern52 beforePattern) {
         if ( beforePattern == null ) {
             throw new IllegalArgumentException( "beforePattern cannot be null" );
         }
 
-        //Find the index of the first column of the pattern after the one being moved.
-        //Columns of the Pattern being moved will be inserted *before* this column.
+        //Find the index of the first column of the pattern before which the one being 
+        //moved will be inserted. Columns of the Pattern being moved will be inserted 
+        //*before* this column.
         DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( 0 );
         int beforeColumnIndex = getColumnIndex( beforeColumn );
 
@@ -1374,25 +1372,26 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     /**
      * Move a Pattern, or more accurately the group of columns relating to a
-     * pattern, downwards in the order that the Patterns are added to a rule's
-     * DRL (i.e. moving a Pattern downwards results in the corresponding DRL
-     * being added to the rule later).
+     * pattern, after another Pattern in the order in which they are added to a
+     * rule's DRL
      * 
      * @param pattern
      *            The Pattern being moved
-     * @param beforePattern
-     *            The Pattern before which the pattern will be moved
+     * @param afterPattern
+     *            The Pattern after which the pattern will be moved
      */
-    public void movePatternDown(Pattern52 pattern,
-                                Pattern52 beforePattern) {
-        if ( beforePattern == null ) {
-            throw new IllegalArgumentException( "beforePattern cannot be null" );
+    public void movePatternAfter(Pattern52 pattern,
+                                 Pattern52 afterPattern) {
+        if ( afterPattern == null ) {
+            throw new IllegalArgumentException( "afterPattern cannot be null" );
         }
 
-        //Find the index of the last column of the pattern before the one being moved.
-        //Columns of the Pattern being moved will be inserted *before* this column.
-        DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( beforePattern.getConditions().size() - 1 );
-        int beforeColumnIndex = getColumnIndex( beforeColumn );
+        //Find the index of the last column of the pattern after which the one being 
+        //moved will be inserted. Since columns of the Pattern being moved are first
+        //deleted the afterColumnIndex effectively points to the first column after
+        //the last column of the existing afterPattern.
+        DTColumnConfig52 afterColumn = afterPattern.getConditions().get( afterPattern.getConditions().size() - 1 );
+        int afterColumnIndex = getColumnIndex( afterColumn );
 
         //Move columns
         for ( ConditionCol52 cc : pattern.getConditions() ) {
@@ -1402,12 +1401,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
                           false );
             insertColumnBefore( cc,
                                 columnData,
-                                beforeColumnIndex,
+                                afterColumnIndex,
                                 false );
         }
 
         //Partial redraw
-        int startRedrawIndex = getColumnIndex( beforePattern.getConditions().get( 0 ) );
+        int startRedrawIndex = getColumnIndex( afterPattern.getConditions().get( 0 ) );
         int endRedrawIndex = getColumnIndex( pattern.getConditions().get( pattern.getConditions().size() - 1 ) );
         widget.getGridWidget().redrawColumns( startRedrawIndex,
                                               endRedrawIndex );

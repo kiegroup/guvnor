@@ -79,9 +79,9 @@ public interface DecisionTableResources
         String templateColumn();
         
         String patternSectionHeader();
-        
-        String patternSectionHeaderShufflersContainer();
 
+        String columnLabelHidden();
+        
     };
 
     @Source("../resources/images/emptyArrow.png")

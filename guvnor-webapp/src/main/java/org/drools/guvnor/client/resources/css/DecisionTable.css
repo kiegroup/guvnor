@@ -195,9 +195,10 @@
 	padding: 2px 2px 2px 2px;
 	margin: 2px 2px 2px 2px;
 	background-color: #d0d0d0;
-	width: 200px;
+	width: 400px;
 }
 
-.patternSectionHeaderShufflersContainer {
-	float: right;
+.columnLabelHidden {
+	font-style: italic;
+	color: grey;
 }
