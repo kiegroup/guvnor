@@ -18,17 +18,69 @@
   related rules. Web-based decision table rules are compiled into DRL like all
   other rule assets.</para>
 
-  <figure>
-    <title>Decision table</title>
+  <section>
+    <title>Types of decision table</title>
 
-    <mediaobject>
-      <imageobject>
-        <imagedata align="center"
-                   fileref="images/Chapter-Guvnor/dtable-complete.png"
-                   format="PNG" scalefit="1" xml:base="../../"></imagedata>
-      </imageobject>
-    </mediaobject>
-  </figure>
+    <para>There are boradly two different types of decision table, both of
+    which are supported in Guvnor:-</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Extended Entry</para>
+      </listitem>
+
+      <listitem>
+        <para>Limited Entry</para>
+      </listitem>
+    </itemizedlist>
+
+    <section>
+      <title>Extended Entry</title>
+
+      <para>An Extended Entry decision table is one for which the column
+      definitons, or stubs, specify Pattern, Field and operator but not value.
+      The values, or states, are themselves held in the body of the decision
+      table. It is normal, but not essential, for the range of possible values
+      to be restricted by limiting entry to values from a list. Guvnor
+      supports use of Java enumerations, Guvnor enumerations or decision table
+      "optional value lists" to restrict value entry.</para>
+
+      <figure>
+        <title>Extended Entry Decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/dtable-complete1.png"
+                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+
+    <section>
+      <title>Limited Entry</title>
+
+      <para>A Limited Entry decision table is one for which the column
+      definitions specify value in addition to Pattern, Field and operator.
+      The decision table states, held in the body of the table, are boolean
+      where a positive value (a checked tick-box) has the effect of meaning
+      the column should apply, or be matched. A negative value (a cleared
+      tick-box) means the column does not apply. </para>
+
+      <figure>
+        <title>Limited Entry Decision table</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/dtable-complete2.png"
+                       format="PNG" scalefit="1" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
 
   <section>
     <title>Main components\concepts</title>

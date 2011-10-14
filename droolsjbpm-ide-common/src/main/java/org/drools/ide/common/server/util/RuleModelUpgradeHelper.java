@@ -18,6 +18,7 @@ package org.drools.ide.common.server.util;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
+import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.ConnectiveConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -91,15 +92,21 @@ public class RuleModelUpgradeHelper
 
     private void fixConnectiveConstraints(FactPattern p) {
         for ( FieldConstraint fc : p.getFieldConstraints() ) {
-            if ( fc instanceof SingleFieldConstraint ) {
-                fixConnectiveConstraints( (SingleFieldConstraint) fc );
-            }
+            fixConnectiveConstraints( fc );
         }
     }
 
     private void fixConnectiveConstraints(CompositeFactPattern p) {
         for ( IPattern sp : p.getPatterns() ) {
             fixConnectiveConstraints( sp );
+        }
+    }
+
+    private void fixConnectiveConstraints(FieldConstraint fc) {
+        if ( fc instanceof SingleFieldConstraint ) {
+            fixConnectiveConstraints( (SingleFieldConstraint) fc );
+        } else if ( fc instanceof CompositeFieldConstraint ) {
+            fixConnectiveConstraints( (CompositeFieldConstraint) fc );
         }
     }
 
@@ -112,6 +119,15 @@ public class RuleModelUpgradeHelper
                 cc.setFieldName( sfc.getFieldName() );
                 cc.setFieldType( sfc.getFieldType() );
             }
+        }
+    }
+
+    private void fixConnectiveConstraints(CompositeFieldConstraint cfc) {
+        if ( cfc.constraints == null ) {
+            return;
+        }
+        for ( FieldConstraint fc : cfc.constraints ) {
+            fixConnectiveConstraints( fc );
         }
     }
 

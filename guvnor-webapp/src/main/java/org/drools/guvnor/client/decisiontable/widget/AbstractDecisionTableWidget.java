@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
 import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
@@ -39,12 +40,15 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
+import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
@@ -66,12 +70,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasSystemControlledColumns {
 
     // Decision Table data
-    protected GuidedDecisionTable52                 model;
-    protected DecoratedGridWidget<DTColumnConfig52> widget;
-    protected SuggestionCompletionEngine            sce;
-    protected DecisionTableCellFactory              cellFactory;
-    protected DecisionTableCellValueFactory         cellValueFactory;
-    protected DecisionTableControlsWidget           dtableCtrls;
+    protected GuidedDecisionTable52                       model;
+    protected DecoratedGridWidget<DTColumnConfig52>       widget;
+    protected SuggestionCompletionEngine                  sce;
+    protected DecisionTableCellFactory                    cellFactory;
+    protected DecisionTableCellValueFactory               cellValueFactory;
+    protected DecisionTableControlsWidget                 dtableCtrls;
+
+    protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
 
     /**
      * Constructor
@@ -125,17 +131,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void deleteColumn(DTColumnConfig52 modelColumn) {
         if ( modelColumn == null ) {
-            throw new IllegalArgumentException(
-                                                "modelColumn cannot be null." );
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
+        deleteColumn( modelColumn,
+                      true );
+    }
+
+    private void deleteColumn(DTColumnConfig52 modelColumn,
+                              boolean bRedraw) {
         DynamicColumn<DTColumnConfig52> col = getDynamicColumn( modelColumn );
-        widget.deleteColumn( col );
+        widget.deleteColumn( col,
+                             bRedraw );
     }
 
     /**
      * Delete the given row
      * 
-     * @param The
+     * @param row
      *            Decision Table row to delete
      */
     public void deleteRow(DynamicDataRow row) {
@@ -174,7 +186,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      *            table
      */
     public void insertRowBefore(DynamicDataRow rowBefore) {
-        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
+        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData( 0 ); // TODO FIXME the 0 is incorrect
         widget.insertRowBefore( rowBefore,
                                 rowData );
         redrawSystemControlledColumns();
@@ -186,7 +198,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * explicitly defined for this column.
      */
     public void makeOtherwiseCell() {
-
         MergableGridWidget<DTColumnConfig52> grid = widget.getGridWidget();
         List<CellValue< ? >> selections = grid.getSelectedCells();
         CellValue< ? > cell = selections.get( 0 );
@@ -209,104 +220,12 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
-     * Update the Decision Table model with the columns contained in the grid.
-     * The Decision Table controls indexing of new columns to preserve grouping
-     * of column types. If the order of columns is important to client-code this
-     * can be called to ensure columns within the model are synchronised with
-     * the Decision Table.
-     */
-    public void scrapeColumns() {
-
-        RowNumberCol52 rnCol = null;
-        DescriptionCol52 descCol = null;
-        List<MetadataCol52> newMetaColumns = new ArrayList<MetadataCol52>();
-        List<AttributeCol52> newAttributeColumns = new ArrayList<AttributeCol52>();
-        List<Pattern52> newPatterns = new ArrayList<Pattern52>();
-        List<ActionCol52> newActionColumns = new ArrayList<ActionCol52>();
-
-        // Extract column information
-        for ( DynamicColumn<DTColumnConfig52> column : widget.getGridWidget().getColumns() ) {
-            DTColumnConfig52 modelCol = column.getModelColumn();
-            if ( modelCol instanceof RowNumberCol52 ) {
-                rnCol = (RowNumberCol52) modelCol;
-                rnCol.setWidth( column.getWidth() );
-                rnCol.setHideColumn( !column.isVisible() );
-                model.setRowNumberCol( rnCol );
-
-            } else if ( modelCol instanceof DescriptionCol52 ) {
-                descCol = (DescriptionCol52) modelCol;
-                descCol.setWidth( column.getWidth() );
-                descCol.setHideColumn( !column.isVisible() );
-                model.setDescriptionCol( descCol );
-
-            } else if ( modelCol instanceof MetadataCol52 ) {
-                MetadataCol52 tc = (MetadataCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newMetaColumns.add( tc );
-
-            } else if ( modelCol instanceof AttributeCol52 ) {
-                AttributeCol52 tc = (AttributeCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newAttributeColumns.add( tc );
-
-            } else if ( modelCol instanceof ConditionCol52 ) {
-                ConditionCol52 tc = (ConditionCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-
-                Pattern52 p = model.getPattern( tc );
-                Pattern52 newPattern = getExistingNewPattern( newPatterns,
-                                                              p );
-                if ( newPattern == null ) {
-                    newPattern = clonePatternExcludingConditions( p );
-                    newPatterns.add( newPattern );
-                }
-                newPattern.getConditions().add( tc );
-
-            } else if ( modelCol instanceof ActionCol52 ) {
-                ActionCol52 tc = (ActionCol52) modelCol;
-                tc.setWidth( column.getWidth() );
-                tc.setHideColumn( !column.isVisible() );
-                newActionColumns.add( tc );
-            }
-
-        }
-        model.setMetadataCols( newMetaColumns );
-        model.setAttributeCols( newAttributeColumns );
-        model.setConditionPatterns( newPatterns );
-        model.setActionCols( newActionColumns );
-
-    }
-
-    private Pattern52 clonePatternExcludingConditions(Pattern52 p) {
-        Pattern52 newPattern = new Pattern52();
-        newPattern.setBoundName( p.getBoundName() );
-        newPattern.setEntryPointName( p.getEntryPointName() );
-        newPattern.setFactType( p.getFactType() );
-        newPattern.setNegated( p.isNegated() );
-        newPattern.setWindow( p.getWindow() );
-        return newPattern;
-    }
-
-    private Pattern52 getExistingNewPattern(List<Pattern52> newPatterns,
-                                            Pattern52 pattern) {
-        for ( Pattern52 p : newPatterns ) {
-            if ( p.getBoundName().equals( pattern.getBoundName() ) ) {
-                return p;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Update the Decision Table model with the data contained in the grid. The
      * Decision Table does not synchronise model data with UI data during user
      * interaction with the UI. Consequentially this should be called to refresh
      * the Model with the UI when needed.
      */
-    public void scrapeData() {
+    public List<List<DTCellValue52>> scrapeData() {
 
         // Copy data
         final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
@@ -322,14 +241,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 //Values put back into the Model are type-safe
                 CellValue< ? > cv = dataRow.get( iCol );
                 DTColumnConfig52 column = columns.get( iCol ).getModelColumn();
-                DTCellValue52 dcv = cellValueFactory.convertToDTModelCell( column,
-                                                                              cv );
-                dcv.setOtherwise( cv.isOtherwise() );
-                row.add( dcv );
+                if ( !(column instanceof AnalysisCol52) ) {
+                    DTCellValue52 dcv = cellValueFactory.convertToDTModelCell( column,
+                                                                                  cv );
+                    dcv.setOtherwise( cv.isOtherwise() );
+                    row.add( dcv );
+                }
             }
             grid.add( row );
         }
-        this.model.setData( grid );
+        return grid;
+    }
+
+    public void scrapeDataToModel() {
+        this.model.setData( scrapeData() );
     }
 
     public void setColumnVisibility(DTColumnConfig52 modelColumn,
@@ -340,14 +265,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         DynamicColumn<DTColumnConfig52> col = getDynamicColumn( modelColumn );
         widget.setColumnVisibility( col.getColumnIndex(),
-                                            isVisible );
+                                    isVisible );
     }
 
     /**
      * Set the Decision Table's data. This removes all existing columns from the
      * Decision Table and re-creates them based upon the provided data.
      * 
-     * @param data
+     * @param model
      */
     public void setModel(GuidedDecisionTable52 model) {
         if ( model == null ) {
@@ -385,27 +310,25 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         // Static columns, Row#
         int colIndex = 0;
-        DTColumnConfig52 colStatic;
-        DynamicColumn<DTColumnConfig52> columnStatic;
-        colStatic = model.getRowNumberCol();
-        columnStatic = new DynamicColumn<DTColumnConfig52>( colStatic,
-                                                            cellFactory.getCell( colStatic ),
-                                                            colIndex,
-                                                            true,
-                                                            false );
-        columnStatic.setWidth( 24 );
-        widget.appendColumn( columnStatic,
-                             makeColumnData( colStatic,
+        DTColumnConfig52 rowNumberCol = model.getRowNumberCol();
+        DynamicColumn<DTColumnConfig52> rowNumberColumn = new DynamicColumn<DTColumnConfig52>( rowNumberCol,
+                                                                                               cellFactory.getCell( rowNumberCol ),
+                                                                                               colIndex,
+                                                                                               true,
+                                                                                               false );
+        rowNumberColumn.setWidth( 24 );
+        widget.appendColumn( rowNumberColumn,
+                             makeColumnData( rowNumberCol,
                                              colIndex++ ),
                              false );
 
         // Static columns, Description
-        colStatic = model.getDescriptionCol();
-        columnStatic = new DynamicColumn<DTColumnConfig52>( colStatic,
-                                                            cellFactory.getCell( colStatic ),
-                                                            colIndex );
-        widget.appendColumn( columnStatic,
-                             makeColumnData( colStatic,
+        DTColumnConfig52 descriptionCol = model.getDescriptionCol();
+        DynamicColumn<DTColumnConfig52> descriptionColumn = new DynamicColumn<DTColumnConfig52>( descriptionCol,
+                                                                                                 cellFactory.getCell( descriptionCol ),
+                                                                                                 colIndex );
+        widget.appendColumn( descriptionColumn,
+                             makeColumnData( descriptionCol,
                                              colIndex++ ),
                              false );
 
@@ -466,6 +389,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                  false );
         }
 
+        AnalysisCol52 analysisCol = model.getAnalysisCol();
+        DynamicColumn<DTColumnConfig52> analysisColumn = new DynamicColumn<DTColumnConfig52>( analysisCol,
+                                                                                              cellFactory.getCell( analysisCol ),
+                                                                                              colIndex,
+                                                                                              true,
+                                                                                              false );
+        analysisColumn.setVisible( !analysisCol.isHideColumn() );
+        analysisColumn.setWidth( 200 );
+        widget.appendColumn( analysisColumn,
+                             makeAnalysisColumnData( analysisCol,
+                                                     colIndex++ ),
+                             false );
+
         // Ensure System Controlled values are correctly initialised
         updateSystemControlledColumnValues();
 
@@ -503,7 +439,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     /**
      * Update an ActionSetFieldCol column
      * 
-     * @param origCol
+     * @param origColumn
      *            The existing column in the grid
      * @param editColumn
      *            A copy (not clone) of the original column containing the
@@ -539,6 +475,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                  || !isEqualOrNull( origColumn.getFactField(),
                                     editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
+                bRedrawHeader = true;
                 bUpdateCellsForDataType = true;
             }
 
@@ -547,6 +484,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
+            bRedrawHeader = true;
             bUpdateCellsForDataType = true;
         }
 
@@ -560,6 +498,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -593,7 +545,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     /**
      * Update an ActionSetFieldCol column
      * 
-     * @param origCol
+     * @param origColumn
      *            The existing column in the grid
      * @param editColumn
      *            A copy (not clone) of the original column containing the
@@ -627,12 +579,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             if ( !isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() ) ) {
                 bRedrawColumn = true;
+                bRedrawHeader = true;
                 bUpdateCellsForDataType = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
             bRedrawColumn = true;
+            bRedrawHeader = true;
             bUpdateCellsForDataType = true;
         }
 
@@ -646,6 +600,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -681,7 +649,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * 
      * @param origPattern
      *            The existing pattern to which the column related
-     * @param origCol
+     * @param origColumn
      *            The existing column in the grid
      * @param editPattern
      *            The new pattern to which the column relates
@@ -757,7 +725,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
 
             // Delete old column and redraw
-            widget.deleteColumn( origCol );
+            widget.deleteColumn( origCol,
+                                 false );
             origColIndex = Math.min( widget.getGridWidget().getColumns().size() - 1,
                                      origColIndex );
             editColIndex = Math.min( widget.getGridWidget().getColumns().size() - 1,
@@ -802,6 +771,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column field in Header Widget
         if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
         }
 
         // Copy new values into original column definition
@@ -917,7 +895,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     // Find the right-most index for an Action column
     private int findActionColumnIndex() {
-        int index = widget.getGridWidget().getColumns().size() - 1;
+        int analysisColumnsSize = 1;
+        int index = widget.getGridWidget().getColumns().size() - analysisColumnsSize;
         return index;
     }
 
@@ -938,7 +917,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 index = iCol;
             }
         }
-        return index;
+        return index + 1;
     }
 
     // Find the right-most index for a Condition column
@@ -967,7 +946,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 }
             }
         }
-        return index;
+        return index + 1;
     }
 
     // Find the right-most index for a Metadata column
@@ -985,7 +964,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 index = iCol;
             }
         }
-        return index;
+        return index + 1;
     }
 
     // Retrieves the DynamicColumn relating to the Model column or null if it
@@ -1007,13 +986,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                     int index,
                                     boolean bRedraw) {
 
-        // Create new column for grid
-        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( modelColumn,
-                                                                                      cellFactory.getCell( modelColumn ),
-                                                                                      index );
-        column.setVisible( !modelColumn.isHideColumn() );
-        DynamicColumn<DTColumnConfig52> columnBefore = widget.getGridWidget().getColumns().get( index );
-
         // Create column data
         DynamicData data = widget.getGridWidget().getData();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
@@ -1026,12 +998,41 @@ public abstract class AbstractDecisionTableWidget extends Composite
             columnData.add( cell );
         }
 
+        insertColumnBefore( modelColumn,
+                            columnData,
+                            index,
+                            bRedraw );
+    }
+
+    // Insert a new model column at the specified index with the specified column data
+    private void insertColumnBefore(DTColumnConfig52 modelColumn,
+                                    List<CellValue< ? extends Comparable< ? >>> columnData,
+                                    int index,
+                                    boolean bRedraw) {
+
+        // Create new column for grid
+        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( modelColumn,
+                                                                                      cellFactory.getCell( modelColumn ),
+                                                                                      index );
+        column.setVisible( !modelColumn.isHideColumn() );
+        DynamicColumn<DTColumnConfig52> columnBefore = widget.getGridWidget().getColumns().get( index );
+
         // Add column and data to grid
         widget.insertColumnBefore( columnBefore,
                                    column,
                                    columnData,
                                    bRedraw );
+    }
 
+    // Retrieve the data for a particular column
+    private List<CellValue< ? extends Comparable< ? >>> getColumnData(int index) {
+        DynamicData data = widget.getGridWidget().getData();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            columnData.add( row.get( index ) );
+        }
+        return columnData;
     }
 
     // Check whether two Strings are equal or both null
@@ -1068,7 +1069,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(DTColumnConfig52 column,
                                                                        int colIndex) {
         int dataSize = model.getData().size();
-        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>(
+                                                                                                                       dataSize );
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             List<DTCellValue52> row = model.getData().get( iRow );
@@ -1082,17 +1084,36 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return columnData;
     }
 
+    private List<CellValue< ? extends Comparable< ? >>> makeAnalysisColumnData(AnalysisCol52 column,
+                                                                               int colIndex) {
+        int dataSize = model.getAnalysisData().size();
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
+
+        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeNewAnalysisCellValue( iRow,
+                                                                                                  colIndex );
+            columnData.add( cv );
+        }
+        return columnData;
+    }
+
     // Construct a new row for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
+    private List<CellValue< ? extends Comparable< ? >>> makeRowData(int rowIndex) {
         List<CellValue< ? extends Comparable< ? >>> rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             DTColumnConfig52 col = columns.get( iCol ).getModelColumn();
-            DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                       0,
-                                                                                       iCol,
-                                                                                       dcv );
+            CellValue< ? extends Comparable< ? >> cv;
+            if ( col instanceof AnalysisCol52 ) {
+                cv = cellValueFactory.makeNewAnalysisCellValue( rowIndex,
+                                                                iCol );
+            } else {
+                DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
+                cv = cellValueFactory.makeCellValue( col,
+                                                     rowIndex,
+                                                     iCol,
+                                                     dcv );
+            }
             rowData.add( cv );
         }
         return rowData;
@@ -1110,6 +1131,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setHideColumn( editingCol.isHideColumn() );
         col.setFactType( editingCol.getFactType() );
         col.setInsertLogical( editingCol.isInsertLogical() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     // Copy values from one (transient) model column into another
@@ -1123,6 +1147,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setUpdate( editingCol.isUpdate() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     // Copy values from one (transient) model column into another
@@ -1137,6 +1164,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setParameters( editingCol.getParameters() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
     }
 
     //Remove Otherwise state from column cells
@@ -1272,6 +1302,144 @@ public abstract class AbstractDecisionTableWidget extends Composite
         MergableGridWidget<DTColumnConfig52> grid = widget.getGridWidget();
         DynamicColumn<DTColumnConfig52> column = grid.getColumns().get( c.getCol() );
         return canAcceptOtherwiseValues( column.getModelColumn() );
+    }
+
+    public void analyze() {
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( sce );
+        // Workaround design the real model isn't up to date with the GWT model
+        List<List<DTCellValue52>> data = scrapeData();
+        List<Analysis> analysisData = analyzer.analyze( model,
+                                                        data );
+        showAnalysis( analysisData );
+    }
+
+    private void showAnalysis(List<Analysis> analysisData) {
+        AnalysisCol52 analysisCol = model.getAnalysisCol();
+        int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
+        DynamicData dynamicData = widget.getGridWidget().getData();
+        for ( int i = 0; i < analysisData.size(); i++ ) {
+            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get( i ).get( analysisColumnIndex );
+            Analysis analysis = analysisData.get( i );
+            cellValue.setValue( analysis );
+        }
+        analysisCol.setHideColumn( false );
+        setColumnVisibility( analysisCol,
+                             !analysisCol.isHideColumn() );
+        widget.getGridWidget().redrawColumn( analysisColumnIndex );
+    }
+
+    /**
+     * Move a Pattern, or more accurately the group of columns relating to a
+     * pattern, before another Pattern in the order in which they are added to a
+     * rule's DRL
+     * 
+     * @param pattern
+     *            The Pattern being moved
+     * @param beforePattern
+     *            The Pattern before which the pattern will be moved
+     */
+    public void movePatternBefore(Pattern52 pattern,
+                                  Pattern52 beforePattern) {
+        if ( beforePattern == null ) {
+            throw new IllegalArgumentException( "beforePattern cannot be null" );
+        }
+
+        //Find the index of the first column of the pattern before which the one being 
+        //moved will be inserted. Columns of the Pattern being moved will be inserted 
+        //*before* this column.
+        DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( 0 );
+        int beforeColumnIndex = getColumnIndex( beforeColumn );
+
+        //Move columns
+        for ( ConditionCol52 cc : pattern.getConditions() ) {
+            int columnIndex = getColumnIndex( cc );
+            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+            deleteColumn( cc,
+                          false );
+            insertColumnBefore( cc,
+                                columnData,
+                                beforeColumnIndex++,
+                                false );
+        }
+
+        //Partial redraw
+        int startRedrawIndex = getColumnIndex( pattern.getConditions().get( 0 ) );
+        int endRedrawIndex = getColumnIndex( beforePattern.getConditions().get( beforePattern.getConditions().size() - 1 ) );
+        widget.getGridWidget().redrawColumns( startRedrawIndex,
+                                              endRedrawIndex );
+        widget.getHeaderWidget().redraw();
+    }
+
+    /**
+     * Move a Pattern, or more accurately the group of columns relating to a
+     * pattern, after another Pattern in the order in which they are added to a
+     * rule's DRL
+     * 
+     * @param pattern
+     *            The Pattern being moved
+     * @param afterPattern
+     *            The Pattern after which the pattern will be moved
+     */
+    public void movePatternAfter(Pattern52 pattern,
+                                 Pattern52 afterPattern) {
+        if ( afterPattern == null ) {
+            throw new IllegalArgumentException( "afterPattern cannot be null" );
+        }
+
+        //Find the index of the last column of the pattern after which the one being 
+        //moved will be inserted. Since columns of the Pattern being moved are first
+        //deleted the afterColumnIndex effectively points to the first column after
+        //the last column of the existing afterPattern.
+        DTColumnConfig52 afterColumn = afterPattern.getConditions().get( afterPattern.getConditions().size() - 1 );
+        int afterColumnIndex = getColumnIndex( afterColumn );
+
+        //Move columns
+        for ( ConditionCol52 cc : pattern.getConditions() ) {
+            int columnIndex = getColumnIndex( cc );
+            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+            deleteColumn( cc,
+                          false );
+            insertColumnBefore( cc,
+                                columnData,
+                                afterColumnIndex,
+                                false );
+        }
+
+        //Partial redraw
+        int startRedrawIndex = getColumnIndex( afterPattern.getConditions().get( 0 ) );
+        int endRedrawIndex = getColumnIndex( pattern.getConditions().get( pattern.getConditions().size() - 1 ) );
+        widget.getGridWidget().redrawColumns( startRedrawIndex,
+                                              endRedrawIndex );
+        widget.getHeaderWidget().redraw();
+    }
+
+    public void moveCondition(ConditionCol52 column,
+                              ConditionCol52 beforeCondition) {
+        //TODO Not tried or tested yet
+        if ( beforeCondition == null ) {
+            throw new IllegalArgumentException( "beforeCondition cannot be null" );
+        }
+
+        int columnIndex = getColumnIndex( column );
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+        int beforeColumnIndex = getColumnIndex( beforeCondition );
+        deleteColumn( column );
+        insertColumnBefore( column,
+                            columnData,
+                            beforeColumnIndex,
+                            true );
+    }
+
+    //Get the (UI-) column index of a Model column
+    private int getColumnIndex(DTColumnConfig52 column) {
+        List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            DTColumnConfig52 modelColumn = columns.get( iCol ).getModelColumn();
+            if ( modelColumn.equals( column ) ) {
+                return iCol;
+            }
+        }
+        return 0;
     }
 
 }

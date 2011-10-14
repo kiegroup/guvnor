@@ -26,6 +26,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
+import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
@@ -47,25 +48,28 @@ public class TemplateDataTableWidget extends Composite
     HasColumns<TemplateDataColumn> {
 
     // Decision Table data
-    protected DecoratedGridWidget<TemplateDataColumn> widget;
-    protected TemplateDataCellFactory                 cellFactory;
-    protected TemplateDataCellValueFactory            cellValueFactory;
-    protected SuggestionCompletionEngine              sce;
+    protected DecoratedGridWidget<TemplateDataColumn>            widget;
+    protected TemplateDataCellFactory                            cellFactory;
+    protected TemplateDataCellValueFactory                       cellValueFactory;
+    protected SuggestionCompletionEngine                         sce;
+
+    protected static final ResourcesProvider<TemplateDataColumn> resources = new TemplateDataTableResourcesProvider();
 
     /**
      * Constructor
      */
     public TemplateDataTableWidget(SuggestionCompletionEngine sce) {
-
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
         this.sce = sce;
 
         // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<TemplateDataColumn>();
-        DecoratedGridHeaderWidget<TemplateDataColumn> header = new TemplateDataHeaderWidget( widget );
-        DecoratedGridSidebarWidget<TemplateDataColumn> sidebar = new VerticalDecoratedGridSidebarWidget<TemplateDataColumn>( widget,
+        widget = new VerticalDecoratedGridWidget<TemplateDataColumn>( resources );
+        DecoratedGridHeaderWidget<TemplateDataColumn> header = new TemplateDataHeaderWidget( resources,
+                                                                                             widget );
+        DecoratedGridSidebarWidget<TemplateDataColumn> sidebar = new VerticalDecoratedGridSidebarWidget<TemplateDataColumn>( resources,
+                                                                                                                             widget,
                                                                                                                              this );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
@@ -85,8 +89,7 @@ public class TemplateDataTableWidget extends Composite
      */
     public void addColumn(TemplateDataColumn modelColumn) {
         if ( modelColumn == null ) {
-            throw new IllegalArgumentException(
-                                                "modelColumn cannot be null." );
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
         addColumn( modelColumn,
                    true );
@@ -111,7 +114,8 @@ public class TemplateDataTableWidget extends Composite
         }
 
         DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
-        widget.deleteColumn( col );
+        widget.deleteColumn( col,
+                             true );
     }
 
     /**

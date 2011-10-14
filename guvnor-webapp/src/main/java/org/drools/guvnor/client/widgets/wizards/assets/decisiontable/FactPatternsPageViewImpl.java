@@ -108,9 +108,6 @@ public class FactPatternsPageViewImpl extends Composite
     HorizontalPanel                         cepWindowContainer;
 
     @UiField
-    HorizontalPanel                         msgIncompletePatterns;
-
-    @UiField
     HorizontalPanel                         msgDuplicateBindings;
 
     @UiField(provided = true)
@@ -219,7 +216,8 @@ public class FactPatternsPageViewImpl extends Composite
     }
 
     private void validateBinding() {
-        if ( validator.isPatternBindingUnique( chosenPatternSelection ) && validator.isPatternValid( chosenPatternSelection ) ) {
+        //        if ( validator.isPatternBindingUnique( chosenPatternSelection ) && validator.isPatternValid( chosenPatternSelection ) ) {
+        if ( validator.isPatternBindingUnique( chosenPatternSelection ) ) {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerValid() );
         } else {
             bindingContainer.setStyleName( WizardResources.INSTANCE.style().wizardDTableFieldContainerInvalid() );
@@ -338,11 +336,6 @@ public class FactPatternsPageViewImpl extends Composite
 
     public void setArePatternBindingsUnique(boolean arePatternBindingsUnique) {
         msgDuplicateBindings.setVisible( !arePatternBindingsUnique );
-        chosenPatternWidget.redraw();
-    }
-
-    public void setAreFactPatternsDefined(boolean areFactPatternsDefined) {
-        msgIncompletePatterns.setVisible( !areFactPatternsDefined );
         chosenPatternWidget.redraw();
     }
 

@@ -18,12 +18,9 @@ package org.drools.guvnor.client.widgets.decoratedgrid;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
@@ -44,27 +41,27 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 public abstract class DecoratedGridWidget<T> extends Composite {
 
     // Widgets for UI
-    protected Panel                               mainPanel;
-    protected Panel                               bodyPanel;
-    protected ScrollPanel                         scrollPanel;
-    protected MergableGridWidget<T>               gridWidget;
-    protected DecoratedGridHeaderWidget<T>        headerWidget;
-    protected DecoratedGridSidebarWidget<T>       sidebarWidget;
-    protected HasSystemControlledColumns          hasSystemControlledColumns;
+    protected Panel                         mainPanel;
+    protected Panel                         bodyPanel;
+    protected ScrollPanel                   scrollPanel;
+    protected MergableGridWidget<T>         gridWidget;
+    protected DecoratedGridHeaderWidget<T>  headerWidget;
+    protected DecoratedGridSidebarWidget<T> sidebarWidget;
+    protected HasSystemControlledColumns    hasSystemControlledColumns;
 
-    protected int                                 height;
-    protected int                                 width;
+    protected int                           height;
+    protected int                           width;
 
     // Resources
-    protected static final DecisionTableResources resource = GWT.create( DecisionTableResources.class );
-    protected static final DecisionTableStyle     style    = resource.cellTableStyle();
+    protected ResourcesProvider<T>          resources;
 
     /**
      * Construct at empty DecoratedGridWidget, without DecoratedGridHeaderWidget
      * or DecoratedGridSidebarWidget These should be set before the grid is
      * displayed using setHeaderWidget and setSidebarWidget respectively.
      */
-    public DecoratedGridWidget() {
+    public DecoratedGridWidget(ResourcesProvider<T> resources) {
+        this.resources = resources;
 
         mainPanel = getMainPanel();
         bodyPanel = getBodyPanel();
@@ -128,16 +125,19 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * Delete the given column
      * 
      * @param column
+     * @param bRedraw
      */
-    public void deleteColumn(DynamicColumn<T> column) {
+    public void deleteColumn(DynamicColumn<T> column,
+                             boolean bRedraw) {
         if ( column == null ) {
-            throw new IllegalArgumentException(
-                                                "Column cannot be null." );
+            throw new IllegalArgumentException( "Column cannot be null." );
         }
         gridWidget.deleteColumn( column,
-                                 true );
-        headerWidget.redraw();
-        assertDimensions();
+                                 bRedraw );
+        if ( bRedraw ) {
+            headerWidget.redraw();
+            assertDimensions();
+        }
     }
 
     /**
@@ -484,7 +484,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     private void setWidth(int width) {
         mainPanel.setWidth( width
                             + "px" );
-        scrollPanel.setWidth( (width - style.sidebarWidth())
+        scrollPanel.setWidth( (width - resources.sidebarWidth())
                               + "px" );
 
         // The Sidebar and Header sizes are derived from the ScrollPanel

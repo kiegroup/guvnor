@@ -28,7 +28,9 @@ import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 
@@ -200,7 +202,8 @@ public class ActionInsertColumn extends FormStylePopup {
         ActionInsertFactCol52 clone = null;
         if ( col instanceof LimitedEntryActionInsertFactCol52 ) {
             clone = new LimitedEntryActionInsertFactCol52();
-            ((LimitedEntryActionInsertFactCol52) clone).setValue( ((LimitedEntryActionInsertFactCol52) col).getValue() );
+            DTCellValue52 dcv = cloneLimitedEntryValue( ((LimitedEntryCol) col).getValue() );
+            ((LimitedEntryCol) clone).setValue( dcv );
         } else {
             clone = new ActionInsertFactCol52();
         }
@@ -213,6 +216,24 @@ public class ActionInsertColumn extends FormStylePopup {
         clone.setDefaultValue( col.getDefaultValue() );
         clone.setHideColumn( col.isHideColumn() );
         clone.setInsertLogical( col.isInsertLogical() );
+        return clone;
+    }
+
+    private DTCellValue52 cloneLimitedEntryValue(DTCellValue52 dcv) {
+        DTCellValue52 clone = new DTCellValue52();
+        switch ( dcv.getDataType() ) {
+            case BOOLEAN :
+                clone.setBooleanValue( dcv.getBooleanValue() );
+                break;
+            case DATE :
+                clone.setDateValue( dcv.getDateValue() );
+                break;
+            case NUMERIC :
+                clone.setNumericValue( dcv.getNumericValue() );
+                break;
+            case STRING :
+                clone.setStringValue( dcv.getStringValue() );
+        }
         return clone;
     }
 

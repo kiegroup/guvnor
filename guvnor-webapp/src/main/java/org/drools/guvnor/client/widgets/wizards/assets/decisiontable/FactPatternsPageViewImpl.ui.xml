@@ -15,9 +15,10 @@
   ~   limitations under the License.
   -->
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-  xmlns:guvnor='urn:import:org.drools.guvnor.client.modeldriven.ui'>
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
+  xmlns:guvnor="urn:import:org.drools.guvnor.client.modeldriven.ui"
+  xmlns:c="urn:import:org.drools.guvnor.client.common">
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
@@ -28,12 +29,6 @@
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
         <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
-      </gwt:HorizontalPanel>
-    </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel ui:field="msgIncompletePatterns" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
-      <gwt:HorizontalPanel>
-        <gwt:Image resource="{images.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardIncompletePatterns}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
     <gwt:VerticalPanel>
@@ -64,7 +59,7 @@
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
-          <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.DTLabelFromEntryPoint}" styleName="{res.style.wizardDTableFields}" />

@@ -21,7 +21,6 @@ import java.util.List;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;
-import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.FactPatternsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.PatternRemovedEvent;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -34,8 +33,7 @@ import com.google.gwt.event.shared.EventBus;
 public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     implements
     FactPatternsPageView.Presenter,
-    DuplicatePatternsEvent.Handler,
-    FactPatternsDefinedEvent.Handler {
+    DuplicatePatternsEvent.Handler {
 
     private FactPatternsPageView view;
 
@@ -51,8 +49,6 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
 
         //Wire-up the events
         eventBus.addHandler( DuplicatePatternsEvent.TYPE,
-                             this );
-        eventBus.addHandler( FactPatternsDefinedEvent.TYPE,
                              this );
     }
 
@@ -89,28 +85,11 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
         DuplicatePatternsEvent event = new DuplicatePatternsEvent( arePatternBindingsUnique );
         eventBus.fireEvent( event );
 
-        //Are all Patterns defined?
-        boolean arePatternsDefined = true;
-        for ( Pattern52 p : dtable.getConditionPatterns() ) {
-            if ( !getValidator().isPatternValid( p ) ) {
-                arePatternsDefined = false;
-                break;
-            }
-        }
-
-        //Signal Fact Patterns to other pages
-        FactPatternsDefinedEvent eventFactPatterns = new FactPatternsDefinedEvent( arePatternsDefined );
-        eventBus.fireEvent( eventFactPatterns );
-
-        return arePatternBindingsUnique && arePatternsDefined;
+        return arePatternBindingsUnique;
     }
 
     public void onDuplicatePatterns(DuplicatePatternsEvent event) {
         view.setArePatternBindingsUnique( event.getArePatternBindingsUnique() );
-    }
-
-    public void onFactPatternsDefined(FactPatternsDefinedEvent event) {
-        view.setAreFactPatternsDefined( event.getAreFactPatternsDefined() );
     }
 
     public boolean isPatternEvent(Pattern52 pattern) {
@@ -120,6 +99,22 @@ public class FactPatternsPage extends AbstractGuidedDecisionTableWizardPage
     public void signalRemovalOfPattern(Pattern52 pattern) {
         PatternRemovedEvent event = new PatternRemovedEvent( pattern );
         eventBus.fireEvent( event );
+    }
+
+    @Override
+    public void makeResult(GuidedDecisionTable52 dtable) {
+        //Ensure every Pattern is bound
+        int fi = 1;
+        for ( Pattern52 p : dtable.getConditionPatterns() ) {
+            if ( !getValidator().isPatternValid( p ) ) {
+                String binding = NEW_FACT_PREFIX + (fi++);
+                p.setBoundName( binding );
+                while ( !getValidator().isPatternBindingUnique( p ) ) {
+                    binding = NEW_FACT_PREFIX + (fi++);
+                    p.setBoundName( binding );
+                }
+            }
+        }
     }
 
 }

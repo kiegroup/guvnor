@@ -36,10 +36,12 @@ public abstract class AbstractGuidedDecisionTableWizardPage
     implements
     WizardPage {
 
-    protected static Constants           constants = GWT.create( Constants.class );
-    protected static Images              images    = GWT.create( Images.class );
+    protected static Constants           constants       = GWT.create( Constants.class );
+    protected static Images              images          = GWT.create( Images.class );
 
-    protected SimplePanel                content   = new SimplePanel();
+    protected static final String        NEW_FACT_PREFIX = "f";
+
+    protected SimplePanel                content         = new SimplePanel();
 
     protected GuidedDecisionTable52      dtable;
     protected EventBus                   eventBus;

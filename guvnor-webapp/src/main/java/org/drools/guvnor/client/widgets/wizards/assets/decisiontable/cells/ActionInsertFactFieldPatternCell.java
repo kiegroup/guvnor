@@ -68,7 +68,7 @@ public class ActionInsertFactFieldPatternCell extends AbstractCell<ActionInsertF
     }
 
     protected String getCssStyleName(Pattern52 p) {
-        if ( !(validator.isPatternBindingUnique( p ) && validator.isPatternValid( p )) ) {
+        if ( !(validator.isPatternBindingUnique( p )) ) {
             return WizardResources.INSTANCE.style().wizardDTableValidationError();
         }
         if ( !validator.arePatternActionInsertFactFieldsValid( p ) ) {

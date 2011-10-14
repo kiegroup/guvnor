@@ -66,11 +66,11 @@
 }
 
 .cellTableEvenRow {
-    background: #f8f8f8;
+    background: #f0f0f0;
 }
 
 .cellTableOddRow {
-    background: #fcfcfc;
+    background: #fbfbfb;
 }
 
 /* Header */
@@ -130,4 +130,75 @@
     text-align: center;
     border-right: borderWidth solid grey;
     border-bottom: borderWidth solid #C8C8C8;
+}
+
+.metaColumn {
+}
+        
+.conditionColumn {
+	background-color: #ADD8E6;
+}
+
+.actionColumn {
+}
+
+.templateColumn {
+}
+
+.cellTableEvenRow .conditionColumn {
+    background: #d2EFFF;
+}
+
+.cellTableOddRow .conditionColumn {
+    background: #f2FFFF
+}
+
+.cellTableEvenRow .conditionColumn:HOVER {
+    background-color: #ffff99;
+}
+
+.cellTableOddRow .conditionColumn:HOVER {
+    background: #ffff99;
+}
+
+.cellTableEvenRow .cellTableCellSelected {
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
+}
+
+.cellTableOddRow .cellTableCellSelected {
+    border-bottom: borderWidth solid #b9b9b9;
+    background-color: #b9b9b9;
+}
+
+.cellTableEvenRow .cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
+    background-color: #60f070;
+}
+
+.cellTableOddRow .cellTableCellOtherwise {
+    border-bottom: borderWidth solid #60f070;
+    background-color: #60f070;
+}
+
+.cellTableEvenRow .cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
+    background-color: #e09090;
+}
+
+.cellTableOddRow .cellTableCellMultipleValues {
+    border-bottom: borderWidth solid #e09090;
+    background-color: #e09090;
+}
+
+.patternSectionHeader {
+	padding: 2px 2px 2px 2px;
+	margin: 2px 2px 2px 2px;
+	background-color: #d0d0d0;
+	width: 400px;
+}
+
+.columnLabelHidden {
+	font-style: italic;
+	color: grey;
 }

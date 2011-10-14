@@ -11,6 +11,7 @@
   <inherits name="org.cobogw.gwt.user.User" />
   <inherits name="org.drools.ide.common.Common" />
   <inherits name="com.google.gwt.activity.Activity" />
+  <inherits name="com.allen_sauer.gwt.dnd.gwt-dnd" />
 
   <!-- Here we put different locales (translations) There are of the form 
     values="xx_YY" - which match to Constants_xx_YY.properties which contain 

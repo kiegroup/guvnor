@@ -16,8 +16,6 @@
 package org.drools.guvnor.client.widgets.decoratedgrid;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.resources.DecisionTableResources.DecisionTableStyle;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -53,7 +51,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     implements
-        HasResizeHandlers,
+    HasResizeHandlers,
     HasColumnResizeHandlers {
 
     /**
@@ -93,26 +91,31 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
 
     }
 
-    private static final int                      MIN_COLUMN_WIDTH = 16;
+    private static final int         MIN_COLUMN_WIDTH = 16;
 
-    protected Panel                               panel;
-    protected DecoratedGridWidget<T>              grid;
+    protected Panel                  panel;
+    protected DecoratedGridWidget<T> grid;
 
     // Resources
-    protected static final DecisionTableResources resource         = GWT.create( DecisionTableResources.class );
-    protected static final DecisionTableStyle     style            = resource.cellTableStyle();
-    protected static final Constants              constants        = GWT.create( Constants.class );
+    protected static final Constants constants        = GWT.create( Constants.class );
+    protected ResourcesProvider<T>   resources;
 
     // Column resizing
-    private ResizerInformation                    resizerInfo      = new ResizerInformation();
-    private DivElement                            resizer;
+    private ResizerInformation       resizerInfo      = new ResizerInformation();
+    private DivElement               resizer;
 
     /**
      * Construct a "Header" for the provided DecoratedGridWidget
      * 
      * @param grid
+     * @param styleProvider
      */
-    public DecoratedGridHeaderWidget(DecoratedGridWidget<T> grid) {
+    public DecoratedGridHeaderWidget(ResourcesProvider<T> resources,
+                                     DecoratedGridWidget<T> grid) {
+        if ( resources == null ) {
+            throw new IllegalArgumentException( "resources cannot be null" );
+        }
+        this.resources = resources;
         if ( grid == null ) {
             throw new IllegalArgumentException( "grid cannot be null" );
         }
@@ -140,7 +143,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
 
         // Column resizing
         resizer = DOM.createDiv().<DivElement> cast();
-        resizer.addClassName( style.headerResizer() );
+        resizer.addClassName( resources.headerResizer() );
         resizer.getStyle().setTop( 0,
                                    Unit.PX );
 

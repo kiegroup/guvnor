@@ -165,7 +165,7 @@ public class ActionSetFieldsPageViewImpl extends Composite
         availablePatternsWidget.setKeyboardSelectionPolicy( KeyboardSelectionPolicy.ENABLED );
         availablePatternsWidget.setMinimumWidth( 180 );
 
-        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailableBoundPatterns() );
+        Label lstEmpty = new Label( constants.DecisionTableWizardNoAvailablePatterns() );
         lstEmpty.setStyleName( WizardCellListResources.INSTANCE.cellListStyle().cellListEmptyItem() );
         availablePatternsWidget.setEmptyListWidget( lstEmpty );
 
@@ -272,9 +272,11 @@ public class ActionSetFieldsPageViewImpl extends Composite
                 }
                 LimitedEntryActionSetFieldCol52 lea = (LimitedEntryActionSetFieldCol52) chosenFieldsSelection;
                 if ( lea.getValue() == null ) {
-                    lea.setValue( factory.makeNewValue( chosenFieldsSelection ) );
+                    lea.setValue( factory.makeNewValue( availablePatternsSelection,
+                                                        chosenFieldsSelection ) );
                 }
-                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( chosenFieldsSelection,
+                limitedEntryValueWidgetContainer.setWidget( factory.getWidget( availablePatternsSelection,
+                                                                               chosenFieldsSelection,
                                                                                lea.getValue() ) );
             }
 

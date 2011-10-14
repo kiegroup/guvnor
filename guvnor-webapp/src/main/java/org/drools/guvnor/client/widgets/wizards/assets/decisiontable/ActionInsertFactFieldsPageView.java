@@ -40,7 +40,7 @@ public interface ActionInsertFactFieldsPageView
         void selectPattern(ActionInsertFactFieldsPattern pattern);
 
         void stateChanged();
-        
+
         TableFormat getTableFormat();
 
     }
@@ -51,7 +51,7 @@ public interface ActionInsertFactFieldsPageView
      * @param presenter
      */
     void setPresenter(Presenter presenter);
-    
+
     void setDTCellValueWidgetFactory(DTCellValueWidgetFactory factory);
 
     void setAvailableFactTypes(List<String> availableTypes);
@@ -63,8 +63,6 @@ public interface ActionInsertFactFieldsPageView
     void setChosenFields(List<ActionInsertFactCol52> fields);
 
     void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
-
-    void setAreActionInsertFactPatternsDefined(boolean areActionInsertFactPatternsDefined);
 
     void setAreActionInsertFactFieldsDefined(boolean areActionInsertFactFieldsDefined);
 

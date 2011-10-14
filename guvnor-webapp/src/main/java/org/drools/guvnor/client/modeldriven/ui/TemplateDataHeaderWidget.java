@@ -22,6 +22,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 
@@ -72,7 +73,7 @@ public class TemplateDataHeaderWidget extends
                 this.col = col;
                 hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
                 hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
-                hp.setHeight( style.rowHeaderSorterHeight() + "px" );
+                hp.setHeight( resources.rowHeaderSorterHeight() + "px" );
                 hp.setWidth( "100%" );
                 setIconImage();
                 add( hp );
@@ -94,23 +95,23 @@ public class TemplateDataHeaderWidget extends
                     case ASCENDING :
                         switch ( col.getSortIndex() ) {
                             case 0 :
-                                hp.add( new Image( resource.upArrow() ) );
+                                hp.add( new Image( resources.upArrowIcon() ) );
                                 break;
                             default :
-                                hp.add( new Image( resource.smallUpArrow() ) );
+                                hp.add( new Image( resources.smallUpArrowIcon() ) );
                         }
                         break;
                     case DESCENDING :
                         switch ( col.getSortIndex() ) {
                             case 0 :
-                                hp.add( new Image( resource.downArrow() ) );
+                                hp.add( new Image( resources.downArrowIcon() ) );
                                 break;
                             default :
-                                hp.add( new Image( resource.smallDownArrow() ) );
+                                hp.add( new Image( resources.smallDownArrowIcon() ) );
                         }
                         break;
                     default :
-                        hp.add( new Image( resource.emptyArrow() ) );
+                        hp.add( new Image( resources.arrowSpacerIcon() ) );
                 }
             }
 
@@ -154,8 +155,8 @@ public class TemplateDataHeaderWidget extends
             TemplateDataColumn modelCol = col.getModelColumn();
             tce.appendChild( makeLabel( modelCol.getTemplateVar(),
                                         col.getWidth(),
-                                        style.rowHeaderHeight() ) );
-            tce.addClassName( style.headerRowIntermediate() );
+                                        resources.rowHeaderHeight() ) );
+            tce.addClassName( resources.headerRowIntermediate() );
         }
 
         // Redraw entire header
@@ -199,7 +200,7 @@ public class TemplateDataHeaderWidget extends
                 case 0 :
                     for ( DynamicColumn<TemplateDataColumn> col : headerColumns ) {
                         tce = DOM.createTD();
-                        tce.addClassName( style.headerText() );
+                        tce.addClassName( resources.headerText() );
                         tre.appendChild( tce );
                         populateTableCellElement( col,
                                                   tce );
@@ -224,7 +225,7 @@ public class TemplateDataHeaderWidget extends
                         sorters.add( shp );
 
                         tce = DOM.createTD();
-                        tce.addClassName( style.headerRowBottom() );
+                        tce.addClassName( resources.headerRowBottom() );
                         tre.appendChild( tce );
                         add( shp,
                              tce );
@@ -273,8 +274,10 @@ public class TemplateDataHeaderWidget extends
      * 
      * @param grid
      */
-    public TemplateDataHeaderWidget(final DecoratedGridWidget<TemplateDataColumn> grid) {
-        super( grid );
+    public TemplateDataHeaderWidget(final ResourcesProvider<TemplateDataColumn> resources,
+                                    final DecoratedGridWidget<TemplateDataColumn> grid) {
+        super( resources,
+               grid );
     }
 
     @Override

@@ -19,6 +19,7 @@ package org.drools.guvnor.server.jaxrs;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.apache.abdera.Abdera;
 import org.apache.abdera.factory.Factory;
+import org.apache.abdera.model.Element;
 import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.apache.abdera.model.Feed;
@@ -570,13 +571,24 @@ public class PackageResource extends Resource {
     public void updateAssetFromAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName, Entry assetEntry) {
         try {
             String format = null;
-            String initialCategory = null;
+            String[] categories = null;
+            String state = null;
             ExtensibleElement metadataExtension = assetEntry.getExtension(Translator.METADATA);
             if (metadataExtension != null) {
                 ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);
                 format = formatExtension != null ? formatExtension.getSimpleExtension(Translator.VALUE) : null;
                 ExtensibleElement categoryExtension = metadataExtension.getExtension(Translator.CATEGORIES);
-                initialCategory = formatExtension != null ? categoryExtension.getSimpleExtension(Translator.VALUE) : null;
+                if (categoryExtension != null) {
+                    List<Element> categoryValues = categoryExtension
+                            .getExtensions(Translator.VALUE);
+                    categories = new String[categoryValues.size()];
+                    for (int i=0; i< categoryValues.size(); i++) {
+                        String catgoryValue = categoryValues.get(i).getText();
+                        categories[i] = catgoryValue;
+                    }
+                }
+                ExtensibleElement stateExtension = metadataExtension.getExtension(Translator.STATE);
+                state = stateExtension != null ? stateExtension.getSimpleExtension(Translator.VALUE) : null;
             }
 
             //Throws RulesRepositoryException if the package or asset does not exist
@@ -588,8 +600,16 @@ public class PackageResource extends Resource {
             if (format != null) {
                 ai.updateFormat(format);
             }
-            if (assetEntry.getContent() != null) {
+            
+            //REVISIT: What if the client really wants to set content to ""?
+            if (assetEntry.getContent() != null && !"".equals(assetEntry.getContent())) {
                 ai.updateContent(assetEntry.getContent());
+            }
+            if (categories != null) {
+                ai.updateCategoryList(categories);
+            }
+            if (state != null) {
+                ai.updateState(state);
             }
             ai.checkin("Check-in (summary): " + assetEntry.getSummary());
             rulesRepository.save();

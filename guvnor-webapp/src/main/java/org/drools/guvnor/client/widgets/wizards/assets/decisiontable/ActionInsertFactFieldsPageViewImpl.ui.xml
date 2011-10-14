@@ -31,12 +31,6 @@
         <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel ui:field="msgIncompletePatterns" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
-      <gwt:HorizontalPanel>
-        <gwt:Image resource="{images.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardIncompletePatterns}" styleName="{res.style.wizardDTableMessage}" />
-      </gwt:HorizontalPanel>
-    </gwt:HorizontalPanel>
     <gwt:HorizontalPanel ui:field="msgIncompleteActions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
@@ -83,7 +77,7 @@
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
           <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
-          <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
+          <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:CheckBox ui:field="chkLogicalInsert" styleName="{res.style.wizardDTableFields}" text="{i18n.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved}"/>

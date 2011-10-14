@@ -107,8 +107,12 @@ public class AssetViewerActivity extends Activity
 
         //Record the number of groups expected to have assets, if all are found to be empty we show a warning
         final AssetGroupSemaphore s = new AssetGroupSemaphore( formatListGroupedByTitles.size() );
+        final AssetViewerSection[] sections = new AssetViewerSection[formatListGroupedByTitles.size()];
 
-        for ( final FormatList formatList : formatListGroupedByTitles ) {
+        for ( int i = 0; i < formatListGroupedByTitles.size(); i++ ) {
+
+            final FormatList formatList = formatListGroupedByTitles.get( i );
+            final int sectionIndex = i;
 
             //Only add a section to the view if the Format Group contains Format Types
             if ( formatList.size() == 0 ) {
@@ -126,17 +130,18 @@ public class AssetViewerActivity extends Activity
                                                            new GenericCallback<Long>() {
                                                                public void onSuccess(Long count) {
 
+                                                                   s.recordProcessedGroup();
+
                                                                    if ( count > 0 ) {
 
                                                                        //If the group contains assets add a section
                                                                        String title = getGroupTitle( formatList.getFirst() );
                                                                        ImageResource icon = getGroupIcon( formatList.getFirst() );
-                                                                       view.addAssetFormat( formatsInList,
-                                                                                            formatIsRegistered,
-                                                                                            title,
-                                                                                            icon,
-                                                                                            packageConfigData,
-                                                                                            clientFactory );
+                                                                       AssetViewerSection section = new AssetViewerSection( title,
+                                                                                                                            icon,
+                                                                                                                            formatsInList,
+                                                                                                                            formatIsRegistered );
+                                                                       sections[sectionIndex] = section;
                                                                    } else {
 
                                                                        //Otherwise record empty group and show warning, if applicable
@@ -144,31 +149,81 @@ public class AssetViewerActivity extends Activity
                                                                        if ( s.areAllGroupsEmpty() ) {
                                                                            view.showHasNoAssetsWarning( true );
                                                                        }
+
+                                                                   }
+
+                                                                   //If all groups have been processed add sections to UI
+                                                                   if ( s.areAllGroupsProcessed() ) {
+                                                                       for ( int i = 0; i < sections.length; i++ ) {
+                                                                           AssetViewerSection section = sections[i];
+                                                                           if ( section != null ) {
+                                                                               view.addAssetFormat( section.formatsInList,
+                                                                                                    section.formatIsRegistered,
+                                                                                                    section.title,
+                                                                                                    section.icon,
+                                                                                                    packageConfigData,
+                                                                                                    clientFactory );
+                                                                           }
+                                                                       }
                                                                    }
                                                                }
                                                            } );
         }
     }
 
-    //A wrapper for the number of Asset Groups to be shown for this Activity. The number of
+    //A container for the number of Asset Groups to be shown for this Activity. The number of
     //Assets in each Group is determined with asynchronous GWT-RPC calls. Since we cannot
     //control when the responses are received we keep a running total of the number of
-    //Groups containing Assets. If this reaches zero we know to show a warning.
+    //Groups containing Assets and those processed.
     private static class AssetGroupSemaphore {
 
-        int numberOfGroups = 0;
+        int numberOfGroups          = 0;
+        int numberOfGroupsProcessed = 0;
 
         AssetGroupSemaphore(int numberOfGroups) {
             this.numberOfGroups = numberOfGroups;
+            this.numberOfGroupsProcessed = numberOfGroups;
         }
 
         synchronized void recordEmptyGroup() {
             numberOfGroups--;
         }
 
+        synchronized void recordProcessedGroup() {
+            numberOfGroupsProcessed--;
+        }
+
         synchronized boolean areAllGroupsEmpty() {
             return this.numberOfGroups == 0;
         }
+
+        synchronized boolean areAllGroupsProcessed() {
+            return this.numberOfGroupsProcessed == 0;
+        }
+
+    }
+
+    //A container for a table that needs to be added to the Asset Viewer
+    private static class AssetViewerSection {
+
+        AssetViewerSection(String title,
+                           ImageResource icon,
+                           List<String> formatsInList,
+                           Boolean formatIsRegistered) {
+            this.title = title;
+            this.icon = icon;
+            this.formatsInList = formatsInList;
+            this.formatIsRegistered = formatIsRegistered;
+        }
+
+        String        title;
+
+        ImageResource icon;
+
+        List<String>  formatsInList;
+
+        Boolean       formatIsRegistered;
+
     }
 
     private List<String> getFormatsInList(FormatList formatList) {

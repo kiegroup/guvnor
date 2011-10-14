@@ -55,6 +55,4 @@ public interface FactPatternsPageView
 
     void setArePatternBindingsUnique(boolean arePatternBindingsUnique);
 
-    void setAreFactPatternsDefined(boolean areFactPatternsDefined);
-
 }

@@ -29,42 +29,51 @@ import org.drools.guvnor.client.messages.Constants;
  */
 public class DecisionTableControlsWidget extends Composite {
 
-    private Button btnOtherwise;
-    private AbstractDecisionTableWidget dtable;
-
-    // Resources
     protected static final Constants messages = GWT.create(Constants.class);
 
+    private AbstractDecisionTableWidget dtable;
+
+    private Button addRowButton;
+    private Button otherwiseButton;
+    private Button analyzeButton;
+
     public DecisionTableControlsWidget() {
+        Panel panel = new HorizontalPanel();
 
         // Add row button
-        Button btnAddRow = new Button(messages.AddRow(),
+        addRowButton = new Button(messages.AddRow(),
                 new ClickHandler() {
-
                     public void onClick(ClickEvent event) {
                         if (dtable != null) {
                             dtable.appendRow();
                         }
                     }
                 });
-        Panel panel = new HorizontalPanel();
-        panel.add(btnAddRow);
+        panel.add(addRowButton);
 
-        btnOtherwise = new Button("Otherwise",
+        otherwiseButton = new Button(messages.Otherwise(),
                 new ClickHandler() {
-
                     public void onClick(ClickEvent event) {
                         if (dtable != null) {
                             dtable.makeOtherwiseCell();
                         }
                     }
                 });
-        btnOtherwise.setEnabled(false);
+        otherwiseButton.setEnabled(false);
+        panel.add(otherwiseButton);
 
-        panel.add(btnOtherwise);
+        // Add row button
+        analyzeButton = new Button(messages.Analyze(),
+                new ClickHandler() {
+                    public void onClick(ClickEvent event) {
+                        if (dtable != null) {
+                            dtable.analyze();
+                        }
+                    }
+                });
+        panel.add(analyzeButton);
 
         initWidget(panel);
-
     }
 
     /**
@@ -73,7 +82,7 @@ public class DecisionTableControlsWidget extends Composite {
      * @return
      */
     Button getOtherwiseButton() {
-        return this.btnOtherwise;
+        return this.otherwiseButton;
     }
 
     /**

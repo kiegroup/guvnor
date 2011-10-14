@@ -31,12 +31,6 @@
         <gwt:Label text="{i18n.DecisionTableWizardDuplicateBindings}" styleName="{res.style.wizardDTableMessage}" />
       </gwt:HorizontalPanel>
     </gwt:HorizontalPanel>
-    <gwt:HorizontalPanel ui:field="msgIncompletePatterns" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
-      <gwt:HorizontalPanel>
-        <gwt:Image resource="{images.warningLarge}" />
-        <gwt:Label text="{i18n.DecisionTableWizardIncompletePatterns}" styleName="{res.style.wizardDTableMessage}" />
-      </gwt:HorizontalPanel>
-    </gwt:HorizontalPanel>
     <gwt:HorizontalPanel ui:field="msgIncompleteConditions" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
       <gwt:HorizontalPanel>
         <gwt:Image resource="{images.warningLarge}" />
