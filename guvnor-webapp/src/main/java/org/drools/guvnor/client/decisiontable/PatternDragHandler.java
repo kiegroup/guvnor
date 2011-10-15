@@ -69,28 +69,9 @@ public class PatternDragHandler
         if ( endIndex == startIndex ) {
             return;
         }
-        Pattern52 patternBeingMoved = dtableModel.getConditionPatterns().get( startIndex );
-        if ( endIndex > startIndex ) {
-            //Move down (after)
-            Pattern52 patternBeingMovedAfter = dtableModel.getConditionPatterns().get( endIndex );
-            dtableModel.getConditionPatterns().remove( patternBeingMoved );
-            if ( endIndex > dtableModel.getConditionPatterns().size() - 1 ) {
-                dtableModel.getConditionPatterns().add( patternBeingMoved );
-            } else {
-                dtableModel.getConditionPatterns().add( endIndex,
-                                                        patternBeingMoved );
-            }
-            dtableWidget.movePatternAfter( patternBeingMoved,
-                                           patternBeingMovedAfter );
-        } else {
-            //Move up (before)
-            Pattern52 patternBeingMovedBefore = dtableModel.getConditionPatterns().get( endIndex );
-            dtableModel.getConditionPatterns().remove( patternBeingMoved );
-            dtableModel.getConditionPatterns().add( endIndex,
-                                                    patternBeingMoved );
-            dtableWidget.movePatternBefore( patternBeingMoved,
-                                            patternBeingMovedBefore );
-        }
+        Pattern52 pattern = dtableModel.getConditionPatterns().get( startIndex );
+        dtableWidget.movePattern( pattern,
+                                  endIndex );
     }
 
     public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {

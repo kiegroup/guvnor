@@ -385,7 +385,7 @@ public class GuidedDecisionTableWidget extends Composite
 
             //Add DnD container to main Conditions container
             conditionsBoundaryPanel.add( conditionsPanel );
-            patternsPanel.add( conditionsBoundaryPanel );
+            patternPanel.add( conditionsBoundaryPanel );
 
             //Add a DragHandler to handle the actions resulting from the drag operation
             conditionsDragController.addDragHandler( new ConditionDragHandler( conditionsPanel,

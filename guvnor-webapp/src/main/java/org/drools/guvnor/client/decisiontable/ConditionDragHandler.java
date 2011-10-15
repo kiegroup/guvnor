@@ -72,27 +72,9 @@ public class ConditionDragHandler
             return;
         }
         ConditionCol52 conditionBeingMoved = pattern.getConditions().get( startIndex );
-        if ( endIndex > startIndex ) {
-            //Move down (after)
-            ConditionCol52 conditionBeingMovedAfter = pattern.getConditions().get( endIndex );
-            pattern.getConditions().remove( conditionBeingMoved );
-            if ( endIndex > pattern.getConditions().size() - 1 ) {
-                pattern.getConditions().add( conditionBeingMoved );
-            } else {
-                pattern.getConditions().add( endIndex,
-                                             conditionBeingMoved );
-            }
-            dtableWidget.moveConditionAfter( conditionBeingMoved,
-                                             conditionBeingMovedAfter );
-        } else {
-            //Move up (before)
-            ConditionCol52 conditionBeingMovedBefore = pattern.getConditions().get( endIndex );
-            pattern.getConditions().remove( conditionBeingMoved );
-            pattern.getConditions().add( endIndex,
-                                         conditionBeingMoved );
-            dtableWidget.moveConditionBefore( conditionBeingMoved,
-                                              conditionBeingMovedBefore );
-        }
+        dtableWidget.moveCondition( pattern,
+                                    conditionBeingMoved,
+                                    endIndex );
     }
 
     public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
