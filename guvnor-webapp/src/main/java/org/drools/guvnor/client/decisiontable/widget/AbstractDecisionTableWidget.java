@@ -1413,23 +1413,56 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.getHeaderWidget().redraw();
     }
 
-    public void moveCondition(ConditionCol52 column,
-                              ConditionCol52 beforeCondition) {
-        //TODO Not tried or tested yet
+    /**
+     * Move a Condition before another Condition in the order in which they are
+     * added to a Pattern's DRL. Both Conditions should be in the same Pattern.
+     * 
+     * @param condition
+     *            The Condition being moved
+     * @param beforeCondition
+     *            The Condition before which the condition will be moved
+     */
+    public void moveConditionBefore(ConditionCol52 condition,
+                                    ConditionCol52 beforeCondition) {
         if ( beforeCondition == null ) {
             throw new IllegalArgumentException( "beforeCondition cannot be null" );
         }
 
-        int columnIndex = getColumnIndex( column );
+        int columnIndex = getColumnIndex( condition );
         List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
         int beforeColumnIndex = getColumnIndex( beforeCondition );
-        deleteColumn( column );
-        insertColumnBefore( column,
+        deleteColumn( condition );
+        insertColumnBefore( condition,
                             columnData,
                             beforeColumnIndex,
                             true );
     }
 
+    /**
+     * Move a Condition after another Condition in the order in which they are
+     * added to a Pattern's DRL. Both Conditions should be in the same Pattern.
+     * 
+     * @param condition
+     *            The Condition being moved
+     * @param beforeCondition
+     *            The Condition before which the condition will be moved
+     */
+    public void moveConditionAfter(ConditionCol52 condition,
+                                   ConditionCol52 afterCondition) {
+        if ( afterCondition == null ) {
+            throw new IllegalArgumentException( "afterCondition cannot be null" );
+        }
+
+        int columnIndex = getColumnIndex( condition );
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
+        int afterColumnIndex = getColumnIndex( afterCondition );
+        deleteColumn( condition );
+        insertColumnBefore( condition,
+                            columnData,
+                            afterColumnIndex,
+                            true );
+    }
+    
     //Get the (UI-) column index of a Model column
     private int getColumnIndex(DTColumnConfig52 column) {
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();

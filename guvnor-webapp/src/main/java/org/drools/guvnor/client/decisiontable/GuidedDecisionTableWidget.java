@@ -15,6 +15,8 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.List;
+
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -49,11 +51,7 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
-import com.allen_sauer.gwt.dnd.client.DragEndEvent;
-import com.allen_sauer.gwt.dnd.client.DragHandler;
-import com.allen_sauer.gwt.dnd.client.DragStartEvent;
 import com.allen_sauer.gwt.dnd.client.PickupDragController;
-import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.allen_sauer.gwt.dnd.client.drop.VerticalPanelDropController;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -115,6 +113,8 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout = new VerticalPanel();
 
+        setupDecisionTable();
+
         configureColumnsNote = new PrettyFormLayout();
         configureColumnsNote.startSection();
         configureColumnsNote.addRow( new HTML( AbstractImagePrototype.create( images.information() ).getHTML()
@@ -150,8 +150,7 @@ public class GuidedDecisionTableWidget extends Composite
 
         layout.add( disclosurePanel );
         layout.add( configureColumnsNote );
-
-        setupDecisionTable();
+        layout.add( dtable );
 
         initWidget( layout );
     }
@@ -347,66 +346,24 @@ public class GuidedDecisionTableWidget extends Composite
 
         //Wire-up DnD for Patterns. All DnD related widgets must be contained in the AbsolutePanel
         AbsolutePanel patternsBoundaryPanel = new AbsolutePanel();
-        PickupDragController dragController = new PickupDragController( patternsBoundaryPanel,
-                                                                        false );
-        dragController.setBehaviorConstrainedToBoundaryPanel( false );
+        PickupDragController patternsDragController = new PickupDragController( patternsBoundaryPanel,
+                                                                                false );
+        patternsDragController.setBehaviorConstrainedToBoundaryPanel( false );
         VerticalPanelDropController widgetDropController = new VerticalPanelDropController( patternsPanel );
-        dragController.registerDropController( widgetDropController );
+        patternsDragController.registerDropController( widgetDropController );
 
         //Add DnD container to main Conditions container
         conditionsConfigWidget.add( patternsBoundaryPanel );
         patternsBoundaryPanel.add( patternsPanel );
 
         //Add a DragHandler to handle the actions resulting from the drag operation
-        dragController.addDragHandler( new DragHandler() {
+        patternsDragController.addDragHandler( new PatternDragHandler( patternsPanel,
+                                                                       guidedDecisionTable,
+                                                                       dtable ) );
 
-            private int startIndex = -1;
-            private int endIndex   = -1;
-
-            public void onDragStart(DragStartEvent event) {
-                startIndex = patternsPanel.getWidgetIndex( event.getContext().draggable );
-            }
-
-            public void onDragEnd(DragEndEvent event) {
-                endIndex = patternsPanel.getWidgetIndex( event.getContext().draggable );
-                if ( endIndex == startIndex ) {
-                    return;
-                }
-                Pattern52 patternBeingMoved = guidedDecisionTable.getConditionPatterns().get( startIndex );
-                if ( endIndex > startIndex ) {
-                    //Move down (after)
-                    Pattern52 patternBeingMovedAfter = guidedDecisionTable.getConditionPatterns().get( endIndex );
-                    guidedDecisionTable.getConditionPatterns().remove( patternBeingMoved );
-                    if ( endIndex > guidedDecisionTable.getConditionPatterns().size() - 1 ) {
-                        guidedDecisionTable.getConditionPatterns().add( patternBeingMoved );
-                    } else {
-                        guidedDecisionTable.getConditionPatterns().add( endIndex,
-                                                                        patternBeingMoved );
-                    }
-                    dtable.movePatternAfter( patternBeingMoved,
-                                             patternBeingMovedAfter );
-                } else {
-                    //Move up (before)
-                    Pattern52 patternBeingMovedBefore = guidedDecisionTable.getConditionPatterns().get( endIndex );
-                    guidedDecisionTable.getConditionPatterns().remove( patternBeingMoved );
-                    guidedDecisionTable.getConditionPatterns().add( endIndex,
-                                                                    patternBeingMoved );
-                    dtable.movePatternBefore( patternBeingMoved,
-                                              patternBeingMovedBefore );
-                }
-            }
-
-            public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
-                //Do nothing
-            }
-
-            public void onPreviewDragStart(DragStartEvent event) throws VetoDragException {
-                //Do nothing
-            }
-
-        } );
-
-        for ( Pattern52 p : guidedDecisionTable.getConditionPatterns() ) {
+        List<Pattern52> patterns = guidedDecisionTable.getConditionPatterns();
+        boolean arePatternsDraggable = patterns.size() > 1;
+        for ( Pattern52 p : patterns ) {
 
             //TODO Move to new Widget
             VerticalPanel patternPanel = new VerticalPanel();
@@ -416,19 +373,44 @@ public class GuidedDecisionTableWidget extends Composite
             patternHeaderPanel.add( patternLabel );
             patternHeaderPanel.setStylePrimaryName( DecisionTableResources.INSTANCE.style().patternSectionHeader() );
             patternPanel.add( patternHeaderPanel );
-            patternPanel.add( conditionsPanel );
             patternsPanel.add( patternPanel );
 
+            //Wire-up DnD for Conditions. All DnD related widgets must be contained in the AbsolutePanel
+            AbsolutePanel conditionsBoundaryPanel = new AbsolutePanel();
+            PickupDragController conditionsDragController = new PickupDragController( conditionsBoundaryPanel,
+                                                                                      false );
+            conditionsDragController.setBehaviorConstrainedToBoundaryPanel( false );
+            VerticalPanelDropController conditionsDropController = new VerticalPanelDropController( conditionsPanel );
+            conditionsDragController.registerDropController( conditionsDropController );
+
+            //Add DnD container to main Conditions container
+            conditionsBoundaryPanel.add( conditionsPanel );
+            patternsPanel.add( conditionsBoundaryPanel );
+
+            //Add a DragHandler to handle the actions resulting from the drag operation
+            conditionsDragController.addDragHandler( new ConditionDragHandler( conditionsPanel,
+                                                                               p,
+                                                                               dtable ) );
+
+            List<ConditionCol52> conditions = p.getConditions();
+            boolean bAreConditionsDraggable = conditions.size() > 1;
             for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
                 hp.add( editCondition( c ) );
-                hp.add( makeColumnLabel( c ) );
+                SmallLabel conditionLabel = makeColumnLabel( c );
+                hp.add( conditionLabel );
                 conditionsPanel.add( hp );
+                if ( bAreConditionsDraggable ) {
+                    conditionsDragController.makeDraggable( hp,
+                                                            conditionLabel );
+                }
             }
 
-            dragController.makeDraggable( patternPanel,
-                                          patternLabel );
+            if ( arePatternsDraggable ) {
+                patternsDragController.makeDraggable( patternPanel,
+                                                      patternLabel );
+            }
             //End of new Widget code
 
         }
@@ -859,14 +841,11 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private void setupDecisionTable() {
-        if ( dtable == null ) {
-            dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
+        dtable = new VerticalDecisionTableWidget( new DecisionTableControlsWidget(),
                                                       getSCE() );
-            dtable.setPixelSize( 1000,
-                                 400 );
-            dtable.setModel( guidedDecisionTable );
-        }
-        layout.add( dtable );
+        dtable.setPixelSize( 1000,
+                             400 );
+        dtable.setModel( guidedDecisionTable );
     }
 
     //A Condition column cannot be deleted if it is the only column for a bound pattern 
