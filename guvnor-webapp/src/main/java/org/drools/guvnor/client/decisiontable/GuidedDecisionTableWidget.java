@@ -163,12 +163,42 @@ public class GuidedDecisionTableWidget extends Composite
 
     private void refreshActionsWidget() {
         this.actionsConfigWidget.clear();
-        for ( ActionCol52 c : guidedDecisionTable.getActionCols() ) {
+
+        //Each Action is a row in a vertical panel
+        final VerticalPanel actionsPanel = new VerticalPanel();
+
+        //Wire-up DnD for Actions. All DnD related widgets must be contained in the AbsolutePanel
+        AbsolutePanel actionsBoundaryPanel = new AbsolutePanel();
+        PickupDragController actionsDragController = new PickupDragController( actionsBoundaryPanel,
+                                                                               false );
+        actionsDragController.setBehaviorConstrainedToBoundaryPanel( false );
+        VerticalPanelDropController actionsDropController = new VerticalPanelDropController( actionsPanel );
+        actionsDragController.registerDropController( actionsDropController );
+
+        //Add DnD container to main Conditions container
+        actionsBoundaryPanel.add( actionsPanel );
+        this.actionsConfigWidget.add( actionsBoundaryPanel );
+
+        //Add a DragHandler to handle the actions resulting from the drag operation
+        actionsDragController.addDragHandler( new ActionDragHandler( actionsPanel,
+                                                                     guidedDecisionTable,
+                                                                     dtable ) );
+
+        //Add Actions to panel
+        List<ActionCol52> actions = guidedDecisionTable.getActionCols();
+        boolean bAreActionsDraggable = actions.size() > 1;
+        for ( ActionCol52 c : actions ) {
             HorizontalPanel hp = new HorizontalPanel();
             hp.add( removeAction( c ) );
             hp.add( editAction( c ) );
-            hp.add( makeColumnLabel( c ) );
-            actionsConfigWidget.add( hp );
+            Label actionLabel = makeColumnLabel( c );
+            hp.add( actionLabel );
+            actionsPanel.add( hp );
+            if ( bAreActionsDraggable ) {
+                actionsDragController.makeDraggable( hp,
+                                                     actionLabel );
+            }
+
         }
         actionsConfigWidget.add( newAction() );
         setupColumnsNote();

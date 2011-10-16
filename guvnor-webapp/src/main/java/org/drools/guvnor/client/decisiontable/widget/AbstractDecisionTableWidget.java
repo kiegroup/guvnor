@@ -1495,6 +1495,56 @@ public abstract class AbstractDecisionTableWidget extends Composite
                             true );
     }
 
+    /**
+     * Move an action to the given index in the model
+     * 
+     * @param action
+     *            The Action being moved
+     * @param actionIndex
+     *            The index in the model to which the column will be moved
+     */
+    public void moveAction(ActionCol52 action,
+                           int actionTargetIndex) {
+
+        //Sanity check
+        if ( actionTargetIndex < 0 || actionTargetIndex > model.getActionCols().size() - 1 ) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        //If target index is the Actions current position exit
+        int actionSourceIndex = model.getActionCols().indexOf( action );
+        if ( actionSourceIndex == actionTargetIndex ) {
+            return;
+        }
+
+        ActionCol52 actionTarget = model.getActionCols().get( actionTargetIndex );
+        int actionTargetColumnIndex = getColumnIndex( actionTarget );
+        int actionSourceColumnIndex = getColumnIndex( action );
+
+        //Update model
+        model.getActionCols().remove( action );
+        if ( actionTargetIndex > actionSourceIndex ) {
+            if ( actionTargetIndex > model.getActionCols().size() - 1 ) {
+                model.getActionCols().add( action );
+            } else {
+                model.getActionCols().add( actionTargetIndex,
+                                           action );
+            }
+
+        } else {
+            model.getActionCols().add( actionTargetIndex,
+                                       action );
+        }
+
+        //Update UI
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( actionSourceColumnIndex );
+        deleteColumn( action );
+        insertColumnBefore( action,
+                            columnData,
+                            actionTargetColumnIndex,
+                            true );
+    }
+
     //Get the (UI-) column index of a Model column
     private int getColumnIndex(DTColumnConfig52 column) {
         List<DynamicColumn<DTColumnConfig52>> columns = widget.getGridWidget().getColumns();

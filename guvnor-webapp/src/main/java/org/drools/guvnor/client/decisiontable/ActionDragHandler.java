@@ -16,8 +16,8 @@
 package org.drools.guvnor.client.decisiontable;
 
 import org.drools.guvnor.client.decisiontable.widget.AbstractDecisionTableWidget;
-import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.allen_sauer.gwt.dnd.client.DragEndEvent;
 import com.allen_sauer.gwt.dnd.client.DragHandler;
@@ -26,11 +26,11 @@ import com.allen_sauer.gwt.dnd.client.VetoDragException;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
- * A Drag Handler for Conditions in the Configuration section of the Guided
+ * A Drag Handler for Actions in the Configuration section of the Guided
  * Decision Table screen that acts as a Mediator between drag operations and the
  * Decision Table Widget
  */
-public class ConditionDragHandler
+public class ActionDragHandler
     implements
     DragHandler {
 
@@ -40,40 +40,38 @@ public class ConditionDragHandler
     //Index of Action at the end of a drag operation
     private int                         endIndex   = -1;
 
-    private VerticalPanel               conditionsPanel;
-    private Pattern52                   pattern;
+    private VerticalPanel               actionsPanel;
+    private GuidedDecisionTable52       dtableModel;
     private AbstractDecisionTableWidget dtableWidget;
 
     /**
-     * Constructor to mediate drag operations between the Conditions
-     * configuration section of the Guided Decision Table screen and the
-     * Decision Table Widget
+     * Constructor to mediate drag operations between the Actions configuration
+     * section of the Guided Decision Table screen and the Decision Table Widget
      * 
-     * @param conditionsPanel
-     * @param pattern
+     * @param actionsPanel
+     * @param dtableModel
      * @param dtableWidget
      */
-    public ConditionDragHandler(VerticalPanel conditionsPanel,
-                                Pattern52 pattern,
-                                AbstractDecisionTableWidget dtableWidget) {
-        this.conditionsPanel = conditionsPanel;
-        this.pattern = pattern;
+    public ActionDragHandler(VerticalPanel actionsPanel,
+                             GuidedDecisionTable52 dtableModel,
+                             AbstractDecisionTableWidget dtableWidget) {
+        this.actionsPanel = actionsPanel;
+        this.dtableModel = dtableModel;
         this.dtableWidget = dtableWidget;
     }
 
     public void onDragStart(DragStartEvent event) {
-        startIndex = conditionsPanel.getWidgetIndex( event.getContext().draggable );
+        startIndex = actionsPanel.getWidgetIndex( event.getContext().draggable );
     }
 
     public void onDragEnd(DragEndEvent event) {
-        endIndex = conditionsPanel.getWidgetIndex( event.getContext().draggable );
+        endIndex = actionsPanel.getWidgetIndex( event.getContext().draggable );
         if ( endIndex == startIndex ) {
             return;
         }
-        ConditionCol52 conditionBeingMoved = pattern.getConditions().get( startIndex );
-        dtableWidget.moveCondition( pattern,
-                                    conditionBeingMoved,
-                                    endIndex );
+        ActionCol52 actionBeingMoved = dtableModel.getActionCols().get( startIndex );
+        dtableWidget.moveAction( actionBeingMoved,
+                                 endIndex );
     }
 
     public void onPreviewDragEnd(DragEndEvent event) throws VetoDragException {
