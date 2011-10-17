@@ -37,9 +37,71 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 public class DecisionTableAnalyzerTest {
+
+    @Test
+    public void testImpossibleMatchesBoolean() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 approved = new ConditionCol52();
+        approved.setFactField("approved");
+        approved.setOperator("==");
+        approved.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(approved);
+
+        ConditionCol52 disapproved = new ConditionCol52();
+        disapproved.setFactField("approved");
+        disapproved.setOperator("!=");
+        disapproved.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(disapproved);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.TRUE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52((Boolean) null)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52((Boolean) null),
+                        new DTCellValue52(Boolean.TRUE)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getWarningSize());
+        assertEquals(1, analysisData.get(1).getWarningSize());
+        assertEquals(0, analysisData.get(2).getWarningSize());
+        assertEquals(0, analysisData.get(3).getWarningSize());
+    }
 
     @Test
     public void testImpossibleMatchesNumeric() throws ParseException {
@@ -62,33 +124,33 @@ public class DecisionTableAnalyzerTest {
         ageLower.setOperator("<=");
         ageLower.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getConditions().add(ageLower);
-        
+
         dt.getConditionPatterns().add(driverPattern);
 
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
-                    new DTCellValue52( new BigDecimal("1")),
-                    new DTCellValue52( "Row 1 description"),
-                    new DTCellValue52( new BigDecimal("20")),
-                    new DTCellValue52( new BigDecimal("50"))
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52(new BigDecimal("50"))
                 ),
                 Arrays.asList(
-                    new DTCellValue52( new BigDecimal("2")),
-                    new DTCellValue52( "Row 2 description"),
-                    new DTCellValue52( new BigDecimal("40")),
-                    new DTCellValue52( new BigDecimal("30"))
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new BigDecimal("30"))
                 ),
                 Arrays.asList(
-                    new DTCellValue52( new BigDecimal("3")),
-                    new DTCellValue52( "Row 3 description"),
-                    new DTCellValue52( (BigDecimal) null ),
-                    new DTCellValue52( new BigDecimal("50"))
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new BigDecimal("50"))
                 ),
                 Arrays.asList(
-                    new DTCellValue52( new BigDecimal("4")),
-                    new DTCellValue52( "Row 4 description"),
-                    new DTCellValue52( new BigDecimal("20") ),
-                    new DTCellValue52( (BigDecimal) null)
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52((BigDecimal) null)
                 )
         );
 
