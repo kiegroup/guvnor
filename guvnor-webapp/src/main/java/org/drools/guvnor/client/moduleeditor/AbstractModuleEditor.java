@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,20 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor;
 
-import com.google.gwt.event.shared.EventHandler;
 
-public interface RefreshModuleListEventHandler extends EventHandler {
-    public void onRefreshList( RefreshModuleListEvent refreshModuleListEvent );
+import org.drools.guvnor.client.common.*;
+import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+
+/**
+ * This is the abstract editor and viewer for module configuration.
+ */
+public abstract class AbstractModuleEditor extends PrettyFormLayout {
+
+    public AbstractModuleEditor() {
+    }
+
+    abstract public ActionToolbar getActionToolbar();
+
 }

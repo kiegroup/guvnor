@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.drools;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import org.drools.guvnor.client.moduleeditor.drools.PackageNameValidator;
 import org.junit.Test;
 
 public class NewPackageWizardTest {

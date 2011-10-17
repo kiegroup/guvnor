@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.drools;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.junit.Before;
 import org.junit.Test;

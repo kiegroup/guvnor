@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.drools;
 
-
-import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-
-/**
- * This is the abstract editor and viewer for module configuration.
- */
-public abstract class AbstractModuleEditor extends PrettyFormLayout {
-
-    public AbstractModuleEditor() {
+public class PackageNameValidator {
+    public static boolean validatePackageName(String name) {
+        if (name == null) return false;
+        return name.matches("^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$");
     }
-
-    abstract public ActionToolbar getActionToolbar();
-
 }

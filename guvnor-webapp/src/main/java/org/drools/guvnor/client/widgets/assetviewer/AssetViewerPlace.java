@@ -19,7 +19,7 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
 
 /**
- * A request for to see a Package's Assets
+ * A request for to see a Module's Assets
  */
 public class AssetViewerPlace extends Place {
 

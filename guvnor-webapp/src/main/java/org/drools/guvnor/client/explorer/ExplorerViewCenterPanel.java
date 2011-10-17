@@ -44,7 +44,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.navigation.CloseAllPlacesEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.ModuleEditorWrapper;
+import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.util.ScrollTabLayoutPanel;
 import org.drools.guvnor.client.util.TabbedPanel;
 

@@ -27,7 +27,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.NewPackageWizard;
+import org.drools.guvnor.client.moduleeditor.drools.NewPackageWizard;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;

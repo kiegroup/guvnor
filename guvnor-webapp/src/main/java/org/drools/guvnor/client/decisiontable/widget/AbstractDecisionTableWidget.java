@@ -1329,20 +1329,59 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
-     * Move a Pattern, or more accurately the group of columns relating to a
-     * pattern, before another Pattern in the order in which they are added to a
-     * rule's DRL
+     * Move a Pattern to the given index in the model
      * 
      * @param pattern
-     *            The Pattern being moved
-     * @param beforePattern
-     *            The Pattern before which the pattern will be moved
+     *            The Pattern to which the Condition relates
+     * @param patternTargetIndex
+     *            The index to which the pattern will be moved
      */
-    public void movePatternBefore(Pattern52 pattern,
-                                  Pattern52 beforePattern) {
-        if ( beforePattern == null ) {
-            throw new IllegalArgumentException( "beforePattern cannot be null" );
+    public void movePattern(Pattern52 pattern,
+                            int patternTargetIndex) {
+
+        //Sanity check
+        if ( patternTargetIndex < 0 || patternTargetIndex > model.getConditionPatterns().size() - 1 ) {
+            throw new IndexOutOfBoundsException();
         }
+
+        //If target index is the Patterns current position exit
+        int patternSourceIndex = model.getConditionPatterns().indexOf( pattern );
+        if ( patternSourceIndex == patternTargetIndex ) {
+            return;
+        }
+
+        //Update model
+        if ( patternTargetIndex > patternSourceIndex ) {
+            //Move down (after)
+            Pattern52 patternBeingMovedAfter = model.getConditionPatterns().get( patternTargetIndex );
+            model.getConditionPatterns().remove( pattern );
+            if ( patternTargetIndex > model.getConditionPatterns().size() - 1 ) {
+                model.getConditionPatterns().add( pattern );
+            } else {
+                model.getConditionPatterns().add( patternTargetIndex,
+                                                  pattern );
+            }
+            //Update UI
+            movePatternAfter( pattern,
+                              patternBeingMovedAfter );
+        } else {
+            //Move up (before)
+            Pattern52 patternBeingMovedBefore = model.getConditionPatterns().get( patternTargetIndex );
+            model.getConditionPatterns().remove( pattern );
+            model.getConditionPatterns().add( patternTargetIndex,
+                                              pattern );
+            //Update UI
+            movePatternBefore( pattern,
+                               patternBeingMovedBefore );
+        }
+
+    }
+
+    // Move a Pattern, or more accurately the group of columns relating to a
+    // pattern, before another Pattern in the order in which they are added to a
+    // rule's DRL
+    private void movePatternBefore(Pattern52 pattern,
+                                   Pattern52 beforePattern) {
 
         //Find the index of the first column of the pattern before which the one being 
         //moved will be inserted. Columns of the Pattern being moved will be inserted 
@@ -1370,21 +1409,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.getHeaderWidget().redraw();
     }
 
-    /**
-     * Move a Pattern, or more accurately the group of columns relating to a
-     * pattern, after another Pattern in the order in which they are added to a
-     * rule's DRL
-     * 
-     * @param pattern
-     *            The Pattern being moved
-     * @param afterPattern
-     *            The Pattern after which the pattern will be moved
-     */
-    public void movePatternAfter(Pattern52 pattern,
-                                 Pattern52 afterPattern) {
-        if ( afterPattern == null ) {
-            throw new IllegalArgumentException( "afterPattern cannot be null" );
-        }
+    // Move a Pattern, or more accurately the group of columns relating to a
+    // pattern, after another Pattern in the order in which they are added to a
+    // rule's DRL
+    private void movePatternAfter(Pattern52 pattern,
+                                  Pattern52 afterPattern) {
 
         //Find the index of the last column of the pattern after which the one being 
         //moved will be inserted. Since columns of the Pattern being moved are first
@@ -1413,20 +1442,106 @@ public abstract class AbstractDecisionTableWidget extends Composite
         widget.getHeaderWidget().redraw();
     }
 
-    public void moveCondition(ConditionCol52 column,
-                              ConditionCol52 beforeCondition) {
-        //TODO Not tried or tested yet
-        if ( beforeCondition == null ) {
-            throw new IllegalArgumentException( "beforeCondition cannot be null" );
+    /**
+     * Move a Condition to the given index on a Pattern in the model
+     * 
+     * @param pattern
+     *            The Pattern to which the Condition relates
+     * @param condition
+     *            The Condition being moved
+     * @param conditionIndex
+     *            The index in the pattern to which the column will be moved
+     */
+    public void moveCondition(Pattern52 pattern,
+                              ConditionCol52 condition,
+                              int conditionTargetIndex) {
+
+        //Sanity check
+        if ( conditionTargetIndex < 0 || conditionTargetIndex > pattern.getConditions().size() - 1 ) {
+            throw new IndexOutOfBoundsException();
         }
 
-        int columnIndex = getColumnIndex( column );
-        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( columnIndex );
-        int beforeColumnIndex = getColumnIndex( beforeCondition );
-        deleteColumn( column );
-        insertColumnBefore( column,
+        //If target index is the Conditions current position exit
+        int conditionSourceIndex = pattern.getConditions().indexOf( condition );
+        if ( conditionSourceIndex == conditionTargetIndex ) {
+            return;
+        }
+
+        ConditionCol52 conditionTarget = pattern.getConditions().get( conditionTargetIndex );
+        int conditionTargetColumnIndex = getColumnIndex( conditionTarget );
+        int conditionSourceColumnIndex = getColumnIndex( condition );
+
+        //Update model
+        pattern.getConditions().remove( condition );
+        if ( conditionTargetIndex > conditionSourceIndex ) {
+            if ( conditionTargetIndex > pattern.getConditions().size() - 1 ) {
+                pattern.getConditions().add( condition );
+            } else {
+                pattern.getConditions().add( conditionTargetIndex,
+                                             condition );
+            }
+
+        } else {
+            pattern.getConditions().add( conditionTargetIndex,
+                                         condition );
+        }
+
+        //Update UI
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( conditionSourceColumnIndex );
+        deleteColumn( condition );
+        insertColumnBefore( condition,
                             columnData,
-                            beforeColumnIndex,
+                            conditionTargetColumnIndex,
+                            true );
+    }
+
+    /**
+     * Move an action to the given index in the model
+     * 
+     * @param action
+     *            The Action being moved
+     * @param actionIndex
+     *            The index in the model to which the column will be moved
+     */
+    public void moveAction(ActionCol52 action,
+                           int actionTargetIndex) {
+
+        //Sanity check
+        if ( actionTargetIndex < 0 || actionTargetIndex > model.getActionCols().size() - 1 ) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        //If target index is the Actions current position exit
+        int actionSourceIndex = model.getActionCols().indexOf( action );
+        if ( actionSourceIndex == actionTargetIndex ) {
+            return;
+        }
+
+        ActionCol52 actionTarget = model.getActionCols().get( actionTargetIndex );
+        int actionTargetColumnIndex = getColumnIndex( actionTarget );
+        int actionSourceColumnIndex = getColumnIndex( action );
+
+        //Update model
+        model.getActionCols().remove( action );
+        if ( actionTargetIndex > actionSourceIndex ) {
+            if ( actionTargetIndex > model.getActionCols().size() - 1 ) {
+                model.getActionCols().add( action );
+            } else {
+                model.getActionCols().add( actionTargetIndex,
+                                           action );
+            }
+
+        } else {
+            model.getActionCols().add( actionTargetIndex,
+                                       action );
+        }
+
+        //Update UI
+        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( actionSourceColumnIndex );
+        deleteColumn( action );
+        insertColumnBefore( action,
+                            columnData,
+                            actionTargetColumnIndex,
                             true );
     }
 

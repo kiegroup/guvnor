@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.perspectives;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
 import com.google.gwt.event.shared.EventBus;

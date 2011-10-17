@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.soa;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -27,14 +27,19 @@ import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.explorer.ModuleEditorPlace;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
+import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
+import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget;
+import org.drools.guvnor.client.moduleeditor.drools.PackageNameValidator;
+import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
+import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
@@ -45,9 +50,9 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 /**
- * This is the module editor for Drools Package.
+ * This is the package editor and viewer for package configuration.
  */
-public class PackageEditor extends AbstractModuleEditor {
+public class SOAServiceEditor extends AbstractModuleEditor {
     private Constants constants = GWT.create( Constants.class );
     private static Images images = GWT.create( Images.class );
 
@@ -60,10 +65,10 @@ public class PackageEditor extends AbstractModuleEditor {
     private final ClientFactory clientFactory;
     private final EventBus eventBus;
 
-    public PackageEditor(PackageConfigData data,
-                         ClientFactory clientFactory,
-                         EventBus eventBus,
-                         Command refreshCommand) {
+    public SOAServiceEditor(PackageConfigData data,
+                            ClientFactory clientFactory,
+                            EventBus eventBus,
+                            Command refreshCommand) {
         this( data,
                 clientFactory,
                 eventBus,
@@ -71,7 +76,7 @@ public class PackageEditor extends AbstractModuleEditor {
                 refreshCommand );
     }
 
-    public PackageEditor(PackageConfigData data,
+    public SOAServiceEditor(PackageConfigData data,
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          boolean historicalReadOnly,
@@ -129,52 +134,11 @@ public class PackageEditor extends AbstractModuleEditor {
 
         startSection( constants.ConfigurationSection() );
 
-        packageConfigurationValidationResult.clear();
-        addRow( packageConfigurationValidationResult );
-
-        addAttribute( constants.Configuration(),
-                header() );
-
-        if ( !isHistoricalReadOnly ) {
-            addAttribute( constants.CategoryRules(),
-                    getAddCatRules() );
-        }
-        addAttribute( "",
-                getShowCatRules() );
-
-        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            Button save = new Button( constants.ValidateConfiguration() );
-            save.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    doValidatePackageConfiguration( null );
-                }
-            } );
-            addAttribute( "",
-                    save );
-        }
+        addAttribute("NOTE:", new HTML("Add any SOA service editor specific UI here") );
 
         endSection();
-
-        if ( isHistoricalReadOnly ) {
-            startSection( constants.Dependencies() );
-            addRow( new DependencyWidget(
-                    clientFactory,
-                    eventBus,
-                    this.packageConfigData,
-                    isHistoricalReadOnly ) );
-            endSection();
-        }
-
-        if ( !packageConfigData.isSnapshot() && !isHistoricalReadOnly ) {
-            startSection( constants.BuildAndValidate() );
-            addRow( new PackageBuilderWidget(
-                    this.packageConfigData,
-                    clientFactory ) );
-            endSection();
-        }
-
-        startSection( constants.InformationAndImportantURLs() );
+        
+ /*       startSection( constants.InformationAndImportantURLs() );
 
         Button buildSource = new Button( constants.ShowPackageSource() );
         buildSource.addClickHandler( new ClickHandler() {
@@ -251,7 +215,7 @@ public class PackageEditor extends AbstractModuleEditor {
                 callBack );
 
         endSection();
-    }
+*/    }
 
     private Widget createHPanel(Widget widget,
                                 String popUpText) {
