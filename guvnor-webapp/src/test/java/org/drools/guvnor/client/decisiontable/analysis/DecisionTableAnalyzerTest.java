@@ -161,6 +161,67 @@ public class DecisionTableAnalyzerTest {
     }
 
     @Test
+    public void testImpossibleMatchesString() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 name = new ConditionCol52();
+        name.setFactField("name");
+        name.setOperator("==");
+        name.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(name);
+
+        ConditionCol52 notName = new ConditionCol52();
+        notName.setFactField("name");
+        notName.setOperator("!=");
+        notName.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(notName);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52("Bart")
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52("Homer")
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52((String) null)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52((String) null),
+                        new DTCellValue52("Bart")
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
+    }
+
+    @Test
     public void testImpossibleMatchesDate() throws ParseException {
         SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -221,67 +282,6 @@ public class DecisionTableAnalyzerTest {
         assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
         assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
     }
-
-//    @Test
-//    public void testImpossibleMatches() throws ParseException {
-//        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
-//
-//        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
-//
-//        Pattern52 driverPattern = new Pattern52();
-//        driverPattern.setBoundName("driverPattern");
-//        driverPattern.setFactType("Driver");
-//
-//        ConditionCol52 c1 = new ConditionCol52();
-//        c1.setFactField( "name" );
-//        c1.setOperator( "==" );
-//        c1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-//        driverPattern.getConditions().add(c1);
-//        dt.getConditionPatterns().add(driverPattern);
-//
-//        ConditionCol52 c2 = new ConditionCol52();
-//        c2.setFactField( "age" );
-//        c2.setOperator( "==" );
-//        c2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-//        driverPattern.getConditions().add(c2);
-//        dt.getConditionPatterns().add(driverPattern);
-//
-//        ConditionCol52 c3 = new ConditionCol52();
-//        c3.setFactField( "dateOfBirth" );
-//        c3.setOperator( "==" );
-//        c3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-//        driverPattern.getConditions().add(c3);
-//        dt.getConditionPatterns().add(driverPattern);
-//
-//        ConditionCol52 c4 = new ConditionCol52();
-//        c4.setFactField( "approved" );
-//        c4.setOperator( "==" );
-//        c4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
-//        driverPattern.getConditions().add( c4 );
-//        dt.getConditionPatterns().add( driverPattern );
-//
-//        List<List<DTCellValue52>> data = new ArrayList<List<DTCellValue52>>();
-//        Arrays.asList(
-//                Arrays.asList(
-//
-//                ),
-//                Arrays.asList(),
-//        );
-//
-//        DTCellValue52 dcv1 = new DTCellValue52( 1 );
-//        DTCellValue52 dcv2 = new DTCellValue52( Boolean.TRUE );
-//        DTCellValue52 dcv3 = new DTCellValue52( "Michael" );
-//        DTCellValue52 dcv4 = new DTCellValue52( 11 );
-//        DTCellValue52 dcv5 = new DTCellValue52( new SimpleDateFormat("yyyy-MM-dd").parse("2000-01-01") );
-//        DTCellValue52 dcv6 = new DTCellValue52( Boolean.TRUE );
-//        DTCellValue52 dcv7 = new DTCellValue52( "Mike" );
-//        DTCellValue52 dcv8 = new DTCellValue52( "Mike" );
-//
-//
-//        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-//        List<Analysis> analysisData = analyzer.analyze(dt, data);
-//
-//    }
 
     private SuggestionCompletionEngine buildSuggestionCompletionEngine() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
