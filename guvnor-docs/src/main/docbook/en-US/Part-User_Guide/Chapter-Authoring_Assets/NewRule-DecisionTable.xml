@@ -66,7 +66,7 @@
       The decision table states, held in the body of the table, are boolean
       where a positive value (a checked tick-box) has the effect of meaning
       the column should apply, or be matched. A negative value (a cleared
-      tick-box) means the column does not apply. </para>
+      tick-box) means the column does not apply.</para>
 
       <figure>
         <title>Limited Entry Decision table</title>
@@ -212,6 +212,41 @@ end</programlisting>
 then
   ...
 end</programlisting>
+    </section>
+
+    <section>
+      <title>Re-arranging columns</title>
+
+      <para>Whole patterns and individual conditions can be re-arranged by
+      dragging and dropping them in the configuration section of the screen.
+      This allows constraints to be re-ordered to maximise performance of the
+      resulting rules, by placing generalised constraints before more
+      specific. Action columns can also be re-arranged by dragging and
+      dropping them.</para>
+
+      <figure>
+        <title>Re-arranging Condition patterns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/dtable-rearranging-patterns.png"
+                       format="PNG" scalefit="0" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <figure>
+        <title>Re-arranging columns</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata align="center"
+                       fileref="images/Chapter-Guvnor/dtable-rearranging-columns.png"
+                       format="PNG" scalefit="0" xml:base="../../"></imagedata>
+          </imageobject>
+        </mediaobject>
+      </figure>
     </section>
   </section>
 
