@@ -16,14 +16,11 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -69,7 +66,7 @@ public class DecisionTableAnalyzer {
                                 boolean previousImpossibleMatch = detector.isImpossibleMatch();
                                 detector.merge(newDetector);
                                 if (!previousImpossibleMatch && detector.isImpossibleMatch()) {
-                                    analysis.addWarning("Impossible match on " + factField);
+                                    analysis.addImpossibleMatch("Impossible match on " + factField);
                                 }
                             }
                         }

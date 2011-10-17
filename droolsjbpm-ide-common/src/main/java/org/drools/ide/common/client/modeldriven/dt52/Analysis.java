@@ -24,16 +24,28 @@ import java.util.List;
  */
 public class Analysis implements Comparable<Analysis> {
 
-    private List<String> warningHtmlList = new ArrayList<String>();
+    private List<String> impossibleMatchHtmlList = new ArrayList<String>();
+    private List<String> multipleMatchHtmlList = new ArrayList<String>();
 
-    public void addWarning(String htmlEntry) {
-        warningHtmlList.add(htmlEntry);
+    public void addImpossibleMatch(String htmlEntry) {
+        impossibleMatchHtmlList.add(htmlEntry);
+    }
+
+    public void addMultipleMatch(String htmlEntry) {
+        multipleMatchHtmlList.add(htmlEntry);
     }
 
     public String toHtmlString() {
         StringBuilder htmlBuilder = new StringBuilder("<span>");
         boolean first = true;
-        for (String htmlEntry : warningHtmlList) {
+        for (String htmlEntry : impossibleMatchHtmlList) {
+            if (!first) {
+                htmlBuilder.append(", ");
+                first = false;
+            }
+            htmlBuilder.append(htmlEntry);
+        }
+        for (String htmlEntry : multipleMatchHtmlList) {
             if (!first) {
                 htmlBuilder.append(", ");
                 first = false;
@@ -45,7 +57,15 @@ public class Analysis implements Comparable<Analysis> {
     }
 
     public int getWarningSize() {
-        return warningHtmlList.size();
+        return getImpossibleMatchesSize() + getMultipleMatchesSize();
+    }
+
+    public int getImpossibleMatchesSize() {
+        return impossibleMatchHtmlList.size();
+    }
+
+    public int getMultipleMatchesSize() {
+        return multipleMatchHtmlList.size();
     }
 
     public int compareTo(Analysis other) {

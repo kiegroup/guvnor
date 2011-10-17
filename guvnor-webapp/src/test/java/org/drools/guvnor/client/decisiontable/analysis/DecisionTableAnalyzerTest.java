@@ -16,14 +16,9 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,7 +30,6 @@ import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -97,10 +91,10 @@ public class DecisionTableAnalyzerTest {
         List<Analysis> analysisData = analyzer.analyze(dt, data);
 
         assertEquals(data.size(), analysisData.size());
-        assertEquals(0, analysisData.get(0).getWarningSize());
-        assertEquals(1, analysisData.get(1).getWarningSize());
-        assertEquals(0, analysisData.get(2).getWarningSize());
-        assertEquals(0, analysisData.get(3).getWarningSize());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
     }
 
     @Test
@@ -158,10 +152,10 @@ public class DecisionTableAnalyzerTest {
         List<Analysis> analysisData = analyzer.analyze(dt, data);
 
         assertEquals(data.size(), analysisData.size());
-        assertEquals(0, analysisData.get(0).getWarningSize());
-        assertEquals(1, analysisData.get(1).getWarningSize());
-        assertEquals(0, analysisData.get(2).getWarningSize());
-        assertEquals(0, analysisData.get(3).getWarningSize());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
     }
 
 //    @Test
