@@ -18,7 +18,9 @@ package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -107,17 +109,17 @@ public class DecisionTableAnalyzerTest {
         driverPattern.setBoundName("driverPattern");
         driverPattern.setFactType("Driver");
 
-        ConditionCol52 ageHigher = new ConditionCol52();
-        ageHigher.setFactField("age");
-        ageHigher.setOperator(">=");
-        ageHigher.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
-        driverPattern.getConditions().add(ageHigher);
+        ConditionCol52 ageMinimum = new ConditionCol52();
+        ageMinimum.setFactField("age");
+        ageMinimum.setOperator(">=");
+        ageMinimum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMinimum);
 
-        ConditionCol52 ageLower = new ConditionCol52();
-        ageLower.setFactField("age");
-        ageLower.setOperator("<=");
-        ageLower.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
-        driverPattern.getConditions().add(ageLower);
+        ConditionCol52 ageMaximum = new ConditionCol52();
+        ageMaximum.setFactField("age");
+        ageMaximum.setOperator("<=");
+        ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMaximum);
 
         dt.getConditionPatterns().add(driverPattern);
 
@@ -145,6 +147,68 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52(new BigDecimal("20")),
                         new DTCellValue52((BigDecimal) null)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
+    }
+
+    @Test
+    public void testImpossibleMatchesDate() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 dateOfBirthMinimum = new ConditionCol52();
+        dateOfBirthMinimum.setFactField("dateOfBirth");
+        dateOfBirthMinimum.setOperator(">=");
+        dateOfBirthMinimum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(dateOfBirthMinimum);
+
+        ConditionCol52 dateOfBirthMaximum = new ConditionCol52();
+        dateOfBirthMaximum.setFactField("dateOfBirth");
+        dateOfBirthMaximum.setOperator("<=");
+        dateOfBirthMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(dateOfBirthMaximum);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52(dateFormat.parse("1981-01-01")),
+                        new DTCellValue52(dateFormat.parse("2001-01-01"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(dateFormat.parse("2001-01-01")),
+                        new DTCellValue52(dateFormat.parse("1981-01-01"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52((Date) null),
+                        new DTCellValue52(dateFormat.parse("2001-01-01"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52(dateFormat.parse("1981-01-01")),
+                        new DTCellValue52((Date) null)
                 )
         );
 
