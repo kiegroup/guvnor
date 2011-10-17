@@ -94,6 +94,8 @@ public class DecisionTableAnalyzer {
             } else if ( type == null ) {
                 // Null means the field is free-format
                 newDetector = null;
+            } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+                newDetector = new StringDisjointDetector(value.getStringValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
                 newDetector = new NumericDisjointDetector(value.getNumericValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
