@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.perspectives.PerspectiveFactory;
 import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.*;

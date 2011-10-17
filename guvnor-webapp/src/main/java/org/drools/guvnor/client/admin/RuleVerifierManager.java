@@ -19,7 +19,7 @@ package org.drools.guvnor.client.admin;
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.WorkingSetManager;
+import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.resources.Images;
 
 import com.google.gwt.user.client.ui.Button;

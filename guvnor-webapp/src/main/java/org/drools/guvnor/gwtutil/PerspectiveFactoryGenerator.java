@@ -32,7 +32,7 @@ import com.google.gwt.user.rebind.SourceWriter;
 import org.drools.guvnor.client.common.DefaultContentUploadEditor;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.AbstractModuleEditor;
+import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.perspectives.Perspective;
 import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
 import org.drools.guvnor.client.resources.Images;

@@ -18,7 +18,7 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.explorer.navigation.NavigationItemBuilderOld;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.packages.SnapshotView;
+import org.drools.guvnor.client.moduleeditor.drools.SnapshotView;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.Util;
 

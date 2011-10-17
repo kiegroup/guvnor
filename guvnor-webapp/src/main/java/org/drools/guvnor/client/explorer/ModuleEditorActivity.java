@@ -20,7 +20,7 @@ import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
-import org.drools.guvnor.client.packages.ModuleEditorWrapper;
+import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.util.Activity;
 

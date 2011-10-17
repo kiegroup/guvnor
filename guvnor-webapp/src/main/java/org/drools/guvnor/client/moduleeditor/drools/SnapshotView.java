@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.drools;
 
 import java.util.ArrayList;
 import java.util.List;

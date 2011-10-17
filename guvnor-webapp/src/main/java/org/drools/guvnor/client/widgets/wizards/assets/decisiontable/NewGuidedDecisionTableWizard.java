@@ -21,7 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.packages.SuggestionCompletionCache;
+import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;

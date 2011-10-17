@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.packages.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.moduleeditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable;

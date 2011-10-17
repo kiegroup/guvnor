@@ -20,8 +20,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.IsTreeItem;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.packages.RefreshModuleListEvent;
-import org.drools.guvnor.client.packages.RefreshModuleListEventHandler;
+import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
+import org.drools.guvnor.client.moduleeditor.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 
 public class ModulesTreeItem extends ModulesTreeItemBase {

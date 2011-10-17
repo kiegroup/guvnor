@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.packages;
+package org.drools.guvnor.client.moduleeditor.drools;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
-import org.drools.guvnor.client.packages.PackageHeaderWidget.Global;
-import org.drools.guvnor.client.packages.PackageHeaderWidget.Import;
-import org.drools.guvnor.client.packages.PackageHeaderWidget.Types;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderHelper;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Global;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Import;
+import org.drools.guvnor.client.moduleeditor.drools.PackageHeaderWidget.Types;
 import org.junit.Test;
 
 public class PackageHeaderWidgetTest {

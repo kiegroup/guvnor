@@ -17,6 +17,7 @@ package org.drools.guvnor.client.ruleeditor.springcontext;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -34,7 +35,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import java.util.Map;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.ErrorPopup;
-import org.drools.guvnor.client.packages.PackageBuilderWidget;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
