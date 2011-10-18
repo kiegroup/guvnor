@@ -317,7 +317,7 @@ public class DecisionTableAnalyzerTest {
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                         SuggestionCompletionEngine.TYPE_NUMERIC),
                                 new ModelField("dateOfBirth",
-                                        Boolean.class.getName(),
+                                        Date.class.getName(),
                                         ModelField.FIELD_CLASS_TYPE.REGULAR_CLASS,
                                         SuggestionCompletionEngine.TYPE_DATE),
                                 new ModelField("approved",
