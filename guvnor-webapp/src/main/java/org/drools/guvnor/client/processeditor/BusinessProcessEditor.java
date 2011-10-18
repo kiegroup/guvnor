@@ -16,13 +16,13 @@
 
 package org.drools.guvnor.client.processeditor;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;

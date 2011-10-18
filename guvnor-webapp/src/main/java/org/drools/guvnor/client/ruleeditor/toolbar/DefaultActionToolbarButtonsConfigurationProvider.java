@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.client.ruleeditor.toolbar;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
 
 import static org.drools.guvnor.client.common.AssetFormats.*;
 

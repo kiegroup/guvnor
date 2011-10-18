@@ -19,9 +19,10 @@ package org.drools.guvnor.client.ruleeditor.standalone;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
+
+import org.drools.guvnor.client.asseteditor.MultiViewEditor;
+import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
-import org.drools.guvnor.client.ruleeditor.MultiViewEditorMenuBarCreator;
 
 /**
  * Creates a menu bar with 2 buttons: "Done" and "Cancel".

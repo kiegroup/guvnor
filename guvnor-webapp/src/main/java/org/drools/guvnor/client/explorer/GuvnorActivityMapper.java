@@ -42,10 +42,10 @@ import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksActivity;
 import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksActivity;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
+import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
 import org.drools.guvnor.client.util.Activity;
 import org.drools.guvnor.client.util.ActivityMapper;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
 import org.drools.guvnor.client.widgets.wizards.WizardActivity;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 

@@ -21,6 +21,9 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import org.drools.guvnor.client.asseteditor.GuvnorEditor;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;

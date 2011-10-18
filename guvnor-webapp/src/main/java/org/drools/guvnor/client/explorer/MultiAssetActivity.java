@@ -1,7 +1,8 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.event.shared.EventBus;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.util.Activity;
 
 public class MultiAssetActivity extends Activity {

@@ -34,12 +34,13 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.ProvidesKey;
+
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.AbstractAssetPageRow;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 
 import java.util.ArrayList;
 import java.util.HashSet;

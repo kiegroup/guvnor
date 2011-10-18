@@ -8,6 +8,9 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+
+import org.drools.guvnor.client.asseteditor.MultiViewEditor;
+import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;

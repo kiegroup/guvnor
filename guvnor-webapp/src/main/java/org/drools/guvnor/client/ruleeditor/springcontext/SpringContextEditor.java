@@ -25,13 +25,14 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.TextArea;
+
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 /**
  * This is the default Spring editor widget - more to come later.

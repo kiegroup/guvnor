@@ -2,7 +2,8 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceTokenizer;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 
 import java.util.ArrayList;
 import java.util.Arrays;

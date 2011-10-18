@@ -17,6 +17,9 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -31,9 +34,6 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 import org.drools.guvnor.client.util.AddButton;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;

@@ -28,11 +28,10 @@ import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.perspectives.PerspectiveFactory;
+import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 
 /**
  * This is the module editor.

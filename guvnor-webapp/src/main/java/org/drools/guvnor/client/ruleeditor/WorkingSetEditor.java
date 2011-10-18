@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.ClientFactory;

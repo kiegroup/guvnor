@@ -21,10 +21,11 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Widget;
+
+import org.drools.guvnor.client.asseteditor.GuvnorEditor;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.Artifact;
-import org.drools.guvnor.client.ruleeditor.GuvnorEditor;
 import org.drools.guvnor.client.ruleeditor.MessageWidget;
 import org.drools.guvnor.client.ruleeditor.MetaDataWidget;
 import org.drools.guvnor.client.ruleeditor.RuleDocumentWidget;

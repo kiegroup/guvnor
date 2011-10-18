@@ -15,13 +15,13 @@
  */
 package org.drools.guvnor.client.ruleeditor.workitem;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
-import org.drools.guvnor.client.ruleeditor.SaveEventListener;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;

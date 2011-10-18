@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.modeldriven.ui;
 
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.EditorWidget;
 
 public interface RuleModelEditor
     extends

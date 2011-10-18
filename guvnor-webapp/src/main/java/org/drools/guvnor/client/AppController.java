@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.MultiActivityManager;
-import org.drools.guvnor.client.perspectives.PerspectivesPanel;
+import org.drools.guvnor.client.perspective.PerspectivesPanel;
 
 public class AppController {
 

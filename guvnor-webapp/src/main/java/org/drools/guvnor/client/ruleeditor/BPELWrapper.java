@@ -24,10 +24,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+
+import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.asseteditor.DefaultContentUploadEditor;
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.AssetAttachmentFileWidget;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 public class BPELWrapper extends Composite

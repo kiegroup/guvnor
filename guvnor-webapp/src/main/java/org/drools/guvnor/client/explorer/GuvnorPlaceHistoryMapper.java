@@ -13,7 +13,7 @@ import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPla
 import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerPlace;
+import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;

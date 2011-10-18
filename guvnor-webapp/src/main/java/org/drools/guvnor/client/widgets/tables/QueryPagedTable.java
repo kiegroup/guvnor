@@ -22,7 +22,7 @@ import java.util.List;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.perspectives.PerspectiveFactory;
+import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.PageResponse;
