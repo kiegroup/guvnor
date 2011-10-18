@@ -50,23 +50,23 @@ public class DecisionTableAnalyzer {
             analysisData.add(analysis);
             for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
                 List<ConditionCol52> conditions = pattern.getConditions();
-                Map<String, FieldDetector> detectorMap = new HashMap<String, FieldDetector>(
+                Map<String, FieldDetector> fieldDetectorMap = new HashMap<String, FieldDetector>(
                         conditions.size());
                 for (ConditionCol52 conditionCol : conditions) {
                     int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
                     DTCellValue52 value = row.get(columnIndex);
                     if (value.hasValue()) {
-                        FieldDetector newDetector = buildDetector(modelWithWrongData, conditionCol, value);
-                        if (newDetector != null) {
+                        FieldDetector newFieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
+                        if (newFieldDetector != null) {
                             String factField = conditionCol.getFactField();
-                            FieldDetector detector = detectorMap.get(factField);
-                            if (detector == null) {
-                                detector = newDetector;
-                                detectorMap.put(factField, detector);
+                            FieldDetector fieldDetector = fieldDetectorMap.get(factField);
+                            if (fieldDetector == null) {
+                                fieldDetector = newFieldDetector;
+                                fieldDetectorMap.put(factField, fieldDetector);
                             } else {
-                                boolean previousImpossibleMatch = detector.isImpossibleMatch();
-                                detector.merge(newDetector);
-                                if (!previousImpossibleMatch && detector.isImpossibleMatch()) {
+                                boolean previousImpossibleMatch = fieldDetector.isImpossibleMatch();
+                                fieldDetector.merge(newFieldDetector);
+                                if (!previousImpossibleMatch && fieldDetector.isImpossibleMatch()) {
                                     analysis.addImpossibleMatch("Impossible match on " + factField);
                                 }
                             }
