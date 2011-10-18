@@ -17,32 +17,53 @@
 package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class StringDisjointDetector extends DisjointDetector<StringDisjointDetector> {
 
-    public String value = null;
-    private List<String> notList = new ArrayList<String>(1);
+    private List<String> allowedValueList = null;
+    private List<String> disallowedList = new ArrayList<String>(1);
 
     public StringDisjointDetector(String value, String operator) {
         if (operator.equals("==")) {
-            this.value = value;
+            allowedValueList = new ArrayList<String>(1);
+            allowedValueList.add(value);
         } else if (operator.equals("!=")) {
-            notList.add(value);
+            disallowedList.add(value);
+        } else if (operator.equals("in")) {
+            String[] tokens = value.split(",");
+            allowedValueList = new ArrayList<String>(tokens.length);
+            Collections.addAll(allowedValueList, tokens);
         }
     }
 
     public void merge(StringDisjointDetector other) {
-        if (value == null) {
-            value = other.value;
-        } else if (other.value != null) {
-            if (!value.equals(other.value)) {
-                impossibleMatch = true;
-                value = null;
+        if (allowedValueList == null) {
+            allowedValueList = other.allowedValueList;
+        } else if (other.allowedValueList != null) {
+            for (Iterator<String> it = allowedValueList.iterator(); it.hasNext(); ) {
+                String value = it.next();
+                if (!other.allowedValueList.contains(value)) {
+                    it.remove();
+                }
             }
         }
-        notList.addAll(other.notList);
-        if (value != null && notList.contains(value)) {
+        disallowedList.addAll(other.disallowedList);
+        optimizeAllowedValueList();
+        detectImpossibleMatch();
+    }
+
+    private void optimizeAllowedValueList() {
+        if (allowedValueList != null) {
+            allowedValueList.removeAll(disallowedList);
+            disallowedList.clear();
+        }
+    }
+
+    private void detectImpossibleMatch() {
+        if (allowedValueList != null && allowedValueList.isEmpty()) {
             impossibleMatch = true;
         }
     }

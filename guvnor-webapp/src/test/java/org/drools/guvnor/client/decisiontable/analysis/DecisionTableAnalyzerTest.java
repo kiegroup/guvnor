@@ -182,6 +182,12 @@ public class DecisionTableAnalyzerTest {
         notName.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
         driverPattern.getConditions().add(notName);
 
+        ConditionCol52 nameIn = new ConditionCol52();
+        nameIn.setFactField("name");
+        nameIn.setOperator("in");
+        nameIn.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(nameIn);
+
         dt.getConditionPatterns().add(driverPattern);
 
         List<List<DTCellValue52>> data = Arrays.asList(
@@ -189,25 +195,36 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52(new BigDecimal("1")),
                         new DTCellValue52("Row 1 description"),
                         new DTCellValue52("Homer"),
-                        new DTCellValue52("Bart")
+                        new DTCellValue52("Bart"),
+                        new DTCellValue52((String) null)
                 ),
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("2")),
                         new DTCellValue52("Row 2 description"),
                         new DTCellValue52("Homer"),
-                        new DTCellValue52("Homer")
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52((String) null)
                 ),
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("3")),
                         new DTCellValue52("Row 3 description"),
                         new DTCellValue52("Homer"),
+                        new DTCellValue52((String) null),
                         new DTCellValue52((String) null)
                 ),
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("4")),
                         new DTCellValue52("Row 4 description"),
                         new DTCellValue52((String) null),
-                        new DTCellValue52("Bart")
+                        new DTCellValue52("Bart"),
+                        new DTCellValue52((String) null)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52("Row 5 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52((String) null),
+                        new DTCellValue52("Marge,Lisa")
                 )
         );
 
@@ -219,6 +236,7 @@ public class DecisionTableAnalyzerTest {
         assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
         assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
         assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(4).getImpossibleMatchesSize());
     }
 
     @Test
