@@ -301,6 +301,85 @@ public class DecisionTableAnalyzerTest {
         assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
     }
 
+    @Test
+    public void testImpossibleMatchesCombination() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 name = new ConditionCol52();
+        name.setFactField("name");
+        name.setOperator("==");
+        name.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(name);
+
+        ConditionCol52 ageMinimum = new ConditionCol52();
+        ageMinimum.setFactField("age");
+        ageMinimum.setOperator(">=");
+        ageMinimum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMinimum);
+
+        ConditionCol52 ageMaximum = new ConditionCol52();
+        ageMaximum.setFactField("age");
+        ageMaximum.setOperator("<=");
+        ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMaximum);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52(new BigDecimal("50"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new BigDecimal("30"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52((String) null),
+                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(new BigDecimal("30"))
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52("Homer"),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52((BigDecimal) null)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52("Row 5 description"),
+                        new DTCellValue52((String) null),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52((BigDecimal) null)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(2).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(3).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(4).getImpossibleMatchesSize());
+    }
+
     private SuggestionCompletionEngine buildSuggestionCompletionEngine() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
