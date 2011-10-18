@@ -85,4 +85,20 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
         return this.groupedRows.add( childRow );
     }
 
+    @Override
+    void clear() {
+        for ( DynamicDataRow groupedRow : this.groupedRows ) {
+            groupedRow.clear();
+        }
+        super.clear();
+    }
+
+    @Override
+    CellValue< ? extends Comparable< ? >> remove(int index) {
+        for ( DynamicDataRow groupedRow : this.groupedRows ) {
+            groupedRow.remove( index );
+        }
+        return super.remove( index );
+    }
+
 }
