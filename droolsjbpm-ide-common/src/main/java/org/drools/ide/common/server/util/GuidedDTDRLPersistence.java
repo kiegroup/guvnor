@@ -238,7 +238,10 @@ public class GuidedDTDRLPersistence {
                 if ( c instanceof LimitedEntryCol ) {
                     if ( dcv.getBooleanValue() == true ) {
                         LimitedEntryCol lec = (LimitedEntryCol) c;
-                        cell = GuidedDTDRLUtilities.convertDTCellValueToString( lec.getValue() );
+                        DTCellValue52 value = lec.getValue();
+                        if ( value != null ) {
+                            cell = GuidedDTDRLUtilities.convertDTCellValueToString( value );
+                        }
                     }
                 } else {
                     cell = GuidedDTDRLUtilities.convertDTCellValueToString( dcv );
@@ -252,9 +255,9 @@ public class GuidedDTDRLPersistence {
                     isValid = validCell( cell );
                 }
 
-                //Empty cells are valid if operator is "== null" or "!= null"
+                //If operator is "== null" or "!= null" add constraint if table value is true
                 if ( c.getOperator() != null && (c.getOperator().equals( "== null" ) || c.getOperator().equals( "!= null" )) ) {
-                    isValid = true;
+                    isValid = dcv.getBooleanValue();
                 }
 
                 if ( isValid ) {

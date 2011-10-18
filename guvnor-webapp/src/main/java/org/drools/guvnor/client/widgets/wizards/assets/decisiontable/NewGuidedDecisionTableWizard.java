@@ -171,6 +171,7 @@ public class NewGuidedDecisionTableWizard
         //Slurp out expanded rows and construct decision table data
         int rowIndex = 0;
         RowIterator ri = re.iterator();
+        dtable.initAnalysisColumn();
         while ( ri.hasNext() ) {
             List<String> row = ri.next();
             dtable.getData().add( makeRow( row ) );

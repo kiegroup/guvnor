@@ -341,6 +341,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private DTCellValue52 cloneLimitedEntryValue(DTCellValue52 dcv) {
+        if ( dcv == null ) {
+            return null;
+        }
         DTCellValue52 clone = new DTCellValue52();
         switch ( dcv.getDataType() ) {
             case BOOLEAN :
