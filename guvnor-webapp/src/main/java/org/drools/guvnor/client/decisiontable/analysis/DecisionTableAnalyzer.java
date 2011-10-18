@@ -57,18 +57,16 @@ public class DecisionTableAnalyzer {
                     DTCellValue52 value = row.get(columnIndex);
                     if (value.hasValue()) {
                         FieldDetector newFieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
-                        if (newFieldDetector != null) {
-                            String factField = conditionCol.getFactField();
-                            FieldDetector fieldDetector = fieldDetectorMap.get(factField);
-                            if (fieldDetector == null) {
-                                fieldDetector = newFieldDetector;
-                                fieldDetectorMap.put(factField, fieldDetector);
-                            } else {
-                                boolean previousImpossibleMatch = fieldDetector.isImpossibleMatch();
-                                fieldDetector.merge(newFieldDetector);
-                                if (!previousImpossibleMatch && fieldDetector.isImpossibleMatch()) {
-                                    analysis.addImpossibleMatch("Impossible match on " + factField);
-                                }
+                        String factField = conditionCol.getFactField();
+                        FieldDetector fieldDetector = fieldDetectorMap.get(factField);
+                        if (fieldDetector == null) {
+                            fieldDetector = newFieldDetector;
+                            fieldDetectorMap.put(factField, fieldDetector);
+                        } else {
+                            boolean previousImpossibleMatch = fieldDetector.isImpossibleMatch();
+                            fieldDetector.merge(newFieldDetector);
+                            if (!previousImpossibleMatch && fieldDetector.isImpossibleMatch()) {
+                                analysis.addImpossibleMatch("Impossible match on " + factField);
                             }
                         }
                     }
@@ -85,16 +83,16 @@ public class DecisionTableAnalyzer {
         if (conditionCol instanceof LimitedEntryCol) {
             newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
         } else {
-            //Extended Entry...
+            // Extended Entry...
             String type = model.getType( conditionCol, sce );
-            //Retrieve "Guvnor" enums
+            // Retrieve "Guvnor" enums
             String[] allValueList = model.getValueList( conditionCol, sce );
             if (allValueList.length != 0) {
-                // use vals
+                // Guvnor enum
                 newDetector = new EnumFieldDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
             } else if ( type == null ) {
-                // Null means the field is free-format
-                newDetector = null;
+                // type null means the field is free-format
+                newDetector = new UnrecognizedFieldDetector(operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
                 newDetector = new StringFieldDetector(value.getStringValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
@@ -104,7 +102,7 @@ public class DecisionTableAnalyzer {
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 newDetector = new DateFieldDetector(value.getDateValue(), operator);
             } else {
-                newDetector = null;
+                newDetector = new UnrecognizedFieldDetector(operator);
             }
         }
         return newDetector;
