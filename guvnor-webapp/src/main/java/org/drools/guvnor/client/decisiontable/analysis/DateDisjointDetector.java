@@ -23,6 +23,8 @@ import java.util.List;
 
 public class DateDisjointDetector extends DisjointDetector<DateDisjointDetector> {
 
+    // TODO support operator "in" and optimize to allowedValueList if not continuous
+    // private List<Date> allowedValueList = null;
     private Date from = null;
     private boolean fromInclusive;
     private Date to = null;

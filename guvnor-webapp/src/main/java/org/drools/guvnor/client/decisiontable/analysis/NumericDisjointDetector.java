@@ -23,6 +23,8 @@ import java.util.List;
 
 public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDetector> {
 
+    // TODO support operator "in" and optimize to allowedValueList if not continuous
+    // private List<BigDecimal> allowedValueList = null;
     private BigDecimal from = null;
     private boolean fromInclusive;
     private BigDecimal to = null;
