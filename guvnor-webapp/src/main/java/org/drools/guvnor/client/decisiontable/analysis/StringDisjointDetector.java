@@ -36,10 +36,13 @@ public class StringDisjointDetector extends DisjointDetector<StringDisjointDetec
             String[] tokens = value.split(",");
             allowedValueList = new ArrayList<String>(tokens.length);
             Collections.addAll(allowedValueList, tokens);
+        } else {
+            hasUnrecognizedConstraint = true;
         }
     }
 
     public void merge(StringDisjointDetector other) {
+        super.merge(other);
         if (allowedValueList == null) {
             allowedValueList = other.allowedValueList;
         } else if (other.allowedValueList != null) {

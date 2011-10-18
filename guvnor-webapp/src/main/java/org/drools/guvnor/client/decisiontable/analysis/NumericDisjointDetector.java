@@ -27,7 +27,7 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
     private boolean fromInclusive;
     private BigDecimal to = null;
     private boolean toInclusive;
-    private List<BigDecimal> notList = new ArrayList<BigDecimal>(1);
+    private List<BigDecimal> disallowedList = new ArrayList<BigDecimal>(1);
 
     public NumericDisjointDetector(BigDecimal value, String operator) {
         if (operator.equals("==")) {
@@ -36,7 +36,7 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
             to = value;
             toInclusive = true;
         } else if (operator.equals("!=")) {
-            notList.add(value);
+            disallowedList.add(value);
         } else if (operator.equals("<")) {
             to = value;
             toInclusive = false;
@@ -50,11 +50,12 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
             from = value;
             fromInclusive = true;
         } else {
-            throw new IllegalArgumentException("The operator (" + operator + ") is not supported.");
+            hasUnrecognizedConstraint = true;
         }
     }
 
     public void merge(NumericDisjointDetector other) {
+        super.merge(other);
         if (from == null) {
             from = other.from;
             fromInclusive = other.fromInclusive;
@@ -79,13 +80,13 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
                 toInclusive = toInclusive && other.toInclusive;
             }
         }
-        notList.addAll(other.notList);
+        disallowedList.addAll(other.disallowedList);
         optimizeNotList();
         detectImpossibleMatch();
     }
 
     private void optimizeNotList() {
-        for (Iterator<BigDecimal> notIt = notList.iterator(); notIt.hasNext(); ) {
+        for (Iterator<BigDecimal> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
             BigDecimal notValue =  notIt.next();
             if (from != null) {
                 int comparison = notValue.compareTo(from);

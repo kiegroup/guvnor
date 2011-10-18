@@ -25,10 +25,13 @@ public class BooleanDisjointDetector extends DisjointDetector<BooleanDisjointDet
             this.value = value;
         } else if (operator.equals("!=")) {
             this.value = !value;
+        } else {
+            hasUnrecognizedConstraint = true;
         }
     }
 
     public void merge(BooleanDisjointDetector other) {
+        super.merge(other);
         if (!value.equals(other.value)) {
             impossibleMatch = true;
             value = null;

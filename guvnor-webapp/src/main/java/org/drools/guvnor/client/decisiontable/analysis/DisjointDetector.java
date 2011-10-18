@@ -18,12 +18,19 @@ package org.drools.guvnor.client.decisiontable.analysis;
 
 public abstract class DisjointDetector<T extends DisjointDetector> {
 
+    protected boolean hasUnrecognizedConstraint = false;
     protected boolean impossibleMatch = false;
+
+    public boolean hasUnrecognizedConstraint() {
+        return hasUnrecognizedConstraint;
+    }
 
     public boolean isImpossibleMatch() {
         return impossibleMatch;
     }
 
-    public abstract void merge(T other);
+    public void merge(T other) {
+        hasUnrecognizedConstraint = hasUnrecognizedConstraint() || other.hasUnrecognizedConstraint;
+    }
 
 }

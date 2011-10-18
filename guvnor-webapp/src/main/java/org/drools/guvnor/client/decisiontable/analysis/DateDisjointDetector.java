@@ -27,7 +27,7 @@ public class DateDisjointDetector extends DisjointDetector<DateDisjointDetector>
     private boolean fromInclusive;
     private Date to = null;
     private boolean toInclusive;
-    private List<Date> notList = new ArrayList<Date>(1);
+    private List<Date> disallowedList = new ArrayList<Date>(1);
 
     public DateDisjointDetector(Date value, String operator) {
         if (operator.equals("==")) {
@@ -36,7 +36,7 @@ public class DateDisjointDetector extends DisjointDetector<DateDisjointDetector>
             to = value;
             toInclusive = true;
         } else if (operator.equals("!=")) {
-            notList.add(value);
+            disallowedList.add(value);
         } else if (operator.equals("<")) {
             to = value;
             toInclusive = false;
@@ -50,11 +50,12 @@ public class DateDisjointDetector extends DisjointDetector<DateDisjointDetector>
             from = value;
             fromInclusive = true;
         } else {
-            throw new IllegalArgumentException("The operator (" + operator + ") is not supported.");
+            hasUnrecognizedConstraint = true;
         }
     }
 
     public void merge(DateDisjointDetector other) {
+        super.merge(other);
         if (from == null) {
             from = other.from;
             fromInclusive = other.fromInclusive;
@@ -79,13 +80,13 @@ public class DateDisjointDetector extends DisjointDetector<DateDisjointDetector>
                 toInclusive = toInclusive && other.toInclusive;
             }
         }
-        notList.addAll(other.notList);
+        disallowedList.addAll(other.disallowedList);
         optimizeNotList();
         detectImpossibleMatch();
     }
 
     private void optimizeNotList() {
-        for (Iterator<Date> notIt = notList.iterator(); notIt.hasNext(); ) {
+        for (Iterator<Date> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
             Date notValue =  notIt.next();
             if (from != null) {
                 int comparison = notValue.compareTo(from);

@@ -33,11 +33,12 @@ public class EnumDisjointDetector extends DisjointDetector<EnumDisjointDetector>
                 }
             }
         } else {
-            throw new IllegalArgumentException("The operator (" + operator + ") is not supported.");
+            hasUnrecognizedConstraint = true;
         }
     }
 
     public void merge(EnumDisjointDetector other) {
+        super.merge(other);
         allowedValueList.retainAll(other.allowedValueList);
         if (allowedValueList.isEmpty()) {
             impossibleMatch = true;
