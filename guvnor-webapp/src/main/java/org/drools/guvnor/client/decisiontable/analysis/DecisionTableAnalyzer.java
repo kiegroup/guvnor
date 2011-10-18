@@ -44,34 +44,26 @@ public class DecisionTableAnalyzer {
 
     private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
         List<Analysis> analysisData = new ArrayList<Analysis>(data.size());
+        List<RowDetector> rowDetectorList = new ArrayList<RowDetector>(data.size());
         for (List<DTCellValue52> row : data) {
-            long rowIndex = row.get(0).getNumericValue().longValue();
-            Analysis analysis = new Analysis();
-            analysisData.add(analysis);
+            RowDetector rowDetector = new RowDetector(row.get(0).getNumericValue().longValue() - 1);
             for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
                 List<ConditionCol52> conditions = pattern.getConditions();
-                Map<String, FieldDetector> fieldDetectorMap = new HashMap<String, FieldDetector>(
-                        conditions.size());
                 for (ConditionCol52 conditionCol : conditions) {
                     int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
                     DTCellValue52 value = row.get(columnIndex);
+                    // Blank cells are ignored
                     if (value.hasValue()) {
-                        FieldDetector newFieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
+                        FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
                         String factField = conditionCol.getFactField();
-                        FieldDetector fieldDetector = fieldDetectorMap.get(factField);
-                        if (fieldDetector == null) {
-                            fieldDetector = newFieldDetector;
-                            fieldDetectorMap.put(factField, fieldDetector);
-                        } else {
-                            boolean previousImpossibleMatch = fieldDetector.isImpossibleMatch();
-                            fieldDetector.merge(newFieldDetector);
-                            if (!previousImpossibleMatch && fieldDetector.isImpossibleMatch()) {
-                                analysis.addImpossibleMatch("Impossible match on " + factField);
-                            }
-                        }
+                        rowDetector.putOrMerge(pattern, factField, fieldDetector);
                     }
                 }
             }
+            rowDetectorList.add(rowDetector);
+        }
+        for (RowDetector rowDetector : rowDetectorList) {
+            analysisData.add(rowDetector.buildAnalysis(rowDetectorList));
         }
         return analysisData;
     }
