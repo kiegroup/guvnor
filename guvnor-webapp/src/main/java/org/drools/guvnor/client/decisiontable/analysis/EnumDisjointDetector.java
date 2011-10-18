@@ -17,19 +17,32 @@
 package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EnumDisjointDetector extends DisjointDetector<EnumDisjointDetector> {
 
     private final List<String> allowedValueList = new ArrayList<String>();
 
-    public EnumDisjointDetector(String[] allValueList, String value, String operator) {
+    public EnumDisjointDetector(List<String> allValueList, String value, String operator) {
         if (operator.equals("==")) {
-            allowedValueList.add(value);
+            if (allValueList.contains(value)) {
+                allowedValueList.add(value);
+            } else {
+                System.out.println("Warning: value (" + value + ") is not a valid enum value (" + allValueList + ").");
+            }
         } else if (operator.equals("!=")) {
-            for (String allValue : allValueList) {
-                if (!value.equals(allValue)) {
-                    allowedValueList.add(value);
+            allowedValueList.addAll(allValueList);
+            allowedValueList.remove(value);
+        } else if (operator.equals("in")) {
+            String[] tokens = value.split(",");
+            for (String token : tokens) {
+                if (allValueList.contains(token)) {
+                    allowedValueList.add(token);
+                } else {
+                    System.out.println("Warning: value (" + token + ") is not a valid enum value ("
+                            + allValueList + ").");
                 }
             }
         } else {

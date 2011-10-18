@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,7 @@ public class DecisionTableAnalyzer {
             String[] allValueList = model.getValueList( conditionCol, sce );
             if (allValueList.length != 0) {
                 // use vals
-                newDetector = new EnumDisjointDetector(allValueList, value.getStringValue(), operator);
+                newDetector = new EnumDisjointDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
             } else if ( type == null ) {
                 // Null means the field is free-format
                 newDetector = null;
