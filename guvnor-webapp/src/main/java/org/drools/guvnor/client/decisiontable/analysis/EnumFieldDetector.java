@@ -17,15 +17,13 @@
 package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class EnumDisjointDetector extends DisjointDetector<EnumDisjointDetector> {
+public class EnumFieldDetector extends FieldDetector<EnumFieldDetector> {
 
     private final List<String> allowedValueList = new ArrayList<String>();
 
-    public EnumDisjointDetector(List<String> allValueList, String value, String operator) {
+    public EnumFieldDetector(List<String> allValueList, String value, String operator) {
         if (operator.equals("==")) {
             if (allValueList.contains(value)) {
                 allowedValueList.add(value);
@@ -50,7 +48,7 @@ public class EnumDisjointDetector extends DisjointDetector<EnumDisjointDetector>
         }
     }
 
-    public void merge(EnumDisjointDetector other) {
+    public void merge(EnumFieldDetector other) {
         super.merge(other);
         allowedValueList.retainAll(other.allowedValueList);
         if (allowedValueList.isEmpty()) {

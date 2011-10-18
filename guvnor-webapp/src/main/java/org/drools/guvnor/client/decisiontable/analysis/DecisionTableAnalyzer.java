@@ -50,16 +50,16 @@ public class DecisionTableAnalyzer {
             analysisData.add(analysis);
             for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
                 List<ConditionCol52> conditions = pattern.getConditions();
-                Map<String, DisjointDetector> detectorMap = new HashMap<String, DisjointDetector>(
+                Map<String, FieldDetector> detectorMap = new HashMap<String, FieldDetector>(
                         conditions.size());
                 for (ConditionCol52 conditionCol : conditions) {
                     int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
                     DTCellValue52 value = row.get(columnIndex);
                     if (value.hasValue()) {
-                        DisjointDetector newDetector = buildDetector(modelWithWrongData, conditionCol, value);
+                        FieldDetector newDetector = buildDetector(modelWithWrongData, conditionCol, value);
                         if (newDetector != null) {
                             String factField = conditionCol.getFactField();
-                            DisjointDetector detector = detectorMap.get(factField);
+                            FieldDetector detector = detectorMap.get(factField);
                             if (detector == null) {
                                 detector = newDetector;
                                 detectorMap.put(factField, detector);
@@ -78,12 +78,12 @@ public class DecisionTableAnalyzer {
         return analysisData;
     }
 
-    private DisjointDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
+    private FieldDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
             DTCellValue52 value) {
-        DisjointDetector newDetector;
+        FieldDetector newDetector;
         String operator = conditionCol.getOperator();
         if (conditionCol instanceof LimitedEntryCol) {
-            newDetector = new BooleanDisjointDetector(value.getBooleanValue(), operator);
+            newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
         } else {
             //Extended Entry...
             String type = model.getType( conditionCol, sce );
@@ -91,18 +91,18 @@ public class DecisionTableAnalyzer {
             String[] allValueList = model.getValueList( conditionCol, sce );
             if (allValueList.length != 0) {
                 // use vals
-                newDetector = new EnumDisjointDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
+                newDetector = new EnumFieldDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
             } else if ( type == null ) {
                 // Null means the field is free-format
                 newDetector = null;
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-                newDetector = new StringDisjointDetector(value.getStringValue(), operator);
+                newDetector = new StringFieldDetector(value.getStringValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                newDetector = new NumericDisjointDetector(value.getNumericValue(), operator);
+                newDetector = new NumericFieldDetector(value.getNumericValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                newDetector = new BooleanDisjointDetector(value.getBooleanValue(), operator);
+                newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                newDetector = new DateDisjointDetector(value.getDateValue(), operator);
+                newDetector = new DateFieldDetector(value.getDateValue(), operator);
             } else {
                 newDetector = null;
             }

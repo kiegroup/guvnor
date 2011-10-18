@@ -16,22 +16,22 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDetector> {
+public class DateFieldDetector extends FieldDetector<DateFieldDetector> {
 
     // TODO support operator "in" and optimize to allowedValueList if not continuous
-    // private List<BigDecimal> allowedValueList = null;
-    private BigDecimal from = null;
+    // private List<Date> allowedValueList = null;
+    private Date from = null;
     private boolean fromInclusive;
-    private BigDecimal to = null;
+    private Date to = null;
     private boolean toInclusive;
-    private List<BigDecimal> disallowedList = new ArrayList<BigDecimal>(1);
+    private List<Date> disallowedList = new ArrayList<Date>(1);
 
-    public NumericDisjointDetector(BigDecimal value, String operator) {
+    public DateFieldDetector(Date value, String operator) {
         if (operator.equals("==")) {
             from = value;
             fromInclusive = true;
@@ -56,7 +56,7 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
         }
     }
 
-    public void merge(NumericDisjointDetector other) {
+    public void merge(DateFieldDetector other) {
         super.merge(other);
         if (from == null) {
             from = other.from;
@@ -88,8 +88,8 @@ public class NumericDisjointDetector extends DisjointDetector<NumericDisjointDet
     }
 
     private void optimizeNotList() {
-        for (Iterator<BigDecimal> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
-            BigDecimal notValue =  notIt.next();
+        for (Iterator<Date> notIt = disallowedList.iterator(); notIt.hasNext(); ) {
+            Date notValue =  notIt.next();
             if (from != null) {
                 int comparison = notValue.compareTo(from);
                 if (comparison <= 0) {

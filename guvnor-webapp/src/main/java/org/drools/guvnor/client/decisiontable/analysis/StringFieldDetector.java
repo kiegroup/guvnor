@@ -21,12 +21,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class StringDisjointDetector extends DisjointDetector<StringDisjointDetector> {
+public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
 
     private List<String> allowedValueList = null;
     private List<String> disallowedList = new ArrayList<String>(1);
 
-    public StringDisjointDetector(String value, String operator) {
+    public StringFieldDetector(String value, String operator) {
         if (operator.equals("==")) {
             allowedValueList = new ArrayList<String>(1);
             allowedValueList.add(value);
@@ -41,7 +41,7 @@ public class StringDisjointDetector extends DisjointDetector<StringDisjointDetec
         }
     }
 
-    public void merge(StringDisjointDetector other) {
+    public void merge(StringFieldDetector other) {
         super.merge(other);
         if (allowedValueList == null) {
             allowedValueList = other.allowedValueList;

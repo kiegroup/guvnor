@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-public abstract class DisjointDetector<T extends DisjointDetector> {
+public abstract class FieldDetector<T extends FieldDetector> {
 
     protected boolean hasUnrecognizedConstraint = false;
     protected boolean impossibleMatch = false;

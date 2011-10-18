@@ -16,11 +16,11 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-public class BooleanDisjointDetector extends DisjointDetector<BooleanDisjointDetector> {
+public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
 
     public Boolean value;
 
-    public BooleanDisjointDetector(Boolean value, String operator) {
+    public BooleanFieldDetector(Boolean value, String operator) {
         if (operator.equals("==")) {
             this.value = value;
         } else if (operator.equals("!=")) {
@@ -30,7 +30,7 @@ public class BooleanDisjointDetector extends DisjointDetector<BooleanDisjointDet
         }
     }
 
-    public void merge(BooleanDisjointDetector other) {
+    public void merge(BooleanFieldDetector other) {
         super.merge(other);
         if (!value.equals(other.value)) {
             impossibleMatch = true;
