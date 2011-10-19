@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.widgets;
+package org.drools.guvnor.client.asseteditor;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.TextArea;
 
-import org.drools.guvnor.client.asseteditor.EditorWidget;
-import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;

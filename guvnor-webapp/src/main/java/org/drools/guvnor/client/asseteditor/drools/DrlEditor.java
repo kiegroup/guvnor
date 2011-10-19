@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools;
 
+import org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -23,7 +24,6 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.FactTypeBrowser;
 import org.drools.guvnor.client.ruleeditor.FactTypeBrowser.ClickEvent;
-import org.drools.guvnor.client.widgets.DefaultRuleContentWidget;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;

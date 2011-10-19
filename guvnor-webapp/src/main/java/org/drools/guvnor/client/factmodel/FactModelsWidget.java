@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.factmodel;
 
+import org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
@@ -25,7 +26,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
-import org.drools.guvnor.client.widgets.DefaultRuleContentWidget;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;

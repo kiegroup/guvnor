@@ -56,7 +56,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
         <format>dsl</format>
         <icon>images.dsl()</icon>
         <title>constants.DSLConfigurations()</title>    
@@ -114,7 +114,7 @@
     <!--  end of bpel editor group   --> 
         
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.DefaultRuleContentWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
         <format>enumeration</format>
         <icon>images.enumeration()</icon>
         <title>constants.Enumerations()</title>    
