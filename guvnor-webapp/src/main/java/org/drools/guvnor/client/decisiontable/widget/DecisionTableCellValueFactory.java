@@ -219,7 +219,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;
-            if ( cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" ) ) {
+            if ( cc.getOperator() != null && (cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" )) ) {
                 return DTDataTypes52.BOOLEAN;
             }
         }

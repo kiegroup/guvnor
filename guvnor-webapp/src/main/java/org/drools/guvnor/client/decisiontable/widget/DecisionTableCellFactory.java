@@ -141,7 +141,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         }
 
         //Operators "is null" and "is not null" require a boolean cell
-        if ( col.getOperator().equals( "== null" ) || col.getOperator().equals( "!= null" ) ) {
+        if ( col.getOperator() != null && (col.getOperator().equals( "== null" ) || col.getOperator().equals( "!= null" )) ) {
             return makeBooleanCell();
         }
 
