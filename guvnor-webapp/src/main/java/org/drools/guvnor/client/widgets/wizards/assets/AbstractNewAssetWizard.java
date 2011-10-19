@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards.assets;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.widgets.wizards.AbstractWizard;
@@ -49,24 +50,11 @@ public abstract class AbstractNewAssetWizard<T extends PortableObject>
      * by a Wizard will have two initial versions: one corresponding to the
      * creation and another corresponding to the checkin of content.
      * 
-     * @param assetName
-     * @param description
-     * @param initialCategory
-     * @param packageName
-     * @param format
-     * @param content
+     * @param config
      */
-    protected void save(final String assetName,
-                        final String description,
-                        final String initialCategory,
-                        final String packageName,
-                        final String format,
+    protected void save(final NewAssetConfiguration config,
                         final T content) {
-        RepositoryServiceFactory.getService().createNewRule( assetName,
-                                                             description,
-                                                             initialCategory,
-                                                             packageName,
-                                                             format,
+        RepositoryServiceFactory.getService().createNewRule( config,
                                                              createCreateAssetCallback( content ) );
     }
 

@@ -22,10 +22,12 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardPage;
 import org.drools.guvnor.client.widgets.wizards.assets.AbstractNewAssetWizard;
-import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.RowExpander.RowIterator;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
@@ -56,7 +58,7 @@ public class NewGuidedDecisionTableWizard
 
     public NewGuidedDecisionTableWizard(final ClientFactory clientFactory,
                                         final EventBus eventBus,
-                                        final NewAssetWizardContext context,
+                                        final NewGuidedDecisionTableAssetWizardContext context,
                                         final WizardActivityView.Presenter presenter) {
         super( clientFactory,
                eventBus,
@@ -91,7 +93,7 @@ public class NewGuidedDecisionTableWizard
                                                    eventBus,
                                                    validator ) );
         pages.add( columnExpansionPage );
-        
+
         dtable.setTableFormat( context.getTableFormat() );
 
         SuggestionCompletionCache.getInstance().loadPackage( context.getPackageName(),
@@ -175,16 +177,19 @@ public class NewGuidedDecisionTableWizard
         while ( ri.hasNext() ) {
             List<String> row = ri.next();
             dtable.getData().add( makeRow( row ) );
-            dtable.getAnalysisData().add(new Analysis());
+            dtable.getAnalysisData().add( new Analysis() );
             rowIndex++;
         }
 
         //Save it!
-        save( summaryPage.getAssetName(),
-              context.getDescription(),
-              context.getInitialCategory(),
-              context.getPackageName(),
-              context.getFormat(),
+        NewAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( summaryPage.getAssetName(),
+                                                                                     context.getPackageName(),
+                                                                                     context.getPackageUUID(),
+                                                                                     ((NewGuidedDecisionTableAssetWizardContext) context).getTableFormat(),
+                                                                                     context.getDescription(),
+                                                                                     context.getInitialCategory(),
+                                                                                     context.getFormat() );
+        save( config,
               dtable );
     }
 

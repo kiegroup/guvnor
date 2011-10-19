@@ -14,7 +14,7 @@ import org.drools.guvnor.client.explorer.navigation.settings.PreferencesPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.GroupTasksPlace;
 import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
-import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
@@ -34,7 +34,7 @@ import com.google.gwt.place.shared.WithTokenizers;
                 StatePlace.Tokenizer.class,
                 InboxPlace.Tokenizer.class,
                 MultiAssetPlace.Tokenizer.class,
-                NewAssetWizardContext.Tokenizer.class,
+                NewGuidedDecisionTableAssetWizardContext.Tokenizer.class,
                 PersonalTasksPlace.Tokenizer.class,
                 GroupTasksPlace.Tokenizer.class,
                 ReportTemplatesPlace.Tokenizer.class,

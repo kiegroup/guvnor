@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server;
 
+import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.server.repository.MailboxService;
@@ -525,6 +526,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
                 p4 );
     }
     
+    public String createNewRule(org.drools.guvnor.client.rpc.NewAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return serviceImplementation.createNewRule( p0 );
+    }
+
     public java.lang.String createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewImportedRule( p0,

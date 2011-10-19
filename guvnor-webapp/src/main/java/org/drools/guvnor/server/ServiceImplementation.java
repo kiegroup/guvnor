@@ -37,6 +37,7 @@ import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -212,6 +213,26 @@ public class ServiceImplementation
 
         }
 
+    }
+    
+    /**
+     * This will create a new asset. It will be saved, but not checked in. The
+     * initial state will be the draft state. Returns the UUID of the asset.
+     */
+    @WebRemote
+    @LoggedIn
+    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
+    public String createNewRule(NewAssetConfiguration configuration) throws SerializationException {
+        String assetName = configuration.getAssetName();
+        String description = configuration.getDescription();
+        String initialCategory = configuration.getInitialCategory();
+        String packageName = configuration.getPackageName();
+        String format = configuration.getFormat();
+        return createNewRule( assetName,
+                              description,
+                              initialCategory,
+                              packageName,
+                              format );
     }
 
     /**

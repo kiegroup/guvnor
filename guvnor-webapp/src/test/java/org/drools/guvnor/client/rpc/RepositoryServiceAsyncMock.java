@@ -40,6 +40,10 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     public void createNewRule(String p0, String p1, String p2, String p3, String p4, AsyncCallback<String> cb) {
         
     }
+    
+    public void createNewRule(NewAssetConfiguration p0, AsyncCallback<String> cb) {
+        
+    }
 
     public void createNewImportedRule(String p0, String p1, AsyncCallback<String> cb) {
         

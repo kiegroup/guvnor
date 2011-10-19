@@ -17,7 +17,7 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.core.client.GWT;
@@ -34,7 +34,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
 
     private SummaryPageView  view      = new SummaryPageViewImpl();
 
-    public SummaryPage(NewAssetWizardContext context,
+    public SummaryPage(NewGuidedDecisionTableAssetWizardContext context,
                        GuidedDecisionTable52 dtable,
                        EventBus eventBus,
                        Validator validator) {
@@ -64,7 +64,7 @@ public class SummaryPage extends AbstractGuidedDecisionTableWizardPage
         view.setAssetName( context.getAssetName() );
         view.setAssetDescription( context.getDescription() );
         view.setPackageName( context.getPackageName() );
-        view.setTableFormat( context.getTableFormat() );
+        view.setTableFormat( ((NewGuidedDecisionTableAssetWizardContext) context).getTableFormat() );
         content.setWidget( view );
     }
 
