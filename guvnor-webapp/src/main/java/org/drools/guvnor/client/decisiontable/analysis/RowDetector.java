@@ -106,9 +106,9 @@ public class RowDetector {
             }
         }
         if (!alwaysDisjoint) {
-            analysis.addConflict("Conflict with row " + (otherRowDetector.getRowIndex() + 1));
+            analysis.addConflictingMatch("Conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
         } else if (!possiblyDisjoint) {
-            System.out.println("Possible conflict with row " + (otherRowDetector.getRowIndex() + 1));
+            System.out.println("Possible conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
         }
     }
 
