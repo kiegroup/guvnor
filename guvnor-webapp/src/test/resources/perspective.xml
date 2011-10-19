@@ -21,7 +21,7 @@
 
   <moduleeditors>
     <moduleeditor>
-      <class>org.drools.guvnor.client.module.moduleeditor.PackageEditor</class>
+      <class>org.drools.guvnor.client.moduleeditor.drools.PackageEditor</class>
       <format>package</format>
       <asseteditorformats>brl,dslr,xls</asseteditorformats>
     </moduleeditor>
