@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,22 +34,44 @@ public class RowDetector {
         this.rowIndex = rowIndex;
     }
 
-    public void putOrMerge(Pattern52 pattern, String factField, FieldDetector fieldDetector) {
+    public long getRowIndex() {
+        return rowIndex;
+    }
+
+    public FieldDetector getFieldDetector(Pattern52 pattern, String factField) {
+        Map<String, FieldDetector> subMap = fieldDetectorMap.get(pattern);
+        if (subMap == null) {
+            return null;
+        }
+        return subMap.get(factField);
+    }
+
+    public void putOrMergeFieldDetector(Pattern52 pattern, String factField, FieldDetector fieldDetector) {
         Map<String, FieldDetector> subMap = fieldDetectorMap.get(pattern);
         if (subMap == null) {
             subMap = new LinkedHashMap<String, FieldDetector>();
             fieldDetectorMap.put(pattern, subMap);
         }
-        FieldDetector existing = subMap.get(factField);
-        if (existing == null) {
-            subMap.put(factField, fieldDetector);
+        FieldDetector originalFieldDetector = subMap.get(factField);
+        FieldDetector mergedFieldDetector;
+        if (originalFieldDetector == null) {
+            mergedFieldDetector = fieldDetector;
         } else {
-            existing.merge(fieldDetector);
+            mergedFieldDetector = originalFieldDetector.merge(fieldDetector);
         }
+        subMap.put(factField, mergedFieldDetector);
     }
 
     public Analysis buildAnalysis(List<RowDetector> rowDetectorList) {
         Analysis analysis = new Analysis();
+        detectImpossibleMatch(analysis);
+        for (RowDetector otherRowDetector : rowDetectorList) {
+            detectConflict(analysis, otherRowDetector);
+        }
+        return analysis;
+    }
+
+    private void detectImpossibleMatch(Analysis analysis) {
         for (Map.Entry<Pattern52, Map<String, FieldDetector>> entry : fieldDetectorMap.entrySet()) {
             Pattern52 pattern = entry.getKey();
             for (Map.Entry<String, FieldDetector> subEntry : entry.getValue().entrySet()) {
@@ -62,7 +82,34 @@ public class RowDetector {
                 }
             }
         }
-        return analysis;
+    }
+
+    private void detectConflict(Analysis analysis, RowDetector otherRowDetector) {
+        boolean alwaysDisjoint = false;
+        boolean possiblyDisjoint = false;
+        for (Map.Entry<Pattern52, Map<String, FieldDetector>> entry : fieldDetectorMap.entrySet()) {
+            Pattern52 pattern = entry.getKey();
+            for (Map.Entry<String, FieldDetector> subEntry : entry.getValue().entrySet()) {
+                String factField = subEntry.getKey();
+                FieldDetector fieldDetector = subEntry.getValue();
+                FieldDetector otherFieldDetector = otherRowDetector.getFieldDetector(pattern, factField);
+                if (otherFieldDetector != null) {
+                    FieldDetector mergedFieldDetector = fieldDetector.merge(otherFieldDetector);
+                    if (mergedFieldDetector.isImpossibleMatch()) {
+                        // If 1 field is always disjoint then the entire 2 rows are disjoint
+                        alwaysDisjoint = true;
+                    }
+                    if (mergedFieldDetector.hasUnrecognizedConstraint()) {
+                        possiblyDisjoint = true;
+                    }
+                }
+            }
+        }
+        if (!alwaysDisjoint) {
+            analysis.addConflict("Conflict with row " + (otherRowDetector.getRowIndex() + 1));
+        } else if (!possiblyDisjoint) {
+            System.out.println("Possible conflict with row " + (otherRowDetector.getRowIndex() + 1));
+        }
     }
 
 }

@@ -21,6 +21,13 @@ public abstract class FieldDetector<T extends FieldDetector> {
     protected boolean hasUnrecognizedConstraint = false;
     protected boolean impossibleMatch = false;
 
+    protected FieldDetector() {
+    }
+
+    protected FieldDetector(T a, T b) {
+        hasUnrecognizedConstraint = a.hasUnrecognizedConstraint() || b.hasUnrecognizedConstraint;
+    }
+
     public boolean hasUnrecognizedConstraint() {
         return hasUnrecognizedConstraint;
     }
@@ -29,8 +36,6 @@ public abstract class FieldDetector<T extends FieldDetector> {
         return impossibleMatch;
     }
 
-    public void merge(T other) {
-        hasUnrecognizedConstraint = hasUnrecognizedConstraint() || other.hasUnrecognizedConstraint;
-    }
+    public abstract T merge(T other);
 
 }

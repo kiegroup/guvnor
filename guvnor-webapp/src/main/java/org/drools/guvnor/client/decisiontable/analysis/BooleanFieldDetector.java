@@ -18,7 +18,7 @@ package org.drools.guvnor.client.decisiontable.analysis;
 
 public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
 
-    public Boolean value;
+    public Boolean value = null;
 
     public BooleanFieldDetector(Boolean value, String operator) {
         if (operator.equals("==")) {
@@ -30,12 +30,22 @@ public class BooleanFieldDetector extends FieldDetector<BooleanFieldDetector> {
         }
     }
 
-    public void merge(BooleanFieldDetector other) {
-        super.merge(other);
-        if (!value.equals(other.value)) {
+    public BooleanFieldDetector(BooleanFieldDetector a, BooleanFieldDetector b) {
+        super(a, b);
+        if (b.value == null) {
+            value = a.value;
+        } else if (a.value == null) {
+            value = b.value;
+        } else if (a.value.equals(b.value)) {
+            value = a.value;
+        } else {
             impossibleMatch = true;
             value = null;
         }
+    }
+
+    public BooleanFieldDetector merge(BooleanFieldDetector other) {
+        return new BooleanFieldDetector(this, other);
     }
 
 }

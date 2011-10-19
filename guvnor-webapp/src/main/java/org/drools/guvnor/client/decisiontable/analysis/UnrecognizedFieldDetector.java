@@ -22,8 +22,16 @@ public class UnrecognizedFieldDetector extends FieldDetector<UnrecognizedFieldDe
         hasUnrecognizedConstraint = true;
     }
 
-    public void merge(UnrecognizedFieldDetector other) {
-        super.merge(other);
+    public UnrecognizedFieldDetector(UnrecognizedFieldDetector a, UnrecognizedFieldDetector b) {
+        super(a, b);
+    }
+
+    public void mergeImpl(UnrecognizedFieldDetector other) {
+        // Do nothing
+    }
+
+    public UnrecognizedFieldDetector merge(UnrecognizedFieldDetector other) {
+        return new UnrecognizedFieldDetector(this, other);
     }
 
 }

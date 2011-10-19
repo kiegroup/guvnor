@@ -56,33 +56,48 @@ public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
         }
     }
 
-    public void merge(NumericFieldDetector other) {
-        super.merge(other);
-        if (from == null) {
-            from = other.from;
-            fromInclusive = other.fromInclusive;
-        } else if (other.from != null) {
-            int comparison = from.compareTo(other.from);
+    public NumericFieldDetector(NumericFieldDetector a, NumericFieldDetector b) {
+        super(a, b);
+        if (b.from == null) {
+            from = a.from;
+            fromInclusive = a.fromInclusive;
+        } else if (a.from == null) {
+            from = b.from;
+            fromInclusive = b.fromInclusive;
+        } else {
+            int comparison = a.from.compareTo(b.from);
             if (comparison < 0) {
-                from = other.from;
-                fromInclusive = other.fromInclusive;
+                from = b.from;
+                fromInclusive = b.fromInclusive;
             } else if (comparison == 0) {
-                fromInclusive = fromInclusive && other.fromInclusive;
+                from = a.from;
+                fromInclusive = a.fromInclusive && b.fromInclusive;
+            } else {
+                from = a.from;
+                fromInclusive = a.fromInclusive;
             }
         }
-        if (to == null) {
-            to = other.to;
-            toInclusive = other.toInclusive;
-        } else if (other.to != null) {
-            int comparison = to.compareTo(other.to);
-            if (comparison > 0) {
-                to = other.to;
-                toInclusive = other.toInclusive;
+        if (b.to == null) {
+            to = a.to;
+            toInclusive = a.toInclusive;
+        } else if (a.to == null) {
+            to = b.to;
+            toInclusive = b.toInclusive;
+        } else {
+            int comparison = a.to.compareTo(b.to);
+            if (comparison < 0) {
+                to = a.to;
+                toInclusive = a.toInclusive;
             } else if (comparison == 0) {
-                toInclusive = toInclusive && other.toInclusive;
+                to = a.to;
+                toInclusive = a.toInclusive && b.toInclusive;
+            } else {
+                to = b.to;
+                toInclusive = b.toInclusive;
             }
         }
-        disallowedList.addAll(other.disallowedList);
+        disallowedList.addAll(a.disallowedList);
+        disallowedList.addAll(b.disallowedList);
         optimizeNotList();
         detectImpossibleMatch();
     }
@@ -118,6 +133,10 @@ public class NumericFieldDetector extends FieldDetector<NumericFieldDetector> {
                 impossibleMatch = true;
             }
         }
+    }
+
+    public NumericFieldDetector merge(NumericFieldDetector other) {
+        return new NumericFieldDetector(this, other);
     }
 
 }

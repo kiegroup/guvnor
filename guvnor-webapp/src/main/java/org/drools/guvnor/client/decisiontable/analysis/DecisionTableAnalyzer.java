@@ -18,9 +18,7 @@ package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
@@ -56,7 +54,7 @@ public class DecisionTableAnalyzer {
                     if (value.hasValue()) {
                         FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
                         String factField = conditionCol.getFactField();
-                        rowDetector.putOrMerge(pattern, factField, fieldDetector);
+                        rowDetector.putOrMergeFieldDetector(pattern, factField, fieldDetector);
                     }
                 }
             }

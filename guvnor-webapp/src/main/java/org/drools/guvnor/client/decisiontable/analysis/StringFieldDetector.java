@@ -41,19 +41,18 @@ public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
         }
     }
 
-    public void merge(StringFieldDetector other) {
-        super.merge(other);
-        if (allowedValueList == null) {
-            allowedValueList = other.allowedValueList;
-        } else if (other.allowedValueList != null) {
-            for (Iterator<String> it = allowedValueList.iterator(); it.hasNext(); ) {
-                String value = it.next();
-                if (!other.allowedValueList.contains(value)) {
-                    it.remove();
-                }
-            }
+    public StringFieldDetector(StringFieldDetector a, StringFieldDetector b) {
+        super(a, b);
+        if (b.allowedValueList == null) {
+            allowedValueList = a.allowedValueList;
+        } else if (a.allowedValueList == null) {
+            allowedValueList = b.allowedValueList;
+        } else {
+            allowedValueList = new ArrayList<String>(a.allowedValueList);
+            allowedValueList.retainAll(b.allowedValueList);
         }
-        disallowedList.addAll(other.disallowedList);
+        disallowedList.addAll(a.disallowedList);
+        disallowedList.addAll(b.disallowedList);
         optimizeAllowedValueList();
         detectImpossibleMatch();
     }
@@ -69,6 +68,10 @@ public class StringFieldDetector extends FieldDetector<StringFieldDetector> {
         if (allowedValueList != null && allowedValueList.isEmpty()) {
             impossibleMatch = true;
         }
+    }
+
+    public StringFieldDetector merge(StringFieldDetector other) {
+        return new StringFieldDetector(this, other);
     }
 
 }

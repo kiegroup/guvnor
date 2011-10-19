@@ -44,16 +44,26 @@ public class EnumFieldDetector extends FieldDetector<EnumFieldDetector> {
                 }
             }
         } else {
+            allowedValueList.addAll(allValueList);
             hasUnrecognizedConstraint = true;
         }
     }
 
-    public void merge(EnumFieldDetector other) {
-        super.merge(other);
-        allowedValueList.retainAll(other.allowedValueList);
+    public EnumFieldDetector(EnumFieldDetector a, EnumFieldDetector b) {
+        super(a, b);
+        allowedValueList.addAll(a.allowedValueList);
+        allowedValueList.retainAll(b.allowedValueList);
+        detectImpossibleMatch();
+    }
+
+    private void detectImpossibleMatch() {
         if (allowedValueList.isEmpty()) {
             impossibleMatch = true;
         }
+    }
+
+    public EnumFieldDetector merge(EnumFieldDetector other) {
+        return new EnumFieldDetector(this, other);
     }
 
 }
