@@ -66,7 +66,9 @@ public class RowDetector {
         Analysis analysis = new Analysis();
         detectImpossibleMatch(analysis);
         for (RowDetector otherRowDetector : rowDetectorList) {
-            detectConflict(analysis, otherRowDetector);
+            if (this != otherRowDetector) {
+                detectConflict(analysis, otherRowDetector);
+            }
         }
         return analysis;
     }
@@ -85,8 +87,8 @@ public class RowDetector {
     }
 
     private void detectConflict(Analysis analysis, RowDetector otherRowDetector) {
-        boolean alwaysDisjoint = false;
-        boolean possiblyDisjoint = false;
+        boolean overlapping = true;
+        boolean hasUnrecognized = false;
         for (Map.Entry<Pattern52, Map<String, FieldDetector>> entry : fieldDetectorMap.entrySet()) {
             Pattern52 pattern = entry.getKey();
             for (Map.Entry<String, FieldDetector> subEntry : entry.getValue().entrySet()) {
@@ -96,19 +98,22 @@ public class RowDetector {
                 if (otherFieldDetector != null) {
                     FieldDetector mergedFieldDetector = fieldDetector.merge(otherFieldDetector);
                     if (mergedFieldDetector.isImpossibleMatch()) {
-                        // If 1 field is always disjoint then the entire 2 rows are disjoint
-                        alwaysDisjoint = true;
+                        // If 1 field is in both and not overlapping then the entire 2 rows are not overlapping
+                        overlapping = false;
                     }
                     if (mergedFieldDetector.hasUnrecognizedConstraint()) {
-                        possiblyDisjoint = true;
+                        // If 1 field is in both and unrecognized, they might or might not be overlapping
+                        hasUnrecognized = true;
                     }
                 }
             }
         }
-        if (!alwaysDisjoint) {
-            analysis.addConflictingMatch("Conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
-        } else if (!possiblyDisjoint) {
-            System.out.println("Possible conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+        if (overlapping) {
+            if (!hasUnrecognized) {
+                analysis.addConflictingMatch("Conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+            } else {
+                System.out.println("Possible conflicting match with row " + (otherRowDetector.getRowIndex() + 1));
+            }
         }
     }
 
