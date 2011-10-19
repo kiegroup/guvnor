@@ -442,6 +442,93 @@ public class DecisionTableAnalyzerTest {
         assertEquals(1, analysisData.get(3).getConflictingMatchSize());
     }
 
+    @Test
+    public void testConflictingMatchCombination() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 ageMinimum = new ConditionCol52();
+        ageMinimum.setFactField("age");
+        ageMinimum.setOperator(">=");
+        ageMinimum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMinimum);
+
+        ConditionCol52 ageMaximum = new ConditionCol52();
+        ageMaximum.setFactField("age");
+        ageMaximum.setOperator("<=");
+        ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMaximum);
+
+        ConditionCol52 approved = new ConditionCol52();
+        approved.setFactField("approved");
+        approved.setOperator("==");
+        approved.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(approved);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52(Boolean.TRUE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(new BigDecimal("21")),
+                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52(Boolean.TRUE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52(new BigDecimal("41")),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(Boolean.TRUE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new BigDecimal("25")),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("5")),
+                        new DTCellValue52("Row 5 description"),
+                        new DTCellValue52(new BigDecimal("26")),
+                        new DTCellValue52(new BigDecimal("60")),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("6")),
+                        new DTCellValue52("Row 6 description"),
+                        new DTCellValue52(new BigDecimal("50")),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(Boolean.FALSE)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(1).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(2).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(3).getConflictingMatchSize());
+        assertEquals(1, analysisData.get(4).getConflictingMatchSize());
+        assertEquals(1, analysisData.get(5).getConflictingMatchSize());
+    }
+
     private SuggestionCompletionEngine buildSuggestionCompletionEngine() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 
