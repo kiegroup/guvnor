@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.asseteditor;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;

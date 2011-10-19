@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.asseteditor.drools;
 
 import java.util.ArrayList;
 import java.util.Arrays;

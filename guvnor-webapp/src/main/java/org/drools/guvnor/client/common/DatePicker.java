@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.drools.guvnor.client.common.DirtyableComposite;
-import org.drools.guvnor.client.common.ValueChanged;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 import com.google.gwt.i18n.client.DateTimeFormat;

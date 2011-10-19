@@ -13,7 +13,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.RuleValidatorWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper</class> 
         <format>dslr</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
@@ -42,14 +42,14 @@
     <!--  end of business rules group-->
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.DrlEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.DrlEditor</class> 
         <format>drl</format>
         <icon>images.technicalRuleAssets()</icon>
         <title>constants.TechnicalRuleAssets()</title>    
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.FunctionEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.FunctionEditor</class> 
         <format>function</format>
         <icon>images.functionAssets()</icon>
         <title>constants.Functions()</title>    
@@ -149,7 +149,7 @@
     </asseteditor>
 
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.WorkingSetEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.WorkingSetEditor</class> 
         <format>workingset</format>
         <icon>images.workingset()</icon>
         <title>constants.WorkingSets()</title>    

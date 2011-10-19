@@ -25,6 +25,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
+import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -41,15 +43,12 @@ import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.ruleeditor.CheckinPopup;
-import org.drools.guvnor.client.ruleeditor.MessageWidget;
-import org.drools.guvnor.client.ruleeditor.RefreshAssetEditorEvent;
-import org.drools.guvnor.client.ruleeditor.RuleValidatorWrapper;
-import org.drools.guvnor.client.ruleeditor.RuleViewerSettings;
 import org.drools.guvnor.client.ruleeditor.WorkingSetSelectorPopup;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.CheckinPopup;
+import org.drools.guvnor.client.widgets.MessageWidget;
 
 import java.util.Set;
 

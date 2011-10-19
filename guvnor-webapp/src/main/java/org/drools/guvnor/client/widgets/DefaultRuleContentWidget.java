@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.widgets;
 
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.event.shared.EventBus;
@@ -92,7 +92,7 @@ public class DefaultRuleContentWidget extends DirtyableComposite
 
     }
 
-    void insertText(String ins) {
+    public void insertText(String ins) {
         int i = text.getCursorPos();
         String left = text.getText().substring(0,
                 i);

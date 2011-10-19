@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.modeldriven.ui;
+package org.drools.guvnor.client.common;
 
 import java.util.Date;
 

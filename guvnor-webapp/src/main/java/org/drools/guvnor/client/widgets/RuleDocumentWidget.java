@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.widgets;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.rpc.Artifact;
