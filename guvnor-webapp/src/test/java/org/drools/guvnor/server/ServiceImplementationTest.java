@@ -48,6 +48,8 @@ import org.drools.guvnor.client.rpc.InboxPageRequest;
 import org.drools.guvnor.client.rpc.InboxPageRow;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -73,6 +75,7 @@ import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.GuidedDecisionTableModelUpgradeHelper;
 import org.drools.repository.AssetItem;
@@ -329,6 +332,63 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                       "an initial desc" );
     }
 
+    @Test
+    public void testCreateNewRuleUsingConfiguration() throws Exception {
+        rulesRepository.createPackage( "testCreateNewRule",
+                                       "desc" );
+        repositoryCategoryService.createCategory( "",
+                                                  "testCreateNewRule",
+                                                  "this is a cat" );
+
+        NewAssetConfiguration config = new NewAssetConfiguration( "testCreateNewRuleName",
+                                                                  "testCreateNewRule",
+                                                                  null,
+                                                                  "an initial desc",
+                                                                  "testCreateNewRule",
+                                                                  AssetFormats.DSL_TEMPLATE_RULE );
+
+        String uuid = serviceImplementation.createNewRule( config );
+        assertNotNull( uuid );
+        assertFalse( "".equals( uuid ) );
+
+        AssetItem dtItem = rulesRepository.loadAssetByUUID( uuid );
+        assertEquals( dtItem.getDescription(),
+                      "an initial desc" );
+    }
+
+    @Test
+    public void testCreateNewGuidedDecisionTableUsingConfiguration() throws Exception {
+        rulesRepository.createPackage( "testCreateNewRule",
+                                       "desc" );
+        repositoryCategoryService.createCategory( "",
+                                                  "testCreateNewRule",
+                                                  "this is a cat" );
+
+        NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( "testCreateNewRuleName",
+                                                                                                        "testCreateNewRule",
+                                                                                                        null,
+                                                                                                        TableFormat.LIMITED_ENTRY,
+                                                                                                        "an initial desc",
+                                                                                                        "testCreateNewRule",
+                                                                                                        AssetFormats.DSL_TEMPLATE_RULE );
+
+        String uuid = serviceImplementation.createNewRule( config );
+        assertNotNull( uuid );
+        assertFalse( "".equals( uuid ) );
+
+        AssetItem dtItem = rulesRepository.loadAssetByUUID( uuid );
+        assertEquals( dtItem.getDescription(),
+                      "an initial desc" );
+
+        RuleAsset asset = this.repositoryAssetService.loadRuleAsset( uuid );
+        GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
+
+        assertNotNull( content );
+        assertEquals( TableFormat.LIMITED_ENTRY,
+                      content.getTableFormat() );
+
+    }
+    
     @Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {

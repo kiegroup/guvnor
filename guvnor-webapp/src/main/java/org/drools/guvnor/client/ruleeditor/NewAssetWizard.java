@@ -443,7 +443,28 @@ public class NewAssetWizard extends FormStylePopup {
                                                                                                               description,
                                                                                                               initialCategory,
                                                                                                               format );
-        return makeSaveCommand( config );
+        //Command to save the asset
+        final Command cmdSave = new Command() {
+
+            public void execute() {
+                RepositoryServiceFactory.getService().createNewRule( config,
+                                                                     createGenericCallbackForOk() );
+            }
+        };
+        
+        //Command to check if the asset already exists, before delegating to save command
+        final Command cmdCheckBeforeSaving = new Command() {
+
+            public void execute() {
+                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                                                                               config.getPackageName(),
+                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
+            }
+
+        };
+        return cmdCheckBeforeSaving;
+        
     }
 
     //Construct a chain of commands to handle saving assets other than a Guided Decision Table
@@ -460,11 +481,6 @@ public class NewAssetWizard extends FormStylePopup {
                                                                         description,
                                                                         initialCategory,
                                                                         format );
-        return makeSaveCommand( config );
-    }
-
-    //Actually make the chain of commands
-    private Command makeSaveCommand(final NewAssetConfiguration config) {
 
         //Command to save the asset
         final Command cmdSave = new Command() {

@@ -45,6 +45,10 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
         
     }
 
+    public void createNewRule(NewGuidedDecisionTableAssetConfiguration p0, AsyncCallback<String> cb) {
+        
+    }
+
     public void createNewImportedRule(String p0, String p1, AsyncCallback<String> cb) {
         
     }

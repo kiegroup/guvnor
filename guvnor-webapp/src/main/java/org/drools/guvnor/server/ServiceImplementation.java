@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.jcr.ItemExistsException;
 import javax.jcr.RepositoryException;
 
@@ -38,6 +40,7 @@ import org.drools.guvnor.client.rpc.LogEntry;
 import org.drools.guvnor.client.rpc.LogPageRow;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PageRequest;
 import org.drools.guvnor.client.rpc.PageResponse;
@@ -47,6 +50,7 @@ import org.drools.guvnor.client.rpc.QueryMetadataPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRequest;
 import org.drools.guvnor.client.rpc.QueryPageRow;
 import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StatePageRequest;
 import org.drools.guvnor.client.rpc.StatePageRow;
 import org.drools.guvnor.client.rpc.TableConfig;
@@ -70,6 +74,7 @@ import org.drools.guvnor.server.util.HtmlCleaner;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -83,9 +88,6 @@ import org.drools.repository.RulesRepositoryException;
 import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.repository.security.PermissionManager;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
@@ -108,27 +110,30 @@ public class ServiceImplementation
     implements
     RepositoryService {
 
-    private static final long                 serialVersionUID            = 510l;
+    private static final long           serialVersionUID = 510l;
 
-    private static final LoggingHelper        log                         = LoggingHelper.getLogger( ServiceImplementation.class );
-
-    @Inject
-    private RulesRepository rulesRepository;
+    private static final LoggingHelper  log              = LoggingHelper.getLogger( ServiceImplementation.class );
 
     @Inject
-    private ServiceSecurity serviceSecurity;
+    private RulesRepository             rulesRepository;
+
+    @Inject
+    private ServiceSecurity             serviceSecurity;
 
     @Inject
     private RepositoryAssetOperations   repositoryAssetOperations;
 
     @Inject
+    private RepositoryAssetService      repositoryAssetService;
+
+    @Inject
     private RepositoryPackageOperations repositoryPackageOperations;
 
     @Inject
-    private Backchannel backchannel;
+    private Backchannel                 backchannel;
 
     @Inject
-    private Identity identity;
+    private Identity                    identity;
 
     @WebRemote
     @LoggedIn
@@ -214,7 +219,7 @@ public class ServiceImplementation
         }
 
     }
-    
+
     /**
      * This will create a new asset. It will be saved, but not checked in. The
      * initial state will be the draft state. Returns the UUID of the asset.
@@ -233,6 +238,39 @@ public class ServiceImplementation
                               initialCategory,
                               packageName,
                               format );
+    }
+
+    /**
+     * This will create a new Guided Decision Table asset. The initial state
+     * will be the draft state. Returns the UUID of the asset. The new Asset
+     * will be SAVED and CHECKED-IN.
+     */
+    @WebRemote
+    @LoggedIn
+    //@Restrict("#{identity.checkPermission(new PackageNameType( packageName ),initialPackage)}")
+    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException {
+        String assetName = configuration.getAssetName();
+        String description = configuration.getDescription();
+        String initialCategory = configuration.getInitialCategory();
+        String packageName = configuration.getPackageName();
+        String format = configuration.getFormat();
+
+        //Create the asset
+        String uuid = createNewRule( assetName,
+                                     description,
+                                     initialCategory,
+                                     packageName,
+                                     format );
+
+        //Set the Table Format and check-in
+        //TODO Is it possible to alter the content and save without checking-in?
+        RuleAsset asset = repositoryAssetService.loadRuleAsset( uuid );
+        GuidedDecisionTable52 content = (GuidedDecisionTable52) asset.getContent();
+        content.setTableFormat( configuration.getTableFormat() );
+        asset.setCheckinComment( "Table Format automatically set to [" + configuration.getTableFormat().toString() + "]" );
+        repositoryAssetService.checkinVersion( asset );
+
+        return uuid;
     }
 
     /**
@@ -293,7 +331,7 @@ public class ServiceImplementation
 
         // TODO: May need to use a filter that acts on both package based and
         // category based.
-        RepositoryFilter filter = new AssetItemFilter(identity);
+        RepositoryFilter filter = new AssetItemFilter( identity );
         AssetItemPageResult result = rulesRepository.findAssetsByState( stateName,
                                                                              false,
                                                                              skip,
@@ -356,16 +394,16 @@ public class ServiceImplementation
         // Add Filter to check Permission
         List<AssetItem> resultList = new ArrayList<AssetItem>();
 
-        RepositoryFilter packageFilter = new PackageFilter(identity);
-        RepositoryFilter categoryFilter = new CategoryFilter(identity);
+        RepositoryFilter packageFilter = new PackageFilter( identity );
+        RepositoryFilter categoryFilter = new CategoryFilter( identity );
 
         while ( it.hasNext() ) {
             AssetItem ai = it.next();
             if ( checkPackagePermissionHelper( packageFilter,
                                                ai,
                                                RoleType.PACKAGE_READONLY.getName() ) || checkCategoryPermissionHelper( categoryFilter,
-                                                                                                              ai,
-                                                                                                              RoleType.ANALYST_READ.getName() ) ) {
+                                                                                                                       ai,
+                                                                                                                       RoleType.ANALYST_READ.getName() ) ) {
                 resultList.add( ai );
             }
         }
@@ -474,7 +512,7 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsPackageReadOnlyWithPackageName( RulesRepository.RULE_GLOBAL_AREA );
         return repositoryPackageOperations.listRulesInPackage( RulesRepository.RULE_GLOBAL_AREA );
     }
-    
+
     @WebRemote
     @LoggedIn
     public String[] listImagesInGlobalArea() throws SerializationException {
@@ -637,13 +675,13 @@ public class ServiceImplementation
         serviceSecurity.checkSecurityIsAdmin();
         return RoleTypes.listAvailableTypes();
     }
-    
+
     @LoggedIn
     public List<String> listAvailablePermissionRoleTypes() {
         serviceSecurity.checkSecurityIsAdmin();
         RoleType[] roleTypes = RoleType.values();
         List<String> values = new ArrayList<String>();
-        for(RoleType roleType: roleTypes){
+        for ( RoleType roleType : roleTypes ) {
             values.add( roleType.getName() );
         }
         return values;
@@ -756,9 +794,11 @@ public class ServiceImplementation
     }
 
     /**
-     * Returns the Spring context elements specified by SpringContextElementsManager
+     * Returns the Spring context elements specified by
+     * SpringContextElementsManager
+     * 
      * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException 
+     * @throws DetailedSerializationException
      */
     public Map<String, String> loadSpringContextElementData() throws DetailedSerializationException {
         try {
@@ -770,11 +810,13 @@ public class ServiceImplementation
                                                       "View server logs for more information" );
         }
     }
-    
+
     /**
-     * Returns the Workitem Definition elements specified by WorkitemDefinitionElementsManager
+     * Returns the Workitem Definition elements specified by
+     * WorkitemDefinitionElementsManager
+     * 
      * @return a Map containing the key,value pairs of data.
-     * @throws DetailedSerializationException 
+     * @throws DetailedSerializationException
      */
     public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException {
         try {
@@ -850,8 +892,8 @@ public class ServiceImplementation
                                                 .withStartRowIndex( request.getStartRowIndex() )
                                                 .withPageRowList( rowList )
                                                 .withLastPage( !bHasMoreRows )
-                                                .buildWithTotalRowCount(-1);//its impossible to know the exact selected count until we'v reached
-                                                                            //the end of iterator
+                                                .buildWithTotalRowCount( -1 );//its impossible to know the exact selected count until we'v reached
+                                                                              //the end of iterator
         long methodDuration = System.currentTimeMillis() - start;
         log.debug( "Queried repository (Metadata) in " + methodDuration + " ms." );
         return response;
@@ -901,7 +943,7 @@ public class ServiceImplementation
                                                                              false,
                                                                              request.getStartRowIndex(),
                                                                              numRowsToReturn,
-                                                                             new AssetItemFilter(identity) );
+                                                                             new AssetItemFilter( identity ) );
         log.debug( "Search time: " + (System.currentTimeMillis() - start) );
 
         // Populate response
@@ -954,7 +996,7 @@ public class ServiceImplementation
     public List<PushResponse> subscribe() {
         return backchannel.subscribe();
     }
-    
+
     /**
      * Check whether an asset exists in a package
      * 

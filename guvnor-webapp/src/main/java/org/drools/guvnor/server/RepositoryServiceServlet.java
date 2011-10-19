@@ -530,6 +530,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.createNewRule( p0 );
     }
 
+    public String createNewRule(org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration p0) throws com.google.gwt.user.client.rpc.SerializationException {
+        return serviceImplementation.createNewRule( p0 );
+    }
+
     public java.lang.String createNewImportedRule(java.lang.String p0,
                                                   java.lang.String p1) throws com.google.gwt.user.client.rpc.SerializationException {
         return serviceImplementation.createNewImportedRule( p0,
