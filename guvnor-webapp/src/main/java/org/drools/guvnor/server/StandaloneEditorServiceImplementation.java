@@ -17,10 +17,11 @@ package org.drools.guvnor.server;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
+import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.rpc.DetailedSerializationException;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
-import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.server.standalonededitor.BRLRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.NewRuleAssetProvider;
 import org.drools.guvnor.server.standalonededitor.RuleAssetProvider;

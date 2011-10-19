@@ -777,7 +777,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
             LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
             LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+            if ( isEqualOrNull( lecOrig.getValue(),
+                                lecEditing.getValue() ) ) {
                 bRedrawHeader = true;
             }
         }
@@ -1035,9 +1036,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return columnData;
     }
 
-    // Check whether two Strings are equal or both null
-    private boolean isEqualOrNull(String s1,
-                                  String s2) {
+    // Check whether two Objects are equal or both null
+    private boolean isEqualOrNull(Object s1,
+                                  Object s2) {
         if ( s1 == null
              && s2 == null ) {
             return true;

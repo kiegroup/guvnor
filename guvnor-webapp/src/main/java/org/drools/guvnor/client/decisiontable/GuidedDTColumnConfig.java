@@ -269,8 +269,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader()
-                        || "".equals( editingCol.getHeader() ) ) {
+                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
@@ -341,6 +340,9 @@ public class GuidedDTColumnConfig extends FormStylePopup {
     }
 
     private DTCellValue52 cloneLimitedEntryValue(DTCellValue52 dcv) {
+        if ( dcv == null ) {
+            return null;
+        }
         DTCellValue52 clone = new DTCellValue52();
         switch ( dcv.getDataType() ) {
             case BOOLEAN :

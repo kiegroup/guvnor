@@ -21,12 +21,12 @@
 
   <moduleeditors>
     <moduleeditor>
-      <class>org.drools.guvnor.client.packages.PackageEditor</class>
+      <class>org.drools.guvnor.client.moduleeditor.drools.PackageEditor</class>
       <format>package</format>
       <asseteditorformats>brl,dslr,xls</asseteditorformats>
     </moduleeditor>
     <moduleeditor>
-      <class>org.drools.guvnor.client.packages.SOAServiceEditor</class>
+      <class>org.drools.guvnor.client.moduleeditor.soa.SOAServiceEditor</class>
       <format>soaservice</format>
       <asseteditorformats>brl</asseteditorformats>
     </moduleeditor>

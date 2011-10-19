@@ -38,12 +38,12 @@ public class AssetEditorConfigurationParserTest {
         boolean foundPropertiesWidgetForDocument = false;
         for(AssetEditorConfiguration config:configList) {
         	if(config.getFormat().equalsIgnoreCase("xml")) {
-                assertEquals("org.drools.guvnor.client.ruleeditor.XmlFileWidget", config.getEditorClass());       		
+                assertEquals("org.drools.guvnor.client.asseteditor.XmlFileWidget", config.getEditorClass());       		
                 assertEquals("images.newFile()", config.getIcon());       		
                 assertEquals("constants.XMLProperties()", config.getTitle());  
                 foundPropertiesWidgetForXML = true;
             } else if (config.getFormat().equalsIgnoreCase("")) {
-                assertEquals("org.drools.guvnor.client.ruleeditor.PropertiesWidget", config.getEditorClass());       		
+                assertEquals("org.drools.guvnor.client.asseteditor.PropertiesWidget", config.getEditorClass());       		
                 assertEquals("images.newFile()", config.getIcon());       		
                 assertEquals("constants.OtherAssetsDocumentation()", config.getTitle());  
                 foundPropertiesWidgetForDocument = true;

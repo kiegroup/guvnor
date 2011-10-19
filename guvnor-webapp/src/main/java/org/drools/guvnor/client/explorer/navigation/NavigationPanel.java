@@ -21,7 +21,7 @@ import com.google.gwt.event.shared.ResettableEventBus;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.perspectives.ChangePerspectiveEvent;
+import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 
 public class NavigationPanel implements ChangePerspectiveEvent.Handler, IsWidget {
 

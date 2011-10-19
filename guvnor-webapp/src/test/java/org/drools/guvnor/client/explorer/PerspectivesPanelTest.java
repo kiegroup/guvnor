@@ -24,12 +24,12 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
-import org.drools.guvnor.client.perspectives.ChangePerspectiveEvent;
-import org.drools.guvnor.client.perspectives.PerspectiveFactory;
-import org.drools.guvnor.client.perspectives.PerspectivesPanel;
-import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
-import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
-import org.drools.guvnor.client.perspectives.runtime.RunTimePerspective;
+import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
+import org.drools.guvnor.client.perspective.PerspectiveFactory;
+import org.drools.guvnor.client.perspective.PerspectivesPanel;
+import org.drools.guvnor.client.perspective.PerspectivesPanelView;
+import org.drools.guvnor.client.perspective.author.AuthorPerspective;
+import org.drools.guvnor.client.perspective.runtime.RunTimePerspective;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;

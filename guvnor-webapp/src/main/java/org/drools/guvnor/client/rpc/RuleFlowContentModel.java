@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.List;
 import java.io.Serializable;
 
-import org.drools.guvnor.client.rulefloweditor.TransferConnection;
-import org.drools.guvnor.client.rulefloweditor.TransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.TransferConnection;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.TransferNode;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 public class RuleFlowContentModel

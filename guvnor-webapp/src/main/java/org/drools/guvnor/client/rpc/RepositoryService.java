@@ -23,6 +23,7 @@ import java.util.Map;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -77,6 +78,20 @@ public interface RepositoryService
                                 String initialPackage,
                                 String format) throws SerializationException;
     
+    /**
+     * Creates a brand new rule with the initial category. Return the UUID of
+     * the item created. This will not check in the rule, but just leave it as
+     * saved in the repo.
+     */
+    public String createNewRule(NewAssetConfiguration configuration) throws SerializationException;
+   
+    /**
+     * Creates a brand new Guided Decision Table rule with the initial category.
+     * Return the UUID of the item created. This will not check in the rule, but
+     * just leave it as saved in the repo.
+     */
+    public String createNewRule(NewGuidedDecisionTableAssetConfiguration configuration) throws SerializationException;
+
     /**
      * Check whether an asset exists in a package
      * 

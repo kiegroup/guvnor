@@ -21,12 +21,13 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Timer;
+
+import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.RuleViewerWrapper;
 import org.drools.guvnor.client.util.Activity;
 
 public class AssetEditorActivity extends Activity {

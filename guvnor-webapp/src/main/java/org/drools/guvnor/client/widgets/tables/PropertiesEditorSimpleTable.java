@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.PropertyHolder;
 import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.guvnor.client.rpc.AbstractPageRow;
-import org.drools.guvnor.client.ruleeditor.PropertyHolder;
 import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable.PropertyHolderAdaptor;
 
 import com.google.gwt.cell.client.FieldUpdater;

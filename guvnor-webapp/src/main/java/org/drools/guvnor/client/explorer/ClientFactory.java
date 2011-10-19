@@ -19,11 +19,11 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
-import org.drools.guvnor.client.perspectives.PerspectiveFactory;
-import org.drools.guvnor.client.perspectives.PerspectivesPanelView;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
+import org.drools.guvnor.client.perspective.PerspectiveFactory;
+import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ActivityMapper;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
 import com.google.gwt.event.shared.EventBus;

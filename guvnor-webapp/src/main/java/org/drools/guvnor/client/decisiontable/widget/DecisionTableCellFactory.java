@@ -17,7 +17,6 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
 
-import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
@@ -26,8 +25,10 @@ import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -114,15 +115,15 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
             }
 
         } else if ( column instanceof ConditionCol52 ) {
-            cell = derieveNewCellFromModel( column );
+            cell = derieveCellFromCondition( (ConditionCol52) column );
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
-            cell = derieveNewCellFromModel( column );
+            cell = derieveCellFromAction( (ActionSetFieldCol52) column );
 
         } else if ( column instanceof ActionInsertFactCol52 ) {
-            cell = derieveNewCellFromModel( column );
+            cell = derieveCellFromAction( (ActionInsertFactCol52) column );
 
-        } else if ( column instanceof AnalysisCol52) {
+        } else if ( column instanceof AnalysisCol52 ) {
             cell = makeRowAnalysisCell();
         }
 
@@ -131,13 +132,35 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
     }
 
-    // Make a new Cell for Condition and Actions columns
-    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveNewCellFromModel(DTColumnConfig52 col) {
+    // Make a new Cell for Condition columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromCondition(ConditionCol52 col) {
 
         //Limited Entry are simply boolean
         if ( col instanceof LimitedEntryCol ) {
             return makeBooleanCell();
         }
+
+        //Operators "is null" and "is not null" require a boolean cell
+        if ( col.getOperator() != null && (col.getOperator().equals( "== null" ) || col.getOperator().equals( "!= null" )) ) {
+            return makeBooleanCell();
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for Actions columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionCol52 col) {
+
+        //Limited Entry are simply boolean
+        if ( col instanceof LimitedEntryCol ) {
+            return makeBooleanCell();
+        }
+
+        return derieveCellFromModel( col );
+    }
+
+    //Get Cell applicable to Model's data-type
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromModel(DTColumnConfig52 col) {
 
         //Extended Entry...
         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = makeTextCell();

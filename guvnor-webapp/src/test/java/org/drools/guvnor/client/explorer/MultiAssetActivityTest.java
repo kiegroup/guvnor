@@ -1,8 +1,9 @@
 package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.event.shared.EventBus;
+
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
 import org.junit.Before;
 import org.junit.Test;
 

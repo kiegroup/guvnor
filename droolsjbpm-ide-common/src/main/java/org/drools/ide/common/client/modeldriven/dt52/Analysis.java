@@ -25,14 +25,14 @@ import java.util.List;
 public class Analysis implements Comparable<Analysis> {
 
     private List<String> impossibleMatchHtmlList = new ArrayList<String>();
-    private List<String> multipleMatchHtmlList = new ArrayList<String>();
+    private List<String> conflictingMatchHtmlList = new ArrayList<String>();
 
     public void addImpossibleMatch(String htmlEntry) {
         impossibleMatchHtmlList.add(htmlEntry);
     }
 
-    public void addMultipleMatch(String htmlEntry) {
-        multipleMatchHtmlList.add(htmlEntry);
+    public void addConflictingMatch(String htmlEntry) {
+        conflictingMatchHtmlList.add(htmlEntry);
     }
 
     public String toHtmlString() {
@@ -45,7 +45,7 @@ public class Analysis implements Comparable<Analysis> {
             }
             htmlBuilder.append(htmlEntry);
         }
-        for (String htmlEntry : multipleMatchHtmlList) {
+        for (String htmlEntry : conflictingMatchHtmlList) {
             if (!first) {
                 htmlBuilder.append(", ");
                 first = false;
@@ -56,20 +56,20 @@ public class Analysis implements Comparable<Analysis> {
         return htmlBuilder.toString();
     }
 
-    public int getWarningSize() {
-        return getImpossibleMatchesSize() + getMultipleMatchesSize();
+    public int getWarningsSize() {
+        return getImpossibleMatchesSize() + getConflictingMatchSize();
     }
 
     public int getImpossibleMatchesSize() {
         return impossibleMatchHtmlList.size();
     }
 
-    public int getMultipleMatchesSize() {
-        return multipleMatchHtmlList.size();
+    public int getConflictingMatchSize() {
+        return conflictingMatchHtmlList.size();
     }
 
     public int compareTo(Analysis other) {
-        return Integer.valueOf(getWarningSize()).compareTo(Integer.valueOf(other.getWarningSize()));
+        return Integer.valueOf(getWarningsSize()).compareTo(Integer.valueOf(other.getWarningsSize()));
     }
 
 }

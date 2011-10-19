@@ -2,8 +2,9 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Widget;
-import org.drools.guvnor.client.ruleeditor.MultiViewEditor;
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+
+import org.drools.guvnor.client.asseteditor.MultiViewEditor;
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 
 public class MultiAssetViewImpl implements MultiAssetView {
 

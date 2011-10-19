@@ -8,7 +8,7 @@ import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
+import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;

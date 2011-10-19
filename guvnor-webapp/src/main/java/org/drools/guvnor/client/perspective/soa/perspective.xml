@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<perspective>
+  <!--  name>soaservice</name>
+  <class>org.drools.guvnor.client.perspectives.soa.SOAPerspective</class>
+  <title>constants.AuthorPerspective()</title-->
+  
+  <NavigationPanelHeader>
+    <icon>images.chartOrganisation()</icon>
+    <title>constants.Services()</title>
+  </NavigationPanelHeader>
+
+  <ModuleTreeHeader>
+    <icon>images.chartOrganisation()</icon>
+    <title>constants.Services()</title>
+  </ModuleTreeHeader>
+
+  <CreateNewMenu>org.drools.guvnor.client.explorer.navigation.modules.ServicesNewAssetMenu
+  </CreateNewMenu>
+
+  <moduleeditors>
+    <moduleeditor>
+      <class>org.drools.guvnor.client.moduleeditor.soa.SOAServiceEditor</class>
+      <format>soaservice</format>
+      <asseteditorformats>xmlschema,samplemessages,wsdl,bpel.jar,bpmn2,esbconfig,smooks,scenariodiagram,choreographymodel,deploymentarchive,jmsdestination,javasource,doc,other</asseteditorformats>
+    </moduleeditor>
+  </moduleeditors>
+     
+
+</perspective>  

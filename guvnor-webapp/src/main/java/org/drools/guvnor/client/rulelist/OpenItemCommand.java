@@ -16,7 +16,7 @@
 
 package org.drools.guvnor.client.rulelist;
 
-import org.drools.guvnor.client.ruleeditor.MultiViewRow;
+import org.drools.guvnor.client.asseteditor.MultiViewRow;
 
 /**
  * This is used by the list view to "open" an item.

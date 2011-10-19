@@ -50,12 +50,12 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.widgets.assetviewer.AssetViewerActivity;
 import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
 
 /**

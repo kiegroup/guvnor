@@ -32,9 +32,12 @@ import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.guvnor.client.rpc.NewAssetConfiguration;
+import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
@@ -329,7 +332,8 @@ public class NewAssetWizard extends FormStylePopup {
      */
     void ok() {
 
-        if ( "".equals( getFormat() ) ) {
+        String assetFormat = getFormat();
+        if ( "".equals( assetFormat ) ) {
             Window.alert( constants.PleaseEnterAFormatFileType() );
             return;
         }
@@ -347,50 +351,69 @@ public class NewAssetWizard extends FormStylePopup {
             packageName = packageSelector.getSelectedPackage();
         }
 
-        //If using a Wizard we don't attempt to create and save the asset until the Wizard is completed. Using commands make this simpler
         Command cmd = null;
-        if (guidedDecisionTableOptions.isUsingWizard()) {
-            cmd = makeWizardSaveCommand( assetName,
-                                         packageName,
-                                         guidedDecisionTableOptions.getTableFormat(),
-                                         packageSelector.getSelectedPackageUUID(),
-                                         description.getText(),
-                                         initialCategory,
-                                         getFormat() );
+        //The Guided Decision Table asset type requires additional parameters to be set
+        if ( assetFormat.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
+
+            //If using a Wizard we don't attempt to create and save the asset until the Wizard is completed. Using commands make this simpler
+            if ( guidedDecisionTableOptions.isUsingWizard() ) {
+                cmd = makeGuidedDecisionTableWizardSaveCommand( assetName,
+                                                                packageName,
+                                                                packageSelector.getSelectedPackageUUID(),
+                                                                guidedDecisionTableOptions.getTableFormat(),
+                                                                description.getText(),
+                                                                initialCategory,
+                                                                assetFormat );
+            } else {
+                cmd = makeGuidedDecisionTableSaveCommand( assetName,
+                                                          packageName,
+                                                          packageSelector.getSelectedPackageUUID(),
+                                                          guidedDecisionTableOptions.getTableFormat(),
+                                                          description.getText(),
+                                                          initialCategory,
+                                                          assetFormat );
+            }
+
         } else {
-            cmd = makeSaveCommand( assetName,
-                                   packageName,
-                                   packageSelector.getSelectedPackageUUID(),
-                                   description.getText(),
-                                   initialCategory,
-                                   getFormat() );
+
+            //All other asset types
+            cmd = makeGeneralAssetSaveCommand( assetName,
+                                               packageName,
+                                               packageSelector.getSelectedPackageUUID(),
+                                               description.getText(),
+                                               initialCategory,
+                                               assetFormat );
         }
         cmd.execute();
 
     }
 
-    //Construct a chain of commands to handle saving the new asset, depending on whether the asset is constructed with a Wizard or not
-    private Command makeWizardSaveCommand(final String assetName,
-                                          final String packageName,
-                                          final TableFormat tableFormat,
-                                          final String packageUUID,
-                                          final String description,
-                                          final String initialCategory,
-                                          final String format) {
+    //Construct a chain of commands to handle saving the new asset with a Wizard
+    private Command makeGuidedDecisionTableWizardSaveCommand(final String assetName,
+                                                             final String packageName,
+                                                             final String packageUUID,
+                                                             final TableFormat tableFormat,
+                                                             final String description,
+                                                             final String initialCategory,
+                                                             final String format) {
 
+        //Command to invoke wizard, if asset does not already exist
         final Command cmdInvokeWizard = new Command() {
 
             public void execute() {
-                NewAssetWizardContext config = new NewAssetWizardContext( assetName,
-                                                                          packageName,
-                                                                          packageUUID,
-                                                                          tableFormat,
-                                                                          description,
-                                                                          initialCategory,
-                                                                          format );
-                clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( config ) );
+                NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
+                                                                                                                packageName,
+                                                                                                                packageUUID,
+                                                                                                                tableFormat,
+                                                                                                                description,
+                                                                                                                initialCategory,
+                                                                                                                format );
+                NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
+                clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
             }
         };
+
+        //Command to check if the asset already exists, before delegating to wizard command
         final Command cmdCheckBeforeInvokingWizard = new Command() {
 
             public void execute() {
@@ -404,47 +427,82 @@ public class NewAssetWizard extends FormStylePopup {
         return cmdCheckBeforeInvokingWizard;
     }
 
-    private Command makeSaveCommand(final String assetName,
-                                    final String packageName,
-                                    final String packageUUID,
-                                    final String description,
-                                    final String initialCategory,
-                                    final String format) {
+    //Construct a chain of commands to handle saving a Guided Decision Table
+    private Command makeGuidedDecisionTableSaveCommand(final String assetName,
+                                                       final String packageName,
+                                                       final String packageUUID,
+                                                       final TableFormat tableFormat,
+                                                       final String description,
+                                                       final String initialCategory,
+                                                       final String format) {
 
+        final NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
+                                                                                                              packageName,
+                                                                                                              packageUUID,
+                                                                                                              tableFormat,
+                                                                                                              description,
+                                                                                                              initialCategory,
+                                                                                                              format );
+        //Command to save the asset
+        final Command cmdSave = new Command() {
+
+            public void execute() {
+                RepositoryServiceFactory.getService().createNewRule( config,
+                                                                     createGenericCallbackForOk() );
+            }
+        };
+        
+        //Command to check if the asset already exists, before delegating to save command
         final Command cmdCheckBeforeSaving = new Command() {
 
             public void execute() {
                 LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( assetName,
-                                                                                   packageName,
-                                                                                   createGenericCallBackForCheckingIfExists( makeSaveCommand( assetName,
-                                                                                                                                              packageName,
-                                                                                                                                              description,
-                                                                                                                                              initialCategory,
-                                                                                                                                              format ) ) );
+                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                                                                               config.getPackageName(),
+                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
             }
 
         };
         return cmdCheckBeforeSaving;
+        
     }
 
-    private Command makeSaveCommand(final String assetName,
-                                    final String packageName,
-                                    final String description,
-                                    final String initialCategory,
-                                    final String format) {
+    //Construct a chain of commands to handle saving assets other than a Guided Decision Table
+    private Command makeGeneralAssetSaveCommand(final String assetName,
+                                                final String packageName,
+                                                final String packageUUID,
+                                                final String description,
+                                                final String initialCategory,
+                                                final String format) {
+
+        final NewAssetConfiguration config = new NewAssetConfiguration( assetName,
+                                                                        packageName,
+                                                                        packageUUID,
+                                                                        description,
+                                                                        initialCategory,
+                                                                        format );
+
+        //Command to save the asset
         final Command cmdSave = new Command() {
 
             public void execute() {
-                RepositoryServiceFactory.getService().createNewRule( assetName,
-                                                                     description,
-                                                                     initialCategory,
-                                                                     packageName,
-                                                                     format,
+                RepositoryServiceFactory.getService().createNewRule( config,
                                                                      createGenericCallbackForOk() );
             }
         };
-        return cmdSave;
+
+        //Command to check if the asset already exists, before delegating to save command
+        final Command cmdCheckBeforeSaving = new Command() {
+
+            public void execute() {
+                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
+                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
+                                                                               config.getPackageName(),
+                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
+            }
+
+        };
+        return cmdCheckBeforeSaving;
     }
 
     /**

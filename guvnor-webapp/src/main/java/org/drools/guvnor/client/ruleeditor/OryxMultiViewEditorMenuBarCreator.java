@@ -1,5 +1,6 @@
 package org.drools.guvnor.client.ruleeditor;
 
+import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.core.client.GWT;

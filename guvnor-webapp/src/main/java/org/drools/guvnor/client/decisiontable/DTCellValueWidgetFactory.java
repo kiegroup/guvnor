@@ -18,8 +18,8 @@ package org.drools.guvnor.client.decisiontable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.drools.guvnor.client.common.PopupDatePicker;
 import org.drools.guvnor.client.modeldriven.ui.NumericTextBox;
-import org.drools.guvnor.client.modeldriven.ui.PopupDatePicker;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;

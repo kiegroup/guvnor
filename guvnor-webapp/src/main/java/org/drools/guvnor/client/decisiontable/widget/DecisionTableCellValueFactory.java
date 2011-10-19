@@ -25,6 +25,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
@@ -215,6 +216,14 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             return DTDataTypes52.BOOLEAN;
         }
 
+        //Operators "is null" and "is not null" require a boolean cell
+        if ( column instanceof ConditionCol52 ) {
+            ConditionCol52 cc = (ConditionCol52) column;
+            if ( cc.getOperator() != null && (cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" )) ) {
+                return DTDataTypes52.BOOLEAN;
+            }
+        }
+
         //Extended Entry...
         return model.getTypeSafeType( column,
                                       sce );
@@ -229,9 +238,12 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return cv;
     }
 
-    public CellValue<Analysis> makeNewAnalysisCellValue(int iRow, int iCol) {
+    public CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
+                                                        int iCol) {
         Analysis analysis = new Analysis();
-        return new CellValue<Analysis>(analysis, iRow, iCol );
+        return new CellValue<Analysis>( analysis,
+                                        iRow,
+                                        iCol );
     }
 
 }

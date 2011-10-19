@@ -16,8 +16,8 @@
 
 package org.drools.guvnor.server.util;
 
-import org.drools.guvnor.client.ruleeditor.PropertiesHolder;
-import org.drools.guvnor.client.ruleeditor.PropertyHolder;
+import org.drools.guvnor.client.asseteditor.PropertiesHolder;
+import org.drools.guvnor.client.asseteditor.PropertyHolder;
 
 import java.util.ArrayList;
 import java.util.List;

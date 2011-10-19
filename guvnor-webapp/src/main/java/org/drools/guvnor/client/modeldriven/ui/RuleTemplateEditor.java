@@ -25,13 +25,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 

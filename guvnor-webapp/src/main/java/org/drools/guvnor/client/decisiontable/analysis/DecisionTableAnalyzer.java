@@ -17,9 +17,8 @@
 package org.drools.guvnor.client.decisiontable.analysis;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
@@ -43,67 +42,57 @@ public class DecisionTableAnalyzer {
 
     private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
         List<Analysis> analysisData = new ArrayList<Analysis>(data.size());
+        List<RowDetector> rowDetectorList = new ArrayList<RowDetector>(data.size());
         for (List<DTCellValue52> row : data) {
-            long rowIndex = row.get(0).getNumericValue().longValue();
-            Analysis analysis = new Analysis();
-            analysisData.add(analysis);
+            RowDetector rowDetector = new RowDetector(row.get(0).getNumericValue().longValue() - 1);
             for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
                 List<ConditionCol52> conditions = pattern.getConditions();
-                Map<String, DisjointDetector> detectorMap = new HashMap<String, DisjointDetector>(
-                        conditions.size());
                 for (ConditionCol52 conditionCol : conditions) {
                     int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
                     DTCellValue52 value = row.get(columnIndex);
+                    // Blank cells are ignored
                     if (value.hasValue()) {
-                        DisjointDetector newDetector = buildDetector(modelWithWrongData, conditionCol, value);
-                        if (newDetector != null) {
-                            String factField = conditionCol.getFactField();
-                            DisjointDetector detector = detectorMap.get(factField);
-                            if (detector == null) {
-                                detector = newDetector;
-                                detectorMap.put(factField, detector);
-                            } else {
-                                boolean previousImpossibleMatch = detector.isImpossibleMatch();
-                                detector.merge(newDetector);
-                                if (!previousImpossibleMatch && detector.isImpossibleMatch()) {
-                                    analysis.addImpossibleMatch("Impossible match on " + factField);
-                                }
-                            }
-                        }
+                        FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
+                        String factField = conditionCol.getFactField();
+                        rowDetector.putOrMergeFieldDetector(pattern, factField, fieldDetector);
                     }
                 }
             }
+            rowDetectorList.add(rowDetector);
+        }
+        for (RowDetector rowDetector : rowDetectorList) {
+            analysisData.add(rowDetector.buildAnalysis(rowDetectorList));
         }
         return analysisData;
     }
 
-    private DisjointDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
+    private FieldDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
             DTCellValue52 value) {
-        DisjointDetector newDetector;
+        FieldDetector newDetector;
         String operator = conditionCol.getOperator();
         if (conditionCol instanceof LimitedEntryCol) {
-            newDetector = new BooleanDisjointDetector(value.getBooleanValue(), operator);
+            newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
         } else {
-            //Extended Entry...
+            // Extended Entry...
             String type = model.getType( conditionCol, sce );
-            //Retrieve "Guvnor" enums
+            // Retrieve "Guvnor" enums
             String[] allValueList = model.getValueList( conditionCol, sce );
             if (allValueList.length != 0) {
-                // use vals
-                newDetector = new EnumDisjointDetector(allValueList, value.getStringValue(), operator);
+                // Guvnor enum
+                newDetector = new EnumFieldDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
             } else if ( type == null ) {
-                // Null means the field is free-format
-                newDetector = null;
+                // type null means the field is free-format
+                newDetector = new UnrecognizedFieldDetector(operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-                newDetector = new StringDisjointDetector(value.getStringValue(), operator);
+                newDetector = new StringFieldDetector(value.getStringValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                newDetector = new NumericDisjointDetector(value.getNumericValue(), operator);
+                newDetector = new NumericFieldDetector(value.getNumericValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                newDetector = new BooleanDisjointDetector(value.getBooleanValue(), operator);
+                newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
             } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                newDetector = new DateDisjointDetector(value.getDateValue(), operator);
+                newDetector = new DateFieldDetector(value.getDateValue(), operator);
             } else {
-                newDetector = null;
+                newDetector = new UnrecognizedFieldDetector(operator);
             }
         }
         return newDetector;

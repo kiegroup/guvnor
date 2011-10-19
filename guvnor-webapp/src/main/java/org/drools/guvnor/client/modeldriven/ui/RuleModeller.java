@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.ClickableLabel;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
@@ -42,7 +43,6 @@ import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.IAction;
 import org.drools.ide.common.client.modeldriven.brl.IPattern;

@@ -18,6 +18,8 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.EditorWidget;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -28,8 +30,6 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.EditorWidget;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.testing.CallFixtureMap;
 import org.drools.ide.common.client.modeldriven.testing.ExecutionTrace;

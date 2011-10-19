@@ -48,7 +48,7 @@
   <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 
   <generate-with class="org.drools.guvnor.gwtutil.PerspectiveFactoryGenerator">
-    <when-type-assignable class="org.drools.guvnor.client.perspectives.PerspectiveFactory"/>
+    <when-type-assignable class="org.drools.guvnor.client.perspective.PerspectiveFactory"/>
   </generate-with>  
   
   <generate-with class="org.drools.guvnor.gwtutil.AssetEditorFactoryGenerator">

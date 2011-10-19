@@ -20,13 +20,14 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
+import org.drools.guvnor.client.common.DatePickerTextBox;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.DatePickerTextBox;
 import org.drools.guvnor.client.rpc.MetaDataQuery;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 import org.drools.guvnor.client.widgets.tables.QueryPagedTable;

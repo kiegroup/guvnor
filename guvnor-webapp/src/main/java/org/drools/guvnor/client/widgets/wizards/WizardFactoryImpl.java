@@ -18,6 +18,7 @@ package org.drools.guvnor.client.widgets.wizards;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
+import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.NewGuidedDecisionTableWizard;
 
 import com.google.gwt.event.shared.EventBus;
@@ -41,7 +42,7 @@ public class WizardFactoryImpl
     public Wizard getWizard(WizardContext context,
                             WizardActivityView.Presenter presenter) {
         if ( context instanceof NewAssetWizardContext ) {
-            NewAssetWizardContext newAssetContext = (NewAssetWizardContext) context;
+            NewGuidedDecisionTableAssetWizardContext newAssetContext = (NewGuidedDecisionTableAssetWizardContext) context;
             if ( newAssetContext.getFormat().equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
                 return new NewGuidedDecisionTableWizard( clientFactory,
                                                          eventBus,

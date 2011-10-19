@@ -29,16 +29,17 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
-import org.drools.guvnor.client.common.DefaultContentUploadEditor;
+
+import org.drools.guvnor.client.asseteditor.DefaultContentUploadEditor;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
-import org.drools.guvnor.client.perspectives.Perspective;
-import org.drools.guvnor.client.perspectives.author.AuthorPerspective;
+import org.drools.guvnor.client.perspective.Perspective;
+import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.RuleViewer;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.util.ModuleEditorConfiguration;
@@ -207,19 +208,19 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.indent();
         sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
         sourceWriter.indent();
-        sourceWriter.println( "return new org.drools.guvnor.client.perspectives.author.AuthorPerspective();");
+        sourceWriter.println( "return new org.drools.guvnor.client.perspective.author.AuthorPerspective();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
         
         sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
         sourceWriter.indent();
-        sourceWriter.println( "return new org.drools.guvnor.client.perspectives.soa.SOAPerspective();");
+        sourceWriter.println( "return new org.drools.guvnor.client.perspective.soa.SOAPerspective();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
         sourceWriter.println( "if(\"runtime\".equals(perspectiveType)) {");
         sourceWriter.indent();        
-        sourceWriter.println( "return new org.drools.guvnor.client.perspectives.runtime.RunTimePerspective();");
+        sourceWriter.println( "return new org.drools.guvnor.client.perspective.runtime.RunTimePerspective();");
         sourceWriter.outdent();
         sourceWriter.println( "}");
 
@@ -251,13 +252,13 @@ public class PerspectiveFactoryGenerator extends Generator {
 
     private static Perspective getPerspective(String perspectiveType) {
         if ("author".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspectives.author.AuthorPerspective();
+            return new org.drools.guvnor.client.perspective.author.AuthorPerspective();
         }
         if ("soaservice".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspectives.soa.SOAPerspective();
+            return new org.drools.guvnor.client.perspective.soa.SOAPerspective();
         }
         if ("runtime".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspectives.runtime.RunTimePerspective();
+            return new org.drools.guvnor.client.perspective.runtime.RunTimePerspective();
         }
         return null;
     }
