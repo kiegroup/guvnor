@@ -19,13 +19,13 @@ package org.drools.guvnor.server.builder;
 import java.util.Collection;
 
 import org.drools.definition.process.Node;
-import org.drools.guvnor.client.rulefloweditor.ElementContainerTransferNode;
-import org.drools.guvnor.client.rulefloweditor.HumanTaskTransferNode;
-import org.drools.guvnor.client.rulefloweditor.SplitNode;
-import org.drools.guvnor.client.rulefloweditor.SplitTransferNode;
-import org.drools.guvnor.client.rulefloweditor.TransferNode;
-import org.drools.guvnor.client.rulefloweditor.TransferNode.Type;
-import org.drools.guvnor.client.rulefloweditor.WorkItemTransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.ElementContainerTransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.HumanTaskTransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.SplitNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.SplitTransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.TransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.WorkItemTransferNode;
+import org.drools.guvnor.client.asseteditor.drools.ruleflow.TransferNode.Type;
 import org.drools.process.core.Work;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
@@ -157,7 +157,7 @@ public class RuleFlowProcessBuilder {
     }
 
     private static void updateConstraint(Constraint constraint,
-                                         org.drools.guvnor.client.rulefloweditor.SplitNode.Constraint from) {
+                                         org.drools.guvnor.client.asseteditor.drools.ruleflow.SplitNode.Constraint from) {
 
         constraint.setConstraint( from.getConstraint() );
 

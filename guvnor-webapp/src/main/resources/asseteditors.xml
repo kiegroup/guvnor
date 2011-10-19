@@ -78,35 +78,35 @@
     
     <!--  bpel editor group   -->   
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.BusinessProcessEditor</class> 
         <format>bpmn</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.processeditor.BusinessProcessEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.BusinessProcessEditor</class> 
         <format>bpmn2</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.BPELWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.BPELWrapper</class> 
         <format>bpel.jar</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.RuleFlowWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
@@ -156,14 +156,14 @@
     </asseteditor>   
             
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.springcontext.SpringContextEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.springcontext.SpringContextEditor</class> 
         <format>springContext</format>
         <icon>images.enumeration()</icon>
         <title>constants.SpringContext()</title>    
     </asseteditor>    
     
     <asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.workitem.WorkitemDefinitionEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.workitem.WorkitemDefinitionEditor</class> 
         <format>wid</format>
         <icon>images.enumeration()</icon>
         <title>constants.WorkItemDefinition()</title>    

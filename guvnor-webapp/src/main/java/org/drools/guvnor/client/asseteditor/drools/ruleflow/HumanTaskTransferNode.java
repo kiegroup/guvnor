@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.guvnor.client.asseteditor.drools.ruleflow;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
+public class HumanTaskTransferNode extends TransferNode {
 
-public interface StandaloneEditorServiceAsync {
+    public Map<String, String> parameters = new HashMap<String, String>();
 
-    void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
 
 }

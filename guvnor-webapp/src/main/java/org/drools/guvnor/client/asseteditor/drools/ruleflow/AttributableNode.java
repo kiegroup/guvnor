@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.guvnor.client.asseteditor.drools.ruleflow;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import java.util.Map;
 
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
+public interface AttributableNode {
 
-public interface StandaloneEditorServiceAsync {
+    Map<String, String> getParameters();
 
-    void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
+    void addAttribute(String key,
+                      String value);
+
+    void setAttributes(Map<String, String> map);
 
 }

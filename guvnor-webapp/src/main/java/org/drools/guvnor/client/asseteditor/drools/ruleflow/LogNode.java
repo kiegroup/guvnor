@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rpc;
+package org.drools.guvnor.client.asseteditor.drools.ruleflow;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import org.drools.guvnor.client.resources.FlowImages;
 
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.resources.client.ImageResource;
 
-public interface StandaloneEditorServiceAsync {
+public class LogNode extends WorkItemNode {
 
-    void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
+    private static FlowImages images = GWT.create( FlowImages.class );
 
+    @Override
+    public ImageResource getImagePath() {
+        return images.action();
+    }
 }

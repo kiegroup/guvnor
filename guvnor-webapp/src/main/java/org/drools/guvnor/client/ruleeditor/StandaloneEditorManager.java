@@ -11,6 +11,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.standalone.RealAssetsMultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
+import org.drools.guvnor.client.asseteditor.drools.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -20,9 +23,6 @@ import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
-import org.drools.guvnor.client.ruleeditor.standalone.RealAssetsMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.ruleeditor.standalone.StandaloneEditorInvocationParameters;
-import org.drools.guvnor.client.ruleeditor.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
 
 import java.util.Arrays;

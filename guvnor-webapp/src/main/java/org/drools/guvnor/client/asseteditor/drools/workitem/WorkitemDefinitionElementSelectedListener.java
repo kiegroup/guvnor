@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2011 JBoss Inc..
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.drools.guvnor.client.asseteditor.drools.workitem;
 
-package org.drools.guvnor.client.rpc;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
-
-public interface StandaloneEditorServiceAsync {
-
-    void getInvocationParameters(String parametersUUID, AsyncCallback<StandaloneEditorInvocationParameters> asyncCallback);
-    void getAsstesDRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-    void getAsstesBRL(RuleAsset[] assets, AsyncCallback<String[]> asyncCallback);
-
+public interface WorkitemDefinitionElementSelectedListener {
+    public void onElementSelected(String elementName, String pasteValue);
 }
