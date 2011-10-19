@@ -1707,5 +1707,201 @@ public class GuidedDTDRLPersistenceTest {
                                   index + 1 );
         assertFalse( indexRule2 > -1 );
     }
+    
+    @Test
+    public void testLHSIsNullOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.EXTENDED_ENTRY );
+        dt.setTableName( "extended-entry" );
 
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "== null" );
+        p1.getConditions().add( cc1 );
+
+        ConditionCol52 cc2 = new ConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "== null" );
+        p1.getConditions().add( cc2 );
+
+        ConditionCol52 cc3 = new ConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        cc3.setFactField( "dateOfBirth" );
+        cc3.setOperator( "== null" );
+        p1.getConditions().add( cc3 );
+        
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true, true},
+                                                           new Object[]{2l, "desc", false, false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == null , age == null , dateOfBirth == null )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLHSIsNotNullOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.EXTENDED_ENTRY );
+        dt.setTableName( "extended-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        ConditionCol52 cc1 = new ConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "!= null" );
+        p1.getConditions().add( cc1 );
+
+        ConditionCol52 cc2 = new ConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "!= null" );
+        p1.getConditions().add( cc2 );
+
+        ConditionCol52 cc3 = new ConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        cc3.setFactField( "dateOfBirth" );
+        cc3.setOperator( "!= null" );
+        p1.getConditions().add( cc3 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true, true},
+                                                           new Object[]{2l, "desc", false, false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name != null , age != null , dateOfBirth != null )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLimitedEntryLHSIsNullOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "== null" );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "== null" );
+        p1.getConditions().add( cc2 );
+
+        LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        cc3.setFactField( "dateOfBirth" );
+        cc3.setOperator( "== null" );
+        p1.getConditions().add( cc3 );
+        
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true, true},
+                                                           new Object[]{2l, "desc", false, false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name == null , age == null , dateOfBirth == null )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testLimitedEntryLHSIsNotNullOperator() {
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+        dt.setTableFormat( TableFormat.LIMITED_ENTRY );
+        dt.setTableName( "limited-entry" );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Smurf" );
+        dt.getConditionPatterns().add( p1 );
+
+        LimitedEntryConditionCol52 cc1 = new LimitedEntryConditionCol52();
+        cc1.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        cc1.setFactField( "name" );
+        cc1.setOperator( "!= null" );
+        p1.getConditions().add( cc1 );
+
+        LimitedEntryConditionCol52 cc2 = new LimitedEntryConditionCol52();
+        cc2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc2.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        cc2.setFactField( "age" );
+        cc2.setOperator( "!= null" );
+        p1.getConditions().add( cc2 );
+
+        LimitedEntryConditionCol52 cc3 = new LimitedEntryConditionCol52();
+        cc3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        cc3.setFieldType( SuggestionCompletionEngine.TYPE_DATE );
+        cc3.setFactField( "dateOfBirth" );
+        cc3.setOperator( "!= null" );
+        p1.getConditions().add( cc3 );
+
+        dt.setData( upgrader.makeDataLists( new Object[][]{
+                                                           new Object[]{1l, "desc", true, true, true},
+                                                           new Object[]{2l, "desc", false, false, false}
+                                                           } ) );
+
+        GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
+        String drl = p.marshal( dt );
+
+        int index = -1;
+        index = drl.indexOf( "Smurf( name != null , age != null , dateOfBirth != null )" );
+        assertTrue( index > -1 );
+
+        index = drl.indexOf( "Smurf( )",
+                             index + 1 );
+        assertFalse( index > -1 );
+    }
+    
 }
