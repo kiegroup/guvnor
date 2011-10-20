@@ -32,7 +32,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.DefaultMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;

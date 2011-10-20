@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -35,6 +33,8 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
 import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.NewGuidedDecisionTableAssetWizardContext;

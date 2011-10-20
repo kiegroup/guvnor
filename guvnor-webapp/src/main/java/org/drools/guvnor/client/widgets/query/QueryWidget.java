@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.query;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;

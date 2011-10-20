@@ -19,7 +19,7 @@ package org.drools.guvnor.client.widgets.tables;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.InboxIncomingPageRow;
 import org.drools.guvnor.client.rpc.InboxPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;

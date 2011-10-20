@@ -31,7 +31,6 @@ import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;
-import org.drools.guvnor.client.ruleeditor.ConstraintEditor;
 import org.drools.ide.common.client.factconstraints.ConstraintConfiguration;
 import org.drools.ide.common.client.factconstraints.helper.ConstraintsContainer;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;

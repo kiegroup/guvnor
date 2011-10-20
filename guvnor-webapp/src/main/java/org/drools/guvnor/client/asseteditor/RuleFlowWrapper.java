@@ -38,7 +38,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.client.ruleeditor.RuleFlowUploadWidget;
 import org.drools.guvnor.client.util.DecoratedDisclosurePanel;
 
 public class RuleFlowWrapper extends Composite

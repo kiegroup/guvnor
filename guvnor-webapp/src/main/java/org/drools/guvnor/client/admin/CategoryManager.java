@@ -16,13 +16,13 @@
 
 package org.drools.guvnor.client.admin;
 
-import org.drools.guvnor.client.categorynav.CategoryEditor;
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
+import org.drools.guvnor.client.widgets.categorynav.CategoryEditor;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.messages.Constants;
 
 import com.google.gwt.user.client.Command;

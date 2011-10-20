@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.categorynav;
+package org.drools.guvnor.client.widgets.categorynav;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.messages.Constants;

@@ -20,7 +20,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.AnalysisReportLine;
 import org.drools.guvnor.client.rpc.Cause;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.ui.HTML;

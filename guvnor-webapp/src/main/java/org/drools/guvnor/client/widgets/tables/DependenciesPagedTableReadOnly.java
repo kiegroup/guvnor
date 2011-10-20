@@ -17,7 +17,7 @@
 package org.drools.guvnor.client.widgets.tables;
 
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.user.cellview.client.CellTable;

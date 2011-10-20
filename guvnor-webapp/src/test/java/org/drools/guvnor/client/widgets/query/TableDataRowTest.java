@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.rulelist;
+package org.drools.guvnor.client.widgets.query;
 
 import static org.junit.Assert.assertEquals;
 

@@ -27,6 +27,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;
+import org.drools.guvnor.client.asseteditor.drools.WorkingSetSelectorPopup;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -43,7 +44,6 @@ import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.client.ruleeditor.WorkingSetSelectorPopup;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;

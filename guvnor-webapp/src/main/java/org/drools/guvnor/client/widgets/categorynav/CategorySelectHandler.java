@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.categorynav;
+package org.drools.guvnor.client.widgets.categorynav;
 
 /**
  * This represents an event of a category being selected.

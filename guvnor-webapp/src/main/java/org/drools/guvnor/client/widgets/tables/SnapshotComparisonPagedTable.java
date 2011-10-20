@@ -24,7 +24,7 @@ import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
 import org.drools.guvnor.client.rpc.SnapshotComparisonPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;

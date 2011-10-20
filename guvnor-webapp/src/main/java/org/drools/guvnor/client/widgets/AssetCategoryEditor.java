@@ -16,8 +16,6 @@
 
 package org.drools.guvnor.client.widgets;
 
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DirtyableFlexTable;
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -26,6 +24,8 @@ import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.MetaData;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;

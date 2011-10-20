@@ -24,8 +24,6 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -34,6 +32,8 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
 
 import java.util.ArrayList;

@@ -23,8 +23,6 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
@@ -42,6 +40,8 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
 import java.util.HashMap;
 import java.util.Iterator;
