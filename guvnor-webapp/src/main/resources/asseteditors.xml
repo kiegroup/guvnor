@@ -78,7 +78,7 @@
     
     <!--  bpel editor group   -->   
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.RuleFlowWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    

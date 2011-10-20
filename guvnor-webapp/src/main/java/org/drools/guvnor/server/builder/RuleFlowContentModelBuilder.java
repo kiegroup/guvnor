@@ -18,25 +18,13 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
-import org.drools.guvnor.client.asseteditor.drools.ruleflow.*;
+import org.drools.guvnor.client.asseteditor.ruleflow.*;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.process.core.Work;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.impl.ConnectionRef;
-import org.jbpm.workflow.core.node.ActionNode;
-import org.jbpm.workflow.core.node.CompositeNode;
-import org.jbpm.workflow.core.node.EndNode;
-import org.jbpm.workflow.core.node.EventNode;
-import org.jbpm.workflow.core.node.FaultNode;
-import org.jbpm.workflow.core.node.ForEachNode;
-import org.jbpm.workflow.core.node.HumanTaskNode;
 import org.jbpm.workflow.core.node.*;
-import org.jbpm.workflow.core.node.RuleSetNode;
-import org.jbpm.workflow.core.node.StartNode;
-import org.jbpm.workflow.core.node.SubProcessNode;
-import org.jbpm.workflow.core.node.TimerNode;
-import org.jbpm.workflow.core.node.WorkItemNode;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -266,7 +254,7 @@ public class RuleFlowContentModelBuilder {
         return tn;
     }
 
-    private static org.drools.guvnor.client.asseteditor.drools.ruleflow.SplitNode.Constraint getConstraint(Constraint constraint) {
+    private static org.drools.guvnor.client.asseteditor.ruleflow.SplitNode.Constraint getConstraint(Constraint constraint) {
 
         SplitNode.Constraint c = new SplitNode.Constraint();
 
