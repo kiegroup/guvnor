@@ -254,6 +254,19 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                       asf,
                                                                                                       false );
                                             ed.show();
+                                        } else if ( c instanceof ActionRetractFactCol52 ) {
+                                            final ActionRetractFactCol52 arf = (ActionRetractFactCol52) c;
+                                            ActionRetractFactPopup ed = new ActionRetractFactPopup( guidedDecisionTable,
+                                                                                                    new GenericColumnCommand() {
+                                                                                                        public void execute(DTColumnConfig52 column) {
+                                                                                                            dtable.updateColumn( arf,
+                                                                                                                                 (ActionRetractFactCol52) column );
+                                                                                                            refreshActionsWidget();
+                                                                                                        }
+                                                                                                    },
+                                                                                                    arf,
+                                                                                                    false );
+                                            ed.show();
                                         }
 
                                     }
@@ -624,6 +637,10 @@ public class GuidedDecisionTableWidget extends Composite
                                                  //Remove pattern if it contains zero conditions
                                                  if ( origPattern.getConditions().size() == 0 ) {
                                                      guidedDecisionTable.getConditionPatterns().remove( origPattern );
+
+                                                     //Signal patterns changed event to Decision Table Widget
+                                                     PatternsChangedEvent pce = new PatternsChangedEvent( guidedDecisionTable.getConditionPatterns() );
+                                                     eventBus.fireEvent( pce );
                                                  }
 
                                                  //Update UI

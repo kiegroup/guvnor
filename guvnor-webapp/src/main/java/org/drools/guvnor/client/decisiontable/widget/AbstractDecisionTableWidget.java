@@ -39,6 +39,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
@@ -650,6 +651,62 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Update an ActionRetractFactCol52 column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy (not clone) of the original column containing the
+     *            modified values
+     */
+    public void updateColumn(final ActionRetractFactCol52 origColumn,
+                             final ActionRetractFactCol52 editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bRedrawHeader = false;
+        DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        // Schedule redraw event after column has been redrawn
+        if ( bRedrawHeader ) {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                public void execute() {
+                    widget.getHeaderWidget().redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
      * Update a Condition column
      * 
      * @param origPattern
@@ -1153,6 +1210,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setUpdate( editingCol.isUpdate() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionRetractFactCol52 col,
+                                     final ActionRetractFactCol52 editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
