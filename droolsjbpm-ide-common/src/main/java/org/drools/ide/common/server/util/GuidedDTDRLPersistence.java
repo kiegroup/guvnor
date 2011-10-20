@@ -164,11 +164,11 @@ public class GuidedDTDRLPersistence {
                 } else if ( c instanceof ActionRetractFactCol52 ) {
                     ActionRetractFactCol52 rf = (ActionRetractFactCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
-                                                             rf.getBoundName() );
+                                                             cell );
                     if ( a == null ) {
                         a = new LabelledAction();
-                        a.action = new ActionRetractFact( rf.getBoundName() );
-                        a.boundName = rf.getBoundName();
+                        a.action = new ActionRetractFact( cell );
+                        a.boundName = cell;
                         actions.add( a );
                     }
                 } else if ( c instanceof ActionSetFieldCol52 ) {

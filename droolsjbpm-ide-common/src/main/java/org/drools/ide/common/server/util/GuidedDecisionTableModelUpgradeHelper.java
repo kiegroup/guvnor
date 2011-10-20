@@ -112,6 +112,18 @@ public class GuidedDecisionTableModelUpgradeHelper
         //Copy across data
         newDTModel.setData( makeDataLists( legacyDTModel.data ) );
 
+        //Copy the boundName for ActionRetractFactCol into the data of the new Guided Decision Table model
+        final int DATA_COLUMN_OFFSET = legacyDTModel.conditionCols.size() + legacyDTModel.getMetadataCols().size() + legacyDTModel.attributeCols.size() + GuidedDecisionTable.INTERNAL_ELEMENTS;
+        for ( int iCol = 0; iCol < legacyDTModel.actionCols.size(); iCol++ ) {
+            ActionCol lc = legacyDTModel.actionCols.get( iCol );
+            if ( lc instanceof ActionRetractFactCol ) {
+                String boundName = ((ActionRetractFactCol) lc).boundName;
+                for ( List<DTCellValue52> row : newDTModel.getData() ) {
+                    row.get( DATA_COLUMN_OFFSET + iCol ).setStringValue( boundName );
+                }
+            }
+        }
+
         return newDTModel;
     }
 
@@ -292,7 +304,6 @@ public class GuidedDecisionTableModelUpgradeHelper
 
     private ActionRetractFactCol52 makeNewColumn(ActionRetractFactCol c) {
         ActionRetractFactCol52 nc = new ActionRetractFactCol52();
-        nc.setBoundName( c.boundName );
         nc.setDefaultValue( c.defaultValue );
         nc.setHeader( c.header );
         nc.setHideColumn( c.hideColumn );

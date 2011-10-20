@@ -25,6 +25,7 @@ import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -35,9 +36,11 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
     private VerticalDecisionTableHeaderWidget header;
 
     public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
-                                       SuggestionCompletionEngine sce) {
+                                       SuggestionCompletionEngine sce,
+                                       EventBus eventBus) {
         super( ctrls,
-               sce );
+               sce, 
+               eventBus );
 
         VerticalPanel vp = new VerticalPanel();
 

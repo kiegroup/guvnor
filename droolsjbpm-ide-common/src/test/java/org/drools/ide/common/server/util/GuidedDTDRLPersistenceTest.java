@@ -44,10 +44,10 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
@@ -114,7 +114,6 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
-        ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
         ActionSetFieldCol52 set = new ActionSetFieldCol52();
@@ -131,8 +130,8 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( set2 );
 
         dt.setData( upgrader.makeDataLists( new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
-                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
+                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2" },
+                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "age > 7", "6.60", "", "gooVal1", null}
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -280,7 +279,6 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
-        ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
         ActionSetFieldCol52 set = new ActionSetFieldCol52();
@@ -297,8 +295,8 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( set2 );
 
         dt.setData( upgrader.makeDataLists( new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", null},
-                new String[]{"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", ""}
+                new String[]{"1", "desc", "42", "33", "michael, manik", "age * 0.2", "age > 7", "6.60", "true", "gooVal1", "f2"},
+                new String[]{"2", "desc", "", "39", "bob, frank", "age * 0.3", "age > 7", "6.60", "", "gooVal1", null}
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -365,7 +363,6 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( ins );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
-        ret.setBoundName( "f2" );
         dt.getActionCols().add( ret );
 
         ActionSetFieldCol52 set = new ActionSetFieldCol52();
@@ -382,8 +379,8 @@ public class GuidedDTDRLPersistenceTest {
         dt.getActionCols().add( set2 );
 
         dt.setData( upgrader.makeDataLists( new String[][]{
-                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", null},
-                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", ""}
+                new String[]{"1", "desc", "42", "33", "michael", "age * 0.2", "BAM", "6.60", "true", "gooVal1", "f2" },
+                new String[]{"2", "desc", "", "39", "bob", "age * 0.3", "BAM", "6.60", "", "gooVal1", null}
         } ) );
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
@@ -1264,7 +1261,6 @@ public class GuidedDTDRLPersistenceTest {
         cols.add( asf2 );
 
         ActionRetractFactCol52 ret = new ActionRetractFactCol52();
-        ret.setBoundName( "ret" );
         cols.add( ret );
 
         ActionInsertFactCol52 ins1 = new ActionInsertFactCol52();
@@ -1314,7 +1310,7 @@ public class GuidedDTDRLPersistenceTest {
 
         // examine the retract
         ActionRetractFact a2 = (ActionRetractFact) rm.rhs[1];
-        assertEquals( "ret",
+        assertEquals( "retract",
                       a2.variableName );
 
         // examine the insert

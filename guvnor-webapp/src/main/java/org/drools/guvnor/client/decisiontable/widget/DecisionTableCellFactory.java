@@ -19,6 +19,7 @@ import java.math.BigDecimal;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
+import org.drools.guvnor.client.decisiontable.cells.PopupBoundPatternDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
@@ -27,6 +28,7 @@ import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
@@ -36,6 +38,8 @@ import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+
+import com.google.gwt.event.shared.EventBus;
 
 /**
  * A Factory to provide the Cells for given coordinate for Decision Tables.
@@ -47,6 +51,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
 
+    //Event Bus on which cells can subscribe to events
+    private EventBus              eventBus;
+
     /**
      * Construct a Cell Factory for a specific Decision Table
      * 
@@ -56,16 +63,23 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      *            MergableGridWidget to which cells will send their updates
      * @param model
      *            The Decision Table model to assist data-type derivation
+     * @param eventBus
+     *            An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
                                     MergableGridWidget<DTColumnConfig52> grid,
-                                    GuidedDecisionTable52 model) {
+                                    GuidedDecisionTable52 model,
+                                    EventBus eventBus) {
         super( sce,
                grid );
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
+        }
+        this.eventBus = eventBus;
     }
 
     /**
@@ -123,6 +137,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveCellFromAction( (ActionInsertFactCol52) column );
 
+        } else if ( column instanceof ActionRetractFactCol52 ) {
+            cell = derieveCellFromAction( (ActionRetractFactCol52) column );
+
         } else if ( column instanceof AnalysisCol52 ) {
             cell = makeRowAnalysisCell();
         }
@@ -157,6 +174,20 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         }
 
         return derieveCellFromModel( col );
+    }
+
+    // Make a new Cell for Actions columns
+    private DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> derieveCellFromAction(ActionRetractFactCol52 col) {
+
+        //Limited Entry are simply boolean
+        if ( col instanceof LimitedEntryCol ) {
+            return makeBooleanCell();
+        }
+
+        //Drop down of possible patterns
+        PopupBoundPatternDropDownEditCell pudd = new PopupBoundPatternDropDownEditCell( eventBus );
+        pudd.setPatterns( model.getConditionPatterns() );
+        return new DecoratedGridCellValueAdaptor<String>( pudd );
     }
 
     //Get Cell applicable to Model's data-type

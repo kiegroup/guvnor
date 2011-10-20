@@ -55,6 +55,7 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -76,6 +77,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected DecisionTableCellFactory                    cellFactory;
     protected DecisionTableCellValueFactory               cellValueFactory;
     protected DecisionTableControlsWidget                 dtableCtrls;
+    protected final EventBus                              eventBus;
 
     protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
 
@@ -85,7 +87,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param sce
      */
     public AbstractDecisionTableWidget(DecisionTableControlsWidget dtableCtrls,
-                                       SuggestionCompletionEngine sce) {
+                                       SuggestionCompletionEngine sce,
+                                       EventBus eventBus) {
 
         if ( dtableCtrls == null ) {
             throw new IllegalArgumentException( "dtableControls cannot be null" );
@@ -96,6 +99,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.sce = sce;
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
+        this.eventBus = eventBus;
     }
 
     /**
@@ -282,7 +286,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.model = model;
         this.cellFactory = new DecisionTableCellFactory( sce,
                                                          widget.getGridWidget(),
-                                                         this.model );
+                                                         this.model,
+                                                         this.eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
 

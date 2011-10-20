@@ -62,7 +62,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * This is a configuration editor for a column in a the guided decision table.
  */
-public class GuidedDTColumnConfig extends FormStylePopup {
+public class ConditionPopup extends FormStylePopup {
 
     private static Constants           constants                        = ((Constants) GWT.create( Constants.class ));
     private static Images              images                           = (Images) GWT.create( Images.class );
@@ -88,7 +88,7 @@ public class GuidedDTColumnConfig extends FormStylePopup {
 
     private InfoPopup                  fieldLabelInterpolationInfo      = getPredicateHint();
 
-    public GuidedDTColumnConfig(SuggestionCompletionEngine sce,
+    public ConditionPopup(SuggestionCompletionEngine sce,
                                 final GuidedDecisionTable52 model,
                                 final ConditionColumnCommand refreshGrid,
                                 final ConditionCol52 col,

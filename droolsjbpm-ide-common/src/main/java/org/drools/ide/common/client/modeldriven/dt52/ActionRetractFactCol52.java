@@ -15,19 +15,16 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
+/** 
+ * A column representing the retraction of a Fact.
+ */
 public class ActionRetractFactCol52 extends ActionCol52 {
 
-    /**
-     * The name of the fact to be retracted.
-     */
-    private String boundName;
-
-    public String getBoundName() {
-        return boundName;
-    }
-
-    public void setBoundName(String boundName) {
-        this.boundName = boundName;
-    }
-
+    private static final long serialVersionUID = 510l;
+    
+    //Columns not implementing LimitedEntryCol are for Extended Entry Decision Tables 
+    //for which the values are held in the table data. Consequentially the identifier 
+    //for the Fact being retracted will be contained in the table data. This class
+    //is therefore effectively a marker-interface for this type of action.
+    
 }

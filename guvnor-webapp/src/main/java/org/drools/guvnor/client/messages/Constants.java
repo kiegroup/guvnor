@@ -2538,4 +2538,8 @@ public interface Constants
     
     String BindingDescription();
     
+    String RetractAnExistingFact();
+    
+    String ColumnConfigurationRetractAFact();
+    
 }
