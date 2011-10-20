@@ -175,10 +175,6 @@
           </webResources>
           <!-- Only excludes them from the war file, not from the exploded directory -->
           <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
-          <archive>
-            <!-- TODO Workaround for bug in seam 3.1.0.Beta2 (fixed in next) https://issues.jboss.org/browse/SOLDER-119 -->
-            <manifestFile>${project.basedir}/src/main/webapp/META-INF/MANIFEST.MF</manifestFile>
-          </archive>
         </configuration>
       </plugin>
       <plugin>
@@ -398,16 +394,6 @@
     <dependency>
       <groupId>org.jboss.seam.security</groupId>
       <artifactId>seam-security</artifactId>
-      <version>${seam.version}</version>
-    </dependency>
-    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-88 fixed in 3.1.0.CR1 -->
-      <groupId>org.jboss.seam.transaction</groupId>
-      <artifactId>seam-transaction</artifactId>
-      <version>${seam.version}</version>
-    </dependency>
-    <dependency><!-- TODO should be a transitive dependency on seam-security https://issues.jboss.org/browse/SEAMSECURITY-89 fixed in 3.1.0.CR1 -->
-      <groupId>org.jboss.seam.international</groupId>
-      <artifactId>seam-international</artifactId>
       <version>${seam.version}</version>
     </dependency>
     <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->

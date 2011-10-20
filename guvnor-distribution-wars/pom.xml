@@ -39,11 +39,6 @@
             <descriptor>src/main/assembly/assembly-guvnor-jboss-as-7_0.xml</descriptor>
             <descriptor>src/main/assembly/assembly-guvnor-tomcat-6_0.xml</descriptor>
           </descriptors>
-          <archive>
-            <manifestEntries><!-- TODO alternative fix that the fix in guvnor-webapp/pom.xlm https://issues.jboss.org/browse/SOLDER-119 -->
-               <Dependencies>org.jboss.logging,org.jboss.logmanager</Dependencies>
-            </manifestEntries>
-          </archive>
         </configuration>
       </plugin>
     </plugins>
