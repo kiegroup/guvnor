@@ -176,7 +176,7 @@
           <!-- Only excludes them from the war file, not from the exploded directory -->
           <packagingExcludes>WEB-INF/classes/org/drools/guvnor/gwtutil/**</packagingExcludes>
           <archive>
-            <!-- Workaround for bug in seam 3.1.0.Beta2 (fixed in next) https://issues.jboss.org/browse/SOLDER-119 -->
+            <!-- TODO Workaround for bug in seam 3.1.0.Beta2 (fixed in next) https://issues.jboss.org/browse/SOLDER-119 -->
             <manifestFile>${project.basedir}/src/main/webapp/META-INF/MANIFEST.MF</manifestFile>
           </archive>
         </configuration>
