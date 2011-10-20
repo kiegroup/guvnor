@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.admin;
+package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import org.drools.guvnor.client.common.PrettyFormLayout;

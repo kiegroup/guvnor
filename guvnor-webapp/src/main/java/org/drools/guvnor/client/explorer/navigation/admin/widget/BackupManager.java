@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.admin;
+package org.drools.guvnor.client.explorer.navigation.admin.widget;
 
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.HTMLFileManagerFields;
