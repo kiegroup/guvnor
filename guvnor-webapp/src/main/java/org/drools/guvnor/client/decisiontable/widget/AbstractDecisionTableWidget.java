@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;

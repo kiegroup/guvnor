@@ -28,6 +28,8 @@ import com.google.gwt.user.client.ui.*;
 
 import org.drools.guvnor.client.asseteditor.drools.RuleValidatorWrapper;
 import org.drools.guvnor.client.asseteditor.drools.WorkingSetSelectorPopup;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -36,8 +38,6 @@ import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.explorer.navigation.qa.VerifierResultWidget;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.RuleModelEditor;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.moduleeditor.drools.PackageBuilderWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;

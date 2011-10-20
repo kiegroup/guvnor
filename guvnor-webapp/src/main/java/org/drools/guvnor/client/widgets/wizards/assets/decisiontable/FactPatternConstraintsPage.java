@@ -18,9 +18,9 @@ package org.drools.guvnor.client.widgets.wizards.assets.decisiontable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
-import org.drools.guvnor.client.factmodel.ModelNameHelper;
 import org.drools.guvnor.client.widgets.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.ConditionsDefinedEvent;
 import org.drools.guvnor.client.widgets.wizards.assets.decisiontable.events.DuplicatePatternsEvent;

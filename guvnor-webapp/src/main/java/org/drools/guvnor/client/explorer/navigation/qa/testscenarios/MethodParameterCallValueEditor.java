@@ -18,13 +18,13 @@ package org.drools.guvnor.client.explorer.navigation.qa.testscenarios;
 
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.EnumDropDown;
 import org.drools.guvnor.client.common.DirtyableComposite;
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.EnumDropDown;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.util.NumbericFilterKeyPressHandler;
 import org.drools.ide.common.client.modeldriven.DropDownData;

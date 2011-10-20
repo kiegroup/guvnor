@@ -20,6 +20,7 @@ import java.util.List;
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
 import org.drools.guvnor.client.asseteditor.SaveEventListener;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
@@ -29,7 +30,6 @@ import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.Images;

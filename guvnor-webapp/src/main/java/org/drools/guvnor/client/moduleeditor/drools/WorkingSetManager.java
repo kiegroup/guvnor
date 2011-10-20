@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.modeldriven.SetFactTypeFilter;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.WorkingSetConfigData;

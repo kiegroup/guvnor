@@ -17,10 +17,10 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.cells.AnalysisCell;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;

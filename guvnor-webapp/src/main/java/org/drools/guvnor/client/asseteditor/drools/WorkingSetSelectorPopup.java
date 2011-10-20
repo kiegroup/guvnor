@@ -23,9 +23,10 @@ import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.ListBox;
+
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;

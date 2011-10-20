@@ -21,12 +21,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPOperatorsDropdown;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.modeldriven.HumanReadable;
-import org.drools.guvnor.client.modeldriven.ui.CEPOperatorsDropdown;
-import org.drools.guvnor.client.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;

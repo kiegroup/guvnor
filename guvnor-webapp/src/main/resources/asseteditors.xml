@@ -6,7 +6,7 @@
 	
     <!--  business rules group   -->   
     <asseteditor>
-        <class>org.drools.guvnor.client.modeldriven.ui.RuleModeller</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller</class> 
         <format>brl</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
@@ -34,7 +34,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleTemplateEditor</class> 
         <format>template</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
@@ -70,7 +70,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.factmodel.FactModelsWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.factmodel.FactModelsWidget</class> 
         <format>model.drl</format>
         <icon>images.modelAsset()</icon>
         <title>constants.Model()</title>    
