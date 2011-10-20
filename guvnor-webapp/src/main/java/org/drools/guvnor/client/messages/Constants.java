@@ -2542,4 +2542,6 @@ public interface Constants
     
     String ColumnConfigurationRetractAFact();
     
+    String NoPatternBindingsAvailable();
+    
 }

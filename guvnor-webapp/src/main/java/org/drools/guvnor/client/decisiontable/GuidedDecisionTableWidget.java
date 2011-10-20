@@ -45,6 +45,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionInsertFactCol52;
@@ -103,7 +104,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private enum ActionTypes {
         UPDATE_FACT_FIELD,
-        INSERT_FACT_FACT,
+        INSERT_FACT_FIELD,
         RETRACT_FACT,
         WORKITEM
     }
@@ -288,7 +289,7 @@ public class GuidedDecisionTableWidget extends Composite
                 choice.addItem( constants.SetTheValueOfAField(),
                                 ActionTypes.UPDATE_FACT_FIELD.name() );
                 choice.addItem( constants.SetTheValueOfAFieldOnANewFact(),
-                                ActionTypes.INSERT_FACT_FACT.name() );
+                                ActionTypes.INSERT_FACT_FIELD.name() );
                 choice.addItem( constants.RetractAnExistingFact(),
                                 ActionTypes.RETRACT_FACT.name() );
                 Button ok = new Button( "OK" );
@@ -297,7 +298,7 @@ public class GuidedDecisionTableWidget extends Composite
                         String s = choice.getValue( choice.getSelectedIndex() );
                         if ( s.equals( ActionTypes.UPDATE_FACT_FIELD.name() ) ) {
                             showSet();
-                        } else if ( s.equals( ActionTypes.UPDATE_FACT_FIELD.name() ) ) {
+                        } else if ( s.equals( ActionTypes.INSERT_FACT_FIELD.name() ) ) {
                             showInsert();
                         } else if ( s.equals( ActionTypes.RETRACT_FACT.name() ) ) {
                             showRetract();
@@ -386,7 +387,9 @@ public class GuidedDecisionTableWidget extends Composite
     private ActionRetractFactCol52 makeNewActionRetractFact() {
         switch ( guidedDecisionTable.getTableFormat() ) {
             case LIMITED_ENTRY :
-                return new LimitedEntryActionRetractFactCol52();
+                LimitedEntryActionRetractFactCol52 ler = new LimitedEntryActionRetractFactCol52();
+                ler.setValue( new DTCellValue52() );
+                return ler;
             default :
                 return new ActionRetractFactCol52();
         }

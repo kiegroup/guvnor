@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
@@ -161,16 +162,7 @@ public class GuidedDTDRLPersistence {
                                                                  cell,
                                                                  ac.getType() );
                     ins.addFieldValue( val );
-                } else if ( c instanceof ActionRetractFactCol52 ) {
-                    ActionRetractFactCol52 rf = (ActionRetractFactCol52) c;
-                    LabelledAction a = findByLabelledAction( actions,
-                                                             cell );
-                    if ( a == null ) {
-                        a = new LabelledAction();
-                        a.action = new ActionRetractFact( cell );
-                        a.boundName = cell;
-                        actions.add( a );
-                    }
+
                 } else if ( c instanceof ActionSetFieldCol52 ) {
                     ActionSetFieldCol52 sf = (ActionSetFieldCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
@@ -196,6 +188,12 @@ public class GuidedDTDRLPersistence {
                                                                  cell,
                                                                  sf.getType() );
                     asf.addFieldValue( val );
+
+                } else if ( c instanceof ActionRetractFactCol52 ) {
+                    LabelledAction a = new LabelledAction();
+                    a.action = new ActionRetractFact( cell );
+                    a.boundName = cell;
+                    actions.add( a );
                 }
             }
         }
@@ -206,11 +204,16 @@ public class GuidedDTDRLPersistence {
         }
     }
 
+    //Labelled Actions are used to group actions on the same bound Fact. Only 
+    //ActionSetField and ActionUpdateField need to be grouped in this manner.
     private LabelledAction findByLabelledAction(List<LabelledAction> actions,
                                                 String boundName) {
         for ( LabelledAction labelledAction : actions ) {
-            if ( labelledAction.boundName.equals( boundName ) ) {
-                return labelledAction;
+            IAction action = labelledAction.action;
+            if ( action instanceof ActionFieldList ) {
+                if ( labelledAction.boundName.equals( boundName ) ) {
+                    return labelledAction;
+                }
             }
         }
         return null;

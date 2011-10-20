@@ -18,8 +18,10 @@ package org.drools.guvnor.client.decisiontable.cells;
 import java.util.List;
 
 import org.drools.guvnor.client.decisiontable.widget.PatternsChangedEvent;
+import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.Element;
@@ -40,6 +42,8 @@ public class PopupBoundPatternDropDownEditCell extends
         AbstractPopupEditCell<String, String>
     implements
     PatternsChangedEvent.Handler {
+
+    private Constants     constants = GWT.create( Constants.class );
 
     private final ListBox listBox;
 
@@ -94,11 +98,20 @@ public class PopupBoundPatternDropDownEditCell extends
                 listBox.addItem( boundName );
             }
         }
+        listBox.setEnabled( listBox.getItemCount() > 0 );
+        if ( listBox.getItemCount() == 0 ) {
+            listBox.addItem( constants.NoPatternBindingsAvailable() );
+        }
     }
 
     // Commit the change
     @Override
     protected void commit() {
+
+        //If there are no pattern bindings don't update the model
+        if ( !listBox.isEnabled() ) {
+            return;
+        }
 
         // Update value
         String value = null;

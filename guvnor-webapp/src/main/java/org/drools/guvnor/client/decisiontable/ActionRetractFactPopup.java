@@ -15,16 +15,13 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -46,7 +43,6 @@ public class ActionRetractFactPopup extends FormStylePopup {
     private ActionRetractFactCol52 editingCol;
     private GuidedDecisionTable52  model;
 
-    //TODO Limited Entry support, show pattern drop-down
     public ActionRetractFactPopup(final GuidedDecisionTable52 model,
                                   final GenericColumnCommand refreshGrid,
                                   final ActionRetractFactCol52 col,
@@ -56,6 +52,24 @@ public class ActionRetractFactPopup extends FormStylePopup {
 
         setTitle( constants.ColumnConfigurationRetractAFact() );
         setModal( false );
+
+        //Show available pattern bindings, if Limited Entry
+        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
+            final LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) editingCol;
+            final ListBox patterns = loadBoundFacts( ler.getValue().getStringValue() );
+            patterns.addClickHandler( new ClickHandler() {
+
+                public void onClick(ClickEvent event) {
+                    int index = patterns.getSelectedIndex();
+                    if ( index > -1 ) {
+                        ler.getValue().setStringValue( patterns.getValue( index ) );
+                    }
+                }
+
+            } );
+            addAttribute( constants.ColumnHeaderDescription(),
+                          patterns );
+        }
 
         //Column header
         final TextBox header = new TextBox();
@@ -116,7 +130,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
         ActionRetractFactCol52 clone = null;
         if ( col instanceof LimitedEntryCol ) {
             clone = new LimitedEntryActionRetractFactCol52();
-            DTCellValue52 dcv = cloneLimitedEntryValue( ((LimitedEntryCol) col).getValue() );
+            DTCellValue52 dcv = new DTCellValue52( ((LimitedEntryCol) col).getValue().getStringValue() );
             ((LimitedEntryCol) clone).setValue( dcv );
         } else {
             clone = new ActionRetractFactCol52();
@@ -125,48 +139,26 @@ public class ActionRetractFactPopup extends FormStylePopup {
         clone.setHideColumn( col.isHideColumn() );
         return clone;
     }
-    
-    private DTCellValue52 cloneLimitedEntryValue(DTCellValue52 dcv) {
-        if ( dcv == null ) {
-            return null;
-        }
-        DTCellValue52 clone = new DTCellValue52();
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                clone.setBooleanValue( dcv.getBooleanValue() );
-                break;
-            case DATE :
-                clone.setDateValue( dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                clone.setNumericValue( dcv.getNumericValue() );
-                break;
-            case STRING :
-                clone.setStringValue( dcv.getStringValue() );
-        }
-        return clone;
-    }
 
-    private void makeLimitedValueWidget() {
-        //TODO Support Limited Entry
-        //TODO This will be a list of bound facts from which to select
-    }
-
-    private ListBox loadBoundFacts() {
-        Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( !p.isNegated() && !"".equals( p.getBoundName() ) ) {
-                facts.add( p.getBoundName() );
+    private ListBox loadBoundFacts(String binding) {
+        ListBox listBox = new ListBox();
+        listBox.addItem( constants.Choose() );
+        for ( int index = 0; index < model.getConditionPatterns().size(); index++ ) {
+            Pattern52 p = model.getConditionPatterns().get( index );
+            String boundName = p.getBoundName();
+            if ( !"".equals( boundName ) ) {
+                listBox.addItem( boundName );
+                if ( boundName.equals( binding ) ) {
+                    listBox.setSelectedIndex( index );
+                }
             }
         }
-
-        ListBox box = new ListBox();
-        for ( Iterator<String> iterator = facts.iterator(); iterator.hasNext(); ) {
-            String b = iterator.next();
-            box.addItem( b );
+        listBox.setEnabled( listBox.getItemCount() > 1 );
+        if ( listBox.getItemCount() == 1 ) {
+            listBox.clear();
+            listBox.addItem( constants.NoPatternBindingsAvailable() );
         }
-
-        return box;
+        return listBox;
     }
 
 }
