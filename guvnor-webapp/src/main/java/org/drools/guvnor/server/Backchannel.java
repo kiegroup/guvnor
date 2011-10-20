@@ -45,8 +45,9 @@ public class Backchannel {
     @Inject
     private Credentials credentials;
 
-    @Inject
-    private HttpSessionStatus sessionStatus;
+    // TODO fixme GUVNOR-1681
+//    @Inject
+//    private HttpSessionStatus sessionStatus;
 
     @PostConstruct
     public void postConstruct() {
@@ -65,15 +66,15 @@ public class Backchannel {
      * @return never null, an empty list if there's nothing to tell
      */
     public List<PushResponse> subscribe() {
-        if (sessionStatus.isActive()) {
+//        if (sessionStatus.isActive()) {
             try {
                 return await(credentials.getUsername());
             } catch (InterruptedException e) {
                 return new ArrayList<PushResponse>();
             }
-        } else {
-            return new ArrayList<PushResponse>();
-        }
+//        } else {
+//            return new ArrayList<PushResponse>();
+//        }
     }
 
     public List<PushResponse> await(String userName) throws InterruptedException {
