@@ -16,7 +16,7 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.resources.DecisionTableResources;
-import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ImageResource;

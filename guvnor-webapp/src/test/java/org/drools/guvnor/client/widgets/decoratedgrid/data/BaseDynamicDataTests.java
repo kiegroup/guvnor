@@ -18,7 +18,9 @@ package org.drools.guvnor.client.widgets.decoratedgrid.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.junit.Before;
 
 /**

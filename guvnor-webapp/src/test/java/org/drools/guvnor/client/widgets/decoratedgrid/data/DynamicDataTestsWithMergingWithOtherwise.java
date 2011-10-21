@@ -17,8 +17,9 @@ package org.drools.guvnor.client.widgets.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.junit.Before;
 import org.junit.Test;
 

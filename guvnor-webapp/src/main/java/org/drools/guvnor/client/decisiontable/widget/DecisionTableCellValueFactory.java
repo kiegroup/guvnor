@@ -19,9 +19,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;

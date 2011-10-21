@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.server.util.JVMDateConverter;
 import org.drools.ide.common.client.modeldriven.ModelField;
 import org.drools.ide.common.client.modeldriven.ModelField.FIELD_CLASS_TYPE;

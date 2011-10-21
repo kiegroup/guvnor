@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
-import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
-import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;

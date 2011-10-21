@@ -16,9 +16,9 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
-import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellFactory;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridCellValueAdaptor;
-import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {

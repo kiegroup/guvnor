@@ -19,8 +19,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.GroupedCellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.junit.Before;
 import org.junit.Test;
 

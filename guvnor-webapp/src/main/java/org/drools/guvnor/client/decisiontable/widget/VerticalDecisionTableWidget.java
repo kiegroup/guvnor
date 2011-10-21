@@ -15,12 +15,12 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.decoratedgrid.SelectedCellChangeHandler;
-import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
