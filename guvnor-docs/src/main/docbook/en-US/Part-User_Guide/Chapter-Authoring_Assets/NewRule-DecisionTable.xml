@@ -260,42 +260,20 @@ end</programlisting>
       define columns for Facts, their constraints and corresponding
       actions.</para>
 
-      <para>Expand the "Decision table" element and you will see three further
-      sections for "Conditions", "Actions" and "Options". Expanding either the
-      "Conditions" or "Actions" sections reveals the "New column" icon. This
-      can be used to add new column definitions to the corresponding section.
-      Existing columns can be removed by clicking the "-" icon beside each
-      column name, or edited by clicking the "pencil" icon also beside each
-      column name. The "Options" section functions slightly differently
-      however the principle is the same: clicking the "Add Attribute/Metadata"
-      icon allows columns for table attributes to be defined (such as
-      "salience", "no-loop" etc) or metadata added.</para>
-
       <section>
         <title>Column configuration</title>
 
-        <para>When you edit or create a new column, you will be given a choice
-        of the type of constraint:-</para>
-
-        <itemizedlist>
-          <listitem>
-            <para>Literal : The value in the cell will be compared with the
-            field using the operator.</para>
-          </listitem>
-
-          <listitem>
-            <para>Formula: The expression in the cell will be evaluated and
-            then compared with the field.</para>
-          </listitem>
-
-          <listitem>
-            <para>Predicate : No field is needed, the expression will be
-            evaluated to true or false.</para>
-          </listitem>
-        </itemizedlist>
-
-        <para>You can set a default value, but normally if there is no value
-        in the cell, that constraint will not apply.</para>
+        <para>Expand the "Decision table" element and you will see three
+        further sections for "Conditions", "Actions" and "Options". Expanding
+        either the "Conditions" or "Actions" sections reveals the "New column"
+        icon. This can be used to add new column definitions to the
+        corresponding section. Existing columns can be removed by clicking the
+        "-" icon beside each column name, or edited by clicking the "pencil"
+        icon also beside each column name. The "Options" section functions
+        slightly differently however the principle is the same: clicking the
+        "Add Attribute/Metadata" icon allows columns for table attributes to
+        be defined (such as "salience", "no-loop" etc) or metadata
+        added.</para>
 
         <figure>
           <title>Column configuration</title>
@@ -358,17 +336,55 @@ end</programlisting>
           pattern. If you define multiple bindings for a single model class
           each binding becomes a seperate model class in the right-hand side
           of the rule.</para>
+
+          <para>When you edit or create a new column, you will be given a
+          choice of the type of constraint:-</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Literal : The value in the cell will be compared with the
+              field using the operator.</para>
+            </listitem>
+
+            <listitem>
+              <para>Formula: The expression in the cell will be evaluated and
+              then compared with the field.</para>
+            </listitem>
+
+            <listitem>
+              <para>Predicate : No field is needed, the expression will be
+              evaluated to true or false.</para>
+            </listitem>
+          </itemizedlist>
         </section>
 
         <section>
           <title>Action columns</title>
 
-          <para>Action columns can be defined to perform simple operations on
-          bound facts within the rule engine's working memory or create new
-          facts entirely. New facts can be inserted logically into the rule
-          engine's working memory thus being subject to truth maintenance as
-          usual. Please refer to the "Drools Expert" documentation for
-          discussion on truth maintenance and logical insertions.</para>
+          <para>Action columns can be defined to perform the following simple
+          operations:-</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>Set the value of fields on previoulsy bound facts, with
+              the option to notify the Rule Engine of the modified values
+              which could lead to other rules being re-activated.</para>
+            </listitem>
+
+            <listitem>
+              <para>Insert new Facts into the Rule Engine Working Memory and
+              set the values of the new Facts' fields. You can choose to have
+              the new Fact "logically inserted" meaning it will be
+              automatically retracted should the conditions leading to the
+              action being invoked cease to be true. Please refer to the
+              Drools Expert documentation for details on Truth Maintenance and
+              Logical insertions. </para>
+            </listitem>
+
+            <listitem>
+              <para>Retract a bound fact.</para>
+            </listitem>
+          </itemizedlist>
         </section>
       </section>
     </section>
