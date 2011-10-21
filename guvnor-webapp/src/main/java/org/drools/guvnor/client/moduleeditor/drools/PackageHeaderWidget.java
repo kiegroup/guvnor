@@ -123,10 +123,14 @@ public class PackageHeaderWidget extends Composite {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisFactType() ) ) {
-                                int i = importList.getSelectedIndex();
-                                if ( i >= 0 ) {
-                                    importList.removeItem( i );
-                                    t.imports.remove( i );
+                                if ( importList.getSelectedIndex() > -1 ) {
+                                    for ( int i = 0; i < importList.getItemCount(); i++ ) {
+                                        if ( importList.isItemSelected( i ) ) {
+                                            importList.removeItem( i );
+                                            t.imports.remove( i );
+                                            i--;
+                                        }
+                                    }
                                     updateHeader( t );
                                 }
                             }
@@ -179,10 +183,16 @@ public class PackageHeaderWidget extends Composite {
                     addClickHandler( new ClickHandler() {
                         public void onClick(ClickEvent event) {
                             if ( Window.confirm( constants.AreYouSureYouWantToRemoveThisGlobal() ) ) {
-                                int i = globalList.getSelectedIndex();
-                                globalList.removeItem( i );
-                                t.globals.remove( i );
-                                updateHeader( t );
+                                if ( globalList.getSelectedIndex() > -1 ) {
+                                    for ( int i = 0; i < globalList.getItemCount(); i++ ) {
+                                        if ( globalList.isItemSelected( i ) ) {
+                                            globalList.removeItem( i );
+                                            t.globals.remove( i );
+                                            i--;
+                                        }
+                                    }
+                                    updateHeader( t );
+                                }
                             }
                         }
                     } );
