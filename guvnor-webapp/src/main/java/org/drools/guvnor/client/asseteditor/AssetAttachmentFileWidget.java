@@ -54,7 +54,6 @@ public abstract class AssetAttachmentFileWidget extends Composite
                                      ClientFactory clientFactory,
                                      EventBus eventBus) {
         this.viewer = viewer;
-        ClientFactory clientFactory1 = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
         initWidgets(asset.getUuid(),
