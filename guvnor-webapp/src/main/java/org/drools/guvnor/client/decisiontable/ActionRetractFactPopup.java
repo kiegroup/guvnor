@@ -67,7 +67,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
                 }
 
             } );
-            addAttribute( constants.ColumnHeaderDescription(),
+            addAttribute( constants.FactToRetractColon(),
                           patterns );
         }
 

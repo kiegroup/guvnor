@@ -2544,4 +2544,6 @@ public interface Constants
     
     String NoPatternBindingsAvailable();
     
+    String FactToRetractColon();
+    
 }

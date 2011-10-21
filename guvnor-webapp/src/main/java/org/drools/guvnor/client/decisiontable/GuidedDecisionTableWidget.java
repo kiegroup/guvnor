@@ -361,38 +361,38 @@ public class GuidedDecisionTableWidget extends Composite
                 pop.show();
             }
 
+            private ActionInsertFactCol52 makeNewActionInsertColumn() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryActionInsertFactCol52();
+                    default :
+                        return new ActionInsertFactCol52();
+                }
+            }
+
+            private ActionSetFieldCol52 makeNewActionSetColumn() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        return new LimitedEntryActionSetFieldCol52();
+                    default :
+                        return new ActionSetFieldCol52();
+                }
+            }
+
+            private ActionRetractFactCol52 makeNewActionRetractFact() {
+                switch ( guidedDecisionTable.getTableFormat() ) {
+                    case LIMITED_ENTRY :
+                        LimitedEntryActionRetractFactCol52 ler = new LimitedEntryActionRetractFactCol52();
+                        ler.setValue( new DTCellValue52( "" ) );
+                        return ler;
+                    default :
+                        return new ActionRetractFactCol52();
+                }
+            }
+
         } );
 
         return addButton;
-    }
-
-    private ActionInsertFactCol52 makeNewActionInsertColumn() {
-        switch ( guidedDecisionTable.getTableFormat() ) {
-            case LIMITED_ENTRY :
-                return new LimitedEntryActionInsertFactCol52();
-            default :
-                return new ActionInsertFactCol52();
-        }
-    }
-
-    private ActionSetFieldCol52 makeNewActionSetColumn() {
-        switch ( guidedDecisionTable.getTableFormat() ) {
-            case LIMITED_ENTRY :
-                return new LimitedEntryActionSetFieldCol52();
-            default :
-                return new ActionSetFieldCol52();
-        }
-    }
-
-    private ActionRetractFactCol52 makeNewActionRetractFact() {
-        switch ( guidedDecisionTable.getTableFormat() ) {
-            case LIMITED_ENTRY :
-                LimitedEntryActionRetractFactCol52 ler = new LimitedEntryActionRetractFactCol52();
-                ler.setValue( new DTCellValue52() );
-                return ler;
-            default :
-                return new ActionRetractFactCol52();
-        }
     }
 
     private Widget removeAction(final ActionCol52 c) {
@@ -961,18 +961,7 @@ public class GuidedDecisionTableWidget extends Composite
                     //Check whether Limited Entry retraction is bound to Pattern
                     LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) ac;
                     if ( ler.getValue().getStringValue().equals( pattern.getBoundName() ) ) {
-
-                        //Check whether Limited Entry Action is used
-                        dtable.scrapeDataToModel();
-                        int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
-                        for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
-                            if ( row.get( iCol ).getBooleanValue().equals( Boolean.TRUE ) ) {
-                                return false;
-                            }
-                        }
-
-                        //If the Limited Action does not use the pattern clear the binding for the pattern as it is now deleted
-                        ler.setValue( new DTCellValue52() );
+                        return false;
                     }
                 } else {
 
@@ -980,7 +969,8 @@ public class GuidedDecisionTableWidget extends Composite
                     dtable.scrapeDataToModel();
                     int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
                     for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
-                        if ( row.get( iCol ).getStringValue().equals( pattern.getBoundName() ) ) {
+                        DTCellValue52 dcv = row.get( iCol );
+                        if ( dcv != null && pattern.getBoundName().equals( dcv.getStringValue() ) ) {
                             return false;
                         }
                     }
