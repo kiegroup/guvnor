@@ -1993,6 +1993,11 @@ public interface Constants
     String property0ModifiedOn12(String propertyName,
                                  String arg1,
                                  String arg2);
+    
+    String property0ModifiedOn1By23(String propertyName,
+                                    String lastModifier,
+                                    String lastModifiedDate,
+                                    String lastModifiedComment);
 
     String isContainedInTheFollowingList();
 
