@@ -151,12 +151,12 @@ public class VersionBrowser extends Composite {
 
                         for (int i = 0; i < rows.length; i++) {
                             TableDataRow row = rows[i];
-                            String s = constants.property0ModifiedOn12(
-                                    row.values[0],
-                                    row.values[2],
-                                    row.values[1] );
+                            String s = constants.property0ModifiedOn1By23(row.values[0],
+                                                                          row.values[2],
+                                                                          row.values[4],
+                                                                          row.values[1] );
                             history.addItem( s,
-                                    row.id );
+                                             row.id );
                         }
 
                         layout.setWidget( 1,

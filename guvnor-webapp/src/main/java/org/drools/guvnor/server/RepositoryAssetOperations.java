@@ -190,29 +190,22 @@ public class RepositoryAssetOperations {
         Iterator<VersionableItem> it = item.getHistory();
         //AssetHistoryIterator it = assetItem.getHistory();
 
-        // MN Note: this uses the lazy iterator, but then loads the whole lot
-        // up, and returns it.
-        // The reason for this is that the GUI needs to show things in numeric
-        // order by the version number.
-        // When a version is restored, its previous version is NOT what you
-        // thought it was - due to how JCR works
-        // (its more like CVS then SVN). So to get a linear progression of
-        // versions, we use the incrementing version number,
-        // and load it all up and sort it. This is not ideal.
-        // In future, we may do a "restore" instead just by copying content into
-        // a new version, not restoring a node,
-        // in which case the iterator will be in order (or you can just walk all
-        // the way back).
-        // So if there are performance problems with looking at lots of
-        // historical versions, look at this nasty bit of code.
+        // MN Note: this uses the lazy iterator, but then loads the whole lot up, and returns it. 
+        // The reason for this is that the GUI needs to show things in numeric order by the version 
+        // number. When a version is restored, its previous version is NOT what you thought it was 
+        // - due to how JCR works (its more like CVS then SVN). So to get a linear progression of
+        // versions, we use the incrementing version number, and load it all up and sort it. This 
+        // is not ideal. In future, we may do a "restore" instead just by copying content into
+        // a new version, not restoring a node, in which case the iterator will be in order (or 
+        // you can just walk all the way back). So if there are performance problems with looking 
+        // at lots of historical versions, look at this nasty bit of code.
         List<TableDataRow> result = new ArrayList<TableDataRow>();
         while (it.hasNext()) {
             VersionableItem historical = (VersionableItem) it.next();
             long versionNumber = historical.getVersionNumber();
-            if (isHistory(item,
-                    versionNumber)) {
-                result.add(createHistoricalRow(
-                        historical));
+            if (isHistory(item, 
+                          versionNumber)) {
+                result.add(createHistoricalRow(historical));
             }
         }
 
@@ -233,12 +226,12 @@ public class RepositoryAssetOperations {
         final DateFormat dateFormatter = DateFormat.getInstance();
         TableDataRow tableDataRow = new TableDataRow();
         tableDataRow.id = historical.getVersionSnapshotUUID();
-        tableDataRow.values = new String[4];
+        tableDataRow.values = new String[5];
         tableDataRow.values[0] = Long.toString(historical.getVersionNumber());
         tableDataRow.values[1] = historical.getCheckinComment();
-        tableDataRow.values[2] = dateFormatter.format(historical
-                .getLastModified().getTime());
+        tableDataRow.values[2] = dateFormatter.format(historical.getLastModified().getTime());
         tableDataRow.values[3] = historical.getStateDescription();
+        tableDataRow.values[4] = historical.getLastContributor();
         return tableDataRow;
     }
 
