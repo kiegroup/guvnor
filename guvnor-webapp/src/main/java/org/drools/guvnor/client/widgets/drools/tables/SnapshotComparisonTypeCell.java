@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.tables;
+package org.drools.guvnor.client.widgets.drools.tables;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.SnapshotDiff;

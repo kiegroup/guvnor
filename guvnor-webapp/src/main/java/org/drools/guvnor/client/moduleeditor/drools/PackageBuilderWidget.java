@@ -34,7 +34,7 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
-import org.drools.guvnor.client.widgets.tables.BuildPackageErrorsSimpleTable;
+import org.drools.guvnor.client.widgets.drools.tables.BuildPackageErrorsSimpleTable;
 
 import java.util.ArrayList;
 import java.util.List;

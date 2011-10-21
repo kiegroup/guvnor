@@ -42,7 +42,7 @@ public abstract class AbstractPagedTable<T extends AbstractPageRow> extends Abst
     protected AsyncDataProvider<T>   dataProvider;
 
     @UiField
-    protected GuvnorSimplePager      pager;
+    public GuvnorSimplePager      pager;
 
     /**
      * Constructor

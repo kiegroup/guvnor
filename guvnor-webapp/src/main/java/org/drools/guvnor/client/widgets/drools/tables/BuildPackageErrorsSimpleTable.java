@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.drools.guvnor.client.widgets.tables;
+package org.drools.guvnor.client.widgets.drools.tables;
 
 import java.util.Set;
 
@@ -23,6 +23,12 @@ import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.RuleFormatImageResource;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.client.widgets.tables.AbstractSimpleTable;
+import org.drools.guvnor.client.widgets.tables.ColumnPicker;
+import org.drools.guvnor.client.widgets.tables.RuleFormatImageResourceCell;
+import org.drools.guvnor.client.widgets.tables.SelectionColumn;
+import org.drools.guvnor.client.widgets.tables.SortableHeader;
+import org.drools.guvnor.client.widgets.tables.SortableHeaderGroup;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;

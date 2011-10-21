@@ -47,10 +47,10 @@ public abstract class AbstractSimpleTable<T extends AbstractPageRow> extends Com
     protected static final Constants constants = GWT.create( Constants.class );
 
     @UiField(provided = true)
-    protected ToggleButton           columnPickerButton;
+    public ToggleButton           columnPickerButton;
 
     @UiField(provided = true)
-    protected CellTable<T>           cellTable;
+    public CellTable<T>           cellTable;
 
     public AbstractSimpleTable() {
         doCellTable();
