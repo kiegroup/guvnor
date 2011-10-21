@@ -954,6 +954,37 @@ public class GuidedDecisionTableWidget extends Composite
                 if ( asfc.getBoundName().equals( pattern.getBoundName() ) ) {
                     return false;
                 }
+            } else if ( ac instanceof ActionRetractFactCol52 ) {
+
+                if ( ac instanceof LimitedEntryActionRetractFactCol52 ) {
+
+                    //Check whether Limited Entry retraction is bound to Pattern
+                    LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) ac;
+                    if ( ler.getValue().getStringValue().equals( pattern.getBoundName() ) ) {
+
+                        //Check whether Limited Entry Action is used
+                        dtable.scrapeDataToModel();
+                        int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
+                        for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
+                            if ( row.get( iCol ).getBooleanValue().equals( Boolean.TRUE ) ) {
+                                return false;
+                            }
+                        }
+
+                        //If the Limited Action does not use the pattern clear the binding for the pattern as it is now deleted
+                        ler.setValue( new DTCellValue52() );
+                    }
+                } else {
+
+                    //Check whether data for column contains Pattern binding
+                    dtable.scrapeDataToModel();
+                    int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
+                    for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
+                        if ( row.get( iCol ).getStringValue().equals( pattern.getBoundName() ) ) {
+                            return false;
+                        }
+                    }
+                }
             }
         }
         return true;

@@ -149,7 +149,7 @@ public class ActionRetractFactPopup extends FormStylePopup {
             if ( !"".equals( boundName ) ) {
                 listBox.addItem( boundName );
                 if ( boundName.equals( binding ) ) {
-                    listBox.setSelectedIndex( index );
+                    listBox.setSelectedIndex( index + 1 );
                 }
             }
         }
