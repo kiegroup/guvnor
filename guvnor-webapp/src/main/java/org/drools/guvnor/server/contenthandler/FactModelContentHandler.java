@@ -91,12 +91,12 @@ public class FactModelContentHandler extends ContentHandler
             sb.append( mm.getSuperType() );
         }
         for ( int i = 0; i < mm.getAnnotations().size(); i++ ) {
-            AnnotationMetaModel a = (AnnotationMetaModel) mm.getAnnotations().get( i );
+            AnnotationMetaModel a = mm.getAnnotations().get( i );
             sb.append( "\n\t" );
             sb.append( buildAnnotationDRL( a ) );
         }
         for ( int i = 0; i < mm.getFields().size(); i++ ) {
-            FieldMetaModel f = (FieldMetaModel) mm.getFields().get( i );
+            FieldMetaModel f = mm.getFields().get( i );
             sb.append( "\n\t" );
             sb.append( f.name ).append( ": " ).append( f.type );
         }

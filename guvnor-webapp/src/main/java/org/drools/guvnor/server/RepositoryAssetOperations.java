@@ -72,7 +72,7 @@ public class RepositoryAssetOperations {
     @Inject
     private AssetLockManager assetLockManager;
 
-    private String[]                   registeredFormats;
+    private final String[]                   registeredFormats;
 
     public RepositoryAssetOperations() {
         //Load recognised formats from configuration file

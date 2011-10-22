@@ -109,7 +109,7 @@ public class ActionsAPI {
      * Split from RestAPI
      */
     String[] split(String path) throws UnsupportedEncodingException {
-        if (path.indexOf("action") > -1) {
+        if (path.contains("action")) {
             path = path.split("action")[1];
         }
         if (path.startsWith("/")) path = path.substring(1);

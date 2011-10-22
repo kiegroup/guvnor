@@ -55,7 +55,7 @@ public class FeedServlet extends RepositoryServlet {
             IOException {
         try {
             String url = request.getRequestURI();
-            if (url.indexOf("feed/package") > -1) {
+            if (url.contains("feed/package")) {
                 doAuthorizedAction(request,
                         response,
                         new Command() {
@@ -64,7 +64,7 @@ public class FeedServlet extends RepositoryServlet {
                                         response);
                             }
                         });
-            } else if (url.indexOf("feed/category") > -1) {
+            } else if (url.contains("feed/category")) {
                 doAuthorizedAction(request,
                         response,
                         new Command() {
@@ -73,7 +73,7 @@ public class FeedServlet extends RepositoryServlet {
                                         response);
                             }
                         });
-            } else if (url.indexOf("feed/discussion") > -1) {
+            } else if (url.contains("feed/discussion")) {
                 doAuthorizedAction(request,
                         response,
                         new Command() {

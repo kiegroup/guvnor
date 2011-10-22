@@ -242,7 +242,7 @@ public class ClassicDRLImporter {
     public static String getRuleName(String line) throws DroolsParserException {
         DrlParser parser = new DrlParser();
         line = line + "\n when\n then \n end";
-        RuleDescr rule = (RuleDescr) parser.parse(line).getRules().get(0);
+        RuleDescr rule = parser.parse(line).getRules().get(0);
         return rule.getName();
     }
 

@@ -624,7 +624,7 @@ public class RepositoryPackageOperations {
                 retList.add( pitem.getName() );
             }
         }
-        return (String[]) retList.toArray( new String[]{} );
+        return retList.toArray( new String[]{} );
     }
 
     PackageDRLAssembler createPackageDRLAssembler(final PackageItem packageItem) {

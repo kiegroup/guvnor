@@ -99,9 +99,8 @@ public class Backchannel {
      * Fetch the list of messages waiting, if there are some, replace it with an empty list.
      */
     private List<PushResponse> fetchMessageForUser(String userName) {
-        List<PushResponse> msgs = mailbox.put(userName,
+        return mailbox.put(userName,
                 new ArrayList<PushResponse>());
-        return msgs;
     }
 
     /**

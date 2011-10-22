@@ -57,7 +57,7 @@ public class MetaDataMapper {
 
             try {
                 m.invoke(target,
-                        new Object[]{f.get(data)});
+                        f.get(data));
             } catch (IllegalArgumentException e1) {
                 throw new RulesRepositoryException(e1);
             } catch (IllegalAccessException e1) {

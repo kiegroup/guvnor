@@ -22,7 +22,7 @@ import org.jboss.seam.security.Identity;
 
 public class CategoryFilter implements RepositoryFilter {
 
-    private Identity identity;
+    private final Identity identity;
 
     public CategoryFilter(Identity identity) {
         this.identity = identity;

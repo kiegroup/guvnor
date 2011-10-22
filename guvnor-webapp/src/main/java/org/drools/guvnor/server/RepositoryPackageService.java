@@ -424,7 +424,7 @@ public class RepositoryPackageService
 
         try {
             while (it.hasNext()) {
-                AssetItem asset = (AssetItem) it.next();
+                AssetItem asset = it.next();
                 if ( !asset.isArchived() ) {
                     if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
                         jis = typesForModel( res,

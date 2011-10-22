@@ -243,9 +243,9 @@ public class WebDAVImpl
         }
     }
 
-    private boolean addNameAndFormat(List<String> result,
+    private void addNameAndFormat(List<String> result,
                                      AssetItem asset) {
-        return result.add(asset.getName() + "." + asset.getFormat());
+        result.add(asset.getName() + "." + asset.getFormat());
     }
 
     private void listPackages(RulesRepository repository,

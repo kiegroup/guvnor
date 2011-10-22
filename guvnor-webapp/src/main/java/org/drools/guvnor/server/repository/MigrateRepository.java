@@ -81,7 +81,7 @@ public class MigrateRepository {
         boolean performed = false;
         while (pkgs.hasNext()) {
             performed = true;
-            PackageItem pkg = (PackageItem) pkgs.next();
+            PackageItem pkg = pkgs.next();
             migrateRuleflows(pkg);
 
             String[] snaps = repo.listPackageSnapshots(pkg.getName());

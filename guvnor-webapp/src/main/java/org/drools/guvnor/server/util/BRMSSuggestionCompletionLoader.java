@@ -48,7 +48,7 @@ public class BRMSSuggestionCompletionLoader extends SuggestionCompletionLoader {
                                                           String droolsHeader) {
 
         StringBuilder buf = new StringBuilder();
-        AssetItemIterator it = packageItem.listAssetsByFormat(new String[]{AssetFormats.DRL_MODEL});
+        AssetItemIterator it = packageItem.listAssetsByFormat(AssetFormats.DRL_MODEL);
         while (it.hasNext()) {
             AssetItem as = it.next();
             buf.append(as.getContent());

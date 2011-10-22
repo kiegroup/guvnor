@@ -57,6 +57,7 @@ public class Translator {
         metadata.setFormat(a.getFormat());
         metadata.setNote("<![CDATA[ " + a.getCheckinComment() + " ]]>");
         List<CategoryItem> categories = a.getCategories();
+        //TODO: Is this a bug since cat's are never assigned to metadata after this?
         String[] cats = new String[categories.size()];
         int counter = 0;
         for (CategoryItem c : categories) {

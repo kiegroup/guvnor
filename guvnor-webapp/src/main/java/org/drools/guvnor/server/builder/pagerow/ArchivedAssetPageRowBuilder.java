@@ -41,7 +41,7 @@ public class ArchivedAssetPageRowBuilder
         RepositoryFilter filter = new AssetItemFilter(identity);
         List<AdminArchivedPageRow> rowList = new ArrayList<AdminArchivedPageRow>();
         while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem archivedAssetItem = (AssetItem) iterator.next();
+            AssetItem archivedAssetItem = iterator.next();
 
             // Filter surplus assets
             if ( filter.accept( archivedAssetItem,

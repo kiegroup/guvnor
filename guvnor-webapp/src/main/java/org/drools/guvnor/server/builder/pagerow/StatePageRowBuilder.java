@@ -40,7 +40,7 @@ public class StatePageRowBuilder
         // Filtering and skipping records to the required page is handled in
         // repository.findAssetsByState() so we only need to simply copy
         while ( iterator.hasNext() ) {
-            AssetItem assetItem = (AssetItem) iterator.next();
+            AssetItem assetItem = iterator.next();
             rowList.add( makeStatePageRow( assetItem ) );
         }
         return rowList;

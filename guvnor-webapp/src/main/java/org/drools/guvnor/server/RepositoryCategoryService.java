@@ -110,12 +110,11 @@ public class RepositoryCategoryService
         // ANALYST_READ role or higher (i.e., ANALYST) to this category
         if ( !serviceSecurity.isSecurityIsAnalystReadWithTargetObject( new CategoryPathType( request.getCategoryPath() ) ) ) {
             List<CategoryPageRow> rowList = new ArrayList<CategoryPageRow>();
-            PageResponse<CategoryPageRow> pageResponse = new PageResponseBuilder<CategoryPageRow>()
+            return new PageResponseBuilder<CategoryPageRow>()
                     .withStartRowIndex(request.getStartRowIndex())
                     .withPageRowList(rowList)
                     .withLastPage(true)
                     .buildWithTotalRowCount(0);
-            return pageResponse;
         }
 
         return repositoryCategoryOperations.loadRuleListForCategories( request );

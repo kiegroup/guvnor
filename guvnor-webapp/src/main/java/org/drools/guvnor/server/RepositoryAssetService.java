@@ -449,42 +449,32 @@ public class RepositoryAssetService
 
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
-        try {
-            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-            serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
-
-            if (item.getPackage().isArchived()) {
-                throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
-            }
-
-            log.info("USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] ");
-
-            try {
-                ContentHandler handler = getContentHandler(item);
-                if (handler instanceof ICanHasAttachment) {
-                    ((ICanHasAttachment) handler).onAttachmentRemoved(item);
-                }
-            } catch (IOException e) {
-                log.error("Unable to remove asset attachment",
-                        e);
-            }
-
-            item.archiveItem(archive);
-            PackageItem pkg = item.getPackage();
-            pkg.updateBinaryUpToDate(false);
-            RuleBaseCache.getInstance().remove(pkg.getUUID());
-            if (archive) {
-                item.checkin("archived");
-            } else {
-                item.checkin("unarchived");
-            }
-
-            push("packageChange",
-                    pkg.getName());
-
-        } catch (RulesRepositoryException e) {
-            throw e;
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
+        if (item.getPackage().isArchived()) {
+            throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
         }
+        log.info("USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] ");
+        try {
+            ContentHandler handler = getContentHandler(item);
+            if (handler instanceof ICanHasAttachment) {
+                ((ICanHasAttachment) handler).onAttachmentRemoved(item);
+            }
+        } catch (IOException e) {
+            log.error("Unable to remove asset attachment",
+                    e);
+        }
+        item.archiveItem(archive);
+        PackageItem pkg = item.getPackage();
+        pkg.updateBinaryUpToDate(false);
+        RuleBaseCache.getInstance().remove(pkg.getUUID());
+        if (archive) {
+            item.checkin("archived");
+        } else {
+            item.checkin("unarchived");
+        }
+        push("packageChange",
+                pkg.getName());
     }
 
     @LoggedIn
