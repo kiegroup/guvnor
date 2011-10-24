@@ -12,8 +12,12 @@
 
   <fileSets>
     <fileSet>
-      <directory>src/main/assembly/jboss-as-7_0/resources</directory>
-      <outputDirectory/>
+      <!-- TODO Workaround for https://issues.jboss.org/browse/WELD-953 -->
+      <directory>../guvnor-webapp/src/main/resources/META-INF/</directory>
+      <includes>
+        <include>beans.xml</include>
+      </includes>
+      <outputDirectory>WEB-INF/</outputDirectory>
     </fileSet>
   </fileSets>
 
@@ -26,6 +30,9 @@
       <unpack>true</unpack>
       <unpackOptions>
         <excludes>
+          <!-- TODO Workaround for https://issues.jboss.org/browse/WELD-953 -->
+          <exclude>WEB-INF/classes/META-INF/beans.xml</exclude>
+
           <!-- Weld and transitive dependency excludes, it's bundled in the AS -->
           <exclude>WEB-INF/lib/cdi-api-*.jar</exclude>
           <exclude>WEB-INF/lib/persistence-api-*.jar</exclude>
