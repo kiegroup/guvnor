@@ -53,6 +53,8 @@ public interface ClientFactory {
     AssetViewerActivityView getAssetViewerActivityView();
 
     PackageServiceAsync getPackageService();
+    
+    RepositoryServiceAsync getService();
 
     AssetEditorFactory getAssetEditorFactory();
     

@@ -26,12 +26,12 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 public class RepositoryServiceFactory {
 
     private static RepositoryServiceAsync SERVICE;
-    private static AssetServiceAsync ASSET_SERVICE;
-    private static PackageServiceAsync PACKAGE_SERVICE;
-    private static CategoryServiceAsync CATEGORY_SERVICE;
+    private static AssetServiceAsync      ASSET_SERVICE;
+    private static PackageServiceAsync    PACKAGE_SERVICE;
+    private static CategoryServiceAsync   CATEGORY_SERVICE;
 
     public static RepositoryServiceAsync getService() {
-        if (SERVICE == null) {
+        if ( SERVICE == null ) {
             loadService();
         }
         return SERVICE;
@@ -39,7 +39,7 @@ public class RepositoryServiceFactory {
     }
 
     public static AssetServiceAsync getAssetService() {
-        if (ASSET_SERVICE == null) {
+        if ( ASSET_SERVICE == null ) {
             loadAssetService();
         }
         return ASSET_SERVICE;
@@ -47,14 +47,14 @@ public class RepositoryServiceFactory {
     }
 
     public static PackageServiceAsync getPackageService() {
-        if (PACKAGE_SERVICE == null) {
+        if ( PACKAGE_SERVICE == null ) {
             loadPackageService();
         }
         return PACKAGE_SERVICE;
     }
 
     public static CategoryServiceAsync getCategoryService() {
-        if (CATEGORY_SERVICE == null) {
+        if ( CATEGORY_SERVICE == null ) {
             loadCategoryService();
         }
         return CATEGORY_SERVICE;
@@ -78,45 +78,45 @@ public class RepositoryServiceFactory {
 
     private static RepositoryServiceAsync getRealService() {
         // define the service you want to call
-        RepositoryServiceAsync svc = (RepositoryServiceAsync) GWT.create(RepositoryService.class);
+        RepositoryServiceAsync svc = (RepositoryServiceAsync) GWT.create( RepositoryService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) svc;
 
         String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
 
-        endpoint.setServiceEntryPoint(endpointURL);
+        endpoint.setServiceEntryPoint( endpointURL );
         return svc;
     }
 
     private static AssetServiceAsync getRealAssetService() {
         // define the service you want to call
-        AssetServiceAsync assetServiceAsync = (AssetServiceAsync) GWT.create(AssetService.class);
+        AssetServiceAsync assetServiceAsync = (AssetServiceAsync) GWT.create( AssetService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) assetServiceAsync;
 
         String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
 
-        endpoint.setServiceEntryPoint(endpointURL);
+        endpoint.setServiceEntryPoint( endpointURL );
         return assetServiceAsync;
     }
 
     private static PackageServiceAsync getRealPackageService() {
         // define the service you want to call
-        PackageServiceAsync packageServiceAsync = (PackageServiceAsync) GWT.create(PackageService.class);
+        PackageServiceAsync packageServiceAsync = (PackageServiceAsync) GWT.create( PackageService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) packageServiceAsync;
 
         String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
 
-        endpoint.setServiceEntryPoint(endpointURL);
+        endpoint.setServiceEntryPoint( endpointURL );
         return packageServiceAsync;
     }
 
     private static CategoryServiceAsync getRealCategoryService() {
         // define the service you want to call
-        CategoryServiceAsync categoryServiceAsync = (CategoryServiceAsync) GWT.create(CategoryService.class);
+        CategoryServiceAsync categoryServiceAsync = (CategoryServiceAsync) GWT.create( CategoryService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) categoryServiceAsync;
 
         String endpointURL = GWT.getModuleBaseURL() + "guvnorService";
 
-        endpoint.setServiceEntryPoint(endpointURL);
+        endpoint.setServiceEntryPoint( endpointURL );
         return categoryServiceAsync;
     }
 
@@ -127,17 +127,17 @@ public class RepositoryServiceFactory {
                              String password,
                              AsyncCallback cb) {
         SecurityServiceAsync svc = getSecurityService();
-        svc.login(userName,
-                password,
-                cb);
+        svc.login( userName,
+                   password,
+                   cb );
     }
 
     public static SecurityServiceAsync getSecurityService() {
         SecurityServiceAsync svc =
-                (SecurityServiceAsync) GWT.create(SecurityService.class);
+                (SecurityServiceAsync) GWT.create( SecurityService.class );
         ServiceDefTarget endpoint = (ServiceDefTarget) svc;
         String endpointURL = GWT.getModuleBaseURL() + "securityService";
-        endpoint.setServiceEntryPoint(endpointURL);
+        endpoint.setServiceEntryPoint( endpointURL );
         return svc;
     }
 

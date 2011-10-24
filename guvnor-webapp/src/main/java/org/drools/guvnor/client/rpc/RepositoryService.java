@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.shared.workitems.WorkDefinition;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -360,5 +360,15 @@ public interface RepositoryService
      * @throws DetailedSerializationException
      */
     public Map<String, String> loadWorkitemDefinitionElementData() throws DetailedSerializationException;
+
+    /**
+     * Load and return a List of all parsed Work Definitions. The source of such
+     * Work Definitions is Assets defined in Guvnor and those defined in
+     * /workitemDefinitionElements.properties.
+     * 
+     * @return
+     * @throws DetailedSerializationException
+     */
+    public List<WorkDefinition> loadWorkItemDefinitions() throws DetailedSerializationException;
 
 }

@@ -15,16 +15,16 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.List;
+
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
-import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.shared.workitems.WorkDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -37,42 +37,27 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 
 /**
- * A popup to define the parameters of an Action to retract a Fact
+ * A popup to define an Action to execute a Work Item
  */
-public class ActionRetractFactPopup extends FormStylePopup {
+public class ActionWorkItemPopup extends FormStylePopup {
 
-    private static Constants       constants = GWT.create( Constants.class );
+    private static Constants      constants = GWT.create( Constants.class );
 
-    private ActionRetractFactCol52 editingCol;
-    private GuidedDecisionTable52  model;
+    private ActionWorkItemCol52   editingCol;
+    private GuidedDecisionTable52 model;
+    private ClientFactory         clientFactory;
 
-    public ActionRetractFactPopup(final GuidedDecisionTable52 model,
-                                  final GenericColumnCommand refreshGrid,
-                                  final ActionRetractFactCol52 col,
-                                  final boolean isNew) {
-        this.editingCol = cloneActionRetractColumn( col );
+    public ActionWorkItemPopup(final ClientFactory clientFactory,
+                               final GuidedDecisionTable52 model,
+                               final GenericColumnCommand refreshGrid,
+                               final ActionWorkItemCol52 col,
+                               final boolean isNew) {
+        this.editingCol = cloneActionWorkItemColumn( col );
+        this.clientFactory = clientFactory;
         this.model = model;
 
-        setTitle( constants.ColumnConfigurationRetractAFact() );
+        setTitle( constants.ColumnConfigurationWorkItem() );
         setModal( false );
-
-        //Show available pattern bindings, if Limited Entry
-        if ( model.getTableFormat() == TableFormat.LIMITED_ENTRY ) {
-            final LimitedEntryActionRetractFactCol52 ler = (LimitedEntryActionRetractFactCol52) editingCol;
-            final ListBox patterns = loadBoundFacts( ler.getValue().getStringValue() );
-            patterns.addClickHandler( new ClickHandler() {
-
-                public void onClick(ClickEvent event) {
-                    int index = patterns.getSelectedIndex();
-                    if ( index > -1 ) {
-                        ler.getValue().setStringValue( patterns.getValue( index ) );
-                    }
-                }
-
-            } );
-            addAttribute( constants.FactToRetractColon(),
-                          patterns );
-        }
 
         //Column header
         final TextBox header = new TextBox();
@@ -84,6 +69,12 @@ public class ActionRetractFactPopup extends FormStylePopup {
         } );
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
+
+        //Work Item Definitions
+        ListBox workItemsListBox = new ListBox();
+        addAttribute( constants.WorkItemNameColon(),
+                      workItemsListBox );
+        setupWorkItems( workItemsListBox );
 
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
@@ -129,39 +120,30 @@ public class ActionRetractFactPopup extends FormStylePopup {
         return true;
     }
 
-    private ActionRetractFactCol52 cloneActionRetractColumn(ActionRetractFactCol52 col) {
-        ActionRetractFactCol52 clone = null;
-        if ( col instanceof LimitedEntryCol ) {
-            clone = new LimitedEntryActionRetractFactCol52();
-            DTCellValue52 dcv = new DTCellValue52( ((LimitedEntryCol) col).getValue().getStringValue() );
-            ((LimitedEntryCol) clone).setValue( dcv );
-        } else {
-            clone = new ActionRetractFactCol52();
-        }
+    private ActionWorkItemCol52 cloneActionWorkItemColumn(ActionWorkItemCol52 col) {
+        ActionWorkItemCol52 clone = new ActionWorkItemCol52();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
         return clone;
     }
 
-    private ListBox loadBoundFacts(String binding) {
-        ListBox listBox = new ListBox();
-        listBox.addItem( constants.Choose() );
-        for ( int index = 0; index < model.getConditionPatterns().size(); index++ ) {
-            Pattern52 p = model.getConditionPatterns().get( index );
-            String boundName = p.getBoundName();
-            if ( !"".equals( boundName ) ) {
-                listBox.addItem( boundName );
-                if ( boundName.equals( binding ) ) {
-                    listBox.setSelectedIndex( index + 1 );
+    private void setupWorkItems(final ListBox workItemsListBox) {
+        workItemsListBox.clear();
+        workItemsListBox.addItem( constants.NoWorkItemsAvailable() );
+        workItemsListBox.setEnabled( false );
+        clientFactory.getService().loadWorkItemDefinitions( new GenericCallback<List<WorkDefinition>>() {
+
+            public void onSuccess(List<WorkDefinition> result) {
+                //Add list of Work Item Definitions to list box
+                workItemsListBox.clear();
+                workItemsListBox.setEnabled( true );
+                for ( WorkDefinition wid : result ) {
+                    workItemsListBox.addItem( wid.getName() );
                 }
             }
-        }
-        listBox.setEnabled( listBox.getItemCount() > 1 );
-        if ( listBox.getItemCount() == 1 ) {
-            listBox.clear();
-            listBox.addItem( constants.NoPatternBindingsAvailable() );
-        }
-        return listBox;
+
+        } );
+
     }
 
 }

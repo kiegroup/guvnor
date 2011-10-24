@@ -43,6 +43,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -101,6 +102,7 @@ public class GuidedDecisionTableWidget extends Composite
 
     private VerticalDecisionTableWidget dtable;
     private EventBus                    eventBus;
+    private ClientFactory               clientFactory;
 
     private enum ActionTypes {
         UPDATE_FACT_FIELD,
@@ -118,6 +120,7 @@ public class GuidedDecisionTableWidget extends Composite
         this.guidedDecisionTable.initAnalysisColumn();
         this.packageName = asset.getMetaData().getPackageName();
         this.guidedDecisionTable.setTableName( asset.getName() );
+        this.clientFactory = clientFactory;
         this.eventBus = eventBus;
 
         layout = new VerticalPanel();
@@ -292,6 +295,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 ActionTypes.INSERT_FACT_FIELD.name() );
                 choice.addItem( constants.RetractAnExistingFact(),
                                 ActionTypes.RETRACT_FACT.name() );
+                choice.addItem( constants.WorkItemAction(),
+                                ActionTypes.WORKITEM.name() );
                 Button ok = new Button( "OK" );
                 ok.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
@@ -302,6 +307,8 @@ public class GuidedDecisionTableWidget extends Composite
                             showInsert();
                         } else if ( s.equals( ActionTypes.RETRACT_FACT.name() ) ) {
                             showRetract();
+                        } else if ( s.equals( ActionTypes.WORKITEM.name() ) ) {
+                            showWorkItemAction();
                         }
                         pop.hide();
                     }
@@ -348,6 +355,20 @@ public class GuidedDecisionTableWidget extends Composite
                         popup.show();
                     }
 
+                    private void showWorkItemAction() {
+                        final ActionWorkItemCol52 awi = makeNewActionWorkItem();
+                        ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
+                                                                             guidedDecisionTable,
+                                                                             new GenericColumnCommand() {
+                                                                                 public void execute(DTColumnConfig52 column) {
+                                                                                     newActionAdded( (ActionCol52) column );
+                                                                                 }
+                                                                             },
+                                                                             awi,
+                                                                             true );
+                        popup.show();
+                    }
+
                     private void newActionAdded(ActionCol52 column) {
                         guidedDecisionTable.getActionCols().add( column );
                         dtable.addColumn( column );
@@ -388,6 +409,11 @@ public class GuidedDecisionTableWidget extends Composite
                     default :
                         return new ActionRetractFactCol52();
                 }
+            }
+
+            private ActionWorkItemCol52 makeNewActionWorkItem() {
+                //WorkItems are defined within the column and always boolean (i.e. Limited Entry) in the table
+                return new ActionWorkItemCol52();
             }
 
         } );

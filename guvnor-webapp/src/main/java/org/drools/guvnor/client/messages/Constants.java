@@ -2551,4 +2551,12 @@ public interface Constants
     
     String FactToRetractColon();
     
+    String WorkItemAction();
+
+    String ColumnConfigurationWorkItem();
+    
+    String NoWorkItemsAvailable();
+    
+    String WorkItemNameColon();
+    
 }

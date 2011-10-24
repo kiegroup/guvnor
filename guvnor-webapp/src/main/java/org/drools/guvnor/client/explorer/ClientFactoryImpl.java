@@ -53,11 +53,11 @@ public class ClientFactoryImpl
     private PerspectivesPanelView     perspectivesPanelView;
     private NavigationViewFactoryImpl navigationViewFactory;
 
-    private AssetEditorFactory assetEditorFactory;
-    private PerspectiveFactory perspectiveFactory;
-    private PlaceHistoryHandler placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper guvnorPlaceHistoryMapper;
-    private final EventBus eventBus;
+    private AssetEditorFactory        assetEditorFactory;
+    private PerspectiveFactory        perspectiveFactory;
+    private PlaceHistoryHandler       placeHistoryHandler;
+    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
+    private final EventBus            eventBus;
     private WizardFactory             wizardFactory;
 
     public ClientFactoryImpl(EventBus eventBus) {
@@ -124,6 +124,10 @@ public class ClientFactoryImpl
         return RepositoryServiceFactory.getPackageService();
     }
 
+    public RepositoryServiceAsync getService() {
+        return RepositoryServiceFactory.getService();
+    }
+
     public AssetEditorFactory getAssetEditorFactory() {
         if ( assetEditorFactory == null ) {
             assetEditorFactory = GWT.create( AssetEditorFactory.class );
@@ -132,12 +136,12 @@ public class ClientFactoryImpl
     }
 
     public PerspectiveFactory getPerspectiveFactory() {
-        if (perspectiveFactory == null) {
-            perspectiveFactory = GWT.create(PerspectiveFactory.class);
+        if ( perspectiveFactory == null ) {
+            perspectiveFactory = GWT.create( PerspectiveFactory.class );
         }
         return perspectiveFactory;
     }
-    
+
     public RepositoryServiceAsync getRepositoryService() {
         return RepositoryServiceFactory.getService();
     }
@@ -149,6 +153,7 @@ public class ClientFactoryImpl
     public AssetServiceAsync getAssetService() {
         return RepositoryServiceFactory.getAssetService();
     }
+
     public SecurityServiceAsync getSecurityService() {
         return RepositoryServiceFactory.getSecurityService();
     }

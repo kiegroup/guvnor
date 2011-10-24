@@ -75,6 +75,11 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.shared.workitems.BooleanParameterDefinition;
+import org.drools.ide.common.shared.workitems.FloatParameterDefinition;
+import org.drools.ide.common.shared.workitems.IntegerParameterDefinition;
+import org.drools.ide.common.shared.workitems.StringParameterDefinition;
+import org.drools.ide.common.shared.workitems.WorkDefinition;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -827,6 +832,32 @@ public class ServiceImplementation
             throw new DetailedSerializationException( "Error loading Workitem Definition Elements",
                                                       "View server logs for more information" );
         }
+    }
+
+    /**
+     * Load and return a Map of all parsed Work Definitions. The source of such
+     * Work Definitions is Assets defined in Guvnor and those defined in
+     * /workitemDefinitionElements.properties.
+     * 
+     * @return
+     * @throws DetailedSerializationException
+     */
+    @WebRemote
+    @LoggedIn
+    public List<WorkDefinition> loadWorkItemDefinitions() throws DetailedSerializationException {
+        //TODO Load WorkDefinitions from all sources, including:-
+        // - Assets
+        // - workitemDefinitionElements.properties
+        // - jBPM Service Repository
+        List<WorkDefinition> workItems = new ArrayList<WorkDefinition>();
+        WorkDefinition wid = new WorkDefinition();
+        wid.setName( "Do something for someone" );
+        wid.addParameter( new FloatParameterDefinition() );
+        wid.addParameter( new IntegerParameterDefinition() );
+        wid.addParameter( new BooleanParameterDefinition() );
+        wid.addParameter( new StringParameterDefinition() );
+        workItems.add( wid );
+        return workItems;
     }
 
     @WebRemote
