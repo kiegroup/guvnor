@@ -220,7 +220,7 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     public void loadWorkitemDefinitionElementData(AsyncCallback cb) {
     }
     
-    public void loadWorkItemDefinitions(AsyncCallback<List<WorkDefinition>> cb) {
+    public void loadWorkItemDefinitions(String p0, AsyncCallback<List<WorkDefinition>> cb) {
     }
 
     public void doesAssetExistInPackage(String p0, String p1, AsyncCallback<Boolean> cb) {

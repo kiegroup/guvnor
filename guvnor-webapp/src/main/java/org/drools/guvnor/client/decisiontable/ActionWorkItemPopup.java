@@ -44,16 +44,19 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private static Constants      constants = GWT.create( Constants.class );
 
     private ActionWorkItemCol52   editingCol;
+    private String                packageUUID;
     private GuidedDecisionTable52 model;
     private ClientFactory         clientFactory;
 
     public ActionWorkItemPopup(final ClientFactory clientFactory,
+                               final String packageUUID,
                                final GuidedDecisionTable52 model,
                                final GenericColumnCommand refreshGrid,
                                final ActionWorkItemCol52 col,
                                final boolean isNew) {
         this.editingCol = cloneActionWorkItemColumn( col );
         this.clientFactory = clientFactory;
+        this.packageUUID = packageUUID;
         this.model = model;
 
         setTitle( constants.ColumnConfigurationWorkItem() );
@@ -131,18 +134,19 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemsListBox.clear();
         workItemsListBox.addItem( constants.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
-        clientFactory.getService().loadWorkItemDefinitions( new GenericCallback<List<WorkDefinition>>() {
+        clientFactory.getService().loadWorkItemDefinitions( packageUUID,
+                                                            new GenericCallback<List<WorkDefinition>>() {
 
-            public void onSuccess(List<WorkDefinition> result) {
-                //Add list of Work Item Definitions to list box
-                workItemsListBox.clear();
-                workItemsListBox.setEnabled( true );
-                for ( WorkDefinition wid : result ) {
-                    workItemsListBox.addItem( wid.getName() );
-                }
-            }
+                                                                public void onSuccess(List<WorkDefinition> result) {
+                                                                    //Add list of Work Item Definitions to list box
+                                                                    workItemsListBox.clear();
+                                                                    workItemsListBox.setEnabled( true );
+                                                                    for ( WorkDefinition wid : result ) {
+                                                                        workItemsListBox.addItem( wid.getName() );
+                                                                    }
+                                                                }
 
-        } );
+                                                            } );
 
     }
 

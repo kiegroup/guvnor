@@ -724,8 +724,8 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.loadWorkitemDefinitionElementData();
     }
     
-    public List<WorkDefinition> loadWorkItemDefinitions() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
-        return serviceImplementation.loadWorkItemDefinitions();
+    public List<WorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+        return serviceImplementation.loadWorkItemDefinitions( p0 );
     }
     
     public boolean doesAssetExistInPackage(java.lang.String p0,

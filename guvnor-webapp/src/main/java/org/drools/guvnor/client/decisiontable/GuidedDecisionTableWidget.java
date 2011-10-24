@@ -97,6 +97,7 @@ public class GuidedDecisionTableWidget extends Composite
     private VerticalPanel               attributeConfigWidget;
     private VerticalPanel               conditionsConfigWidget;
     private String                      packageName;
+    private String                      packageUUID;
     private VerticalPanel               actionsConfigWidget;
     private SuggestionCompletionEngine  sce;
 
@@ -119,6 +120,7 @@ public class GuidedDecisionTableWidget extends Composite
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
         this.packageName = asset.getMetaData().getPackageName();
+        this.packageUUID = asset.getMetaData().getPackageUUID();
         this.guidedDecisionTable.setTableName( asset.getName() );
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
@@ -358,6 +360,7 @@ public class GuidedDecisionTableWidget extends Composite
                     private void showWorkItemAction() {
                         final ActionWorkItemCol52 awi = makeNewActionWorkItem();
                         ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
+                                                                             packageUUID,
                                                                              guidedDecisionTable,
                                                                              new GenericColumnCommand() {
                                                                                  public void execute(DTColumnConfig52 column) {

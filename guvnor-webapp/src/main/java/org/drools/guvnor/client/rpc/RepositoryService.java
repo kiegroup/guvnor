@@ -35,14 +35,11 @@ public interface RepositoryService
     extends
     RemoteService {
 
-
-
     /**
      * Return a a 2d array/grid of results for rules.
      * 
      * @param The
      *            name of the state.
-     *            
      * @deprecated in favour of {@link loadRuleListForState(StatePageRequest)}
      */
     public TableDataResult loadRuleListForState(String state,
@@ -77,14 +74,14 @@ public interface RepositoryService
                                 String initialCategory,
                                 String initialPackage,
                                 String format) throws SerializationException;
-    
+
     /**
      * Creates a brand new rule with the initial category. Return the UUID of
      * the item created. This will not check in the rule, but just leave it as
      * saved in the repo.
      */
     public String createNewRule(NewAssetConfiguration configuration) throws SerializationException;
-   
+
     /**
      * Creates a brand new Guided Decision Table rule with the initial category.
      * Return the UUID of the item created. This will not check in the rule, but
@@ -176,7 +173,6 @@ public interface RepositoryService
      */
     public void removeState(String name) throws SerializationException;
 
- 
     /**
      * Loads up the SuggestionCompletionEngine for the given package. As this
      * doesn't change that often, its safe to cache. However, if a change is
@@ -188,7 +184,7 @@ public interface RepositoryService
      * return custom selector names
      */
     public String[] getCustomSelectors() throws SerializationException;
-   
+
     /**
      * This will list the last N log entryies logged by the server. For
      * debugging purposes in the GUI.
@@ -244,7 +240,6 @@ public interface RepositoryService
      * @param numRows
      * @return
      * @throws SerializationException
-     * 
      * @deprecated in favour of {@link queryMetaData(QueryPageRequest)}
      */
     public TableDataResult queryMetaData(final MetaDataQuery[] qr,
@@ -269,7 +264,6 @@ public interface RepositoryService
 
     /**
      * @return A map of username : list of permission types for display reasons.
-     * 
      * @deprecated in favour of {@link listUserPermissions(PageRequest)}
      */
     public Map<String, List<String>> listUserPermissions() throws DetailedSerializationException;
@@ -296,12 +290,12 @@ public interface RepositoryService
 
     /**
      * List the available permission types.
-     * @deprecated in favour of {@link listAvailablePermissionRoleTypes()}
      * 
+     * @deprecated in favour of {@link listAvailablePermissionRoleTypes()}
      * @return
      */
     public String[] listAvailablePermissionTypes();
-    
+
     /**
      * List the available permission types.
      * 
@@ -318,7 +312,6 @@ public interface RepositoryService
      * create new user.
      */
     public void createUser(String userName);
-
 
     /**
      * Subscribe for a "callback" for a given request.
@@ -351,7 +344,7 @@ public interface RepositoryService
      * @throws DetailedSerializationException
      */
     public Map<String, String> loadSpringContextElementData() throws DetailedSerializationException;
-    
+
     /**
      * Returns the Workitem Definition elements specified by
      * WorkitemDefinitionElementsManager
@@ -366,9 +359,11 @@ public interface RepositoryService
      * Work Definitions is Assets defined in Guvnor and those defined in
      * /workitemDefinitionElements.properties.
      * 
+     * @param packageUUID
+     *            The Package UUID for which Work Definitions should be loaded
      * @return
      * @throws DetailedSerializationException
      */
-    public List<WorkDefinition> loadWorkItemDefinitions() throws DetailedSerializationException;
+    public List<WorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
 
 }

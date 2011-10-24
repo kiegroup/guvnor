@@ -65,6 +65,9 @@ import org.drools.guvnor.server.builder.pagerow.QueryMetadataPageRowBuilder;
 import org.drools.guvnor.server.builder.pagerow.StatePageRowBuilder;
 import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.ruleeditor.springcontext.SpringContextElementsManager;
+import org.drools.guvnor.server.ruleeditor.workitem.AssetWorkDefinitionsLoader;
+import org.drools.guvnor.server.ruleeditor.workitem.ConfigFileWorkDefinitionsLoader;
+import org.drools.guvnor.server.ruleeditor.workitem.WorkDefinitionsLoader;
 import org.drools.guvnor.server.ruleeditor.workitem.WorkitemDefinitionElementsManager;
 import org.drools.guvnor.server.security.RoleType;
 import org.drools.guvnor.server.security.RoleTypes;
@@ -75,10 +78,6 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.BooleanParameterDefinition;
-import org.drools.ide.common.shared.workitems.FloatParameterDefinition;
-import org.drools.ide.common.shared.workitems.IntegerParameterDefinition;
-import org.drools.ide.common.shared.workitems.StringParameterDefinition;
 import org.drools.ide.common.shared.workitems.WorkDefinition;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
@@ -842,21 +841,45 @@ public class ServiceImplementation
      * @return
      * @throws DetailedSerializationException
      */
-    @WebRemote
     @LoggedIn
-    public List<WorkDefinition> loadWorkItemDefinitions() throws DetailedSerializationException {
-        //TODO Load WorkDefinitions from all sources, including:-
-        // - Assets
-        // - workitemDefinitionElements.properties
-        // - jBPM Service Repository
+    public List<WorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
+        Map<String, org.drools.process.core.WorkDefinition> workDefinitions = new HashMap<String, org.drools.process.core.WorkDefinition>();
+        //Load WorkDefinitions from different sources
+
+        try {
+            // - Assets
+            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( packageUUID );
+            Map<String, org.drools.process.core.WorkDefinition> assetWorkDefinitions = loader.getWorkDefinitions();
+            for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : assetWorkDefinitions.entrySet() ) {
+                if ( !workDefinitions.containsKey( entry.getKey() ) ) {
+                    workDefinitions.put( entry.getKey(),
+                                         entry.getValue() );
+                }
+            }
+
+            // - workitem-definitions.xml
+            Map<String, org.drools.process.core.WorkDefinition> configuredWorkDefinitions = ConfigFileWorkDefinitionsLoader.getInstance().getWorkDefinitions();
+            for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : configuredWorkDefinitions.entrySet() ) {
+                if ( !workDefinitions.containsKey( entry.getKey() ) ) {
+                    workDefinitions.put( entry.getKey(),
+                                         entry.getValue() );
+                }
+            }
+        } catch ( Exception e ) {
+            log.error( "Error loading Workitem Definitions",
+                       e );
+            throw new DetailedSerializationException( "Error loading Workitem Definitions",
+                                                      "View server logs for more information" );
+        }
+
+        //Copy the Work Items into Structures suitable for GWT
         List<WorkDefinition> workItems = new ArrayList<WorkDefinition>();
-        WorkDefinition wid = new WorkDefinition();
-        wid.setName( "Do something for someone" );
-        wid.addParameter( new FloatParameterDefinition() );
-        wid.addParameter( new IntegerParameterDefinition() );
-        wid.addParameter( new BooleanParameterDefinition() );
-        wid.addParameter( new StringParameterDefinition() );
-        workItems.add( wid );
+        for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : workDefinitions.entrySet() ) {
+            WorkDefinition wid = new WorkDefinition();
+            wid.setName( entry.getKey() );
+            //TODO Add parameters
+            workItems.add( wid );
+        }
         return workItems;
     }
 

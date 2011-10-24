@@ -76,7 +76,7 @@ public interface RepositoryServiceAsync {
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
     public void loadWorkitemDefinitionElementData(AsyncCallback cb);
-    public void loadWorkItemDefinitions(AsyncCallback<List<WorkDefinition>> cb);
+    public void loadWorkItemDefinitions(String p0, AsyncCallback<List<WorkDefinition>> cb);
     
 }
 
