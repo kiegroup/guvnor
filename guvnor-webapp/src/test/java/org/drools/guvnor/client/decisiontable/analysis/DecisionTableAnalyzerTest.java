@@ -31,6 +31,8 @@ import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.junit.Test;
 
@@ -380,6 +382,62 @@ public class DecisionTableAnalyzerTest {
         assertEquals(0, analysisData.get(4).getImpossibleMatchesSize());
     }
 
+    @Test
+    public void testImpossibleMatchesLimitedEntry() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        LimitedEntryConditionCol52 child = new LimitedEntryConditionCol52();
+        child.setFactField("age");
+        child.setOperator("<");
+        child.setValue(new DTCellValue52(new BigDecimal("18")));
+        child.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(child);
+
+        LimitedEntryConditionCol52 pensioner = new LimitedEntryConditionCol52();
+        pensioner.setFactField("age");
+        pensioner.setOperator(">=");
+        pensioner.setValue(new DTCellValue52(new BigDecimal("65")));
+        pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(pensioner);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.TRUE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52(Boolean.FALSE),
+                        new DTCellValue52(Boolean.TRUE)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
+        assertEquals(1, analysisData.get(1).getImpossibleMatchesSize());
+        assertEquals(0, analysisData.get(2).getImpossibleMatchesSize());
+    }
+
 
     @Test
     public void testConflictingMatchNumeric() throws ParseException {
@@ -527,6 +585,72 @@ public class DecisionTableAnalyzerTest {
         assertEquals(0, analysisData.get(3).getConflictingMatchSize());
         assertEquals(1, analysisData.get(4).getConflictingMatchSize());
         assertEquals(1, analysisData.get(5).getConflictingMatchSize());
+    }
+
+    @Test
+    public void testConflictingMatchLimitedEntry() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        LimitedEntryConditionCol52 child = new LimitedEntryConditionCol52();
+        child.setFactField("age");
+        child.setOperator("<");
+        child.setValue(new DTCellValue52(new BigDecimal("18")));
+        child.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(child);
+
+        LimitedEntryConditionCol52 adult = new LimitedEntryConditionCol52();
+        adult.setFactField("age");
+        adult.setOperator(">=");
+        adult.setValue(new DTCellValue52(new BigDecimal("18")));
+        adult.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(adult);
+
+        LimitedEntryConditionCol52 pensioner = new LimitedEntryConditionCol52();
+        pensioner.setFactField("age");
+        pensioner.setOperator(">=");
+        pensioner.setValue(new DTCellValue52(new BigDecimal("65")));
+        pensioner.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(pensioner);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.FALSE),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(Boolean.FALSE),
+                        new DTCellValue52(Boolean.TRUE),
+                        new DTCellValue52(Boolean.FALSE)
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52(Boolean.FALSE),
+                        new DTCellValue52(Boolean.FALSE),
+                        new DTCellValue52(Boolean.TRUE)
+                )
+        );
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt, data);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getConflictingMatchSize());
+        assertEquals(1, analysisData.get(1).getConflictingMatchSize());
+        assertEquals(1, analysisData.get(2).getConflictingMatchSize());
     }
 
     private SuggestionCompletionEngine buildSuggestionCompletionEngine() {
