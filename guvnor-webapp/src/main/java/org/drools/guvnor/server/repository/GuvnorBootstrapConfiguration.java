@@ -19,10 +19,12 @@ package org.drools.guvnor.server.repository;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.drools.repository.RulesRepositoryConfigurator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,6 +53,15 @@ public class GuvnorBootstrapConfiguration {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    @PostConstruct
+    public void validate() {
+        if (!properties.containsKey(RulesRepositoryConfigurator.CONFIGURATOR_CLASS)) {
+            throw new IllegalStateException("The beans.xml file does not have a GuvnorBootstrapConfiguration " +
+                    "with a property for the configurator class (" + RulesRepositoryConfigurator.CONFIGURATOR_CLASS
+                    + ") configured.");
+        }
     }
 
     public String extractAdminUsername() {
