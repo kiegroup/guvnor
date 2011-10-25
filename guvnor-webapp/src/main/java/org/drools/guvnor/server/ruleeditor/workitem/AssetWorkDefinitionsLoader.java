@@ -47,7 +47,7 @@ public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
 
     //Load file into a String
     public String loadWorkDefinitions() throws SerializationException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         AssetPageRequest workDefinitionAssetRequest = new AssetPageRequest( packageUUID,
                                                                             Arrays.asList( new String[]{"wid"} ),
                                                                             null,
