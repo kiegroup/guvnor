@@ -34,14 +34,12 @@ import com.google.gwt.user.client.rpc.SerializationException;
  */
 public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
 
-    @Inject
-    private RepositoryAssetService      repositoryAssetService;
+    private RepositoryAssetService repositoryAssetService;
     
     private String packageUUID;
 
-    public AssetWorkDefinitionsLoader() {}
-    
-    public AssetWorkDefinitionsLoader(String packageUUID) {
+    public AssetWorkDefinitionsLoader(RepositoryAssetService repositoryAssetService, String packageUUID) {
+        this.repositoryAssetService = repositoryAssetService;
         this.packageUUID = packageUUID;
     }
 

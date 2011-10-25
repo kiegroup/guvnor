@@ -848,7 +848,7 @@ public class ServiceImplementation
 
         try {
             // - Assets
-            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( packageUUID );
+            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService, packageUUID );
             Map<String, org.drools.process.core.WorkDefinition> assetWorkDefinitions = loader.getWorkDefinitions();
             for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : assetWorkDefinitions.entrySet() ) {
                 if ( !workDefinitions.containsKey( entry.getKey() ) ) {
