@@ -12,7 +12,7 @@
   <!--
     TODO Move this file to src/main/webapp/WEB-INF/beans.xml
     and remove the workarounds in assembly-guvnor-jboss-as-7_0.xml and GuvnorTestBase
-    for https://issues.jboss.org/browse/WELD-953 and https://issues.jboss.org/browse/SOLDER-220
+    for https://issues.jboss.org/browse/SOLDER-220
   -->
 
   <weld:scan>

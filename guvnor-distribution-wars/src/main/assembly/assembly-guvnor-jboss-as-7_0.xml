@@ -12,7 +12,7 @@
 
   <fileSets>
     <fileSet>
-      <!-- TODO Workaround for https://issues.jboss.org/browse/WELD-953 -->
+      <!-- TODO Workaround for https://issues.jboss.org/browse/SOLDER-220 -->
       <directory>../guvnor-webapp/src/main/resources/META-INF/</directory>
       <includes>
         <include>beans.xml</include>
@@ -30,8 +30,6 @@
       <unpack>true</unpack>
       <unpackOptions>
         <excludes>
-          <!-- TODO Workaround for https://issues.jboss.org/browse/WELD-953 -->
-          <exclude>WEB-INF/classes/META-INF/beans.xml</exclude>
 
           <!-- Weld and transitive dependency excludes, it's bundled in the AS -->
           <exclude>WEB-INF/lib/cdi-api-*.jar</exclude>
