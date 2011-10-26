@@ -18,7 +18,7 @@ package org.drools.guvnor.client.rpc;
 
 import java.util.List;
 
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -76,7 +76,7 @@ public interface RepositoryServiceAsync {
     public void processTemplate(java.lang.String p0, java.util.Map p1, AsyncCallback<java.lang.String> cb);
     public void loadSpringContextElementData(AsyncCallback cb);
     public void loadWorkitemDefinitionElementData(AsyncCallback cb);
-    public void loadWorkItemDefinitions(String p0, AsyncCallback<List<WorkDefinition>> cb);
+    public void loadWorkItemDefinitions(String p0, AsyncCallback<List<PortableWorkDefinition>> cb);
     
 }
 

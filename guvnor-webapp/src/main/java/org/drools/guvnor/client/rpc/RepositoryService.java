@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.SerializationException;
@@ -364,6 +364,6 @@ public interface RepositoryService
      * @return
      * @throws DetailedSerializationException
      */
-    public List<WorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
+    public List<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
 
 }

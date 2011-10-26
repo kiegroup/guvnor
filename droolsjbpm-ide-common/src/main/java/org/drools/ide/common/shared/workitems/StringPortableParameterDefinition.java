@@ -18,8 +18,20 @@ package org.drools.ide.common.shared.workitems;
 /**
  * A String parameter
  */
-public class StringParameterDefinition extends ParameterDefinition<String> {
+public class StringPortableParameterDefinition extends PortableParameterDefinition
+    implements
+    HasValue<String> {
 
     private static final long serialVersionUID = 540L;
-    
+
+    private String            value;
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
 }

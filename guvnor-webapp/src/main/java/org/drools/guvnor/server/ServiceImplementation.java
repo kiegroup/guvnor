@@ -22,9 +22,11 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -78,7 +80,20 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.BooleanPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.FloatPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.IntegerPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.ObjectPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+import org.drools.ide.common.shared.workitems.StringPortableParameterDefinition;
+import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.datatype.DataType;
+import org.drools.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.process.core.datatype.impl.type.FloatDataType;
+import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -842,13 +857,14 @@ public class ServiceImplementation
      * @throws DetailedSerializationException
      */
     @LoggedIn
-    public List<WorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
+    public List<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
         Map<String, org.drools.process.core.WorkDefinition> workDefinitions = new HashMap<String, org.drools.process.core.WorkDefinition>();
         //Load WorkDefinitions from different sources
 
         try {
             // - Assets
-            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService, packageUUID );
+            WorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService,
+                                                                           packageUUID );
             Map<String, org.drools.process.core.WorkDefinition> assetWorkDefinitions = loader.getWorkDefinitions();
             for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : assetWorkDefinitions.entrySet() ) {
                 if ( !workDefinitions.containsKey( entry.getKey() ) ) {
@@ -873,14 +889,41 @@ public class ServiceImplementation
         }
 
         //Copy the Work Items into Structures suitable for GWT
-        List<WorkDefinition> workItems = new ArrayList<WorkDefinition>();
+        List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
         for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : workDefinitions.entrySet() ) {
-            WorkDefinition wid = new WorkDefinition();
+            PortableWorkDefinition wid = new PortableWorkDefinition();
             wid.setName( entry.getKey() );
-            //TODO Add parameters
+            wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
+            wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
             workItems.add( wid );
         }
         return workItems;
+    }
+
+    private Set<PortableParameterDefinition> convertWorkItemParameters(Set<ParameterDefinition> parameters) {
+        Set<PortableParameterDefinition> pps = new HashSet<PortableParameterDefinition>();
+        for ( ParameterDefinition pd : parameters ) {
+            DataType pdt = pd.getType();
+            PortableParameterDefinition ppd;
+            if ( pd.getType() instanceof StringDataType ) {
+                ppd = new StringPortableParameterDefinition();
+                ppd.setName( pd.getName() );
+            } else if ( pdt instanceof BooleanDataType ) {
+                ppd = new BooleanPortableParameterDefinition();
+                ppd.setName( pd.getName() );
+            } else if ( pdt instanceof FloatDataType ) {
+                ppd = new FloatPortableParameterDefinition();
+                ppd.setName( pd.getName() );
+            } else if ( pdt instanceof IntegerDataType ) {
+                ppd = new IntegerPortableParameterDefinition();
+                ppd.setName( pd.getName() );
+            } else if ( pdt instanceof ObjectDataType ) {
+                ppd = new ObjectPortableParameterDefinition();
+                ppd.setName( pd.getName() );
+                ((ObjectPortableParameterDefinition) ppd).setClassName( ((ObjectDataType) pd).getClassName() );
+            }
+        }
+        return pps;
     }
 
     @WebRemote

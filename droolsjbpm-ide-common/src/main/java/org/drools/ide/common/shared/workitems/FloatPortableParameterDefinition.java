@@ -18,8 +18,20 @@ package org.drools.ide.common.shared.workitems;
 /**
  * A Float parameter
  */
-public class FloatParameterDefinition extends ParameterDefinition<Float> {
+public class FloatPortableParameterDefinition extends PortableParameterDefinition
+    implements
+    HasValue<Float> {
 
     private static final long serialVersionUID = 540L;
-    
+
+    private Float             value;
+
+    public Float getValue() {
+        return this.value;
+    }
+
+    public void setValue(Float value) {
+        this.value = value;
+    }
+
 }

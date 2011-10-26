@@ -15,7 +15,7 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 /**
  * A column representing the execution of a Work Item.
@@ -24,13 +24,13 @@ public class ActionWorkItemCol52 extends ActionCol52 {
 
     private static final long serialVersionUID = 540l;
 
-    private WorkDefinition    workItemDefinition;
+    private PortableWorkDefinition    workItemDefinition;
 
-    public WorkDefinition getWorkItemDefinition() {
+    public PortableWorkDefinition getWorkItemDefinition() {
         return workItemDefinition;
     }
 
-    public void setWorkItemDefinition(WorkDefinition workItemDefinition) {
+    public void setWorkItemDefinition(PortableWorkDefinition workItemDefinition) {
         this.workItemDefinition = workItemDefinition;
     }
 

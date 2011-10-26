@@ -15,8 +15,6 @@
  */
 package org.drools.ide.common.shared.workitems;
 
-import java.io.Serializable;
-
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 
 /**
@@ -24,20 +22,18 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * @see org.drools.process.core.ParameterDefinition
  */
-public abstract class ParameterDefinition<T extends Serializable>
+public abstract class PortableParameterDefinition
     implements
     PortableObject {
 
     private static final long serialVersionUID = 540L;
 
     private String            name;
-    private T                 value;
 
-    public ParameterDefinition() {
+    public PortableParameterDefinition() {
     }
 
-    public ParameterDefinition(String name,
-                               T value) {
+    public PortableParameterDefinition(String name) {
         setName( name );
     }
 
@@ -50,14 +46,6 @@ public abstract class ParameterDefinition<T extends Serializable>
             throw new IllegalArgumentException( "Name cannot be null" );
         }
         this.name = name;
-    }
-
-    public void setValue(T value) {
-        this.value = value;
-    }
-
-    public T getValue() {
-        return this.value;
     }
 
 }

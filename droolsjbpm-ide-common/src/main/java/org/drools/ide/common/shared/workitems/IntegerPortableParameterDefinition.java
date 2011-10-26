@@ -18,8 +18,20 @@ package org.drools.ide.common.shared.workitems;
 /**
  * An Integer parameter
  */
-public class IntegerParameterDefinition extends ParameterDefinition<Integer> {
+public class IntegerPortableParameterDefinition extends PortableParameterDefinition
+    implements
+    HasValue<Integer> {
 
     private static final long serialVersionUID = 540L;
-    
+
+    private Integer           value;
+
+    public Integer getValue() {
+        return this.value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
+    }
+
 }

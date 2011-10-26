@@ -29,7 +29,7 @@ import org.drools.guvnor.client.rpc.PackageService;
 import org.drools.guvnor.client.rpc.RepositoryService;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
 import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.repository.RulesRepositoryException;
 import org.jboss.seam.security.AuthorizationException;
 
@@ -724,7 +724,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.loadWorkitemDefinitionElementData();
     }
     
-    public List<WorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+    public List<PortableWorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return serviceImplementation.loadWorkItemDefinitions( p0 );
     }
     

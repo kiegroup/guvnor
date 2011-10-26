@@ -29,15 +29,15 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * @see org.drools.process.core.WorkDefinition
  */
 @SuppressWarnings("rawtypes")
-public class WorkDefinition
+public class PortableWorkDefinition
     implements
     PortableObject {
 
-    private static final long                serialVersionUID = 540L;
+    private static final long                        serialVersionUID = 540L;
 
-    private String                           name;
-    private Map<String, ParameterDefinition> parameters       = new HashMap<String, ParameterDefinition>();
-    private Map<String, ParameterDefinition> results          = new HashMap<String, ParameterDefinition>();
+    private String                                   name;
+    private Map<String, PortableParameterDefinition> parameters       = new HashMap<String, PortableParameterDefinition>();
+    private Map<String, PortableParameterDefinition> results          = new HashMap<String, PortableParameterDefinition>();
 
     public String getName() {
         return name;
@@ -47,19 +47,19 @@ public class WorkDefinition
         this.name = name;
     }
 
-    public Set<ParameterDefinition> getParameters() {
-        return new HashSet<ParameterDefinition>( parameters.values() );
+    public Set<PortableParameterDefinition> getParameters() {
+        return new HashSet<PortableParameterDefinition>( parameters.values() );
     }
 
-    public void setParameters(Set<ParameterDefinition> parameters) {
+    public void setParameters(Set<PortableParameterDefinition> parameters) {
         this.parameters.clear();
-        Iterator<ParameterDefinition> iterator = parameters.iterator();
+        Iterator<PortableParameterDefinition> iterator = parameters.iterator();
         while ( iterator.hasNext() ) {
             addParameter( iterator.next() );
         }
     }
 
-    public void addParameter(ParameterDefinition parameter) {
+    public void addParameter(PortableParameterDefinition parameter) {
         parameters.put( parameter.getName(),
                         parameter );
     }
@@ -72,23 +72,23 @@ public class WorkDefinition
         return parameters.keySet().toArray( new String[parameters.size()] );
     }
 
-    public ParameterDefinition getParameter(String name) {
+    public PortableParameterDefinition getParameter(String name) {
         return parameters.get( name );
     }
 
-    public Set<ParameterDefinition> getResults() {
-        return new HashSet<ParameterDefinition>( results.values() );
+    public Set<PortableParameterDefinition> getResults() {
+        return new HashSet<PortableParameterDefinition>( results.values() );
     }
 
-    public void setResults(Set<ParameterDefinition> results) {
+    public void setResults(Set<PortableParameterDefinition> results) {
         this.results.clear();
-        Iterator<ParameterDefinition> it = results.iterator();
+        Iterator<PortableParameterDefinition> it = results.iterator();
         while ( it.hasNext() ) {
             addResult( it.next() );
         }
     }
 
-    public void addResult(ParameterDefinition result) {
+    public void addResult(PortableParameterDefinition result) {
         results.put( result.getName(),
                      result );
     }
@@ -101,7 +101,7 @@ public class WorkDefinition
         return results.keySet().toArray( new String[results.size()] );
     }
 
-    public ParameterDefinition getResult(String name) {
+    public PortableParameterDefinition getResult(String name) {
         return results.get( name );
     }
 

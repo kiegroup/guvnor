@@ -24,7 +24,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.WorkDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -135,14 +135,16 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemsListBox.addItem( constants.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
         clientFactory.getService().loadWorkItemDefinitions( packageUUID,
-                                                            new GenericCallback<List<WorkDefinition>>() {
+                                                            new GenericCallback<List<PortableWorkDefinition>>() {
 
-                                                                public void onSuccess(List<WorkDefinition> result) {
+                                                                public void onSuccess(List<PortableWorkDefinition> result) {
                                                                     //Add list of Work Item Definitions to list box
-                                                                    workItemsListBox.clear();
-                                                                    workItemsListBox.setEnabled( true );
-                                                                    for ( WorkDefinition wid : result ) {
-                                                                        workItemsListBox.addItem( wid.getName() );
+                                                                    if ( result.size() > 0 ) {
+                                                                        workItemsListBox.clear();
+                                                                        workItemsListBox.setEnabled( true );
+                                                                        for ( PortableWorkDefinition wid : result ) {
+                                                                            workItemsListBox.addItem( wid.getName() );
+                                                                        }
                                                                     }
                                                                 }
 

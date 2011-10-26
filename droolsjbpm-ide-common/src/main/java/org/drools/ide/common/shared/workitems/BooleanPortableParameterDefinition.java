@@ -18,8 +18,20 @@ package org.drools.ide.common.shared.workitems;
 /**
  * A Boolean parameter
  */
-public class BooleanParameterDefinition extends ParameterDefinition<Boolean> {
+public class BooleanPortableParameterDefinition extends PortableParameterDefinition
+    implements
+    HasValue<Boolean> {
 
     private static final long serialVersionUID = 540L;
-    
+
+    private Boolean           value;
+
+    public Boolean getValue() {
+        return this.value;
+    }
+
+    public void setValue(Boolean value) {
+        this.value = value;
+    }
+
 }
