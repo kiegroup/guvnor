@@ -66,6 +66,15 @@ public class FormStylePopup extends Popup {
                                   wid );
     }
 
+    public int addAttribute(String label,
+                            Widget wid,
+                            boolean isVisible) {
+       return form.addAttribute( label,
+                                 wid,
+                                 isVisible );
+   }
+
+    
     public int addRow(Widget wid) {
         return form.addRow( wid );
     }

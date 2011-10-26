@@ -81,6 +81,7 @@ import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.shared.workitems.BooleanPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.EnumPortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.FloatPortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.IntegerPortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.ObjectPortableParameterDefinition;
@@ -88,12 +89,15 @@ import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.ide.common.shared.workitems.StringPortableParameterDefinition;
 import org.drools.process.core.ParameterDefinition;
+import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
 import org.drools.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.process.core.datatype.impl.type.EnumDataType;
 import org.drools.process.core.datatype.impl.type.FloatDataType;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -890,9 +894,11 @@ public class ServiceImplementation
 
         //Copy the Work Items into Structures suitable for GWT
         List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
-        for ( Map.Entry<String, org.drools.process.core.WorkDefinition> entry : workDefinitions.entrySet() ) {
+        for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
             PortableWorkDefinition wid = new PortableWorkDefinition();
-            wid.setName( entry.getKey() );
+            WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();
+            wid.setName( wd.getName() );
+            wid.setDisplayName( wd.getDisplayName() );
             wid.setParameters( convertWorkItemParameters( entry.getValue().getParameters() ) );
             wid.setResults( convertWorkItemParameters( entry.getValue().getResults() ) );
             workItems.add( wid );
@@ -904,23 +910,30 @@ public class ServiceImplementation
         Set<PortableParameterDefinition> pps = new HashSet<PortableParameterDefinition>();
         for ( ParameterDefinition pd : parameters ) {
             DataType pdt = pd.getType();
-            PortableParameterDefinition ppd;
+            PortableParameterDefinition ppd = null;
             if ( pd.getType() instanceof StringDataType ) {
                 ppd = new StringPortableParameterDefinition();
-                ppd.setName( pd.getName() );
             } else if ( pdt instanceof BooleanDataType ) {
                 ppd = new BooleanPortableParameterDefinition();
-                ppd.setName( pd.getName() );
             } else if ( pdt instanceof FloatDataType ) {
                 ppd = new FloatPortableParameterDefinition();
-                ppd.setName( pd.getName() );
             } else if ( pdt instanceof IntegerDataType ) {
                 ppd = new IntegerPortableParameterDefinition();
-                ppd.setName( pd.getName() );
             } else if ( pdt instanceof ObjectDataType ) {
                 ppd = new ObjectPortableParameterDefinition();
+                ObjectPortableParameterDefinition oppd = (ObjectPortableParameterDefinition) ppd;
+                ObjectDataType odt = (ObjectDataType) pdt;
+                oppd.setClassName( odt.getClassName() );
+            } else if ( pdt instanceof EnumDataType ) {
+                ppd = new EnumPortableParameterDefinition();
+                EnumPortableParameterDefinition eppd = (EnumPortableParameterDefinition) ppd;
+                EnumDataType epdt = (EnumDataType) pdt;
+                eppd.setClassName( epdt.getClassName() );
+                eppd.setValues( epdt.getValueNames() );
+            }
+            if ( ppd != null ) {
                 ppd.setName( pd.getName() );
-                ((ObjectPortableParameterDefinition) ppd).setClassName( ((ObjectDataType) pd).getClassName() );
+                pps.add( ppd );
             }
         }
         return pps;

@@ -16,30 +16,31 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * An Object parameter. These can only be bound to Facts of the same data-type
+ * An Enum parameter
  */
-public class ObjectPortableParameterDefinition extends PortableParameterDefinition {
+public class EnumPortableParameterDefinition extends ObjectPortableParameterDefinition
+    implements
+    HasValue<String> {
 
     private static final long serialVersionUID = 540L;
 
-    private String            className;
+    private String[]          values;
+    private String            value;
 
-    private String            binding;
-
-    public String getClassName() {
-        return className;
+    public String getValue() {
+        return value;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setValue(String value) {
+        this.value = value;
     }
 
-    public String getBinding() {
-        return binding;
+    public String[] getValues() {
+        return values;
     }
 
-    public void setBinding(String binding) {
-        this.binding = binding;
+    public void setValues(String[] values) {
+        this.values = values;
     }
 
 }

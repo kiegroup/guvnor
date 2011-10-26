@@ -28,7 +28,6 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  * 
  * @see org.drools.process.core.WorkDefinition
  */
-@SuppressWarnings("rawtypes")
 public class PortableWorkDefinition
     implements
     PortableObject {
@@ -36,6 +35,7 @@ public class PortableWorkDefinition
     private static final long                        serialVersionUID = 540L;
 
     private String                                   name;
+    private String                                   displayName;
     private Map<String, PortableParameterDefinition> parameters       = new HashMap<String, PortableParameterDefinition>();
     private Map<String, PortableParameterDefinition> results          = new HashMap<String, PortableParameterDefinition>();
 
@@ -45,6 +45,14 @@ public class PortableWorkDefinition
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public Set<PortableParameterDefinition> getParameters() {

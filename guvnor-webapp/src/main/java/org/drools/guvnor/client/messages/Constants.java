@@ -2559,4 +2559,10 @@ public interface Constants
     
     String WorkItemNameColon();
     
+    String WorkItemInputParameters();
+    
+    String WorkItemOutputParameters();
+    
+    String WorkItemParameterName();
+    
 }

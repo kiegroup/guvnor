@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -24,6 +26,7 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -35,18 +38,24 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A popup to define an Action to execute a Work Item
  */
 public class ActionWorkItemPopup extends FormStylePopup {
 
-    private static Constants      constants = GWT.create( Constants.class );
+    private static Constants                    constants                = GWT.create( Constants.class );
 
-    private ActionWorkItemCol52   editingCol;
-    private String                packageUUID;
-    private GuidedDecisionTable52 model;
-    private ClientFactory         clientFactory;
+    private ActionWorkItemCol52                 editingCol;
+    private String                              packageUUID;
+    private GuidedDecisionTable52               model;
+    private ClientFactory                       clientFactory;
+    private VerticalPanel                       workItemInputParameters  = new VerticalPanel();
+    private VerticalPanel                       workItemOutputParameters = new VerticalPanel();
+    private int                                 workItemInputParametersIndex;
+    private int                                 workItemOutputParametersIndex;
+    private Map<String, PortableWorkDefinition> workItemDefinitions;
 
     public ActionWorkItemPopup(final ClientFactory clientFactory,
                                final String packageUUID,
@@ -74,10 +83,33 @@ public class ActionWorkItemPopup extends FormStylePopup {
                       header );
 
         //Work Item Definitions
-        ListBox workItemsListBox = new ListBox();
+        final ListBox workItemsListBox = new ListBox();
         addAttribute( constants.WorkItemNameColon(),
                       workItemsListBox );
         setupWorkItems( workItemsListBox );
+        workItemsListBox.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                int index = workItemsListBox.getSelectedIndex();
+                if ( index > -1 ) {
+                    String selectedWorkItemName = workItemsListBox.getValue( index );
+                    editingCol.setWorkItemDefinition( workItemDefinitions.get( selectedWorkItemName ) );
+                    showWorkItemParameters();
+                    center();
+                }
+            }
+
+        } );
+
+        //Work Item Input Parameters
+        workItemInputParametersIndex = addAttribute( constants.WorkItemInputParameters(),
+                                                     workItemInputParameters,
+                                                     false );
+
+        //Work Item Output Parameters
+        workItemOutputParametersIndex = addAttribute( constants.WorkItemOutputParameters(),
+                                                      workItemOutputParameters,
+                                                      false );
 
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
@@ -138,17 +170,86 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                             new GenericCallback<List<PortableWorkDefinition>>() {
 
                                                                 public void onSuccess(List<PortableWorkDefinition> result) {
+
                                                                     //Add list of Work Item Definitions to list box
                                                                     if ( result.size() > 0 ) {
                                                                         workItemsListBox.clear();
                                                                         workItemsListBox.setEnabled( true );
-                                                                        for ( PortableWorkDefinition wid : result ) {
-                                                                            workItemsListBox.addItem( wid.getName() );
+                                                                        workItemsListBox.addItem( constants.pleaseChoose(),
+                                                                                                  "" );
+                                                                        workItemDefinitions = new HashMap<String, PortableWorkDefinition>();
+
+                                                                        String selectedName = null;
+                                                                        boolean isWorkItemSelected = false;
+                                                                        if ( editingCol.getWorkItemDefinition() != null ) {
+                                                                            selectedName = editingCol.getWorkItemDefinition().getName();
                                                                         }
+
+                                                                        //Add items
+                                                                        for ( int i = 0; i < result.size(); i++ ) {
+                                                                            PortableWorkDefinition wid = result.get( i );
+                                                                            workItemsListBox.addItem( wid.getDisplayName(),
+                                                                                                      wid.getName() );
+                                                                            workItemDefinitions.put( wid.getName(),
+                                                                                                     wid );
+                                                                            if ( wid.getName().equals( selectedName ) ) {
+                                                                                workItemsListBox.setSelectedIndex( i + 1 );
+                                                                                isWorkItemSelected = true;
+                                                                            }
+                                                                        }
+
+                                                                        //Show parameters if a Work Item is pre-selected
+                                                                        setAttributeVisibility( workItemInputParametersIndex,
+                                                                                                isWorkItemSelected );
+                                                                        setAttributeVisibility( workItemOutputParametersIndex,
+                                                                                                isWorkItemSelected );
+                                                                        showWorkItemParameters();
                                                                     }
                                                                 }
 
                                                             } );
+
+    }
+
+    private void showWorkItemParameters() {
+
+        //Hide parameter selections if a Work Item has not been selected
+        if ( editingCol.getWorkItemDefinition() == null ) {
+            this.setAttributeVisibility( workItemInputParametersIndex,
+                                         false );
+            this.setAttributeVisibility( workItemOutputParametersIndex,
+                                         false );
+            return;
+        }
+        String selectedWorkItemName = editingCol.getWorkItemDefinition().getName();
+        PortableWorkDefinition wid = workItemDefinitions.get( selectedWorkItemName );
+        if ( wid == null ) {
+            this.setAttributeVisibility( workItemInputParametersIndex,
+                                         false );
+            this.setAttributeVisibility( workItemOutputParametersIndex,
+                                         false );
+            return;
+        }
+
+        //Show parameters
+        this.setAttributeVisibility( workItemInputParametersIndex,
+                                     true );
+        this.setAttributeVisibility( workItemOutputParametersIndex,
+                                     true );
+
+        //Input parameters
+        workItemInputParameters.clear();
+        for ( PortableParameterDefinition ppd : wid.getParameters() ) {
+            WorkItemParameterWidget wiw = new WorkItemParameterWidget( ppd );
+            workItemInputParameters.add( wiw );
+        }
+
+        //Output parameters
+        workItemOutputParameters.clear();
+        for ( PortableParameterDefinition ppd : wid.getResults() ) {
+            WorkItemParameterWidget wiw = new WorkItemParameterWidget( ppd );
+            workItemOutputParameters.add( wiw );
+        }
 
     }
 

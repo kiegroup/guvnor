@@ -71,7 +71,7 @@ public class FormStyleLayout extends Composite {
      * @return Index of row created
      */
     public int addAttribute(String lbl,
-                             Widget editor) {
+                            Widget editor) {
         int row = numInLayout;
         HTML label = new HTML( "<div class='form-field'>" + lbl + "</div>" );
         layout.setWidget( numInLayout,
@@ -91,6 +91,27 @@ public class FormStyleLayout extends Composite {
 
         numInLayout++;
         return row;
+    }
+
+    /**
+     * Add a widget to the "form"
+     * 
+     * @param lbl
+     *            The label displayed in column 0
+     * @param editor
+     *            The Widget displayed in column 1
+     * @param isVisible
+     *            Is the new row visible
+     * @return Index of row created
+     */
+    public int addAttribute(String lbl,
+                             Widget editor,
+                             boolean isVisible) {
+        int rowIndex = addAttribute( lbl,
+                                     editor );
+        setAttributeVisibility( rowIndex,
+                                isVisible );
+        return rowIndex;
     }
 
     /**
