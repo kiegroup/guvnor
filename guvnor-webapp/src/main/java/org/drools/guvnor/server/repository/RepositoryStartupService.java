@@ -18,27 +18,20 @@ package org.drools.guvnor.server.repository;
 
 
 import org.drools.repository.*;
-import org.drools.repository.events.CheckinEvent;
-import org.drools.repository.events.StorageEventManager;
+
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
 import javax.jcr.LoginException;
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.servlet.ServletContextEvent;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 
@@ -77,18 +70,16 @@ public class RepositoryStartupService {
         String adminUsername = guvnorBootstrapConfiguration.extractAdminUsername();
         String adminPassword = guvnorBootstrapConfiguration.extractAdminPassword();
         sessionForSetup = newSession(adminUsername, adminPassword);
-        create(sessionForSetup);
+        setupRepository(sessionForSetup);
     }
 
-    void create(Session sessionForSetup) {
-
+    private void setupRepository(Session sessionForSetup) {
         RulesRepositoryAdministrator admin = new RulesRepositoryAdministrator(sessionForSetup);
         if (!admin.isRepositoryInitialized()) {
             try {
                 configurator.setupRepository(sessionForSetup);
             } catch (RepositoryException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                throw new RulesRepositoryException(e);
             }
         }
 
