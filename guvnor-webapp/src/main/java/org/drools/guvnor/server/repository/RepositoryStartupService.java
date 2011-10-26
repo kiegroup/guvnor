@@ -55,8 +55,8 @@ public class RepositoryStartupService {
 
     private RulesRepositoryConfigurator configurator;
 
-    private Repository repository;
-    private Session sessionForSetup;
+    protected Repository repository;
+    protected Session sessionForSetup;
 
     public Repository getRepositoryInstance() {
         try {

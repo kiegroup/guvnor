@@ -63,11 +63,6 @@ public class DemoAuthenticator extends BaseAuthenticator implements Serializable
         setStatus(AuthenticationStatus.SUCCESS);
         setUser(new SimpleUser(username));
         log.info("Demo login for user (" + username + ") succeeded.");
-        if (username.equals("admin")) {
-            // HACK the testdata should really do this
-            roleBasedPermissionStore.addRoleBasedPermissionForTesting(username,
-                    new RoleBasedPermission(username, RoleType.ADMIN.getName(), null, null));
-        }
     }
 
     private void upgradeGuestToAdmin() {

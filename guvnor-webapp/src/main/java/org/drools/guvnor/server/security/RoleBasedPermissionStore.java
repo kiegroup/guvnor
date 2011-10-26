@@ -39,6 +39,14 @@ public class RoleBasedPermissionStore implements Serializable {
     public RoleBasedPermissionStore() {
     }
 
+    /**
+     * Do not use this
+     * @param rulesRepository never null
+     */
+    public RoleBasedPermissionStore(RulesRepository rulesRepository) {
+        this.rulesRepository = rulesRepository;
+    }
+
     public List<RoleBasedPermission> getRoleBasedPermissionsByUserName(
             String userName) {
         PermissionManager permissionManager = new PermissionManager(rulesRepository);
