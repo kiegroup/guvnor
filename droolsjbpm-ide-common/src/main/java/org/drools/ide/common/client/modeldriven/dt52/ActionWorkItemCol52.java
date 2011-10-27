@@ -24,7 +24,7 @@ public class ActionWorkItemCol52 extends ActionCol52 {
 
     private static final long      serialVersionUID   = 540l;
 
-    private PortableWorkDefinition workItemDefinition = new PortableWorkDefinition();
+    private PortableWorkDefinition workItemDefinition;
 
     public PortableWorkDefinition getWorkItemDefinition() {
         return workItemDefinition;

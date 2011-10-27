@@ -16,8 +16,10 @@
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
@@ -27,6 +29,14 @@ import org.drools.guvnor.client.widgets.drools.workitems.WorkItemParametersWidge
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -90,7 +100,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
 
             public void onChange(ChangeEvent event) {
                 int index = workItemsListBox.getSelectedIndex();
-                if ( index > -1 ) {
+                if ( index >= 0 ) {
                     String selectedWorkItemName = workItemsListBox.getValue( index );
                     editingCol.setWorkItemDefinition( workItemDefinitions.get( selectedWorkItemName ) );
                     showWorkItemParameters();
@@ -163,10 +173,74 @@ public class ActionWorkItemPopup extends FormStylePopup {
     }
 
     private PortableWorkDefinition cloneWorkItemDefinition(PortableWorkDefinition pwd) {
+        if ( pwd == null ) {
+            return null;
+        }
         PortableWorkDefinition clone = new PortableWorkDefinition();
         clone.setName( pwd.getName() );
         clone.setDisplayName( pwd.getDisplayName() );
+        clone.setParameters( cloneParameters( pwd.getParameters() ) );
+        clone.setResults( cloneParameters( pwd.getResults() ) );
         return clone;
+    }
+
+    private Set<PortableParameterDefinition> cloneParameters(Set<PortableParameterDefinition> parameters) {
+        Set<PortableParameterDefinition> clone = new HashSet<PortableParameterDefinition>();
+        for ( PortableParameterDefinition ppd : parameters ) {
+            clone.add( cloneParameter( ppd ) );
+        }
+        return clone;
+    }
+
+    private PortableParameterDefinition cloneParameter(PortableParameterDefinition ppd) {
+        PortableParameterDefinition clone = null;
+        if ( ppd instanceof PortableBooleanParameterDefinition ) {
+            clone = new PortableBooleanParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableBooleanParameterDefinition) clone).setClassName( ((PortableBooleanParameterDefinition) ppd).getClassName() );
+            ((PortableBooleanParameterDefinition) clone).setBinding( ((PortableBooleanParameterDefinition) ppd).getBinding() );
+            ((PortableBooleanParameterDefinition) clone).setValue( ((PortableBooleanParameterDefinition) ppd).getValue() );
+            return clone;
+        } else if ( ppd instanceof PortableEnumParameterDefinition ) {
+            clone = new PortableEnumParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableEnumParameterDefinition) clone).setClassName( ((PortableEnumParameterDefinition) ppd).getClassName() );
+            ((PortableEnumParameterDefinition) clone).setBinding( ((PortableEnumParameterDefinition) ppd).getBinding() );
+            ((PortableEnumParameterDefinition) clone).setValues( ((PortableEnumParameterDefinition) ppd).getValues() );
+            ((PortableEnumParameterDefinition) clone).setValue( ((PortableEnumParameterDefinition) ppd).getValue() );
+            return clone;
+        } else if ( ppd instanceof PortableFloatParameterDefinition ) {
+            clone = new PortableFloatParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableFloatParameterDefinition) clone).setBinding( ((PortableFloatParameterDefinition) ppd).getBinding() );
+            ((PortableFloatParameterDefinition) clone).setValue( ((PortableFloatParameterDefinition) ppd).getValue() );
+            return clone;
+        } else if ( ppd instanceof PortableIntegerParameterDefinition ) {
+            clone = new PortableIntegerParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableIntegerParameterDefinition) clone).setBinding( ((PortableIntegerParameterDefinition) ppd).getBinding() );
+            ((PortableIntegerParameterDefinition) clone).setValue( ((PortableIntegerParameterDefinition) ppd).getValue() );
+            return clone;
+        } else if ( ppd instanceof PortableListParameterDefinition ) {
+            clone = new PortableListParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableListParameterDefinition) clone).setBinding( ((PortableListParameterDefinition) ppd).getBinding() );
+            ((PortableListParameterDefinition) clone).setClassName( ((PortableListParameterDefinition) ppd).getClassName() );
+            return clone;
+        } else if ( ppd instanceof PortableObjectParameterDefinition ) {
+            clone = new PortableObjectParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableObjectParameterDefinition) clone).setBinding( ((PortableObjectParameterDefinition) ppd).getBinding() );
+            ((PortableObjectParameterDefinition) clone).setClassName( ((PortableObjectParameterDefinition) ppd).getClassName() );
+            return clone;
+        } else if ( ppd instanceof PortableStringParameterDefinition ) {
+            clone = new PortableStringParameterDefinition();
+            clone.setName( ppd.getName() );
+            ((PortableStringParameterDefinition) clone).setBinding( ((PortableStringParameterDefinition) ppd).getBinding() );
+            ((PortableStringParameterDefinition) clone).setValue( ((PortableStringParameterDefinition) ppd).getValue() );
+            return clone;
+        }
+        throw new IllegalArgumentException( "Unrecognized PortableParameterDefinition" );
     }
 
     private void setupWorkItems(final ListBox workItemsListBox) {
@@ -211,6 +285,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                         setAttributeVisibility( workItemOutputParametersIndex,
                                                                                                 isWorkItemSelected );
                                                                         showWorkItemParameters();
+                                                                        center();
                                                                     }
                                                                 }
 
@@ -221,15 +296,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private void showWorkItemParameters() {
 
         //Hide parameter selections if a Work Item has not been selected
-        if ( editingCol.getWorkItemDefinition() == null ) {
-            this.setAttributeVisibility( workItemInputParametersIndex,
-                                         false );
-            this.setAttributeVisibility( workItemOutputParametersIndex,
-                                         false );
-            return;
-        }
-        String selectedWorkItemName = editingCol.getWorkItemDefinition().getName();
-        PortableWorkDefinition wid = workItemDefinitions.get( selectedWorkItemName );
+        PortableWorkDefinition wid = editingCol.getWorkItemDefinition();
         if ( wid == null ) {
             this.setAttributeVisibility( workItemInputParametersIndex,
                                          false );

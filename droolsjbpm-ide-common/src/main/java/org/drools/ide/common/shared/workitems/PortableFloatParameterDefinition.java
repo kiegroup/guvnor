@@ -20,9 +20,12 @@ package org.drools.ide.common.shared.workitems;
  */
 public class PortableFloatParameterDefinition extends PortableParameterDefinition
     implements
-    HasValue<Float> {
+    HasValue<Float>,
+    HasBinding {
 
     private static final long serialVersionUID = 540L;
+
+    private String            binding;
 
     private Float             value;
 
@@ -32,6 +35,14 @@ public class PortableFloatParameterDefinition extends PortableParameterDefinitio
 
     public void setValue(Float value) {
         this.value = value;
+    }
+
+    public String getBinding() {
+        return this.binding;
+    }
+
+    public void setBinding(String binding) {
+        this.binding = binding;
     }
 
 }

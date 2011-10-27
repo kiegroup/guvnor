@@ -20,9 +20,12 @@ package org.drools.ide.common.shared.workitems;
  */
 public class PortableStringParameterDefinition extends PortableParameterDefinition
     implements
-    HasValue<String> {
+    HasValue<String>,
+    HasBinding {
 
     private static final long serialVersionUID = 540L;
+
+    private String            binding;
 
     private String            value;
 
@@ -32,6 +35,14 @@ public class PortableStringParameterDefinition extends PortableParameterDefiniti
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getBinding() {
+        return this.binding;
+    }
+
+    public void setBinding(String binding) {
+        this.binding = binding;
     }
 
 }

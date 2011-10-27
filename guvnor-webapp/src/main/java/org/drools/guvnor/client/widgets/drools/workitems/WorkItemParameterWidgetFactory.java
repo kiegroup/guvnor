@@ -25,7 +25,7 @@ import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 
 /**
- * 
+ * A Factory to create Widgets to edit Work Item parameters
  */
 public class WorkItemParameterWidgetFactory {
 

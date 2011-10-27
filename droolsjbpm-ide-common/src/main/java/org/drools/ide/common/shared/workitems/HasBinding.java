@@ -16,33 +16,12 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * An Integer parameter
+ * Implementations can be bound to a variable
  */
-public class PortableIntegerParameterDefinition extends PortableParameterDefinition
-    implements
-    HasValue<Integer>,
-    HasBinding {
+public interface HasBinding {
 
-    private static final long serialVersionUID = 540L;
+    String getBinding();
 
-    private String            binding;
-
-    private Integer           value;
-
-    public Integer getValue() {
-        return this.value;
-    }
-
-    public void setValue(Integer value) {
-        this.value = value;
-    }
-
-    public String getBinding() {
-        return this.binding;
-    }
-
-    public void setBinding(String binding) {
-        this.binding = binding;
-    }
+    void setBinding(String binding);
 
 }

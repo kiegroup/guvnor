@@ -18,7 +18,9 @@ package org.drools.ide.common.shared.workitems;
 /**
  * An Object parameter. These can only be bound to Facts of the same data-type
  */
-public class PortableObjectParameterDefinition extends PortableParameterDefinition {
+public class PortableObjectParameterDefinition extends PortableParameterDefinition
+    implements
+    HasBinding {
 
     private static final long serialVersionUID = 540L;
 
