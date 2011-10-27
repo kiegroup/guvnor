@@ -16,9 +16,9 @@
 
 package org.drools.guvnor.server.ruleeditor.workitem;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-
-import javax.inject.Inject;
+import java.util.List;
 
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -35,31 +35,35 @@ import com.google.gwt.user.client.rpc.SerializationException;
 public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
 
     private RepositoryAssetService repositoryAssetService;
-    
-    private String packageUUID;
 
-    public AssetWorkDefinitionsLoader(RepositoryAssetService repositoryAssetService, String packageUUID) {
+    private String                 packageUUID;
+
+    public AssetWorkDefinitionsLoader(RepositoryAssetService repositoryAssetService,
+                                      String packageUUID) {
         this.repositoryAssetService = repositoryAssetService;
         this.packageUUID = packageUUID;
     }
 
-    //Load file into a String
-    public String loadWorkDefinitions() throws SerializationException {
-        StringBuilder sb = new StringBuilder();
+    public List<String> loadWorkDefinitions() throws SerializationException {
+
+        //Load assets from package
         AssetPageRequest workDefinitionAssetRequest = new AssetPageRequest( packageUUID,
                                                                             Arrays.asList( new String[]{"wid"} ),
                                                                             null,
                                                                             0,
                                                                             null );
         PageResponse<AssetPageRow> assetWorkDefinitions = repositoryAssetService.findAssetPage( workDefinitionAssetRequest );
+
+        //Add individual assets to definitions list
+        List<String> definitions = new ArrayList<String>();
         for ( AssetPageRow row : assetWorkDefinitions.getPageRowList() ) {
             RuleAsset asset = repositoryAssetService.loadRuleAsset( row.getUuid() );
             RuleContentText content = (RuleContentText) asset.getContent();
-            sb.append( content.content );
-            sb.append( NEW_LINE );
-            sb.append( NEW_LINE );
+            String definition = new String( content.content );
+            definitions.add( definition );
         }
-        return sb.toString();
+
+        return definitions;
     }
 
 }

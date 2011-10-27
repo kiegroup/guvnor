@@ -17,6 +17,8 @@
 package org.drools.guvnor.server.ruleeditor.workitem;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -32,18 +34,23 @@ public class ConfigFileWorkDefinitionsLoader extends AbstractWorkDefinitionsLoad
         super();
     }
 
-    //Load file into a String
-    public String loadWorkDefinitions() throws IOException {
-        StringBuilder definitions = new StringBuilder();
+    public List<String> loadWorkDefinitions() throws IOException {
+
+        //Load file into a String
+        StringBuilder definition = new StringBuilder();
         Scanner scanner = new Scanner( this.getClass().getResourceAsStream( WORKITEM_DEFINITIONS ) );
         try {
             while ( scanner.hasNextLine() ) {
-                definitions.append( scanner.nextLine() + NEW_LINE );
+                definition.append( scanner.nextLine() + NEW_LINE );
             }
         } finally {
             scanner.close();
         }
-        return definitions.toString();
+
+        //Add definition to definitions list
+        List<String> definitions = new ArrayList<String>();
+        definitions.add( definition.toString() );
+        return definitions;
     }
 
     public synchronized static ConfigFileWorkDefinitionsLoader getInstance() {
