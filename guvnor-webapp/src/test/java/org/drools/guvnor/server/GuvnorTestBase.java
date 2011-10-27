@@ -66,7 +66,7 @@ public abstract class GuvnorTestBase {
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
         removeExcludedFiles(webArchive, explodedWarFile);
-        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 
