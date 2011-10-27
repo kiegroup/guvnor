@@ -16,9 +16,12 @@
 package org.drools.guvnor.server;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.io.FileUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.repository.RulesRepository;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -51,22 +54,46 @@ public abstract class GuvnorTestBase {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
+        File mergedBeansXml = writeMergedBeansXmlFile();
         WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, explodedWarFile.getName() + ".war")
                 .importDirectory(explodedWarFile)
                 .as(WebArchive.class)
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
                 // Workaround for https://issues.jboss.org/browse/ARQ-585
-                .addAsWebInfResource(new File("target/test-classes/META-INF/beans.xml"), ArchivePaths.create("beans.xml"))
+                .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"))
                 .addAsLibraries(
                         DependencyResolvers.use(MavenDependencyResolver.class)
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
-        removeWeldJars(webArchive, explodedWarFile);
+        removeExcludedFiles(webArchive, explodedWarFile);
         // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 
-    private static void removeWeldJars(WebArchive webArchive, File explodedWarFile) {
+    private static File writeMergedBeansXmlFile() {
+        File productionBeansXml = new File("src/main/resources/META-INF/beans.xml");
+        File mergedBeansXml = new File("target/mergedBeans.xml");
+        try {
+            List<String> lines = FileUtils.readLines(productionBeansXml, "UTF-8");
+            for (int i = 0; i < lines.size(); i++) {
+                String line = lines.get(i);
+                if (line.contains("</beans>")) {
+                    lines.set(i,
+                            "  <alternatives>\n" +
+                            "    <class>org.drools.guvnor.server.repository.TestRepositoryStartupService</class>\n" +
+                            "  </alternatives>\n" +
+                            "</beans>");
+                }
+            }
+            FileUtils.writeLines(mergedBeansXml, "UTF-8", lines, "\n");
+        } catch (IOException e) {
+            throw new RuntimeException("Could not write mergedBeansXml (" + mergedBeansXml + ").", e);
+        }
+        return mergedBeansXml;
+    }
+
+    private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
+        webArchive.delete(ArchivePaths.create("WEB-INF/classes/org/drools/guvnor/gwtutil/"));
         // Workaround for JBoss 7 https://issues.jboss.org/browse/WELD-983
         File libDir = new File(explodedWarFile, "WEB-INF/lib");
         for (File file : libDir.listFiles()) {
