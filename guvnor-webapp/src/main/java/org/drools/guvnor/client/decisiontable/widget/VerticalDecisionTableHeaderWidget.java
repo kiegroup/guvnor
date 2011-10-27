@@ -32,6 +32,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -508,6 +509,8 @@ public class VerticalDecisionTableHeaderWidget extends
                             factType = ((ActionSetFieldCol52) ac).getBoundName();
                         } else if ( ac instanceof LimitedEntryActionRetractFactCol52 ) {
                             factType = ((LimitedEntryActionRetractFactCol52) ac).getValue().getStringValue();
+                        } else if ( ac instanceof ActionWorkItemCol52 ) {
+                            factType = ((ActionWorkItemCol52) ac).getWorkItemDefinition().getDisplayName();
                         }
 
                         tce.addClassName( resources.headerRowIntermediate() );
@@ -574,6 +577,8 @@ public class VerticalDecisionTableHeaderWidget extends
                             factField = asf.getFactField();
                         } else if ( ac instanceof ActionRetractFactCol52 ) {
                             factField = "[" + constants.Retract() + "]";
+                        } else if ( ac instanceof ActionWorkItemCol52 ) {
+                            factField = "[" + constants.WorkItemAction() + "]";
                         }
 
                         if ( factField != null && factField.length() > 0 ) {

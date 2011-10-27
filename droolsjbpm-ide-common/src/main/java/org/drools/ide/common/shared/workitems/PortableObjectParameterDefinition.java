@@ -16,22 +16,30 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * A Boolean parameter
+ * An Object parameter. These can only be bound to Facts of the same data-type
  */
-public class BooleanPortableParameterDefinition extends PortableParameterDefinition
-    implements
-    HasValue<Boolean> {
+public class PortableObjectParameterDefinition extends PortableParameterDefinition {
 
     private static final long serialVersionUID = 540L;
 
-    private Boolean           value;
+    private String            className;
 
-    public Boolean getValue() {
-        return this.value;
+    private String            binding;
+
+    public String getClassName() {
+        return className;
     }
 
-    public void setValue(Boolean value) {
-        this.value = value;
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
+    public String getBinding() {
+        return binding;
+    }
+
+    public void setBinding(String binding) {
+        this.binding = binding;
     }
 
 }

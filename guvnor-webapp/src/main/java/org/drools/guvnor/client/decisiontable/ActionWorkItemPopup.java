@@ -23,10 +23,10 @@ import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.widgets.drools.workitems.WorkItemParametersWidget;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -38,7 +38,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
  * A popup to define an Action to execute a Work Item
@@ -51,8 +50,8 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private String                              packageUUID;
     private GuidedDecisionTable52               model;
     private ClientFactory                       clientFactory;
-    private VerticalPanel                       workItemInputParameters  = new VerticalPanel();
-    private VerticalPanel                       workItemOutputParameters = new VerticalPanel();
+    private WorkItemParametersWidget            workItemInputParameters  = new WorkItemParametersWidget();
+    private WorkItemParametersWidget            workItemOutputParameters = new WorkItemParametersWidget();
     private int                                 workItemInputParametersIndex;
     private int                                 workItemOutputParametersIndex;
     private Map<String, PortableWorkDefinition> workItemDefinitions;
@@ -159,6 +158,14 @@ public class ActionWorkItemPopup extends FormStylePopup {
         ActionWorkItemCol52 clone = new ActionWorkItemCol52();
         clone.setHeader( col.getHeader() );
         clone.setHideColumn( col.isHideColumn() );
+        clone.setWorkItemDefinition( cloneWorkItemDefinition( col.getWorkItemDefinition() ) );
+        return clone;
+    }
+
+    private PortableWorkDefinition cloneWorkItemDefinition(PortableWorkDefinition pwd) {
+        PortableWorkDefinition clone = new PortableWorkDefinition();
+        clone.setName( pwd.getName() );
+        clone.setDisplayName( pwd.getDisplayName() );
         return clone;
     }
 
@@ -238,18 +245,10 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                      true );
 
         //Input parameters
-        workItemInputParameters.clear();
-        for ( PortableParameterDefinition ppd : wid.getParameters() ) {
-            WorkItemParameterWidget wiw = new WorkItemParameterWidget( ppd );
-            workItemInputParameters.add( wiw );
-        }
+        workItemInputParameters.setParameters( wid.getParameters() );
 
         //Output parameters
-        workItemOutputParameters.clear();
-        for ( PortableParameterDefinition ppd : wid.getResults() ) {
-            WorkItemParameterWidget wiw = new WorkItemParameterWidget( ppd );
-            workItemOutputParameters.add( wiw );
-        }
+        workItemOutputParameters.setParameters( wid.getResults() );
 
     }
 

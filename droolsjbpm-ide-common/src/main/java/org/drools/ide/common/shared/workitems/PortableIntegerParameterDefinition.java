@@ -18,7 +18,7 @@ package org.drools.ide.common.shared.workitems;
 /**
  * An Integer parameter
  */
-public class IntegerPortableParameterDefinition extends PortableParameterDefinition
+public class PortableIntegerParameterDefinition extends PortableParameterDefinition
     implements
     HasValue<Integer> {
 

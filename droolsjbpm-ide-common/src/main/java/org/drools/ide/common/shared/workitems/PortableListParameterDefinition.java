@@ -16,30 +16,14 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * An Object parameter. These can only be bound to Facts of the same data-type
+ * A List parameter
  */
-public class ObjectPortableParameterDefinition extends PortableParameterDefinition {
+public class PortableListParameterDefinition extends PortableObjectParameterDefinition {
 
     private static final long serialVersionUID = 540L;
 
-    private String            className;
-
-    private String            binding;
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public String getBinding() {
-        return binding;
-    }
-
-    public void setBinding(String binding) {
-        this.binding = binding;
+    public PortableListParameterDefinition() {
+        this.setClassName( "java.util.List" );
     }
 
 }

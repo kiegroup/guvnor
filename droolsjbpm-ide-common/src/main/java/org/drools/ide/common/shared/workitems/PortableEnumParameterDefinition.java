@@ -13,25 +13,34 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.client.modeldriven.dt52;
-
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+package org.drools.ide.common.shared.workitems;
 
 /**
- * A column representing the execution of a Work Item.
+ * An Enum parameter
  */
-public class ActionWorkItemCol52 extends ActionCol52 {
+public class PortableEnumParameterDefinition extends PortableObjectParameterDefinition
+    implements
+    HasValue<String> {
 
-    private static final long      serialVersionUID   = 540l;
+    private static final long serialVersionUID = 540L;
 
-    private PortableWorkDefinition workItemDefinition = new PortableWorkDefinition();
+    private String[]          values;
+    private String            value;
 
-    public PortableWorkDefinition getWorkItemDefinition() {
-        return workItemDefinition;
+    public String getValue() {
+        return value;
     }
 
-    public void setWorkItemDefinition(PortableWorkDefinition workItemDefinition) {
-        this.workItemDefinition = workItemDefinition;
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String[] getValues() {
+        return values;
+    }
+
+    public void setValues(String[] values) {
+        this.values = values;
     }
 
 }

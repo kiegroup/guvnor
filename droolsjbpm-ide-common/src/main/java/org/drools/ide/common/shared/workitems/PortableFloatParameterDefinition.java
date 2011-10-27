@@ -16,21 +16,21 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * A String parameter
+ * A Float parameter
  */
-public class StringPortableParameterDefinition extends PortableParameterDefinition
+public class PortableFloatParameterDefinition extends PortableParameterDefinition
     implements
-    HasValue<String> {
+    HasValue<Float> {
 
     private static final long serialVersionUID = 540L;
 
-    private String            value;
+    private Float             value;
 
-    public String getValue() {
+    public Float getValue() {
         return this.value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 

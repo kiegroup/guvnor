@@ -18,16 +18,25 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import com.google.gwt.regexp.shared.RegExp;
 
 /**
- * A TextBox to handle numeric values
+ * A TextBox to handle float values
  */
-public class NumericTextBox extends AbstractRestrictedEntryTextBox {
+public class NumericFloatTextBox extends AbstractRestrictedEntryTextBox {
 
-    // A valid number
+    // A valid Float
     private static final RegExp VALID = RegExp.compile( "(^[-]?[0-9]*\\.?[0-9]*([eE][-+]?[0-9]*)?$)" );
 
     @Override
     protected boolean isValidValue(String value) {
-        return VALID.test( value );
+        boolean isValid = VALID.test( value );
+        if ( !isValid ) {
+            return isValid;
+        }
+        try {
+            Float.parseFloat( value );
+        } catch ( NumberFormatException nfe ) {
+            isValid = false;
+        }
+        return isValid;
     }
 
 }

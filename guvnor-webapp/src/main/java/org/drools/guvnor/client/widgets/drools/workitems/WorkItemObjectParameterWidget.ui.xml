@@ -22,9 +22,7 @@
 
   <gwt:HorizontalPanel>
     <gwt:Label ui:field="parameterName" text="{i18n.WorkItemParameterName}" />
-    <gwt:TextBox ui:field="parameterValue" />
-    <gwt:CheckBox ui:field="chkBindValue" />
     <gwt:ListBox ui:field="lstAvailableBindings" />
-</gwt:HorizontalPanel>
+  </gwt:HorizontalPanel>
 
 </ui:UiBinder>

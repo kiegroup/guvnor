@@ -273,6 +273,22 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                                     arf,
                                                                                                     false );
                                             ed.show();
+                                        } else if ( c instanceof ActionWorkItemCol52 ) {
+                                            final ActionWorkItemCol52 awi = (ActionWorkItemCol52) c;
+                                            ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
+                                                                                                 packageUUID,
+                                                                                                 guidedDecisionTable,
+                                                                                                 new GenericColumnCommand() {
+                                                                                                     public void execute(DTColumnConfig52 column) {
+                                                                                                         dtable.updateColumn( awi,
+                                                                                                                              (ActionWorkItemCol52) column );
+                                                                                                         refreshActionsWidget();
+                                                                                                     }
+                                                                                                 },
+                                                                                                 awi,
+                                                                                                 false );
+                                            popup.show();
+
                                         }
 
                                     }

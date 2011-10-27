@@ -80,14 +80,15 @@ import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.shared.workitems.BooleanPortableParameterDefinition;
-import org.drools.ide.common.shared.workitems.EnumPortableParameterDefinition;
-import org.drools.ide.common.shared.workitems.FloatPortableParameterDefinition;
-import org.drools.ide.common.shared.workitems.IntegerPortableParameterDefinition;
-import org.drools.ide.common.shared.workitems.ObjectPortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
-import org.drools.ide.common.shared.workitems.StringPortableParameterDefinition;
 import org.drools.process.core.ParameterDefinition;
 import org.drools.process.core.WorkDefinition;
 import org.drools.process.core.datatype.DataType;
@@ -95,9 +96,9 @@ import org.drools.process.core.datatype.impl.type.BooleanDataType;
 import org.drools.process.core.datatype.impl.type.EnumDataType;
 import org.drools.process.core.datatype.impl.type.FloatDataType;
 import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.ListDataType;
 import org.drools.process.core.datatype.impl.type.ObjectDataType;
 import org.drools.process.core.datatype.impl.type.StringDataType;
-import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.AssetItemPageResult;
@@ -114,6 +115,7 @@ import org.drools.repository.security.PermissionManager;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
+import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.mvel2.MVEL;
 import org.mvel2.templates.TemplateRuntime;
 
@@ -855,8 +857,10 @@ public class ServiceImplementation
     /**
      * Load and return a Map of all parsed Work Definitions. The source of such
      * Work Definitions is Assets defined in Guvnor and those defined in
-     * /workitemDefinitionElements.properties.
+     * /workitem-definitions.xml
      * 
+     * @param packageUUID
+     *            The Package from which to load Work Items
      * @return
      * @throws DetailedSerializationException
      */
@@ -911,25 +915,29 @@ public class ServiceImplementation
         for ( ParameterDefinition pd : parameters ) {
             DataType pdt = pd.getType();
             PortableParameterDefinition ppd = null;
-            if ( pd.getType() instanceof StringDataType ) {
-                ppd = new StringPortableParameterDefinition();
-            } else if ( pdt instanceof BooleanDataType ) {
-                ppd = new BooleanPortableParameterDefinition();
-            } else if ( pdt instanceof FloatDataType ) {
-                ppd = new FloatPortableParameterDefinition();
-            } else if ( pdt instanceof IntegerDataType ) {
-                ppd = new IntegerPortableParameterDefinition();
-            } else if ( pdt instanceof ObjectDataType ) {
-                ppd = new ObjectPortableParameterDefinition();
-                ObjectPortableParameterDefinition oppd = (ObjectPortableParameterDefinition) ppd;
-                ObjectDataType odt = (ObjectDataType) pdt;
-                oppd.setClassName( odt.getClassName() );
+            if ( pdt instanceof BooleanDataType ) {
+                ppd = new PortableBooleanParameterDefinition();
             } else if ( pdt instanceof EnumDataType ) {
-                ppd = new EnumPortableParameterDefinition();
-                EnumPortableParameterDefinition eppd = (EnumPortableParameterDefinition) ppd;
+                ppd = new PortableEnumParameterDefinition();
+                PortableEnumParameterDefinition eppd = (PortableEnumParameterDefinition) ppd;
                 EnumDataType epdt = (EnumDataType) pdt;
                 eppd.setClassName( epdt.getClassName() );
-                eppd.setValues( epdt.getValueNames() );
+                if ( epdt.getValueMap() != null ) {
+                    eppd.setValues( epdt.getValueNames() );
+                }
+            } else if ( pdt instanceof FloatDataType ) {
+                ppd = new PortableFloatParameterDefinition();
+            } else if ( pdt instanceof IntegerDataType ) {
+                ppd = new PortableIntegerParameterDefinition();
+            } else if ( pdt instanceof ListDataType ) {
+                ppd = new PortableListParameterDefinition();
+            } else if ( pdt instanceof ObjectDataType ) {
+                ppd = new PortableObjectParameterDefinition();
+                PortableObjectParameterDefinition oppd = (PortableObjectParameterDefinition) ppd;
+                ObjectDataType odt = (ObjectDataType) pdt;
+                oppd.setClassName( odt.getClassName() );
+            } else if ( pd.getType() instanceof StringDataType ) {
+                ppd = new PortableStringParameterDefinition();
             }
             if ( ppd != null ) {
                 ppd.setName( pd.getName() );

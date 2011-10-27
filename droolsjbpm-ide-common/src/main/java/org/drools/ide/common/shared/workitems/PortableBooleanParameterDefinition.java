@@ -13,25 +13,23 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.client.modeldriven.dt52;
-
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+package org.drools.ide.common.shared.workitems;
 
 /**
- * A column representing the execution of a Work Item.
+ * A Boolean parameter
  */
-public class ActionWorkItemCol52 extends ActionCol52 {
+public class PortableBooleanParameterDefinition extends PortableEnumParameterDefinition {
 
-    private static final long      serialVersionUID   = 540l;
+    private static final long     serialVersionUID = 540L;
 
-    private PortableWorkDefinition workItemDefinition = new PortableWorkDefinition();
+    private static final String[] VALUES           = new String[]{Boolean.toString( Boolean.TRUE ), Boolean.toString( Boolean.FALSE )};
 
-    public PortableWorkDefinition getWorkItemDefinition() {
-        return workItemDefinition;
+    public PortableBooleanParameterDefinition() {
+        super.setValues( VALUES );
     }
 
-    public void setWorkItemDefinition(PortableWorkDefinition workItemDefinition) {
-        this.workItemDefinition = workItemDefinition;
+    public void setValues(String[] values) {
+        throw new UnsupportedOperationException( "Cannot set values of PortableBooleanParameterDefinition" );
     }
 
 }

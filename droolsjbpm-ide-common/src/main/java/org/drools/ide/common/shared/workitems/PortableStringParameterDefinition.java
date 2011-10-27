@@ -16,31 +16,22 @@
 package org.drools.ide.common.shared.workitems;
 
 /**
- * An Enum parameter
+ * A String parameter
  */
-public class EnumPortableParameterDefinition extends ObjectPortableParameterDefinition
+public class PortableStringParameterDefinition extends PortableParameterDefinition
     implements
     HasValue<String> {
 
     private static final long serialVersionUID = 540L;
 
-    private String[]          values;
     private String            value;
 
     public String getValue() {
-        return value;
+        return this.value;
     }
 
     public void setValue(String value) {
         this.value = value;
-    }
-
-    public String[] getValues() {
-        return values;
-    }
-
-    public void setValues(String[] values) {
-        this.values = values;
     }
 
 }

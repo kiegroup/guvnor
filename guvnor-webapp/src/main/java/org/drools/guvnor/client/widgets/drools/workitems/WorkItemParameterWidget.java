@@ -13,25 +13,25 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.ide.common.shared.workitems;
+package org.drools.guvnor.client.widgets.drools.workitems;
+
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+
+import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
- * A Float parameter
+ * A Widget to display a Work Item parameter
  */
-public class FloatPortableParameterDefinition extends PortableParameterDefinition
-    implements
-    HasValue<Float> {
+public abstract class WorkItemParameterWidget extends Composite {
 
-    private static final long serialVersionUID = 540L;
+    protected PortableParameterDefinition ppd;
 
-    private Float             value;
-
-    public Float getValue() {
-        return this.value;
+    public WorkItemParameterWidget(PortableParameterDefinition ppd) {
+        this.ppd = ppd;
+        initWidget( getWidget() );
     }
 
-    public void setValue(Float value) {
-        this.value = value;
-    }
+    protected abstract Widget getWidget();
 
 }
