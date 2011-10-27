@@ -66,7 +66,7 @@ public abstract class GuvnorTestBase {
                                 .includeDependenciesFromPom("pom.xml")
                                 .resolveAsFiles(new ScopeFilter("test")));
         removeExcludedFiles(webArchive, explodedWarFile);
-        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 
@@ -93,7 +93,7 @@ public abstract class GuvnorTestBase {
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
-        webArchive.delete(ArchivePaths.create("WEB-INF/classes/org/drools/guvnor/gwtutil/"));
+        webArchive.delete(ArchivePaths.create("WEB-INF/classes/org/drools/guvnor/gwtutil"));
         // Workaround for JBoss 7 https://issues.jboss.org/browse/WELD-983
         File libDir = new File(explodedWarFile, "WEB-INF/lib");
         for (File file : libDir.listFiles()) {
