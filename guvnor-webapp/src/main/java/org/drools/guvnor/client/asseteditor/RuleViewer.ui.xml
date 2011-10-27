@@ -29,8 +29,8 @@
 
   <gwt:HTMLPanel>
     <gwt:VerticalPanel width="100%">
-      <guvnor-toolbar:ActionToolbar
-        ui:field="toolbar"></guvnor-toolbar:ActionToolbar>
+      <!-- <guvnor-toolbar:ActionToolbar
+        ui:field="toolbar"></guvnor-toolbar:ActionToolbar> -->
       <guvnor-widgets:MessageWidget
         ui:field="messageWidget"></guvnor-widgets:MessageWidget>
       <gwt:Widget ui:field="editor"></gwt:Widget>

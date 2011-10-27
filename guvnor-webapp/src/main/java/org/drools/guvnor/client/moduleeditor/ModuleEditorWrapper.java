@@ -28,10 +28,11 @@ import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
+import org.drools.guvnor.client.widgets.drools.toolbar.PackageActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar;
+import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
  * This is the module editor.
@@ -73,14 +74,17 @@ public class ModuleEditorWrapper extends Composite {
 
         ArtifactEditor artifactEditor = new ArtifactEditor(clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly);
 
-        AbstractModuleEditor moduleEditor = clientFactory.getPerspectiveFactory().getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, new Command() {
+        Command refreshCommand = new Command() {
             public void execute() {
                 refresh();
             }
-        });
-
-        ActionToolbar actionToolBar = moduleEditor.getActionToolbar();
+        };        
+        AbstractModuleEditor moduleEditor = clientFactory.getPerspectiveFactory().getModuleEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand);
+        
         layout.clear();
+        
+        PackageEditorActionToolbar actionToolBar = new PackageEditorActionToolbar( getConfiguration(),
+                packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
         layout.add(actionToolBar);
 
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
@@ -111,6 +115,10 @@ public class ModuleEditorWrapper extends Composite {
         layout.setHeight("100%");
     }
 
+    private ActionToolbarButtonsConfigurationProvider getConfiguration() {
+        return new PackageActionToolbarButtonsConfigurationProvider();
+    }
+    
     /**
      * Will refresh all the data.
      */

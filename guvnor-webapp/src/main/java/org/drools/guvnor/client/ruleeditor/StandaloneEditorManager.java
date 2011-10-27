@@ -23,7 +23,7 @@ import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
-import org.drools.guvnor.client.ruleeditor.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
 
 import java.util.Arrays;
 import java.util.HashSet;

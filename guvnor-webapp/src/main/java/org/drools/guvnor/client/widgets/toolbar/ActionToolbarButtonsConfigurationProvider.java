@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor.toolbar;
+package org.drools.guvnor.client.widgets.toolbar;
 
 /**
  * This interface is used by ActionToolbar to know which buttons should be 

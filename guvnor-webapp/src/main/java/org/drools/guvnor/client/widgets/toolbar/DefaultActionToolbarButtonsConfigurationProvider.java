@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor.toolbar;
+package org.drools.guvnor.client.widgets.toolbar;
 
-import org.drools.guvnor.client.asseteditor.EditorWidget;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModelEditor;
 import org.drools.guvnor.client.rpc.RuleAsset;
 
 import static org.drools.guvnor.client.common.AssetFormats.*;
@@ -32,12 +30,9 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     public static String[] VERIFY_FORMATS = new String[]{BUSINESS_RULE, DECISION_SPREADSHEET_XLS, DRL, DECISION_TABLE_GUIDED, DRL_MODEL, RULE_TEMPLATE};
 
     private RuleAsset       asset;
-    private EditorWidget    editor;
 
-    public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset,
-                                                            EditorWidget editor) {
+    public DefaultActionToolbarButtonsConfigurationProvider(RuleAsset asset) {
         this.asset = asset;
-        this.editor = editor;
     }
 
     public boolean showSaveButton() {
@@ -73,7 +68,7 @@ public class DefaultActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showSelectWorkingSetsButton() {
-        return this.isValidatorTypeAsset() && editor instanceof RuleModelEditor;
+        return BUSINESS_RULE.equals(asset.getFormat()) || RULE_TEMPLATE.equals(asset.getFormat());
     }
 
     public boolean showValidateButton() {

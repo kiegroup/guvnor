@@ -24,18 +24,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
+import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
+import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.client.util.LazyStackPanel;
 import org.drools.guvnor.client.util.LoadContentCommand;
 import org.drools.guvnor.client.widgets.CheckinPopup;
+import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 import java.util.*;
 
@@ -227,8 +232,6 @@ public class MultiViewEditor extends GuvnorEditor {
                         final RuleViewer ruleViewer = new RuleViewer( asset,
                                 clientFactory,
                                 eventBus,
-                                false,
-                                individualActionToolbarButtonsConfigurationProvider,
                                 ruleViewerSettings );
                         //ruleViewer.setDocoVisible( showDescription );
                         //ruleViewer.setMetaVisible( showMetadata );
@@ -250,7 +253,7 @@ public class MultiViewEditor extends GuvnorEditor {
             public void execute() {
                 String comment = pop.getCheckinComment();
                 for (RuleViewer ruleViewer : ruleViews.values()) {
-                    ruleViewer.doCheckin( comment, false );
+                	 doCheckin(ruleViewer.getAssetEditor(), ruleViewer.asset, comment, false );
                 }
                 if ( closeAfter ) {
                     close();
@@ -261,6 +264,76 @@ public class MultiViewEditor extends GuvnorEditor {
 
     }
 
+	public void doCheckin(Widget editor, RuleAsset asset, String comment, boolean closeAfter) {
+		if (editor instanceof SaveEventListener) {
+			((SaveEventListener) editor).onSave();
+		}
+		performCheckIn(comment, closeAfter, asset);
+		if (editor instanceof SaveEventListener) {
+			((SaveEventListener) editor).onAfterSave();
+		}
+
+		eventBus.fireEvent(new RefreshModuleEditorEvent(asset.getMetaData()
+				.getPackageUUID()));
+		// lastSaved = System.currentTimeMillis();
+		// resetDirty();
+	}
+
+    private void performCheckIn(String comment,
+                                final boolean closeAfter, final RuleAsset asset) {
+        asset.setCheckinComment( comment );
+        final boolean[] saved = {false};
+
+        if ( !saved[0] ) LoadingPopup.showMessage( constants.SavingPleaseWait() );
+        RepositoryServiceFactory.getAssetService().checkinVersion( asset,
+                new GenericCallback<String>() {
+
+                    public void onSuccess(String uuid) {
+                        if ( uuid == null ) {
+                            ErrorPopup.showMessage( constants.FailedToCheckInTheItemPleaseContactYourSystemAdministrator() );
+                            return;
+                        }
+
+                        if ( uuid.startsWith( "ERR" ) ) { // NON-NLS
+                            ErrorPopup.showMessage( uuid.substring( 5 ) );
+                            return;
+                        }
+
+                        flushSuggestionCompletionCache(asset.getMetaData().getPackageName(), asset);
+/*                        if ( editor instanceof DirtyableComposite ) {
+                            ((DirtyableComposite) editor).resetDirty();
+                        }*/
+
+                        LoadingPopup.close();
+                        saved[0] = true;
+
+                        //showInfoMessage( constants.SavedOK() );
+                        if ( !closeAfter ) {
+                            eventBus.fireEvent( new RefreshAssetEditorEvent( uuid ) );
+                        }
+                    }
+                } );
+    }
+    
+    /**
+     * In some cases we will want to flush the package dependency stuff for
+     * suggestion completions. The user will still need to reload the asset
+     * editor though.
+     */
+    public void flushSuggestionCompletionCache(final String packageName, RuleAsset asset) {
+        if ( AssetFormats.isPackageDependency( asset.getFormat() ) ) {
+            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
+            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
+                    new Command() {
+                        public void execute() {
+                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
+                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
+                            eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
+                            LoadingPopup.close();
+                        }
+                    } );
+        }
+    }
     public void close() {
         eventBus.fireEvent(new ClosePlaceEvent(new MultiAssetPlace(rows)));
         if ( closeCommand != null ) {

@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor.toolbar;
+package org.drools.guvnor.client.widgets.toolbar;
 
-public class PackageActionToolbarButtonsConfigurationProvider
-        implements
-        ActionToolbarButtonsConfigurationProvider {
-
-    public PackageActionToolbarButtonsConfigurationProvider() {
-    }
+public class StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider implements ActionToolbarButtonsConfigurationProvider {
 
     public boolean showSaveButton() {
-        return true;
+        return false;
     }
 
     public boolean showSaveAndCloseButton() {
@@ -32,11 +27,11 @@ public class PackageActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showCopyButton() {
-        return true;
+        return false;
     }
     
     public boolean showRenameButton() {
-        return true;
+        return false;
     }
     
     public boolean showPromoteToGlobalButton() {
@@ -44,7 +39,7 @@ public class PackageActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showArchiveButton() {
-        return true;
+        return false;
     }
 
     public boolean showDeleteButton() {
@@ -52,7 +47,7 @@ public class PackageActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showChangeStatusButton() {
-        return true;
+        return false;
     }
 
     public boolean showSelectWorkingSetsButton() {
@@ -60,18 +55,19 @@ public class PackageActionToolbarButtonsConfigurationProvider
     }
 
     public boolean showValidateButton() {
-    	return false;
+        return true;
     }
 
     public boolean showVerifyButton() {
-    	return false;
+        return true;
     }
 
     public boolean showViewSourceButton() {
         return true;
     }
-
+    
     public boolean showStateLabel() {
-        return true;
+        return false;
     }
+
 }

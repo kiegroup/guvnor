@@ -21,6 +21,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
@@ -29,8 +30,9 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar;
+import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -97,10 +99,11 @@ public class RuleViewerWrapper extends GuvnorEditor {
                 asset,
                 clientFactory,
                 eventBus,
-                this.isHistoricalReadOnly,
-                actionToolbarButtonsConfigurationProvider,
                 ruleViewerSettings);
-        ActionToolbar actionToolBar = ruleViewer.getActionToolbar();
+        
+        boolean readOnly = isHistoricalReadOnly || asset.isReadonly() || (this.ruleViewerSettings !=null && this.ruleViewerSettings.isStandalone());
+        Widget actionToolBar = new AssetEditorActionToolbar( getConfiguration(),
+                 asset, ruleViewer.getAssetEditor(), clientFactory, eventBus, readOnly);
 
         layout.clear();
         layout.add(actionToolBar);
@@ -124,6 +127,14 @@ public class RuleViewerWrapper extends GuvnorEditor {
         layout.add(tPanel);
     }
 
+    private ActionToolbarButtonsConfigurationProvider getConfiguration() {
+        if ( actionToolbarButtonsConfigurationProvider == null ) {
+            return new DefaultActionToolbarButtonsConfigurationProvider(asset);
+        } else {
+            return actionToolbarButtonsConfigurationProvider;
+        }
+    }
+    
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingItem());
         RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
