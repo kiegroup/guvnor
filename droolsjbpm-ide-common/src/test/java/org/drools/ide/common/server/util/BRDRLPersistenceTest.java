@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -45,6 +46,11 @@ import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
 import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
+import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -1270,6 +1276,136 @@ public class BRDRLPersistenceTest {
                                     oldValue );
             }
         }
+    }
+
+    @Test
+    public void testRHSExecuteWorkItem() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern p = new FactPattern( "Person" );
+        p.setBoundName( "$p" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setFieldName( "name" );
+        con.setOperator( "==" );
+        con.setValue( "Michael" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setValue( "true" );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setValue( 123.456f );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setValue( 123 );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setValue( "hello" );
+        pwd.addParameter( p4 );
+
+        m.addRhsItem( awi );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", Boolean.TRUE );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", 123.456f );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", 123 );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", \"hello\" );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
+    }
+    
+    @Test
+    public void testRHSExecuteWorkItemWithBindings() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern p = new FactPattern( "Person" );
+        p.setBoundName( "$p" );
+        SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setFieldName( "name" );
+        con.setOperator( "==" );
+        con.setValue( "Michael" );
+        con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        p.addConstraint( con );
+
+        m.addLhsItem( p );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setBinding( "$b" );
+        p1.setValue( "true" );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setBinding( "$f" );
+        p2.setValue( 123.456f );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setBinding( "$i" );
+        p3.setValue( 123 );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setBinding( "$s" );
+        p4.setValue( "hello" );
+        pwd.addParameter( p4 );
+
+        m.addRhsItem( awi );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", $f );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
     }
 
     @Test
