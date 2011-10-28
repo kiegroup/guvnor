@@ -26,6 +26,7 @@ import org.drools.core.util.ReflectiveVisitor;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
+import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
@@ -57,6 +58,8 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 import org.drools.ide.common.shared.SharedConstants;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 /**
  * This class persists the rule model to DRL and back
@@ -76,7 +79,6 @@ public class BRDRLPersistence
 
     /*
      * (non-Javadoc)
-     *
      * @see
      * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
@@ -219,12 +221,25 @@ public class BRDRLPersistence
                             boolean isDSLEnhanced) {
         String indentation = "\t\t";
         if ( model.rhs != null ) {
+
+            //Add boiler-plate for actions operating on Dates
             Map<String, List<ActionFieldValue>> classes = getRHSClassDependencies( model );
             if ( classes.containsKey( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 buf.append( indentation );
                 buf.append( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"" + System.getProperty( "drools.dateformat" ) + "\");\n" );
             }
 
+            //Add boiler-plate for actions operating on WorkItems
+            if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
+                buf.append( indentation );
+                buf.append( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();\n" );
+                buf.append( indentation );
+                buf.append( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();\n" );
+                buf.append( indentation );
+                buf.append( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();\n" );
+            }
+
+            //Marshall the model itself
             RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
                                                                    buf,
                                                                    indentation );
@@ -244,6 +259,21 @@ public class BRDRLPersistence
         }
 
         Map<String, List<ActionFieldValue>> empty = Collections.emptyMap();
+        return empty;
+    }
+
+    private List<PortableWorkDefinition> getRHSWorkItemDependencies(RuleModel model) {
+        if ( model != null ) {
+            List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
+            for ( IAction action : model.rhs ) {
+                if ( action instanceof ActionExecuteWorkItem ) {
+                    workItems.add( ((ActionExecuteWorkItem) action).getWorkDefinition() );
+                }
+            }
+            return workItems;
+        }
+
+        List<PortableWorkDefinition> empty = Collections.emptyList();
         return empty;
     }
 
@@ -561,7 +591,7 @@ public class BRDRLPersistence
                     StringBuilder parentBuf = new StringBuilder();
                     while ( parent != null ) {
                         String fieldName = parent.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         parentBuf.insert( 0,
@@ -573,7 +603,7 @@ public class BRDRLPersistence
                         buf.append( ((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText() );
                     } else {
                         String fieldName = constr.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         buf.append( fieldName );
@@ -853,6 +883,45 @@ public class BRDRLPersistence
             buf.append( "\n" );
         }
 
+        public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
+            String wiName = action.getWorkDefinition().getName();
+            String wiHandlerName = "wih" + wiName;
+            String wiImplName = "wi" + wiName;
+            buf.append( indentation );
+            buf.append( "org.drools.runtime.process.WorkItemHandler " );
+            buf.append( wiHandlerName );
+            buf.append( " = handlers.get( \"" );
+            buf.append( wiName );
+            buf.append( "\" );\n" );
+            buf.append( indentation );
+            buf.append( "if( " );
+            buf.append( wiHandlerName );
+            buf.append( " != null ) {\n" );
+            buf.append( indentation );
+            buf.append( indentation );
+            buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
+            buf.append( wiImplName );
+            buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
+            for(PortableParameterDefinition ppd : action.getWorkDefinition().getParameters()){
+                buf.append( indentation );
+                buf.append( indentation );
+                buf.append( wiImplName );
+                buf.append( ".getParameters().put( \"" );
+                buf.append( ppd.getName() );
+                buf.append( "\", ");
+                buf.append( ppd.asString() );
+                buf.append( " );\n" );
+            }
+            buf.append( indentation );
+            buf.append( indentation );
+            buf.append( wiHandlerName );
+            buf.append( ".executeWorkItem( ");
+            buf.append( wiImplName );
+            buf.append( ", wim );\n" );
+            buf.append( indentation );
+            buf.append( "}\n" );
+        }
+
         public void visitActionSetField(final ActionSetField action) {
             if ( action instanceof ActionCallMethod ) {
                 this.generateSetMethodCallsMethod( (ActionCallMethod) action,
@@ -959,6 +1028,10 @@ public class BRDRLPersistence
 
         public void visitActionSetField(final ActionSetField action) {
             getClasses( action.fieldValues );
+        }
+
+        public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
         }
 
         public Map<String, List<ActionFieldValue>> getRHSClasses() {

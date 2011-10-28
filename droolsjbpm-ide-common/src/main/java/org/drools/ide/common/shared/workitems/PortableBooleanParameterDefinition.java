@@ -32,4 +32,12 @@ public class PortableBooleanParameterDefinition extends PortableEnumParameterDef
         throw new UnsupportedOperationException( "Cannot set values of PortableBooleanParameterDefinition" );
     }
 
+    @Override
+    public String asString() {
+        if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
+            return this.getBinding();
+        }
+        return "Boolean." + this.getValue().toUpperCase();
+    }
+
 }

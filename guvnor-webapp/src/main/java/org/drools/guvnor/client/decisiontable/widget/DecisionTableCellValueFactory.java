@@ -23,6 +23,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFa
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -216,6 +217,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             return DTDataTypes52.BOOLEAN;
         }
 
+        //Action Work Items are always boolean
+        if ( column instanceof ActionWorkItemCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+        
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;

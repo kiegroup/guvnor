@@ -17,7 +17,6 @@ package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -248,9 +247,9 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemsListBox.addItem( constants.NoWorkItemsAvailable() );
         workItemsListBox.setEnabled( false );
         clientFactory.getService().loadWorkItemDefinitions( packageUUID,
-                                                            new GenericCallback<List<PortableWorkDefinition>>() {
+                                                            new GenericCallback<Set<PortableWorkDefinition>>() {
 
-                                                                public void onSuccess(List<PortableWorkDefinition> result) {
+                                                                public void onSuccess(Set<PortableWorkDefinition> result) {
 
                                                                     //Add list of Work Item Definitions to list box
                                                                     if ( result.size() > 0 ) {
@@ -267,8 +266,8 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                         }
 
                                                                         //Add items
-                                                                        for ( int i = 0; i < result.size(); i++ ) {
-                                                                            PortableWorkDefinition wid = result.get( i );
+                                                                        int i = 0;
+                                                                        for ( PortableWorkDefinition wid : result ) {
                                                                             workItemsListBox.addItem( wid.getDisplayName(),
                                                                                                       wid.getName() );
                                                                             workItemDefinitions.put( wid.getName(),
@@ -277,6 +276,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                                 workItemsListBox.setSelectedIndex( i + 1 );
                                                                                 isWorkItemSelected = true;
                                                                             }
+                                                                            i++;
                                                                         }
 
                                                                         //Show parameters if a Work Item is pre-selected

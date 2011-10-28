@@ -19,6 +19,7 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
@@ -220,7 +221,7 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     public void loadWorkitemDefinitionElementData(AsyncCallback cb) {
     }
     
-    public void loadWorkItemDefinitions(String p0, AsyncCallback<List<PortableWorkDefinition>> cb) {
+    public void loadWorkItemDefinitions(String p0, AsyncCallback<Set<PortableWorkDefinition>> cb) {
     }
 
     public void doesAssetExistInPackage(String p0, String p1, AsyncCallback<Boolean> cb) {

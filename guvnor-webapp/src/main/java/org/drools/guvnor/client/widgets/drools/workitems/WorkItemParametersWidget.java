@@ -15,6 +15,10 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
@@ -26,7 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class WorkItemParametersWidget extends VerticalPanel {
 
-    private Set<PortableParameterDefinition> parameters;
+    private List<PortableParameterDefinition> parameters;
 
     public WorkItemParametersWidget() {
     }
@@ -37,15 +41,26 @@ public class WorkItemParametersWidget extends VerticalPanel {
 
     public void setParameters(Set<PortableParameterDefinition> parameters) {
         this.clear();
-        this.parameters = parameters;
-        for ( PortableParameterDefinition ppd : parameters ) {
+        this.parameters = sort( parameters );
+        for ( PortableParameterDefinition ppd : this.parameters ) {
             WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd );
             add( pw );
         }
     }
 
-    public Set<PortableParameterDefinition> getParameters() {
-        return this.parameters;
+    private List<PortableParameterDefinition> sort(Set<PortableParameterDefinition> parameters) {
+        List<PortableParameterDefinition> sortedParameters = new ArrayList<PortableParameterDefinition>();
+        sortedParameters.addAll( parameters );
+        Collections.sort( sortedParameters,
+                          new Comparator<PortableParameterDefinition>() {
+
+                              public int compare(PortableParameterDefinition o1,
+                                                 PortableParameterDefinition o2) {
+                                  return o1.getName().compareTo( o2.getName() );
+                              }
+
+                          } );
+        return sortedParameters;
     }
 
 }

@@ -19,6 +19,7 @@ package org.drools.guvnor.client.rpc;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.guvnor.client.widgets.tables.AbstractPagedTable;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -364,6 +365,6 @@ public interface RepositoryService
      * @return
      * @throws DetailedSerializationException
      */
-    public List<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException;
 
 }

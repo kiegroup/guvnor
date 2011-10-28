@@ -865,7 +865,7 @@ public class ServiceImplementation
      * @throws DetailedSerializationException
      */
     @LoggedIn
-    public List<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String packageUUID) throws DetailedSerializationException {
         Map<String, org.drools.process.core.WorkDefinition> workDefinitions = new HashMap<String, org.drools.process.core.WorkDefinition>();
         //Load WorkDefinitions from different sources
 
@@ -897,7 +897,7 @@ public class ServiceImplementation
         }
 
         //Copy the Work Items into Structures suitable for GWT
-        List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
+        Set<PortableWorkDefinition> workItems = new HashSet<PortableWorkDefinition>();
         for ( Map.Entry<String, WorkDefinition> entry : workDefinitions.entrySet() ) {
             PortableWorkDefinition wid = new PortableWorkDefinition();
             WorkDefinitionImpl wd = (WorkDefinitionImpl) entry.getValue();

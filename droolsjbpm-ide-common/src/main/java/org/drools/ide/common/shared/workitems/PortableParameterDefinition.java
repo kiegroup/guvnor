@@ -48,4 +48,6 @@ public abstract class PortableParameterDefinition
         this.name = name;
     }
 
+    public abstract String asString();
+
 }

@@ -43,4 +43,12 @@ public class PortableEnumParameterDefinition extends PortableObjectParameterDefi
         this.values = values;
     }
 
+    @Override
+    public String asString() {
+        if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
+            return this.getBinding();
+        }
+        return this.getClassName() + "." + this.value;
+    }
+
 }

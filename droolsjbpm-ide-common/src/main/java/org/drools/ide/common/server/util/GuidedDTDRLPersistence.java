@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldList;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
@@ -43,6 +44,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -194,6 +196,15 @@ public class GuidedDTDRLPersistence {
                     a.action = new ActionRetractFact( cell );
                     a.boundName = cell;
                     actions.add( a );
+                } else if ( c instanceof ActionWorkItemCol52 ) {
+                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+                        ActionExecuteWorkItem aewi = new ActionExecuteWorkItem();
+                        aewi.setWorkDefinition( ((ActionWorkItemCol52) c).getWorkItemDefinition() );
+                        LabelledAction a = new LabelledAction();
+                        a.action = aewi;
+                        a.boundName = ((ActionWorkItemCol52) c).getWorkItemDefinition().getName();
+                        actions.add( a );
+                    }
                 }
             }
         }

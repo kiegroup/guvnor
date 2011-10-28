@@ -19,6 +19,7 @@ package org.drools.guvnor.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
@@ -724,7 +725,7 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
         return serviceImplementation.loadWorkitemDefinitionElementData();
     }
     
-    public List<PortableWorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return serviceImplementation.loadWorkItemDefinitions( p0 );
     }
     

@@ -45,4 +45,12 @@ public class PortableIntegerParameterDefinition extends PortableParameterDefinit
         this.binding = binding;
     }
 
+    @Override
+    public String asString() {
+        if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
+            return this.getBinding();
+        }
+        return Integer.toString( this.value );
+    }
+
 }

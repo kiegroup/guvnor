@@ -44,4 +44,9 @@ public class PortableObjectParameterDefinition extends PortableParameterDefiniti
         this.binding = binding;
     }
 
+    @Override
+    public String asString() {
+        return this.binding;
+    }
+
 }
