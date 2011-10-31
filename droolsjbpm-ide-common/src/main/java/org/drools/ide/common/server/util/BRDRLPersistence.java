@@ -890,7 +890,7 @@ public class BRDRLPersistence
             buf.append( indentation );
             buf.append( "org.drools.runtime.process.WorkItemHandler " );
             buf.append( wiHandlerName );
-            buf.append( " = handlers.get( \"" );
+            buf.append( " = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"" );
             buf.append( wiName );
             buf.append( "\" );\n" );
             buf.append( indentation );
