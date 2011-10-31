@@ -20,11 +20,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
@@ -38,6 +40,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -51,6 +54,11 @@ import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.junit.Test;
 
 public class GuidedDTDRLPersistenceTest {
@@ -1898,6 +1906,176 @@ public class GuidedDTDRLPersistenceTest {
         index = drl.indexOf( "Smurf( )",
                              index + 1 );
         assertFalse( index > -1 );
+    }
+
+    @Test
+    public void testRHSExecuteWorkItem() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true"};
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "work-item" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setValue( "true" );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setValue( 123.456f );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setValue( 123 );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setValue( "hello" );
+        pwd.addParameter( p4 );
+
+        cols.add( awi );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 1,
+                      rm.rhs.length );
+
+        //Examine RuleModel action
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 4,
+                      mpwd.getParameters().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getParameter( "BooleanParameter" );
+        assertNotNull( mp1 );
+        assertEquals( Boolean.TRUE,
+                      Boolean.parseBoolean( mp1.getValue() ) );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getParameter( "FloatParameter" );
+        assertNotNull( mp2 );
+        assertEquals( new Float( 123.456f ),
+                      mp2.getValue() );
+
+        PortableIntegerParameterDefinition mp3 = (PortableIntegerParameterDefinition) mpwd.getParameter( "IntegerParameter" );
+        assertNotNull( mp3 );
+        assertEquals( new Integer( 123 ),
+                      mp3.getValue() );
+
+        PortableStringParameterDefinition mp4 = (PortableStringParameterDefinition) mpwd.getParameter( "StringParameter" );
+        assertNotNull( mp4 );
+        assertEquals( "hello",
+                      mp4.getValue() );
+
+    }
+
+    @Test
+    public void testRHSExecuteWorkItemWithBindings() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true"};
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "work-item" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setValue( "true" );
+        p1.setBinding( "$b" );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setValue( 123.456f );
+        p2.setBinding( "$f" );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setValue( 123 );
+        p3.setBinding( "$i" );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setValue( "hello" );
+        p4.setBinding( "$s" );
+        pwd.addParameter( p4 );
+
+        cols.add( awi );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 1,
+                      rm.rhs.length );
+
+        //Examine RuleModel action
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 4,
+                      mpwd.getParameters().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getParameter( "BooleanParameter" );
+        assertNotNull( mp1 );
+        assertEquals( Boolean.TRUE,
+                      Boolean.parseBoolean( mp1.getValue() ) );
+        assertEquals( "$b",
+                      mp1.getBinding() );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getParameter( "FloatParameter" );
+        assertNotNull( mp2 );
+        assertEquals( new Float( 123.456f ),
+                      mp2.getValue() );
+        assertEquals( "$f",
+                      mp2.getBinding() );
+
+        PortableIntegerParameterDefinition mp3 = (PortableIntegerParameterDefinition) mpwd.getParameter( "IntegerParameter" );
+        assertNotNull( mp3 );
+        assertEquals( new Integer( 123 ),
+                      mp3.getValue() );
+        assertEquals( "$i",
+                      mp3.getBinding() );
+
+        PortableStringParameterDefinition mp4 = (PortableStringParameterDefinition) mpwd.getParameter( "StringParameter" );
+        assertNotNull( mp4 );
+        assertEquals( "hello",
+                      mp4.getValue() );
+        assertEquals( "$s",
+                      mp4.getBinding() );
+
     }
     
 }
