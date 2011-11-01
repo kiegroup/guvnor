@@ -15,11 +15,16 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import java.util.Set;
+
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableObjectParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -43,14 +48,44 @@ public class WorkItemObjectParameterWidget extends WorkItemParameterWidget {
 
     private static WorkItemObjectParameterWidgetBinder uiBinder = GWT.create( WorkItemObjectParameterWidgetBinder.class );
 
-    public WorkItemObjectParameterWidget(PortableObjectParameterDefinition ppd) {
-        super( ppd );
+    public WorkItemObjectParameterWidget(PortableObjectParameterDefinition ppd,
+                                         IBindingProvider bindingProvider) {
+        super( ppd,
+               bindingProvider );
+
+        //Setup widget to use bindings
         this.parameterName.setText( ppd.getName() );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
+        if ( bindings.size() > 0 ) {
+            lstAvailableBindings.clear();
+            lstAvailableBindings.addItem( constants.Choose() );
+            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setVisible( true );
+            int selectedIndex = 0;
+            for ( String binding : bindings ) {
+                lstAvailableBindings.addItem( binding );
+                if ( binding.equals( ppd.getBinding() ) ) {
+                    selectedIndex = lstAvailableBindings.getItemCount() - 1;
+                }
+            }
+            lstAvailableBindings.setSelectedIndex( selectedIndex );
+        }
+
     }
 
     @Override
     protected Widget getWidget() {
         return uiBinder.createAndBindUi( this );
+    }
+
+    @UiHandler("lstAvailableBindings")
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
+        int index = lstAvailableBindings.getSelectedIndex();
+        if ( index > 0 ) {
+            ((PortableObjectParameterDefinition) ppd).setBinding( lstAvailableBindings.getItemText( index ) );
+        } else {
+            ((PortableObjectParameterDefinition) ppd).setBinding( "" );
+        }
     }
 
 }

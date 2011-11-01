@@ -22,7 +22,7 @@
 
   <gwt:HorizontalPanel>
     <gwt:Label ui:field="parameterName" text="{i18n.WorkItemParameterName}" />
-    <gwt:ListBox ui:field="lstAvailableBindings" />
+    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" />
   </gwt:HorizontalPanel>
 
 </ui:UiBinder>

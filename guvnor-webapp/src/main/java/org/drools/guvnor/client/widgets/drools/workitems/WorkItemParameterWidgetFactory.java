@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
@@ -29,27 +30,35 @@ import org.drools.ide.common.shared.workitems.PortableStringParameterDefinition;
  */
 public class WorkItemParameterWidgetFactory {
 
-    public static WorkItemParameterWidget getWidget(PortableParameterDefinition ppd) {
+    public static WorkItemParameterWidget getWidget(PortableParameterDefinition ppd,
+                                                    IBindingProvider bindingProvider) {
         if ( ppd instanceof PortableBooleanParameterDefinition ) {
-            return new WorkItemBooleanParameterWidget( (PortableBooleanParameterDefinition) ppd );
+            return new WorkItemBooleanParameterWidget( (PortableBooleanParameterDefinition) ppd,
+                                                       bindingProvider );
         }
         if ( ppd instanceof PortableEnumParameterDefinition ) {
-            return new WorkItemEnumParameterWidget( (PortableEnumParameterDefinition) ppd );
+            return new WorkItemEnumParameterWidget( (PortableEnumParameterDefinition) ppd,
+                                                    bindingProvider );
         }
         if ( ppd instanceof PortableFloatParameterDefinition ) {
-            return new WorkItemFloatParameterWidget( (PortableFloatParameterDefinition) ppd );
+            return new WorkItemFloatParameterWidget( (PortableFloatParameterDefinition) ppd,
+                                                     bindingProvider );
         }
         if ( ppd instanceof PortableIntegerParameterDefinition ) {
-            return new WorkItemIntegerParameterWidget( (PortableIntegerParameterDefinition) ppd );
+            return new WorkItemIntegerParameterWidget( (PortableIntegerParameterDefinition) ppd,
+                                                       bindingProvider );
         }
         if ( ppd instanceof PortableListParameterDefinition ) {
-            return new WorkItemListParameterWidget( (PortableListParameterDefinition) ppd );
+            return new WorkItemListParameterWidget( (PortableListParameterDefinition) ppd,
+                                                    bindingProvider );
         }
         if ( ppd instanceof PortableObjectParameterDefinition ) {
-            return new WorkItemObjectParameterWidget( (PortableObjectParameterDefinition) ppd );
+            return new WorkItemObjectParameterWidget( (PortableObjectParameterDefinition) ppd,
+                                                      bindingProvider );
         }
         if ( ppd instanceof PortableStringParameterDefinition ) {
-            return new WorkItemStringParameterWidget( (PortableStringParameterDefinition) ppd );
+            return new WorkItemStringParameterWidget( (PortableStringParameterDefinition) ppd,
+                                                      bindingProvider );
         }
         throw new IllegalArgumentException( "Unrecognized PortableParameterDefinition" );
     }

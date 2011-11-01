@@ -15,7 +15,10 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import java.util.Set;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericFloatTextBox;
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableFloatParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -49,12 +52,35 @@ public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
 
     private static WorkItemFloatParameterWidgetBinder uiBinder = GWT.create( WorkItemFloatParameterWidgetBinder.class );
 
-    public WorkItemFloatParameterWidget(PortableFloatParameterDefinition ppd) {
-        super( ppd );
+    public WorkItemFloatParameterWidget(PortableFloatParameterDefinition ppd,
+                                        IBindingProvider bindingProvider) {
+        super( ppd,
+               bindingProvider );
+
+        //Setup widget to select a literal value
         this.parameterName.setText( ppd.getName() );
         if ( ppd.getValue() != null ) {
             this.parameterEditor.setText( Float.toString( ppd.getValue() ) );
         }
+
+        //Setup widget to use bindings
+        Set<String> bindings = bindingProvider.getBindings( "Float" );
+        if ( bindings.size() > 0 ) {
+            lstAvailableBindings.clear();
+            lstAvailableBindings.addItem( constants.Choose() );
+            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setVisible( true );
+            int selectedIndex = 0;
+            for ( String binding : bindings ) {
+                lstAvailableBindings.addItem( binding );
+                if ( binding.equals( ppd.getBinding() ) ) {
+                    selectedIndex = lstAvailableBindings.getItemCount() - 1;
+                }
+            }
+            lstAvailableBindings.setSelectedIndex( selectedIndex );
+            parameterEditor.setEnabled( selectedIndex == 0 );
+        }
+
     }
 
     @Override
@@ -68,6 +94,18 @@ public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
             ((PortableFloatParameterDefinition) ppd).setValue( Float.parseFloat( parameterEditor.getText() ) );
         } catch ( NumberFormatException nfe ) {
             ((PortableFloatParameterDefinition) ppd).setValue( null );
+        }
+    }
+
+    @UiHandler("lstAvailableBindings")
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
+        int index = lstAvailableBindings.getSelectedIndex();
+        parameterEditor.setEnabled( index == 0 );
+        if ( index > 0 ) {
+            ((PortableFloatParameterDefinition) ppd).setValue( null );
+            ((PortableFloatParameterDefinition) ppd).setBinding( lstAvailableBindings.getItemText( index ) );
+        } else {
+            ((PortableFloatParameterDefinition) ppd).setBinding( "" );
         }
     }
 

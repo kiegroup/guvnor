@@ -15,8 +15,11 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import java.util.Set;
+
+import org.drools.guvnor.client.common.IBindingProvider;
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
-import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -49,9 +52,13 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
 
     private static WorkItemBooleanParameterWidgetBinder uiBinder = GWT.create( WorkItemBooleanParameterWidgetBinder.class );
 
-    public WorkItemBooleanParameterWidget(PortableBooleanParameterDefinition ppd) {
-        super( ppd );
+    public WorkItemBooleanParameterWidget(PortableBooleanParameterDefinition ppd,
+                                          IBindingProvider bindingProvider) {
+        super( ppd,
+               bindingProvider );
         this.parameterName.setText( ppd.getName() );
+
+        //Setup widget to select a literal value
         boolean isItemSelected = false;
         Boolean selectedItem = ppd.getValue();
         if ( ppd.getValues() != null ) {
@@ -68,6 +75,25 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
                 ppd.setValue( Boolean.valueOf( this.parameterValues.getItemText( 0 ) ) );
             }
         }
+
+        //Setup widget to use bindings
+        Set<String> bindings = bindingProvider.getBindings( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        if ( bindings.size() > 0 ) {
+            lstAvailableBindings.clear();
+            lstAvailableBindings.addItem( constants.Choose() );
+            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setVisible( true );
+            int selectedIndex = 0;
+            for ( String binding : bindings ) {
+                lstAvailableBindings.addItem( binding );
+                if ( binding.equals( ppd.getBinding() ) ) {
+                    selectedIndex = lstAvailableBindings.getItemCount() - 1;
+                }
+            }
+            lstAvailableBindings.setSelectedIndex( selectedIndex );
+            parameterValues.setEnabled( selectedIndex == 0 );
+        }
+
     }
 
     @Override
@@ -82,6 +108,18 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
             ((PortableBooleanParameterDefinition) ppd).setValue( null );
         } else {
             ((PortableBooleanParameterDefinition) ppd).setValue( Boolean.valueOf( this.parameterValues.getItemText( index ) ) );
+        }
+    }
+
+    @UiHandler("lstAvailableBindings")
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
+        int index = lstAvailableBindings.getSelectedIndex();
+        parameterValues.setEnabled( index == 0 );
+        if ( index > 0 ) {
+            ((PortableBooleanParameterDefinition) ppd).setValue( null );
+            ((PortableBooleanParameterDefinition) ppd).setBinding( lstAvailableBindings.getItemText( index ) );
+        } else {
+            ((PortableBooleanParameterDefinition) ppd).setBinding( "" );
         }
     }
 

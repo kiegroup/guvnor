@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableEnumParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -45,8 +46,10 @@ public class WorkItemEnumParameterWidget extends WorkItemParameterWidget {
 
     private static WorkItemEnumParameterWidgetBinder uiBinder = GWT.create( WorkItemEnumParameterWidgetBinder.class );
 
-    public WorkItemEnumParameterWidget(PortableEnumParameterDefinition ppd) {
-        super( ppd );
+    public WorkItemEnumParameterWidget(PortableEnumParameterDefinition ppd,
+                                       IBindingProvider bindingProvider) {
+        super( ppd,
+               bindingProvider );
         this.parameterName.setText( ppd.getName() );
         boolean isItemSelected = false;
         String selectedItem = ppd.getValue();

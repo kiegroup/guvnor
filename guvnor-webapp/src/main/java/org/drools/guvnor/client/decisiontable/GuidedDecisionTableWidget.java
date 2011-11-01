@@ -15,7 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.EditorWidget;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
@@ -23,6 +25,7 @@ import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.common.DirtyableHorizontalPane;
 import org.drools.guvnor.client.common.FormStylePopup;
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
@@ -86,7 +89,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class GuidedDecisionTableWidget extends Composite
         implements
         SaveEventListener,
-        EditorWidget {
+        EditorWidget,
+        IBindingProvider {
 
     private Constants                   constants = GWT.create( Constants.class );
     private static Images               images    = GWT.create( Images.class );
@@ -278,6 +282,7 @@ public class GuidedDecisionTableWidget extends Composite
                                             ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
                                                                                                  packageUUID,
                                                                                                  guidedDecisionTable,
+                                                                                                 GuidedDecisionTableWidget.this,
                                                                                                  new GenericColumnCommand() {
                                                                                                      public void execute(DTColumnConfig52 column) {
                                                                                                          dtable.updateColumn( awi,
@@ -378,6 +383,7 @@ public class GuidedDecisionTableWidget extends Composite
                         ActionWorkItemPopup popup = new ActionWorkItemPopup( clientFactory,
                                                                              packageUUID,
                                                                              guidedDecisionTable,
+                                                                             GuidedDecisionTableWidget.this,
                                                                              new GenericColumnCommand() {
                                                                                  public void execute(DTColumnConfig52 column) {
                                                                                      newActionAdded( (ActionCol52) column );
@@ -1023,6 +1029,19 @@ public class GuidedDecisionTableWidget extends Composite
             }
         }
         return true;
+    }
+
+    public Set<String> getBindings(String dataType) {
+        Set<String> bindings = new HashSet<String>();
+        for ( Pattern52 p : this.guidedDecisionTable.getConditionPatterns() ) {
+            if ( dataType == null || p.getFactType().equals( dataType ) ) {
+                String binding = p.getBoundName();
+                if ( !(binding == null || "".equals( binding )) ) {
+                    bindings.add( binding );
+                }
+            }
+        }
+        return bindings;
     }
 
     /**

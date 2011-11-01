@@ -21,6 +21,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -32,18 +33,17 @@ public class WorkItemParametersWidget extends VerticalPanel {
 
     private List<PortableParameterDefinition> parameters;
 
-    public WorkItemParametersWidget() {
-    }
+    private IBindingProvider                  bindingProvider;
 
-    public WorkItemParametersWidget(Set<PortableParameterDefinition> parameters) {
-        setParameters( parameters );
+    public WorkItemParametersWidget(IBindingProvider bindingProvider) {
+        this.bindingProvider = bindingProvider;
     }
 
     public void setParameters(Set<PortableParameterDefinition> parameters) {
         this.clear();
         this.parameters = sort( parameters );
         for ( PortableParameterDefinition ppd : this.parameters ) {
-            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd );
+            WorkItemParameterWidget pw = WorkItemParameterWidgetFactory.getWidget( ppd, bindingProvider );
             add( pw );
         }
     }

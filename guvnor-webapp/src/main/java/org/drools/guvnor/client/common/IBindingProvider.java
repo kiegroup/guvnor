@@ -13,21 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.drools.workitems;
+package org.drools.guvnor.client.common;
 
-import org.drools.guvnor.client.common.IBindingProvider;
-import org.drools.ide.common.shared.workitems.PortableListParameterDefinition;
+import java.util.Set;
 
 /**
- * A Widget to display a Work Item List parameter
+ * A interface defining the means to find available bindings for specific
+ * data-types
  */
-public class WorkItemListParameterWidget extends WorkItemObjectParameterWidget {
+public interface IBindingProvider {
 
-    public WorkItemListParameterWidget(PortableListParameterDefinition ppd,
-                                       IBindingProvider bindingProvider) {
-        super( ppd,
-               bindingProvider );
-        this.parameterName.setText( ppd.getName() );
-    }
+    Set<String> getBindings(String dataType);
 
 }

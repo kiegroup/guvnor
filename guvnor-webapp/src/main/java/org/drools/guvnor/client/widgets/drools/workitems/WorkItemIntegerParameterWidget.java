@@ -15,7 +15,10 @@
  */
 package org.drools.guvnor.client.widgets.drools.workitems;
 
+import java.util.Set;
+
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.NumericIntegerTextBox;
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.ide.common.shared.workitems.PortableIntegerParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -49,12 +52,35 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
 
     private static WorkItemIntegerParameterWidgetBinder uiBinder = GWT.create( WorkItemIntegerParameterWidgetBinder.class );
 
-    public WorkItemIntegerParameterWidget(PortableIntegerParameterDefinition ppd) {
-        super( ppd );
+    public WorkItemIntegerParameterWidget(PortableIntegerParameterDefinition ppd,
+                                          IBindingProvider bindingProvider) {
+        super( ppd,
+               bindingProvider );
+
+        //Setup widget to select a literal value
         this.parameterName.setText( ppd.getName() );
         if ( ppd.getValue() != null ) {
             this.parameterEditor.setText( Integer.toString( ppd.getValue() ) );
         }
+
+        //Setup widget to use bindings
+        Set<String> bindings = bindingProvider.getBindings( "Integer" );
+        if ( bindings.size() > 0 ) {
+            lstAvailableBindings.clear();
+            lstAvailableBindings.addItem( constants.Choose() );
+            lstAvailableBindings.setEnabled( true );
+            lstAvailableBindings.setVisible( true );
+            int selectedIndex = 0;
+            for ( String binding : bindings ) {
+                lstAvailableBindings.addItem( binding );
+                if ( binding.equals( ppd.getBinding() ) ) {
+                    selectedIndex = lstAvailableBindings.getItemCount() - 1;
+                }
+            }
+            lstAvailableBindings.setSelectedIndex( selectedIndex );
+            parameterEditor.setEnabled( selectedIndex == 0 );
+        }
+
     }
 
     @Override
@@ -68,6 +94,18 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
             ((PortableIntegerParameterDefinition) ppd).setValue( Integer.parseInt( parameterEditor.getText() ) );
         } catch ( NumberFormatException nfe ) {
             ((PortableIntegerParameterDefinition) ppd).setValue( null );
+        }
+    }
+
+    @UiHandler("lstAvailableBindings")
+    void lstAvailableBindingsOnChange(ChangeEvent event) {
+        int index = lstAvailableBindings.getSelectedIndex();
+        parameterEditor.setEnabled( index == 0 );
+        if ( index > 0 ) {
+            ((PortableIntegerParameterDefinition) ppd).setValue( null );
+            ((PortableIntegerParameterDefinition) ppd).setBinding( lstAvailableBindings.getItemText( index ) );
+        } else {
+            ((PortableIntegerParameterDefinition) ppd).setBinding( "" );
         }
     }
 

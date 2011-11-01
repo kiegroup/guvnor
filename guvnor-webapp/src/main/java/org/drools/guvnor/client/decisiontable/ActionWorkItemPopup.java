@@ -22,6 +22,7 @@ import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.common.IBindingProvider;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.workitems.WorkItemParametersWidget;
@@ -53,14 +54,14 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ActionWorkItemPopup extends FormStylePopup {
 
-    private static Constants                    constants                = GWT.create( Constants.class );
+    private static Constants                    constants = GWT.create( Constants.class );
 
     private ActionWorkItemCol52                 editingCol;
     private String                              packageUUID;
     private GuidedDecisionTable52               model;
     private ClientFactory                       clientFactory;
-    private WorkItemParametersWidget            workItemInputParameters  = new WorkItemParametersWidget();
-    private WorkItemParametersWidget            workItemOutputParameters = new WorkItemParametersWidget();
+    private WorkItemParametersWidget            workItemInputParameters;
+    private WorkItemParametersWidget            workItemOutputParameters;
     private int                                 workItemInputParametersIndex;
     private int                                 workItemOutputParametersIndex;
     private Map<String, PortableWorkDefinition> workItemDefinitions;
@@ -68,6 +69,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
     public ActionWorkItemPopup(final ClientFactory clientFactory,
                                final String packageUUID,
                                final GuidedDecisionTable52 model,
+                               final IBindingProvider bindingProvider,
                                final GenericColumnCommand refreshGrid,
                                final ActionWorkItemCol52 col,
                                final boolean isNew) {
@@ -75,6 +77,9 @@ public class ActionWorkItemPopup extends FormStylePopup {
         this.clientFactory = clientFactory;
         this.packageUUID = packageUUID;
         this.model = model;
+
+        this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider );
+        this.workItemOutputParameters = new WorkItemParametersWidget( bindingProvider );
 
         setTitle( constants.ColumnConfigurationWorkItem() );
         setModal( false );
