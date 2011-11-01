@@ -1925,7 +1925,7 @@ public class GuidedDTDRLPersistenceTest {
 
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
         p1.setName( "BooleanParameter" );
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         pwd.addParameter( p1 );
 
         PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
@@ -1968,7 +1968,7 @@ public class GuidedDTDRLPersistenceTest {
         PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getParameter( "BooleanParameter" );
         assertNotNull( mp1 );
         assertEquals( Boolean.TRUE,
-                      Boolean.parseBoolean( mp1.getValue() ) );
+                      mp1.getValue() );
 
         PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getParameter( "FloatParameter" );
         assertNotNull( mp2 );
@@ -2004,7 +2004,7 @@ public class GuidedDTDRLPersistenceTest {
 
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
         p1.setName( "BooleanParameter" );
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         p1.setBinding( "$b" );
         pwd.addParameter( p1 );
 
@@ -2051,7 +2051,7 @@ public class GuidedDTDRLPersistenceTest {
         PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getParameter( "BooleanParameter" );
         assertNotNull( mp1 );
         assertEquals( Boolean.TRUE,
-                      Boolean.parseBoolean( mp1.getValue() ) );
+                      mp1.getValue() );
         assertEquals( "$b",
                       mp1.getBinding() );
 

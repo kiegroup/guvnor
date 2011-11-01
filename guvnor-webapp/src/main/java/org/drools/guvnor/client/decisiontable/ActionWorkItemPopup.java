@@ -196,7 +196,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
         if ( ppd instanceof PortableBooleanParameterDefinition ) {
             clone = new PortableBooleanParameterDefinition();
             clone.setName( ppd.getName() );
-            ((PortableBooleanParameterDefinition) clone).setClassName( ((PortableBooleanParameterDefinition) ppd).getClassName() );
             ((PortableBooleanParameterDefinition) clone).setBinding( ((PortableBooleanParameterDefinition) ppd).getBinding() );
             ((PortableBooleanParameterDefinition) clone).setValue( ((PortableBooleanParameterDefinition) ppd).getValue() );
             return clone;

@@ -18,18 +18,36 @@ package org.drools.ide.common.shared.workitems;
 /**
  * A Boolean parameter
  */
-public class PortableBooleanParameterDefinition extends PortableEnumParameterDefinition {
+public class PortableBooleanParameterDefinition extends PortableParameterDefinition
+    implements
+    HasValue<Boolean>,
+    HasBinding {
 
-    private static final long     serialVersionUID = 540L;
+    private static final long      serialVersionUID = 540L;
 
-    private static final String[] VALUES           = new String[]{Boolean.toString( Boolean.TRUE ), Boolean.toString( Boolean.FALSE )};
+    private static final Boolean[] VALUES           = new Boolean[]{Boolean.TRUE, Boolean.FALSE};
+    private Boolean                value            = null;
 
-    public PortableBooleanParameterDefinition() {
-        super.setValues( VALUES );
+    private String                 binding;
+
+    public String getBinding() {
+        return this.binding;
     }
 
-    public void setValues(String[] values) {
-        throw new UnsupportedOperationException( "Cannot set values of PortableBooleanParameterDefinition" );
+    public void setBinding(String binding) {
+        this.binding = binding;
+    }
+
+    public Boolean getValue() {
+        return this.value;
+    }
+
+    public Boolean[] getValues() {
+        return VALUES;
+    }
+
+    public void setValue(Boolean value) {
+        this.value = value;
     }
 
     @Override
@@ -37,7 +55,10 @@ public class PortableBooleanParameterDefinition extends PortableEnumParameterDef
         if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
             return this.getBinding();
         }
-        return "Boolean." + this.getValue().toUpperCase();
+        if ( this.value == null ) {
+            return "null";
+        }
+        return "Boolean." + Boolean.toString( this.getValue() ).toUpperCase();
     }
 
 }

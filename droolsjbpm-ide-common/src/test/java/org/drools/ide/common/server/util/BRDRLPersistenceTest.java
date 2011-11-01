@@ -1303,7 +1303,7 @@ public class BRDRLPersistenceTest {
 
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
         p1.setName( "BooleanParameter" );
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         pwd.addParameter( p1 );
 
         PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
@@ -1329,7 +1329,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
         assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", Boolean.TRUE );" ) != -1 );
@@ -1367,7 +1367,7 @@ public class BRDRLPersistenceTest {
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
         p1.setName( "BooleanParameter" );
         p1.setBinding( "$b" );
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         pwd.addParameter( p1 );
 
         PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
@@ -1396,7 +1396,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
         assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b );" ) != -1 );

@@ -50,6 +50,9 @@ public class PortableStringParameterDefinition extends PortableParameterDefiniti
         if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
             return this.getBinding();
         }
+        if ( this.value == null ) {
+            return "null";
+        }
         return "\"" + value + "\"";
     }
 

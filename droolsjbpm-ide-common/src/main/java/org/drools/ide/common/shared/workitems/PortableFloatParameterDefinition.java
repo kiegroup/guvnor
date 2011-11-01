@@ -50,6 +50,9 @@ public class PortableFloatParameterDefinition extends PortableParameterDefinitio
         if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
             return this.getBinding();
         }
+        if ( this.value == null ) {
+            return "null";
+        }
         return Float.toString( this.value ) + "f";
     }
 

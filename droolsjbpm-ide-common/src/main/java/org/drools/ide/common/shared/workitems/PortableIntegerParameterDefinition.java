@@ -50,6 +50,9 @@ public class PortableIntegerParameterDefinition extends PortableParameterDefinit
         if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
             return this.getBinding();
         }
+        if ( this.value == null ) {
+            return "null";
+        }
         return Integer.toString( this.value );
     }
 

@@ -27,7 +27,7 @@ public class PortableParameterDefinitionTests {
     @Test
     public void testAsString() {
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         assertEquals( "Boolean.TRUE",
                       p1.asString() );
 
@@ -60,9 +60,38 @@ public class PortableParameterDefinitionTests {
     }
 
     @Test
+    public void testAsStringNullValues() {
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        assertEquals( "null",
+                      p1.asString() );
+
+        PortableEnumParameterDefinition p2 = new PortableEnumParameterDefinition();
+        p2.setClassName( "Smurf" );
+        assertEquals( "null",
+                      p2.asString() );
+
+        PortableFloatParameterDefinition p3 = new PortableFloatParameterDefinition();
+        assertEquals( "null",
+                      p3.asString() );
+
+        PortableIntegerParameterDefinition p4 = new PortableIntegerParameterDefinition();
+        assertEquals( "null",
+                      p4.asString() );
+
+        PortableObjectParameterDefinition p5 = new PortableObjectParameterDefinition();
+        assertEquals( "null",
+                      p5.asString() );
+
+        PortableStringParameterDefinition p6 = new PortableStringParameterDefinition();
+        assertEquals( "null",
+                      p6.asString() );
+
+    }
+
+    @Test
     public void testAsStringWithBindings() {
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
-        p1.setValue( "true" );
+        p1.setValue( Boolean.TRUE );
         p1.setBinding( "$b" );
         assertEquals( "$b",
                       p1.asString() );
