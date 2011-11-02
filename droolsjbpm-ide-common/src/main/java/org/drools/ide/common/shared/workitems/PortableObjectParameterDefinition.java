@@ -46,10 +46,14 @@ public class PortableObjectParameterDefinition extends PortableParameterDefiniti
 
     @Override
     public String asString() {
-        if ( this.binding == null ) {
-            return "null";
+        if ( isBound() ) {
+            return this.getBinding();
         }
-        return this.binding;
+        return "null";
+    }
+
+    public boolean isBound() {
+        return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }
 
 }

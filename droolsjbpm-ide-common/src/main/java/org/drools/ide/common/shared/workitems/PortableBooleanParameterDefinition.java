@@ -52,13 +52,17 @@ public class PortableBooleanParameterDefinition extends PortableParameterDefinit
 
     @Override
     public String asString() {
-        if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
+        if ( isBound() ) {
             return this.getBinding();
         }
         if ( this.value == null ) {
             return "null";
         }
         return "Boolean." + Boolean.toString( this.getValue() ).toUpperCase();
+    }
+
+    public boolean isBound() {
+        return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }
 
 }

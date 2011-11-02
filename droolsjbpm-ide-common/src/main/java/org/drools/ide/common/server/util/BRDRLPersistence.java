@@ -58,6 +58,7 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 import org.drools.ide.common.shared.SharedConstants;
+import org.drools.ide.common.shared.workitems.HasBinding;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
@@ -68,7 +69,11 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final BRLPersistence INSTANCE = new BRDRLPersistence();
+    private static final BRLPersistence  INSTANCE = new BRDRLPersistence();
+
+    //Keep a record of all bindings for Actions that require knowledge of what bindings exist
+    private Map<String, IFactPattern>    bindingsPatterns;
+    private Map<String, FieldConstraint> bindingsFields;
 
     protected BRDRLPersistence() {
     }
@@ -89,6 +94,8 @@ public class BRDRLPersistence
 
     protected String marshalRule(RuleModel model) {
         boolean isDSLEnhanced = model.hasDSLSentences();
+        bindingsPatterns = new HashMap<String, IFactPattern>();
+        bindingsFields = new HashMap<String, FieldConstraint>();
 
         StringBuilder buf = new StringBuilder();
         this.marshalHeader( model,
@@ -192,6 +199,7 @@ public class BRDRLPersistence
         String indentation = "\t\t";
         String nestedIndentation = indentation;
         boolean isNegated = model.isNegated();
+
         if ( model.lhs != null ) {
             if ( isNegated ) {
                 nestedIndentation += "\t";
@@ -199,6 +207,8 @@ public class BRDRLPersistence
                 buf.append( "not (\n" );
             }
             LHSPatternVisitor visitor = new LHSPatternVisitor( isDSLEnhanced,
+                                                               bindingsPatterns,
+                                                               bindingsFields,
                                                                buf,
                                                                nestedIndentation,
                                                                isNegated );
@@ -241,6 +251,8 @@ public class BRDRLPersistence
 
             //Marshall the model itself
             RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
+                                                                   bindingsPatterns,
+                                                                   bindingsFields,
                                                                    buf,
                                                                    indentation );
             for ( IAction action : model.rhs ) {
@@ -279,18 +291,24 @@ public class BRDRLPersistence
 
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private boolean       isPatternNegated;
-        private String        indentation;
+        private StringBuilder                buf;
+        private boolean                      isDSLEnhanced;
+        private boolean                      isPatternNegated;
+        private String                       indentation;
+        private Map<String, IFactPattern>    bindingsPatterns;
+        private Map<String, FieldConstraint> bindingsFields;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
+                                 Map<String, IFactPattern> bindingsPatterns,
+                                 Map<String, FieldConstraint> bindingsFields,
                                  StringBuilder b,
                                  String indentation,
                                  boolean isPatternNegated) {
             this.isPatternNegated = isPatternNegated;
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
+            this.bindingsPatterns = bindingsPatterns;
+            this.bindingsFields = bindingsFields;
             buf = b;
         }
 
@@ -494,6 +512,8 @@ public class BRDRLPersistence
             if ( pattern.isNegated() ) {
                 buf.append( "not " );
             } else if ( pattern.isBound() ) {
+                bindingsPatterns.put( pattern.getBoundName(),
+                                      pattern );
                 buf.append( pattern.getBoundName() );
                 buf.append( " : " );
             }
@@ -577,6 +597,8 @@ public class BRDRLPersistence
                 buf.append( " )" );
             } else {
                 if ( constr.isBound() ) {
+                    bindingsFields.put( constr.getFieldBinding(),
+                                        constr );
                     buf.append( constr.getFieldBinding() );
                     buf.append( " : " );
                 }
@@ -756,16 +778,22 @@ public class BRDRLPersistence
 
     public static class RHSActionVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private String        indentation;
-        private int           idx = 0;
+        private StringBuilder                buf;
+        private boolean                      isDSLEnhanced;
+        private String                       indentation;
+        private int                          idx = 0;
+        private Map<String, IFactPattern>    bindingsPatterns;
+        private Map<String, FieldConstraint> bindingsFields;
 
         public RHSActionVisitor(boolean isDSLEnhanced,
+                                Map<String, IFactPattern> bindingsPatterns,
+                                Map<String, FieldConstraint> bindingsFields,
                                 StringBuilder b,
                                 String indentation) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
+            this.bindingsPatterns = bindingsPatterns;
+            this.bindingsFields = bindingsFields;
             buf = b;
         }
 
@@ -902,24 +930,52 @@ public class BRDRLPersistence
             buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
             buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
-            for(PortableParameterDefinition ppd : action.getWorkDefinition().getParameters()){
+            for ( PortableParameterDefinition ppd : action.getWorkDefinition().getParameters() ) {
+                makeWorkItemParameterDRL( ppd,
+                                          wiImplName );
+            }
+            buf.append( indentation );
+            buf.append( indentation );
+            buf.append( wiHandlerName );
+            buf.append( ".executeWorkItem( " );
+            buf.append( wiImplName );
+            buf.append( ", wim );\n" );
+            buf.append( indentation );
+            buf.append( "}\n" );
+        }
+
+        private void makeWorkItemParameterDRL(PortableParameterDefinition ppd,
+                                              String wiImplName) {
+            boolean makeParameter = true;
+
+            //Only add bound parameters if their binding exists (i.e. the corresponding column has a value or - for Limited Entry - is true)
+            if ( ppd instanceof HasBinding ) {
+                HasBinding hb = (HasBinding) ppd;
+                if ( hb.isBound() ) {
+                    String binding = hb.getBinding();
+                    makeParameter = isBindingValid( binding );
+                }
+            }
+            if ( makeParameter ) {
                 buf.append( indentation );
                 buf.append( indentation );
                 buf.append( wiImplName );
                 buf.append( ".getParameters().put( \"" );
                 buf.append( ppd.getName() );
-                buf.append( "\", ");
+                buf.append( "\", " );
                 buf.append( ppd.asString() );
                 buf.append( " );\n" );
             }
-            buf.append( indentation );
-            buf.append( indentation );
-            buf.append( wiHandlerName );
-            buf.append( ".executeWorkItem( ");
-            buf.append( wiImplName );
-            buf.append( ", wim );\n" );
-            buf.append( indentation );
-            buf.append( "}\n" );
+        }
+
+        private boolean isBindingValid(String binding) {
+            if ( bindingsPatterns.containsKey( binding ) ) {
+                return true;
+            }
+            if ( bindingsFields.containsKey( binding ) ) {
+                return true;
+            }
+            return false;
         }
 
         public void visitActionSetField(final ActionSetField action) {

@@ -28,4 +28,5 @@ public interface GuvnorCss
     
     String warningMessage();
     
+    String workItemParameter();
 }

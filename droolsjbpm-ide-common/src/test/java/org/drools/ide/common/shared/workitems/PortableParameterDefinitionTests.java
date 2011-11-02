@@ -128,4 +128,84 @@ public class PortableParameterDefinitionTests {
 
     }
 
+    @Test
+    public void testBindings1() {
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setValue( Boolean.TRUE );
+        p1.setBinding( "$b" );
+        assertEquals( true,
+                      p1.isBound() );
+
+        PortableEnumParameterDefinition p2 = new PortableEnumParameterDefinition();
+        p2.setValue( "PUPA" );
+        p2.setBinding( "$b" );
+        p2.setClassName( "Smurf" );
+        assertEquals( true,
+                      p2.isBound() );
+
+        PortableFloatParameterDefinition p3 = new PortableFloatParameterDefinition();
+        p3.setValue( 1.23f );
+        p3.setBinding( "$b" );
+        assertEquals( true,
+                      p3.isBound() );
+
+        PortableIntegerParameterDefinition p4 = new PortableIntegerParameterDefinition();
+        p4.setValue( 123 );
+        p4.setBinding( "$b" );
+        assertEquals( true,
+                      p4.isBound() );
+
+        PortableObjectParameterDefinition p5 = new PortableObjectParameterDefinition();
+        p5.setBinding( "$b" );
+        assertEquals( true,
+                      p5.isBound() );
+
+        PortableStringParameterDefinition p6 = new PortableStringParameterDefinition();
+        p6.setValue( "hello" );
+        p6.setBinding( "$b" );
+        assertEquals( true,
+                      p6.isBound() );
+
+    }
+
+    @Test
+    public void testBindings2() {
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setValue( Boolean.TRUE );
+        p1.setBinding( "" );
+        assertEquals( false,
+                      p1.isBound() );
+
+        PortableEnumParameterDefinition p2 = new PortableEnumParameterDefinition();
+        p2.setValue( "PUPA" );
+        p2.setBinding( "" );
+        p2.setClassName( "Smurf" );
+        assertEquals( false,
+                      p2.isBound() );
+
+        PortableFloatParameterDefinition p3 = new PortableFloatParameterDefinition();
+        p3.setValue( 1.23f );
+        p3.setBinding( "" );
+        assertEquals( false,
+                      p3.isBound() );
+
+        PortableIntegerParameterDefinition p4 = new PortableIntegerParameterDefinition();
+        p4.setValue( 123 );
+        p4.setBinding( "" );
+        assertEquals( false,
+                      p4.isBound() );
+
+        PortableObjectParameterDefinition p5 = new PortableObjectParameterDefinition();
+        p5.setBinding( "" );
+        assertEquals( false,
+                      p5.isBound() );
+
+        PortableStringParameterDefinition p6 = new PortableStringParameterDefinition();
+        p6.setValue( "hello" );
+        p6.setBinding( "" );
+        assertEquals( false,
+                      p6.isBound() );
+
+    }
+
 }

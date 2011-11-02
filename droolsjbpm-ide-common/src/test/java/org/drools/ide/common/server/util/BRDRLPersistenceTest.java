@@ -1279,7 +1279,7 @@ public class BRDRLPersistenceTest {
     }
 
     @Test
-    public void testRHSExecuteWorkItem() {
+    public void testRHSExecuteWorkItem1() {
 
         RuleModel m = new RuleModel();
         m.name = "WorkItem";
@@ -1340,9 +1340,9 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
 
     }
-    
+
     @Test
-    public void testRHSExecuteWorkItemWithBindings() {
+    public void testRHSExecuteWorkItem2() {
 
         RuleModel m = new RuleModel();
         m.name = "WorkItem";
@@ -1358,6 +1358,118 @@ public class BRDRLPersistenceTest {
         p.addConstraint( con );
 
         m.addLhsItem( p );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setValue( Boolean.TRUE );
+        p1.setBinding( "" );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setValue( 123.456f );
+        p2.setBinding( "" );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setValue( 123 );
+        p3.setBinding( "" );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setValue( "hello" );
+        p4.setBinding( "" );
+        pwd.addParameter( p4 );
+
+        m.addRhsItem( awi );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", Boolean.TRUE );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", 123.456f );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", 123 );" ) != -1 );
+        assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", \"hello\" );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
+    }
+
+    @Test
+    //Test that WorkItem Parameters whose values are bound are created and 
+    //populated in the RHS if the Pattern is bound to the same variable
+    public void testRHSExecuteWorkItemWithBindings() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern fp1 = new FactPattern( "Person" );
+        fp1.setBoundName( "$p" );
+        SingleFieldConstraint con1 = new SingleFieldConstraint();
+        con1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con1.setFieldName( "name" );
+        con1.setOperator( "==" );
+        con1.setValue( "Michael" );
+        con1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( con1 );
+        m.addLhsItem( fp1 );
+
+        FactPattern fp2 = new FactPattern( "Boolean" );
+        fp2.setBoundName( "$b" );
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        con2.setFieldName( "this" );
+        con2.setOperator( "==" );
+        con2.setValue( "true" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp2.addConstraint( con2 );
+        m.addLhsItem( fp2 );
+
+        FactPattern fp3 = new FactPattern( "Float" );
+        fp3.setBoundName( "$f" );
+        SingleFieldConstraint con3 = new SingleFieldConstraint();
+        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con3.setFieldName( "this" );
+        con3.setOperator( "==" );
+        con3.setValue( "123.456f" );
+        con3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp3.addConstraint( con3 );
+        m.addLhsItem( fp3 );
+
+        FactPattern fp4 = new FactPattern( "Integer" );
+        fp4.setBoundName( "$i" );
+        SingleFieldConstraint con4 = new SingleFieldConstraint();
+        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con4.setFieldName( "this" );
+        con4.setOperator( "==" );
+        con4.setValue( "123" );
+        con4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp4.addConstraint( con4 );
+        m.addLhsItem( fp4 );
+
+        FactPattern fp5 = new FactPattern( "String" );
+        fp5.setBoundName( "$s" );
+        SingleFieldConstraint con5 = new SingleFieldConstraint();
+        con5.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con5.setFieldName( "this" );
+        con5.setOperator( "==" );
+        con5.setValue( "hello" );
+        con5.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp5.addConstraint( con5 );
+        m.addLhsItem( fp5 );
 
         ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
         PortableWorkDefinition pwd = new PortableWorkDefinition();
@@ -1403,6 +1515,191 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", $f );" ) != -1 );
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i );" ) != -1 );
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
+    }
+
+    @Test
+    //Test that WorkItem Parameters whose values are bound are *NOT* created or
+    //populated in the RHS if the Pattern is *NOT* bound to the same variable
+    public void testRHSExecuteWorkItemWithMissingBindings1() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern fp1 = new FactPattern( "Person" );
+        fp1.setBoundName( "$p" );
+        SingleFieldConstraint con1 = new SingleFieldConstraint();
+        con1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con1.setFieldName( "name" );
+        con1.setOperator( "==" );
+        con1.setValue( "Michael" );
+        con1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( con1 );
+        m.addLhsItem( fp1 );
+
+        FactPattern fp2 = new FactPattern( "Boolean" );
+        fp2.setBoundName( "$b1" );
+        SingleFieldConstraint con2 = new SingleFieldConstraint();
+        con2.setFieldType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        con2.setFieldName( "this" );
+        con2.setOperator( "==" );
+        con2.setValue( "true" );
+        con2.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp2.addConstraint( con2 );
+        m.addLhsItem( fp2 );
+
+        FactPattern fp3 = new FactPattern( "Float" );
+        fp3.setBoundName( "$f1" );
+        SingleFieldConstraint con3 = new SingleFieldConstraint();
+        con3.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con3.setFieldName( "this" );
+        con3.setOperator( "==" );
+        con3.setValue( "123.456f" );
+        con3.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp3.addConstraint( con3 );
+        m.addLhsItem( fp3 );
+
+        FactPattern fp4 = new FactPattern( "Integer" );
+        fp4.setBoundName( "$i1" );
+        SingleFieldConstraint con4 = new SingleFieldConstraint();
+        con4.setFieldType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        con4.setFieldName( "this" );
+        con4.setOperator( "==" );
+        con4.setValue( "123" );
+        con4.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp4.addConstraint( con4 );
+        m.addLhsItem( fp4 );
+
+        FactPattern fp5 = new FactPattern( "String" );
+        fp5.setBoundName( "$s1" );
+        SingleFieldConstraint con5 = new SingleFieldConstraint();
+        con5.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con5.setFieldName( "this" );
+        con5.setOperator( "==" );
+        con5.setValue( "hello" );
+        con5.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp5.addConstraint( con5 );
+        m.addLhsItem( fp5 );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setBinding( "$b" );
+        p1.setValue( Boolean.TRUE );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setBinding( "$f" );
+        p2.setValue( 123.456f );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setBinding( "$i" );
+        p3.setValue( 123 );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setBinding( "$s" );
+        p4.setValue( "hello" );
+        pwd.addParameter( p4 );
+
+        m.addRhsItem( awi );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b1 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", $f1 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i1 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s1 );" ) != -1 );
+
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b2 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", $f2 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i2 );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s2 );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
+    }
+
+    @Test
+    //Test that WorkItem Parameters whose values are bound are *NOT* created or
+    //populated in the RHS if the Pattern is *NOT* bound to the same variable
+    public void testRHSExecuteWorkItemWithMissingBindings2() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern fp1 = new FactPattern( "Person" );
+        fp1.setBoundName( "$p" );
+        SingleFieldConstraint con1 = new SingleFieldConstraint();
+        con1.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con1.setFieldName( "name" );
+        con1.setOperator( "==" );
+        con1.setValue( "Michael" );
+        con1.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
+        fp1.addConstraint( con1 );
+        m.addLhsItem( fp1 );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanParameter" );
+        p1.setBinding( "$b2" );
+        p1.setValue( Boolean.TRUE );
+        pwd.addParameter( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatParameter" );
+        p2.setBinding( "$f2" );
+        p2.setValue( 123.456f );
+        pwd.addParameter( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerParameter" );
+        p3.setBinding( "$i2" );
+        p3.setValue( 123 );
+        pwd.addParameter( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringParameter" );
+        p4.setBinding( "$s2" );
+        p4.setValue( "hello" );
+        pwd.addParameter( p4 );
+
+        m.addRhsItem( awi );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"FloatParameter\", $f );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i );" ) != -1 );
+        assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s );" ) != -1 );
 
         assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
 
@@ -1672,12 +1969,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"or composite\""
-            + "dialect \"mvel\"\n"
-            + "when\n"
-            + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\" )\n"
-            + "then\n"
-            + "insert( new Whee() );\n"
-            + "end";
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\" )\n"
+                          + "then\n"
+                          + "insert( new Whee() );\n"
+                          + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -1725,23 +2022,23 @@ public class BRDRLPersistenceTest {
         sfc4.setValue( "zooValue" );
         sfc4.setOperator( "==" );
         p.addConstraint( sfc4 );
-        
+
         ActionInsertFact ass = new ActionInsertFact( "Whee" );
         m.addRhsItem( ass );
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"or composite complex\""
-            + "dialect \"mvel\"\n"
-            + "when\n"
-            + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
-            + "then\n"
-            + "insert( new Whee() );\n"
-            + "end";
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "Goober( gooField == \"gooValue\" || fooField != null || fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+                          + "then\n"
+                          + "insert( new Whee() );\n"
+                          + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
     }
-    
+
     @Test
     public void testCompositeAndConstraints() {
         RuleModel m = new RuleModel();
@@ -1782,12 +2079,12 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"and composite\""
-            + "dialect \"mvel\"\n"
-            + "when\n"
-            + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\" )\n"
-            + "then\n"
-            + "insert( new Whee() );\n"
-            + "end";
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\" )\n"
+                          + "then\n"
+                          + "insert( new Whee() );\n"
+                          + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
@@ -1827,7 +2124,7 @@ public class BRDRLPersistenceTest {
         sfc3.setValue( "barValue" );
         sfc3.setOperator( "==" );
         comp.addConstraint( sfc3 );
-        
+
         final SingleFieldConstraint sfc4 = new SingleFieldConstraint();
         sfc4.setFieldName( "zooField" );
         sfc4.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
@@ -1841,15 +2138,15 @@ public class BRDRLPersistenceTest {
 
         String actual = BRDRLPersistence.getInstance().marshal( m );
         String expected = "rule \"and composite complex\""
-            + "dialect \"mvel\"\n"
-            + "when\n"
-            + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
-            + "then\n"
-            + "insert( new Whee() );\n"
-            + "end";
+                          + "dialect \"mvel\"\n"
+                          + "when\n"
+                          + "Goober( gooField == \"gooValue\" && fooField != null && fooField.barField == \"barValue\", zooField == \"zooValue\" )\n"
+                          + "then\n"
+                          + "insert( new Whee() );\n"
+                          + "end";
 
         assertEqualsIgnoreWhitespace( expected,
                                       actual );
     }
-    
+
 }

@@ -24,4 +24,6 @@ public interface HasBinding {
 
     void setBinding(String binding);
 
+    boolean isBound();
+    
 }

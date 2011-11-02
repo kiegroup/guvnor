@@ -47,13 +47,17 @@ public class PortableStringParameterDefinition extends PortableParameterDefiniti
 
     @Override
     public String asString() {
-        if ( !(this.getBinding() == null || "".equals( this.getBinding() )) ) {
+        if ( isBound() ) {
             return this.getBinding();
         }
         if ( this.value == null ) {
             return "null";
         }
         return "\"" + value + "\"";
+    }
+
+    public boolean isBound() {
+        return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }
 
 }

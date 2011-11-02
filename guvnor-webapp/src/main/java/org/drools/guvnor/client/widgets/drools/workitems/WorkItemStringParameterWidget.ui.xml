@@ -19,11 +19,12 @@
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui' >
 
   <ui:with field='i18n' type='org.drools.guvnor.client.messages.Constants'/>
+  <ui:with field='resources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
 
-  <gwt:HorizontalPanel>
-    <gwt:Label ui:field="parameterName" text="{i18n.WorkItemParameterName}" />
-    <gwt:TextBox ui:field="parameterEditor" />
-    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false"/>
+  <gwt:HorizontalPanel spacing="2">
+    <gwt:Label ui:field="parameterName" text="{i18n.WorkItemParameterName}" styleName="{resources.guvnorCss.workItemParameter}"/>
+    <gwt:TextBox ui:field="parameterEditor" styleName="{resources.guvnorCss.workItemParameter}"/>
+    <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.guvnorCss.workItemParameter}"/>
   </gwt:HorizontalPanel>
 
 </ui:UiBinder>

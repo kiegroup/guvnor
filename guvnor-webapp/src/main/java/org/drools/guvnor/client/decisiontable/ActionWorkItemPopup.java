@@ -61,9 +61,7 @@ public class ActionWorkItemPopup extends FormStylePopup {
     private GuidedDecisionTable52               model;
     private ClientFactory                       clientFactory;
     private WorkItemParametersWidget            workItemInputParameters;
-    private WorkItemParametersWidget            workItemOutputParameters;
     private int                                 workItemInputParametersIndex;
-    private int                                 workItemOutputParametersIndex;
     private Map<String, PortableWorkDefinition> workItemDefinitions;
 
     public ActionWorkItemPopup(final ClientFactory clientFactory,
@@ -79,7 +77,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
         this.model = model;
 
         this.workItemInputParameters = new WorkItemParametersWidget( bindingProvider );
-        this.workItemOutputParameters = new WorkItemParametersWidget( bindingProvider );
 
         setTitle( constants.ColumnConfigurationWorkItem() );
         setModal( false );
@@ -118,11 +115,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
         workItemInputParametersIndex = addAttribute( constants.WorkItemInputParameters(),
                                                      workItemInputParameters,
                                                      false );
-
-        //Work Item Output Parameters
-        workItemOutputParametersIndex = addAttribute( constants.WorkItemOutputParameters(),
-                                                      workItemOutputParameters,
-                                                      false );
 
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
@@ -286,8 +278,6 @@ public class ActionWorkItemPopup extends FormStylePopup {
                                                                         //Show parameters if a Work Item is pre-selected
                                                                         setAttributeVisibility( workItemInputParametersIndex,
                                                                                                 isWorkItemSelected );
-                                                                        setAttributeVisibility( workItemOutputParametersIndex,
-                                                                                                isWorkItemSelected );
                                                                         showWorkItemParameters();
                                                                         center();
                                                                     }
@@ -304,22 +294,15 @@ public class ActionWorkItemPopup extends FormStylePopup {
         if ( wid == null ) {
             this.setAttributeVisibility( workItemInputParametersIndex,
                                          false );
-            this.setAttributeVisibility( workItemOutputParametersIndex,
-                                         false );
             return;
         }
 
         //Show parameters
         this.setAttributeVisibility( workItemInputParametersIndex,
                                      true );
-        this.setAttributeVisibility( workItemOutputParametersIndex,
-                                     true );
 
         //Input parameters
         workItemInputParameters.setParameters( wid.getParameters() );
-
-        //Output parameters
-        workItemOutputParameters.setParameters( wid.getResults() );
 
     }
 
