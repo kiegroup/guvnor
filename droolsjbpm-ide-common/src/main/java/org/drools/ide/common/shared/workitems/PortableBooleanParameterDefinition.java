@@ -61,6 +61,11 @@ public class PortableBooleanParameterDefinition extends PortableParameterDefinit
         return "Boolean." + Boolean.toString( this.getValue() ).toUpperCase();
     }
 
+    @Override
+    public String getClassName() {
+        return Boolean.class.getName();
+    }
+
     public boolean isBound() {
         return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }

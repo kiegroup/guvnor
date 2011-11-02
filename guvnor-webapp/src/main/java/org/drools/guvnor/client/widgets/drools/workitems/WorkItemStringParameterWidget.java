@@ -65,7 +65,7 @@ public class WorkItemStringParameterWidget extends WorkItemParameterWidget {
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( SuggestionCompletionEngine.TYPE_STRING );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getSimpleClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );

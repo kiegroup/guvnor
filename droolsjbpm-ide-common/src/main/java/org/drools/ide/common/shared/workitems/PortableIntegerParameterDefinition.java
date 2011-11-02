@@ -56,6 +56,11 @@ public class PortableIntegerParameterDefinition extends PortableParameterDefinit
         return Integer.toString( this.value );
     }
 
+    @Override
+    public String getClassName() {
+        return Integer.class.getName();
+    }
+
     public boolean isBound() {
         return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }

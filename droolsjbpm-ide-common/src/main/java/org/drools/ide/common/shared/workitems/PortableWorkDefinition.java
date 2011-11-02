@@ -30,7 +30,8 @@ import org.drools.ide.common.client.modeldriven.brl.PortableObject;
  */
 public class PortableWorkDefinition
     implements
-    PortableObject {
+    PortableObject,
+    Comparable<PortableWorkDefinition> {
 
     private static final long                        serialVersionUID = 540L;
 
@@ -111,6 +112,11 @@ public class PortableWorkDefinition
 
     public PortableParameterDefinition getResult(String name) {
         return results.get( name );
+    }
+
+    //TODO Implement something sensible!
+    public int compareTo(PortableWorkDefinition o) {
+        return 0;
     }
 
 }

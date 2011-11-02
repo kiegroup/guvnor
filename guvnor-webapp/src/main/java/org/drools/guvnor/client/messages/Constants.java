@@ -2563,6 +2563,6 @@ public interface Constants
     
     String WorkItemOutputParameters();
     
-    String WorkItemParameterName();
+    String BindActionFieldToWorkItem();
     
 }

@@ -25,6 +25,66 @@ import org.junit.Test;
 public class PortableParameterDefinitionTests {
 
     @Test
+    public void testClassNames() {
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        assertEquals( "java.lang.Boolean",
+                      p1.getClassName() );
+
+        PortableEnumParameterDefinition p2 = new PortableEnumParameterDefinition();
+        p2.setClassName( "com.tests.example.Smurf" );
+        assertEquals( "com.tests.example.Smurf",
+                      p2.getClassName() );
+
+        PortableFloatParameterDefinition p3 = new PortableFloatParameterDefinition();
+        assertEquals( "java.lang.Float",
+                      p3.getClassName() );
+
+        PortableIntegerParameterDefinition p4 = new PortableIntegerParameterDefinition();
+        assertEquals( "java.lang.Integer",
+                      p4.getClassName() );
+
+        PortableObjectParameterDefinition p5 = new PortableObjectParameterDefinition();
+        p5.setClassName( "com.tests.example.Smurf" );
+        assertEquals( "com.tests.example.Smurf",
+                      p5.getClassName() );
+
+        PortableStringParameterDefinition p6 = new PortableStringParameterDefinition();
+        assertEquals( "java.lang.String",
+                      p6.getClassName() );
+
+    }
+
+    @Test
+    public void testSimpleClassNames() {
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        assertEquals( "Boolean",
+                      p1.getSimpleClassName() );
+
+        PortableEnumParameterDefinition p2 = new PortableEnumParameterDefinition();
+        p2.setClassName( "com.tests.example.Smurf" );
+        assertEquals( "Smurf",
+                      p2.getSimpleClassName() );
+
+        PortableFloatParameterDefinition p3 = new PortableFloatParameterDefinition();
+        assertEquals( "Float",
+                      p3.getSimpleClassName() );
+
+        PortableIntegerParameterDefinition p4 = new PortableIntegerParameterDefinition();
+        assertEquals( "Integer",
+                      p4.getSimpleClassName() );
+
+        PortableObjectParameterDefinition p5 = new PortableObjectParameterDefinition();
+        p5.setClassName( "com.tests.example.Smurf" );
+        assertEquals( "Smurf",
+                      p5.getSimpleClassName() );
+
+        PortableStringParameterDefinition p6 = new PortableStringParameterDefinition();
+        assertEquals( "String",
+                      p6.getSimpleClassName() );
+
+    }
+
+    @Test
     public void testAsString() {
         PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
         p1.setValue( Boolean.TRUE );

@@ -64,7 +64,7 @@ public class WorkItemIntegerParameterWidget extends WorkItemParameterWidget {
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( "Integer" );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getSimpleClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );

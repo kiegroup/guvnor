@@ -23,7 +23,7 @@
   <ui:with field='resources' type='org.drools.guvnor.client.resources.GuvnorResources'/>
 
   <gwt:HorizontalPanel spacing="2">
-    <gwt:Label ui:field="parameterName" text="{i18n.WorkItemParameterName}" styleName="{resources.guvnorCss.workItemParameter}"/>
+    <gwt:Label ui:field="parameterName" styleName="{resources.guvnorCss.workItemParameter}"/>
     <guvnor:NumericFloatTextBox ui:field="parameterEditor" styleName="{resources.guvnorCss.workItemParameter}"/>
     <gwt:ListBox ui:field="lstAvailableBindings" visible="false" enabled="false" styleName="{resources.guvnorCss.workItemParameter}"/>
   </gwt:HorizontalPanel>

@@ -56,6 +56,11 @@ public class PortableFloatParameterDefinition extends PortableParameterDefinitio
         return Float.toString( this.value ) + "f";
     }
 
+    @Override
+    public String getClassName() {
+        return Float.class.getName();
+    }
+
     public boolean isBound() {
         return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }

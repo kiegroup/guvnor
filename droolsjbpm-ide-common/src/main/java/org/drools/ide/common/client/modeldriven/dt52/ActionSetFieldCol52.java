@@ -23,30 +23,30 @@ public class ActionSetFieldCol52 extends ActionCol52 {
      * The bound name of the variable to be effected. If the same name appears
      * twice, is it merged into the same action.
      */
-    private String boundName;
+    private String            boundName;
 
     /**
      * The field on the fact being effected.
      */
-    private String factField;
+    private String            factField;
 
     /**
      * Same as the type in ActionFieldValue - eg, either a String, or Numeric.
      * Refers to the data type of the literal value in the cell. These values
      * come from SuggestionCompletionEngine.
      */
-    private String type;
+    private String            type;
 
     /**
      * An optional comma separated list of values.
      */
-    private String valueList;
+    private String            valueList;
 
     /**
      * This will be true if it is meant to be a modify to the engine, when in
      * inferencing mode.
      */
-    private boolean update = false;
+    private boolean           update           = false;
 
     public void setValueList(String valueList) {
         this.valueList = valueList;

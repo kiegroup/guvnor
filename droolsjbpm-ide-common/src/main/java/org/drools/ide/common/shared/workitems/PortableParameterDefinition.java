@@ -50,4 +50,18 @@ public abstract class PortableParameterDefinition
 
     public abstract String asString();
 
+    public abstract String getClassName();
+
+    public String getSimpleClassName() {
+        String className = getClassName();
+        if ( className == null ) {
+            return null;
+        }
+        int index = className.lastIndexOf( "." );
+        if ( index >= 0 ) {
+            className = className.substring( index + 1 );
+        }
+        return className;
+    }
+
 }

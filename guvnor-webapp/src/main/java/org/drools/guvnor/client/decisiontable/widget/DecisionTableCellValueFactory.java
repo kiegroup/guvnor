@@ -33,6 +33,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -145,6 +146,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                     }
                 }
                 break;
+            case WORKITEM :
+                cell = makeNewWorkItemCellValue( iRow,
+                                                 iCol,
+                                                 dcv );
+                break;
             default :
                 cell = makeNewStringCellValue( iRow,
                                                iCol,
@@ -221,7 +227,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         if ( column instanceof ActionWorkItemCol52 ) {
             return DTDataTypes52.BOOLEAN;
         }
-        
+
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;
@@ -244,12 +250,20 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return cv;
     }
 
-    public CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
-                                                        int iCol) {
+    protected CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
+                                                           int iCol) {
         Analysis analysis = new Analysis();
         return new CellValue<Analysis>( analysis,
                                         iRow,
                                         iCol );
+    }
+
+    protected CellValue<PortableWorkDefinition> makeNewWorkItemCellValue(int iRow,
+                                                                         int iCol,
+                                                                         DTCellValue52 dcv) {
+        return new CellValue<PortableWorkDefinition>( null,
+                                                      iRow,
+                                                      iCol );
     }
 
 }

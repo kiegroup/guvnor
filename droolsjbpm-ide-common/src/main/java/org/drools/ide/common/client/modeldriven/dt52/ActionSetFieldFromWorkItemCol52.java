@@ -15,18 +15,12 @@
  */
 package org.drools.ide.common.client.modeldriven.dt52;
 
-import org.drools.ide.common.client.modeldriven.brl.PortableObject;
-
 /**
- * Explicit DataTypes handled by the Mergable Grid Widgets
+ * An Action to set an existing Fact's field value with the value of a Work Item
+ * Definition's result parameter
  */
-public enum DTDataTypes52
-        implements PortableObject {
+public class ActionSetFieldFromWorkItemCol52 extends ActionSetFieldCol52 {
 
-    STRING,
-    NUMERIC,
-    DATE,
-    BOOLEAN,
-    WORKITEM
+    private static final long serialVersionUID = 540l;
 
 }

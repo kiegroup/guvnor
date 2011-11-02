@@ -56,6 +56,11 @@ public class PortableStringParameterDefinition extends PortableParameterDefiniti
         return "\"" + value + "\"";
     }
 
+    @Override
+    public String getClassName() {
+        return String.class.getName();
+    }
+
     public boolean isBound() {
         return (this.getBinding() != null && !"".equals( this.getBinding() ));
     }

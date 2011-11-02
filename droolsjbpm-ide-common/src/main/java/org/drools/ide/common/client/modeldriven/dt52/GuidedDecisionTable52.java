@@ -350,7 +350,10 @@ public class GuidedDecisionTable52
         } else if ( column instanceof ConditionCol52 ) {
             dataType = derieveDataType( column,
                                         sce );
-
+            
+        } else if ( column instanceof ActionSetFieldFromWorkItemCol52 ) {
+            dataType = DTDataTypes52.WORKITEM;
+            
         } else if ( column instanceof ActionSetFieldCol52 ) {
             dataType = derieveDataType( column,
                                         sce );

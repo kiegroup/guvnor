@@ -18,7 +18,6 @@ package org.drools.guvnor.client.widgets.drools.workitems;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.IBindingProvider;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.shared.workitems.PortableBooleanParameterDefinition;
 
 import com.google.gwt.core.client.GWT;
@@ -77,7 +76,7 @@ public class WorkItemBooleanParameterWidget extends WorkItemParameterWidget {
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getSimpleClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );

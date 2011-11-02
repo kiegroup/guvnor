@@ -15,8 +15,10 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -28,12 +30,15 @@ import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -57,6 +62,7 @@ public class ActionSetColumnPopup extends FormStylePopup {
 
     private SmallLabel                 bindingLabel                     = new SmallLabel();
     private TextBox                    fieldLabel                       = getFieldLabel();
+    private ListBox workItemResultParameters = new ListBox();
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
 
@@ -65,7 +71,7 @@ public class ActionSetColumnPopup extends FormStylePopup {
     private SuggestionCompletionEngine sce;
     private DTCellValueWidgetFactory   factory;
 
-    public ActionSetColumnPopup(SuggestionCompletionEngine sce,
+    public ActionSetColumnPopup(final SuggestionCompletionEngine sce,
                                 final GuidedDecisionTable52 model,
                                 final GenericColumnCommand refreshGrid,
                                 final ActionSetFieldCol52 col,
@@ -155,6 +161,10 @@ public class ActionSetColumnPopup extends FormStylePopup {
         addAttribute( constants.UpdateEngineWithChanges(),
                       doUpdate() );
 
+        //Bind field to a WorkItem result parameter
+        addAttribute( constants.BindActionFieldToWorkItem(),
+                      doBindFieldToWorkItem() );
+
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
@@ -162,24 +172,20 @@ public class ActionSetColumnPopup extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader()
-                        || "".equals( editingCol.getHeader() ) ) {
-                    Window.alert( constants
-                            .YouMustEnterAColumnHeaderValueDescription() );
+                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
+                    Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
-                        Window.alert( constants
-                                .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                        Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                         return;
                     }
 
                 } else {
                     if ( !col.getHeader().equals( editingCol.getHeader() ) ) {
                         if ( !unique( editingCol.getHeader() ) ) {
-                            Window.alert( constants
-                                    .ThatColumnNameIsAlreadyInUsePleasePickAnother() );
+                            Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
                             return;
                         }
                     }
@@ -297,6 +303,48 @@ public class ActionSetColumnPopup extends FormStylePopup {
         return hp;
     }
 
+    //TODO Populate with list of WorkItem Result Parameters
+    private Widget doBindFieldToWorkItem() {
+        workItemResultParameters.clear();
+        List<PortableWorkDefinition> actionWorkItems = new ArrayList<PortableWorkDefinition>();
+        for ( ActionCol52 ac : model.getActionCols() ) {
+            if ( ac instanceof ActionWorkItemCol52 ) {
+                PortableWorkDefinition pwd = ((ActionWorkItemCol52) ac).getWorkItemDefinition();
+                actionWorkItems.add( pwd );
+            }
+        }
+
+        if ( actionWorkItems.size() == 0 ) {
+            workItemResultParameters.setEnabled( false );
+            workItemResultParameters.addItem( constants.NoWorkItemsAvailable() );
+        } else {
+            workItemResultParameters.setEnabled( true );
+            for ( PortableWorkDefinition pwd : actionWorkItems ) {
+                String workItemName = pwd.getDisplayName();
+                for ( PortableParameterDefinition ppd : pwd.getResults() ) {
+                    if ( acceptParameterType( ppd ) ) {
+                        workItemResultParameters.addItem( workItemName + "." + ppd.getName() );
+                    }
+                }
+            }
+        }
+
+        return workItemResultParameters;
+    }
+
+    private boolean acceptParameterType(PortableParameterDefinition ppd) {
+        if ( nil( editingCol.getFactField() ) ) {
+            return false;
+        }
+        if ( ppd.getClassName() == null ) {
+            return false;
+        }
+        Pattern52 p = model.getConditionPattern( editingCol.getBoundName() );
+        String fieldClassName = sce.getFieldClassName( p.getFactType(),
+                                                       editingCol.getFactField() );
+        return fieldClassName.equals( ppd.getClass() );
+    }
+
     private String getFactType() {
         if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
             return sce.getGlobalVariable( editingCol.getBoundName() );
@@ -396,6 +444,7 @@ public class ActionSetColumnPopup extends FormStylePopup {
                 editingCol.setType( sce.getFieldType( factType,
                                                       editingCol.getFactField() ) );
                 makeLimitedValueWidget();
+                doBindFieldToWorkItem();
                 doFieldLabel();
                 pop.hide();
             }
