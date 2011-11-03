@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
@@ -224,7 +225,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         }
 
         //Actions setting Field Values from Work Item Result Parameters are always boolean
-        if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+        if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
             return DTDataTypes52.BOOLEAN;
         }
 

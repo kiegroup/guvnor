@@ -46,6 +46,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -143,7 +144,33 @@ public class GuidedDTDRLPersistence {
             }
 
             if ( validCell( cell ) ) {
-                if ( c instanceof ActionInsertFactCol52 ) {
+                if ( c instanceof ActionWorkItemInsertFactCol52 ) {
+                    ActionWorkItemInsertFactCol52 ac = (ActionWorkItemInsertFactCol52) c;
+                    LabelledAction a = findByLabelledAction( actions,
+                                                             ac.getBoundName() );
+                    if ( a == null ) {
+                        a = new LabelledAction();
+                        a.boundName = ac.getBoundName();
+                        if ( !ac.isInsertLogical() ) {
+                            ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
+                            ins.setBoundName( ac.getBoundName() );
+                            a.action = ins;
+                        } else {
+                            ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
+                            ins.setBoundName( ac.getBoundName() );
+                            a.action = ins;
+                        }
+                        actions.add( a );
+                    }
+                    ActionInsertFact ins = (ActionInsertFact) a.action;
+                    ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( ac.getFactField(),
+                                                                                 ac.getType(),
+                                                                                 ac.getWorkItemName(),
+                                                                                 ac.getWorkItemResultParameterName(),
+                                                                                 ac.getParameterClassName() );
+                    ins.addFieldValue( val );
+
+                } else if ( c instanceof ActionInsertFactCol52 ) {
                     ActionInsertFactCol52 ac = (ActionInsertFactCol52) c;
                     LabelledAction a = findByLabelledAction( actions,
                                                              ac.getBoundName() );

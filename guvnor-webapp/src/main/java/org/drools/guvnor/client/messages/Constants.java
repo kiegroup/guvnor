@@ -2567,6 +2567,10 @@ public interface Constants
     
     String WorkItemActionSetField();
 
-    String ColumnConfigurationWorkItemSetColumn();
+    String ColumnConfigurationWorkItemSetField();
+    
+    String WorkItemActionInsertFact();
+    
+    String ColumnConfigurationWorkItemInsertFact();
     
 }

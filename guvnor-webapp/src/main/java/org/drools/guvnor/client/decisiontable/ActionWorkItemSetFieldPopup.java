@@ -15,8 +15,12 @@
  */
 package org.drools.guvnor.client.decisiontable;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.drools.guvnor.client.common.FormStylePopup;
@@ -27,13 +31,12 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -46,39 +49,50 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ActionSetColumnPopup extends FormStylePopup {
+/**
+ * A popup to define an Action to set a field on an existing Fact to the value
+ * of a Work Item Result parameter
+ */
+public class ActionWorkItemSetFieldPopup extends FormStylePopup {
 
-    private static Constants           constants                        = GWT.create( Constants.class );
-    private static Images              images                           = (Images) GWT.create( Images.class );
+    private static Constants               constants                   = GWT.create( Constants.class );
+    private static Images                  images                      = (Images) GWT.create( Images.class );
 
-    private SmallLabel                 bindingLabel                     = new SmallLabel();
-    private TextBox                    fieldLabel                       = getFieldLabel();
-    private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
-    private int                        limitedEntryValueAttributeIndex  = 0;
+    private SmallLabel                     bindingLabel                = new SmallLabel();
+    private TextBox                        fieldLabel                  = getFieldLabel();
+    private ListBox                        workItemResultParameters    = new ListBox();
+    private Map<String, WorkItemParameter> workItemResultParametersMap = new HashMap<String, WorkItemParameter>();
 
-    private ActionSetFieldCol52        editingCol;
-    private GuidedDecisionTable52      model;
-    private SuggestionCompletionEngine sce;
-    private DTCellValueWidgetFactory   factory;
+    private ActionWorkItemSetFieldCol52    editingCol;
+    private GuidedDecisionTable52          model;
+    private SuggestionCompletionEngine     sce;
 
-    public ActionSetColumnPopup(final SuggestionCompletionEngine sce,
-                                final GuidedDecisionTable52 model,
-                                final GenericColumnCommand refreshGrid,
-                                final ActionSetFieldCol52 col,
-                                final boolean isNew) {
+    //Container to contain WorkItem and WorkItem Parameters associations
+    private static class WorkItemParameter {
+
+        WorkItemParameter(PortableWorkDefinition workDefinition,
+                          PortableParameterDefinition workParameterDefinition) {
+            this.workDefinition = workDefinition;
+            this.workParameterDefinition = workParameterDefinition;
+        }
+
+        PortableWorkDefinition      workDefinition;
+        PortableParameterDefinition workParameterDefinition;
+    }
+
+    public ActionWorkItemSetFieldPopup(final SuggestionCompletionEngine sce,
+                                       final GuidedDecisionTable52 model,
+                                       final GenericColumnCommand refreshGrid,
+                                       final ActionWorkItemSetFieldCol52 col,
+                                       final boolean isNew) {
         this.editingCol = cloneActionSetColumn( col );
         this.model = model;
         this.sce = sce;
 
-        //Set-up factory for common widgets
-        factory = new DTCellValueWidgetFactory( model,
-                                                sce );
-
-        setTitle( constants.ColumnConfigurationSetAFieldOnAFact() );
+        setTitle( constants.ColumnConfigurationWorkItemSetField() );
         setModal( false );
 
         //Fact on which field will be set
@@ -123,37 +137,27 @@ public class ActionSetColumnPopup extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
-        //Optional value list
-        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            final TextBox valueList = new TextBox();
-            valueList.setText( editingCol.getValueList() );
-            valueList.addChangeHandler( new ChangeHandler() {
-                public void onChange(ChangeEvent event) {
-                    editingCol.setValueList( valueList.getText() );
-                }
-            } );
-            HorizontalPanel vl = new HorizontalPanel();
-            vl.add( valueList );
-            vl.add( new InfoPopup( constants.ValueList(),
-                                   constants.ValueListsExplanation() ) );
-            addAttribute( constants.optionalValueList(),
-                          vl );
-        }
-
-        //Default Value
-        if ( model.getTableFormat() == TableFormat.EXTENDED_ENTRY ) {
-            addAttribute( constants.DefaultValue(),
-                          DTCellValueWidgetFactory.getDefaultEditor( editingCol ) );
-        }
-
-        //Limited entry value widget
-        limitedEntryValueAttributeIndex = addAttribute( constants.LimitedEntryValue(),
-                                                        limitedEntryValueWidgetContainer );
-        makeLimitedValueWidget();
-
         //Update Engine with changes
         addAttribute( constants.UpdateEngineWithChanges(),
                       doUpdate() );
+
+        //Bind field to a WorkItem result parameter
+        addAttribute( constants.BindActionFieldToWorkItem(),
+                      doBindFieldToWorkItem() );
+        workItemResultParameters.addChangeHandler( new ChangeHandler() {
+
+            public void onChange(ChangeEvent event) {
+                int index = workItemResultParameters.getSelectedIndex();
+                if ( index >= 0 ) {
+                    String key = workItemResultParameters.getValue( index );
+                    WorkItemParameter wip = workItemResultParametersMap.get( key );
+                    editingCol.setWorkItemName( wip.workDefinition.getName() );
+                    editingCol.setWorkItemResultParameterName( wip.workParameterDefinition.getName() );
+                    editingCol.setParameterClassName( wip.workParameterDefinition.getClassName() );
+                }
+            }
+
+        } );
 
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
@@ -191,15 +195,8 @@ public class ActionSetColumnPopup extends FormStylePopup {
 
     }
 
-    private ActionSetFieldCol52 cloneActionSetColumn(ActionSetFieldCol52 col) {
-        ActionSetFieldCol52 clone = null;
-        if ( col instanceof LimitedEntryActionSetFieldCol52 ) {
-            clone = new LimitedEntryActionSetFieldCol52();
-            DTCellValue52 dcv = cloneLimitedEntryValue( ((LimitedEntryCol) col).getValue() );
-            ((LimitedEntryCol) clone).setValue( dcv );
-        } else {
-            clone = new ActionSetFieldCol52();
-        }
+    private ActionWorkItemSetFieldCol52 cloneActionSetColumn(ActionWorkItemSetFieldCol52 col) {
+        ActionWorkItemSetFieldCol52 clone = new ActionWorkItemSetFieldCol52();
         clone.setBoundName( col.getBoundName() );
         clone.setFactField( col.getFactField() );
         clone.setHeader( col.getHeader() );
@@ -208,57 +205,17 @@ public class ActionSetColumnPopup extends FormStylePopup {
         clone.setUpdate( col.isUpdate() );
         clone.setDefaultValue( col.getDefaultValue() );
         clone.setHideColumn( col.isHideColumn() );
+        clone.setWorkItemName( col.getWorkItemName() );
+        clone.setWorkItemResultParameterName( col.getWorkItemResultParameterName() );
+        clone.setParameterClassName( col.getParameterClassName() );
         return clone;
-    }
-
-    private DTCellValue52 cloneLimitedEntryValue(DTCellValue52 dcv) {
-        if ( dcv == null ) {
-            return null;
-        }
-        DTCellValue52 clone = new DTCellValue52();
-        switch ( dcv.getDataType() ) {
-            case BOOLEAN :
-                clone.setBooleanValue( dcv.getBooleanValue() );
-                break;
-            case DATE :
-                clone.setDateValue( dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                clone.setNumericValue( dcv.getNumericValue() );
-                break;
-            case STRING :
-                clone.setStringValue( dcv.getStringValue() );
-        }
-        return clone;
-    }
-
-    private void makeLimitedValueWidget() {
-        if ( !(editingCol instanceof LimitedEntryActionSetFieldCol52) ) {
-            setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                    false );
-            return;
-        }
-        if ( nil( editingCol.getFactField() ) ) {
-            setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                    false );
-            return;
-        }
-        LimitedEntryActionSetFieldCol52 lea = (LimitedEntryActionSetFieldCol52) editingCol;
-        setAttributeVisibility( limitedEntryValueAttributeIndex,
-                                true );
-        if ( lea.getValue() == null ) {
-            lea.setValue( factory.makeNewValue( editingCol ) );
-        }
-        limitedEntryValueWidgetContainer.setWidget( factory.getWidget( editingCol,
-                                                                       lea.getValue() ) );
     }
 
     private void doBindingLabel() {
         if ( this.editingCol.getBoundName() != null ) {
             this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
         } else {
-            this.bindingLabel.setText( constants
-                    .pleaseChooseABoundFactForThisColumn() );
+            this.bindingLabel.setText( constants.pleaseChooseABoundFactForThisColumn() );
         }
     }
 
@@ -288,9 +245,90 @@ public class ActionSetColumnPopup extends FormStylePopup {
         } );
         hp.add( cb );
         hp.add( new InfoPopup( constants.UpdateFact(),
-                               constants
-                                       .UpdateDescription() ) );
+                               constants.UpdateDescription() ) );
         return hp;
+    }
+
+    //Populate list of WorkItem Result Parameters for the Fact\Fields data-type
+    private Widget doBindFieldToWorkItem() {
+        workItemResultParameters.clear();
+        workItemResultParametersMap.clear();
+
+        //Get list of Work Items executed by Actions
+        List<PortableWorkDefinition> actionWorkItems = new ArrayList<PortableWorkDefinition>();
+        for ( ActionCol52 ac : model.getActionCols() ) {
+            if ( ac instanceof ActionWorkItemCol52 ) {
+                PortableWorkDefinition pwd = ((ActionWorkItemCol52) ac).getWorkItemDefinition();
+                actionWorkItems.add( pwd );
+            }
+        }
+
+        //Populate list of available result parameters
+        if ( actionWorkItems.size() == 0 ) {
+            workItemResultParameters.setEnabled( false );
+            workItemResultParameters.addItem( constants.NoWorkItemsAvailable() );
+            editingCol.setWorkItemName( null );
+            editingCol.setWorkItemResultParameterName( null );
+            editingCol.setParameterClassName( null );
+        } else {
+            int selectedItemIndex = -1;
+            String selectedItemKey = editingCol.getWorkItemName() + "." + editingCol.getWorkItemResultParameterName();
+            workItemResultParameters.setEnabled( true );
+            for ( PortableWorkDefinition pwd : actionWorkItems ) {
+                for ( PortableParameterDefinition ppd : pwd.getResults() ) {
+                    if ( acceptParameterType( ppd ) ) {
+                        String key = pwd.getName() + "." + ppd.getName();
+                        String parameterDisplayName = pwd.getDisplayName() + "." + ppd.getName();
+
+                        //Pre-select item if applicable
+                        if ( key.equals( selectedItemKey ) ) {
+                            selectedItemIndex = workItemResultParameters.getItemCount();
+                        }
+                        workItemResultParametersMap.put( key,
+                                                         new WorkItemParameter( pwd,
+                                                                                ppd ) );
+                        workItemResultParameters.addItem( parameterDisplayName,
+                                                          key );
+                    }
+                }
+            }
+
+            //Disable selection if no suitable parameters were found
+            if ( workItemResultParameters.getItemCount() == 0 ) {
+                workItemResultParameters.setEnabled( false );
+                workItemResultParameters.addItem( constants.NoWorkItemsAvailable() );
+                editingCol.setWorkItemName( null );
+                editingCol.setWorkItemResultParameterName( null );
+                editingCol.setParameterClassName( null );
+            } else {
+
+                //Select first item if none were pre-selected
+                if ( selectedItemIndex == -1 ) {
+                    selectedItemIndex = 0;
+                    selectedItemKey = workItemResultParameters.getValue( selectedItemIndex );
+                    WorkItemParameter wip = workItemResultParametersMap.get( selectedItemKey );
+                    editingCol.setWorkItemName( wip.workDefinition.getName() );
+                    editingCol.setWorkItemResultParameterName( wip.workParameterDefinition.getName() );
+                    editingCol.setParameterClassName( wip.workParameterDefinition.getClassName() );
+                }
+                workItemResultParameters.setSelectedIndex( selectedItemIndex );
+            }
+        }
+
+        return workItemResultParameters;
+    }
+
+    private boolean acceptParameterType(PortableParameterDefinition ppd) {
+        if ( nil( editingCol.getFactField() ) ) {
+            return false;
+        }
+        if ( ppd.getClassName() == null ) {
+            return false;
+        }
+        Pattern52 p = model.getConditionPattern( editingCol.getBoundName() );
+        String fieldClassName = sce.getFieldClassName( p.getFactType(),
+                                                       editingCol.getFactField() );
+        return fieldClassName.equals( ppd.getClassName() );
     }
 
     private String getFactType() {
@@ -360,7 +398,7 @@ public class ActionSetColumnPopup extends FormStylePopup {
                 String val = pats.getValue( pats.getSelectedIndex() );
                 editingCol.setBoundName( val );
                 editingCol.setFactField( null );
-                makeLimitedValueWidget();
+                doBindFieldToWorkItem();
                 doBindingLabel();
                 doFieldLabel();
                 pop.hide();
@@ -391,7 +429,7 @@ public class ActionSetColumnPopup extends FormStylePopup {
                 editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
                 editingCol.setType( sce.getFieldType( factType,
                                                       editingCol.getFactField() ) );
-                makeLimitedValueWidget();
+                doBindFieldToWorkItem();
                 doFieldLabel();
                 pop.hide();
             }

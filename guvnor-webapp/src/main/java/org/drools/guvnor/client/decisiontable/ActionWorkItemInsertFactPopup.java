@@ -18,7 +18,6 @@ package org.drools.guvnor.client.decisiontable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,10 +28,12 @@ import org.drools.guvnor.client.common.InfoPopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
+import org.drools.ide.common.client.modeldriven.FieldAccessorsAndMutators;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
@@ -46,23 +47,28 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ActionWorkItemSetColumnPopup extends FormStylePopup {
+/**
+ * A popup to define an Action to insert a new Fact and set one of its fields to
+ * the value of a Work Item Result parameter
+ */
+public class ActionWorkItemInsertFactPopup extends FormStylePopup {
 
-    private static Constants               constants                   = GWT.create( Constants.class );
     private static Images                  images                      = (Images) GWT.create( Images.class );
+    private static Constants               constants                   = GWT.create( Constants.class );
 
-    private SmallLabel                     bindingLabel                = new SmallLabel();
+    private SmallLabel                     patternLabel                = new SmallLabel();
     private TextBox                        fieldLabel                  = getFieldLabel();
     private ListBox                        workItemResultParameters    = new ListBox();
     private Map<String, WorkItemParameter> workItemResultParametersMap = new HashMap<String, WorkItemParameter>();
 
-    private ActionWorkItemSetFieldCol52    editingCol;
+    private ActionWorkItemInsertFactCol52  editingCol;
     private GuidedDecisionTable52          model;
     private SuggestionCompletionEngine     sce;
 
@@ -79,35 +85,35 @@ public class ActionWorkItemSetColumnPopup extends FormStylePopup {
         PortableParameterDefinition workParameterDefinition;
     }
 
-    public ActionWorkItemSetColumnPopup(final SuggestionCompletionEngine sce,
-                                        final GuidedDecisionTable52 model,
-                                        final GenericColumnCommand refreshGrid,
-                                        final ActionWorkItemSetFieldCol52 col,
-                                        final boolean isNew) {
-        this.editingCol = cloneActionSetColumn( col );
+    public ActionWorkItemInsertFactPopup(final SuggestionCompletionEngine sce,
+                                         final GuidedDecisionTable52 model,
+                                         final GenericColumnCommand refreshGrid,
+                                         final ActionWorkItemInsertFactCol52 col,
+                                         final boolean isNew) {
+        this.editingCol = cloneActionInsertColumn( col );
         this.model = model;
         this.sce = sce;
 
-        setTitle( constants.ColumnConfigurationWorkItemSetColumn() );
+        setTitle( constants.ColumnConfigurationWorkItemInsertFact() );
         setModal( false );
 
-        //Fact on which field will be set
+        //Fact being inserted
         HorizontalPanel pattern = new HorizontalPanel();
-        pattern.add( bindingLabel );
-        doBindingLabel();
+        pattern.add( patternLabel );
+        doPatternLabel();
 
         Image changePattern = new ImageButton( images.edit(),
-                                               constants.ChooseABoundFactThatThisColumnPertainsTo(),
+                                               constants.ChooseAPatternThatThisColumnAddsDataTo(),
                                                new ClickHandler() {
                                                    public void onClick(ClickEvent w) {
-                                                       showChangeFact( w );
+                                                       showChangePattern( w );
                                                    }
                                                } );
         pattern.add( changePattern );
-        addAttribute( constants.Fact(),
+        addAttribute( constants.Pattern(),
                       pattern );
 
-        //Fact Field being set
+        //Fact field being set
         HorizontalPanel field = new HorizontalPanel();
         field.add( fieldLabel );
         Image editField = new ImageButton( images.edit(),
@@ -133,9 +139,9 @@ public class ActionWorkItemSetColumnPopup extends FormStylePopup {
         addAttribute( constants.ColumnHeaderDescription(),
                       header );
 
-        //Update Engine with changes
-        addAttribute( constants.UpdateEngineWithChanges(),
-                      doUpdate() );
+        //Logical insertion
+        addAttribute( constants.LogicallyAssertAFactTheFactWillBeRetractedWhenTheSupportingEvidenceIsRemoved(),
+                      doInsertLogical() );
 
         //Bind field to a WorkItem result parameter
         addAttribute( constants.BindActionFieldToWorkItem(),
@@ -162,7 +168,8 @@ public class ActionWorkItemSetColumnPopup extends FormStylePopup {
         Button apply = new Button( constants.ApplyChanges() );
         apply.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
-                if ( null == editingCol.getHeader() || "".equals( editingCol.getHeader() ) ) {
+                if ( null == editingCol.getHeader()
+                        || "".equals( editingCol.getHeader() ) ) {
                     Window.alert( constants.YouMustEnterAColumnHeaderValueDescription() );
                     return;
                 }
@@ -191,51 +198,193 @@ public class ActionWorkItemSetColumnPopup extends FormStylePopup {
 
     }
 
-    private ActionWorkItemSetFieldCol52 cloneActionSetColumn(ActionWorkItemSetFieldCol52 col) {
-        ActionWorkItemSetFieldCol52 clone = new ActionWorkItemSetFieldCol52();
+    private ActionWorkItemInsertFactCol52 cloneActionInsertColumn(ActionWorkItemInsertFactCol52 col) {
+        ActionWorkItemInsertFactCol52 clone = new ActionWorkItemInsertFactCol52();
         clone.setBoundName( col.getBoundName() );
-        clone.setFactField( col.getFactField() );
-        clone.setHeader( col.getHeader() );
         clone.setType( col.getType() );
+        clone.setFactField( col.getFactField() );
+        clone.setFactType( col.getFactType() );
+        clone.setHeader( col.getHeader() );
         clone.setValueList( col.getValueList() );
-        clone.setUpdate( col.isUpdate() );
         clone.setDefaultValue( col.getDefaultValue() );
         clone.setHideColumn( col.isHideColumn() );
+        clone.setInsertLogical( col.isInsertLogical() );
         clone.setWorkItemName( col.getWorkItemName() );
         clone.setWorkItemResultParameterName( col.getWorkItemResultParameterName() );
         clone.setParameterClassName( col.getParameterClassName() );
         return clone;
     }
 
-    private void doBindingLabel() {
-        if ( this.editingCol.getBoundName() != null ) {
-            this.bindingLabel.setText( "" + this.editingCol.getBoundName() );
-        } else {
-            this.bindingLabel.setText( constants.pleaseChooseABoundFactForThisColumn() );
-        }
-    }
-
     private void doFieldLabel() {
-        if ( this.editingCol.getFactField() != null ) {
-            this.fieldLabel.setText( this.editingCol.getFactField() );
+        if ( nil( this.editingCol.getFactField() ) ) {
+            fieldLabel.setText( constants.pleaseChooseFactType() );
         } else {
-            this.fieldLabel.setText( constants.pleaseChooseAFactPatternFirst() );
+            fieldLabel.setText( editingCol.getFactField() );
         }
     }
 
-    private Widget doUpdate() {
+    private void doPatternLabel() {
+        if ( this.editingCol.getFactType() != null ) {
+            this.patternLabel.setText( this.editingCol.getFactType() + " [" + editingCol.getBoundName() + "]" );
+        }
+    }
+
+    private TextBox getFieldLabel() {
+        final TextBox box = new TextBox();
+        box.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setFactField( box.getText() );
+            }
+        } );
+        return box;
+    }
+
+    private ListBox loadPatterns() {
+        Set<String> vars = new HashSet<String>();
+        ListBox patterns = new ListBox();
+
+        for ( Object o : model.getActionCols() ) {
+            ActionCol52 col = (ActionCol52) o;
+            if ( col instanceof ActionInsertFactCol52 ) {
+                ActionInsertFactCol52 c = (ActionInsertFactCol52) col;
+                if ( !vars.contains( c.getBoundName() ) ) {
+                    patterns.addItem( c.getFactType() + " [" + c.getBoundName() + "]",
+                                      c.getFactType() + " " + c.getBoundName() );
+                    vars.add( c.getBoundName() );
+                }
+            }
+        }
+        return patterns;
+    }
+
+    private boolean nil(String s) {
+        return s == null || s.equals( "" );
+    }
+
+    private void showFieldChange() {
+        final FormStylePopup pop = new FormStylePopup();
+        pop.setModal( false );
+        String[] fields = this.sce.getFieldCompletions(
+                                                        FieldAccessorsAndMutators.MUTATOR,
+                                                        this.editingCol.getFactType() );
+        final ListBox box = new ListBox();
+        for ( int i = 0; i < fields.length; i++ ) {
+            box.addItem( fields[i] );
+        }
+        pop.addAttribute( constants.Field(),
+                          box );
+        Button b = new Button( constants.OK() );
+        pop.addAttribute( "",
+                          b );
+        b.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
+                editingCol.setType( sce.getFieldType( editingCol.getFactType(),
+                                                      editingCol.getFactField() ) );
+                doBindFieldToWorkItem();
+                doFieldLabel();
+                pop.hide();
+            }
+        } );
+        pop.show();
+
+    }
+
+    private boolean unique(String header) {
+        for ( ActionCol52 o : model.getActionCols() ) {
+            if ( o.getHeader().equals( header ) ) return false;
+        }
+        return true;
+    }
+
+    protected void showChangePattern(ClickEvent w) {
+
+        final ListBox pats = this.loadPatterns();
+        if ( pats.getItemCount() == 0 ) {
+            showNewPatternDialog();
+            return;
+        }
+        final FormStylePopup pop = new FormStylePopup();
+        Button ok = new Button( "OK" );
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.add( pats );
+        hp.add( ok );
+
+        pop.addAttribute( constants.ChooseExistingPatternToAddColumnTo(),
+                          hp );
+        pop.addAttribute( "",
+                          new HTML( constants.ORwithEmphasis() ) );
+
+        Button createPattern = new Button( constants.CreateNewFactPattern() );
+        createPattern.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                pop.hide();
+                showNewPatternDialog();
+            }
+        } );
+        pop.addAttribute( "",
+                          createPattern );
+
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                String[] val = pats.getValue( pats.getSelectedIndex() ).split( "\\s" );
+                editingCol.setFactType( val[0] );
+                editingCol.setBoundName( val[1] );
+                editingCol.setFactField( null );
+                doBindFieldToWorkItem();
+                doPatternLabel();
+                doFieldLabel();
+                pop.hide();
+            }
+        } );
+
+        pop.show();
+    }
+
+    protected void showNewPatternDialog() {
+        final FormStylePopup pop = new FormStylePopup();
+        pop.setTitle( constants.NewFactSelectTheType() );
+        final ListBox types = new ListBox();
+        for ( int i = 0; i < sce.getFactTypes().length; i++ ) {
+            types.addItem( sce.getFactTypes()[i] );
+        }
+        pop.addAttribute( constants.FactType(),
+                          types );
+        final TextBox binding = new TextBox();
+        pop.addAttribute( constants.Binding(),
+                          binding );
+
+        Button ok = new Button( constants.OK() );
+        ok.addClickHandler( new ClickHandler() {
+            public void onClick(ClickEvent w) {
+                editingCol.setBoundName( binding.getText() );
+                editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
+                editingCol.setFactField( null );
+                doBindFieldToWorkItem();
+                doPatternLabel();
+                doFieldLabel();
+                pop.hide();
+            }
+        } );
+        pop.addAttribute( "",
+                          ok );
+
+        pop.show();
+    }
+
+    private Widget doInsertLogical() {
         HorizontalPanel hp = new HorizontalPanel();
 
         final CheckBox cb = new CheckBox();
-        cb.setValue( editingCol.isUpdate() );
+        cb.setValue( editingCol.isInsertLogical() );
         cb.setText( "" );
         cb.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent arg0) {
                 if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
                     cb.setEnabled( false );
-                    editingCol.setUpdate( false );
+                    editingCol.setInsertLogical( false );
                 } else {
-                    editingCol.setUpdate( cb.getValue() );
+                    editingCol.setInsertLogical( cb.getValue() );
                 }
             }
         } );
@@ -321,124 +470,9 @@ public class ActionWorkItemSetColumnPopup extends FormStylePopup {
         if ( ppd.getClassName() == null ) {
             return false;
         }
-        Pattern52 p = model.getConditionPattern( editingCol.getBoundName() );
-        String fieldClassName = sce.getFieldClassName( p.getFactType(),
+        String fieldClassName = sce.getFieldClassName( editingCol.getFactType(),
                                                        editingCol.getFactField() );
         return fieldClassName.equals( ppd.getClassName() );
-    }
-
-    private String getFactType() {
-        if ( sce.isGlobalVariable( editingCol.getBoundName() ) ) {
-            return sce.getGlobalVariable( editingCol.getBoundName() );
-        }
-        return getFactType( this.editingCol.getBoundName() );
-    }
-
-    private String getFactType(String boundName) {
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( p.getBoundName().equals( boundName ) ) {
-                return p.getFactType();
-            }
-        }
-        return "";
-    }
-
-    private TextBox getFieldLabel() {
-        final TextBox box = new TextBox();
-        box.addChangeHandler( new ChangeHandler() {
-            public void onChange(ChangeEvent event) {
-                editingCol.setFactField( box.getText() );
-            }
-        } );
-        return box;
-    }
-
-    private ListBox loadBoundFacts() {
-        Set<String> facts = new HashSet<String>();
-        for ( Pattern52 p : model.getConditionPatterns() ) {
-            if ( !p.isNegated() ) {
-                facts.add( p.getBoundName() );
-            }
-        }
-
-        ListBox box = new ListBox();
-        for ( Iterator<String> iterator = facts.iterator(); iterator.hasNext(); ) {
-            String b = (String) iterator.next();
-            box.addItem( b );
-        }
-
-        String[] globs = this.sce.getGlobalVariables();
-        for ( int i = 0; i < globs.length; i++ ) {
-            box.addItem( globs[i] );
-        }
-
-        return box;
-    }
-
-    private boolean nil(String s) {
-        return s == null || s.equals( "" );
-    }
-
-    private void showChangeFact(ClickEvent w) {
-        final FormStylePopup pop = new FormStylePopup();
-
-        final ListBox pats = this.loadBoundFacts();
-        pop.addAttribute( constants.ChooseFact(),
-                          pats );
-        Button ok = new Button( constants.OK() );
-        pop.addAttribute( "",
-                          ok );
-
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                String val = pats.getValue( pats.getSelectedIndex() );
-                editingCol.setBoundName( val );
-                editingCol.setFactField( null );
-                doBindFieldToWorkItem();
-                doBindingLabel();
-                doFieldLabel();
-                pop.hide();
-            }
-        } );
-
-        pop.show();
-
-    }
-
-    private void showFieldChange() {
-        final FormStylePopup pop = new FormStylePopup();
-        pop.setModal( false );
-
-        final String factType = getFactType();
-        String[] fields = this.sce.getFieldCompletions( factType );
-        final ListBox box = new ListBox();
-        for ( int i = 0; i < fields.length; i++ ) {
-            box.addItem( fields[i] );
-        }
-        pop.addAttribute( constants.Field(),
-                          box );
-        Button b = new Button( constants.OK() );
-        pop.addAttribute( "",
-                          b );
-        b.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent w) {
-                editingCol.setFactField( box.getItemText( box.getSelectedIndex() ) );
-                editingCol.setType( sce.getFieldType( factType,
-                                                      editingCol.getFactField() ) );
-                doBindFieldToWorkItem();
-                doFieldLabel();
-                pop.hide();
-            }
-        } );
-        pop.show();
-
-    }
-
-    private boolean unique(String header) {
-        for ( ActionCol52 o : model.getActionCols() ) {
-            if ( o.getHeader().equals( header ) ) return false;
-        }
-        return true;
     }
 
 }

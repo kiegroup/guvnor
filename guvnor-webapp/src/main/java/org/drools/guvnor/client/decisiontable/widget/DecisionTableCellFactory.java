@@ -31,6 +31,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
@@ -138,6 +139,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveCellFromAction( (ActionSetFieldCol52) column );
+
+        } else if ( column instanceof ActionWorkItemInsertFactCol52 ) {
+            cell = makeBooleanCell();
 
         } else if ( column instanceof ActionInsertFactCol52 ) {
             cell = derieveCellFromAction( (ActionInsertFactCol52) column );
