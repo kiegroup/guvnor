@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -33,7 +34,6 @@ import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
-import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 /**
  * A Factory to create CellValues applicable to given columns.
@@ -146,11 +146,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                     }
                 }
                 break;
-            case WORKITEM :
-                cell = makeNewWorkItemCellValue( iRow,
-                                                 iCol,
-                                                 dcv );
-                break;
             default :
                 cell = makeNewStringCellValue( iRow,
                                                iCol,
@@ -228,6 +223,11 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             return DTDataTypes52.BOOLEAN;
         }
 
+        //Actions setting Field Values from Work Item Result Parameters are always boolean
+        if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;
@@ -256,14 +256,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return new CellValue<Analysis>( analysis,
                                         iRow,
                                         iCol );
-    }
-
-    protected CellValue<PortableWorkDefinition> makeNewWorkItemCellValue(int iRow,
-                                                                         int iCol,
-                                                                         DTCellValue52 dcv) {
-        return new CellValue<PortableWorkDefinition>( null,
-                                                      iRow,
-                                                      iCol );
     }
 
 }

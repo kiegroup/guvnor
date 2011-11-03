@@ -47,6 +47,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -113,7 +114,9 @@ public class GuidedDecisionTableWidget extends Composite
         UPDATE_FACT_FIELD,
         INSERT_FACT_FIELD,
         RETRACT_FACT,
-        WORKITEM
+        WORKITEM,
+        WORKITEM_UPDATE_FACT_FIELD,
+        WORKITEM_INSERET_FACT_FIELD
     }
 
     public GuidedDecisionTableWidget(RuleAsset asset,
@@ -235,7 +238,22 @@ public class GuidedDecisionTableWidget extends Composite
                                 constants.EditThisActionColumnConfiguration(),
                                 new ClickHandler() {
                                     public void onClick(ClickEvent w) {
-                                        if ( c instanceof ActionSetFieldCol52 ) {
+                                        if ( c instanceof ActionWorkItemSetFieldCol52 ) {
+                                            final ActionWorkItemSetFieldCol52 awisf = (ActionWorkItemSetFieldCol52) c;
+                                            ActionWorkItemSetColumnPopup ed = new ActionWorkItemSetColumnPopup( getSCE(),
+                                                                                                                    guidedDecisionTable,
+                                                                                                                       new GenericColumnCommand() {
+                                                                                                                           public void execute(DTColumnConfig52 column) {
+                                                                                                                               dtable.updateColumn( awisf,
+                                                                                                                                                    (ActionWorkItemSetFieldCol52) column );
+                                                                                                                               refreshActionsWidget();
+                                                                                                                           }
+                                                                                                                       },
+                                                                                                                       awisf,
+                                                                                                                       false );
+                                            ed.show();
+
+                                        } else if ( c instanceof ActionSetFieldCol52 ) {
                                             final ActionSetFieldCol52 asf = (ActionSetFieldCol52) c;
                                             ActionSetColumnPopup ed = new ActionSetColumnPopup( getSCE(),
                                                                                                 guidedDecisionTable,
@@ -320,6 +338,8 @@ public class GuidedDecisionTableWidget extends Composite
                                 ActionTypes.RETRACT_FACT.name() );
                 choice.addItem( constants.WorkItemAction(),
                                 ActionTypes.WORKITEM.name() );
+                choice.addItem( constants.WorkItemActionSetField(),
+                                ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
                 Button ok = new Button( "OK" );
                 ok.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
@@ -332,14 +352,15 @@ public class GuidedDecisionTableWidget extends Composite
                             showRetract();
                         } else if ( s.equals( ActionTypes.WORKITEM.name() ) ) {
                             showWorkItemAction();
+                        } else if ( s.equals( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() ) ) {
+                            showWorkItemActionSet();
                         }
                         pop.hide();
                     }
 
                     private void showInsert() {
                         final ActionInsertFactCol52 afc = makeNewActionInsertColumn();
-                        ActionInsertColumnPopup ins = new ActionInsertColumnPopup(
-                                                                                   getSCE(),
+                        ActionInsertColumnPopup ins = new ActionInsertColumnPopup( getSCE(),
                                                                                    guidedDecisionTable,
                                                                                    new GenericColumnCommand() {
                                                                                        public void execute(DTColumnConfig52 column) {
@@ -394,6 +415,20 @@ public class GuidedDecisionTableWidget extends Composite
                         popup.show();
                     }
 
+                    private void showWorkItemActionSet() {
+                        final ActionWorkItemSetFieldCol52 awisf = makeNewActionWorkItemSetField();
+                        ActionWorkItemSetColumnPopup popup = new ActionWorkItemSetColumnPopup( getSCE(),
+                                                                                               guidedDecisionTable,
+                                                                                               new GenericColumnCommand() {
+                                                                                                   public void execute(DTColumnConfig52 column) {
+                                                                                                       newActionAdded( (ActionCol52) column );
+                                                                                                   }
+                                                                                               },
+                                                                                               awisf,
+                                                                                               true );
+                        popup.show();
+                    }
+
                     private void newActionAdded(ActionCol52 column) {
                         guidedDecisionTable.getActionCols().add( column );
                         dtable.addColumn( column );
@@ -439,6 +474,11 @@ public class GuidedDecisionTableWidget extends Composite
             private ActionWorkItemCol52 makeNewActionWorkItem() {
                 //WorkItems are defined within the column and always boolean (i.e. Limited Entry) in the table
                 return new ActionWorkItemCol52();
+            }
+
+            private ActionWorkItemSetFieldCol52 makeNewActionWorkItemSetField() {
+                ///Actions setting Field Values from Work Item Result Parameters are always boolean (i.e. Limited Entry) in the table
+                return new ActionWorkItemSetFieldCol52();
             }
 
         } );

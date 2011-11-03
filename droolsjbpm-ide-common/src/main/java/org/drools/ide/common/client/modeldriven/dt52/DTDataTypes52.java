@@ -26,7 +26,6 @@ public enum DTDataTypes52
     STRING,
     NUMERIC,
     DATE,
-    BOOLEAN,
-    WORKITEM
+    BOOLEAN
 
 }

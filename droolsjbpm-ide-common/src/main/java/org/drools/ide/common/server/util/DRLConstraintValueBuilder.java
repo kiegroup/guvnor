@@ -15,7 +15,10 @@
  */
 package org.drools.ide.common.server.util;
 
+import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 
 /**
@@ -59,15 +62,15 @@ public class DRLConstraintValueBuilder {
         if ( fieldType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            buf.append("\"");
+            buf.append( "\"" );
             buf.append( fieldValue );
-            buf.append("\"");
+            buf.append( "\"" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
             buf.append( fieldValue );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            buf.append("\"");
+            buf.append( "\"" );
             buf.append( fieldValue );
-            buf.append("\"");
+            buf.append( "\"" );
         } else if ( fieldType.equals( SuggestionCompletionEngine.TYPE_COMPARABLE ) ) {
             buf.append( fieldValue );
         } else {
@@ -81,8 +84,8 @@ public class DRLConstraintValueBuilder {
     }
 
     /**
-     * Concatenate a String to the provided buffer suitable for the fieldValue
-     * and fieldType. Strings are escaped with double-quotes, Dates are wrapped
+     * Concatenate a String to the provided buffer suitable for the fieldType
+     * and fieldValue. Strings are escaped with double-quotes, Dates are wrapped
      * with a call to a pre-constructed SimpleDateFormatter, whilst Numerics,
      * Booleans, (Java 1.5+) enums and all other fieldTypes are not escaped at
      * all. Guvnor-type enums are really a pick list of Strings and in these

@@ -19,8 +19,10 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.ide.common.client.modeldriven.FieldNature;
@@ -35,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
@@ -69,9 +72,13 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final BRLPersistence  INSTANCE = new BRDRLPersistence();
+    private static final String          WORKITEM_PREFIX         = "wi";
 
-    //Keep a record of all bindings for Actions that require knowledge of what bindings exist
+    private static final String          WORKITEM_HANDLER_PREFIX = "wih";
+
+    private static final BRLPersistence  INSTANCE                = new BRDRLPersistence();
+
+    //Keep a record of all variable bindings for Actions that depend on them
     private Map<String, IFactPattern>    bindingsPatterns;
     private Map<String, FieldConstraint> bindingsFields;
 
@@ -785,6 +792,9 @@ public class BRDRLPersistence
         private Map<String, IFactPattern>    bindingsPatterns;
         private Map<String, FieldConstraint> bindingsFields;
 
+        //Keep a record of Work Items that are instantiated for Actions that depend on them
+        private Set<String>                  instantiatedWorkItems;
+
         public RHSActionVisitor(boolean isDSLEnhanced,
                                 Map<String, IFactPattern> bindingsPatterns,
                                 Map<String, FieldConstraint> bindingsFields,
@@ -792,6 +802,7 @@ public class BRDRLPersistence
                                 String indentation) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
+            this.instantiatedWorkItems = new HashSet<String>();
             this.bindingsPatterns = bindingsPatterns;
             this.bindingsFields = bindingsFields;
             buf = b;
@@ -913,19 +924,17 @@ public class BRDRLPersistence
 
         public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
             String wiName = action.getWorkDefinition().getName();
-            String wiHandlerName = "wih" + wiName;
-            String wiImplName = "wi" + wiName;
+            String wiHandlerName = WORKITEM_HANDLER_PREFIX + wiName;
+            String wiImplName = WORKITEM_PREFIX + wiName;
+
+            instantiatedWorkItems.add( wiName );
+
             buf.append( indentation );
             buf.append( "org.drools.runtime.process.WorkItemHandler " );
             buf.append( wiHandlerName );
             buf.append( " = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"" );
             buf.append( wiName );
             buf.append( "\" );\n" );
-            buf.append( indentation );
-            buf.append( "if( " );
-            buf.append( wiHandlerName );
-            buf.append( " != null ) {\n" );
-            buf.append( indentation );
             buf.append( indentation );
             buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
@@ -934,6 +943,10 @@ public class BRDRLPersistence
                 makeWorkItemParameterDRL( ppd,
                                           wiImplName );
             }
+            buf.append( indentation );
+            buf.append( "if( " );
+            buf.append( wiHandlerName );
+            buf.append( " != null ) {\n" );
             buf.append( indentation );
             buf.append( indentation );
             buf.append( wiHandlerName );
@@ -957,7 +970,6 @@ public class BRDRLPersistence
                 }
             }
             if ( makeParameter ) {
-                buf.append( indentation );
                 buf.append( indentation );
                 buf.append( wiImplName );
                 buf.append( ".getParameters().put( \"" );
@@ -997,29 +1009,55 @@ public class BRDRLPersistence
                 }
                 buf.append( variableName );
 
-                ActionFieldValue value = fieldValues[i];
-                if ( value instanceof ActionFieldFunction ) {
+                ActionFieldValue fieldValue = fieldValues[i];
+                if ( fieldValue instanceof ActionFieldFunction ) {
                     buf.append( "." );
-                    buf.append( value.field );
+                    buf.append( fieldValue.field );
                 } else {
                     buf.append( ".set" );
                     buf.append( Character.toUpperCase( fieldValues[i].field.charAt( 0 ) ) );
                     buf.append( fieldValues[i].field.substring( 1 ) );
                 }
                 buf.append( "( " );
-                if ( fieldValues[i].isFormula() ) {
-                    buf.append( fieldValues[i].value.substring( 1 ) );
-                } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                                  fieldValues[i].type,
-                                                                  "@{" + fieldValues[i].value + "}" );
-                } else {
-                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                                  fieldValues[i].type,
-                                                                  fieldValues[i].value );
-                }
+                generateSetMethodCallParameterValue( buf,
+                                                     fieldValue );
                 buf.append( " );\n" );
             }
+        }
+
+        private void generateSetMethodCallParameterValue(StringBuilder buf,
+                                                         ActionFieldValue fieldValue) {
+            if ( fieldValue.isFormula() ) {
+                buf.append( fieldValue.value.substring( 1 ) );
+                return;
+            }
+
+            if ( fieldValue.nature == FieldNature.TYPE_TEMPLATE ) {
+                DRLConstraintValueBuilder.buildRHSFieldValue( buf,
+                                                              fieldValue.type,
+                                                              "@{" + fieldValue.value + "}" );
+                return;
+            }
+
+            if ( fieldValue instanceof ActionWorkItemFieldValue ) {
+                ActionWorkItemFieldValue afv = (ActionWorkItemFieldValue) fieldValue;
+                if ( instantiatedWorkItems.contains( afv.getWorkItemName() ) ) {
+                    buf.append( "(" );
+                    buf.append( afv.getWorkItemParameterClassName() );
+                    buf.append( ") " );
+                    buf.append( WORKITEM_PREFIX );
+                    buf.append( afv.getWorkItemName() );
+                    buf.append( ".getResult( \"" );
+                    buf.append( afv.getWorkItemParameterName() );
+                    buf.append( "\" ) " );
+                } else {
+                    buf.append( "null" );
+                }
+                return;
+            }
+            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
+                                                          fieldValue.type,
+                                                          fieldValue.value );
         }
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,

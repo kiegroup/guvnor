@@ -2565,4 +2565,8 @@ public interface Constants
     
     String BindActionFieldToWorkItem();
     
+    String WorkItemActionSetField();
+
+    String ColumnConfigurationWorkItemSetColumn();
+    
 }

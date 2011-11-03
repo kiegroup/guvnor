@@ -16,12 +16,12 @@
 package org.drools.ide.common.client.modeldriven.dt52;
 
 /**
- * Limited Entry columns need to store their value 
+ * Limited Entry columns need to store their value
  */
 public interface LimitedEntryCol {
 
     public DTCellValue52 getValue();
 
     public void setValue(DTCellValue52 value);
-    
+
 }

@@ -330,34 +330,37 @@ public class PackageBuilderWidget extends Composite {
      */
     public static void showSource(final String content,
                                   String name) {
-        Constants constants = GWT.create(Constants.class);
-        final FormStylePopup pop = new FormStylePopup(images.viewSource(),
-                constants.ViewingSourceFor0(name),
-                new Integer(600));
+        Constants constants = GWT.create( Constants.class );
+        int windowWidth = Window.getClientWidth() / 2;
+        int windowHeight = Window.getClientHeight() / 2;
+        final FormStylePopup pop = new FormStylePopup( images.viewSource(),
+                                                       constants.ViewingSourceFor0( name ),
+                                                       windowWidth );
 
-        String[] rows = content.split("\n");
+        String[] rows = content.split( "\n" );
 
         FlexTable table = new FlexTable();
-        for (int i = 0; i < rows.length; i++) {
+        for ( int i = 0; i < rows.length; i++ ) {
 
-            table.setHTML(i,
-                    0,
-                    "<span style='color:grey;'>"
-                            + (i + 1)
-                            + ".</span>");
-            table.setHTML(i,
-                    1,
-                    "<span style='color:green;' >|</span>");
-            table.setHTML(i,
-                    2,
-                    addSyntaxHilights(rows[i]));
+            table.setHTML( i,
+                           0,
+                           "<span style='color:grey;'>"
+                                   + (i + 1)
+                                   + ".</span>" );
+            table.setHTML( i,
+                           1,
+                           "<span style='color:green;' >|</span>" );
+            table.setHTML( i,
+                           2,
+                           addSyntaxHilights( rows[i] ) );
         }
 
-        ScrollPanel scrollPanel = new ScrollPanel(table);
+        ScrollPanel scrollPanel = new ScrollPanel( table );
 
-        scrollPanel.setHeight("400px");
+        scrollPanel.setHeight( windowHeight + "px" );
+        scrollPanel.setWidth( windowWidth + "px" );
 
-        pop.addRow(scrollPanel);
+        pop.addRow( scrollPanel );
 
         LoadingPopup.close();
 

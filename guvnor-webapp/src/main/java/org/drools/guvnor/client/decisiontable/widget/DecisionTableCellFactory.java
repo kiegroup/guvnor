@@ -30,8 +30,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
-import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldFromWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
@@ -133,8 +133,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         } else if ( column instanceof ConditionCol52 ) {
             cell = derieveCellFromCondition( (ConditionCol52) column );
 
-        } else if ( column instanceof ActionSetFieldFromWorkItemCol52 ) {
-            cell = makeWorkItemActionCell( (ActionSetFieldFromWorkItemCol52) column );
+        } else if ( column instanceof ActionWorkItemSetFieldCol52 ) {
+            cell = makeBooleanCell();
 
         } else if ( column instanceof ActionSetFieldCol52 ) {
             cell = derieveCellFromAction( (ActionSetFieldCol52) column );
@@ -245,13 +245,9 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
         return new DecoratedGridCellValueAdaptor<BigDecimal>( new RowNumberCell() );
     }
 
+    // Make a new Cell for Rule Analysis columns
     private DecoratedGridCellValueAdaptor<Analysis> makeRowAnalysisCell() {
         return new DecoratedGridCellValueAdaptor<Analysis>( new AnalysisCell() );
-    }
-
-    //TODO Custom cell
-    private DecoratedGridCellValueAdaptor<String> makeWorkItemActionCell(ActionSetFieldFromWorkItemCol52 column) {
-        return makeTextCell();
     }
 
 }

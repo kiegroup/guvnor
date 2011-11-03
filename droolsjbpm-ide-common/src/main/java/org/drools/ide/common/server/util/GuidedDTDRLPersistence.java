@@ -29,6 +29,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.FieldConstraint;
@@ -45,6 +46,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -164,6 +166,36 @@ public class GuidedDTDRLPersistence {
                                                                  cell,
                                                                  ac.getType() );
                     ins.addFieldValue( val );
+
+                } else if ( c instanceof ActionWorkItemSetFieldCol52 ) {
+                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+                        ActionWorkItemSetFieldCol52 sf = (ActionWorkItemSetFieldCol52) c;
+                        LabelledAction a = findByLabelledAction( actions,
+                                                                 sf.getBoundName() );
+                        if ( a == null ) {
+                            a = new LabelledAction();
+                            a.boundName = sf.getBoundName();
+                            if ( !sf.isUpdate() ) {
+                                a.action = new ActionSetField( sf.getBoundName() );
+                            } else {
+                                a.action = new ActionUpdateField( sf.getBoundName() );
+                            }
+                            actions.add( a );
+                        } else if ( sf.isUpdate() && !(a.action instanceof ActionUpdateField) ) {
+                            // lets swap it out for an update as the user has asked for it.
+                            ActionSetField old = (ActionSetField) a.action;
+                            ActionUpdateField update = new ActionUpdateField( sf.getBoundName() );
+                            update.fieldValues = old.fieldValues;
+                            a.action = update;
+                        }
+                        ActionSetField asf = (ActionSetField) a.action;
+                        ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( sf.getFactField(),
+                                                                                     sf.getType(),
+                                                                                     sf.getWorkItemName(),
+                                                                                     sf.getWorkItemResultParameterName(),
+                                                                                     sf.getParameterClassName() );
+                        asf.addFieldValue( val );
+                    }
 
                 } else if ( c instanceof ActionSetFieldCol52 ) {
                     ActionSetFieldCol52 sf = (ActionSetFieldCol52) c;

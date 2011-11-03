@@ -90,7 +90,7 @@ public class GuidedDecisionTable52
 
     public GuidedDecisionTable52() {
         analysisCol = new AnalysisCol52();
-        analysisCol.setHideColumn(true);
+        analysisCol.setHideColumn( true );
     }
 
     public List<ActionCol52> getActionCols() {
@@ -116,7 +116,7 @@ public class GuidedDecisionTable52
 
     public Pattern52 getPattern(ConditionCol52 col) {
         for ( Pattern52 p : conditionPatterns ) {
-            if ( p.getConditions().contains(col) ) {
+            if ( p.getConditions().contains( col ) ) {
                 return p;
             }
         }
@@ -183,9 +183,9 @@ public class GuidedDecisionTable52
     }
 
     public void initAnalysisColumn() {
-        analysisData = new ArrayList<Analysis>(data.size());
-        for (List<DTCellValue52> row : data) {
-            analysisData.add(new Analysis());
+        analysisData = new ArrayList<Analysis>( data.size() );
+        for ( List<DTCellValue52> row : data ) {
+            analysisData.add( new Analysis() );
         }
     }
 
@@ -297,7 +297,7 @@ public class GuidedDecisionTable52
 
     private String getType(ActionSetFieldCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = sce.getFieldType( getBoundFactType(col.getBoundName()),
+        String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                         col.getFactField() );
         type = (assertDataType( col,
                                 sce,
@@ -350,10 +350,7 @@ public class GuidedDecisionTable52
         } else if ( column instanceof ConditionCol52 ) {
             dataType = derieveDataType( column,
                                         sce );
-            
-        } else if ( column instanceof ActionSetFieldFromWorkItemCol52 ) {
-            dataType = DTDataTypes52.WORKITEM;
-            
+
         } else if ( column instanceof ActionSetFieldCol52 ) {
             dataType = derieveDataType( column,
                                         sce );
@@ -364,7 +361,7 @@ public class GuidedDecisionTable52
 
         } else if ( column instanceof ActionRetractFactCol52 ) {
             dataType = DTDataTypes52.STRING;
-            
+
         } else if ( column instanceof AnalysisCol52 ) {
             dataType = DTDataTypes52.STRING;
         }
@@ -545,7 +542,7 @@ public class GuidedDecisionTable52
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
-            String[] r = sce.getEnumValues( getBoundFactType(col.getBoundName()),
+            String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
         }
@@ -677,7 +674,7 @@ public class GuidedDecisionTable52
     private boolean assertDataType(ActionSetFieldCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-        String ft = sce.getFieldType( getBoundFactType(col.getBoundName()),
+        String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;

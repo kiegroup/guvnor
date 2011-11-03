@@ -42,6 +42,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
@@ -637,6 +638,71 @@ public abstract class AbstractDecisionTableWidget extends Composite
             widget.getGridWidget().redrawColumns( column.getColumnIndex(),
                                                   maxColumnIndex );
         }
+
+        // Schedule redraw event after column has been redrawn
+        if ( bRedrawHeader ) {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                public void execute() {
+                    widget.getHeaderWidget().redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update an ActionWorkItemSetFieldCol52 column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final ActionWorkItemSetFieldCol52 origColumn,
+                             final ActionWorkItemSetFieldCol52 editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bRedrawHeader = false;
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Change in column's binding forces an update and redraw if FactField
+        // is different; otherwise only need to update and redraw if the
+        // FieldType has changed
+        if ( !isEqualOrNull( origColumn.getBoundName(),
+                             editColumn.getBoundName() ) ) {
+            if ( !isEqualOrNull( origColumn.getFactField(),
+                                 editColumn.getFactField() ) ) {
+                bRedrawHeader = true;
+            }
+
+        } else if ( !isEqualOrNull( origColumn.getFactField(),
+                                    editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
 
         // Schedule redraw event after column has been redrawn
         if ( bRedrawHeader ) {
@@ -1276,6 +1342,20 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionWorkItemSetFieldCol52 col,
+                                     final ActionWorkItemSetFieldCol52 editingCol) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setType( editingCol.getType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setHeader( editingCol.getHeader() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setUpdate( editingCol.isUpdate() );
+        col.setWorkItemName( editingCol.getWorkItemName() );
+        col.setWorkItemResultParameterName( editingCol.getWorkItemResultParameterName() );
+        col.setParameterClassName( editingCol.getParameterClassName() );
+    }
+
+    // Copy values from one (transient) model column into another
     private void populateModelColumn(final ConditionCol52 col,
                                      final ConditionCol52 editingCol) {
         col.setConstraintValueType( editingCol.getConstraintValueType() );
@@ -1436,6 +1516,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         showAnalysis( analysisData );
     }
 
+    @SuppressWarnings("unchecked")
     private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
