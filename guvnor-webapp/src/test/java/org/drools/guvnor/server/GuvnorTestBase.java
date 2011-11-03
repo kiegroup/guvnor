@@ -61,12 +61,15 @@ public abstract class GuvnorTestBase {
                 .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
                 // Workaround for https://issues.jboss.org/browse/ARQ-585
                 .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"))
-                .addAsLibraries(
-                        DependencyResolvers.use(MavenDependencyResolver.class)
-                                .includeDependenciesFromPom("pom.xml")
-                                .resolveAsFiles(new ScopeFilter("test")));
+//                .addAsLibraries(
+//                        DependencyResolvers.use(MavenDependencyResolver.class)
+//                                .includeDependenciesFromPom("pom.xml")
+//                                // exclusions don't work after includeDependenciesFromPom
+//                                // .exclusions("org.jboss.arquillian:*", "org.jboss.shrinkwrap:*")
+//                                .resolveAsFiles(new ScopeFilter("test"))
+                ;
         removeExcludedFiles(webArchive, explodedWarFile);
-        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+//        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
 
