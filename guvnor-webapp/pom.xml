@@ -292,7 +292,7 @@
       <artifactId>ejb-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>javassist</groupId>
+      <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>runtime</scope>
     </dependency>
