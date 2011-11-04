@@ -45,15 +45,15 @@ public class GuidedDecisionTableOptions extends Composite {
 
     private TableFormat                             tableFormat   = TableFormat.EXTENDED_ENTRY;
 
-    GuidedDecisionTableOptions() {
+    public GuidedDecisionTableOptions() {
         initWidget( uiBinder.createAndBindUi( this ) );
     }
 
-    boolean isUsingWizard() {
+    public boolean isUsingWizard() {
         return this.isUsingWizard;
     }
 
-    TableFormat getTableFormat() {
+    public TableFormat getTableFormat() {
         return this.tableFormat;
     }
 

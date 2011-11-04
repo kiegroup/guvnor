@@ -17,10 +17,11 @@
 package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
+import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView.Presenter;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenuView.Presenter;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;

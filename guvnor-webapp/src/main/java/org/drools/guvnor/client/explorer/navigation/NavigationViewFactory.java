@@ -20,6 +20,8 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
+import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
+import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuView;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
@@ -29,8 +31,6 @@ import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemVi
 import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
-import org.drools.guvnor.client.explorer.navigation.modules.PackagesNewAssetMenuView;
-import org.drools.guvnor.client.explorer.navigation.modules.SOAServicesNewAssetMenuView;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
 import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;

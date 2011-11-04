@@ -19,11 +19,8 @@ package org.drools.guvnor.client.explorer;
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityViewImpl;
-import org.drools.guvnor.client.moduleeditor.drools.PackageEditor;
-import org.drools.guvnor.client.moduleeditor.soa.SOAServiceEditor;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl;
@@ -31,7 +28,6 @@ import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
-import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -43,7 +39,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.Command;
 
 public class ClientFactoryImpl
         implements
@@ -156,38 +151,6 @@ public class ClientFactoryImpl
 
     public SecurityServiceAsync getSecurityService() {
         return RepositoryServiceFactory.getSecurityService();
-    }
-
-    //TODO: return ModuleEditor from configuration
-    public AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData,
-                                                ClientFactory clientFactory,
-                                                EventBus eventBus,
-                                                boolean historicalReadOnly,
-                                                Command refreshCommand) {
-        if ( packageConfigData.getFormat().equals( "package" ) ) {
-            return new PackageEditor(
-                                      packageConfigData,
-                                      clientFactory,
-                                      eventBus,
-                                      historicalReadOnly,
-                                      refreshCommand );
-        } else if ( packageConfigData.format.equals( "soaservice" ) ) {
-            return new SOAServiceEditor(
-                                         packageConfigData,
-                                         clientFactory,
-                                         eventBus,
-                                         historicalReadOnly,
-                                         refreshCommand );
-        } else {
-            //default:
-            return new PackageEditor(
-                                      packageConfigData,
-                                      clientFactory,
-                                      eventBus,
-                                      historicalReadOnly,
-                                      refreshCommand );
-        }
-
     }
 
     public WizardFactory getWizardFactory() {

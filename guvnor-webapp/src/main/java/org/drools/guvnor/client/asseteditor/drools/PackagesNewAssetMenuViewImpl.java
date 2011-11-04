@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer.navigation.modules;
+package org.drools.guvnor.client.asseteditor.drools;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
@@ -23,13 +23,13 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.Widget;
+
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.drools.NewPackageWizard;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.ruleeditor.NewAssetWizard;
 import org.drools.guvnor.client.util.Util;
 
 public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {

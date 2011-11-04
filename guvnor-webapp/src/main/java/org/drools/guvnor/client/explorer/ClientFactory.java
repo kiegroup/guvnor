@@ -68,9 +68,7 @@ public interface ClientFactory {
 
     SecurityServiceAsync getSecurityService();
 
-    ActivityMapper getActivityMapper();
-    
-    AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand);
+    ActivityMapper getActivityMapper();    
     
     WizardFactory getWizardFactory();
     

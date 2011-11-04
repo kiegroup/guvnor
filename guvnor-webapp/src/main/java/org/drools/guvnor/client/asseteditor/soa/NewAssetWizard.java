@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.asseteditor.soa;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.common.FormStyleLayout;
@@ -26,19 +26,12 @@ import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.explorer.AssetEditorPlace;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
-import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.NewAssetConfiguration;
-import org.drools.guvnor.client.rpc.NewGuidedDecisionTableAssetConfiguration;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
 import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
-import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
-import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
-import org.drools.guvnor.client.widgets.wizards.WizardPlace;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -70,7 +63,6 @@ public class NewAssetWizard extends FormStylePopup {
 
     private TextBox                          name                       = new TextBox();
     private TextArea                         description                = new TextArea();
-    private GuidedDecisionTableOptions       guidedDecisionTableOptions = new GuidedDecisionTableOptions();
     private String                           initialCategory;
 
     private ListBox                          formatChooser              = getFormatChooser();
@@ -223,29 +215,6 @@ public class NewAssetWizard extends FormStylePopup {
         if ( format == null ) {
             newAssetLayout.addAttribute( constants.TypeFormatOfRule(),
                                          this.formatChooser );
-
-            //Add additional widget (when creating a new rule) to allow for use of a Wizard
-            final int useWizardRowIndex = newAssetLayout.addAttribute( constants.NewAssetWizardGuidedDecisionTableOptions(),
-                                                                       guidedDecisionTableOptions );
-            newAssetLayout.setAttributeVisibility( useWizardRowIndex,
-                                                   false );
-
-            //If the type is Guided Decision table add a checkbox for a Wizard
-            this.formatChooser.addChangeHandler( new ChangeHandler() {
-
-                public void onChange(ChangeEvent event) {
-                    boolean isVisible = false;
-                    int selectedIndex = formatChooser.getSelectedIndex();
-                    if ( selectedIndex >= 0 ) {
-                        String value = formatChooser.getValue( selectedIndex );
-                        isVisible = AssetFormats.DECISION_TABLE_GUIDED.equals( value );
-                    }
-                    newAssetLayout.setAttributeVisibility( useWizardRowIndex,
-                                                           isVisible );
-                }
-
-            } );
-
         } else if ( "".equals( format ) ) { //NON-NLS
             final TextBox fmt = new TextBox();
             newAssetLayout.addAttribute( constants.FileExtensionTypeFormat(),
@@ -352,119 +321,14 @@ public class NewAssetWizard extends FormStylePopup {
         }
 
         Command cmd = null;
-        //The Guided Decision Table asset type requires additional parameters to be set
-        if ( assetFormat.equals( AssetFormats.DECISION_TABLE_GUIDED ) ) {
 
-            //If using a Wizard we don't attempt to create and save the asset until the Wizard is completed. Using commands make this simpler
-            if ( guidedDecisionTableOptions.isUsingWizard() ) {
-                cmd = makeGuidedDecisionTableWizardSaveCommand( assetName,
-                                                                packageName,
-                                                                packageSelector.getSelectedPackageUUID(),
-                                                                guidedDecisionTableOptions.getTableFormat(),
-                                                                description.getText(),
-                                                                initialCategory,
-                                                                assetFormat );
-            } else {
-                cmd = makeGuidedDecisionTableSaveCommand( assetName,
-                                                          packageName,
-                                                          packageSelector.getSelectedPackageUUID(),
-                                                          guidedDecisionTableOptions.getTableFormat(),
-                                                          description.getText(),
-                                                          initialCategory,
-                                                          assetFormat );
-            }
+		// All other asset types
+		cmd = makeGeneralAssetSaveCommand(assetName, packageName,
+				packageSelector.getSelectedPackageUUID(),
+				description.getText(), initialCategory, assetFormat);
 
-        } else {
+		cmd.execute();
 
-            //All other asset types
-            cmd = makeGeneralAssetSaveCommand( assetName,
-                                               packageName,
-                                               packageSelector.getSelectedPackageUUID(),
-                                               description.getText(),
-                                               initialCategory,
-                                               assetFormat );
-        }
-        cmd.execute();
-
-    }
-
-    //Construct a chain of commands to handle saving the new asset with a Wizard
-    private Command makeGuidedDecisionTableWizardSaveCommand(final String assetName,
-                                                             final String packageName,
-                                                             final String packageUUID,
-                                                             final TableFormat tableFormat,
-                                                             final String description,
-                                                             final String initialCategory,
-                                                             final String format) {
-
-        //Command to invoke wizard, if asset does not already exist
-        final Command cmdInvokeWizard = new Command() {
-
-            public void execute() {
-                NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
-                                                                                                                packageName,
-                                                                                                                packageUUID,
-                                                                                                                tableFormat,
-                                                                                                                description,
-                                                                                                                initialCategory,
-                                                                                                                format );
-                NewAssetWizardContext context = new NewGuidedDecisionTableAssetWizardContext( config );
-                clientFactory.getPlaceController().goTo( new WizardPlace<NewAssetWizardContext>( context ) );
-            }
-        };
-
-        //Command to check if the asset already exists, before delegating to wizard command
-        final Command cmdCheckBeforeInvokingWizard = new Command() {
-
-            public void execute() {
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( assetName,
-                                                                               packageName,
-                                                                               createGenericCallBackForCheckingIfExists( cmdInvokeWizard ) );
-            }
-
-        };
-        return cmdCheckBeforeInvokingWizard;
-    }
-
-    //Construct a chain of commands to handle saving a Guided Decision Table
-    private Command makeGuidedDecisionTableSaveCommand(final String assetName,
-                                                       final String packageName,
-                                                       final String packageUUID,
-                                                       final TableFormat tableFormat,
-                                                       final String description,
-                                                       final String initialCategory,
-                                                       final String format) {
-
-        final NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( assetName,
-                                                                                                              packageName,
-                                                                                                              packageUUID,
-                                                                                                              tableFormat,
-                                                                                                              description,
-                                                                                                              initialCategory,
-                                                                                                              format );
-        //Command to save the asset
-        final Command cmdSave = new Command() {
-
-            public void execute() {
-                RepositoryServiceFactory.getService().createNewRule( config,
-                                                                     createGenericCallbackForOk() );
-            }
-        };
-        
-        //Command to check if the asset already exists, before delegating to save command
-        final Command cmdCheckBeforeSaving = new Command() {
-
-            public void execute() {
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getService().doesAssetExistInPackage( config.getAssetName(),
-                                                                               config.getPackageName(),
-                                                                               createGenericCallBackForCheckingIfExists( cmdSave ) );
-            }
-
-        };
-        return cmdCheckBeforeSaving;
-        
     }
 
     //Construct a chain of commands to handle saving assets other than a Guided Decision Table
@@ -540,7 +404,6 @@ public class NewAssetWizard extends FormStylePopup {
                     Window.alert( constants.AssetNameAlreadyExistsPickAnother() );
                 } else {
                     eventBus.fireEvent( new RefreshModuleEditorEvent( importedPackageSelector.getSelectedPackageUUID() ) );
-                    flushSuggestionCompletionCache();
                     openEditor( uuid );
                     hide();
                 }
@@ -562,26 +425,6 @@ public class NewAssetWizard extends FormStylePopup {
             }
         };
         return cb;
-    }
-
-    /**
-     * In some cases we will want to flush the package dependency stuff for
-     * suggestion completions. The user will still need to reload the asset
-     * editor though.
-     */
-    public void flushSuggestionCompletionCache() {
-        if ( AssetFormats.isPackageDependency( format ) ) {
-            LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( importedPackageSelector.getSelectedPackage(),
-                                                                    new Command() {
-                                                                        public void execute() {
-                                                                            //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
-                                                                            //SuggestionCompletionEngine has been changed, they need to refresh their UI to represent the changes.
-                                                                            eventBus.fireEvent( new RefreshSuggestionCompletionEngineEvent( importedPackageSelector.getSelectedPackage() ) );
-                                                                            LoadingPopup.close();
-                                                                        }
-                                                                    } );
-        }
     }
 
     private String getFormat() {
