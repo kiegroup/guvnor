@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.wizards;
+package org.drools.guvnor.client.widgets.drools.wizards;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.NewGuidedDecisionTableAssetWizardContext;
 import org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable.NewGuidedDecisionTableWizard;
+import org.drools.guvnor.client.widgets.wizards.Wizard;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
+import org.drools.guvnor.client.widgets.wizards.WizardContext;
+import org.drools.guvnor.client.widgets.wizards.WizardFactory;
+import org.drools.guvnor.client.widgets.wizards.WizardActivityView.Presenter;
 
 import com.google.gwt.event.shared.EventBus;
 
