@@ -13,20 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.decoratedgrid.data;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTests {
+public class DynamicDataTestsWithGroupingColumnDeletions extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
@@ -34,7 +35,7 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
 
         //Setup date to merge
         //[1][-][3]
-        //[1][2][*]
+        //[1][2][3]
         //[-][2][3]
         rows.get( 0 ).get( 0 ).setValue( "1" );
         rows.get( 0 ).get( 1 ).setValue( "-" );
@@ -42,7 +43,7 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
 
         rows.get( 1 ).get( 0 ).setValue( "1" );
         rows.get( 1 ).get( 1 ).setValue( "2" );
-        rows.get( 1 ).get( 2 ).addState( CellState.OTHERWISE );
+        rows.get( 1 ).get( 2 ).setValue( "3" );
 
         rows.get( 2 ).get( 0 ).setValue( "-" );
         rows.get( 2 ).get( 1 ).setValue( "2" );
@@ -51,10 +52,16 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
 
     @Test
     public void testIndexing_DataCoordinates() {
-        //[1][-][3] --> [0,0][0,1][0,2]
-        //[1][2][*] --> [1,0][1,1][1,2]
-        //[-][2][3] --> [2,0][2,1][2,2]
+        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [-][2][3] --> [1,0][1,1][1,2]
+        //[-][2][3] -->
+        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
+
         data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getCoordinate();
@@ -89,29 +96,61 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
         assertEquals( c.getCol(),
                       2 );
 
-        c = data.get( 2 ).get( 0 ).getCoordinate();
-        assertEquals( c.getRow(),
+        data.deleteColumn( 2 );
+        assertEquals( data.size(),
                       2 );
+        assertEquals( data.get( 0 ).size(),
+                      2 );
+        assertEquals( data.get( 1 ).size(),
+                      2 );
+
+        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
+        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
+        assertEquals( gdr.getChildRows().size(),
+                      2 );
+        assertEquals( gdr.getChildRows().get( 0 ).size(),
+                      2 );
+        assertEquals( gdr.getChildRows().get( 1 ).size(),
+                      2 );
+
+        //[1][-][3][-] --> [1][x] --> [0,0][0,1]
+        //[1][2][3][-] --> [-][2] --> [1,0][1,1]
+        c = data.get( 0 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
         assertEquals( c.getCol(),
                       0 );
-        c = data.get( 2 ).get( 1 ).getCoordinate();
+        c = data.get( 0 ).get( 1 ).getCoordinate();
         assertEquals( c.getRow(),
-                      2 );
+                      0 );
         assertEquals( c.getCol(),
                       1 );
-        c = data.get( 2 ).get( 2 ).getCoordinate();
+
+        c = data.get( 1 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
-                      2 );
+                      1 );
         assertEquals( c.getCol(),
-                      2 );
+                      0 );
+        c = data.get( 1 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      1 );
+
     }
 
     @Test
     public void testIndexing_HtmlCoordinates() {
-        //[1][-][3] --> [0,0][0,1][0,2]
-        //[1][2][*] --> [0,0][1,0][1,1]
-        //[-][2][3] --> [2,0][1,0][2,1]
+        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2]
+        //[-][2][3] -->
+        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
+
         data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
@@ -132,43 +171,75 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
-                      0 );
+                      1 );
         assertEquals( c.getCol(),
                       0 );
         c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      0 );
+                      1 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
+        data.deleteColumn( 2 );
+        assertEquals( data.size(),
+                      2 );
+        assertEquals( data.get( 0 ).size(),
+                      2 );
+        assertEquals( data.get( 1 ).size(),
+                      2 );
+
+        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
+        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
+        assertEquals( gdr.getChildRows().size(),
+                      2 );
+        assertEquals( gdr.getChildRows().get( 0 ).size(),
+                      2 );
+        assertEquals( gdr.getChildRows().get( 1 ).size(),
+                      2 );
+
+        //[1][-][3][-] --> [1][x] --> [0,0][0,1]
+        //[1][2][3][-] --> [-][2] --> [1,0][1,1]
+        c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 0 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      1 );
+
+        c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
                       1 );
 
-        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      1 );
-        assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
-        assertEquals( c.getRow(),
-                      2 );
-        assertEquals( c.getCol(),
-                      1 );
     }
 
     @Test
     public void testIndexing_PhysicalCoordinates() {
-        //[1][-][3] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
-        //[1][2][*] --> [0,0][1,0][1,1] --> [1,1][1,2][-,-]
-        //[-][2][3] --> [2,0][1,0][2,1] --> [2,0][2,2][-,-]
+        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1,0][1,1][-,-]
+        //[-][2][3] -->
+        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
+
         data.setMerged( true );
+        data.applyModelGrouping( cv );
+
+        assertEquals( data.size(),
+                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
@@ -191,62 +262,54 @@ public class DynamicDataTestsWithMergingWithOtherwise extends BaseDynamicDataTes
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
+                      1 );
+
+        data.deleteColumn( 2 );
+        assertEquals( data.size(),
+                      2 );
+        assertEquals( data.get( 0 ).size(),
+                      2 );
+        assertEquals( data.get( 1 ).size(),
                       2 );
 
-        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
+        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
+        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
+        assertEquals( gdr.getChildRows().size(),
                       2 );
+        assertEquals( gdr.getChildRows().get( 0 ).size(),
+                      2 );
+        assertEquals( gdr.getChildRows().get( 1 ).size(),
+                      2 );
+
+        //[1][-][3][-] --> [1][x] --> [0,0][0,1] --> [0,0][0,1]
+        //[1][2][3][-] --> [-][2] --> [1,0][1,1] --> [1,0][1,1]
+        c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
         assertEquals( c.getCol(),
                       0 );
-        c = data.get( 2 ).get( 1 ).getPhysicalCoordinate();
+        c = data.get( 0 ).get( 1 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
-                      2 );
+                      0 );
         assertEquals( c.getCol(),
-                      2 );
-    }
-
-    @Test
-    public void testIndexing_RowSpans() {
-        //[1][-][3] --> [2][1][1]
-        //[1][2][*] --> [0][2][1]
-        //[-][2][3] --> [1][0][1]
-        data.setMerged( true );
-
-        CellValue< ? extends Comparable< ? >> cv;
-        cv = data.get( 0 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
-                      2 );
-        cv = data.get( 0 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 0 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
                       1 );
 
-        cv = data.get( 1 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
+        c = data.get( 1 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
                       0 );
-        cv = data.get( 1 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      2 );
-        cv = data.get( 1 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
+        c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
                       1 );
 
-        cv = data.get( 2 ).get( 0 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
-        cv = data.get( 2 ).get( 1 );
-        assertEquals( cv.getRowSpan(),
-                      0 );
-        cv = data.get( 2 ).get( 2 );
-        assertEquals( cv.getRowSpan(),
-                      1 );
     }
 
 }

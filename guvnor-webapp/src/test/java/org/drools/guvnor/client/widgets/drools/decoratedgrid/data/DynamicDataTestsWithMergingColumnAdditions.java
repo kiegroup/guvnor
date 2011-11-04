@@ -13,21 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.decoratedgrid.data;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicDataTests {
+public class DynamicDataTestsWithMergingColumnAdditions extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
@@ -52,16 +49,10 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
 
     @Test
     public void testIndexing_DataCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][1,2]
-        //[-][2][3] -->
-        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
-
+        //[1][-][3] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [1,0][1,1][1,2]
+        //[-][2][3] --> [2,0][2,1][2,2]
         data.setMerged( true );
-        data.applyModelGrouping( cv );
-
-        assertEquals( data.size(),
-                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getCoordinate();
@@ -96,27 +87,37 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         assertEquals( c.getCol(),
                       2 );
 
+        c = data.get( 2 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 2 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList(),
                         true );
         assertEquals( data.size(),
-                      2 );
+                      3 );
         assertEquals( data.get( 0 ).size(),
                       4 );
         assertEquals( data.get( 1 ).size(),
                       4 );
-
-        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
-        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
-        assertEquals( gdr.getChildRows().size(),
-                      2 );
-        assertEquals( gdr.getChildRows().get( 0 ).size(),
-                      4 );
-        assertEquals( gdr.getChildRows().get( 1 ).size(),
+        assertEquals( data.get( 2 ).size(),
                       4 );
 
-        //[1][-][3][-] --> [1][x][3][-] --> [0,0][0,1][0,2][0,3]
-        //[1][2][3][-] --> [-][2][3][-] --> [1,0][1,1][1,2][1,3]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [1,0][1,1][1,2][1,3]
+        //[-][2][3][-] --> [2,0][2,1][2,2][2,3]
         c = data.get( 0 ).get( 0 ).getCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -159,20 +160,35 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         assertEquals( c.getCol(),
                       3 );
 
+        c = data.get( 2 ).get( 0 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      1 );
+        c = data.get( 2 ).get( 2 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 2 ).get( 3 ).getCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      3 );
+
     }
 
     @Test
     public void testIndexing_HtmlCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2]
-        //[-][2][3] -->
-        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
-
+        //[1][-][3] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [0,0][1,0][0,2]
+        //[-][2][3] --> [2,0][1,0][0,2]
         data.setMerged( true );
-        data.applyModelGrouping( cv );
-
-        assertEquals( data.size(),
-                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
@@ -193,41 +209,51 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
-                      1 );
+                      0 );
         assertEquals( c.getCol(),
                       0 );
         c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       0 );
         assertEquals( c.getCol(),
                       2 );
 
+        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList(),
                         true );
         assertEquals( data.size(),
-                      2 );
+                      3 );
         assertEquals( data.get( 0 ).size(),
                       4 );
         assertEquals( data.get( 1 ).size(),
                       4 );
-
-        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
-        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
-        assertEquals( gdr.getChildRows().size(),
-                      2 );
-        assertEquals( gdr.getChildRows().get( 0 ).size(),
-                      4 );
-        assertEquals( gdr.getChildRows().get( 1 ).size(),
+        assertEquals( data.get( 2 ).size(),
                       4 );
 
-        //[1][-][3][-] --> [1][x][3][-] --> [0,0][0,1][0,2][0,3]
-        //[1][2][3][-] --> [-][2][3][-] --> [1,0][1,1][0,2][0,3]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [0,0][1,0][0,2][0,3]
+        //[-][2][3][-] --> [2,0][1,0][0,2][0,3]
         c = data.get( 0 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -251,14 +277,14 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
 
         c = data.get( 1 ).get( 0 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
-                      1 );
+                      0 );
         assertEquals( c.getCol(),
                       0 );
         c = data.get( 1 ).get( 1 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      1 );
+                      0 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -270,20 +296,35 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         assertEquals( c.getCol(),
                       3 );
 
+        c = data.get( 2 ).get( 0 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 1 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      0 );
+        c = data.get( 2 ).get( 2 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      2 );
+        c = data.get( 2 ).get( 3 ).getHtmlCoordinate();
+        assertEquals( c.getRow(),
+                      0 );
+        assertEquals( c.getCol(),
+                      3 );
+
     }
 
     @Test
     public void testIndexing_PhysicalCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1,0][1,1][-,-]
-        //[-][2][3] -->
-        CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
-
+        //[1][-][3] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
+        //[1][2][3] --> [0,0][1,0][0,2] --> [1,1][-,-][-,-]
+        //[-][2][3] --> [2,0][1,0][0,2] --> [2,0][-,-][-,-]
         data.setMerged( true );
-        data.applyModelGrouping( cv );
-
-        assertEquals( data.size(),
-                      2 );
 
         Coordinate c;
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
@@ -306,34 +347,29 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      1 );
-        assertEquals( c.getCol(),
                       1 );
 
+        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
+
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList(),
                         true );
         assertEquals( data.size(),
-                      2 );
+                      3 );
         assertEquals( data.get( 0 ).size(),
                       4 );
         assertEquals( data.get( 1 ).size(),
                       4 );
-
-        assertTrue( data.get( 0 ) instanceof GroupedDynamicDataRow );
-        GroupedDynamicDataRow gdr = (GroupedDynamicDataRow) data.get( 0 );
-        assertEquals( gdr.getChildRows().size(),
-                      2 );
-        assertEquals( gdr.getChildRows().get( 0 ).size(),
-                      4 );
-        assertEquals( gdr.getChildRows().get( 1 ).size(),
+        assertEquals( data.get( 2 ).size(),
                       4 );
 
-        //[1][-][3][-] --> [1][x][3][-] --> [0,0][0,1][0,2][0,3] --> [0,0][0,1][0,2][0,3]
-        //[1][2][3][-] --> [-][2][3][-] --> [1,0][1,1][0,2][0,3] --> [1,0][1,1][-,-][-,-]
+        //[1][-][3][-] --> [0,0][0,1][0,2][0,3] --> [0,0][0,1][0,2][0,3]
+        //[1][2][3][-] --> [0,0][1,0][0,2][0,3] --> [1,1][-,-][-,-][-,-]
+        //[-][2][3][-] --> [2,0][1,0][0,2][0,3] --> [2,0][-,-][-,-][-,-]
         c = data.get( 0 ).get( 0 ).getPhysicalCoordinate();
         assertEquals( c.getRow(),
                       0 );
@@ -359,13 +395,13 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         assertEquals( c.getRow(),
                       1 );
         assertEquals( c.getCol(),
-                      0 );
-        c = data.get( 1 ).get( 1 ).getPhysicalCoordinate();
-        assertEquals( c.getRow(),
-                      1 );
-        assertEquals( c.getCol(),
                       1 );
 
+        c = data.get( 2 ).get( 0 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      2 );
+        assertEquals( c.getCol(),
+                      0 );
     }
 
 }

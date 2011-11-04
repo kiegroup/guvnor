@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.decoratedgrid.data;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.junit.Before;
@@ -28,7 +29,7 @@ import org.junit.Test;
 /**
  * Tests for DynamicData
  */
-public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
+public class DynamicDataTestsWithGroupingWithOtherwise extends BaseDynamicDataTests {
 
     @Before
     public void setup() {
@@ -36,7 +37,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
 
         //Setup date to merge
         //[1][-][3]
-        //[1][2][3]
+        //[1][2][*]
         //[-][2][3]
         rows.get( 0 ).get( 0 ).setValue( "1" );
         rows.get( 0 ).get( 1 ).setValue( "-" );
@@ -44,7 +45,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
 
         rows.get( 1 ).get( 0 ).setValue( "1" );
         rows.get( 1 ).get( 1 ).setValue( "2" );
-        rows.get( 1 ).get( 2 ).setValue( "3" );
+        rows.get( 1 ).get( 2 ).addState( CellState.OTHERWISE );
 
         rows.get( 2 ).get( 0 ).setValue( "-" );
         rows.get( 2 ).get( 1 ).setValue( "2" );
@@ -54,8 +55,8 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
     @Test
     @SuppressWarnings("rawtypes")
     public void testDataGrouping() {
-        //[1][-][3] --> [1][x][3]
-        //[1][2][3] --> [-][2][3]
+        //[1][-][3] --> [1][x][x]
+        //[1][2][*] --> [-][2][3]
         //[-][2][3] -->
         GroupedCellValue gcv;
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
@@ -79,7 +80,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
         cv = data.get( 0 ).get( 2 );
         assertTrue( cv instanceof GroupedCellValue );
         gcv = (GroupedCellValue) cv;
-        assertFalse( gcv.hasMultipleValues() );
+        assertTrue( gcv.hasMultipleValues() );
         assertEquals( cv.getValue(),
                       "3" );
 
@@ -100,8 +101,8 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
 
     @Test
     public void testIndexing_DataCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][1,2]
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -148,8 +149,8 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
 
     @Test
     public void testIndexing_HtmlCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2]
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -188,7 +189,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
                       1 );
         c = data.get( 1 ).get( 2 ).getHtmlCoordinate();
         assertEquals( c.getRow(),
-                      0 );
+                      1 );
         assertEquals( c.getCol(),
                       2 );
 
@@ -196,8 +197,8 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
 
     @Test
     public void testIndexing_PhysicalCoordinates() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1,0][1,1][-,-]
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2] --> [0,0][0,1][0,2]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2] --> [1,0][1,1][1,2]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -234,13 +235,18 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
                       1 );
         assertEquals( c.getCol(),
                       1 );
+        c = data.get( 1 ).get( 2 ).getPhysicalCoordinate();
+        assertEquals( c.getRow(),
+                      1 );
+        assertEquals( c.getCol(),
+                      2 );
 
     }
 
     @Test
     public void testIndexing_RowSpans() {
-        //[1][-][3] --> [1][x][3] --> [0,0][0,1][0,2] --> [1][1][2]
-        //[1][2][3] --> [-][2][3] --> [1,0][1,1][0,2] --> [1][1][0]
+        //[1][-][3] --> [1][x][x] --> [0,0][0,1][0,2] --> [1][1][1]
+        //[1][2][*] --> [-][2][3] --> [1,0][1,1][1,2] --> [1][1][1]
         //[-][2][3] -->
         CellValue< ? extends Comparable< ? >> cv = data.get( 0 ).get( 0 );
 
@@ -258,7 +264,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
                       1 );
         cv = data.get( 0 ).get( 2 );
         assertEquals( cv.getRowSpan(),
-                      2 );
+                      1 );
 
         cv = data.get( 1 ).get( 0 );
         assertEquals( cv.getRowSpan(),
@@ -268,7 +274,7 @@ public class DynamicDataTestsWithGrouping extends BaseDynamicDataTests {
                       1 );
         cv = data.get( 1 ).get( 2 );
         assertEquals( cv.getRowSpan(),
-                      0 );
+                      1 );
 
     }
 
