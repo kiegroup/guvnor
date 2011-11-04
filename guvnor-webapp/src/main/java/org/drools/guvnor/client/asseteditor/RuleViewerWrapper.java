@@ -32,7 +32,6 @@ import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -42,7 +41,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     private RuleAsset asset;
     private boolean isHistoricalReadOnly = false;
-    private final RuleViewerSettings ruleViewerSettings;
+    private RuleViewerSettings ruleViewerSettings = null;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
@@ -56,23 +55,18 @@ public class RuleViewerWrapper extends GuvnorEditor {
         this(clientFactory,
                 eventBus,
                 asset,
-                false,
-                null,
-                null);
+                false);
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
                              EventBus eventBus,
                              final RuleAsset asset,
-                             boolean isHistoricalReadOnly,
-                             ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-                             RuleViewerSettings ruleViewerSettings) {
+                             boolean isHistoricalReadOnly) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
         this.isHistoricalReadOnly = isHistoricalReadOnly;
-        this.ruleViewerSettings = ruleViewerSettings;
-
+        
         eventBus.addHandler(
                 RefreshAssetEditorEvent.TYPE,
                 new RefreshAssetEditorEvent.Handler() {
@@ -102,7 +96,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
                 ruleViewerSettings);
         
         boolean readOnly = isHistoricalReadOnly || asset.isReadonly() || (this.ruleViewerSettings !=null && this.ruleViewerSettings.isStandalone());
-        Widget actionToolBar = new AssetEditorActionToolbar( getConfiguration(),
+        Widget actionToolBar = new AssetEditorActionToolbar( 
                  asset, ruleViewer.getAssetEditor(), clientFactory, eventBus, readOnly);
 
         layout.clear();
@@ -127,14 +121,6 @@ public class RuleViewerWrapper extends GuvnorEditor {
         layout.add(tPanel);
     }
 
-    private ActionToolbarButtonsConfigurationProvider getConfiguration() {
-        if ( actionToolbarButtonsConfigurationProvider == null ) {
-            return new DefaultActionToolbarButtonsConfigurationProvider(asset);
-        } else {
-            return actionToolbarButtonsConfigurationProvider;
-        }
-    }
-    
     public void refresh() {
         LoadingPopup.showMessage(constants.RefreshingItem());
         RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),

@@ -108,27 +108,18 @@ public class PackageEditorActionToolbar extends Composite {
     @UiField
     MenuItem sourceMenu;
 
-    private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
+    private ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider = new PackageActionToolbarButtonsConfigurationProvider();
     private PackageConfigData packageConfigData;
     private final EventBus eventBus;
     private final ClientFactory clientFactory;
     private Command refreshCommand;
     private boolean readOnly;
     
-    public PackageEditorActionToolbar(ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-            String status) {
-        this.packageConfigData = null;
-        this.eventBus = null;
-        this.clientFactory = null;
-    }
-    
-    public PackageEditorActionToolbar(ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider, 
-    		             PackageConfigData data, 
+    public PackageEditorActionToolbar(PackageConfigData data, 
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          boolean readOnly,
-                         Command refreshCommand) {
-        this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;        
+                         Command refreshCommand) {     
         this.packageConfigData = data;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;

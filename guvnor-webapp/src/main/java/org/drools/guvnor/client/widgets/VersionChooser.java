@@ -185,9 +185,8 @@ public class VersionChooser extends Composite {
                                                                              clientFactory,
                                                                              eventBus,
                                                                              asset,
-                                                                             true,
-                                                                             null,
-                                                                             null );
+                                                                             true
+                                                                                                                                                          );
                                                                      viewer.setWidth( "100%" );
                                                                      viewer.setHeight( "100%" );
 

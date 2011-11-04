@@ -25,13 +25,17 @@ import com.google.gwt.core.ext.typeinfo.JClassType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.rebind.ClassSourceFileComposerFactory;
 import com.google.gwt.user.rebind.SourceWriter;
 
 import org.drools.guvnor.client.asseteditor.DefaultContentUploadEditor;
 import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.common.StackItemHeader;
+import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
@@ -40,6 +44,7 @@ import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.server.util.AssetEditorConfiguration;
 import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.util.ModuleEditorConfiguration;
@@ -88,6 +93,11 @@ public class PerspectiveFactoryGenerator extends Generator {
         composerFactory.addImport( PackageConfigData.class.getCanonicalName() );
         composerFactory.addImport( Command.class.getCanonicalName() );
         composerFactory.addImport( AbstractModuleEditor.class.getCanonicalName() );
+        composerFactory.addImport( StackItemHeaderViewImpl.class.getCanonicalName() );      
+        composerFactory.addImport( StackItemHeader.class.getCanonicalName() );      
+        composerFactory.addImport( Util.class.getCanonicalName() );  
+        composerFactory.addImport( SafeHtml.class.getCanonicalName() );  
+        composerFactory.addImport( IsWidget.class.getCanonicalName() );  
         composerFactory.addImplementedInterface( objectType
                 .getQualifiedSourceName() );
 
@@ -104,6 +114,13 @@ public class PerspectiveFactoryGenerator extends Generator {
             generateGetRegisteredPerspectiveTypesMethod( sourceWriter, registeredEditors );
             generateGetModuleEditorMethod( sourceWriter, registeredEditors );
             generateGetPerspectiveMethod( sourceWriter, registeredEditors );
+            
+            generateGetModulesHeaderViewMethod( sourceWriter, registeredEditors );
+            generateGetModulesTreeRootNodeHeaderMethod( sourceWriter, registeredEditors );
+            generateGetModulesNewAssetMenuMethod( sourceWriter, registeredEditors );            
+            generateGetModuleEditorActionToolbarMethod( sourceWriter, registeredEditors );            
+            generateGetAssetEditorActionToolbarMethod( sourceWriter, registeredEditors );
+  
             sourceWriter.commit( logger );
         }
         return implPackageName + "." + implTypeName;
@@ -202,7 +219,7 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.println( "}" );
     }
     
-    //TODO: Generate from configuration file. 
+    //TODO: Generate from perspective.xml 
     private void generateGetPerspectiveMethod( SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors ) {
         sourceWriter.println( "public Perspective getPerspective(String perspectiveType) {" );
         sourceWriter.indent();
@@ -228,7 +245,129 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );
     }
+    
+    //TODO: Generate from perspective.xml 
+    private void generateGetModulesHeaderViewMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
+        sourceWriter.println( "public IsWidget  getModulesHeaderView(String perspectiveType) {" );
+        sourceWriter.indent();
+        sourceWriter.println( "String title;");
+        sourceWriter.println( "ImageResource image;");        
+        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "title = constants.KnowledgeBases();");
+        sourceWriter.println( "image = images.packages();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+        
+        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "title = \"Services\";");
+        sourceWriter.println( "image = images.packages();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
 
+        sourceWriter.println( "title = constants.KnowledgeBases();");
+        sourceWriter.println( "image = images.packages();");
+
+        sourceWriter.println( "StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();");
+        sourceWriter.println( "StackItemHeader header = new StackItemHeader( view );");
+        sourceWriter.println( "header.setName( title );");
+        sourceWriter.println( "header.setImageResource( image );");
+        sourceWriter.println( "return view;" );
+        sourceWriter.outdent();
+        sourceWriter.println( "}" );   	
+    }
+    private void generateGetModulesTreeRootNodeHeaderMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
+        sourceWriter.println( "public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {" );
+        sourceWriter.indent();
+        sourceWriter.println( "String title;");
+        sourceWriter.println( "ImageResource image;");        
+        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "title = constants.Packages();");
+        sourceWriter.println( "image = images.packages();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+        
+        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "title = \"Services\";");
+        sourceWriter.println( "image = images.chartOrganisation();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+
+        sourceWriter.println( "title = constants.Packages();");
+        sourceWriter.println( "image = images.packages();");
+
+        sourceWriter.println( "return Util.getHeader( image, title );" );
+        sourceWriter.outdent();
+        sourceWriter.println( "}" );       
+    }
+    private void generateGetModulesNewAssetMenuMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
+        sourceWriter.println( "public Widget getModulesNewAssetMenu(String perspectiveType, ClientFactory clientFactory, EventBus eventBus) {" );
+        sourceWriter.indent();
+    
+        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+        
+        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenu( clientFactory, eventBus )).asWidget();");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+
+        sourceWriter.println( "return (new org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu( clientFactory, eventBus )).asWidget();");
+
+        sourceWriter.outdent();
+        sourceWriter.println( "}" );           
+    }
+    private void generateGetModuleEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
+        sourceWriter.println( "public Widget getModuleEditorActionToolbar(String perspectiveType, PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand) {" );
+        sourceWriter.indent();
+    
+        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+        
+        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
+
+        sourceWriter.outdent();
+        sourceWriter.println( "}" );         
+    }
+    private void generateGetAssetEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
+        sourceWriter.println( "public Widget getAssetEditorActionToolbar(String perspectiveType, RuleAsset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly) {" );
+        sourceWriter.indent();
+    
+        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+        
+        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.indent();
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
+        sourceWriter.outdent();
+        sourceWriter.println( "}");
+
+        sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar(asset, editor, clientFactory, eventBus, readOnly);");
+
+        sourceWriter.outdent();
+        sourceWriter.println( "}" );          
+    }
+    
+    
     public static Map<String, List<ModuleEditorConfiguration>> loadModuleEditorMetaData() {
         Map<String, List<ModuleEditorConfiguration>> moduleEditorConfigurations = new HashMap<String, List<ModuleEditorConfiguration>>();
         String[] registeredPerspectiveTypes = getRegisteredPerspectiveTypes();

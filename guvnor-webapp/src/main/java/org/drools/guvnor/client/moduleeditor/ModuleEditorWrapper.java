@@ -83,8 +83,7 @@ public class ModuleEditorWrapper extends Composite {
         
         layout.clear();
         
-        PackageEditorActionToolbar actionToolBar = new PackageEditorActionToolbar( getConfiguration(),
-                packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
+        PackageEditorActionToolbar actionToolBar = new PackageEditorActionToolbar(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
         layout.add(actionToolBar);
 
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,
@@ -113,10 +112,6 @@ public class ModuleEditorWrapper extends Composite {
         tPanel.setHeight("100%");
         layout.add(tPanel);
         layout.setHeight("100%");
-    }
-
-    private ActionToolbarButtonsConfigurationProvider getConfiguration() {
-        return new PackageActionToolbarButtonsConfigurationProvider();
     }
     
     /**

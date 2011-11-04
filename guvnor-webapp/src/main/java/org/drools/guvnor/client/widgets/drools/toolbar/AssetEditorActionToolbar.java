@@ -50,6 +50,7 @@ import org.drools.guvnor.client.rpc.VerificationService;
 import org.drools.guvnor.client.rpc.VerificationServiceAsync;
 import org.drools.guvnor.client.widgets.CheckinPopup;
 import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -136,27 +137,18 @@ public class AssetEditorActionToolbar extends Composite {
     private Command afterCheckinEvent;
     private boolean readOnly;
     
-    public AssetEditorActionToolbar(ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider,
-            String status) {
-        this.asset = null;
-        this.editor = null;
-        this.eventBus = null;
-        this.clientFactory = null;
-
-    }
-    public AssetEditorActionToolbar(ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider, 
-    		             RuleAsset asset, 
+    public AssetEditorActionToolbar(RuleAsset asset, 
                          final Widget editor,
                          ClientFactory clientFactory,
                          EventBus eventBus,
                          boolean readOnly) {
-        this.actionToolbarButtonsConfigurationProvider = actionToolbarButtonsConfigurationProvider;        
         this.asset = asset;
         this.editor = editor;
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
         this.readOnly = readOnly;
         
+        actionToolbarButtonsConfigurationProvider = new DefaultActionToolbarButtonsConfigurationProvider(asset);
         initWidget(uiBinder.createAndBindUi(this));
 
         setState(asset.getState());
