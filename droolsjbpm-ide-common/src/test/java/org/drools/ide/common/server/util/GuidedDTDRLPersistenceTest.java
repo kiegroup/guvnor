@@ -18,18 +18,20 @@ package org.drools.ide.common.server.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
+import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionInsertFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.FactPattern;
 import org.drools.ide.common.client.modeldriven.brl.RuleAttribute;
@@ -41,6 +43,8 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
@@ -1696,7 +1700,7 @@ public class GuidedDTDRLPersistenceTest {
         index = drl.indexOf( "s1.setColour( \"Blue\" );",
                              index + 1 );
         assertTrue( index > -1 );
-        index = drl.indexOf( "insert(s1 );",
+        index = drl.indexOf( "insert( s1 );",
                              index + 1 );
         assertTrue( index > -1 );
 
@@ -2077,5 +2081,547 @@ public class GuidedDTDRLPersistenceTest {
                       mp4.getBinding() );
 
     }
+
+    @Test
+    //Test all Actions setting fields are correctly converted to RuleModel
+    public void testRHSActionWorkItemSetFields1() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true", "true", "true", "true", "true"};
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerResult" );
+        pwd.addResult( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringResult" );
+        pwd.addResult( p4 );
+
+        cols.add( awi );
+
+        ActionWorkItemSetFieldCol52 asf1 = new ActionWorkItemSetFieldCol52();
+        asf1.setBoundName( "$r" );
+        asf1.setFactField( "ResultBooleanField" );
+        asf1.setType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        asf1.setWorkItemName( "WorkItem" );
+        asf1.setWorkItemResultParameterName( "BooleanResult" );
+        asf1.setParameterClassName( Boolean.class.getName() );
+        cols.add( asf1 );
+
+        ActionWorkItemSetFieldCol52 asf2 = new ActionWorkItemSetFieldCol52();
+        asf2.setBoundName( "$r" );
+        asf2.setFactField( "ResultFloatField" );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setWorkItemName( "WorkItem" );
+        asf2.setWorkItemResultParameterName( "FloatResult" );
+        asf2.setParameterClassName( Float.class.getName() );
+        cols.add( asf2 );
+
+        ActionWorkItemSetFieldCol52 asf3 = new ActionWorkItemSetFieldCol52();
+        asf3.setBoundName( "$r" );
+        asf3.setFactField( "ResultIntegerField" );
+        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf3.setWorkItemName( "WorkItem" );
+        asf3.setWorkItemResultParameterName( "IntegerResult" );
+        asf3.setParameterClassName( Integer.class.getName() );
+        cols.add( asf3 );
+
+        ActionWorkItemSetFieldCol52 asf4 = new ActionWorkItemSetFieldCol52();
+        asf4.setBoundName( "$r" );
+        asf4.setFactField( "ResultStringField" );
+        asf4.setType( SuggestionCompletionEngine.TYPE_STRING );
+        asf4.setWorkItemName( "WorkItem" );
+        asf4.setWorkItemResultParameterName( "StringResult" );
+        asf4.setParameterClassName( String.class.getName() );
+        cols.add( asf4 );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 2,
+                      rm.rhs.length );
+
+        //Examine RuleModel actions
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        ActionSetField asf = (ActionSetField) rm.rhs[1];
+        assertNotNull( asf );
+
+        //Check ActionExecuteWorkItem
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 4,
+                      mpwd.getResults().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getResult( "BooleanResult" );
+        assertNotNull( mp1 );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getResult( "FloatResult" );
+        assertNotNull( mp2 );
+
+        PortableIntegerParameterDefinition mp3 = (PortableIntegerParameterDefinition) mpwd.getResult( "IntegerResult" );
+        assertNotNull( mp3 );
+
+        PortableStringParameterDefinition mp4 = (PortableStringParameterDefinition) mpwd.getResult( "StringResult" );
+        assertNotNull( mp4 );
+
+        //Check ActionSetField
+        assertEquals( asf.variable,
+                      "$r" );
+        assertEquals( 4,
+                      asf.fieldValues.length );
+
+        ActionFieldValue fv1 = asf.fieldValues[0];
+        assertNotNull( fv1 );
+        assertTrue( fv1 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv1 = (ActionWorkItemFieldValue) fv1;
+        assertEquals( "ResultBooleanField",
+                      wifv1.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      wifv1.type );
+        assertEquals( "WorkItem",
+                      wifv1.getWorkItemName() );
+        assertEquals( "BooleanResult",
+                      wifv1.getWorkItemParameterName() );
+        assertEquals( Boolean.class.getName(),
+                      wifv1.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv2 = asf.fieldValues[1];
+        assertNotNull( fv2 );
+        assertTrue( fv2 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv2 = (ActionWorkItemFieldValue) fv2;
+        assertEquals( "ResultFloatField",
+                      wifv2.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      wifv2.type );
+        assertEquals( "WorkItem",
+                      wifv2.getWorkItemName() );
+        assertEquals( "FloatResult",
+                      wifv2.getWorkItemParameterName() );
+        assertEquals( Float.class.getName(),
+                      wifv2.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv3 = asf.fieldValues[2];
+        assertNotNull( fv3 );
+        assertTrue( fv3 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv3 = (ActionWorkItemFieldValue) fv3;
+        assertEquals( "ResultIntegerField",
+                      wifv3.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      wifv3.type );
+        assertEquals( "WorkItem",
+                      wifv3.getWorkItemName() );
+        assertEquals( "IntegerResult",
+                      wifv3.getWorkItemParameterName() );
+        assertEquals( Integer.class.getName(),
+                      wifv3.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv4 = asf.fieldValues[3];
+        assertNotNull( fv4 );
+        assertTrue( fv4 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv4 = (ActionWorkItemFieldValue) fv4;
+        assertEquals( "ResultStringField",
+                      wifv4.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      wifv4.type );
+        assertEquals( "WorkItem",
+                      wifv4.getWorkItemName() );
+        assertEquals( "StringResult",
+                      wifv4.getWorkItemParameterName() );
+        assertEquals( String.class.getName(),
+                      wifv4.getWorkItemParameterClassName() );
+
+    }
     
+    @Test
+    //Test only Actions set to "true" are correctly converted to RuleModel
+    public void testRHSActionWorkItemSetFields2() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true", "true", "false" };
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        cols.add( awi );
+
+        ActionWorkItemSetFieldCol52 asf1 = new ActionWorkItemSetFieldCol52();
+        asf1.setBoundName( "$r" );
+        asf1.setFactField( "ResultBooleanField" );
+        asf1.setType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        asf1.setWorkItemName( "WorkItem" );
+        asf1.setWorkItemResultParameterName( "BooleanResult" );
+        asf1.setParameterClassName( Boolean.class.getName() );
+        cols.add( asf1 );
+
+        ActionWorkItemSetFieldCol52 asf2 = new ActionWorkItemSetFieldCol52();
+        asf2.setBoundName( "$r" );
+        asf2.setFactField( "ResultFloatField" );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setWorkItemName( "WorkItem" );
+        asf2.setWorkItemResultParameterName( "FloatResult" );
+        asf2.setParameterClassName( Float.class.getName() );
+        cols.add( asf2 );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 2,
+                      rm.rhs.length );
+
+        //Examine RuleModel actions
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        ActionSetField asf = (ActionSetField) rm.rhs[1];
+        assertNotNull( asf );
+
+        //Check ActionExecuteWorkItem
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 2,
+                      mpwd.getResults().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getResult( "BooleanResult" );
+        assertNotNull( mp1 );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getResult( "FloatResult" );
+        assertNotNull( mp2 );
+
+        //Check ActionSetField
+        assertEquals( asf.variable,
+                      "$r" );
+        assertEquals( 1,
+                      asf.fieldValues.length );
+
+        ActionFieldValue fv1 = asf.fieldValues[0];
+        assertNotNull( fv1 );
+        assertTrue( fv1 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv1 = (ActionWorkItemFieldValue) fv1;
+        assertEquals( "ResultBooleanField",
+                      wifv1.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      wifv1.type );
+        assertEquals( "WorkItem",
+                      wifv1.getWorkItemName() );
+        assertEquals( "BooleanResult",
+                      wifv1.getWorkItemParameterName() );
+        assertEquals( Boolean.class.getName(),
+                      wifv1.getWorkItemParameterClassName() );
+
+    }
+
+    @Test
+    //Test all Actions inserting Facts are correctly converted to RuleModel
+    public void testRHSActionWorkItemInsertFacts1() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true", "true", "true", "true", "true"};
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerResult" );
+        pwd.addResult( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringResult" );
+        pwd.addResult( p4 );
+
+        cols.add( awi );
+
+        ActionWorkItemInsertFactCol52 asf1 = new ActionWorkItemInsertFactCol52();
+        asf1.setBoundName( "$r" );
+        asf1.setFactField( "ResultBooleanField" );
+        asf1.setType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        asf1.setWorkItemName( "WorkItem" );
+        asf1.setWorkItemResultParameterName( "BooleanResult" );
+        asf1.setParameterClassName( Boolean.class.getName() );
+        cols.add( asf1 );
+
+        ActionWorkItemInsertFactCol52 asf2 = new ActionWorkItemInsertFactCol52();
+        asf2.setBoundName( "$r" );
+        asf2.setFactField( "ResultFloatField" );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setWorkItemName( "WorkItem" );
+        asf2.setWorkItemResultParameterName( "FloatResult" );
+        asf2.setParameterClassName( Float.class.getName() );
+        cols.add( asf2 );
+
+        ActionWorkItemInsertFactCol52 asf3 = new ActionWorkItemInsertFactCol52();
+        asf3.setBoundName( "$r" );
+        asf3.setFactField( "ResultIntegerField" );
+        asf3.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf3.setWorkItemName( "WorkItem" );
+        asf3.setWorkItemResultParameterName( "IntegerResult" );
+        asf3.setParameterClassName( Integer.class.getName() );
+        cols.add( asf3 );
+
+        ActionWorkItemInsertFactCol52 asf4 = new ActionWorkItemInsertFactCol52();
+        asf4.setBoundName( "$r" );
+        asf4.setFactField( "ResultStringField" );
+        asf4.setType( SuggestionCompletionEngine.TYPE_STRING );
+        asf4.setWorkItemName( "WorkItem" );
+        asf4.setWorkItemResultParameterName( "StringResult" );
+        asf4.setParameterClassName( String.class.getName() );
+        cols.add( asf4 );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 2,
+                      rm.rhs.length );
+
+        //Examine RuleModel actions
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        ActionInsertFact aif = (ActionInsertFact) rm.rhs[1];
+        assertNotNull( aif );
+
+        //Check ActionExecuteWorkItem
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 4,
+                      mpwd.getResults().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getResult( "BooleanResult" );
+        assertNotNull( mp1 );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getResult( "FloatResult" );
+        assertNotNull( mp2 );
+
+        PortableIntegerParameterDefinition mp3 = (PortableIntegerParameterDefinition) mpwd.getResult( "IntegerResult" );
+        assertNotNull( mp3 );
+
+        PortableStringParameterDefinition mp4 = (PortableStringParameterDefinition) mpwd.getResult( "StringResult" );
+        assertNotNull( mp4 );
+
+        //Check ActionInsertFact
+        assertEquals( aif.getBoundName(),
+                      "$r" );
+        assertEquals( 4,
+                      aif.fieldValues.length );
+
+        ActionFieldValue fv1 = aif.fieldValues[0];
+        assertNotNull( fv1 );
+        assertTrue( fv1 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv1 = (ActionWorkItemFieldValue) fv1;
+        assertEquals( "ResultBooleanField",
+                      wifv1.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      wifv1.type );
+        assertEquals( "WorkItem",
+                      wifv1.getWorkItemName() );
+        assertEquals( "BooleanResult",
+                      wifv1.getWorkItemParameterName() );
+        assertEquals( Boolean.class.getName(),
+                      wifv1.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv2 = aif.fieldValues[1];
+        assertNotNull( fv2 );
+        assertTrue( fv2 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv2 = (ActionWorkItemFieldValue) fv2;
+        assertEquals( "ResultFloatField",
+                      wifv2.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      wifv2.type );
+        assertEquals( "WorkItem",
+                      wifv2.getWorkItemName() );
+        assertEquals( "FloatResult",
+                      wifv2.getWorkItemParameterName() );
+        assertEquals( Float.class.getName(),
+                      wifv2.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv3 = aif.fieldValues[2];
+        assertNotNull( fv3 );
+        assertTrue( fv3 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv3 = (ActionWorkItemFieldValue) fv3;
+        assertEquals( "ResultIntegerField",
+                      wifv3.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_NUMERIC,
+                      wifv3.type );
+        assertEquals( "WorkItem",
+                      wifv3.getWorkItemName() );
+        assertEquals( "IntegerResult",
+                      wifv3.getWorkItemParameterName() );
+        assertEquals( Integer.class.getName(),
+                      wifv3.getWorkItemParameterClassName() );
+
+        ActionFieldValue fv4 = aif.fieldValues[3];
+        assertNotNull( fv4 );
+        assertTrue( fv4 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv4 = (ActionWorkItemFieldValue) fv4;
+        assertEquals( "ResultStringField",
+                      wifv4.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_STRING,
+                      wifv4.type );
+        assertEquals( "WorkItem",
+                      wifv4.getWorkItemName() );
+        assertEquals( "StringResult",
+                      wifv4.getWorkItemParameterName() );
+        assertEquals( String.class.getName(),
+                      wifv4.getWorkItemParameterClassName() );
+
+    }
+
+    @Test
+    //Test only Actions set to "true" are correctly converted to RuleModel
+    public void testRHSActionWorkItemInsertFacts2() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "true", "true", "false"};
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+        List<ActionCol52> cols = new ArrayList<ActionCol52>();
+
+        ActionWorkItemCol52 awi = new ActionWorkItemCol52();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkItemDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        cols.add( awi );
+
+        ActionWorkItemInsertFactCol52 asf1 = new ActionWorkItemInsertFactCol52();
+        asf1.setBoundName( "$r" );
+        asf1.setFactField( "ResultBooleanField" );
+        asf1.setType( SuggestionCompletionEngine.TYPE_BOOLEAN );
+        asf1.setWorkItemName( "WorkItem" );
+        asf1.setWorkItemResultParameterName( "BooleanResult" );
+        asf1.setParameterClassName( Boolean.class.getName() );
+        cols.add( asf1 );
+
+        ActionWorkItemInsertFactCol52 asf2 = new ActionWorkItemInsertFactCol52();
+        asf2.setBoundName( "$r" );
+        asf2.setFactField( "ResultFloatField" );
+        asf2.setType( SuggestionCompletionEngine.TYPE_NUMERIC );
+        asf2.setWorkItemName( "WorkItem" );
+        asf2.setWorkItemResultParameterName( "FloatResult" );
+        asf2.setParameterClassName( Float.class.getName() );
+        cols.add( asf2 );
+
+        RuleModel rm = new RuleModel();
+        allColumns.addAll( cols );
+
+        p.doActions( allColumns,
+                     cols,
+                     upgrader.makeDataRowList( row ),
+                     rm );
+        assertEquals( 2,
+                      rm.rhs.length );
+
+        //Examine RuleModel actions
+        ActionExecuteWorkItem aw = (ActionExecuteWorkItem) rm.rhs[0];
+        assertNotNull( aw );
+
+        ActionInsertFact aif = (ActionInsertFact) rm.rhs[1];
+        assertNotNull( aif );
+
+        //Check ActionExecuteWorkItem
+        PortableWorkDefinition mpwd = aw.getWorkDefinition();
+        assertNotNull( mpwd );
+
+        assertEquals( 2,
+                      mpwd.getResults().size() );
+
+        PortableBooleanParameterDefinition mp1 = (PortableBooleanParameterDefinition) mpwd.getResult( "BooleanResult" );
+        assertNotNull( mp1 );
+
+        PortableFloatParameterDefinition mp2 = (PortableFloatParameterDefinition) mpwd.getResult( "FloatResult" );
+        assertNotNull( mp2 );
+
+        //Check ActionInsertFact
+        assertEquals( aif.getBoundName(),
+                      "$r" );
+        assertEquals( 1,
+                      aif.fieldValues.length );
+
+        ActionFieldValue fv1 = aif.fieldValues[0];
+        assertNotNull( fv1 );
+        assertTrue( fv1 instanceof ActionWorkItemFieldValue );
+        ActionWorkItemFieldValue wifv1 = (ActionWorkItemFieldValue) fv1;
+        assertEquals( "ResultBooleanField",
+                      wifv1.field );
+        assertEquals( SuggestionCompletionEngine.TYPE_BOOLEAN,
+                      wifv1.type );
+        assertEquals( "WorkItem",
+                      wifv1.getWorkItemName() );
+        assertEquals( "BooleanResult",
+                      wifv1.getWorkItemParameterName() );
+        assertEquals( Boolean.class.getName(),
+                      wifv1.getWorkItemParameterClassName() );
+
+    }
+
 }

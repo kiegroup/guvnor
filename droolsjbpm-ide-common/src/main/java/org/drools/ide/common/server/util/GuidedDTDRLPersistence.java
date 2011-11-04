@@ -145,30 +145,32 @@ public class GuidedDTDRLPersistence {
 
             if ( validCell( cell ) ) {
                 if ( c instanceof ActionWorkItemInsertFactCol52 ) {
-                    ActionWorkItemInsertFactCol52 ac = (ActionWorkItemInsertFactCol52) c;
-                    LabelledAction a = findByLabelledAction( actions,
-                                                             ac.getBoundName() );
-                    if ( a == null ) {
-                        a = new LabelledAction();
-                        a.boundName = ac.getBoundName();
-                        if ( !ac.isInsertLogical() ) {
-                            ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
-                            ins.setBoundName( ac.getBoundName() );
-                            a.action = ins;
-                        } else {
-                            ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
-                            ins.setBoundName( ac.getBoundName() );
-                            a.action = ins;
+                    if ( Boolean.TRUE.equals( Boolean.parseBoolean( cell ) ) ) {
+                        ActionWorkItemInsertFactCol52 ac = (ActionWorkItemInsertFactCol52) c;
+                        LabelledAction a = findByLabelledAction( actions,
+                                                                 ac.getBoundName() );
+                        if ( a == null ) {
+                            a = new LabelledAction();
+                            a.boundName = ac.getBoundName();
+                            if ( !ac.isInsertLogical() ) {
+                                ActionInsertFact ins = new ActionInsertFact( ac.getFactType() );
+                                ins.setBoundName( ac.getBoundName() );
+                                a.action = ins;
+                            } else {
+                                ActionInsertLogicalFact ins = new ActionInsertLogicalFact( ac.getFactType() );
+                                ins.setBoundName( ac.getBoundName() );
+                                a.action = ins;
+                            }
+                            actions.add( a );
                         }
-                        actions.add( a );
+                        ActionInsertFact ins = (ActionInsertFact) a.action;
+                        ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( ac.getFactField(),
+                                                                                     ac.getType(),
+                                                                                     ac.getWorkItemName(),
+                                                                                     ac.getWorkItemResultParameterName(),
+                                                                                     ac.getParameterClassName() );
+                        ins.addFieldValue( val );
                     }
-                    ActionInsertFact ins = (ActionInsertFact) a.action;
-                    ActionWorkItemFieldValue val = new ActionWorkItemFieldValue( ac.getFactField(),
-                                                                                 ac.getType(),
-                                                                                 ac.getWorkItemName(),
-                                                                                 ac.getWorkItemResultParameterName(),
-                                                                                 ac.getParameterClassName() );
-                    ins.addFieldValue( val );
 
                 } else if ( c instanceof ActionInsertFactCol52 ) {
                     ActionInsertFactCol52 ac = (ActionInsertFactCol52) c;

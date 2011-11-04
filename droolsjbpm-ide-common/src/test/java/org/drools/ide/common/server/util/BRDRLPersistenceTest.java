@@ -30,6 +30,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFieldConstraint;
@@ -1705,6 +1706,165 @@ public class BRDRLPersistenceTest {
 
     }
 
+    @Test
+    //Test that WorkItem Parameters can be used to set fields on existing Facts
+    public void testRHSActionWorkItemSetFields() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        FactPattern fp1 = new FactPattern( "Results" );
+        fp1.setBoundName( "$r" );
+        m.addLhsItem( fp1 );
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerResult" );
+        pwd.addResult( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringResult" );
+        pwd.addResult( p4 );
+
+        m.addRhsItem( awi );
+
+        ActionSetField asf = new ActionSetField();
+        asf.variable = "$r";
+        ActionWorkItemFieldValue fv1 = new ActionWorkItemFieldValue( "ResultsBooleanResult",
+                                                                     SuggestionCompletionEngine.TYPE_BOOLEAN,
+                                                                     "WorkItem",
+                                                                     "BooleanResult",
+                                                                     Boolean.class.getName() );
+        asf.addFieldValue( fv1 );
+        ActionWorkItemFieldValue fv2 = new ActionWorkItemFieldValue( "ResultsFloatResult",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     "WorkItem",
+                                                                     "FloatResult",
+                                                                     Float.class.getName() );
+        asf.addFieldValue( fv2 );
+        ActionWorkItemFieldValue fv3 = new ActionWorkItemFieldValue( "ResultsIntegerResult",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     "WorkItem",
+                                                                     "IntegerResult",
+                                                                     Integer.class.getName() );
+        asf.addFieldValue( fv3 );
+        ActionWorkItemFieldValue fv4 = new ActionWorkItemFieldValue( "ResultsStringResult",
+                                                                     SuggestionCompletionEngine.TYPE_STRING,
+                                                                     "WorkItem",
+                                                                     "StringResult",
+                                                                     String.class.getName() );
+        asf.addFieldValue( fv4 );
+
+        m.addRhsItem( asf );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertTrue( result.indexOf( "$r.setResultsBooleanResult( (java.lang.Boolean) wiWorkItem.getResult( \"BooleanResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsFloatResult( (java.lang.Float) wiWorkItem.getResult( \"FloatResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsIntegerResult( (java.lang.Integer) wiWorkItem.getResult( \"IntegerResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsStringResult( (java.lang.String) wiWorkItem.getResult( \"StringResult\" ) );" ) != -1 );
+
+        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+
+    }
+
+    @Test
+    //Test that WorkItem Parameters can be used to set fields on new Fact
+    public void testRHSActionWorkItemInsertFacts() {
+
+        RuleModel m = new RuleModel();
+        m.name = "WorkItem";
+
+        ActionExecuteWorkItem awi = new ActionExecuteWorkItem();
+        PortableWorkDefinition pwd = new PortableWorkDefinition();
+        pwd.setName( "WorkItem" );
+        awi.setWorkDefinition( pwd );
+
+        PortableBooleanParameterDefinition p1 = new PortableBooleanParameterDefinition();
+        p1.setName( "BooleanResult" );
+        pwd.addResult( p1 );
+
+        PortableFloatParameterDefinition p2 = new PortableFloatParameterDefinition();
+        p2.setName( "FloatResult" );
+        pwd.addResult( p2 );
+
+        PortableIntegerParameterDefinition p3 = new PortableIntegerParameterDefinition();
+        p3.setName( "IntegerResult" );
+        pwd.addResult( p3 );
+
+        PortableStringParameterDefinition p4 = new PortableStringParameterDefinition();
+        p4.setName( "StringResult" );
+        pwd.addResult( p4 );
+
+        m.addRhsItem( awi );
+
+        ActionInsertFact aif = new ActionInsertFact();
+        aif.setBoundName( "$r" );
+        aif.factType="Results";
+        ActionWorkItemFieldValue fv1 = new ActionWorkItemFieldValue( "ResultsBooleanResult",
+                                                                     SuggestionCompletionEngine.TYPE_BOOLEAN,
+                                                                     "WorkItem",
+                                                                     "BooleanResult",
+                                                                     Boolean.class.getName() );
+        aif.addFieldValue( fv1 );
+        ActionWorkItemFieldValue fv2 = new ActionWorkItemFieldValue( "ResultsFloatResult",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     "WorkItem",
+                                                                     "FloatResult",
+                                                                     Float.class.getName() );
+        aif.addFieldValue( fv2 );
+        ActionWorkItemFieldValue fv3 = new ActionWorkItemFieldValue( "ResultsIntegerResult",
+                                                                     SuggestionCompletionEngine.TYPE_NUMERIC,
+                                                                     "WorkItem",
+                                                                     "IntegerResult",
+                                                                     Integer.class.getName() );
+        aif.addFieldValue( fv3 );
+        ActionWorkItemFieldValue fv4 = new ActionWorkItemFieldValue( "ResultsStringResult",
+                                                                     SuggestionCompletionEngine.TYPE_STRING,
+                                                                     "WorkItem",
+                                                                     "StringResult",
+                                                                     String.class.getName() );
+        aif.addFieldValue( fv4 );
+
+        m.addRhsItem( aif );
+
+        String result = BRDRLPersistence.getInstance().marshal( m );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
+        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
+
+        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
+
+        assertTrue( result.indexOf( "Results $r = new Results();" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsBooleanResult( (java.lang.Boolean) wiWorkItem.getResult( \"BooleanResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsFloatResult( (java.lang.Float) wiWorkItem.getResult( \"FloatResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsIntegerResult( (java.lang.Integer) wiWorkItem.getResult( \"IntegerResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "$r.setResultsStringResult( (java.lang.String) wiWorkItem.getResult( \"StringResult\" ) );" ) != -1 );
+        assertTrue( result.indexOf( "insert( $r );" ) != -1 );
+
+    }
+    
     @Test
     public void testSubConstraints() {
 

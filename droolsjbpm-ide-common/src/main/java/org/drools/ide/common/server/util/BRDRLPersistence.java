@@ -863,7 +863,7 @@ public class BRDRLPersistence
                     buf.append( ">" );
                 }
                 if ( isLogic ) {
-                    buf.append( "insertLogical(" );
+                    buf.append( "insertLogical( " );
                     if ( action.getBoundName() == null ) {
                         buf.append( "fact" );
                         buf.append( idx++ );
@@ -872,7 +872,7 @@ public class BRDRLPersistence
                     }
                     buf.append( " );\n" );
                 } else {
-                    buf.append( "insert(" );
+                    buf.append( "insert( " );
                     if ( action.getBoundName() == null ) {
                         buf.append( "fact" );
                         buf.append( idx++ );
@@ -1049,7 +1049,7 @@ public class BRDRLPersistence
                     buf.append( afv.getWorkItemName() );
                     buf.append( ".getResult( \"" );
                     buf.append( afv.getWorkItemParameterName() );
-                    buf.append( "\" ) " );
+                    buf.append( "\" )" );
                 } else {
                     buf.append( "null" );
                 }
