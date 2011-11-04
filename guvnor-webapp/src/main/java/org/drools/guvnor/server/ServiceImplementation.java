@@ -921,6 +921,9 @@ public class ServiceImplementation
                 ppd = new PortableFloatParameterDefinition();
             } else if ( pdt instanceof IntegerDataType ) {
                 ppd = new PortableIntegerParameterDefinition();
+            } else if ( pdt instanceof ListDataType ) {
+                //TODO ListDataType
+                //ppd = new PortableListParameterDefinition();
             } else if ( pdt instanceof ObjectDataType ) {
                 ppd = new PortableObjectParameterDefinition();
                 PortableObjectParameterDefinition oppd = (PortableObjectParameterDefinition) ppd;
@@ -928,19 +931,16 @@ public class ServiceImplementation
                 oppd.setClassName( odt.getClassName() );
             } else if ( pd.getType() instanceof StringDataType ) {
                 ppd = new PortableStringParameterDefinition();
+            } else if ( pdt instanceof EnumDataType ) {
+                //TODO EnumDataType
+                //ppd = new PortableEnumParameterDefinition();
+                //PortableEnumParameterDefinition eppd = (PortableEnumParameterDefinition) ppd;
+                //EnumDataType epdt = (EnumDataType) pdt;
+                //eppd.setClassName( epdt.getClassName() );
+                //if ( epdt.getValueMap() != null ) {
+                //    eppd.setValues( epdt.getValueNames() );
+                //}
             }
-            //TODO EnumDataTypes
-            //            } else if ( pdt instanceof EnumDataType ) {
-            //                ppd = new PortableEnumParameterDefinition();
-            //                PortableEnumParameterDefinition eppd = (PortableEnumParameterDefinition) ppd;
-            //                EnumDataType epdt = (EnumDataType) pdt;
-            //                eppd.setClassName( epdt.getClassName() );
-            //                if ( epdt.getValueMap() != null ) {
-            //                    eppd.setValues( epdt.getValueNames() );
-            //                }
-            //TODO ListDataType
-            //            } else if ( pdt instanceof ListDataType ) {
-            //                ppd = new PortableListParameterDefinition();
             if ( ppd != null ) {
                 ppd.setName( pd.getName() );
                 pps.add( ppd );

@@ -19,6 +19,7 @@ package org.drools.ide.common.server.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -521,6 +522,96 @@ public class GuidedDTDRLPersistenceTest {
                       cons.getValue() );
         assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
                       cons.getConstraintValueType() );
+    }
+
+    @Test
+    public void testLHSBindings() {
+        GuidedDTDRLPersistence p = new GuidedDTDRLPersistence();
+        String[] row = new String[]{"1", "desc", "mike", "33 + 1", "age > 6"};
+        String[][] data = new String[1][];
+        data[0] = row;
+
+        List<DTColumnConfig52> allColumns = new ArrayList<DTColumnConfig52>();
+        List<Pattern52> allPatterns = new ArrayList<Pattern52>();
+        allColumns.add( new RowNumberCol52() );
+        allColumns.add( new DescriptionCol52() );
+
+        Pattern52 p1 = new Pattern52();
+        p1.setBoundName( "p1" );
+        p1.setFactType( "Person" );
+        allPatterns.add( p1 );
+
+        ConditionCol52 col = new ConditionCol52();
+        col.setFactField( "name" );
+        col.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
+        col.setOperator( "==" );
+        col.setBinding( "$name" );
+        p1.getConditions().add( col );
+        allColumns.add( col );
+
+        ConditionCol52 col2 = new ConditionCol52();
+        col2.setFactField( "age" );
+        col2.setConstraintValueType( BaseSingleFieldConstraint.TYPE_RET_VALUE );
+        col2.setOperator( "<" );
+        col2.setBinding( "$name" );
+        p1.getConditions().add( col2 );
+        allColumns.add( col2 );
+
+        ConditionCol52 col3 = new ConditionCol52();
+        col3.setConstraintValueType( BaseSingleFieldConstraint.TYPE_PREDICATE );
+        col3.setBinding( "$name" );
+        p1.getConditions().add( col3 );
+        allColumns.add( col3 );
+
+        RuleModel rm = new RuleModel();
+
+        p.doConditions( allColumns,
+                        allPatterns,
+                        upgrader.makeDataRowList( row ),
+                        upgrader.makeDataLists( data ),
+                        rm );
+        assertEquals( 1,
+                      rm.lhs.length );
+
+        assertEquals( "Person",
+                      ((FactPattern) rm.lhs[0]).getFactType() );
+        assertEquals( "p1",
+                      ((FactPattern) rm.lhs[0]).getBoundName() );
+
+        // examine the first pattern
+        FactPattern person = (FactPattern) rm.lhs[0];
+        assertEquals( 3,
+                      person.constraintList.constraints.length );
+        
+        SingleFieldConstraint cons = (SingleFieldConstraint) person.constraintList.constraints[0];
+        assertEquals( BaseSingleFieldConstraint.TYPE_LITERAL,
+                      cons.getConstraintValueType() );
+        assertEquals( "name",
+                      cons.getFieldName() );
+        assertEquals( "==",
+                      cons.getOperator() );
+        assertEquals( "mike",
+                      cons.getValue() );
+        assertEquals("$name", cons.getFieldBinding());
+
+        cons = (SingleFieldConstraint) person.constraintList.constraints[1];
+        assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
+                      cons.getConstraintValueType() );
+        assertEquals( "age",
+                      cons.getFieldName() );
+        assertEquals( "<",
+                      cons.getOperator() );
+        assertEquals( "33 + 1",
+                      cons.getValue() );
+        assertNull(cons.getFieldBinding());
+
+        cons = (SingleFieldConstraint) person.constraintList.constraints[2];
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE,
+                      cons.getConstraintValueType() );
+        assertEquals( "age > 6",
+                      cons.getValue() );
+        assertNull(cons.getFieldBinding());
+
     }
 
     @Test
