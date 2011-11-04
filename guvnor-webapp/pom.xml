@@ -442,12 +442,11 @@
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--<dependency>&lt;!&ndash; Override the version specified by arquillian-tomcat/jetty &ndash;&gt;-->
-      <!--<groupId>org.jboss.arquillian.protocol</groupId>-->
-      <!--<artifactId>arquillian-protocol-servlet</artifactId>-->
-      <!--<version>1.0.0.CR4</version>-->
-      <!--<scope>test</scope>-->
-    <!--</dependency>-->
+    <dependency><!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also arquillian.xml -->
+      <groupId>org.jboss.arquillian.protocol</groupId>
+      <artifactId>arquillian-protocol-servlet</artifactId>
+      <scope>test</scope>
+    </dependency>
     
     <!--<dependency>-->
       <!--<groupId>org.jboss.arquillian.container</groupId>-->
