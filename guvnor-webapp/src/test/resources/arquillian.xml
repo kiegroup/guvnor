@@ -3,7 +3,7 @@
             xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
   <engine>
-    <!-- Workaround Perm gen space issues -->
+    <!-- Workaround Perm gen space issues of https://issues.jboss.org/browse/AS7-2516 -->
     <property name="maxTestClassesBeforeRestart">1</property>
   </engine>
 
