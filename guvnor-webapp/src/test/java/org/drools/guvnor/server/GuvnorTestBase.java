@@ -35,6 +35,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.DependencyResolvers;
 import org.jboss.shrinkwrap.resolver.api.maven.MavenDependencyResolver;
 import org.jboss.shrinkwrap.resolver.api.maven.filter.ScopeFilter;
+import org.jboss.shrinkwrap.resolver.impl.maven.MavenImporterImpl;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenImporter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,30 +50,47 @@ public abstract class GuvnorTestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        // TODO FIXME do not hardcode the version number
+        File mergedBeansXml = writeMergedBeansXmlFile();
+        WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
+                .importBuildOutput().importTestBuildOutput()
+                .as(WebArchive.class)
+                .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"));
         File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT");
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
                     + ") should exist, run \"mvn package\" first.");
         }
-        File mergedBeansXml = writeMergedBeansXmlFile();
-        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, explodedWarFile.getName() + ".war")
-                .importDirectory(explodedWarFile)
-                .as(WebArchive.class)
-                .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
-                // Workaround for https://issues.jboss.org/browse/ARQ-585
-                .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"))
-//                .addAsLibraries(
-//                        DependencyResolvers.use(MavenDependencyResolver.class)
-//                                .includeDependenciesFromPom("pom.xml")
-//                                // exclusions don't work after includeDependenciesFromPom
-//                                // .exclusions("org.jboss.arquillian:*", "org.jboss.shrinkwrap:*")
-//                                .resolveAsFiles(new ScopeFilter("test"))
-                ;
         removeExcludedFiles(webArchive, explodedWarFile);
-//        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+        // System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
         return webArchive;
     }
+
+//    @Deployment
+//    public static WebArchive createDeploymentWithoutMavenImporter() {
+//        // TODO FIXME do not hardcode the version number
+//        File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT");
+//        if (!explodedWarFile.exists()) {
+//            throw new IllegalStateException("The exploded war file (" + explodedWarFile
+//                    + ") should exist, run \"mvn package\" first.");
+//        }
+//        File mergedBeansXml = writeMergedBeansXmlFile();
+//        WebArchive webArchive = ShrinkWrap.create(ExplodedImporter.class, explodedWarFile.getName() + ".war")
+//                .importDirectory(explodedWarFile)
+//                .as(WebArchive.class)
+//                .addAsResource(new File("target/test-classes/"), ArchivePaths.create(""))
+//                // Workaround for https://issues.jboss.org/browse/ARQ-585
+//                .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"))
+////                .addAsLibraries(
+////                        DependencyResolvers.use(MavenDependencyResolver.class)
+////                                .includeDependenciesFromPom("pom.xml")
+////                                // exclusions don't work after includeDependenciesFromPom
+////                                // .exclusions("org.jboss.arquillian:*", "org.jboss.shrinkwrap:*")
+////                                .resolveAsFiles(new ScopeFilter("test"))
+//                ;
+//        removeExcludedFiles(webArchive, explodedWarFile);
+//        System.out.println(webArchive.toString(org.jboss.shrinkwrap.api.formatter.Formatters.VERBOSE));
+//        return webArchive;
+//    }
 
     private static File writeMergedBeansXmlFile() {
         File productionBeansXml = new File("src/main/resources/META-INF/beans.xml");
