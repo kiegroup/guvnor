@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.factPattern;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.InfoPopup;
@@ -122,7 +123,7 @@ public class PopupCreator {
         final FormStylePopup popup = new FormStylePopup();
         popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
-        final TextBox varName = new TextBox();
+        final TextBox varName = new BindingTextBox();
         final Button ok = new Button( constants.Set() );
         vn.add( varName );
         vn.add( ok );
@@ -359,7 +360,7 @@ public class PopupCreator {
     private void doBindingEditor(final FormStylePopup popup) {
         if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.getBoundName() )) ) {
             HorizontalPanel varName = new HorizontalPanel();
-            final TextBox varTxt = new TextBox();
+            final TextBox varTxt = new BindingTextBox();
             if ( pattern.getBoundName() == null ) {
                 varTxt.setText( "" );
             } else {

@@ -69,6 +69,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -347,6 +348,7 @@ public class GuidedDecisionTableWidget extends Composite
                 final FormStylePopup pop = new FormStylePopup();
                 pop.setModal( false );
 
+                //List of basic Action types
                 final ListBox choice = new ListBox();
                 choice.addItem( constants.SetTheValueOfAField(),
                                 ActionTypes.UPDATE_FACT_FIELD.name() );
@@ -354,12 +356,51 @@ public class GuidedDecisionTableWidget extends Composite
                                 ActionTypes.INSERT_FACT_FIELD.name() );
                 choice.addItem( constants.RetractAnExistingFact(),
                                 ActionTypes.RETRACT_FACT.name() );
-                choice.addItem( constants.WorkItemAction(),
-                                ActionTypes.WORKITEM.name() );
-                choice.addItem( constants.WorkItemActionSetField(),
-                                ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
-                choice.addItem( constants.WorkItemActionInsertFact(),
-                                ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
+
+                //Checkbox to include Advanced Action types
+                final CheckBox chkIncludeAdvancedOptions = new CheckBox( SafeHtmlUtils.fromString( constants.IncludeAdvancedOptions() ) );
+                chkIncludeAdvancedOptions.setValue( false );
+                chkIncludeAdvancedOptions.addClickHandler( new ClickHandler() {
+
+                    public void onClick(ClickEvent event) {
+                        if ( chkIncludeAdvancedOptions.getValue() ) {
+                            addItem( constants.WorkItemAction(),
+                                     ActionTypes.WORKITEM.name() );
+                            addItem( constants.WorkItemActionSetField(),
+                                     ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
+                            addItem( constants.WorkItemActionInsertFact(),
+                                     ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
+                        } else {
+                            removeItem( ActionTypes.WORKITEM.name() );
+                            removeItem( ActionTypes.WORKITEM_UPDATE_FACT_FIELD.name() );
+                            removeItem( ActionTypes.WORKITEM_INSERT_FACT_FIELD.name() );
+                        }
+                        pop.center();
+                    }
+
+                    private void addItem(String item,
+                                         String value) {
+                        for ( int index = 0; index < choice.getItemCount(); index++ ) {
+                            if ( choice.getValue( index ).equals( value ) ) {
+                                return;
+                            }
+                        }
+                        choice.addItem( item,
+                                        value );
+                    }
+
+                    private void removeItem(String value) {
+                        for ( int index = 0; index < choice.getItemCount(); index++ ) {
+                            if ( choice.getValue( index ).equals( value ) ) {
+                                choice.removeItem( index );
+                                break;
+                            }
+                        }
+                    }
+
+                } );
+
+                //OK button to create column
                 Button ok = new Button( "OK" );
                 ok.addClickHandler( new ClickHandler() {
                     public void onClick(ClickEvent w) {
@@ -473,6 +514,8 @@ public class GuidedDecisionTableWidget extends Composite
                 } );
                 pop.addAttribute( constants.TypeOfActionColumn(),
                                   choice );
+                pop.addAttribute( "",
+                                  chkIncludeAdvancedOptions );
                 pop.addAttribute( "",
                                   ok );
                 pop.show();
@@ -630,7 +673,13 @@ public class GuidedDecisionTableWidget extends Composite
     }
 
     private SmallLabel makeColumnLabel(ConditionCol52 cc) {
-        SmallLabel label = new SmallLabel( cc.getHeader() );
+        StringBuilder sb = new StringBuilder();
+        if ( cc.isBound() ) {
+            sb.append( cc.getBinding() );
+            sb.append( " : " );
+        }
+        sb.append( cc.getHeader() );
+        SmallLabel label = new SmallLabel( sb.toString() );
         if ( cc.isHideColumn() ) {
             label.setStylePrimaryName( DecisionTableResources.INSTANCE.style().columnLabelHidden() );
         }
@@ -1112,13 +1161,29 @@ public class GuidedDecisionTableWidget extends Composite
         return true;
     }
 
-    public Set<String> getBindings(String dataType) {
+    public Set<String> getBindings(String className) {
+        //For some reason, Fact Pattern data-types use the leaf name of the fully qualified Class Name 
+        //whereas Fields use the fully qualified Class Name. We don't use the generic fieldType (see 
+        //SuggestionCompletionEngine.TYPE) as we can't distinguish between different numeric types
+        String simpleClassName = className;
+        if ( simpleClassName != null && simpleClassName.lastIndexOf( "." ) > 0 ) {
+            simpleClassName = simpleClassName.substring( simpleClassName.lastIndexOf( "." ) + 1 );
+        }
         Set<String> bindings = new HashSet<String>();
         for ( Pattern52 p : this.guidedDecisionTable.getConditionPatterns() ) {
-            if ( dataType == null || p.getFactType().equals( dataType ) ) {
+            if ( className == null || p.getFactType().equals( simpleClassName ) ) {
                 String binding = p.getBoundName();
                 if ( !(binding == null || "".equals( binding )) ) {
                     bindings.add( binding );
+                }
+            }
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( c.isBound() ) {
+                    String fieldDataType = sce.getFieldClassName( p.getFactType(),
+                                                                  c.getFactField() );
+                    if ( fieldDataType.equals( className ) ) {
+                        bindings.add( c.getBinding() );
+                    }
                 }
             }
         }

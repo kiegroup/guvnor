@@ -941,6 +941,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bRedrawHeader = true;
         }
 
+        // Update column binding in Header Widget
+        if ( !origColumn.isBound() && editColumn.isBound() ) {
+            bRedrawHeader = true;
+        } else if ( origColumn.isBound() && !editColumn.isBound() ) {
+            bRedrawHeader = true;
+        } else if ( origColumn.getBinding().equals( editColumn.getBinding() ) ) {
+            bRedrawColumn = true;
+        }
+
         // Update LimitedEntryValue in Header Widget
         if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
             LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
@@ -1367,6 +1376,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setParameters( editingCol.getParameters() );
+        col.setBinding( editingCol.getBinding() );
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }

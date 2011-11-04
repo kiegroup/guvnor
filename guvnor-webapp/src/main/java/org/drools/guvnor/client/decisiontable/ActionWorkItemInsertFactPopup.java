@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.InfoPopup;
@@ -34,6 +35,7 @@ import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
@@ -350,13 +352,29 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
         }
         pop.addAttribute( constants.FactType(),
                           types );
-        final TextBox binding = new TextBox();
+        final TextBox binding = new BindingTextBox();
         pop.addAttribute( constants.Binding(),
                           binding );
 
         Button ok = new Button( constants.OK() );
         ok.addClickHandler( new ClickHandler() {
             public void onClick(ClickEvent w) {
+
+                //Validate column configuration
+                String ft = types.getItemText( types.getSelectedIndex() );
+                String fn = binding.getText();
+                if ( fn.equals( "" ) ) {
+                    Window.alert( constants.PleaseEnterANameForFact() );
+                    return;
+                } else if ( fn.equals( ft ) ) {
+                    Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
+                    return;
+                } else if ( !isBindingUnique( fn ) ) {
+                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    return;
+                }
+
+                //Configure column
                 editingCol.setBoundName( binding.getText() );
                 editingCol.setFactType( types.getItemText( types.getSelectedIndex() ) );
                 editingCol.setFactField( null );
@@ -370,6 +388,18 @@ public class ActionWorkItemInsertFactPopup extends FormStylePopup {
                           ok );
 
         pop.show();
+    }
+
+    private boolean isBindingUnique(String binding) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
+            if ( p.getBoundName().equals( binding ) ) return false;
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( c.isBound() ) {
+                    if ( c.getBinding().equals( binding ) ) return false;
+                }
+            }
+        }
+        return true;
     }
 
     private Widget doInsertLogical() {

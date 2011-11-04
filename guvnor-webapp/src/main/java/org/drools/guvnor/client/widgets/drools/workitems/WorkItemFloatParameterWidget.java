@@ -64,7 +64,7 @@ public class WorkItemFloatParameterWidget extends WorkItemParameterWidget {
         }
 
         //Setup widget to use bindings
-        Set<String> bindings = bindingProvider.getBindings( ppd.getSimpleClassName() );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );

@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.decisiontable.DTCellValueWidgetFactory;
 import org.drools.guvnor.client.decisiontable.Validator;
 import org.drools.guvnor.client.messages.Constants;
@@ -118,7 +119,7 @@ public class ActionInsertFactFieldsPageViewImpl extends Composite
     HorizontalPanel                                             bindingContainer;
 
     @UiField
-    TextBox                                                     txtBinding;
+    BindingTextBox                                              txtBinding;
 
     @UiField
     VerticalPanel                                               fieldDefinition;

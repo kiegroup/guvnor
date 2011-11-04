@@ -184,7 +184,7 @@ public class GuidedDecisionTable52
 
     public void initAnalysisColumn() {
         analysisData = new ArrayList<Analysis>( data.size() );
-        for ( List<DTCellValue52> row : data ) {
+        for ( int i = 0; i < data.size(); i++ ) {
             analysisData.add( new Analysis() );
         }
     }

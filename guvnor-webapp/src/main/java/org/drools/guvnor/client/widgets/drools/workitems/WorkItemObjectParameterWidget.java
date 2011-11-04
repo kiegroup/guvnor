@@ -55,7 +55,7 @@ public class WorkItemObjectParameterWidget extends WorkItemParameterWidget {
 
         //Setup widget to use bindings
         this.parameterName.setText( ppd.getName() );
-        Set<String> bindings = bindingProvider.getBindings( ppd.getSimpleClassName() );
+        Set<String> bindings = bindingProvider.getBindings( ppd.getClassName() );
         if ( bindings.size() > 0 ) {
             lstAvailableBindings.clear();
             lstAvailableBindings.addItem( constants.Choose() );

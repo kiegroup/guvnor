@@ -339,7 +339,14 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof ConditionCol52 ) {
-                tce.appendChild( makeLabel( ((ConditionCol52) modelCol).getHeader(),
+                ConditionCol52 cc = (ConditionCol52) modelCol;
+                StringBuilder header = new StringBuilder();
+                if ( cc.isBound() ) {
+                    header.append( cc.getBinding() );
+                    header.append( " : " );
+                }
+                header.append( cc.getHeader() );
+                tce.appendChild( makeLabel( header.toString(),
                                             col.getWidth(),
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );

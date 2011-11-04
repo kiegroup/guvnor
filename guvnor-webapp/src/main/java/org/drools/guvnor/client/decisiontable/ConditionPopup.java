@@ -16,10 +16,10 @@
 package org.drools.guvnor.client.decisiontable;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.HumanReadable;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPOperatorsDropdown;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
@@ -35,8 +35,8 @@ import org.drools.ide.common.client.modeldriven.brl.HasCEPWindow;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
@@ -69,6 +69,7 @@ public class ConditionPopup extends FormStylePopup {
 
     private Label                      patternLabel                     = new Label();
     private TextBox                    fieldLabel                       = getFieldLabel();
+    private TextBox                    binding                          = new BindingTextBox();
     private Label                      operatorLabel                    = new Label();
     private SimplePanel                limitedEntryValueWidgetContainer = new SimplePanel();
     private int                        limitedEntryValueAttributeIndex  = 0;
@@ -143,12 +144,15 @@ public class ConditionPopup extends FormStylePopup {
             switch ( editingCol.getConstraintValueType() ) {
                 case BaseSingleFieldConstraint.TYPE_LITERAL :
                     literal.setValue( true );
+                    binding.setEnabled( true );
                     break;
                 case BaseSingleFieldConstraint.TYPE_RET_VALUE :
                     formula.setValue( true );
+                    binding.setEnabled( false );
                     break;
                 case BaseSingleFieldConstraint.TYPE_PREDICATE :
                     predicate.setValue( true );
+                    binding.setEnabled( false );
             }
 
             literal.addClickHandler( new ClickHandler() {
@@ -261,6 +265,16 @@ public class ConditionPopup extends FormStylePopup {
                                                         limitedEntryValueWidgetContainer );
         makeLimitedValueWidget();
 
+        //Field Binding
+        binding.setText( col.getBinding() );
+        binding.addChangeHandler( new ChangeHandler() {
+            public void onChange(ChangeEvent event) {
+                editingCol.setBinding( binding.getText() );
+            }
+        } );
+        addAttribute( constants.Binding(),
+                      binding );
+
         //Hide column tick-box
         addAttribute( constants.HideThisColumn(),
                       DTCellValueWidgetFactory.getHideColumnIndicator( editingCol ) );
@@ -291,6 +305,14 @@ public class ConditionPopup extends FormStylePopup {
                     //Clear operator for predicates, but leave field intact for interpolation of $param values
                     editingCol.setOperator( null );
                 }
+
+                //Check for unique binding
+                if ( editingCol.isBound() && !isBindingUnique( editingCol.getBinding() ) ) {
+                    Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
+                    return;
+                }
+
+                //Check column header is unique
                 if ( isNew ) {
                     if ( !unique( editingCol.getHeader() ) ) {
                         Window.alert( constants.ThatColumnNameIsAlreadyInUsePleasePickAnother() );
@@ -303,6 +325,11 @@ public class ConditionPopup extends FormStylePopup {
                             return;
                         }
                     }
+                }
+
+                //Clear binding if column is not a literal
+                if ( editingCol.getConstraintValueType() != BaseSingleFieldConstraint.TYPE_LITERAL ) {
+                    editingCol.setBinding( null );
                 }
 
                 // Pass new\modified column back for handling
@@ -336,6 +363,7 @@ public class ConditionPopup extends FormStylePopup {
         clone.setHideColumn( col.isHideColumn() );
         clone.setParameters( col.getParameters() );
         clone.setWidth( col.getWidth() );
+        clone.setBinding( col.getBinding() );
         return clone;
     }
 
@@ -387,6 +415,7 @@ public class ConditionPopup extends FormStylePopup {
 
     private void applyConsTypeChange(int newType) {
         editingCol.setConstraintValueType( newType );
+        binding.setEnabled( newType == BaseSingleFieldConstraint.TYPE_LITERAL );
         doFieldLabel();
         doOperatorLabel();
         doImageButtons();
@@ -398,10 +427,14 @@ public class ConditionPopup extends FormStylePopup {
         this.editOp.setEnabled( constraintType != BaseSingleFieldConstraint.TYPE_PREDICATE );
     }
 
-    private boolean checkUnique(String fn,
-                                List<Pattern52> patterns) {
-        for ( Pattern52 p : patterns ) {
-            if ( p.getBoundName().equals( fn ) ) return false;
+    private boolean isBindingUnique(String binding) {
+        for ( Pattern52 p : model.getConditionPatterns() ) {
+            if ( p.getBoundName().equals( binding ) ) return false;
+            for ( ConditionCol52 c : p.getConditions() ) {
+                if ( c.isBound() ) {
+                    if ( c.getBinding().equals( binding ) ) return false;
+                }
+            }
         }
         return true;
     }
@@ -627,7 +660,7 @@ public class ConditionPopup extends FormStylePopup {
         }
         pop.addAttribute( constants.FactType(),
                           types );
-        final TextBox binding = new TextBox();
+        final TextBox binding = new BindingTextBox();
         binding.addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
                 binding.setText( binding.getText().replace( " ",
@@ -654,8 +687,7 @@ public class ConditionPopup extends FormStylePopup {
                 } else if ( fn.equals( ft ) ) {
                     Window.alert( constants.PleaseEnterANameThatIsNotTheSameAsTheFactType() );
                     return;
-                } else if ( !checkUnique( fn,
-                                          model.getConditionPatterns() ) ) {
+                } else if ( !isBindingUnique( fn ) ) {
                     Window.alert( constants.PleaseEnterANameThatIsNotAlreadyUsedByAnotherPattern() );
                     return;
                 }

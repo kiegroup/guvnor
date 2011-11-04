@@ -19,6 +19,7 @@ package org.drools.guvnor.client.widgets.drools.wizards.assets.decisiontable;
 import java.util.List;
 import java.util.Set;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.BindingTextBox;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.CEPWindowOperatorsDropdown;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.OperatorSelection;
 import org.drools.guvnor.client.decisiontable.Validator;
@@ -93,7 +94,7 @@ public class FactPatternsPageViewImpl extends Composite
     VerticalPanel                           patternDefinition;
 
     @UiField
-    TextBox                                 txtBinding;
+    BindingTextBox                          txtBinding;
 
     @UiField
     HorizontalPanel                         bindingContainer;

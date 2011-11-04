@@ -18,7 +18,8 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
   xmlns:gwt="urn:import:com.google.gwt.user.client.ui"
   xmlns:guvnor="urn:import:org.drools.guvnor.client.asseteditor.drools.modeldriven.ui"
-  xmlns:c="urn:import:org.drools.guvnor.client.common">
+  xmlns:c="urn:import:org.drools.guvnor.client.common"
+  xmlns:ui="urn:import:org.drools.guvnor.client.asseteditor.drools.modeldriven.ui">
 
   <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
   <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
@@ -58,7 +59,7 @@
       <gwt:VerticalPanel ui:field="patternDefinition" visible="false">
         <gwt:HorizontalPanel ui:field="bindingContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
           <gwt:Label text="{i18n.Binding}" styleName="{res.style.wizardDTableFields}" />
-          <gwt:TextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></gwt:TextBox>
+          <ui:BindingTextBox ui:field="txtBinding" enabled="false" styleName="{res.style.wizardDTableFields}"></ui:BindingTextBox>
           <c:InfoPopup styleName="{res.style.wizardDTableFields}" title="{i18n.BindingFact}" message="{i18n.BindingDescription}" />
         </gwt:HorizontalPanel>
         <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
