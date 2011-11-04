@@ -2,10 +2,10 @@
 <arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jboss.org/schema/arquillian"
             xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
 
-  <!-- Copy the deployed archive to target directory so user can check its content -->
-  <!--<engine>-->
-    <!--<property name="deploymentExportPath">target/</property>-->
-  <!--</engine>-->
+  <engine>
+    <!-- Workaround Perm gen space issues -->
+    <property name="maxTestClassesBeforeRestart">1</property>
+  </engine>
 
 	<!--<container qualifier="weld" default="true">-->
 		<!--<configuration>-->
@@ -15,7 +15,7 @@
 
   <!-- Workaround for https://issues.jboss.org/browse/AS7-1696 see also dependency arquillian-protocol-servlet -->
   <defaultProtocol type="Servlet 3.0" />
-  
+
   <container qualifier="jboss7" default="true">
     <!--<protocol type="jmx-as7">-->
       <!--<property name="executionType">REMOTE</property>-->
