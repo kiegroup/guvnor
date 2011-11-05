@@ -30,7 +30,6 @@ import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemBaseV
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.moduleeditor.RefreshModuleListEventHandler;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsyncMock;
 import org.junit.Before;
@@ -105,7 +104,7 @@ public class ModulesTreeItemTest {
     }
 
     private void setUpPresenter() {
-        presenter = new ModulesTreeItem( clientFactory, eventBus, AuthorPerspective.AUTHOR_PERSPECTIVE );
+        presenter = new ModulesTreeItem( clientFactory, eventBus, "AuthorPerspective" );
     }
 
     @Test

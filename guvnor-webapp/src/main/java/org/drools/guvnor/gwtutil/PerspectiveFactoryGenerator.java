@@ -39,14 +39,10 @@ import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
-import org.drools.guvnor.client.perspective.Perspective;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.Util;
-import org.drools.guvnor.server.util.AssetEditorConfiguration;
-import org.drools.guvnor.server.util.AssetEditorConfigurationParser;
 import org.drools.guvnor.server.util.ModuleEditorConfiguration;
 import org.drools.guvnor.server.util.PerspectiveConfigurationParser;
 
@@ -379,13 +375,18 @@ public class PerspectiveFactoryGenerator extends Generator {
         Map<String, List<ModuleEditorConfiguration>> moduleEditorConfigurations = new HashMap<String, List<ModuleEditorConfiguration>>();
         String[] registeredPerspectiveTypes = getRegisteredPerspectiveTypes();
         for(String perspectiveType : registeredPerspectiveTypes) {
-            Perspective p = getPerspective(perspectiveType);
-            InputStream in = p.getClass().getResourceAsStream("perspective.xml");
-            //REVISIT: can a perspective have no perspective configuration file, eg, the runtime perspective?
-            if(in != null) {
-                PerspectiveConfigurationParser parser = new PerspectiveConfigurationParser(in);
-                List<ModuleEditorConfiguration> moduleEditors = parser.getModuleEditors();
-                moduleEditorConfigurations.put(perspectiveType, moduleEditors);
+            try {
+                Class perspectiveClass = Class.forName(getPerspectiveClassName(perspectiveType));
+
+                InputStream in = perspectiveClass.getResourceAsStream("perspective.xml");
+                // REVISIT: can a perspective have no perspective configuration file, eg, the runtime perspective?
+                if (in != null) {
+                    PerspectiveConfigurationParser parser = new PerspectiveConfigurationParser(in);
+                    List<ModuleEditorConfiguration> moduleEditors = parser.getModuleEditors();
+                    moduleEditorConfigurations.put(perspectiveType, moduleEditors);
+                }
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
         }
         
@@ -396,15 +397,15 @@ public class PerspectiveFactoryGenerator extends Generator {
         return new String[] {"author", "runtime", "soaservice"};                          
     }
 
-    private static Perspective getPerspective(String perspectiveType) {
+    private static String getPerspectiveClassName(String perspectiveType) {
         if ("author".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspective.author.AuthorPerspective();
+            return "org.drools.guvnor.client.perspective.author.AuthorPerspective";
         }
         if ("soaservice".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspective.soa.SOAPerspective();
+            return "org.drools.guvnor.client.perspective.soa.SOAPerspective";
         }
         if ("runtime".equals(perspectiveType)) {
-            return new org.drools.guvnor.client.perspective.runtime.RunTimePerspective();
+            return "org.drools.guvnor.client.perspective.runtime.RunTimePerspective";
         }
         return null;
     }

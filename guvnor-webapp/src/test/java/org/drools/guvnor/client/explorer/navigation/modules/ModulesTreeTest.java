@@ -2,14 +2,12 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.Widget;
 
 import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.junit.Before;
 import org.junit.Test;
@@ -108,7 +106,7 @@ public class ModulesTreeTest {
         );
         EventBus eventBus = mock( EventBus.class );
 
-        presenter = new ModulesTree( clientFactory ,eventBus, AuthorPerspective.AUTHOR_PERSPECTIVE);
+        presenter = new ModulesTree( clientFactory ,eventBus, "AuthorPerspective");
     }
 
     private void setUpUserCapabilities( boolean canMakeNewAssets ) {
