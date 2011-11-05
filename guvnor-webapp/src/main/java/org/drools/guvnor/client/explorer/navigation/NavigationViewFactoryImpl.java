@@ -18,19 +18,14 @@ package org.drools.guvnor.client.explorer.navigation;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenu;
 import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
 import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuViewImpl;
-import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenu;
 import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuView;
 import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuViewImpl;
-import org.drools.guvnor.client.common.StackItemHeader;
-import org.drools.guvnor.client.common.StackItemHeaderViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.MultiAssetViewImpl;
@@ -66,13 +61,10 @@ import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeViewImpl;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
-import org.drools.guvnor.client.perspective.soa.SOAPerspective;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.util.Util;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
 
@@ -92,7 +84,6 @@ public class NavigationViewFactoryImpl
     private ModulesTreeItemViewImpl         modulesTreeItemView;
     private PackagesNewAssetMenuViewImpl    modulesNewAssetMenuView;
     private SOAServicesNewAssetMenuViewImpl servicesNewAssetMenuView;
-    private WizardActivityView              wizardView;
 
     public NavigationViewFactoryImpl(ClientFactory clientFactory,
                                      EventBus eventBus) {
@@ -145,47 +136,12 @@ public class NavigationViewFactoryImpl
         return RepositoryServiceFactory.getCategoryService();
     }
 
-    //TODO: get header from configuration instead of hard coding. - JLIU
     public IsWidget getModulesHeaderView(String perspectiveType) {
-        String title;
-        ImageResource image;
-        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
-            title = "Services";
-            image = images.packages();
-        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
-            title = constants.KnowledgeBases();
-            image = images.packages();
-        } else {
-            //Default
-            title = constants.KnowledgeBases();
-            image = images.packages();
-        }
-
-        StackItemHeaderViewImpl view = new StackItemHeaderViewImpl();
-        StackItemHeader header = new StackItemHeader( view );
-        header.setName( title );
-        header.setImageResource( image );
-        return view;
+        return clientFactory.getPerspectiveFactory().getModulesHeaderView(perspectiveType);
     }
 
-    //TODO: get header from configuration instead of hard coding. - JLIU
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {
-        String title;
-        ImageResource image;
-        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
-            title = "Services";
-            image = images.packages();
-        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
-            title = constants.Packages();
-            image = images.chartOrganisation();
-        } else {
-            //Default
-            title = constants.Packages();
-            image = images.chartOrganisation();
-        }
-
-        return Util.getHeader( image,
-                               title );
+        return clientFactory.getPerspectiveFactory().getModulesTreeRootNodeHeader(perspectiveType);
     }
 
     public ModulesTreeItemView getModulesTreeItemView() {
@@ -223,19 +179,8 @@ public class NavigationViewFactoryImpl
         return new MultiAssetViewImpl();
     }
 
-    //TODO: get from configuration instead of hard coding. - JLIU
     public Widget getModulesNewAssetMenu(String perspectiveType) {
-        if ( SOAPerspective.SOA_PERSPECTIVE.equals( perspectiveType ) ) {
-            return (new SOAServicesNewAssetMenu( clientFactory,
-                                                 eventBus )).asWidget();
-        } else if ( AuthorPerspective.AUTHOR_PERSPECTIVE.equals( perspectiveType ) ) {
-            return (new PackagesNewAssetMenu( clientFactory,
-                                              eventBus )).asWidget();
-        } else {
-            //Default
-            return (new PackagesNewAssetMenu( clientFactory,
-                                              eventBus )).asWidget();
-        }
+        return clientFactory.getPerspectiveFactory().getModulesNewAssetMenu(perspectiveType, clientFactory, eventBus);
     }
 
     public SettingsHeaderView getSettingsHeaderView() {

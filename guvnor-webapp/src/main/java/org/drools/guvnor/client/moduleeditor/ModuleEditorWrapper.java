@@ -30,9 +30,6 @@ import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.widgets.drools.toolbar.PackageActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar;
-import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
  * This is the module editor.
@@ -72,7 +69,7 @@ public class ModuleEditorWrapper extends Composite {
         final TabPanel tPanel = new TabPanel();
         tPanel.setWidth("100%");
 
-        ArtifactEditor artifactEditor = new ArtifactEditor(clientFactory, eventBus, packageConfigData, this.isHistoricalReadOnly);
+        ArtifactEditor artifactEditor = new ArtifactEditor(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly);
 
         Command refreshCommand = new Command() {
             public void execute() {
@@ -83,7 +80,7 @@ public class ModuleEditorWrapper extends Composite {
         
         layout.clear();
         
-        PackageEditorActionToolbar actionToolBar = new PackageEditorActionToolbar(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
+        Widget actionToolBar = clientFactory.getPerspectiveFactory().getModuleEditorActionToolbar(packageConfigData, clientFactory, eventBus, this.isHistoricalReadOnly, refreshCommand );
         layout.add(actionToolBar);
 
         AssetViewerActivity assetViewerActivity = new AssetViewerActivity(packageConfigData.uuid,

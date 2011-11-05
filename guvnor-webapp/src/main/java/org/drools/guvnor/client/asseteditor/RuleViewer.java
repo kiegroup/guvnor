@@ -84,8 +84,6 @@ public class RuleViewer extends GuvnorEditor {
 
     /**
      * @param historicalReadOnly true if this is a read only view for historical purposes.
-     * @param actionToolbarButtonsConfigurationProvider
-     *                           used to change the default button configuration provider.
      */
     public RuleViewer(RuleAsset asset,
                       ClientFactory clientFactory,

@@ -30,8 +30,6 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.ArtifactEditor;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.widgets.drools.toolbar.AssetEditorActionToolbar;
-import org.drools.guvnor.client.widgets.toolbar.ActionToolbarButtonsConfigurationProvider;
 
 /**
  * The main layout parent/controller the rule viewer.
@@ -42,8 +40,6 @@ public class RuleViewerWrapper extends GuvnorEditor {
     private RuleAsset asset;
     private boolean isHistoricalReadOnly = false;
     private RuleViewerSettings ruleViewerSettings = null;
-
-    ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
     VerticalPanel layout = new VerticalPanel();
     private final ClientFactory clientFactory;
@@ -84,9 +80,9 @@ public class RuleViewerWrapper extends GuvnorEditor {
 
     private void render() {
         ArtifactEditor artifactEditor = new ArtifactEditor(
+                asset,                
                 clientFactory,
                 eventBus,
-                asset,
                 this.isHistoricalReadOnly);
 
         RuleViewer ruleViewer = new RuleViewer(
@@ -96,8 +92,7 @@ public class RuleViewerWrapper extends GuvnorEditor {
                 ruleViewerSettings);
         
         boolean readOnly = isHistoricalReadOnly || asset.isReadonly() || (this.ruleViewerSettings !=null && this.ruleViewerSettings.isStandalone());
-        Widget actionToolBar = new AssetEditorActionToolbar( 
-                 asset, ruleViewer.getAssetEditor(), clientFactory, eventBus, readOnly);
+        Widget actionToolBar = clientFactory.getPerspectiveFactory().getAssetEditorActionToolbar("author", asset, ruleViewer.getAssetEditor(), clientFactory, eventBus, readOnly);
 
         layout.clear();
         layout.add(actionToolBar);

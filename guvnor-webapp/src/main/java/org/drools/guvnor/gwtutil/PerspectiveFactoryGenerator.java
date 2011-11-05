@@ -277,6 +277,8 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );   	
     }
+    
+    //TODO: Generate from perspective.xml 
     private void generateGetModulesTreeRootNodeHeaderMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
         sourceWriter.println( "public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType) {" );
         sourceWriter.indent();
@@ -303,6 +305,8 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );       
     }
+    
+    //TODO: Generate from perspective.xml 
     private void generateGetModulesNewAssetMenuMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
         sourceWriter.println( "public Widget getModulesNewAssetMenu(String perspectiveType, ClientFactory clientFactory, EventBus eventBus) {" );
         sourceWriter.indent();
@@ -324,17 +328,19 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );           
     }
+    
+    //TODO: Generate from perspective.xml 
     private void generateGetModuleEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
-        sourceWriter.println( "public Widget getModuleEditorActionToolbar(String perspectiveType, PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand) {" );
+        sourceWriter.println( "public Widget getModuleEditorActionToolbar(PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand) {" );
         sourceWriter.indent();
     
-        sourceWriter.println( "if(\"author\".equals(perspectiveType)) {");
+        sourceWriter.println( "if(\"package\".equals(data.getFormat())) {");
         sourceWriter.indent();
         sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
         sourceWriter.outdent();
         sourceWriter.println( "}");
         
-        sourceWriter.println( "if(\"soaservice\".equals(perspectiveType)) {");
+        sourceWriter.println( "if(\"soaservice\".equals(data.getFormat())) {");
         sourceWriter.indent();
         sourceWriter.println( "return new org.drools.guvnor.client.widgets.drools.toolbar.PackageEditorActionToolbar(data,  clientFactory, eventBus, readOnly, refreshCommand);");
         sourceWriter.outdent();
@@ -345,6 +351,8 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );         
     }
+    
+    //TODO: Generate from perspective.xml 
     private void generateGetAssetEditorActionToolbarMethod(SourceWriter sourceWriter, Map<String, List<ModuleEditorConfiguration>> registeredEditors) {
         sourceWriter.println( "public Widget getAssetEditorActionToolbar(String perspectiveType, RuleAsset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly) {" );
         sourceWriter.indent();
@@ -366,8 +374,7 @@ public class PerspectiveFactoryGenerator extends Generator {
         sourceWriter.outdent();
         sourceWriter.println( "}" );          
     }
-    
-    
+        
     public static Map<String, List<ModuleEditorConfiguration>> loadModuleEditorMetaData() {
         Map<String, List<ModuleEditorConfiguration>> moduleEditorConfigurations = new HashMap<String, List<ModuleEditorConfiguration>>();
         String[] registeredPerspectiveTypes = getRegisteredPerspectiveTypes();

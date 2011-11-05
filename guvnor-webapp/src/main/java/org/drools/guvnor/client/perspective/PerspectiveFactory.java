@@ -36,7 +36,7 @@ public interface PerspectiveFactory {
     public IsWidget getModulesHeaderView(String perspectiveType);
     public SafeHtml getModulesTreeRootNodeHeader(String perspectiveType);
     public Widget getModulesNewAssetMenu(String perspectiveType, ClientFactory clientFactory, EventBus eventBus);
-    public Widget getModuleEditorActionToolbar(String perspectiveType, PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand);
+    public Widget getModuleEditorActionToolbar(PackageConfigData data,  ClientFactory clientFactory, EventBus eventBus, boolean readOnly, Command refreshCommand);
     
     public Widget getAssetEditorActionToolbar(String perspectiveType, RuleAsset asset, Widget editor, ClientFactory clientFactory, EventBus eventBus, boolean readOnly);    
     

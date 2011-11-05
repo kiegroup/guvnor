@@ -54,19 +54,19 @@ public class ArtifactEditor extends GuvnorEditor {
     /**
      * @param Artifact artifact
      */
-    public ArtifactEditor(ClientFactory clientFactory,
-                          EventBus eventBus,
-                          Artifact artifact) {
-        this(clientFactory, eventBus, artifact, false);
+    public ArtifactEditor(Artifact artifact,
+                          ClientFactory clientFactory,
+                          EventBus eventBus) {
+        this(artifact, clientFactory, eventBus, false);
     }
 
     /**
      * @param Artifact           artifact
      * @param historicalReadOnly true if this is a read only view for historical purposes.
      */
-    public ArtifactEditor(ClientFactory clientFactory,
-                          EventBus eventBus,
-                          Artifact artifact,
+    public ArtifactEditor(Artifact artifact,
+                          ClientFactory clientFactory,
+                          EventBus eventBus,                          
                           boolean historicalReadOnly) {
         this.artifact = artifact;
         boolean readOnly = historicalReadOnly || artifact.isReadonly();
