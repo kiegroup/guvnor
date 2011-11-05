@@ -128,7 +128,7 @@
     </asseteditor>       
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
         <format>properties</format>
         <icon>images.newFile()</icon>
         <title>constants.XMLProperties()</title>    
@@ -142,7 +142,7 @@
     </asseteditor> 
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
         <format></format>
         <icon>images.newFile()</icon>
         <title>constants.OtherAssetsDocumentation()</title>    

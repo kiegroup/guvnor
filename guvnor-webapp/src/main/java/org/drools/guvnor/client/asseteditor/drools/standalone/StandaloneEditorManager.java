@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.asseteditor.drools.standalone;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -11,10 +11,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.OryxMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
-import org.drools.guvnor.client.asseteditor.drools.standalone.RealAssetsMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
-import org.drools.guvnor.client.asseteditor.drools.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -263,12 +261,12 @@ public class StandaloneEditorManager {
 
             getDRL: function (callbackFunction) {
                 this.drlCallbackFunction = callbackFunction;
-                app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getDRLs()();
+                app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getDRLs()();
             },
 
             getBRL: function (callbackFunction) {
                 this.brlCallbackFunction = callbackFunction;
-                app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getBRLs()();
+                app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getBRLs()();
             },
 
             registerAfterSaveAndCloseButtonCallbackFunction: function (callbackFunction) {
@@ -280,7 +278,7 @@ public class StandaloneEditorManager {
             },
 
             getAssetsUUIDs: function() {
-                return app.@org.drools.guvnor.client.ruleeditor.StandaloneEditorManager::getAssetsUUIDs()();
+                return app.@org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager::getAssetsUUIDs()();
             }
         }
         $wnd.guvnorEditorObject = guvnorEditorObject;

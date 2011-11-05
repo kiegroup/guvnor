@@ -1,4 +1,4 @@
-package org.drools.guvnor.client.ruleeditor;
+package org.drools.guvnor.client.asseteditor.drools;
 
 import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.messages.Constants;

@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client;
 
+import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorManager;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -29,7 +30,6 @@ import org.drools.guvnor.client.resources.WizardCellListResources;
 import org.drools.guvnor.client.resources.WizardResources;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.UserSecurityContext;
-import org.drools.guvnor.client.ruleeditor.StandaloneEditorManager;
 
 import com.google.gwt.animation.client.Animation;
 import com.google.gwt.core.client.EntryPoint;
