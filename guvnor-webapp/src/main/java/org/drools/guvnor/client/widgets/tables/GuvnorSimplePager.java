@@ -261,7 +261,7 @@ public class GuvnorSimplePager extends AbstractPager {
               getDefaultResources(),
               true,
               DEFAULT_FAST_FORWARD_ROWS,
-              false );
+              true );
     }
 
     /**
