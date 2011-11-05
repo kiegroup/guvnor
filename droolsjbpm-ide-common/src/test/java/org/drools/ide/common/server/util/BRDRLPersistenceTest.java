@@ -1326,11 +1326,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", Boolean.TRUE );" ) != -1 );
@@ -1338,7 +1334,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", 123 );" ) != -1 );
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", \"hello\" );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1393,11 +1389,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", Boolean.TRUE );" ) != -1 );
@@ -1405,7 +1397,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", 123 );" ) != -1 );
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", \"hello\" );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1505,11 +1497,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b );" ) != -1 );
@@ -1517,7 +1505,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i );" ) != -1 );
         assertTrue( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1617,11 +1605,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b1 );" ) != -1 );
@@ -1634,7 +1618,7 @@ public class BRDRLPersistenceTest {
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i2 );" ) != -1 );
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s2 );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1690,11 +1674,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"BooleanParameter\", $b );" ) != -1 );
@@ -1702,7 +1682,7 @@ public class BRDRLPersistenceTest {
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"IntegerParameter\", $i );" ) != -1 );
         assertFalse( result.indexOf( "wiWorkItem.getParameters().put( \"StringParameter\", $s );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1771,11 +1751,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "$r.setResultsBooleanResult( (java.lang.Boolean) wiWorkItem.getResult( \"BooleanResult\" ) );" ) != -1 );
@@ -1783,7 +1759,7 @@ public class BRDRLPersistenceTest {
         assertTrue( result.indexOf( "$r.setResultsIntegerResult( (java.lang.Integer) wiWorkItem.getResult( \"IntegerResult\" ) );" ) != -1 );
         assertTrue( result.indexOf( "$r.setResultsStringResult( (java.lang.String) wiWorkItem.getResult( \"StringResult\" ) );" ) != -1 );
 
-        assertTrue( result.indexOf( "wihWorkItem.executeWorkItem( wiWorkItem, wim );" ) != -1 );
+        assertTrue( result.indexOf( "wim.internalExecuteWorkItem( wiWorkItem );" ) != -1 );
 
     }
 
@@ -1849,11 +1825,7 @@ public class BRDRLPersistenceTest {
 
         String result = BRDRLPersistence.getInstance().marshal( m );
 
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
-        assertTrue( result.indexOf( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();" ) != -1 );
-        assertTrue( result.indexOf( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();" ) != -1 );
-
-        assertTrue( result.indexOf( "org.drools.runtime.process.WorkItemHandler wihWorkItem = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"WorkItem\" );" ) != -1 );
+        assertTrue( result.indexOf( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();" ) != -1 );
         assertTrue( result.indexOf( "org.drools.process.instance.impl.WorkItemImpl wiWorkItem = new org.drools.process.instance.impl.WorkItemImpl();" ) != -1 );
 
         assertTrue( result.indexOf( "Results $r = new Results();" ) != -1 );

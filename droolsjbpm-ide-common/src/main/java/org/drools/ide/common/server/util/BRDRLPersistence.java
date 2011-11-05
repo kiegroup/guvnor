@@ -249,11 +249,7 @@ public class BRDRLPersistence
             //Add boiler-plate for actions operating on WorkItems
             if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
                 buf.append( indentation );
-                buf.append( "org.drools.runtime.process.WorkItemManager wim = drools.getWorkingMemory().getWorkItemManager();\n" );
-                buf.append( indentation );
-                buf.append( "org.drools.SessionConfiguration sessionConfiguration = (org.drools.SessionConfiguration) kcontext.getKnowledgeRuntime().getSessionConfiguration();\n" );
-                buf.append( indentation );
-                buf.append( "java.util.Map handlers = sessionConfiguration.getWorkItemHandlers();\n" );
+                buf.append( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
             }
 
             //Marshall the model itself
@@ -928,33 +924,24 @@ public class BRDRLPersistence
             String wiImplName = WORKITEM_PREFIX + wiName;
 
             instantiatedWorkItems.add( wiName );
-
-            buf.append( indentation );
-            buf.append( "org.drools.runtime.process.WorkItemHandler " );
-            buf.append( wiHandlerName );
-            buf.append( " = (org.drools.runtime.process.WorkItemHandler) handlers.get( \"" );
-            buf.append( wiName );
-            buf.append( "\" );\n" );
+            
             buf.append( indentation );
             buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
             buf.append( wiImplName );
             buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
+            buf.append( indentation );
+            buf.append( wiImplName  );
+            buf.append(".setName( \"");
+            buf.append(wiName);
+            buf.append("\" );\n");
             for ( PortableParameterDefinition ppd : action.getWorkDefinition().getParameters() ) {
                 makeWorkItemParameterDRL( ppd,
                                           wiImplName );
             }
             buf.append( indentation );
-            buf.append( "if( " );
-            buf.append( wiHandlerName );
-            buf.append( " != null ) {\n" );
-            buf.append( indentation );
-            buf.append( indentation );
-            buf.append( wiHandlerName );
-            buf.append( ".executeWorkItem( " );
+            buf.append( "wim.internalExecuteWorkItem( " );
             buf.append( wiImplName );
-            buf.append( ", wim );\n" );
-            buf.append( indentation );
-            buf.append( "}\n" );
+            buf.append( " );\n" );
         }
 
         private void makeWorkItemParameterDRL(PortableParameterDefinition ppd,
