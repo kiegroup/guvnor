@@ -14,17 +14,21 @@
  * the License.
  */
 
-package org.drools.guvnor.client.asseteditor;
+package org.drools.guvnor.client.asseteditor.drools;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+import org.drools.guvnor.client.asseteditor.AssetAttachmentFileWidget;
+import org.drools.guvnor.client.asseteditor.PropertiesHolder;
+import org.drools.guvnor.client.asseteditor.RuleViewer;
+import org.drools.guvnor.client.asseteditor.SaveEventListener;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.widgets.tables.PropertiesEditorSimpleTable;
+import org.drools.guvnor.client.widgets.drools.tables.PropertiesEditorSimpleTable;
 
 /**
  * Properties (key/value pairs) editor with a file attachment.
