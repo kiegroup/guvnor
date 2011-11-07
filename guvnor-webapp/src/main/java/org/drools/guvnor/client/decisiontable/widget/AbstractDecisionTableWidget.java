@@ -946,7 +946,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             bRedrawHeader = true;
         } else if ( origColumn.isBound() && !editColumn.isBound() ) {
             bRedrawHeader = true;
-        } else if ( origColumn.getBinding().equals( editColumn.getBinding() ) ) {
+        } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
             bRedrawColumn = true;
         }
 
