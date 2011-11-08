@@ -16,53 +16,58 @@
 
 package org.drools.guvnor.client.ruleeditor;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TabPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.packages.ArtifactEditor;
+import org.drools.guvnor.client.packages.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.TabPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+
 /**
  * The main layout parent/controller the rule viewer.
  */
-public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEditorEvent.Handler {
+public class RuleViewerWrapper extends GuvnorEditor
+    implements
+    RefreshAssetEditorEvent.Handler {
 
-    private Constants constants = GWT.create(Constants.class);
+    private Constants                         constants            = GWT.create( Constants.class );
 
-    private RuleAsset asset;
-    private boolean isHistoricalReadOnly = false;
-    private final RuleViewerSettings ruleViewerSettings;
+    private RuleAsset                         asset;
+    private boolean                           isHistoricalReadOnly = false;
+    private final RuleViewerSettings          ruleViewerSettings;
 
     ActionToolbarButtonsConfigurationProvider actionToolbarButtonsConfigurationProvider;
 
-    VerticalPanel layout = new VerticalPanel();
-    private final ClientFactory clientFactory;
-    private final EventBus eventBus;
+    VerticalPanel                             layout               = new VerticalPanel();
+    private final ClientFactory               clientFactory;
+    private final EventBus                    eventBus;
 
     public RuleViewerWrapper(ClientFactory clientFactory,
-            EventBus eventBus,
-            RuleAsset asset) {
-        this(clientFactory,
+                             EventBus eventBus,
+                             RuleAsset asset) {
+        this( clientFactory,
                 eventBus,
                 asset,
                 false,
-                null);
+                null );
     }
 
     public RuleViewerWrapper(ClientFactory clientFactory,
-            EventBus eventBus,
-            final RuleAsset asset,
-            boolean isHistoricalReadOnly,
-            RuleViewerSettings ruleViewerSettings) {
+                             EventBus eventBus,
+                             final RuleAsset asset,
+                             boolean isHistoricalReadOnly,
+                             RuleViewerSettings ruleViewerSettings) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
         this.asset = asset;
@@ -70,59 +75,77 @@ public class RuleViewerWrapper extends GuvnorEditor implements RefreshAssetEdito
         this.ruleViewerSettings = ruleViewerSettings;
 
         eventBus.addHandler(
-                RefreshAssetEditorEvent.TYPE,
-                this);
+                             RefreshAssetEditorEvent.TYPE,
+                             this );
 
-        initWidget(layout);
+        initWidget( layout );
         render();
-        setWidth("100%");
+        setWidth( "100%" );
     }
 
     private void render() {
         ArtifactEditor artifactEditor = new ArtifactEditor(
-                clientFactory,
-                eventBus,
-                asset,
-                this.isHistoricalReadOnly);
+                                                            clientFactory,
+                                                            eventBus,
+                                                            asset,
+                                                            this.isHistoricalReadOnly );
 
         RuleViewer ruleViewer = new RuleViewer(
-                asset,
-                clientFactory,
-                eventBus,
-                this.isHistoricalReadOnly,
-                actionToolbarButtonsConfigurationProvider,
-                ruleViewerSettings);
+                                                asset,
+                                                clientFactory,
+                                                eventBus,
+                                                this.isHistoricalReadOnly,
+                                                actionToolbarButtonsConfigurationProvider,
+                                                ruleViewerSettings );
         ActionToolbar actionToolBar = ruleViewer.getActionToolbar();
 
         layout.clear();
-        layout.add(actionToolBar);
+        layout.add( actionToolBar );
 
         TabPanel tabPanel = new TabPanel();
-        tabPanel.setWidth("100%");
+        tabPanel.setWidth( "100%" );
 
         ScrollPanel scrollPanel = new ScrollPanel();
-        scrollPanel.add(artifactEditor);
-        tabPanel.add(scrollPanel, constants.Attributes());
+        scrollPanel.add( artifactEditor );
+        tabPanel.add( scrollPanel,
+                      constants.Attributes() );
 
         scrollPanel = new ScrollPanel();
-        scrollPanel.add(ruleViewer);
-        tabPanel.add(scrollPanel, constants.Edit());
-        tabPanel.selectTab(1);
+        scrollPanel.add( ruleViewer );
+        tabPanel.add( scrollPanel,
+                      constants.Edit() );
+        tabPanel.selectTab( 1 );
 
-        layout.add(tabPanel);
+        layout.add( tabPanel );
     }
 
     public void onRefreshAsset(RefreshAssetEditorEvent refreshAssetEditorEvent) {
-        if (refreshAssetEditorEvent.getUuid().equals(asset.getUuid())) {
-            LoadingPopup.showMessage(constants.RefreshingItem());
-            RepositoryServiceFactory.getAssetService().loadRuleAsset(asset.getUuid(),
-                    new GenericCallback<RuleAsset>() {
-                        public void onSuccess(RuleAsset a) {
-                            asset = a;
-                            render();
-                            LoadingPopup.close();
-                        }
-                    });
+        if ( refreshAssetEditorEvent.getUuid().equals( asset.getUuid() ) ) {
+            LoadingPopup.showMessage( constants.RefreshingItem() );
+
+            //When refreshing the Asset ensure the SuggestionCompletionEngine has been cached.
+            //RefreshAssetEditorEvents are fired after an Asset has been moved to a different
+            //Module. Such an operation flushes the SuggestionCompletionCache of engines
+            //for both the 'source' and 'target' Modules (as presumably the Asset could
+            //be a 'Model').
+            RepositoryServiceFactory.getAssetService().loadRuleAsset( asset.getUuid(),
+                                                                      new GenericCallback<RuleAsset>() {
+                                                                          public void onSuccess(final RuleAsset a) {
+                                                                              final String packageName = a.getMetaData().packageName;
+                                                                              SuggestionCompletionCache.getInstance().doAction( packageName,
+                                                                                                                                new Command() {
+
+                                                                                                                                    public void execute() {
+                                                                                                                                        asset = a;
+                                                                                                                                        render();
+                                                                                                                                        LoadingPopup.close();
+                                                                                                                                    }
+
+                                                                                                                                } );
+
+                                                                          }
+                                                                      } );
         }
     }
+
 }
