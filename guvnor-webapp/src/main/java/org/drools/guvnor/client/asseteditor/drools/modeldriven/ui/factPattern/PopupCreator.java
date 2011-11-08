@@ -64,7 +64,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param pattern the pattern to set
+     * @param pattern
+     *            the pattern to set
      */
     public void setPattern(FactPattern pattern) {
         this.pattern = pattern;
@@ -78,7 +79,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param completions the completions to set
+     * @param completions
+     *            the completions to set
      */
     public void setCompletions(SuggestionCompletionEngine completions) {
         this.completions = completions;
@@ -92,7 +94,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param modeller the modeller to set
+     * @param modeller
+     *            the modeller to set
      */
     public void setModeller(RuleModeller modeller) {
         this.modeller = modeller;
@@ -106,7 +109,8 @@ public class PopupCreator {
     }
 
     /**
-     * @param bindable the bindable to set
+     * @param bindable
+     *            the bindable to set
      */
     public void setBindable(boolean bindable) {
         this.bindable = bindable;
@@ -124,6 +128,9 @@ public class PopupCreator {
         popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new BindingTextBox();
+        if ( con.getFieldBinding() != null ) {
+            varName.setText( con.getFieldBinding() );
+        }
         final Button ok = new Button( constants.Set() );
         vn.add( varName );
         vn.add( ok );
@@ -242,7 +249,8 @@ public class PopupCreator {
     }
 
     /**
-     * This shows a popup allowing you to add field constraints to a pattern (its a popup).
+     * This shows a popup allowing you to add field constraints to a pattern
+     * (its a popup).
      */
     public void showPatternPopup(Widget w,
                                  final String factType,
@@ -352,10 +360,9 @@ public class PopupCreator {
     }
 
     /**
-     * This adds in (optionally) the editor for changing the bound variable name.
-     * If its a bindable pattern, it will show the editor,
-     * if it is already bound, and the name is used, it should
-     * not be editable.
+     * This adds in (optionally) the editor for changing the bound variable
+     * name. If its a bindable pattern, it will show the editor, if it is
+     * already bound, and the name is used, it should not be editable.
      */
     private void doBindingEditor(final FormStylePopup popup) {
         if ( bindable || !(modeller.getModel().isBoundFactUsed( pattern.getBoundName() )) ) {
