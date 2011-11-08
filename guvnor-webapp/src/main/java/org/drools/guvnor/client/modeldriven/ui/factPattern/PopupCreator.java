@@ -123,6 +123,9 @@ public class PopupCreator {
         popup.setWidth( 500 + "px" );
         final HorizontalPanel vn = new HorizontalPanel();
         final TextBox varName = new TextBox();
+        if ( con.getFieldBinding() != null ) {
+            varName.setText( con.getFieldBinding() );
+        }
         final Button ok = new Button( constants.Set() );
         vn.add( varName );
         vn.add( ok );
