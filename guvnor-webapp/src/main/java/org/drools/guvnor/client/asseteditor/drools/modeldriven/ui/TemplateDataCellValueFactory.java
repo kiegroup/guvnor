@@ -165,16 +165,18 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         String factField = column.getFactField();
 
         //Strip field name, if it is fully qualified
-        if ( factField.contains( "." ) ) {
-            factField = factField.substring( factField.indexOf( "." ) + 1 );
-        }
+        if ( factField != null ) {
+            if ( factField.contains( "." ) ) {
+                factField = factField.substring( factField.indexOf( "." ) + 1 );
+            }
 
-        //Check for enumerations
-        if ( factType != null && factField != null ) {
-            vals = sce.getEnumValues( factType,
-                                      factField );
-            if ( vals != null && vals.length > 0 ) {
-                return DTDataTypes52.STRING;
+            //Check for enumerations
+            if ( factType != null ) {
+                vals = sce.getEnumValues( factType,
+                                          factField );
+                if ( vals != null && vals.length > 0 ) {
+                    return DTDataTypes52.STRING;
+                }
             }
         }
 
