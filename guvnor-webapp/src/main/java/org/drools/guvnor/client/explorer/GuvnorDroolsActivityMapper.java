@@ -24,8 +24,16 @@ import org.drools.guvnor.client.explorer.navigation.browse.InboxActivity;
 import org.drools.guvnor.client.explorer.navigation.browse.InboxPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.StateActivity;
 import org.drools.guvnor.client.explorer.navigation.browse.StatePlace;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListActivity;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
+import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
+import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListActivity;
+import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierActivity;
+import org.drools.guvnor.client.explorer.navigation.qa.VerifierPlace;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesPlace;
 import org.drools.guvnor.client.explorer.navigation.settings.PreferencesActivity;
@@ -37,20 +45,15 @@ import org.drools.guvnor.client.explorer.navigation.tasks.PersonalTasksPlace;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivity;
 import org.drools.guvnor.client.moduleeditor.AssetViewerPlace;
 import org.drools.guvnor.client.util.Activity;
-import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardActivity;
 import org.drools.guvnor.client.widgets.wizards.WizardPlace;
 
 import com.google.gwt.place.shared.Place;
 
-public class GuvnorActivityMapper
-        implements
-        ActivityMapper {
-    protected ClientFactory  clientFactory;
+public class GuvnorDroolsActivityMapper extends GuvnorActivityMapper {
 
-    public GuvnorActivityMapper(ClientFactory clientFactory) {
-        super();
-        this.clientFactory = clientFactory;
+    public GuvnorDroolsActivityMapper(ClientFactory clientFactory) {
+        super(clientFactory);
     }
 
     public Activity getActivity(Place place) {
@@ -71,6 +74,23 @@ public class GuvnorActivityMapper
         } else if ( place instanceof ManagerPlace ) {
             return new ManagerActivity(
                     ((ManagerPlace) place).getId(),
+                    clientFactory );
+        } else if ( place instanceof TestScenarioListPlace ) {
+            return new TestScenarioListActivity(
+                    ((TestScenarioListPlace) place).getModuleUuid(),
+                    clientFactory );
+        } else if ( place instanceof VerifierPlace ) {
+            return new VerifierActivity(
+                    ((VerifierPlace) place).getModuleUuid(),
+                    clientFactory );
+        } else if ( place instanceof SnapshotPlace ) {
+            return new SnapshotActivity(
+                    ((SnapshotPlace) place).getModuleName(),
+                    ((SnapshotPlace) place).getSnapshotName(),
+                    clientFactory);
+        } else if ( place instanceof SnapshotAssetListPlace ) {
+            return new SnapshotAssetListActivity(
+                    (SnapshotAssetListPlace) place,
                     clientFactory );
         } else if ( place instanceof CategoryPlace ) {
             return new CategoryActivity(

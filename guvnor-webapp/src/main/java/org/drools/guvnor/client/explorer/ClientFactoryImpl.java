@@ -89,8 +89,15 @@ public class ClientFactoryImpl
                                          eventBus );
     }
 
+	/*
+	 * TODO: Alternatively, we can do below: 
+	 * <generate-with class="org.drools.guvnor.client.util.ActivityMapper">
+	 *     <when-type-assignable class="org.drools.guvnor.client.explorer.GuvnorDroolsActivityMapper"/>
+	 * </generate-with>
+	 * We will revisit this code to decide which way is better later.
+	 */
     public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorActivityMapper( this );
+        return new GuvnorDroolsActivityMapper( this );
     }
 
     public PlaceHistoryHandler getPlaceHistoryHandler() {
@@ -102,7 +109,7 @@ public class ClientFactoryImpl
 
     public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
         if ( guvnorPlaceHistoryMapper == null ) {
-            guvnorPlaceHistoryMapper = GWT.create( GuvnorPlaceHistoryMapper.class );
+            guvnorPlaceHistoryMapper = GWT.create( GuvnorDroolsPlaceHistoryMapper.class );
         }
         return guvnorPlaceHistoryMapper;
     }
