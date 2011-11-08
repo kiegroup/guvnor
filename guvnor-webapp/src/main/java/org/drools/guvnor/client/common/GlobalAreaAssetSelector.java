@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.common;
 
-
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
@@ -33,62 +32,73 @@ import com.google.gwt.user.client.ui.ListBox;
  */
 public class GlobalAreaAssetSelector extends Composite {
 
-    /** Used to remember what the "current asset" we are working in is...
-     * Should be the one the user has most recently dealt with... */
+    /**
+     * Used to remember what the "current asset" we are working in is... Should
+     * be the one the user has most recently dealt with...
+     */
     public static String currentlySelectedAsset;
 
-    private ListBox assetList;
-    private String format;
+    private ListBox      assetList;
+    private String[]     formats;
 
     public GlobalAreaAssetSelector(String formatToImport) {
         assetList = new ListBox();
-        if(formatToImport == null) {
-            //default format
-            this.format = AssetFormats.BUSINESS_RULE;
+        //Null format implies the following... <sigh>
+        if ( formatToImport == null ) {
+            this.formats = new String[]{AssetFormats.BUSINESS_RULE, 
+                                        AssetFormats.DSL_TEMPLATE_RULE, 
+                                        AssetFormats.DRL, 
+                                        AssetFormats.DECISION_SPREADSHEET_XLS, 
+                                        AssetFormats.DECISION_TABLE_GUIDED};
         } else {
-            this.format = formatToImport;
+            this.formats = new String[]{formatToImport};
         }
-       
 
         Scheduler.get().scheduleDeferred( new Command() {
             public void execute() {
                 loadAssetList();
             }
-        });
+        } );
 
         initWidget( assetList );
     }
-    
+
     private void loadAssetList() {
-        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName("globalArea", new String[]{format}, 0, -1, ExplorerNodeConfig.RULE_LIST_TABLE_ID, new GenericCallback<TableDataResult>() {
+        RepositoryServiceFactory.getAssetService().listAssetsWithPackageName( "globalArea",
+                                                                              formats,
+                                                                              0,
+                                                                              -1,
+                                                                              ExplorerNodeConfig.RULE_LIST_TABLE_ID,
+                                                                              new GenericCallback<TableDataResult>() {
 
-            public void onSuccess(TableDataResult result) {
+                                                                                  public void onSuccess(TableDataResult result) {
 
-                for (int i = 0; i < result.data.length; i++) {
-                    assetList.addItem(result.data[i].getDisplayName(), result.data[i].id);
-                    if (currentlySelectedAsset != null &&
-                            result.data[i].equals( currentlySelectedAsset )) {
-                        assetList.setSelectedIndex( i );
-                    }
-                }
+                                                                                      for ( int i = 0; i < result.data.length; i++ ) {
+                                                                                          assetList.addItem( result.data[i].getDisplayName(),
+                                                                                                             result.data[i].id );
+                                                                                          if ( currentlySelectedAsset != null &&
+                                                                                               result.data[i].equals( currentlySelectedAsset ) ) {
+                                                                                              assetList.setSelectedIndex( i );
+                                                                                          }
+                                                                                      }
 
-                assetList.addChangeHandler(new ChangeHandler() {
-                    public void onChange(ChangeEvent sender) {
-                         currentlySelectedAsset = getSelectedAsset();
-                    }
-                });
-            }
-            
-            public void onFailure(Throwable t) {
-                if ( t.getMessage().indexOf( "AuthorizationException" ) > -1 ) {
-                    //Do nothing, just leave asset list empty.
-                    //Window.alert( "No permission to access global area" );
-                } else {
-                    super.onFailure( t );
-                }
-            }
+                                                                                      assetList.addChangeHandler( new ChangeHandler() {
+                                                                                          public void onChange(ChangeEvent sender) {
+                                                                                              currentlySelectedAsset = getSelectedAsset();
+                                                                                          }
+                                                                                      } );
+                                                                                  }
 
-        });
+                                                                                  public void onFailure(Throwable t) {
+                                                                                      if ( t.getMessage().indexOf( "AuthorizationException" ) > -1 ) {
+                                                                                          //Do nothing, just leave asset list empty.
+                                                                                          //Window.alert( "No permission to access global area" );
+                                                                                      } else {
+                                                                                          super.onFailure( t );
+                                                                                      }
+                                                                                  }
+
+                                                                              } );
     }
 
     /**
