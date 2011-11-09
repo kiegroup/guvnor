@@ -31,7 +31,7 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
     public SOAServicesNewAssetMenu( ClientFactory clientFactory, EventBus eventBus ) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
-        this.view = clientFactory.getNavigationViewFactory().getServicesNewAssetMenuView();
+        this.view = new SOAServicesNewAssetMenuViewImpl();
         view.setPresenter( this );
     }
 

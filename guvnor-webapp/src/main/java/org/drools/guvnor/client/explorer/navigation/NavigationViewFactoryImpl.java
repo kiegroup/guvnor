@@ -27,6 +27,8 @@ import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuViewImpl;
 import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuView;
 import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.ModuleEditorActivityView;
+import org.drools.guvnor.client.explorer.ModuleEditorActivityViewImpl;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.MultiAssetViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
@@ -61,10 +63,11 @@ import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeViewImpl;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivityViewImpl;
+import org.drools.guvnor.client.perspective.PerspectivesPanelView;
+import org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.resources.Images;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityViewImpl;
 
@@ -84,6 +87,7 @@ public class NavigationViewFactoryImpl
     private ModulesTreeItemViewImpl         modulesTreeItemView;
     private PackagesNewAssetMenuViewImpl    modulesNewAssetMenuView;
     private SOAServicesNewAssetMenuViewImpl servicesNewAssetMenuView;
+    protected PerspectivesPanelView     perspectivesPanelView;
 
     public NavigationViewFactoryImpl(ClientFactory clientFactory,
                                      EventBus eventBus) {
@@ -128,14 +132,6 @@ public class NavigationViewFactoryImpl
         return modulesTreeView;
     }
 
-    public RepositoryServiceAsync getRepositoryService() {
-        return RepositoryServiceFactory.getService();
-    }
-
-    public CategoryServiceAsync getCategoryService() {
-        return RepositoryServiceFactory.getCategoryService();
-    }
-
     public IsWidget getModulesHeaderView(String perspectiveType) {
         return clientFactory.getPerspectiveFactory().getModulesHeaderView(perspectiveType);
     }
@@ -149,22 +145,6 @@ public class NavigationViewFactoryImpl
             modulesTreeItemView = new ModulesTreeItemViewImpl();
         }
         return modulesTreeItemView;
-    }
-
-    //TODO: auto generate from configuration - JLIU
-    public PackagesNewAssetMenuView getPackagesNewAssetMenuView() {
-        if ( modulesNewAssetMenuView == null ) {
-            modulesNewAssetMenuView = new PackagesNewAssetMenuViewImpl();
-        }
-        return modulesNewAssetMenuView;
-    }
-
-    //TODO: auto generate from configuration - JLIU
-    public SOAServicesNewAssetMenuView getServicesNewAssetMenuView() {
-        if ( servicesNewAssetMenuView == null ) {
-            servicesNewAssetMenuView = new SOAServicesNewAssetMenuViewImpl();
-        }
-        return servicesNewAssetMenuView;
     }
 
     public GlobalAreaTreeItemView getGlobalAreaTreeItemView() {
@@ -217,6 +197,22 @@ public class NavigationViewFactoryImpl
 
     public WizardActivityView getWizardView() {
         return new WizardActivityViewImpl( eventBus );
+    }
+    
+    public ModuleEditorActivityView getModuleEditorActivityView() {
+        return new ModuleEditorActivityViewImpl();
+    }
+
+    public AssetViewerActivityView getAssetViewerActivityView() {
+        return new AssetViewerActivityViewImpl();
+    }
+    
+    public PerspectivesPanelView getPerspectivesPanelView() {
+        if ( perspectivesPanelView == null ) {
+            perspectivesPanelView = new PerspectivesPanelViewImpl( clientFactory,
+                                                                   eventBus );
+        }
+        return perspectivesPanelView;
     }
 
 }

@@ -51,7 +51,7 @@ public class PerspectivesPanelTest {
         ClientFactory clientFactory = mock(ClientFactory.class);
         eventBus = spy(new EventBusMock());
         when(
-                clientFactory.getPerspectivesPanelView()
+                clientFactory.getNavigationViewFactory().getPerspectivesPanelView()
         ).thenReturn(
                 view
         );

@@ -20,28 +20,25 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
-import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuView;
+import org.drools.guvnor.client.explorer.ModuleEditorActivityView;
 import org.drools.guvnor.client.explorer.MultiAssetView;
 import org.drools.guvnor.client.explorer.navigation.admin.AdminTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
-import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.ModulesTreeView;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderView;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
-import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsHeaderView;
 import org.drools.guvnor.client.explorer.navigation.settings.SettingsTreeView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksHeaderView;
 import org.drools.guvnor.client.explorer.navigation.tasks.TasksTreeView;
-import org.drools.guvnor.client.rpc.CategoryServiceAsync;
-import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
+import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
+import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.widgets.wizards.WizardActivityView;
 
 public interface NavigationViewFactory {
@@ -54,25 +51,13 @@ public interface NavigationViewFactory {
 
     AdminTreeView getAdminTreeView();
 
-    DeploymentTreeView getDeploymentTreeView();
-
-    QATreeView getQATreeView();
-
     ModulesTreeView getModulesTreeView();
-
-    RepositoryServiceAsync getRepositoryService();
-
-    CategoryServiceAsync getCategoryService();
 
     IsWidget getModulesHeaderView(String perspectiveType);
 
     SafeHtml getModulesTreeRootNodeHeader(String perspectiveType);
 
     ModulesTreeItemView getModulesTreeItemView();
-
-    PackagesNewAssetMenuView getPackagesNewAssetMenuView();
-
-    SOAServicesNewAssetMenuView getServicesNewAssetMenuView();
 
     GlobalAreaTreeItemView getGlobalAreaTreeItemView();
 
@@ -99,5 +84,11 @@ public interface NavigationViewFactory {
     TasksTreeView getTasksTreeView();
     
     WizardActivityView getWizardView();
+    
+    ModuleEditorActivityView getModuleEditorActivityView();
+
+    AssetViewerActivityView getAssetViewerActivityView();
+        
+    PerspectivesPanelView getPerspectivesPanelView();
 
 }

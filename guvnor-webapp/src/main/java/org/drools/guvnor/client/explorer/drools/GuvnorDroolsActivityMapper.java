@@ -14,8 +14,18 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.drools;
 
+import org.drools.guvnor.client.explorer.AssetEditorActivity;
+import org.drools.guvnor.client.explorer.AssetEditorPlace;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.FindActivity;
+import org.drools.guvnor.client.explorer.FindPlace;
+import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
+import org.drools.guvnor.client.explorer.ModuleEditorActivity;
+import org.drools.guvnor.client.explorer.ModuleEditorPlace;
+import org.drools.guvnor.client.explorer.MultiAssetActivity;
+import org.drools.guvnor.client.explorer.MultiAssetPlace;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerActivity;
 import org.drools.guvnor.client.explorer.navigation.admin.ManagerPlace;
 import org.drools.guvnor.client.explorer.navigation.browse.CategoryActivity;

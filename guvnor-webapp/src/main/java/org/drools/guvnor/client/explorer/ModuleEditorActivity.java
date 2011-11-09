@@ -18,7 +18,6 @@ package org.drools.guvnor.client.explorer;
 
 import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.common.RulePackageSelector;
 import org.drools.guvnor.client.moduleeditor.ModuleEditorWrapper;
 import org.drools.guvnor.client.rpc.PackageConfigData;
@@ -33,7 +32,7 @@ public class ModuleEditorActivity extends Activity {
     // TODO: add handler for module refresh event -Rikkola-
 
     public ModuleEditorActivity( String uuid, ClientFactory clientFactory ) {
-        this.view = clientFactory.getModuleEditorActivityView();
+        this.view = clientFactory.getNavigationViewFactory().getModuleEditorActivityView();
 
         this.uuid = uuid;
 

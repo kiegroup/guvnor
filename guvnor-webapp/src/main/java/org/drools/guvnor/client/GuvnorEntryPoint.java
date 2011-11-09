@@ -20,7 +20,7 @@ import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorMa
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ClientFactoryImpl;
+import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.GuvnorResources;

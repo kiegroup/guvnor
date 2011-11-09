@@ -17,6 +17,8 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
+import org.drools.guvnor.client.explorer.drools.GuvnorDroolsActivityMapper;
+import org.drools.guvnor.client.explorer.drools.GuvnorDroolsPlaceHistoryMapper;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
@@ -32,44 +34,32 @@ import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SecurityServiceAsync;
-import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
-import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 
-public class ClientFactoryImpl
+public abstract class AbstractClientFactoryImpl
         implements
         ClientFactory {
 
-    private final PlaceController     placeController;
-    private PerspectivesPanelView     perspectivesPanelView;
-    private NavigationViewFactoryImpl navigationViewFactory;
+	protected final PlaceController     placeController;
+    protected NavigationViewFactoryImpl navigationViewFactory;
 
-    private AssetEditorFactory        assetEditorFactory;
-    private PerspectiveFactory        perspectiveFactory;
-    private PlaceHistoryHandler       placeHistoryHandler;
-    private GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
-    private final EventBus            eventBus;
-    private WizardFactory             wizardFactory;
+    protected AssetEditorFactory        assetEditorFactory;
+    protected PerspectiveFactory        perspectiveFactory;
+    protected PlaceHistoryHandler       placeHistoryHandler;
+    protected GuvnorPlaceHistoryMapper  guvnorPlaceHistoryMapper;
+    protected final EventBus            eventBus;
 
-    public ClientFactoryImpl(EventBus eventBus) {
+    public AbstractClientFactoryImpl(EventBus eventBus) {
         this.eventBus = eventBus;
         this.placeController = new PlaceController( eventBus );
     }
 
     public PlaceController getPlaceController() {
         return placeController;
-    }
-
-    public PerspectivesPanelView getPerspectivesPanelView() {
-        if ( perspectivesPanelView == null ) {
-            perspectivesPanelView = new PerspectivesPanelViewImpl( this,
-                                                                   eventBus );
-        }
-        return perspectivesPanelView;
     }
 
     public NavigationViewFactory getNavigationViewFactory() {
@@ -114,14 +104,6 @@ public class ClientFactoryImpl
         return guvnorPlaceHistoryMapper;
     }
 
-    public ModuleEditorActivityView getModuleEditorActivityView() {
-        return new ModuleEditorActivityViewImpl();
-    }
-
-    public AssetViewerActivityView getAssetViewerActivityView() {
-        return new AssetViewerActivityViewImpl();
-    }
-
     public PackageServiceAsync getPackageService() {
         return RepositoryServiceFactory.getPackageService();
     }
@@ -159,13 +141,4 @@ public class ClientFactoryImpl
     public SecurityServiceAsync getSecurityService() {
         return RepositoryServiceFactory.getSecurityService();
     }
-
-    public WizardFactory getWizardFactory() {
-        if ( wizardFactory == null ) {
-            wizardFactory = new WizardFactoryImpl( this,
-                                                   eventBus );
-        }
-        return wizardFactory;
-    }
-
 }

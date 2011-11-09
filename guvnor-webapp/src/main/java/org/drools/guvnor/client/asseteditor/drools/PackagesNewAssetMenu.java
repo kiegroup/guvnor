@@ -32,7 +32,7 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
     public PackagesNewAssetMenu( ClientFactory clientFactory, EventBus eventBus ) {
         this.clientFactory = clientFactory;
         this.eventBus = eventBus;
-        this.view = clientFactory.getNavigationViewFactory().getPackagesNewAssetMenuView();
+        this.view = new PackagesNewAssetMenuViewImpl();
         view.setPresenter( this );
     }
 

@@ -36,7 +36,7 @@ public class PerspectivesPanel implements Presenter {
     public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
-        this.view = clientFactory.getPerspectivesPanelView();
+        this.view = clientFactory.getNavigationViewFactory().getPerspectivesPanelView();
         this.view.setPresenter(this);
 
         String[] registeredPerspectiveTypes = clientFactory.getPerspectiveFactory().getRegisteredPerspectiveTypes();

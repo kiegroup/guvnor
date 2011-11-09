@@ -44,7 +44,7 @@ public class AppControllerTest {
         clientFactory = mock( ClientFactory.class );
         PerspectivesPanelView perspectivesPanelView = mock( PerspectivesPanelView.class );
         when(
-                clientFactory.getPerspectivesPanelView()
+                clientFactory.getNavigationViewFactory().getPerspectivesPanelView()
         ).thenReturn(
                 perspectivesPanelView
         );

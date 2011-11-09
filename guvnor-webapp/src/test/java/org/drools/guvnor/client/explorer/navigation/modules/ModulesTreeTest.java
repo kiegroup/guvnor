@@ -3,7 +3,6 @@ package org.drools.guvnor.client.explorer.navigation.modules;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.MenuBar;
 
-import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
 import org.drools.guvnor.client.configurations.Capability;
 import org.drools.guvnor.client.configurations.UserCapabilities;
 import org.drools.guvnor.client.explorer.ClientFactory;
@@ -84,12 +83,6 @@ public class ModulesTreeTest {
                 packageService
         );
 
-        PackagesNewAssetMenuView modulesNewAssetMenuView = mock( PackagesNewAssetMenuView.class );
-        when(
-                navigationViewFactory.getPackagesNewAssetMenuView()
-        ).thenReturn(
-                modulesNewAssetMenuView
-        );
 /*        
         MenuBar rootMenuBar = new MenuBar( true ); 
         when(

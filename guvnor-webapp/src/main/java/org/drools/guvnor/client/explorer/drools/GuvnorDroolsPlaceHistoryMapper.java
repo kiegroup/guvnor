@@ -1,6 +1,7 @@
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.explorer.drools;
 
 
+import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotAssetListPlace;
 import org.drools.guvnor.client.explorer.navigation.deployment.SnapshotPlace;
 import org.drools.guvnor.client.explorer.navigation.qa.TestScenarioListPlace;
