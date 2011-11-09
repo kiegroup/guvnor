@@ -268,11 +268,21 @@ public class RepositoryAssetService
                                    String newPackage,
                                    String comment) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
+        
+        AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
+
+        //Perform house-keeping for when an Asset is removed from a package
+        attachmentRemoved( item );
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
+
         getRulesRepository().moveRuleItemPackage(newPackage,
                 uuid,
                 comment);
+        
+        //Perform house-keeping for when an Asset is added to a package
+        attachmentAdded( item );
+
     }
 
     @WebRemote
@@ -282,10 +292,17 @@ public class RepositoryAssetService
         AssetItem item = getRulesRepository().loadAssetByUUID( uuid );
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getPackageName());
 
+        //Perform house-keeping for when an Asset is removed from a package
+        attachmentRemoved( item );
+
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
         getRulesRepository().moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
+        
+        //Perform house-keeping for when an Asset is added to a package
+        attachmentAdded( item );
+        
     }
 
     @WebRemote
@@ -592,6 +609,36 @@ public class RepositoryAssetService
 
     private String getCurrentUserName() {
         return getRulesRepository().getSession().getUserID();
+    }
+    
+    //The Asset is being effectively deleted from the source package so treat as though the Content is being deleted
+    private void attachmentRemoved(AssetItem item) {
+        ICanHasAttachment attachmentHandler = null;
+        ContentHandler contentHandler = ContentManager.getHandler( item.getFormat() );
+        if ( contentHandler instanceof ICanHasAttachment ) {
+            attachmentHandler = (ICanHasAttachment) contentHandler;
+            try {
+                attachmentHandler.onAttachmentRemoved( item );
+            } catch ( IOException ioe ) {
+                log.error( "Unable to remove asset attachment",
+                           ioe );
+            }
+        }
+    }
+
+    //The Asset is being effectively added to the target package so treat as though the Content is being added
+    private void attachmentAdded(AssetItem item) {
+        ICanHasAttachment attachmentHandler = null;
+        ContentHandler contentHandler = ContentManager.getHandler( item.getFormat() );
+        if ( contentHandler instanceof ICanHasAttachment ) {
+            attachmentHandler = (ICanHasAttachment) contentHandler;
+            try {
+                attachmentHandler.onAttachmentAdded( item );
+            } catch ( IOException ioe ) {
+                log.error( "Unable to remove asset attachment",
+                           ioe );
+            }
+        }
     }
 
 }
