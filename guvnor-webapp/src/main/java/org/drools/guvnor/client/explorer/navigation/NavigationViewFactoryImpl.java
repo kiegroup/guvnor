@@ -22,10 +22,6 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
 
-import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuView;
-import org.drools.guvnor.client.asseteditor.drools.PackagesNewAssetMenuViewImpl;
-import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuView;
-import org.drools.guvnor.client.asseteditor.soa.SOAServicesNewAssetMenuViewImpl;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ModuleEditorActivityView;
 import org.drools.guvnor.client.explorer.ModuleEditorActivityViewImpl;
@@ -36,7 +32,6 @@ import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeView;
 import org.drools.guvnor.client.explorer.navigation.browse.BrowseTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.deployment.DeploymentTreeView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemView;
 import org.drools.guvnor.client.explorer.navigation.modules.GlobalAreaTreeItemViewImpl;
 import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeItemView;
@@ -49,7 +44,6 @@ import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderVie
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeView;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessesTreeViewImpl;
-import org.drools.guvnor.client.explorer.navigation.qa.QATreeView;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderView;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingHeaderViewImpl;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportingTreeView;
@@ -85,8 +79,6 @@ public class NavigationViewFactoryImpl
     private ModulesTreeViewImpl             modulesTreeView;
     private BrowseTreeViewImpl              browseTreeView;
     private ModulesTreeItemViewImpl         modulesTreeItemView;
-    private PackagesNewAssetMenuViewImpl    modulesNewAssetMenuView;
-    private SOAServicesNewAssetMenuViewImpl servicesNewAssetMenuView;
     protected PerspectivesPanelView     perspectivesPanelView;
 
     public NavigationViewFactoryImpl(ClientFactory clientFactory,
@@ -114,14 +106,6 @@ public class NavigationViewFactoryImpl
     }
 
     public AdminTreeView getAdminTreeView() {
-        return null; //TODO: Generated code -Rikkola-
-    }
-
-    public DeploymentTreeView getDeploymentTreeView() {
-        return null; //TODO: Generated code -Rikkola-
-    }
-
-    public QATreeView getQATreeView() {
         return null; //TODO: Generated code -Rikkola-
     }
 

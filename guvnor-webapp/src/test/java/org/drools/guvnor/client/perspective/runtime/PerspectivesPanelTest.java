@@ -14,7 +14,7 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.client.explorer;
+package org.drools.guvnor.client.perspective.runtime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +24,7 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
+import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;

@@ -79,17 +79,6 @@ public abstract class AbstractClientFactoryImpl
                                          eventBus );
     }
 
-	/*
-	 * TODO: Alternatively, we can do below: 
-	 * <generate-with class="org.drools.guvnor.client.util.ActivityMapper">
-	 *     <when-type-assignable class="org.drools.guvnor.client.explorer.GuvnorDroolsActivityMapper"/>
-	 * </generate-with>
-	 * We will revisit this code to decide which way is better later.
-	 */
-    public GuvnorActivityMapper getActivityMapper() {
-        return new GuvnorDroolsActivityMapper( this );
-    }
-
     public PlaceHistoryHandler getPlaceHistoryHandler() {
         if ( placeHistoryHandler == null ) {
             placeHistoryHandler = new PlaceHistoryHandler( getPlaceHistoryMapper() );

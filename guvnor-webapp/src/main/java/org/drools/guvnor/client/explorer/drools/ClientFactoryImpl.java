@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.explorer.drools;
 
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
+import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
 
 import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
@@ -30,6 +31,17 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
         super(eventBus);
     }
 
+	/*
+	 * TODO: Alternatively, we can do below: 
+	 * <generate-with class="org.drools.guvnor.client.util.ActivityMapper">
+	 *     <when-type-assignable class="org.drools.guvnor.client.explorer.GuvnorDroolsActivityMapper"/>
+	 * </generate-with>
+	 * We will revisit this code to decide which way is better later.
+	 */
+    public GuvnorActivityMapper getActivityMapper() {
+        return new GuvnorDroolsActivityMapper( this );
+    }
+    
     public WizardFactory getWizardFactory() {
         if ( wizardFactory == null ) {
             wizardFactory = new WizardFactoryImpl( this,

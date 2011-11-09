@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import org.drools.guvnor.client.explorer.drools.GuvnorDroolsActivityMapper;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;
@@ -40,7 +39,7 @@ public class GuvnorActivityMapperTest {
     @Before
     public void setUp() throws Exception {
         ClientFactory clientFactory = mock(ClientFactory.class);
-        guvnorActivityMapper = new GuvnorDroolsActivityMapper(clientFactory);
+        guvnorActivityMapper = new GuvnorActivityMapper(clientFactory);
     }
 
     @Test
