@@ -31,15 +31,15 @@ public class FieldData
     private String          name;
 
     /**
-     * The value of the field to be set to.
-     * This will either be a literal value (which will be coerced by MVEL).
-     * Or if it starts with an "=" then it is an EL that will be evaluated to yield a value.
+     * The value of the field to be set to. This will either be a literal value
+     * (which will be coerced by MVEL). Or if it starts with an "=" then it is
+     * an EL that will be evaluated to yield a value.
      */
-    private String          value;
+    private String          value               = "";
     private long            nature;
     /**
-     * This is used only when action is first created.
-     * This means that there is no value yet for the constraint.
+     * This is used only when action is first created. This means that there is
+     * no value yet for the constraint.
      */
     public static final int TYPE_UNDEFINED      = 0;
 
@@ -59,8 +59,8 @@ public class FieldData
     public static final int TYPE_FORMULA        = 3;
 
     /**
-     * This is not used yet. ENUMs are not suitable for business rules
-     * until we can get data driven non code enums.
+     * This is not used yet. ENUMs are not suitable for business rules until we
+     * can get data driven non code enums.
      */
     public static final int TYPE_ENUM           = 4;
 
@@ -69,13 +69,13 @@ public class FieldData
      */
     public static final int TYPE_PREDICATE      = 5;
     /*
-    *  The field is a collection and user has selected the guided list widget
-    */
+     * The field is a collection and user has selected the guided list widget
+     */
     public static final int TYPE_COLLECTION     = 6;
     /*
-    *  In case the nature is set to TYPE_COLLECTION, collectionFactList may contain
-    * the list of factData
-    */
+     * In case the nature is set to TYPE_COLLECTION, collectionFactList may
+     * contain the list of factData
+     */
     public List<FieldData>  collectionFieldList = null;
 
     public String           collectionType;
