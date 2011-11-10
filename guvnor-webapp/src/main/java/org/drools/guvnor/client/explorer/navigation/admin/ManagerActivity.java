@@ -59,7 +59,8 @@ public class ManagerActivity extends Activity {
                 break;
             case 1 :
                 tabbedPanel.add( constants.ArchivedManager(),
-                                 new ArchivedAssetManager( clientFactory ) );
+                                 new ArchivedAssetManager( clientFactory,
+                                                           eventBus ) );
                 break;
 
             case 2 :
