@@ -50,11 +50,13 @@ public abstract class GuvnorTestBase {
 
     @Deployment
     public static WebArchive createDeployment() {
-        File mergedBeansXml = writeMergedBeansXmlFile();
         WebArchive webArchive = ShrinkWrap.create(MavenImporter.class).loadEffectivePom("pom.xml")
                 .importBuildOutput().importTestBuildOutput()
-                .as(WebArchive.class)
-                .addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"));
+                .as(WebArchive.class);
+        addTestDependencies(webArchive);
+        File mergedBeansXml = writeMergedBeansXmlFile();
+        webArchive.addAsWebInfResource(mergedBeansXml, ArchivePaths.create("beans.xml"));
+
         File explodedWarFile = new File("target/guvnor-webapp-5.4.0-SNAPSHOT");
         if (!explodedWarFile.exists()) {
             throw new IllegalStateException("The exploded war file (" + explodedWarFile
@@ -92,7 +94,15 @@ public abstract class GuvnorTestBase {
 //        return webArchive;
 //    }
 
+    private static void addTestDependencies(WebArchive webArchive) {
+        // Adding all test scope dependencies is bad because it includes arquillian and shrinkwrap
+        // For now, we just add what we need... this is not scalable
+        webArchive.addClasses(org.apache.commons.httpclient.Credentials.class,
+                org.apache.commons.httpclient.UsernamePasswordCredentials.class);
+    }
+
     private static File writeMergedBeansXmlFile() {
+        // TODO Workaround for https://issues.jboss.org/browse/ARQ-585
         File productionBeansXml = new File("src/main/resources/META-INF/beans.xml");
         File mergedBeansXml = new File("target/mergedBeans.xml");
         try {
@@ -115,6 +125,7 @@ public abstract class GuvnorTestBase {
     }
 
     private static void removeExcludedFiles(WebArchive webArchive, File explodedWarFile) {
+        // Workaround because guvnor-webapp and guvnor-gwt-client modules aren't split
         webArchive.delete(ArchivePaths.create("WEB-INF/classes/org/drools/guvnor/gwtutil"));
         // Workaround for JBoss 7 https://issues.jboss.org/browse/WELD-983
         File libDir = new File(explodedWarFile, "WEB-INF/lib");

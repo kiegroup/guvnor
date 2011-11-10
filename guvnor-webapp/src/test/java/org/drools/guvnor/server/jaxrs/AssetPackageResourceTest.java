@@ -60,7 +60,7 @@ import static org.junit.Assert.*;
 
 public class AssetPackageResourceTest extends GuvnorTestBase {
 
-    private static int totalAssets;
+    private static int totalAssets = 7;
 
     private Abdera abdera = new Abdera();
 
@@ -148,21 +148,22 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Count all the assets
         Iterator<AssetItem> assets = pkg.getAssets();
+        int assetsCount = 0;
         while (assets.hasNext()) {
-            totalAssets++;
+            assetsCount++;
             assets.next();
         }
+        assertEquals(totalAssets, assetsCount);
     }
 
     @Test @RunAsClient
     public void testGetAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
-        options.setAuthorization("BASIC " + new String( new Base64().encode( "admin:admin".getBytes() ) ));
-
-        System.out.println("Checking: " + new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm());
 
         ClientResponse resp = client.get(new URL(baseURL, "rest/packages/restPackage1/assets").toExternalForm(), options);
         
@@ -180,6 +181,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetsAsJaxB(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -192,6 +195,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
      public void testGetAssetsAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -203,6 +208,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     @Test @RunAsClient
     public void testGetDRLAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
@@ -234,6 +241,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Use abdera for connection only
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
@@ -254,6 +263,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     @Test @RunAsClient
     public void testGetDRLAndDSLAssetsAsAtom(@ArquillianResource URL baseURL) throws Exception {
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
@@ -286,6 +297,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Use abdera for connection only
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_JSON);
@@ -306,6 +319,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetAsAtom(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -342,6 +357,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {     
         URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -382,6 +399,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         formatExtension.getExtension(Translator.VALUE).setText("anotherformat");
         
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
         connection.setDoOutput(true);
@@ -391,6 +410,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Verify again
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -431,6 +452,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testUpdateAssetFromAtomWithStateNotExist(@ArquillianResource URL baseURL) throws Exception {     
         URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -447,6 +470,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         stateExtension.getExtension(Translator.VALUE).setText("NonExistState");
         
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
         connection.setDoOutput(true);
@@ -460,6 +485,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetAsJaxB(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -472,6 +499,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -484,6 +513,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetSource(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/source");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection.connect();
@@ -498,6 +529,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetBinary(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
@@ -511,6 +544,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Check there is no model1-New asset
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
@@ -528,6 +563,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Get asset 'model1' from Guvnor
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
@@ -551,6 +588,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Save it as a new Asset
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         
         options = client.getDefaultRequestOptions();
         options.setContentType(MediaType.APPLICATION_ATOM_XML);
@@ -567,6 +606,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         
         //Check that the new asset is in the repository
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
@@ -589,6 +630,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     public void testUpdateAssetFromJaxB(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -603,6 +646,8 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         connection.disconnect();
 
         HttpURLConnection conn2 = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         Marshaller ma = context.createMarshaller();
         conn2.setRequestMethod("PUT");
         conn2.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);

@@ -32,6 +32,7 @@ import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
+import org.drools.util.codec.Base64;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.test.api.ArquillianResource;
 import org.junit.*;
@@ -101,6 +102,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Get assets from category 1
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
@@ -129,6 +132,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
         //Get assets from category 2
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
@@ -165,6 +170,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsCreatedByAtomByCategoryAsAtom(@ArquillianResource URL baseURL) throws Exception {
         //Create 2 new assets, one in each category
         AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
             
         Entry processEntry = this.createProcessEntry("Process1", "Some test process", new ArrayList<String>(){{this.add("Category 1");
         }});
@@ -180,6 +187,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
         }
         
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
             
         processEntry = this.createProcessEntry("Process2", "Some other test process", new ArrayList<String>(){{this.add("Category 2");
         }});
@@ -200,6 +209,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
         
         //Get assets from category 1
         client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
@@ -246,6 +257,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -259,6 +272,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAsJaxb(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -271,6 +286,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAndPageAsAtom(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -283,6 +300,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAndPageAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -296,6 +315,8 @@ public class CategoryResourceTest extends GuvnorTestBase {
     public void testGetAssetsByCategoryAndPageAsJaxb(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();

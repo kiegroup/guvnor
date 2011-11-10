@@ -135,6 +135,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Test with invalid user name and pwd
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:invalidPassword"
@@ -151,6 +153,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Test with valid user name and pwd
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
@@ -168,7 +172,9 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     @Test @RunAsClient 
     public void testGetPackagesForJSON(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages");
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();        
+        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -185,6 +191,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackagesForXML(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -201,6 +209,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackagesForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -238,6 +248,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackageForJSON(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
         connection.connect();
@@ -250,6 +262,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackageForXML(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
         connection.connect();
@@ -287,6 +301,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackageForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -339,6 +355,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         String xml = sw.toString();
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
         connection.setRequestProperty("Content-Length", Integer.toString(xml.getBytes().length));
@@ -361,6 +379,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testCreatePackageFromDRLAsEntry(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -380,6 +400,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         if (connection.getResponseCode() == -1) {
             url = new URL(baseURL, "rest/packages");
             connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("Authorization",
+                    "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
             connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -405,6 +427,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testCreatePackageFromDRLAsJson(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -429,6 +453,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testCreatePackageFromDRLAsJaxB(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -454,6 +480,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     	//Test create
     	Abdera abdera = new Abdera();
     	AbderaClient client = new AbderaClient(abdera);
+        client.addCredentials(baseURL.toExternalForm(), null, null,
+                new org.apache.commons.httpclient.UsernamePasswordCredentials("admin", "admin"));
     	Entry entry = abdera.newEntry();		
     	entry.setTitle("testCreatePackageFromAtom");
     	entry.setSummary("desc for testCreatePackageFromAtom");
@@ -485,6 +513,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //NOTE: could not figure out why the code below always returns -1 as the ResponseCode.
 /*        URL url = new URL(baseURL, "packages/testCreatePackageFromAtom");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Content-type", MediaType.APPLICATION_ATOM_XML);
         conn.setRequestProperty("Content-Length", Integer.toString(e.toString().getBytes().length));
@@ -495,6 +525,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
  
         URL url1 = new URL(baseURL, "rest/packages/testCreatePackageFromAtom");
         HttpURLConnection conn1 = (HttpURLConnection)url1.openConnection();
+        conn1.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         conn1.setRequestMethod("GET");
         conn1.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn1.connect();
@@ -518,6 +550,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 		//Verify the package is indeed deleted
 		URL url2 = new URL(baseURL, "rest/packages/testCreatePackageFromAtom");
 		HttpURLConnection conn2 = (HttpURLConnection)url2.openConnection();
+        conn2.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         conn2.setRequestMethod("GET");
         conn2.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         conn2.connect();
@@ -534,6 +568,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackageSource(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
@@ -556,6 +592,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         /* Tests package compilation in addition to byte retrieval */
         URL url = new URL(baseURL, "rest/packages/restPackage1/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
@@ -576,6 +614,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         String xml = sw.toString();
         URL url = new URL(baseURL, "rest/packages/TestCreatePackageFromJAXB");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_XML);
         connection.setRequestProperty("Content-Length", Integer.toString(xml.getBytes().length));
@@ -602,6 +642,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetPackageVersionsForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -635,6 +677,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetHistoricalPackageForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -671,6 +715,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetHistoricalPackageSource(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
@@ -691,6 +737,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetHistoricalPackageBinary(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/versions/2/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
@@ -708,6 +756,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
          */
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection1 = (HttpURLConnection) url.openConnection();
+        connection1.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection1.setRequestMethod("GET");
         connection1.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection1.connect();
@@ -719,6 +769,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
            */
         URL url2 = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection2 = (HttpURLConnection) url2.openConnection();
+        connection2.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection2.setDoOutput(true);
         connection2.setRequestMethod("PUT");
         connection2.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -732,6 +784,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
          */
         URL url3 = new URL(baseURL, "rest/packages/restPackage1/assets/rule4/source");
         HttpURLConnection connection3 = (HttpURLConnection) url3.openConnection();
+        connection3.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection3.setRequestMethod("GET");
         connection3.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection3.connect();
@@ -747,6 +801,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Query if the asset exist
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
@@ -759,6 +815,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -781,6 +839,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Get the asset meta data and verify
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setRequestProperty("Authorization", "Basic "
@@ -803,6 +863,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Get the asset binary and verify
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image/binary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
@@ -817,6 +879,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Update asset binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image/binary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -836,6 +900,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Roll back changes. 
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
@@ -846,6 +912,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Verify the package is indeed deleted
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setRequestProperty("Authorization", "Basic "
@@ -859,6 +927,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Query if the asset exist
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -868,6 +938,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -888,6 +960,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Get the asset source. this will return the binary data as a byte array.
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new/source");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.TEXT_PLAIN);
         connection.connect();
@@ -899,6 +973,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Roll back changes. 
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("DELETE");
         connection.connect();
         System.out.println(IOUtils.toString(connection.getInputStream()));
@@ -907,6 +983,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Verify the package is indeed deleted
         url = new URL(baseURL, "rest/packages/restPackage1/assets/Error-image-new");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -919,6 +997,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //source content instead
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/binary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.connect();
@@ -932,6 +1012,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetAssetVersionsForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -963,6 +1045,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetHistoricalAssetForAtom(@ArquillianResource URL baseURL) throws MalformedURLException, IOException {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -989,6 +1073,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         
         url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/2");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.connect();
@@ -1018,6 +1104,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     public void testGetHistoricalAssetSource(@ArquillianResource URL baseURL) throws Exception {
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/1/source");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
@@ -1032,6 +1120,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         
         url = new URL(baseURL, "rest/packages/restPackage1/assets/model1/versions/2/source");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.WILDCARD);
         connection.connect();
@@ -1050,6 +1140,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Query if the asset exist
         URL url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         byte[] authEncBytes = Base64.encodeBase64("admin:admin".getBytes());
@@ -1062,6 +1154,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Create the asset from binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -1084,6 +1178,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Update asset binary
         url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/binary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -1103,6 +1199,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Get the asset binary version 1 and verify
         url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/1/binary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
@@ -1116,6 +1214,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Get the asset binary version 2 and verify
         url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary/versions/2/binary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_OCTET_STREAM);
         connection.setRequestProperty("Authorization", "Basic "
@@ -1129,6 +1229,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Roll back changes. 
         url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         connection = (HttpURLConnection)url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("DELETE");
         connection.setRequestProperty("Authorization", "Basic "
                 + new String(authEncBytes));
@@ -1139,6 +1241,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         //Verify the package is indeed deleted
         url = new URL(baseURL, "rest/packages/restPackage1/assets/testGetHistoricalAssetBinary");
         connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("Authorization",
+                "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
         connection.setRequestProperty("Authorization", "Basic "
