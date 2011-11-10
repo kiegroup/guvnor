@@ -86,13 +86,6 @@ public abstract class AbstractClientFactoryImpl
         return placeHistoryHandler;
     }
 
-    public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
-        if ( guvnorPlaceHistoryMapper == null ) {
-            guvnorPlaceHistoryMapper = GWT.create( GuvnorDroolsPlaceHistoryMapper.class );
-        }
-        return guvnorPlaceHistoryMapper;
-    }
-
     public PackageServiceAsync getPackageService() {
         return RepositoryServiceFactory.getPackageService();
     }

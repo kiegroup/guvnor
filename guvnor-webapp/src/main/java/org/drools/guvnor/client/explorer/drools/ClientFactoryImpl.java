@@ -18,10 +18,12 @@ package org.drools.guvnor.client.explorer.drools;
 
 import org.drools.guvnor.client.explorer.AbstractClientFactoryImpl;
 import org.drools.guvnor.client.explorer.GuvnorActivityMapper;
+import org.drools.guvnor.client.explorer.GuvnorPlaceHistoryMapper;
 
 import org.drools.guvnor.client.widgets.drools.wizards.WizardFactoryImpl;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 
 public class ClientFactoryImpl extends AbstractClientFactoryImpl {
@@ -40,6 +42,13 @@ public class ClientFactoryImpl extends AbstractClientFactoryImpl {
 	 */
     public GuvnorActivityMapper getActivityMapper() {
         return new GuvnorDroolsActivityMapper( this );
+    }    
+
+    public GuvnorPlaceHistoryMapper getPlaceHistoryMapper() {
+        if ( guvnorPlaceHistoryMapper == null ) {
+            guvnorPlaceHistoryMapper = GWT.create( GuvnorDroolsPlaceHistoryMapper.class );
+        }
+        return guvnorPlaceHistoryMapper;
     }
     
     public WizardFactory getWizardFactory() {
