@@ -17,15 +17,9 @@
 package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
-import org.drools.guvnor.client.explorer.drools.GuvnorDroolsActivityMapper;
-import org.drools.guvnor.client.explorer.drools.GuvnorDroolsPlaceHistoryMapper;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactoryImpl;
-import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
-import org.drools.guvnor.client.moduleeditor.AssetViewerActivityViewImpl;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
-import org.drools.guvnor.client.perspective.PerspectivesPanelView;
-import org.drools.guvnor.client.perspective.PerspectivesPanelViewImpl;
 import org.drools.guvnor.client.rpc.AssetServiceAsync;
 import org.drools.guvnor.client.rpc.CategoryServiceAsync;
 import org.drools.guvnor.client.rpc.ConfigurationService;
