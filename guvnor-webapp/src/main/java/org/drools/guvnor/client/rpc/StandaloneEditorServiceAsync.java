@@ -18,7 +18,6 @@ package org.drools.guvnor.client.rpc;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-import org.drools.guvnor.client.asseteditor.drools.standalone.StandaloneEditorInvocationParameters;
 
 public interface StandaloneEditorServiceAsync {
 

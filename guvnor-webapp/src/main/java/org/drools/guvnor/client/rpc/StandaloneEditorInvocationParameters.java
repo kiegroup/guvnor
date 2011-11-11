@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.client.asseteditor.drools.standalone;
+package org.drools.guvnor.client.rpc;
 
 import java.io.Serializable;
-import org.drools.guvnor.client.rpc.RuleAsset;
 
 /**
  * This class contains all the parameters passed in the invocation of the
