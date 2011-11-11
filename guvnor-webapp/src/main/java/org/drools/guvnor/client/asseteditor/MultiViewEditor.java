@@ -35,7 +35,6 @@ import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.LazyStackPanel;
@@ -213,7 +212,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final RuleAsset asset) {
-        SuggestionCompletionCache.getInstance().refreshPackage( asset.getMetaData().getPackageName(),
+    	eventBus.fireEvent(new RefreshModuleDataModelEvent(asset.getMetaData().getPackageName(),
                 new Command() {
 
                     public void execute() {
@@ -244,7 +243,7 @@ public class MultiViewEditor extends GuvnorEditor {
                                 ruleViewer );
 
                     }
-                } );
+                } ));
     }
 
     public void checkin(final boolean closeAfter) {

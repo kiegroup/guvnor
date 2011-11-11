@@ -82,20 +82,20 @@ public class SuggestionCompletionCache {
     }
 
 
-    public void loadPackage(final String packageName, final Command command) {
+    public void loadPackage(final String packageName, final Command done) {
 
         LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
 
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );
-                command.execute();
+                done.execute();
             }
 
             public void onFailure(Throwable t) {
                 LoadingPopup.close();
                 ErrorPopup.showMessage(constants.UnableToValidatePackageForSCE(packageName));
-                command.execute();
+                done.execute();
             }
         });
     }
@@ -104,10 +104,10 @@ public class SuggestionCompletionCache {
      * Removed the package from the cache, causing it to be loaded the next time.
      */
     public void refreshPackage(String packageName, Command done) {
-        SuggestionCompletionEngine sce = cache.get(packageName);
         //No need to remove sce from cache as this makes sce temporarily unavailable during the 
         //period between removing sce and putting it back.
-/*        if (sce != null) {
+/*        SuggestionCompletionEngine sce = cache.get(packageName);
+        if (sce != null) {
             sce.setFactTypeFilter(null);
             cache.remove( packageName );
         }*/
