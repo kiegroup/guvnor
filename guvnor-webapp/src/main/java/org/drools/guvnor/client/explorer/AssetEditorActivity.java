@@ -77,9 +77,9 @@ public class AssetEditorActivity extends Activity {
                                                              final boolean[] loading) {
         return new GenericCallback<RuleAsset>() {
             public void onSuccess(final RuleAsset ruleAsset) {
-                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.packageName,
                         createCommandForSuggestCompletionCache( loading,
-                                ruleAsset ) );
+                                ruleAsset )));
             }
 
             private Command createCommandForSuggestCompletionCache(final boolean[] loading,

@@ -22,6 +22,7 @@ import org.drools.guvnor.client.configurations.ConfigurationsLoader;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.drools.ClientFactoryImpl;
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.resources.DecisionTableResources;
 import org.drools.guvnor.client.resources.GuvnorResources;
 import org.drools.guvnor.client.resources.OperatorsResource;
@@ -140,6 +141,7 @@ public class GuvnorEntryPoint
      */
     private void createMain() {
         EventBus eventBus = new SimpleEventBus();
+        SuggestionCompletionCache.getInstance().setEventBus(eventBus);
         ClientFactory clientFactory = new ClientFactoryImpl(eventBus);
         appController = new AppController(clientFactory,eventBus);
 

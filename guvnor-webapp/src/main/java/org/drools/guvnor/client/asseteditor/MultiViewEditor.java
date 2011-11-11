@@ -30,6 +30,7 @@ import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.MultiAssetPlace;
+import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
 import org.drools.guvnor.client.explorer.RefreshModuleEditorEvent;
 import org.drools.guvnor.client.explorer.RefreshSuggestionCompletionEngineEvent;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
@@ -212,7 +213,7 @@ public class MultiViewEditor extends GuvnorEditor {
     private void addRuleViewInToSimplePanel(final MultiViewRow row,
                                             final SimplePanel content,
                                             final RuleAsset asset) {
-        SuggestionCompletionCache.getInstance().doAction( asset.getMetaData().getPackageName(),
+        SuggestionCompletionCache.getInstance().refreshPackage( asset.getMetaData().getPackageName(),
                 new Command() {
 
                     public void execute() {
@@ -323,7 +324,7 @@ public class MultiViewEditor extends GuvnorEditor {
     public void flushSuggestionCompletionCache(final String packageName, RuleAsset asset) {
         if ( AssetFormats.isPackageDependency( asset.getFormat() ) ) {
             LoadingPopup.showMessage( constants.RefreshingContentAssistance() );
-            SuggestionCompletionCache.getInstance().refreshPackage( packageName,
+            eventBus.fireEvent(new RefreshModuleDataModelEvent(packageName,
                     new Command() {
                         public void execute() {
                             //Some assets depend on the SuggestionCompletionEngine. This event is to notify them that the 
@@ -331,7 +332,7 @@ public class MultiViewEditor extends GuvnorEditor {
                             eventBus.fireEvent(new RefreshSuggestionCompletionEngineEvent(packageName));
                             LoadingPopup.close();
                         }
-                    } );
+                    }));
         }
     }
     public void close() {
