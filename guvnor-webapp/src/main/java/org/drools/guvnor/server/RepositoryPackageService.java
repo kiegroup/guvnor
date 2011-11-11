@@ -15,9 +15,24 @@
  */
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.io.IOUtils;
-import org.drools.*;
+import org.drools.ClockType;
+import org.drools.RuleBase;
+import org.drools.RuleBaseConfiguration;
+import org.drools.RuleBaseFactory;
+import org.drools.SessionConfiguration;
 import org.drools.base.ClassTypeResolver;
 import org.drools.common.AbstractRuleBase;
 import org.drools.common.InternalRuleBase;
@@ -26,54 +41,73 @@ import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.rpc.*;
+import org.drools.guvnor.client.rpc.BuilderResult;
+import org.drools.guvnor.client.rpc.BulkTestRunResult;
+import org.drools.guvnor.client.rpc.DetailedSerializationException;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.client.rpc.ScenarioResultSummary;
+import org.drools.guvnor.client.rpc.ScenarioRunResult;
+import org.drools.guvnor.client.rpc.SingleScenarioResult;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageRequest;
+import org.drools.guvnor.client.rpc.SnapshotComparisonPageResponse;
+import org.drools.guvnor.client.rpc.SnapshotDiffs;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 import org.drools.lang.descr.PackageDescr;
 import org.drools.lang.descr.TypeDeclarationDescr;
-import org.drools.repository.*;
+import org.drools.repository.AssetItem;
+import org.drools.repository.AssetItemIterator;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RepositoryFilter;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
 import org.drools.rule.Package;
+import org.drools.runtime.process.WorkItem;
+import org.drools.runtime.process.WorkItemHandler;
+import org.drools.runtime.process.WorkItemManager;
 import org.drools.runtime.rule.ConsequenceException;
 import org.drools.testframework.RuleCoverageListener;
 import org.drools.testframework.ScenarioRunner;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.jboss.seam.remoting.annotations.WebRemote;
 import org.jboss.seam.security.Identity;
 import org.jboss.seam.security.annotations.LoggedIn;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
+import com.google.gwt.user.client.rpc.SerializationException;
 
 @Named("org.drools.guvnor.client.rpc.PackageService")
 public class RepositoryPackageService
         implements
         PackageService {
     @Inject
-    private RulesRepository rulesRepository;
+    private RulesRepository             rulesRepository;
 
-    private static final long serialVersionUID = 901123;
+    private static final long           serialVersionUID = 901123;
 
-    private static final LoggingHelper log = LoggingHelper.getLogger( RepositoryAssetService.class );
-
-    @Inject
-    private ServiceSecurity serviceSecurity;
+    private static final LoggingHelper  log              = LoggingHelper.getLogger( RepositoryAssetService.class );
 
     @Inject
-    private Identity identity;
+    private ServiceSecurity             serviceSecurity;
+
+    @Inject
+    private Identity                    identity;
 
     @Inject
     private RepositoryPackageOperations repositoryPackageOperations;
 
     @Inject
-    private RepositoryAssetOperations repositoryAssetOperations;
+    private RepositoryAssetOperations   repositoryAssetOperations;
+
+    @Inject
+    private ServiceImplementation       serviceImplementation;
 
     /**
      * Role-based Authorization check: This method only returns packages that
@@ -90,11 +124,11 @@ public class RepositoryPackageService
     @WebRemote
     @LoggedIn
     public PackageConfigData[] listPackages(String workspace) {
-        RepositoryFilter pf = new PackageFilter(identity);
+        RepositoryFilter pf = new PackageFilter( identity );
         return repositoryPackageOperations.listPackages(
-                false,
-                workspace,
-                pf );
+                                                         false,
+                                                         workspace,
+                                                         pf );
     }
 
     @WebRemote
@@ -107,9 +141,9 @@ public class RepositoryPackageService
     @LoggedIn
     public PackageConfigData[] listArchivedPackages(String workspace) {
         return repositoryPackageOperations.listPackages(
-                true,
-                workspace,
-                new PackageFilter(identity) );
+                                                         true,
+                                                         workspace,
+                                                         new PackageFilter( identity ) );
     }
 
     public PackageConfigData loadGlobalPackage() {
@@ -121,17 +155,17 @@ public class RepositoryPackageService
     public void rebuildPackages() throws SerializationException {
         Iterator<PackageItem> pkit = rulesRepository.listPackages();
         StringBuilder errs = new StringBuilder();
-        while (pkit.hasNext()) {
+        while ( pkit.hasNext() ) {
             PackageItem pkg = pkit.next();
             try {
                 BuilderResult builderResult = this.buildPackage( pkg.getUUID(),
-                        true );
+                                                                 true );
                 if ( builderResult != null ) {
                     errs.append( "Unable to build package name [" ).append( pkg.getName() ).append( "]\n" );
                     StringBuilder buf = createStringBuilderFrom( builderResult );
                     log.warn( buf.toString() );
                 }
-            } catch (Exception e) {
+            } catch ( Exception e ) {
                 e.printStackTrace();
                 log.error( "An error occurred building package [" + pkg.getName() + "]\n" );
                 errs.append( "An error occurred building package [" ).append( pkg.getName() ).append( "]\n" );
@@ -141,7 +175,7 @@ public class RepositoryPackageService
 
     private StringBuilder createStringBuilderFrom(BuilderResult res) {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < res.getLines().size(); i++) {
+        for ( int i = 0; i < res.getLines().size(); i++ ) {
             buf.append( res.getLines().get( i ).toString() );
             buf.append( '\n' );
         }
@@ -160,7 +194,7 @@ public class RepositoryPackageService
                               String destPackageName) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryPackageOperations.copyPackage( sourcePackageName,
-                destPackageName );
+                                                        destPackageName );
     }
 
     @WebRemote
@@ -177,7 +211,7 @@ public class RepositoryPackageService
         serviceSecurity.checkSecurityIsPackageAdminWithPackageUuid( uuid );
 
         return repositoryPackageOperations.renamePackage( uuid,
-                newName );
+                                                          newName );
     }
 
     @WebRemote
@@ -189,22 +223,21 @@ public class RepositoryPackageService
 
     @WebRemote
     @LoggedIn
-    // TODO: Not working. GUVNOR-475
     public void importPackages(byte[] byteArray,
                                boolean importAsNew) {
         repositoryPackageOperations.importPackages( byteArray,
-                importAsNew );
+                                                    importAsNew );
     }
-    
+
     @WebRemote
     public String createPackage(String name,
                                 String description,
                                 String format) throws RulesRepositoryException {
         return repositoryPackageOperations.createPackage( name,
-                description,
-                format);
+                                                          description,
+                                                          format );
     }
-    
+
     @WebRemote
     public String createPackage(String name,
                                 String description,
@@ -212,39 +245,31 @@ public class RepositoryPackageService
                                 String[] workspace) throws RulesRepositoryException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryPackageOperations.createPackage( name,
-                description,
-                format,
-                workspace );
+                                                          description,
+                                                          format,
+                                                          workspace );
     }
-/*
-    @WebRemote
-    public String createPackage(String name,
-                                String description,
-                                String format) throws RulesRepositoryException {
-        serviceSecurity.checkSecurityIsAdmin();
-        return repositoryPackageOperations.createPackage( name,
-                description,
-                new String[]{} );
-    }   */
-/* 
-    @WebRemote
-    public String createPackage(String name,
-                                String description,
-                                String format,
-                                String[] workspace) throws RulesRepositoryException {
-        return createPackage( name,
-                description,
-                new String[]{} );
-    }
-   */
+
+    /*
+     * @WebRemote public String createPackage(String name, String description,
+     * String format) throws RulesRepositoryException {
+     * serviceSecurity.checkSecurityIsAdmin(); return
+     * repositoryPackageOperations.createPackage( name, description, new
+     * String[]{} ); }
+     */
+    /*
+     * @WebRemote public String createPackage(String name, String description,
+     * String format, String[] workspace) throws RulesRepositoryException {
+     * return createPackage( name, description, new String[]{} ); }
+     */
     @WebRemote
     public String createSubPackage(String name,
                                    String description,
                                    String parentNode) throws SerializationException {
         serviceSecurity.checkSecurityIsAdmin();
         return repositoryPackageOperations.createSubPackage( name,
-                description,
-                parentNode );
+                                                             description,
+                                                             parentNode );
     }
 
     @WebRemote
@@ -277,15 +302,15 @@ public class RepositoryPackageService
     public BuilderResult buildPackage(String packageUUID,
                                       boolean force) throws SerializationException {
         return buildPackage( packageUUID,
-                force,
-                null,
-                null,
-                null,
-                false,
-                null,
-                null,
-                false,
-                null );
+                             force,
+                             null,
+                             null,
+                             null,
+                             false,
+                             null,
+                             null,
+                             false,
+                             null );
     }
 
     @WebRemote
@@ -302,15 +327,15 @@ public class RepositoryPackageService
                                       String customSelectorName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageUuid( packageUUID );
         return repositoryPackageOperations.buildPackage( packageUUID,
-                force,
-                buildMode,
-                statusOperator,
-                statusDescriptionValue,
-                enableStatusSelector,
-                categoryOperator,
-                category,
-                enableCategorySelector,
-                customSelectorName );
+                                                         force,
+                                                         buildMode,
+                                                         statusOperator,
+                                                         statusDescriptionValue,
+                                                         enableStatusSelector,
+                                                         categoryOperator,
+                                                         category,
+                                                         enableCategorySelector,
+                                                         customSelectorName );
     }
 
     @WebRemote
@@ -321,9 +346,9 @@ public class RepositoryPackageService
                                       String comment) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         repositoryPackageOperations.createPackageSnapshot( packageName,
-                snapshotName,
-                replaceExisting,
-                comment );
+                                                           snapshotName,
+                                                           replaceExisting,
+                                                           comment );
 
     }
 
@@ -335,9 +360,9 @@ public class RepositoryPackageService
                                      String newSnapshotName) throws SerializationException {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
         repositoryPackageOperations.copyOrRemoveSnapshot( packageName,
-                snapshotName,
-                delete,
-                newSnapshotName );
+                                                          snapshotName,
+                                                          delete,
+                                                          newSnapshotName );
     }
 
     @WebRemote
@@ -359,18 +384,18 @@ public class RepositoryPackageService
         serviceSecurity.checkSecurityIsAdmin();
 
         Iterator<PackageItem> pkit = rulesRepository.listPackages();
-        while (pkit.hasNext()) {
+        while ( pkit.hasNext() ) {
             PackageItem pkg = pkit.next();
             String[] snaps = rulesRepository.listPackageSnapshots( pkg.getName() );
-            for (String snapName : snaps) {
+            for ( String snapName : snaps ) {
                 PackageItem snap = rulesRepository.loadPackageSnapshot( pkg.getName(),
-                        snapName );
+                                                                        snapName );
                 BuilderResult builderResult = this.buildPackage( snap.getUUID(),
-                        true );
+                                                                 true );
                 if ( builderResult.hasLines() ) {
                     StringBuilder stringBuilder = createStringBuilderFrom( builderResult );
                     throw new DetailedSerializationException( "Unable to rebuild snapshot [" + snapName,
-                            stringBuilder.toString() + "]" );
+                                                              stringBuilder.toString() + "]" );
                 }
             }
         }
@@ -383,26 +408,29 @@ public class RepositoryPackageService
 
         String[] snaps = rulesRepository.listPackageSnapshots( packageName );
         SnapshotInfo[] snapshotInfos = new SnapshotInfo[snaps.length];
-        for (int i = 0; i < snaps.length; i++) {
+        for ( int i = 0; i < snaps.length; i++ ) {
             PackageItem packageItem = rulesRepository.loadPackageSnapshot( packageName,
-                    snaps[i] );
-            snapshotInfos[i] = packageItemToSnapshotItem( snaps[i], packageItem );
+                                                                           snaps[i] );
+            snapshotInfos[i] = packageItemToSnapshotItem( snaps[i],
+                                                          packageItem );
         }
         return snapshotInfos;
     }
 
     @LoggedIn
-    public SnapshotInfo loadSnapshotInfo(String packageName, String snapshotName) {
+    public SnapshotInfo loadSnapshotInfo(String packageName,
+                                         String snapshotName) {
         serviceSecurity.checkSecurityIsPackageAdminWithPackageName( packageName );
 
         return packageItemToSnapshotItem(
-                snapshotName,
-                rulesRepository.loadPackageSnapshot(
-                        packageName,
-                        snapshotName ) );
+                                          snapshotName,
+                                          rulesRepository.loadPackageSnapshot(
+                                                                               packageName,
+                                                                               snapshotName ) );
     }
 
-    private SnapshotInfo packageItemToSnapshotItem(String snapshotName, PackageItem packageItem) {
+    private SnapshotInfo packageItemToSnapshotItem(String snapshotName,
+                                                   PackageItem packageItem) {
         SnapshotInfo snapshotInfo = new SnapshotInfo();
         snapshotInfo.setComment( packageItem.getCheckinComment() );
         snapshotInfo.setName( snapshotName );
@@ -418,29 +446,29 @@ public class RepositoryPackageService
         PackageItem pkg = this.rulesRepository.loadPackageByUUID( packageUUID );
         List<String> res = new ArrayList<String>();
         AssetItemIterator it = pkg.listAssetsByFormat( AssetFormats.MODEL,
-                AssetFormats.DRL_MODEL );
+                                                       AssetFormats.DRL_MODEL );
 
         JarInputStream jis = null;
 
         try {
-            while (it.hasNext()) {
+            while ( it.hasNext() ) {
                 AssetItem asset = it.next();
                 if ( !asset.isArchived() ) {
                     if ( asset.getFormat().equals( AssetFormats.MODEL ) ) {
                         jis = typesForModel( res,
-                                asset );
+                                             asset );
                     } else {
                         typesForOthers( res,
-                                asset );
+                                        asset );
                     }
 
                 }
             }
             return res.toArray( new String[res.size()] );
-        } catch (IOException e) {
+        } catch ( IOException e ) {
             log.error( "Unable to read the jar files in the package: " + e.getMessage() );
             throw new DetailedSerializationException( "Unable to read the jar files in the package.",
-                    e.getMessage() );
+                                                      e.getMessage() );
         } finally {
             IOUtils.closeQuietly( jis );
         }
@@ -466,7 +494,7 @@ public class RepositoryPackageService
         JarInputStream jis;
         jis = new JarInputStream( asset.getBinaryContentAttachment() );
         JarEntry entry = null;
-        while ((entry = jis.getNextJarEntry()) != null) {
+        while ( (entry = jis.getNextJarEntry()) != null ) {
             if ( !entry.isDirectory() ) {
                 if ( entry.getName().endsWith( ".class" ) ) {
                     res.add( ModelContentHandler.convertPathToName( entry.getName() ) );
@@ -483,10 +511,10 @@ public class RepositoryPackageService
         try {
             PackageDescr desc = parser.parse( asset.getContent() );
             List<TypeDeclarationDescr> types = desc.getTypeDeclarations();
-            for (TypeDeclarationDescr typeDeclarationDescr : types) {
+            for ( TypeDeclarationDescr typeDeclarationDescr : types ) {
                 res.add( typeDeclarationDescr.getTypeName() );
             }
-        } catch (DroolsParserException e) {
+        } catch ( DroolsParserException e ) {
             log.error( "An error occurred parsing rule: " + e.getMessage() );
 
         }
@@ -500,14 +528,15 @@ public class RepositoryPackageService
     }
 
     /**
-     * @deprecated in favour of {@link #compareSnapshots(SnapshotComparisonPageRequest)}
+     * @deprecated in favour of
+     *             {@link #compareSnapshots(SnapshotComparisonPageRequest)}
      */
     public SnapshotDiffs compareSnapshots(String packageName,
                                           String firstSnapshotName,
                                           String secondSnapshotName) {
         return repositoryPackageOperations.compareSnapshots( packageName,
-                firstSnapshotName,
-                secondSnapshotName );
+                                                             firstSnapshotName,
+                                                             secondSnapshotName );
     }
 
     public SnapshotComparisonPageResponse compareSnapshots(SnapshotComparisonPageRequest request) {
@@ -528,8 +557,8 @@ public class RepositoryPackageService
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName( packageName );
 
         return runScenario( packageName,
-                scenario,
-                null );
+                            scenario,
+                            null );
 
     }
 
@@ -547,23 +576,23 @@ public class RepositoryPackageService
             ClassLoader cl = ((InternalRuleBase) RuleBaseCache.getInstance().get( item.getUUID() )).getRootClassLoader();
             Thread.currentThread().setContextClassLoader( cl );
             result = runScenario( scenario,
-                    item,
-                    cl,
-                    rb,
-                    coverage );
-        } catch (Exception e) {
+                                  item,
+                                  cl,
+                                  rb,
+                                  coverage );
+        } catch ( Exception e ) {
             if ( e instanceof DetailedSerializationException ) {
                 DetailedSerializationException err = (DetailedSerializationException) e;
                 result = new SingleScenarioResult();
                 if ( err.getErrs() != null ) {
                     result.result = new ScenarioRunResult( err.getErrs(),
-                            null );
+                                                           null );
                 } else {
                     throw err;
                 }
             } else {
                 throw new DetailedSerializationException( "Unable to run the scenario.",
-                        e.getMessage() );
+                                                          e.getMessage() );
             }
         } finally {
             Thread.currentThread().setContextClassLoader( originalCL );
@@ -586,19 +615,19 @@ public class RepositoryPackageService
             // we have to build the package, and try again.
             if ( packageItem.isBinaryUpToDate() ) {
                 rb = loadRuleBase( packageItem,
-                        buildCl );
+                                   buildCl );
                 RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                        rb );
+                                                 rb );
             } else {
                 BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
-                        false );
+                                                                                 false );
                 if ( result == null || result.getLines().size() == 0 ) {
                     rb = loadRuleBase( packageItem,
-                            buildCl );
+                                       buildCl );
                     RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                            rb );
+                                                     rb );
                 } else throw new DetailedSerializationException( "Build error",
-                        result.getLines() );
+                                                                 result.getLines() );
             }
 
         }
@@ -609,36 +638,36 @@ public class RepositoryPackageService
                                   ClassLoader cl) throws DetailedSerializationException {
         try {
             return deserKnowledgebase( item,
-                    cl );
-        } catch (ClassNotFoundException e) {
+                                       cl );
+        } catch ( ClassNotFoundException e ) {
             log.error( "Unable to load rule base.",
-                    e );
+                       e );
             throw new DetailedSerializationException( "A required class was not found.",
-                    e.getMessage() );
-        } catch (Exception e) {
+                                                      e.getMessage() );
+        } catch ( Exception e ) {
             log.error( "Unable to load rule base.",
-                    e );
+                       e );
             log.info( "...but trying to rebuild binaries..." );
             try {
                 BuilderResult res = repositoryPackageOperations.buildPackage( item,
-                        true );
+                                                                              true );
                 if ( res != null && res.getLines().size() > 0 ) {
                     log.error( "There were errors when rebuilding the knowledgebase." );
                     throw new DetailedSerializationException( "There were errors when rebuilding the knowledgebase.",
-                            "" );
+                                                              "" );
                 }
-            } catch (Exception e1) {
+            } catch ( Exception e1 ) {
                 log.error( "Unable to rebuild the rulebase: " + e.getMessage() );
                 throw new DetailedSerializationException( "Unable to rebuild the rulebase.",
-                        e.getMessage() );
+                                                          e.getMessage() );
             }
             try {
                 return deserKnowledgebase( item,
-                        cl );
-            } catch (Exception e2) {
+                                           cl );
+            } catch ( Exception e2 ) {
                 log.error( "Unable to reload knowledgebase: " + e.getMessage() );
                 throw new DetailedSerializationException( "Unable to reload knowledgebase.",
-                        e.getMessage() );
+                                                          e.getMessage() );
             }
 
         }
@@ -646,10 +675,10 @@ public class RepositoryPackageService
 
     private RuleBase deserKnowledgebase(PackageItem item,
                                         ClassLoader classloader) throws IOException,
-            ClassNotFoundException {
+                                                                ClassNotFoundException {
         RuleBase rulebase = RuleBaseFactory.newRuleBase( new RuleBaseConfiguration( classloader ) );
         Package bin = (Package) DroolsStreamUtils.streamIn( item.getCompiledPackageBytes(),
-                classloader );
+                                                            classloader );
         rulebase.addPackage( bin );
         return rulebase;
     }
@@ -666,37 +695,48 @@ public class RepositoryPackageService
         Set<String> allImps = new HashSet<String>( imps );
 
         if ( bin.getGlobals() != null ) {
-            for (Object o : bin.getGlobals().keySet()) {
+            for ( Object o : bin.getGlobals().keySet() ) {
                 allImps.add( bin.getGlobals().get( o ) );
             }
         }
-        allImps.add( bin.getName() + ".*" ); // need this for Generated beans to
-        // work
+        // need this for Generated beans to work
+        allImps.add( bin.getName() + ".*" ); 
 
         ClassTypeResolver classTypeResolver = new ClassTypeResolver( allImps,
-                cl );
+                                                                     cl );
         SessionConfiguration sessionConfiguration = new SessionConfiguration();
         sessionConfiguration.setClockType( ClockType.PSEUDO_CLOCK );
         sessionConfiguration.setKeepReference( false );
         InternalWorkingMemory workingMemory = (InternalWorkingMemory) rulebase.newStatefulSession( sessionConfiguration,
-                null );
+                                                                                                   null );
         if ( coverage != null ) workingMemory.addEventListener( coverage );
+
+        //Add stub Work Item Handlers
+        String packageUUID = item.getUUID();
+        Set<PortableWorkDefinition> workItems = serviceImplementation.loadWorkItemDefinitions( packageUUID );
+        WorkItemHandler workItemHandlerStub = getWorkItemHandlerStub();
+        for ( PortableWorkDefinition pwd : workItems ) {
+            workingMemory.getWorkItemManager().registerWorkItemHandler( pwd.getName(),
+                                                                        workItemHandlerStub );
+        }
+
+        //Run Test Scenario
         try {
             AuditLogReporter logger = new AuditLogReporter( workingMemory );
             new ScenarioRunner( scenario,
-                    classTypeResolver,
-                    workingMemory );
+                                classTypeResolver,
+                                workingMemory );
             SingleScenarioResult singleScenarioresult = new SingleScenarioResult();
             singleScenarioresult.auditLog = logger.buildReport();
             singleScenarioresult.result = new ScenarioRunResult( null,
-                    scenario );
+                                                                 scenario );
             return singleScenarioresult;
-        } catch (ClassNotFoundException e) {
+        } catch ( ClassNotFoundException e ) {
             log.error( "Unable to load a required class.",
-                    e );
+                       e );
             throw new DetailedSerializationException( "Unable to load a required class.",
-                    e.getMessage() );
-        } catch (ConsequenceException e) {
+                                                      e.getMessage() );
+        } catch ( ConsequenceException e ) {
             String messageShort = "There was an error executing the consequence of rule [" + e.getRule().getName() + "]";
             String messageLong = e.getMessage();
             if ( e.getCause() != null ) {
@@ -704,14 +744,14 @@ public class RepositoryPackageService
             }
 
             log.error( messageShort + ": " + messageLong,
-                    e );
+                       e );
             throw new DetailedSerializationException( messageShort,
-                    messageLong );
-        } catch (Exception e) {
+                                                      messageLong );
+        } catch ( Exception e ) {
             log.error( "Unable to run the scenario.",
-                    e );
+                       e );
             throw new DetailedSerializationException( "Unable to run the scenario.",
-                    e.getMessage() );
+                                                      e.getMessage() );
         }
     }
 
@@ -724,7 +764,7 @@ public class RepositoryPackageService
     }
 
     public BulkTestRunResult runScenariosInPackage(PackageItem packageItem) throws DetailedSerializationException,
-            SerializationException {
+                                                                           SerializationException {
         ClassLoader originalClassloader = Thread.currentThread().getContextClassLoader();
         ClassLoader classloader = null;
 
@@ -744,20 +784,20 @@ public class RepositoryPackageService
                 // we have to build the package, and try again.
                 if ( packageItem.isBinaryUpToDate() ) {
                     RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                            loadRuleBase( packageItem,
-                                    classloader ) );
+                                                     loadRuleBase( packageItem,
+                                                                   classloader ) );
                 } else {
                     BuilderResult result = repositoryPackageOperations.buildPackage( packageItem,
-                            false );
+                                                                                     false );
                     if ( result == null || result.getLines().size() == 0 ) {
                         RuleBaseCache.getInstance().put( packageItem.getUUID(),
-                                loadRuleBase( packageItem,
-                                        classloader ) );
+                                                         loadRuleBase( packageItem,
+                                                                       classloader ) );
                     } else {
                         return new BulkTestRunResult( result,
-                                null,
-                                0,
-                                null );
+                                                      null,
+                                                      0,
+                                                      null );
                     }
                 }
             }
@@ -769,31 +809,31 @@ public class RepositoryPackageService
 
             RuleCoverageListener coverage = new RuleCoverageListener( expectedRules( bin ) );
 
-            while (it.hasNext()) {
+            while ( it.hasNext() ) {
                 AssetItem as = it.next();
                 if ( !as.getDisabled() ) {
                     RuleAsset asset = repositoryAssetOperations.loadAsset( as );
                     Scenario sc = (Scenario) asset.getContent();
                     runScenario( packageItem.getName(),
-                            sc,
-                            coverage );// runScenario(sc, res,
+                                 sc,
+                                 coverage );// runScenario(sc, res,
                     // workingMemory).scenario;
 
                     int[] totals = sc.countFailuresTotal();
                     resultSummaries.add( new ScenarioResultSummary( totals[0],
-                            totals[1],
-                            asset.getName(),
-                            asset.getDescription(),
-                            asset.getUuid() ) );
+                                                                    totals[1],
+                                                                    asset.getName(),
+                                                                    asset.getDescription(),
+                                                                    asset.getUuid() ) );
                 }
             }
 
             ScenarioResultSummary[] summaries = resultSummaries.toArray( new ScenarioResultSummary[resultSummaries.size()] );
 
             return new BulkTestRunResult( null,
-                    resultSummaries.toArray( summaries ),
-                    coverage.getPercentCovered(),
-                    coverage.getUnfiredRules() );
+                                          resultSummaries.toArray( summaries ),
+                                          coverage.getPercentCovered(),
+                                          coverage.getUnfiredRules() );
 
         } finally {
             Thread.currentThread().setContextClassLoader( originalClassloader );
@@ -803,10 +843,31 @@ public class RepositoryPackageService
 
     private HashSet<String> expectedRules(Package bin) {
         HashSet<String> h = new HashSet<String>();
-        for (int i = 0; i < bin.getRules().length; i++) {
+        for ( int i = 0; i < bin.getRules().length; i++ ) {
             h.add( bin.getRules()[i].getName() );
         }
         return h;
+    }
+
+    //Creates a stub Work Item Handler that does nothing. A problem is that if the *real* Work Item Handler 
+    //sets a Result Parameter that is used in other rules the results of running the Test Scenario could (or 
+    //more likely would) be different than those expected. We can't use the *real* Work Item Handler as we 
+    //have no control what code it executes unless we look into using SecurityManagers...
+    private WorkItemHandler getWorkItemHandlerStub() {
+        WorkItemHandler wih = new WorkItemHandler() {
+
+            public void executeWorkItem(WorkItem workItem,
+                                        WorkItemManager manager) {
+                //Does absolute nothing, however could log execution if needed 
+            }
+
+            public void abortWorkItem(WorkItem workItem,
+                                      WorkItemManager manager) {
+            }
+
+        };
+        return wih;
+
     }
 
 }
