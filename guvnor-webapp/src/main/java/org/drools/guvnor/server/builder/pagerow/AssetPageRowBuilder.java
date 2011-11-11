@@ -39,7 +39,7 @@ public class AssetPageRowBuilder
         List<AssetPageRow> rowList = new ArrayList<AssetPageRow>();
 
         while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            AssetItem assetItem = (AssetItem) iterator.next();
+            AssetItem assetItem = iterator.next();
             AssetPageRowPopulator assetPageRowPopulator = new AssetPageRowPopulator();
             rowList.add( assetPageRowPopulator.populateFrom( assetItem ) );
         }

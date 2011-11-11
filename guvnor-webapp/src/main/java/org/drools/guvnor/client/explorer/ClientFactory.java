@@ -18,7 +18,6 @@ package org.drools.guvnor.client.explorer;
 
 import org.drools.guvnor.client.common.AssetEditorFactory;
 import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
-import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.AssetViewerActivityView;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
@@ -26,37 +25,36 @@ import org.drools.guvnor.client.rpc.*;
 import org.drools.guvnor.client.util.ActivityMapper;
 import org.drools.guvnor.client.widgets.wizards.WizardFactory;
 
-import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
-import com.google.gwt.user.client.Command;
 
 public interface ClientFactory {
 
     PlaceController getPlaceController();
 
-    PerspectivesPanelView getPerspectivesPanelView();
+    MultiActivityManager getActivityManager();   
+    
+    ActivityMapper getActivityMapper();       
+    
+    PlaceHistoryHandler getPlaceHistoryHandler();
+    
+    PlaceHistoryMapper getPlaceHistoryMapper();    
 
     NavigationViewFactory getNavigationViewFactory();
-
-    ConfigurationServiceAsync getConfigurationService();
-
-    MultiActivityManager getActivityManager();
-
-    PlaceHistoryHandler getPlaceHistoryHandler();
-
-    PlaceHistoryMapper getPlaceHistoryMapper();
-
-    ModuleEditorActivityView getModuleEditorActivityView();
-
-    AssetViewerActivityView getAssetViewerActivityView();
-
-    PackageServiceAsync getPackageService();
-
+    
     AssetEditorFactory getAssetEditorFactory();
     
     PerspectiveFactory getPerspectiveFactory();
+
+    WizardFactory getWizardFactory();    
+
+    
+    ConfigurationServiceAsync getConfigurationService();
+
+    PackageServiceAsync getPackageService();
+    
+    RepositoryServiceAsync getService();
     
     RepositoryServiceAsync getRepositoryService();
 
@@ -65,11 +63,4 @@ public interface ClientFactory {
     AssetServiceAsync getAssetService();
 
     SecurityServiceAsync getSecurityService();
-
-    ActivityMapper getActivityMapper();
-    
-    AbstractModuleEditor getModuleEditor(PackageConfigData packageConfigData, ClientFactory clientFactory, EventBus eventBus, boolean historicalReadOnly, Command refreshCommand);
-    
-    WizardFactory getWizardFactory();
-    
 }

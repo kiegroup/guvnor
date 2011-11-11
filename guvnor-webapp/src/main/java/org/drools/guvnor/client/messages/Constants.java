@@ -2001,6 +2001,11 @@ public interface Constants
     String property0ModifiedOn12(String propertyName,
                                  String arg1,
                                  String arg2);
+    
+    String property0ModifiedOn1By23(String propertyName,
+                                    String lastModifier,
+                                    String lastModifiedDate,
+                                    String lastModifiedComment);
 
     String isContainedInTheFollowingList();
 
@@ -2541,5 +2546,37 @@ public interface Constants
     String BindingFact();
     
     String BindingDescription();
+    
+    String RetractAnExistingFact();
+    
+    String ColumnConfigurationRetractAFact();
+    
+    String NoPatternBindingsAvailable();
+    
+    String FactToRetractColon();
+    
+    String WorkItemAction();
+
+    String ColumnConfigurationWorkItem();
+    
+    String NoWorkItemsAvailable();
+    
+    String WorkItemNameColon();
+    
+    String WorkItemInputParameters();
+    
+    String WorkItemOutputParameters();
+    
+    String BindActionFieldToWorkItem();
+    
+    String WorkItemActionSetField();
+
+    String ColumnConfigurationWorkItemSetField();
+    
+    String WorkItemActionInsertFact();
+    
+    String ColumnConfigurationWorkItemInsertFact();
+    
+    String IncludeAdvancedOptions();
     
 }

@@ -43,7 +43,7 @@ public class InboxPageRowBuilder
         int startRowIndex = pageRequest.getStartRowIndex();
         List<InboxPageRow> rowList = new ArrayList<InboxPageRow>();
         while ( iterator.hasNext() && (pageSize == null || rowList.size() < pageSize) ) {
-            InboxEntry ie = (InboxEntry) iterator.next();
+            InboxEntry ie = iterator.next();
 
             if ( skipped >= startRowIndex ) {
                 rowList.add( createInboxPageRow( ie,

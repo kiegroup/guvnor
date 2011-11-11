@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2011 JBoss Inc
+  ~
+  ~   Licensed under the Apache License, Version 2.0 (the "License");
+  ~   you may not use this file except in compliance with the License.
+  ~   You may obtain a copy of the License at
+  ~
+  ~         http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~   Unless required by applicable law or agreed to in writing, software
+  ~   distributed under the License is distributed on an "AS IS" BASIS,
+  ~   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~   See the License for the specific language governing permissions and
+  ~   limitations under the License.
+  -->
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+  xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
+  xmlns:guvnor='urn:import:org.drools.guvnor.client.asseteditor.drools.modeldriven.ui'>
+
+  <ui:with field="i18n" type="org.drools.guvnor.client.messages.Constants" />
+  <ui:with field="images" type="org.drools.guvnor.client.resources.Images" />
+  <ui:with field="res" type="org.drools.guvnor.client.resources.WizardResources" />
+
+  <gwt:VerticalPanel ui:field="container" width="100%">
+    <gwt:HorizontalPanel ui:field="messages" styleName="{res.style.wizardDTableMessageContainer}" visible="false">
+      <gwt:HorizontalPanel>
+        <gwt:Image resource="{images.warningLarge}" />
+        <gwt:Label text="{i18n.DecisionTableWizardSummaryNameMissing}" styleName="{res.style.wizardDTableMessage}" />
+      </gwt:HorizontalPanel>
+    </gwt:HorizontalPanel>
+    <gwt:Label text="{i18n.DecisionTableWizardDescriptionSummaryPage}" styleName="{res.style.wizardDTableCaption}"/>
+    <gwt:VerticalPanel styleName="{res.style.wizardDTableSummaryContainer}">
+      <gwt:HorizontalPanel ui:field="assetNameContainer" styleName="{res.style.wizardDTableFieldContainerValid}">
+        <gwt:Label text="{i18n.NameColon}" styleName="{res.style.wizardDTableFields}" />
+        <gwt:TextBox ui:field="txtAssetName" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Image resource="{images.mandatory}" title="{i18n.MandatoryField}" styleName="{res.style.wizardDTableFields}" />
+      </gwt:HorizontalPanel>
+      <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+        <gwt:Label text="{i18n.InitialDescription}" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Label ui:field="lblAssetDescription" styleName="{res.style.wizardDTableFields}" />
+      </gwt:HorizontalPanel>
+      <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+        <gwt:Label text="{i18n.CreateInPackage}" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Label ui:field="lblPackageName" styleName="{res.style.wizardDTableFields}" />
+      </gwt:HorizontalPanel>
+      <gwt:HorizontalPanel styleName="{res.style.wizardDTableFieldContainerValid}">
+        <gwt:Label text="{i18n.TableFormat}" styleName="{res.style.wizardDTableFields}" />
+        <gwt:Label ui:field="lblTableFormat" styleName="{res.style.wizardDTableFields}" />
+      </gwt:HorizontalPanel>
+    </gwt:VerticalPanel>
+  </gwt:VerticalPanel>
+
+</ui:UiBinder>

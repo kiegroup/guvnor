@@ -18,7 +18,7 @@ package org.drools.guvnor.server.builder;
 
 import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
-import org.drools.guvnor.client.asseteditor.drools.ruleflow.*;
+import org.drools.guvnor.client.asseteditor.ruleflow.*;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
 import org.drools.process.core.Work;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -266,7 +266,7 @@ public class RuleFlowContentModelBuilder {
         return tn;
     }
 
-    private static org.drools.guvnor.client.asseteditor.drools.ruleflow.SplitNode.Constraint getConstraint(Constraint constraint) {
+    private static org.drools.guvnor.client.asseteditor.ruleflow.SplitNode.Constraint getConstraint(Constraint constraint) {
 
         SplitNode.Constraint c = new SplitNode.Constraint();
 

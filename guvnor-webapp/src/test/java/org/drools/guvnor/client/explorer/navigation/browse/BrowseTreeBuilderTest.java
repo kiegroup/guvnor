@@ -39,7 +39,6 @@ public class BrowseTreeBuilderTest {
     @Before
     public void setUp() throws Exception {
         clientFactory = mock( ClientFactory.class );
-        clientFactory = mock( ClientFactory.class );
         builder = new BrowseTreeBuilder( clientFactory, eventBus);
         NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
         stackItemHeaderView = setUpHeaderView( navigationViewFactory );

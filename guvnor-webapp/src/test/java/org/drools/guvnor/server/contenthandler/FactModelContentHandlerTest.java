@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.factmodel.FactMetaModel;
-import org.drools.guvnor.client.factmodel.FactModels;
-import org.drools.guvnor.client.factmodel.FieldMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.GuvnorTestBase;

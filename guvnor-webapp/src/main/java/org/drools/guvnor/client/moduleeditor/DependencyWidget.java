@@ -35,8 +35,8 @@ import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
 import org.drools.guvnor.client.widgets.VersionChooser;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 import org.drools.guvnor.client.widgets.tables.DependenciesPagedTable;
 
 /**

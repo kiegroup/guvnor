@@ -33,64 +33,64 @@ public class GuidedDecisionTable52
     implements
     PortableObject {
 
-    private static final long    serialVersionUID      = 510l;
+    private static final long         serialVersionUID      = 510l;
 
     /**
      * Number of internal elements before ( used for offsets in serialization )
      */
-    public static final int      INTERNAL_ELEMENTS     = 2;
+    public static final int           INTERNAL_ELEMENTS     = 2;
 
     /**
      * Various attribute names
      */
-    public static final String   SALIENCE_ATTR         = "salience";
-    public static final String   ENABLED_ATTR          = "enabled";
-    public static final String   DATE_EFFECTIVE_ATTR   = "date-effective";
-    public static final String   DATE_EXPIRES_ATTR     = "date-expires";
-    public static final String   NO_LOOP_ATTR          = "no-loop";
-    public static final String   AGENDA_GROUP_ATTR     = "agenda-group";
-    public static final String   ACTIVATION_GROUP_ATTR = "activation-group";
-    public static final String   DURATION_ATTR         = "duration";
-    public static final String   AUTO_FOCUS_ATTR       = "auto-focus";
-    public static final String   LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
-    public static final String   RULEFLOW_GROUP_ATTR   = "ruleflow-group";
-    public static final String   DIALECT_ATTR          = "dialect";
-    public static final String   NEGATE_RULE_ATTR      = "negate";
+    public static final String        SALIENCE_ATTR         = "salience";
+    public static final String        ENABLED_ATTR          = "enabled";
+    public static final String        DATE_EFFECTIVE_ATTR   = "date-effective";
+    public static final String        DATE_EXPIRES_ATTR     = "date-expires";
+    public static final String        NO_LOOP_ATTR          = "no-loop";
+    public static final String        AGENDA_GROUP_ATTR     = "agenda-group";
+    public static final String        ACTIVATION_GROUP_ATTR = "activation-group";
+    public static final String        DURATION_ATTR         = "duration";
+    public static final String        AUTO_FOCUS_ATTR       = "auto-focus";
+    public static final String        LOCK_ON_ACTIVE_ATTR   = "lock-on-active";
+    public static final String        RULEFLOW_GROUP_ATTR   = "ruleflow-group";
+    public static final String        DIALECT_ATTR          = "dialect";
+    public static final String        NEGATE_RULE_ATTR      = "negate";
 
-    private String               tableName;
+    private String                    tableName;
 
-    private String               parentName;
+    private String                    parentName;
 
-    private RowNumberCol52       rowNumberCol          = new RowNumberCol52();
+    private RowNumberCol52            rowNumberCol          = new RowNumberCol52();
 
-    private DescriptionCol52     descriptionCol        = new DescriptionCol52();
+    private DescriptionCol52          descriptionCol        = new DescriptionCol52();
 
-    private List<MetadataCol52>  metadataCols          = new ArrayList<MetadataCol52>();
+    private List<MetadataCol52>       metadataCols          = new ArrayList<MetadataCol52>();
 
-    private List<AttributeCol52> attributeCols         = new ArrayList<AttributeCol52>();
+    private List<AttributeCol52>      attributeCols         = new ArrayList<AttributeCol52>();
 
-    private List<Pattern52>      conditionPatterns     = new ArrayList<Pattern52>();
+    private List<Pattern52>           conditionPatterns     = new ArrayList<Pattern52>();
 
-    private List<ActionCol52>    actionCols            = new ArrayList<ActionCol52>();
+    private List<ActionCol52>         actionCols            = new ArrayList<ActionCol52>();
 
     // TODO verify that it's not stored in the repository, else add @XStreamOmitField
-    private transient AnalysisCol52 analysisCol;
+    private transient AnalysisCol52   analysisCol;
 
-    private TableFormat          tableFormat           = TableFormat.EXTENDED_ENTRY;
+    private TableFormat               tableFormat           = TableFormat.EXTENDED_ENTRY;
 
     /**
      * First column is always row number. Second column is description.
      * Subsequent ones follow the above column definitions: attributeCols, then
      * conditionCols, then actionCols, in that order, left to right.
      */
-    private List<List<DTCellValue52>> data = new ArrayList<List<DTCellValue52>>();
+    private List<List<DTCellValue52>> data                  = new ArrayList<List<DTCellValue52>>();
 
     // TODO verify that it's not stored in the repository, else add @XStreamOmitField
-    private transient List<Analysis> analysisData;
+    private transient List<Analysis>  analysisData;
 
     public GuidedDecisionTable52() {
         analysisCol = new AnalysisCol52();
-        analysisCol.setHideColumn(true);
+        analysisCol.setHideColumn( true );
     }
 
     public List<ActionCol52> getActionCols() {
@@ -116,7 +116,7 @@ public class GuidedDecisionTable52
 
     public Pattern52 getPattern(ConditionCol52 col) {
         for ( Pattern52 p : conditionPatterns ) {
-            if ( p.getConditions().contains(col) ) {
+            if ( p.getConditions().contains( col ) ) {
                 return p;
             }
         }
@@ -183,9 +183,9 @@ public class GuidedDecisionTable52
     }
 
     public void initAnalysisColumn() {
-        analysisData = new ArrayList<Analysis>(data.size());
-        for (List<DTCellValue52> row : data) {
-            analysisData.add(new Analysis());
+        analysisData = new ArrayList<Analysis>( data.size() );
+        for ( int i = 0; i < data.size(); i++ ) {
+            analysisData.add( new Analysis() );
         }
     }
 
@@ -297,7 +297,7 @@ public class GuidedDecisionTable52
 
     private String getType(ActionSetFieldCol52 col,
                            SuggestionCompletionEngine sce) {
-        String type = sce.getFieldType( getBoundFactType(col.getBoundName()),
+        String type = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                         col.getFactField() );
         type = (assertDataType( col,
                                 sce,
@@ -358,6 +358,9 @@ public class GuidedDecisionTable52
         } else if ( column instanceof ActionInsertFactCol52 ) {
             dataType = derieveDataType( column,
                                         sce );
+
+        } else if ( column instanceof ActionRetractFactCol52 ) {
+            dataType = DTDataTypes52.STRING;
 
         } else if ( column instanceof AnalysisCol52 ) {
             dataType = DTDataTypes52.STRING;
@@ -539,7 +542,7 @@ public class GuidedDecisionTable52
                  && !"".equals( col.getValueList() ) ) {
             return col.getValueList().split( "," );
         } else {
-            String[] r = sce.getEnumValues( getBoundFactType(col.getBoundName()),
+            String[] r = sce.getEnumValues( getBoundFactType( col.getBoundName() ),
                                             col.getFactField() );
             return (r != null) ? r : new String[0];
         }
@@ -671,7 +674,7 @@ public class GuidedDecisionTable52
     private boolean assertDataType(ActionSetFieldCol52 col,
                                    SuggestionCompletionEngine sce,
                                    String dataType) {
-        String ft = sce.getFieldType( getBoundFactType(col.getBoundName()),
+        String ft = sce.getFieldType( getBoundFactType( col.getBoundName() ),
                                       col.getFactField() );
         if ( ft != null && ft.equals( dataType ) ) {
             return true;

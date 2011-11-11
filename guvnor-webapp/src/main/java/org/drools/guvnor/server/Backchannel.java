@@ -18,7 +18,7 @@ package org.drools.guvnor.server;
 
 import org.drools.guvnor.client.rpc.PushResponse;
 import org.jboss.seam.security.Credentials;
-import org.jboss.seam.servlet.http.HttpSessionStatus;
+import org.jboss.solder.servlet.http.HttpSessionStatus;
 import org.jboss.seam.security.Identity;
 
 import java.util.*;
@@ -45,8 +45,9 @@ public class Backchannel {
     @Inject
     private Credentials credentials;
 
-    @Inject
-    private HttpSessionStatus sessionStatus;
+    // TODO fixme GUVNOR-1681
+//    @Inject
+//    private HttpSessionStatus sessionStatus;
 
     @PostConstruct
     public void postConstruct() {
@@ -65,15 +66,15 @@ public class Backchannel {
      * @return never null, an empty list if there's nothing to tell
      */
     public List<PushResponse> subscribe() {
-        if (sessionStatus.isActive()) {
+//        if (sessionStatus.isActive()) {
             try {
                 return await(credentials.getUsername());
             } catch (InterruptedException e) {
                 return new ArrayList<PushResponse>();
             }
-        } else {
-            return new ArrayList<PushResponse>();
-        }
+//        } else {
+//            return new ArrayList<PushResponse>();
+//        }
     }
 
     public List<PushResponse> await(String userName) throws InterruptedException {
@@ -99,9 +100,8 @@ public class Backchannel {
      * Fetch the list of messages waiting, if there are some, replace it with an empty list.
      */
     private List<PushResponse> fetchMessageForUser(String userName) {
-        List<PushResponse> msgs = mailbox.put(userName,
+        return mailbox.put(userName,
                 new ArrayList<PushResponse>());
-        return msgs;
     }
 
     /**

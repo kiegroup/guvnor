@@ -20,26 +20,29 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.util.GWTDateConverter;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
-import org.drools.guvnor.client.widgets.decoratedgrid.HasColumns;
-import org.drools.guvnor.client.widgets.decoratedgrid.HasRows;
-import org.drools.guvnor.client.widgets.decoratedgrid.HasSystemControlledColumns;
-import org.drools.guvnor.client.widgets.decoratedgrid.MergableGridWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.data.Coordinate;
-import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicData;
-import org.drools.guvnor.client.widgets.decoratedgrid.data.DynamicDataRow;
-import org.drools.guvnor.client.widgets.decoratedgrid.data.GroupedDynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasColumns;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasRows;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasSystemControlledColumns;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
@@ -55,6 +58,7 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 
@@ -76,6 +80,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     protected DecisionTableCellFactory                    cellFactory;
     protected DecisionTableCellValueFactory               cellValueFactory;
     protected DecisionTableControlsWidget                 dtableCtrls;
+    protected final EventBus                              eventBus;
 
     protected static final DecisionTableResourcesProvider resources = new DecisionTableResourcesProvider();
 
@@ -85,7 +90,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param sce
      */
     public AbstractDecisionTableWidget(DecisionTableControlsWidget dtableCtrls,
-                                       SuggestionCompletionEngine sce) {
+                                       SuggestionCompletionEngine sce,
+                                       EventBus eventBus) {
 
         if ( dtableCtrls == null ) {
             throw new IllegalArgumentException( "dtableControls cannot be null" );
@@ -96,6 +102,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.sce = sce;
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
+        this.eventBus = eventBus;
     }
 
     /**
@@ -282,7 +289,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         this.model = model;
         this.cellFactory = new DecisionTableCellFactory( sce,
                                                          widget.getGridWidget(),
-                                                         this.model );
+                                                         this.model,
+                                                         this.eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce,
                                                                    this.model );
 
@@ -442,8 +450,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param origColumn
      *            The existing column in the grid
      * @param editColumn
-     *            A copy (not clone) of the original column containing the
-     *            modified values
+     *            A copy of the original column containing the modified values
      */
     public void updateColumn(final ActionInsertFactCol52 origColumn,
                              final ActionInsertFactCol52 editColumn) {
@@ -548,8 +555,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param origColumn
      *            The existing column in the grid
      * @param editColumn
-     *            A copy (not clone) of the original column containing the
-     *            modified values
+     *            A copy of the original column containing the modified values
      */
     public void updateColumn(final ActionSetFieldCol52 origColumn,
                              final ActionSetFieldCol52 editColumn) {
@@ -632,6 +638,168 @@ public abstract class AbstractDecisionTableWidget extends Composite
             widget.getGridWidget().redrawColumns( column.getColumnIndex(),
                                                   maxColumnIndex );
         }
+
+        // Schedule redraw event after column has been redrawn
+        if ( bRedrawHeader ) {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                public void execute() {
+                    widget.getHeaderWidget().redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update an ActionWorkItemSetFieldCol52 column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final ActionWorkItemSetFieldCol52 origColumn,
+                             final ActionWorkItemSetFieldCol52 editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        boolean bRedrawHeader = false;
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Change in column's binding forces an update and redraw if FactField
+        // is different; otherwise only need to update and redraw if the
+        // FieldType has changed
+        if ( !isEqualOrNull( origColumn.getBoundName(),
+                             editColumn.getBoundName() ) ) {
+            if ( !isEqualOrNull( origColumn.getFactField(),
+                                 editColumn.getFactField() ) ) {
+                bRedrawHeader = true;
+            }
+
+        } else if ( !isEqualOrNull( origColumn.getFactField(),
+                                    editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update column header in Header Widget
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update column field in Header Widget
+        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        // Schedule redraw event after column has been redrawn
+        if ( bRedrawHeader ) {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                public void execute() {
+                    widget.getHeaderWidget().redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update an ActionRetractFactCol52 column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final ActionRetractFactCol52 origColumn,
+                             final ActionRetractFactCol52 editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        boolean bRedrawHeader = false;
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Update LimitedEntryValue in Header Widget
+        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+            if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
+                bRedrawHeader = true;
+            }
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
+
+        // Schedule redraw event after column has been redrawn
+        if ( bRedrawHeader ) {
+            Scheduler.get().scheduleFinally( new ScheduledCommand() {
+                public void execute() {
+                    widget.getHeaderWidget().redraw();
+                }
+            } );
+        }
+
+    }
+
+    /**
+     * Update an ActionWorkItemCol52 column
+     * 
+     * @param origColumn
+     *            The existing column in the grid
+     * @param editColumn
+     *            A copy of the original column containing the modified values
+     */
+    public void updateColumn(final ActionWorkItemCol52 origColumn,
+                             final ActionWorkItemCol52 editColumn) {
+        if ( origColumn == null ) {
+            throw new IllegalArgumentException( "origColumn cannot be null" );
+        }
+        if ( editColumn == null ) {
+            throw new IllegalArgumentException( "editColumn cannot be null" );
+        }
+
+        // Update column's visibility
+        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+            setColumnVisibility( origColumn,
+                                 !editColumn.isHideColumn() );
+        }
+
+        // Update column header in Header Widget
+        boolean bRedrawHeader = false;
+        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+            bRedrawHeader = true;
+        }
+
+        // Copy new values into original column definition
+        populateModelColumn( origColumn,
+                             editColumn );
 
         // Schedule redraw event after column has been redrawn
         if ( bRedrawHeader ) {
@@ -771,6 +939,15 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Update column field in Header Widget
         if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
             bRedrawHeader = true;
+        }
+
+        // Update column binding in Header Widget
+        if ( !origColumn.isBound() && editColumn.isBound() ) {
+            bRedrawHeader = true;
+        } else if ( origColumn.isBound() && !editColumn.isBound() ) {
+            bRedrawHeader = true;
+        } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
+            bRedrawColumn = true;
         }
 
         // Update LimitedEntryValue in Header Widget
@@ -1154,6 +1331,40 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionRetractFactCol52 col,
+                                     final ActionRetractFactCol52 editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
+            ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
+        }
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionWorkItemCol52 col,
+                                     final ActionWorkItemCol52 editingCol) {
+        col.setHeader( editingCol.getHeader() );
+        col.setDefaultValue( editingCol.getDefaultValue() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setWorkItemDefinition( editingCol.getWorkItemDefinition() );
+    }
+
+    // Copy values from one (transient) model column into another
+    private void populateModelColumn(final ActionWorkItemSetFieldCol52 col,
+                                     final ActionWorkItemSetFieldCol52 editingCol) {
+        col.setBoundName( editingCol.getBoundName() );
+        col.setType( editingCol.getType() );
+        col.setFactField( editingCol.getFactField() );
+        col.setHeader( editingCol.getHeader() );
+        col.setHideColumn( editingCol.isHideColumn() );
+        col.setUpdate( editingCol.isUpdate() );
+        col.setWorkItemName( editingCol.getWorkItemName() );
+        col.setWorkItemResultParameterName( editingCol.getWorkItemResultParameterName() );
+        col.setParameterClassName( editingCol.getParameterClassName() );
+    }
+
+    // Copy values from one (transient) model column into another
     private void populateModelColumn(final ConditionCol52 col,
                                      final ConditionCol52 editingCol) {
         col.setConstraintValueType( editingCol.getConstraintValueType() );
@@ -1165,6 +1376,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         col.setDefaultValue( editingCol.getDefaultValue() );
         col.setHideColumn( editingCol.isHideColumn() );
         col.setParameters( editingCol.getParameters() );
+        col.setBinding( editingCol.getBinding() );
         if ( col instanceof LimitedEntryCol && editingCol instanceof LimitedEntryCol ) {
             ((LimitedEntryCol) col).setValue( ((LimitedEntryCol) editingCol).getValue() );
         }
@@ -1314,6 +1526,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         showAnalysis( analysisData );
     }
 
+    @SuppressWarnings("unchecked")
     private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );

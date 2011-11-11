@@ -57,13 +57,13 @@ public class SuggestionCompletionEngine
      * The operators that are used at different times (based on type).
      */
     private static final String[]                   STANDARD_CONNECTIVES     = new String[]{"|| ==", "|| !=", "&& !="};
-    private static final String[]                   STRING_CONNECTIVES       = new String[]{"|| ==", "|| !=", "&& !=", "&& matches", "|| matches"};
+    private static final String[]                   STRING_CONNECTIVES       = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >=", "&& matches", "|| matches"};
     private static final String[]                   COMPARABLE_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "&& >", "&& <", "|| >", "|| <", "&& >=", "&& <=", "|| <=", "|| >="};
     private static final String[]                   COLLECTION_CONNECTIVES   = new String[]{"|| ==", "|| !=", "&& !=", "|| contains", "&& contains", "|| excludes", "&& excludes"};
 
     private static final String[]                   STANDARD_OPERATORS       = new String[]{"==", "!=", "== null", "!= null"};
     private static final String[]                   COMPARABLE_OPERATORS     = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
-    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "matches", "soundslike", "== null", "!= null"};
+    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"};
     private static final String[]                   COLLECTION_OPERATORS     = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
     private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincides"};

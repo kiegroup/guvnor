@@ -20,17 +20,19 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.widgets.decoratedgrid.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridHeaderWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DecoratedGridWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.DynamicColumn;
-import org.drools.guvnor.client.widgets.decoratedgrid.ResourcesProvider;
-import org.drools.guvnor.client.widgets.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionSetFieldCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -39,6 +41,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 import org.drools.ide.common.client.modeldriven.dt52.DescriptionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
+import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryActionRetractFactCol52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
@@ -336,7 +339,14 @@ public class VerticalDecisionTableHeaderWidget extends
                 tce.addClassName( resources.headerRowIntermediate() );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
             } else if ( modelCol instanceof ConditionCol52 ) {
-                tce.appendChild( makeLabel( ((ConditionCol52) modelCol).getHeader(),
+                ConditionCol52 cc = (ConditionCol52) modelCol;
+                StringBuilder header = new StringBuilder();
+                if ( cc.isBound() ) {
+                    header.append( cc.getBinding() );
+                    header.append( " : " );
+                }
+                header.append( cc.getHeader() );
+                tce.appendChild( makeLabel( header.toString(),
                                             col.getWidth(),
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
@@ -345,7 +355,7 @@ public class VerticalDecisionTableHeaderWidget extends
                                             col.getWidth(),
                                             resources.rowHeaderHeight() ) );
                 tce.addClassName( resources.cellTableColumn( col.getModelColumn() ) );
-            } else if ( modelCol instanceof AnalysisCol52) {
+            } else if ( modelCol instanceof AnalysisCol52 ) {
                 tce.appendChild( makeLabel( constants.Analysis(),
                                             col.getWidth(),
                                             resources.rowHeaderHeight() ) );
@@ -504,6 +514,10 @@ public class VerticalDecisionTableHeaderWidget extends
                             binding = aifc.getBoundName();
                         } else if ( ac instanceof ActionSetFieldCol52 ) {
                             factType = ((ActionSetFieldCol52) ac).getBoundName();
+                        } else if ( ac instanceof LimitedEntryActionRetractFactCol52 ) {
+                            factType = ((LimitedEntryActionRetractFactCol52) ac).getValue().getStringValue();
+                        } else if ( ac instanceof ActionWorkItemCol52 ) {
+                            factType = ((ActionWorkItemCol52) ac).getWorkItemDefinition().getDisplayName();
                         }
 
                         tce.addClassName( resources.headerRowIntermediate() );
@@ -558,16 +572,23 @@ public class VerticalDecisionTableHeaderWidget extends
                         ActionCol52 ac = (ActionCol52) col.getModelColumn();
                         StringBuilder label = new StringBuilder();
 
-                        String factField = "";
+                        String lev = null;
+                        String factField = null;
                         if ( ac instanceof ActionInsertFactCol52 ) {
                             ActionInsertFactCol52 aifc = (ActionInsertFactCol52) ac;
+                            lev = getLimitedEntryValue( aifc );
                             factField = aifc.getFactField();
                         } else if ( ac instanceof ActionSetFieldCol52 ) {
-                            factField = ((ActionSetFieldCol52) ac).getFactField();
+                            ActionSetFieldCol52 asf = (ActionSetFieldCol52) ac;
+                            lev = getLimitedEntryValue( asf );
+                            factField = asf.getFactField();
+                        } else if ( ac instanceof ActionRetractFactCol52 ) {
+                            factField = "[" + constants.Retract() + "]";
+                        } else if ( ac instanceof ActionWorkItemCol52 ) {
+                            factField = "[" + constants.WorkItemAction() + "]";
                         }
 
                         if ( factField != null && factField.length() > 0 ) {
-                            String lev = getLimitedEntryValue( ac );
                             label.append( factField );
                             if ( lev != null ) {
                                 label.append( " [" );

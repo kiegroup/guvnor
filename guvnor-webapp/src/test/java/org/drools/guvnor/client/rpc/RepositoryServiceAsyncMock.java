@@ -16,12 +16,15 @@
 
 package org.drools.guvnor.client.rpc;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
+import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * Nothing to see here. Just extends this for your own mock impl.
@@ -218,6 +221,10 @@ public class RepositoryServiceAsyncMock implements RepositoryServiceAsync {
     public void loadWorkitemDefinitionElementData(AsyncCallback cb) {
     }
     
+    public void loadWorkItemDefinitions(String p0, AsyncCallback<Set<PortableWorkDefinition>> cb) {
+    }
+
     public void doesAssetExistInPackage(String p0, String p1, AsyncCallback<Boolean> cb) {
     }
+    
 }

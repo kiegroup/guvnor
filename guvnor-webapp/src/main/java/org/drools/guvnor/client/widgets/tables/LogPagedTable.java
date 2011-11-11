@@ -18,8 +18,8 @@ package org.drools.guvnor.client.widgets.tables;
 
 import java.util.Date;
 
-import org.drools.guvnor.client.admin.EventLogPresenter.EventLogView;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogPresenter.EventLogView;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.LogPageRow;
 

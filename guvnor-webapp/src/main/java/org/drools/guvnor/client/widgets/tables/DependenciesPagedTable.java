@@ -24,7 +24,7 @@ import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
 import org.drools.guvnor.client.rpc.DependenciesPageRow;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;

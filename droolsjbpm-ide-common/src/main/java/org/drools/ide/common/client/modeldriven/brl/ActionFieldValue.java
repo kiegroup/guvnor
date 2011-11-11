@@ -21,18 +21,22 @@ import org.drools.ide.common.client.modeldriven.FieldNature;
 /**
  * Holds field and value for "action" parts of the rule.
  */
-public class ActionFieldValue implements PortableObject, FieldNature {
+public class ActionFieldValue
+    implements
+    PortableObject,
+    FieldNature {
 
     public String field;
     public String value;
-    public long nature;
+    public long   nature;
     /**
      * This is the datatype archectype (eg String, Numeric etc).
      */
     public String type;
 
-    public ActionFieldValue(final String field, final String value,
-            final String type) {
+    public ActionFieldValue(final String field,
+                            final String value,
+                            final String type) {
         this.field = field;
         this.value = value;
         this.type = type;
@@ -41,64 +45,80 @@ public class ActionFieldValue implements PortableObject, FieldNature {
     public ActionFieldValue() {
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#isFormula()
      */
     public boolean isFormula() {
-        return this.value != null && this.value.trim().startsWith("=");
+        return this.value != null && this.value.trim().startsWith( "=" );
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getField()
      */
     public String getField() {
         return field;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setField(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setField(java
+     * .lang.String)
      */
     public void setField(String field) {
         this.field = field;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getValue()
      */
     public String getValue() {
         return value;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setValue(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setValue(java
+     * .lang.String)
      */
     public void setValue(String value) {
         this.value = value;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getNature()
      */
     public long getNature() {
         return nature;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setNature(long)
      */
     public void setNature(long nature) {
         this.nature = nature;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
      * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#getType()
      */
     public String getType() {
         return type;
     }
 
-    /* (non-Javadoc)
-     * @see org.drools.ide.common.client.modeldriven.brl.FieldNature#setType(java.lang.String)
+    /*
+     * (non-Javadoc)
+     * @see
+     * org.drools.ide.common.client.modeldriven.brl.FieldNature#setType(java
+     * .lang.String)
      */
     public void setType(String type) {
         this.type = type;

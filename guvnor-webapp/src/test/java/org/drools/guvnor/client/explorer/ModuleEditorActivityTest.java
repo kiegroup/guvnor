@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.client.explorer;
 
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,15 +33,26 @@ public class ModuleEditorActivityTest {
     @Before
     public void setUp() throws Exception {
         clientFactory = mock( ClientFactory.class );
+        NavigationViewFactory navigationViewFactory = setUpNavigationFactory();
+
         view = mock( ModuleEditorActivityView.class );
         when(
-                clientFactory.getModuleEditorActivityView()
+                clientFactory.getNavigationViewFactory().getModuleEditorActivityView()
         ).thenReturn(
                 view
         );
         moduleEditorActivity = new ModuleEditorActivity( "mockUuid", clientFactory );
     }
 
+    private NavigationViewFactory setUpNavigationFactory() {
+        NavigationViewFactory navigationViewFactory = mock( NavigationViewFactory.class );
+        when(
+                clientFactory.getNavigationViewFactory()
+        ).thenReturn(
+                navigationViewFactory
+        );
+        return navigationViewFactory;
+    }
     @Test
     public void testMock() throws Exception {
         assertTrue( true );

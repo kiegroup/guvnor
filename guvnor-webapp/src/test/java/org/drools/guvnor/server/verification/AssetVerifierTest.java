@@ -18,7 +18,7 @@ package org.drools.guvnor.server.verification;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.AnalysisReport;
-import org.drools.guvnor.client.ruleeditor.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.toolbar.DefaultActionToolbarButtonsConfigurationProvider;
 import org.drools.guvnor.server.MockAssetItemIterator;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;

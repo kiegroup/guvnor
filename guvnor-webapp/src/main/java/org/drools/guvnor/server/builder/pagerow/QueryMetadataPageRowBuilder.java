@@ -34,7 +34,7 @@ public class QueryMetadataPageRowBuilder
         List<QueryPageRow> rowList = new ArrayList<QueryPageRow>();
 
         while (iterator.hasNext() && (pageSize == null || rowList.size() < pageSize)) {
-            AssetItem assetItem = (AssetItem) iterator.next();
+            AssetItem assetItem = iterator.next();
 
             // Filter surplus assets
             if (checkPackagePermissionHelper(packageFilter,

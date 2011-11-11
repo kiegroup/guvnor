@@ -17,6 +17,7 @@
 package org.drools.guvnor.client.asseteditor;
 
 import org.drools.guvnor.client.common.DirtyableComposite;
+import org.drools.guvnor.client.configurations.ApplicationPreferences;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
@@ -27,7 +28,6 @@ import com.google.gwt.dom.client.IFrameElement;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Frame;
-import org.drools.guvnor.client.configurations.ApplicationPreferences;
 
 /**
  * The Business Process Editor, wrapping the Process Editor

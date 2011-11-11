@@ -56,7 +56,7 @@ import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.PackageServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.SnapshotInfo;
-import org.drools.guvnor.client.widgets.tables.SnapshotComparisonPagedTable;
+import org.drools.guvnor.client.widgets.drools.tables.SnapshotComparisonPagedTable;
 
 /**
  * This is the new snapshot view.

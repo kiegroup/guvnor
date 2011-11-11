@@ -57,7 +57,7 @@ public class SuggestionCompletionCacheTest {
             }
         };
 
-        cache.doAction( "xyz", new Command() {
+        cache.refreshPackage( "xyz", new Command() {
             public void execute() {
             }
         });
@@ -66,7 +66,7 @@ public class SuggestionCompletionCacheTest {
         SuggestionCompletionEngine eng = new SuggestionCompletionEngine();
         cache.cache.put( "foo",  eng);
 
-        cache.doAction( "foo", new Command() {
+        cache.refreshPackage( "foo", new Command() {
 
             public void execute() {
                 executed = true;

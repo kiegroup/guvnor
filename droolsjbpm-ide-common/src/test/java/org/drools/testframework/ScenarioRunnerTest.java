@@ -330,7 +330,7 @@ public class ScenarioRunnerTest extends RuleUnit {
         FactData fd = new FactData("Cheese",
                 "x",
                 ls(new FieldData("type",
-                        ""),
+                        null),
                         new FieldData("price",
                                 "42")),
                 false);
@@ -341,6 +341,41 @@ public class ScenarioRunnerTest extends RuleUnit {
                 c.getType());
         assertEquals(42,
                 c.getPrice());
+    }
+
+    @Test
+    public void testPopulateEmptyString() throws Exception {
+        TypeResolver resolver = new ClassTypeResolver( new HashSet<String>(),
+                                                       Thread.currentThread().getContextClassLoader() );
+        resolver.addImport( "org.drools.Cheese" );
+        ScenarioRunner run = new ScenarioRunner( new Scenario(),
+                                                 resolver,
+                                                 new MockWorkingMemory() );
+        run.getPopulatedData().clear();
+        Cheese c = new Cheese();
+        c.setType( "whee" );
+        c.setPrice( 1 );
+        run.getPopulatedData().put( "x",
+                                    c );
+
+        assertEquals( 1,
+                      c.getPrice() );
+
+        //An empty String is a 'value' as opposed to null
+        FactData fd = new FactData( "Cheese",
+                                    "x",
+                                    ls( new FieldData( "type",
+                                                       "" ),
+                                        new FieldData( "price",
+                                                       "42" ) ),
+                                    false );
+
+        run.populateFields( fd,
+                            c );
+        assertEquals( "",
+                      c.getType() );
+        assertEquals( 42,
+                      c.getPrice() );
     }
 
     @Test

@@ -54,7 +54,7 @@ public class CXFAuthenticationHandler implements RequestHandler {
             return null;
         }
 
-        AuthorizationPolicy policy = (AuthorizationPolicy) m.get(AuthorizationPolicy.class);
+        AuthorizationPolicy policy = m.get(AuthorizationPolicy.class);
 
         // The policy can be null when the user did not specify credentials
         if (policy != null) {

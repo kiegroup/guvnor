@@ -23,25 +23,20 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
-import org.drools.guvnor.client.categorynav.CategoryExplorerWidget;
-import org.drools.guvnor.client.categorynav.CategorySelectHandler;
+
 import org.drools.guvnor.client.common.*;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.ModuleEditorPlace;
-import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.moduleeditor.AbstractModuleEditor;
 import org.drools.guvnor.client.moduleeditor.DependencyWidget;
-import org.drools.guvnor.client.moduleeditor.RefreshModuleListEvent;
 import org.drools.guvnor.client.resources.Images;
 import org.drools.guvnor.client.rpc.PackageConfigData;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.TableDataResult;
 import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbarButtonsConfigurationProvider;
-import org.drools.guvnor.client.ruleeditor.toolbar.PackageActionToolbarButtonsConfigurationProvider;
+import org.drools.guvnor.client.widgets.categorynav.CategoryExplorerWidget;
+import org.drools.guvnor.client.widgets.categorynav.CategorySelectHandler;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +50,6 @@ public class PackageEditor extends AbstractModuleEditor {
     private static Images images = GWT.create( Images.class );
 
     private final PackageConfigData packageConfigData;
-    private ActionToolbar actionToolBar;
     private boolean isHistoricalReadOnly = false;
     private Command refreshCommand;
 
@@ -91,44 +85,6 @@ public class PackageEditor extends AbstractModuleEditor {
 
     private void refreshWidgets() {
         clear();
-
-        actionToolBar = new ActionToolbar( getConfiguration(),
-                packageConfigData.getState() );
-        if ( isHistoricalReadOnly ) {
-            actionToolBar.setVisible( false );
-        } else {
-            actionToolBar.setSaveChangesCommand( new Command() {
-                public void execute() {
-                    doSave( null );
-                }
-            } );
-            actionToolBar.setArchiveCommand( new Command() {
-                public void execute() {
-                    doArchive();
-                }
-            } );
-            actionToolBar.setCopyCommand( new Command() {
-                public void execute() {
-                    doCopy();
-                }
-            } );
-            actionToolBar.setRenameCommand( new Command() {
-                public void execute() {
-                    doRename();
-                }
-            } );
-            actionToolBar.setChangeStatusCommand( new Command() {
-                public void execute() {
-                    showStatusChanger();
-                }
-            } );
-            actionToolBar.setViewSourceCommand( new Command() {
-                public void execute() {
-                    PackageBuilderWidget.doBuildSource( packageConfigData.getUuid(),
-                            packageConfigData.getName() );
-                }
-            } );
-        }
 
         startSection( constants.ConfigurationSection() );
 
@@ -256,6 +212,22 @@ public class PackageEditor extends AbstractModuleEditor {
         endSection();
     }
 
+    //TODO: move this to PackageEditorActionToolbar
+    private void doValidatePackageConfiguration(final Command refresh) {
+        final HorizontalPanel busy = new HorizontalPanel();
+        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
+        busy.add( new Image( images.redAnime() ) );
+
+        packageConfigurationValidationResult.add( busy );
+
+        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.packageConfigData,
+                new GenericCallback<ValidatedResponse>() {
+                    public void onSuccess(ValidatedResponse data) {
+                        showValidatePackageConfigurationResult( data );
+                    }
+                } );
+    }
+    
     private Widget createHPanel(Widget widget,
                                 String popUpText) {
         HorizontalPanel hPanel = new HorizontalPanel();
@@ -263,10 +235,6 @@ public class PackageEditor extends AbstractModuleEditor {
         hPanel.add( new InfoPopup( constants.Tip(),
                 popUpText ) );
         return hPanel;
-    }
-
-    public ActionToolbar getActionToolbar() {
-        return this.actionToolBar;
     }
 
     private Widget getShowCatRules() {
@@ -469,16 +437,9 @@ public class PackageEditor extends AbstractModuleEditor {
         return uri;
     }
 
-    protected void showStatusChanger() {
-        final StatusChangePopup pop = new StatusChangePopup( packageConfigData.getUuid(),
-                true );
-        pop.setChangeStatusEvent( new Command() {
-            public void execute() {
-                actionToolBar.setState( pop.getState() );
-            }
-        } );
-
-        pop.show();
+    private Widget header() {
+        return new PackageHeaderWidget( this.packageConfigData,
+        		isHistoricalReadOnly );
     }
 
     /*
@@ -486,148 +447,4 @@ public class PackageEditor extends AbstractModuleEditor {
             status.setHTML( "<b>" + state + "</b>" );
         }
     */
-
-    private void doRename() {
-        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                constants.RenameThePackage() );
-        pop.addRow( new HTML( constants.RenamePackageTip() ) );
-        final TextBox name = new TextBox();
-        pop.addAttribute( constants.NewPackageNameIs(),
-                name );
-        Button ok = new Button( constants.OK() );
-        pop.addAttribute( "",
-                ok );
-
-        ok.addClickHandler( new ClickHandler() {
-            public void onClick(ClickEvent event) {
-                RepositoryServiceFactory.getPackageService().renamePackage( packageConfigData.getUuid(),
-                        name.getText(),
-                        new GenericCallback<String>() {
-                            public void onSuccess(String data) {
-                                completedRenaming( data );
-                                pop.hide();
-                            }
-                        } );
-            }
-        } );
-
-        pop.show();
-    }
-
-    private void completedRenaming(String newAssetUUID) {
-        Window.alert( constants.PackageRenamedSuccessfully() );
-        refreshPackageList();
-
-        eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( newAssetUUID ) ) );
-
-        openModule( newAssetUUID );
-    }
-
-    private void openModule(String newAssetUUID) {
-        clientFactory.getPlaceController().goTo( new ModuleEditorPlace( newAssetUUID ) );
-    }
-
-    /**
-     * Will show a copy dialog for copying the whole package.
-     */
-    private void doCopy() {
-        final FormStylePopup pop = new FormStylePopup( images.newWiz(),
-                constants.CopyThePackage() );
-        pop.addRow( new HTML( constants.CopyThePackageTip() ) );
-        final TextBox name = new TextBox();
-        pop.addAttribute( constants.NewPackageNameIs(),
-                name );
-        Button ok = new Button( constants.OK() );
-        pop.addAttribute( "",
-                ok );
-
-        ok.addClickHandler( new ClickHandler() {
-
-            public void onClick(ClickEvent event) {
-                if ( !PackageNameValidator.validatePackageName( name.getText() ) ) {
-                    Window.alert( constants.NotAValidPackageName() );
-                    return;
-                }
-                LoadingPopup.showMessage( constants.PleaseWaitDotDotDot() );
-                RepositoryServiceFactory.getPackageService().copyPackage( packageConfigData.getName(),
-                        name.getText(),
-                        new GenericCallback<String>() {
-                            public void onSuccess(String uuid) {
-                                completedCopying( uuid );
-                                pop.hide();
-                            }
-                        } );
-            }
-        } );
-
-        pop.show();
-    }
-
-    private void completedCopying(String newAssetUUID) {
-        Window.alert( constants.PackageCopiedSuccessfully() );
-        refreshPackageList();
-
-        openModule( newAssetUUID );
-    }
-
-    private void doSave(final Command refresh) {
-        LoadingPopup.showMessage( constants.SavingPackageConfigurationPleaseWait() );
-
-        RepositoryServiceFactory.getPackageService().savePackage( this.packageConfigData,
-                new GenericCallback<Void>() {
-                    public void onSuccess(Void data) {
-                        refreshCommand.execute();
-                        LoadingPopup.showMessage( constants.PackageConfigurationUpdatedSuccessfullyRefreshingContentCache() );
-
-                        SuggestionCompletionCache.getInstance().refreshPackage( packageConfigData.getName(),
-                                new Command() {
-                                    public void execute() {
-                                        if ( refresh != null ) {
-                                            refresh.execute();
-                                        }
-                                        LoadingPopup.close();
-                                    }
-                                } );
-                    }
-                } );
-    }
-
-    private void doValidatePackageConfiguration(final Command refresh) {
-        final HorizontalPanel busy = new HorizontalPanel();
-        busy.add( new Label( constants.ValidatingAndBuildingPackagePleaseWait() ) );
-        busy.add( new Image( images.redAnime() ) );
-
-        packageConfigurationValidationResult.add( busy );
-
-        RepositoryServiceFactory.getPackageService().validatePackageConfiguration( this.packageConfigData,
-                new GenericCallback<ValidatedResponse>() {
-                    public void onSuccess(ValidatedResponse data) {
-                        showValidatePackageConfigurationResult( data );
-                    }
-                } );
-    }
-
-    private Widget header() {
-        return new PackageHeaderWidget( this.packageConfigData,
-                isHistoricalReadOnly );
-    }
-
-    private ActionToolbarButtonsConfigurationProvider getConfiguration() {
-        return new PackageActionToolbarButtonsConfigurationProvider();
-    }
-
-    private void doArchive() {
-        packageConfigData.setArchived( true );
-        Command ref = new Command() {
-            public void execute() {
-                eventBus.fireEvent( new ClosePlaceEvent( new ModuleEditorPlace( packageConfigData.uuid ) ) );
-                refreshPackageList();
-            }
-        };
-        doSave( ref );
-    }
-
-    private void refreshPackageList() {
-        eventBus.fireEvent( new RefreshModuleListEvent() );
-    }
 }

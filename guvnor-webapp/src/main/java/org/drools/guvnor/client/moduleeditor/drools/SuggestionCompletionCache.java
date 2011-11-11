@@ -24,12 +24,14 @@ import java.util.Map;
 import org.drools.guvnor.client.common.ErrorPopup;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
+import org.drools.guvnor.client.explorer.RefreshModuleDataModelEvent;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.ide.common.client.modeldriven.FactTypeFilter;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 
 /**
@@ -44,6 +46,7 @@ public class SuggestionCompletionCache {
 
     Map<String, SuggestionCompletionEngine> cache = new HashMap<String, SuggestionCompletionEngine>();
     private final Constants constants;
+    private EventBus eventBus;
 
 
     public static SuggestionCompletionCache getInstance() {
@@ -63,19 +66,10 @@ public class SuggestionCompletionCache {
     SuggestionCompletionCache(Constants cs) {
         constants = cs;
     }
-
-
-    /**
-     * This will do the action, after refreshing the cache if necessary.
-     */
-    public void doAction(String packageName,
-                         Command command) {
-
-        if (!this.cache.containsKey( packageName )) {
-            loadPackage(packageName, command);
-        } else {
-            command.execute();
-        }
+    
+    public void setEventBus(final EventBus eventBus) {
+    	this.eventBus = eventBus;    	
+    	setRefreshHandler();
     }
 
     public SuggestionCompletionEngine getEngineFromCache(String packageName) {
@@ -88,20 +82,20 @@ public class SuggestionCompletionCache {
     }
 
 
-    public void loadPackage(final String packageName, final Command command) {
+    public void loadPackage(final String packageName, final Command done) {
 
         LoadingPopup.showMessage(constants.InitialisingInfoFor0PleaseWait(packageName));
 
         RepositoryServiceFactory.getService().loadSuggestionCompletionEngine( packageName, new GenericCallback<SuggestionCompletionEngine>() {
             public void onSuccess(SuggestionCompletionEngine engine) {
                 cache.put( packageName, engine );
-                command.execute();
+                done.execute();
             }
 
             public void onFailure(Throwable t) {
                 LoadingPopup.close();
                 ErrorPopup.showMessage(constants.UnableToValidatePackageForSCE(packageName));
-                command.execute();
+                done.execute();
             }
         });
     }
@@ -110,10 +104,10 @@ public class SuggestionCompletionCache {
      * Removed the package from the cache, causing it to be loaded the next time.
      */
     public void refreshPackage(String packageName, Command done) {
-        SuggestionCompletionEngine sce = cache.get(packageName);
         //No need to remove sce from cache as this makes sce temporarily unavailable during the 
         //period between removing sce and putting it back.
-/*        if (sce != null) {
+/*        SuggestionCompletionEngine sce = cache.get(packageName);
+        if (sce != null) {
             sce.setFactTypeFilter(null);
             cache.remove( packageName );
         }*/
@@ -133,5 +127,15 @@ public class SuggestionCompletionCache {
                 done.execute();
             }
         });
+    }
+        
+    private void setRefreshHandler() {
+        eventBus.addHandler(RefreshModuleDataModelEvent.TYPE,
+                new RefreshModuleDataModelEvent.Handler() {
+                    public void onRefreshModuleDataModel(
+                    		RefreshModuleDataModelEvent refreshModuleDataModelEvent) {
+                        refreshPackage(refreshModuleDataModelEvent.getModuleName(), refreshModuleDataModelEvent.getCallbackCommand());
+                    }
+                });
     }
 }

@@ -26,7 +26,6 @@ import org.drools.guvnor.client.asseteditor.RuleViewerWrapper;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.SuggestionCompletionCache;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.util.Activity;
 
@@ -77,9 +76,9 @@ public class AssetEditorActivity extends Activity {
                                                              final boolean[] loading) {
         return new GenericCallback<RuleAsset>() {
             public void onSuccess(final RuleAsset ruleAsset) {
-                SuggestionCompletionCache.getInstance().doAction( ruleAsset.metaData.packageName,
+            	eventBus.fireEvent(new RefreshModuleDataModelEvent(ruleAsset.metaData.packageName,
                         createCommandForSuggestCompletionCache( loading,
-                                ruleAsset ) );
+                                ruleAsset )));
             }
 
             private Command createCommandForSuggestCompletionCache(final boolean[] loading,

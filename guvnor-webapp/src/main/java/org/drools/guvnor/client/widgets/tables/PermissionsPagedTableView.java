@@ -35,7 +35,7 @@ import com.google.gwt.view.client.ProvidesKey;
 import com.google.gwt.view.client.SingleSelectionModel;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.PermissionsPageRow;
-import org.drools.guvnor.client.rulelist.OpenItemCommand;
+import org.drools.guvnor.client.widgets.query.OpenItemCommand;
 
 /**
  * Widget with a table of Permission entries.

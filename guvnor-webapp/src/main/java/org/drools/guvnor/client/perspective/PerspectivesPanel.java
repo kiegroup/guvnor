@@ -16,25 +16,16 @@
 
 package org.drools.guvnor.client.perspective;
 
+import org.drools.guvnor.client.common.GenericCallback;
+import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.perspective.PerspectivesPanelView.Presenter;
+import org.drools.guvnor.client.rpc.PackageConfigData;
+import org.drools.guvnor.client.rpc.ValidatedResponse;
+import org.drools.guvnor.client.util.TabbedPanel;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.client.common.GenericCallback;
-import org.drools.guvnor.client.explorer.ClientFactory;
-import org.drools.guvnor.client.explorer.ExplorerNodeConfig;
-import org.drools.guvnor.client.explorer.navigation.modules.ModuleTreeSelectableItem;
-import org.drools.guvnor.client.perspective.PerspectivesPanelView.Presenter;
-import org.drools.guvnor.client.perspective.author.AuthorPerspective;
-import org.drools.guvnor.client.perspective.runtime.RunTimePerspective;
-import org.drools.guvnor.client.perspective.soa.SOAPerspective;
-import org.drools.guvnor.client.rpc.PackageConfigData;
-import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
-import org.drools.guvnor.client.rpc.SecurityServiceAsync;
-import org.drools.guvnor.client.rpc.ValidatedResponse;
-import org.drools.guvnor.client.util.TabbedPanel;
 
 public class PerspectivesPanel implements Presenter {
 
@@ -45,13 +36,18 @@ public class PerspectivesPanel implements Presenter {
     public PerspectivesPanel(ClientFactory clientFactory, EventBus eventBus) {
         this.eventBus = eventBus;
         this.clientFactory = clientFactory;
-        this.view = clientFactory.getPerspectivesPanelView();
+        this.view = clientFactory.getNavigationViewFactory().getPerspectivesPanelView();
         this.view.setPresenter(this);
-        setPerspective(new AuthorPerspective());
+
         String[] registeredPerspectiveTypes = clientFactory.getPerspectiveFactory().getRegisteredPerspectiveTypes();
         for(String perspectiveType : registeredPerspectiveTypes) {
             //TODO: Get perspective title from PerspectiveFactory
             view.addPerspective(perspectiveType, perspectiveType);
+        }
+        
+        //Use the first one as the default perspective.
+        if(registeredPerspectiveTypes != null && registeredPerspectiveTypes.length !=0) {
+            setPerspective(clientFactory.getPerspectiveFactory().getPerspective(registeredPerspectiveTypes[0]));
         }
     }
 

@@ -16,20 +16,25 @@
 
 package org.drools.guvnor.server;
 
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import org.drools.guvnor.client.rpc.*;
-import org.drools.guvnor.server.repository.MailboxService;
-import org.drools.guvnor.server.util.LoggingHelper;
-import org.drools.repository.RulesRepository;
-import org.drools.repository.RulesRepositoryException;
-import org.jboss.seam.security.AuthorizationException;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+
+import org.drools.guvnor.client.rpc.AssetService;
+import org.drools.guvnor.client.rpc.CategoryService;
+import org.drools.guvnor.client.rpc.PackageService;
+import org.drools.guvnor.client.rpc.RepositoryService;
+import org.drools.guvnor.client.rpc.SnapshotInfo;
+import org.drools.guvnor.server.util.LoggingHelper;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
+import org.drools.repository.RulesRepositoryException;
+import org.jboss.seam.security.AuthorizationException;
+
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * GWT RPC service endpoint for Repository service. A place to hang some exception handling mainly.
@@ -718,6 +723,10 @@ public class RepositoryServiceServlet extends RemoteServiceServlet
 
     public java.util.Map loadWorkitemDefinitionElementData() throws org.drools.guvnor.client.rpc.DetailedSerializationException {
         return serviceImplementation.loadWorkitemDefinitionElementData();
+    }
+    
+    public Set<PortableWorkDefinition> loadWorkItemDefinitions(String p0) throws org.drools.guvnor.client.rpc.DetailedSerializationException {
+        return serviceImplementation.loadWorkItemDefinitions( p0 );
     }
     
     public boolean doesAssetExistInPackage(java.lang.String p0,

@@ -37,7 +37,7 @@ public class PerspectiveConfigurationParser {
     static final String ICON = "icon";
     static final String FORMAT = "format";
     
-    private InputStream in;
+    private final InputStream in;
 
     private List<ModuleEditorConfiguration> moduleEditors;
     

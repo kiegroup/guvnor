@@ -18,11 +18,14 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.drools.guvnor.client.modeldriven.ui.RuleAttributeWidget;
-import org.drools.guvnor.client.widgets.decoratedgrid.AbstractCellValueFactory;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
+import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemSetFieldCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.AttributeCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
@@ -216,6 +219,16 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             return DTDataTypes52.BOOLEAN;
         }
 
+        //Action Work Items are always boolean
+        if ( column instanceof ActionWorkItemCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
+        //Actions setting Field Values from Work Item Result Parameters are always boolean
+        if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
         //Operators "is null" and "is not null" require a boolean cell
         if ( column instanceof ConditionCol52 ) {
             ConditionCol52 cc = (ConditionCol52) column;
@@ -238,8 +251,8 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return cv;
     }
 
-    public CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
-                                                        int iCol) {
+    protected CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
+                                                           int iCol) {
         Analysis analysis = new Analysis();
         return new CellValue<Analysis>( analysis,
                                         iRow,

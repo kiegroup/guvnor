@@ -19,10 +19,10 @@ package org.drools.guvnor.server.contenthandler;
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DrlParser;
 import org.drools.compiler.DroolsParserException;
-import org.drools.guvnor.client.factmodel.AnnotationMetaModel;
-import org.drools.guvnor.client.factmodel.FactMetaModel;
-import org.drools.guvnor.client.factmodel.FactModels;
-import org.drools.guvnor.client.factmodel.FieldMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.AnnotationMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactMetaModel;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
+import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
 import org.drools.guvnor.server.util.LoggingHelper;
@@ -91,12 +91,12 @@ public class FactModelContentHandler extends ContentHandler
             sb.append( mm.getSuperType() );
         }
         for ( int i = 0; i < mm.getAnnotations().size(); i++ ) {
-            AnnotationMetaModel a = (AnnotationMetaModel) mm.getAnnotations().get( i );
+            AnnotationMetaModel a = mm.getAnnotations().get( i );
             sb.append( "\n\t" );
             sb.append( buildAnnotationDRL( a ) );
         }
         for ( int i = 0; i < mm.getFields().size(); i++ ) {
-            FieldMetaModel f = (FieldMetaModel) mm.getFields().get( i );
+            FieldMetaModel f = mm.getFields().get( i );
             sb.append( "\n\t" );
             sb.append( f.name ).append( ": " ).append( f.type );
         }

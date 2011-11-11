@@ -64,7 +64,7 @@ public class TableDisplayHandler {
     public TableDataResult loadRuleListTable(AssetItemPageResult list) throws SerializationException {
         List<TableDataRow> data = loadRows(list.assets.iterator(), -1);
         TableDataResult result = new TableDataResult();
-        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.data = data.toArray(new TableDataRow[data.size()]);
         result.currentPosition = list.currentPosition;
         result.hasNext = list.hasNext;
         return result;
@@ -75,7 +75,7 @@ public class TableDisplayHandler {
             throws SerializationException {
         List<TableDataRow> data = loadRows(assetList.iterator(), -1);
         TableDataResult result = new TableDataResult();
-        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.data = data.toArray(new TableDataRow[data.size()]);
         result.currentPosition = curPos;
         result.hasNext = hasNext;
         return result;
@@ -121,7 +121,7 @@ public class TableDisplayHandler {
         }
         List<TableDataRow> data = loadRows(it, numRows);
         TableDataResult result = new TableDataResult();
-        result.data = (TableDataRow[]) data.toArray(new TableDataRow[data.size()]);
+        result.data = data.toArray(new TableDataRow[data.size()]);
         result.total = it.getSize();
         result.hasNext = it.hasNext();
         result.currentPosition = it.getPosition();
@@ -132,7 +132,7 @@ public class TableDisplayHandler {
         List<TableDataRow> data = new ArrayList<TableDataRow>();
 
         for (Iterator<AssetItem> iter = it; iter.hasNext(); ) {
-            AssetItem r = (AssetItem) iter.next();
+            AssetItem r = iter.next();
             TableDataRow row = new TableDataRow();
 
             row.id = r.getUUID();

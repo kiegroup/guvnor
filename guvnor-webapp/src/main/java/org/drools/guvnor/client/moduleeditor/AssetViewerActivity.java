@@ -48,7 +48,7 @@ public class AssetViewerActivity extends Activity
                                 ClientFactory clientFactory) {
         this.uuid = uuid;
         this.clientFactory = clientFactory;
-        this.view = clientFactory.getAssetViewerActivityView();
+        this.view = clientFactory.getNavigationViewFactory().getAssetViewerActivityView();
     }
 
     @Override

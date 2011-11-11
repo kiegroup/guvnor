@@ -1,20 +1,20 @@
 package org.drools.guvnor.client.explorer.navigation.admin;
 
-import org.drools.guvnor.client.admin.ArchivedAssetManager;
-import org.drools.guvnor.client.admin.BackupManager;
-import org.drools.guvnor.client.admin.CategoryManager;
-import org.drools.guvnor.client.admin.EventLogPresenter;
-import org.drools.guvnor.client.admin.EventLogViewImpl;
-import org.drools.guvnor.client.admin.PermissionViewer;
-import org.drools.guvnor.client.admin.RepoConfigManager;
-import org.drools.guvnor.client.admin.RuleVerifierManager;
-import org.drools.guvnor.client.admin.StateManager;
-import org.drools.guvnor.client.admin.WorkspaceManager;
 import org.drools.guvnor.client.common.FormStylePopup;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.explorer.AcceptItem;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.navigation.ClosePlaceEvent;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.ArchivedAssetManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.BackupManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.CategoryManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogPresenter;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogViewImpl;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.PermissionViewer;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.RepoConfigManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.RuleVerifierManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.StateManager;
+import org.drools.guvnor.client.explorer.navigation.admin.widget.WorkspaceManager;
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.rpc.RepositoryServiceAsync;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
@@ -59,7 +59,8 @@ public class ManagerActivity extends Activity {
                 break;
             case 1 :
                 tabbedPanel.add( constants.ArchivedManager(),
-                                 new ArchivedAssetManager( clientFactory ) );
+                                 new ArchivedAssetManager( clientFactory,
+                                                           eventBus ) );
                 break;
 
             case 2 :

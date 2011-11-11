@@ -55,10 +55,16 @@ abstract class DatePicker extends DirtyableComposite {
     }
 
     public String getDateString() {
+        Date date = null;
         String t = textWidget.getText();
-        Date date = this.visualFormatFormatter.parse( t );
-        DateTimeFormat formatter = DateTimeFormat.getFormat( defaultFormat );
-        return formatter.format( date );
+        try {
+            date = this.visualFormatFormatter.parse( t );
+            DateTimeFormat formatter = DateTimeFormat.getFormat( defaultFormat );
+            return formatter.format( date );
+        } catch ( IllegalArgumentException iae ) {
+            //The String failed to parse
+        }
+        return null;
     }
 
     /**

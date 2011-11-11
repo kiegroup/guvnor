@@ -18,7 +18,6 @@ package org.drools.guvnor.client.moduleeditor;
 
 
 import org.drools.guvnor.client.common.*;
-import org.drools.guvnor.client.ruleeditor.toolbar.ActionToolbar;
 
 /**
  * This is the abstract editor and viewer for module configuration.
@@ -27,7 +26,5 @@ public abstract class AbstractModuleEditor extends PrettyFormLayout {
 
     public AbstractModuleEditor() {
     }
-
-    abstract public ActionToolbar getActionToolbar();
 
 }

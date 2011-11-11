@@ -16,7 +16,6 @@
 
 package org.drools.guvnor.client.explorer;
 
-import com.google.gwt.event.shared.EventBus;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewActivity;
 import org.drools.guvnor.client.explorer.navigation.processes.ProcessOverviewPlace;
 import org.drools.guvnor.client.explorer.navigation.reporting.ReportTemplatesActivity;

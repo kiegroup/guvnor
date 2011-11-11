@@ -9,8 +9,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:gwt='urn:import:com.google.gwt.user.client.ui'
-  xmlns:guvnor-widgets='urn:import:org.drools.guvnor.client.widgets'
-  xmlns:guvnor-toolbar='urn:import:org.drools.guvnor.client.ruleeditor.toolbar'>
+  xmlns:guvnor-widgets='urn:import:org.drools.guvnor.client.widgets'>
 
   <ui:style>
     .editor {
@@ -29,8 +28,8 @@
 
   <gwt:HTMLPanel>
     <gwt:VerticalPanel width="100%">
-      <guvnor-toolbar:ActionToolbar
-        ui:field="toolbar"></guvnor-toolbar:ActionToolbar>
+      <!-- <guvnor-toolbar:ActionToolbar
+        ui:field="toolbar"></guvnor-toolbar:ActionToolbar> -->
       <guvnor-widgets:MessageWidget
         ui:field="messageWidget"></guvnor-widgets:MessageWidget>
       <gwt:Widget ui:field="editor"></gwt:Widget>

@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
+import org.drools.ide.common.shared.workitems.HasBinding;
 
 /**
  * This is the config for a condition column. Typically many of them have their
@@ -26,7 +27,8 @@ import org.drools.ide.common.client.modeldriven.brl.HasParameterizedOperator;
  */
 public class ConditionCol52 extends DTColumnConfig52
     implements
-    HasParameterizedOperator {
+    HasParameterizedOperator,
+    HasBinding {
 
     private static final long   serialVersionUID = 510l;
 
@@ -55,6 +57,9 @@ public class ConditionCol52 extends DTColumnConfig52
 
     //CEP operators' parameters
     private Map<String, String> parameters;
+
+    //Binding for the field
+    private String              binding;
 
     public void setHeader(String header) {
         this.header = header;
@@ -141,6 +146,18 @@ public class ConditionCol52 extends DTColumnConfig52
 
     public void setParameters(Map<String, String> parameters) {
         this.parameters = parameters;
+    }
+
+    public String getBinding() {
+        return this.binding;
+    }
+
+    public void setBinding(String binding) {
+        this.binding = binding;
+    }
+
+    public boolean isBound() {
+        return (this.binding != null && !"".equals( this.binding ));
     }
 
 }

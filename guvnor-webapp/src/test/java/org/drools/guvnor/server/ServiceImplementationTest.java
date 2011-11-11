@@ -68,6 +68,8 @@ import org.drools.guvnor.server.cache.RuleBaseCache;
 import org.drools.guvnor.server.repository.MailboxService;
 import org.drools.guvnor.server.repository.RepositoryStartupService;
 import org.drools.guvnor.server.repository.UserInbox;
+import org.drools.guvnor.server.ruleeditor.workitem.AssetWorkDefinitionsLoader;
+import org.drools.guvnor.server.ruleeditor.workitem.ConfigFileWorkDefinitionsLoader;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.guvnor.server.util.TableDisplayHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -78,6 +80,14 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52.TableFormat;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.server.util.GuidedDecisionTableModelUpgradeHelper;
+import org.drools.process.core.WorkDefinition;
+import org.drools.process.core.datatype.impl.type.BooleanDataType;
+import org.drools.process.core.datatype.impl.type.EnumDataType;
+import org.drools.process.core.datatype.impl.type.FloatDataType;
+import org.drools.process.core.datatype.impl.type.IntegerDataType;
+import org.drools.process.core.datatype.impl.type.ListDataType;
+import org.drools.process.core.datatype.impl.type.ObjectDataType;
+import org.drools.process.core.datatype.impl.type.StringDataType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.CategoryItem;
 import org.drools.repository.PackageItem;
@@ -86,6 +96,7 @@ import org.drools.repository.StateItem;
 import org.drools.repository.UserInfo.InboxEntry;
 import org.drools.rule.Package;
 import org.drools.type.DateFormatsImpl;
+import org.jbpm.process.workitem.WorkDefinitionImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -1757,6 +1768,249 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         String[] result = serviceImplementation.listWorkspaces();
         assertEquals( 2,
                       result.length );
+    }
+    
+    @Test
+    public void testLoadingWorkDefinitionsFromConfigurationFile() {
+        try {
+            Map<String, WorkDefinition> wids = ConfigFileWorkDefinitionsLoader.getInstance().getWorkDefinitions();
+
+            assertNotNull( wids );
+            assertEquals( 1,
+                          wids.size() );
+
+            WorkDefinitionImpl wid = (WorkDefinitionImpl) wids.get( "MyTask" );
+
+            assertEquals( "MyTask",
+                          wid.getName() );
+            assertEquals( "My Task",
+                          wid.getDisplayName() );
+
+            //Check parameters
+            assertNotNull( wid.getParameters() );
+            assertEquals( 7,
+                          wid.getParameters().size() );
+
+            assertNotNull( wid.getParameter( "StringParam" ) );
+            assertNotNull( wid.getParameter( "IntegerParam" ) );
+            assertNotNull( wid.getParameter( "FloatParam" ) );
+            assertNotNull( wid.getParameter( "BooleanParam" ) );
+            assertNotNull( wid.getParameter( "EnumParam" ) );
+            assertNotNull( wid.getParameter( "ListParam" ) );
+            assertNotNull( wid.getParameter( "ObjectParam" ) );
+
+            assertTrue( wid.getParameter( "StringParam" ).getType() instanceof StringDataType );
+            assertTrue( wid.getParameter( "IntegerParam" ).getType() instanceof IntegerDataType );
+            assertTrue( wid.getParameter( "FloatParam" ).getType() instanceof FloatDataType );
+            assertTrue( wid.getParameter( "BooleanParam" ).getType() instanceof BooleanDataType );
+            assertTrue( wid.getParameter( "EnumParam" ).getType() instanceof EnumDataType );
+            assertTrue( wid.getParameter( "ListParam" ).getType() instanceof ListDataType );
+            assertTrue( wid.getParameter( "ObjectParam" ).getType() instanceof ObjectDataType );
+
+            //Check results
+            assertNotNull( wid.getResults() );
+            assertEquals( 7,
+                          wid.getResults().size() );
+
+            assertNotNull( wid.getResult( "StringResult" ) );
+            assertNotNull( wid.getResult( "IntegerResult" ) );
+            assertNotNull( wid.getResult( "FloatResult" ) );
+            assertNotNull( wid.getResult( "BooleanResult" ) );
+            assertNotNull( wid.getResult( "EnumResult" ) );
+            assertNotNull( wid.getResult( "ListResult" ) );
+            assertNotNull( wid.getResult( "ObjectResult" ) );
+
+            assertTrue( wid.getResult( "StringResult" ).getType() instanceof StringDataType );
+            assertTrue( wid.getResult( "IntegerResult" ).getType() instanceof IntegerDataType );
+            assertTrue( wid.getResult( "FloatResult" ).getType() instanceof FloatDataType );
+            assertTrue( wid.getResult( "BooleanResult" ).getType() instanceof BooleanDataType );
+            assertTrue( wid.getResult( "EnumResult" ).getType() instanceof EnumDataType );
+            assertTrue( wid.getResult( "ListResult" ).getType() instanceof ListDataType );
+            assertTrue( wid.getResult( "ObjectResult" ).getType() instanceof ObjectDataType );
+
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
+    }
+
+    @Test
+    public void testLoadingWorkDefinitionsFromPackageAssets() throws SerializationException {
+
+        String packageUUID = repositoryPackageService.createPackage( "testWorkItems",
+                                                                     "",
+                                                                     "package" );
+
+        //Create #1 Work Item definition
+        String uuid1 = serviceImplementation.createNewRule( "workItem1",
+                                                            "",
+                                                            "",
+                                                            "testWorkItems",
+                                                            "wid" );
+        RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
+        RuleContentText content1 = new RuleContentText();
+        content1.content = ""
+                           + "import org.drools.process.core.datatype.impl.type.StringDataType;\n"
+                           + "[\n"
+                           + "[\n"
+                           + "\"name\" : \"MyTask1\",\n"
+                           + "\"parameters\" : [\n"
+                           + "\"StringParam\" : new StringDataType()\n"
+                           + "],\n"
+                           + "\"results\" : [\n"
+                           + "\"StringResult\" : new StringDataType()\n"
+                           + "],\n"
+                           + "\"displayName\" : \"My Task1\","
+                           + "\"icon\" : \"\",\n"
+                           + "]\n"
+                           + "]";
+
+        asset1.setContent( content1 );
+        repositoryAssetService.checkinVersion( asset1 );
+
+        //Create #2 Work Item definition
+        String uuid2 = serviceImplementation.createNewRule( "workItem2",
+                                                            "",
+                                                            "",
+                                                            "testWorkItems",
+                                                            "wid" );
+        RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
+        RuleContentText content2 = new RuleContentText();
+        content2.content = ""
+                           + "import org.drools.process.core.datatype.impl.type.IntegerDataType;\n"
+                           + "[\n"
+                           + "[\n"
+                           + "\"name\" : \"MyTask2\",\n"
+                           + "\"parameters\" : [\n"
+                           + "\"IntegerParam\" : new IntegerDataType()\n"
+                           + "],\n"
+                           + "\"results\" : [\n"
+                           + "\"IntegerResult\" : new StringDataType()\n"
+                           + "],\n"
+                           + "\"displayName\" : \"My Task2\","
+                           + "\"icon\" : \"\",\n"
+                           + "]\n"
+                           + "]";
+
+        asset2.setContent( content2 );
+        repositoryAssetService.checkinVersion( asset2 );
+
+        //Create #3 Work Item definition
+        String uuid3 = serviceImplementation.createNewRule( "workItem3",
+                                                            "",
+                                                            "",
+                                                            "testWorkItems",
+                                                            "wid" );
+        RuleAsset asset3 = repositoryAssetService.loadRuleAsset( uuid3 );
+        RuleContentText content3 = new RuleContentText();
+        content3.content = ""
+                           + "import org.drools.process.core.datatype.impl.type.ObjectDataType;\n"
+                           + "[\n"
+                           + "[\n"
+                           + "\"name\" : \"MyTask3\",\n"
+                           + "\"parameters\" : [\n"
+                           + "\"ObjectParam\" : new ObjectDataType()\n"
+                           + "],\n"
+                           + "\"results\" : [\n"
+                           + "\"ObjectResult\" : new ObjectDataType()\n"
+                           + "],\n"
+                           + "\"displayName\" : \"My Task3\","
+                           + "\"icon\" : \"\",\n"
+                           + "]\n"
+                           + "]";
+
+        asset3.setContent( content3 );
+        repositoryAssetService.checkinVersion( asset3 );
+
+        try {
+            AssetWorkDefinitionsLoader loader = new AssetWorkDefinitionsLoader( repositoryAssetService,
+                                                                                packageUUID );
+            Map<String, WorkDefinition> wids = loader.getWorkDefinitions();
+
+            assertNotNull( wids );
+            assertEquals( 3,
+                          wids.size() );
+
+            //Check WID1
+            WorkDefinitionImpl wid1 = (WorkDefinitionImpl) wids.get( "MyTask1" );
+
+            assertEquals( "MyTask1",
+                          wid1.getName() );
+            assertEquals( "My Task1",
+                          wid1.getDisplayName() );
+
+            //Check parameters, WID1
+            assertNotNull( wid1.getParameters() );
+            assertEquals( 1,
+                          wid1.getParameters().size() );
+
+            assertNotNull( wid1.getParameter( "StringParam" ) );
+
+            assertTrue( wid1.getParameter( "StringParam" ).getType() instanceof StringDataType );
+
+            //Check results, WID1
+            assertNotNull( wid1.getResults() );
+            assertEquals( 1,
+                          wid1.getResults().size() );
+
+            assertNotNull( wid1.getResult( "StringResult" ) );
+
+            assertTrue( wid1.getResult( "StringResult" ).getType() instanceof StringDataType );
+
+            //Check WID2
+            WorkDefinitionImpl wid2 = (WorkDefinitionImpl) wids.get( "MyTask2" );
+
+            assertEquals( "MyTask2",
+                          wid2.getName() );
+            assertEquals( "My Task2",
+                          wid2.getDisplayName() );
+
+            //Check parameters, WID2
+            assertNotNull( wid2.getParameters() );
+            assertEquals( 1,
+                          wid2.getParameters().size() );
+
+            assertNotNull( wid2.getParameter( "IntegerParam" ) );
+
+            assertTrue( wid2.getParameter( "IntegerParam" ).getType() instanceof IntegerDataType );
+
+            //Check results, WID2
+            assertNotNull( wid2.getResults() );
+            assertEquals( 1,
+                          wid2.getResults().size() );
+
+            assertNotNull( wid2.getResult( "IntegerResult" ) );
+
+            assertTrue( wid2.getResult( "IntegerResult" ).getType() instanceof IntegerDataType );
+
+            //Check WID3
+            WorkDefinitionImpl wid3 = (WorkDefinitionImpl) wids.get( "MyTask3" );
+
+            assertEquals( "MyTask3",
+                          wid3.getName() );
+            assertEquals( "My Task3",
+                          wid3.getDisplayName() );
+
+            //Check parameters, WID3
+            assertNotNull( wid3.getParameters() );
+            assertEquals( 1,
+                          wid2.getParameters().size() );
+
+            assertNotNull( wid2.getParameter( "ObjectParam" ) );
+
+            assertTrue( wid2.getParameter( "ObjectParam" ).getType() instanceof ObjectDataType );
+
+            //Check results, WID3
+            assertNotNull( wid3.getResults() );
+            assertEquals( 1,
+                          wid3.getResults().size() );
+
+            assertNotNull( wid3.getResult( "ObjectResult" ) );
+
+            assertTrue( wid3.getResult( "ObjectResult" ).getType() instanceof ObjectDataType );
+
+        } catch ( Exception e ) {
+            fail( e.getMessage() );
+        }
     }
 
 }

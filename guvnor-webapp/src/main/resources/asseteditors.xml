@@ -6,7 +6,7 @@
 	
     <!--  business rules group   -->   
     <asseteditor>
-        <class>org.drools.guvnor.client.modeldriven.ui.RuleModeller</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModeller</class> 
         <format>brl</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
@@ -34,7 +34,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.modeldriven.ui.RuleTemplateEditor</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleTemplateEditor</class> 
         <format>template</format>
         <icon>images.ruleAsset()</icon>
         <title>constants.BusinessRuleAssets()</title>    
@@ -70,7 +70,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.factmodel.FactModelsWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.factmodel.FactModelsWidget</class> 
         <format>model.drl</format>
         <icon>images.modelAsset()</icon>
         <title>constants.Model()</title>    
@@ -78,7 +78,7 @@
     
     <!--  bpel editor group   -->   
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.RuleFlowWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
@@ -113,7 +113,7 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.drools.RuleFlowWrapper</class> 
+        <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
@@ -135,7 +135,7 @@
     </asseteditor>       
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
         <format>properties</format>
         <icon>images.newFile()</icon>
         <title>constants.XMLProperties()</title>    
@@ -149,7 +149,7 @@
     </asseteditor> 
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.PropertiesWidget</class> 
+        <class>org.drools.guvnor.client.asseteditor.drools.PropertiesWidget</class> 
         <format></format>
         <icon>images.newFile()</icon>
         <title>constants.OtherAssetsDocumentation()</title>    

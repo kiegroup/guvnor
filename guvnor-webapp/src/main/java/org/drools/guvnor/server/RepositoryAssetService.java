@@ -21,6 +21,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.drools.guvnor.client.rpc.AdminArchivedPageRow;
 import org.drools.guvnor.client.rpc.AssetPageRequest;
 import org.drools.guvnor.client.rpc.AssetPageRow;
@@ -43,13 +46,14 @@ import org.drools.guvnor.server.repository.UserInbox;
 import org.drools.guvnor.server.util.Discussion;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.guvnor.server.util.RuleAssetPopulator;
-import org.drools.repository.*;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.drools.repository.AssetItem;
+import org.drools.repository.PackageItem;
+import org.drools.repository.RulesRepository;
+import org.drools.repository.RulesRepositoryException;
+import org.drools.repository.VersionableItem;
 import org.jboss.seam.remoting.annotations.WebRemote;
-import org.jboss.seam.security.annotations.LoggedIn;
 import org.jboss.seam.security.Identity;
+import org.jboss.seam.security.annotations.LoggedIn;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 
@@ -259,11 +263,20 @@ public class RepositoryAssetService
                                    String newPackage,
                                    String comment) {
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(newPackage);
+        
+        AssetItem item = rulesRepository.loadAssetByUUID( uuid );
+
+        //Perform house-keeping for when an Asset is removed from a package
+        attachmentRemoved( item );
 
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [" + newPackage + "]");
         rulesRepository.moveRuleItemPackage(newPackage,
-                uuid,
-                comment);
+                                            uuid,
+                                            comment);
+        
+        //Perform house-keeping for when an Asset is added to a package
+        attachmentAdded( item );
+
     }
 
     @WebRemote
@@ -273,10 +286,17 @@ public class RepositoryAssetService
         AssetItem item = rulesRepository.loadAssetByUUID( uuid );
         serviceSecurity.checkSecurityIsPackageDeveloperWithPackageName(item.getPackageName());
 
+        //Perform house-keeping for when an Asset is removed from a package
+        attachmentRemoved( item );
+
         log.info("USER:" + getCurrentUserName() + " CHANGING PACKAGE OF asset: [" + uuid + "] to [ globalArea ]");
         rulesRepository.moveRuleItemPackage(RulesRepository.RULE_GLOBAL_AREA,
                 uuid,
                 "promote asset to globalArea");
+        
+        //Perform house-keeping for when an Asset is added to a package
+        attachmentAdded( item );
+        
     }
 
     @WebRemote
@@ -449,42 +469,32 @@ public class RepositoryAssetService
 
     private void archiveOrUnarchiveAsset(String uuid,
                                          boolean archive) {
-        try {
-            AssetItem item = rulesRepository.loadAssetByUUID(uuid);
-            serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
-
-            if (item.getPackage().isArchived()) {
-                throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
-            }
-
-            log.info("USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] ");
-
-            try {
-                ContentHandler handler = getContentHandler(item);
-                if (handler instanceof ICanHasAttachment) {
-                    ((ICanHasAttachment) handler).onAttachmentRemoved(item);
-                }
-            } catch (IOException e) {
-                log.error("Unable to remove asset attachment",
-                        e);
-            }
-
-            item.archiveItem(archive);
-            PackageItem pkg = item.getPackage();
-            pkg.updateBinaryUpToDate(false);
-            RuleBaseCache.getInstance().remove(pkg.getUUID());
-            if (archive) {
-                item.checkin("archived");
-            } else {
-                item.checkin("unarchived");
-            }
-
-            push("packageChange",
-                    pkg.getName());
-
-        } catch (RulesRepositoryException e) {
-            throw e;
+        AssetItem item = rulesRepository.loadAssetByUUID(uuid);
+        serviceSecurity.checkIsPackageDeveloperOrAnalyst(item);
+        if (item.getPackage().isArchived()) {
+            throw new RulesRepositoryException("The package [" + item.getPackageName() + "] that asset [" + item.getName() + "] belongs to is archived. You need to unarchive it first.");
         }
+        log.info("USER:" + getCurrentUserName() + " ARCHIVING asset: [" + item.getName() + "] UUID: [" + item.getUUID() + "] ");
+        try {
+            ContentHandler handler = getContentHandler(item);
+            if (handler instanceof ICanHasAttachment) {
+                ((ICanHasAttachment) handler).onAttachmentRemoved(item);
+            }
+        } catch (IOException e) {
+            log.error("Unable to remove asset attachment",
+                    e);
+        }
+        item.archiveItem(archive);
+        PackageItem pkg = item.getPackage();
+        pkg.updateBinaryUpToDate(false);
+        RuleBaseCache.getInstance().remove(pkg.getUUID());
+        if (archive) {
+            item.checkin("archived");
+        } else {
+            item.checkin("unarchived");
+        }
+        push("packageChange",
+                pkg.getName());
     }
 
     @LoggedIn
@@ -581,6 +591,36 @@ public class RepositoryAssetService
 
     private String getCurrentUserName() {
         return rulesRepository.getSession().getUserID();
+    }
+    
+    //The Asset is being effectively deleted from the source package so treat as though the Content is being deleted
+    private void attachmentRemoved(AssetItem item) {
+        ICanHasAttachment attachmentHandler = null;
+        ContentHandler contentHandler = ContentManager.getHandler( item.getFormat() );
+        if ( contentHandler instanceof ICanHasAttachment ) {
+            attachmentHandler = (ICanHasAttachment) contentHandler;
+            try {
+                attachmentHandler.onAttachmentRemoved( item );
+            } catch ( IOException ioe ) {
+                log.error( "Unable to remove asset attachment",
+                           ioe );
+            }
+        }
+    }
+
+    //The Asset is being effectively added to the target package so treat as though the Content is being added
+    private void attachmentAdded(AssetItem item) {
+        ICanHasAttachment attachmentHandler = null;
+        ContentHandler contentHandler = ContentManager.getHandler( item.getFormat() );
+        if ( contentHandler instanceof ICanHasAttachment ) {
+            attachmentHandler = (ICanHasAttachment) contentHandler;
+            try {
+                attachmentHandler.onAttachmentAdded( item );
+            } catch ( IOException ioe ) {
+                log.error( "Unable to remove asset attachment",
+                           ioe );
+            }
+        }
     }
 
 }

@@ -17,6 +17,7 @@ package org.drools.ide.common.server.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,7 +42,7 @@ import org.junit.Test;
 public class GuidedDTModelConversionTest {
 
     private GuidedDecisionTableModelUpgradeHelper upgrader = new GuidedDecisionTableModelUpgradeHelper();
-    
+
     @Test
     public void testConversion() {
 
@@ -101,7 +102,7 @@ public class GuidedDTModelConversionTest {
         dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
-        ret.boundName = "f2";
+        ret.boundName = "ret1";
         dt.actionCols.add( ret );
 
         ActionSetFieldCol set = new ActionSetFieldCol();
@@ -121,6 +122,11 @@ public class GuidedDTModelConversionTest {
                 new String[]{"1", "desc", "metar1", "saliencer1", "c1r1", "c2r1", "c3r1", "c4r1", "a1r1", "a2r1", "a3r1", "a4r1"},
                 new String[]{"2", "desc", "metar2", "saliencer2", "c1r2", "c2r2", "c3r2", "c4r2", "a1r2", "a2r2", "a3r2", "a4r2"}
         };
+
+        String[][] expected = new String[][]{
+                                             new String[]{"1", "desc", "metar1", "saliencer1", "c1r1", "c2r1", "c3r1", "c4r1", "a1r1", "ret1", "a3r1", "a4r1"},
+                                             new String[]{"2", "desc", "metar2", "saliencer2", "c1r2", "c2r2", "c3r2", "c4r2", "a1r2", "ret1", "a3r2", "a4r2"}
+                                             };
 
         GuidedDecisionTable52 tsdt = upgrader.upgrade( dt );
 
@@ -216,8 +222,7 @@ public class GuidedDTModelConversionTest {
                       a1.getType() );
 
         ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
-        assertEquals( "f2",
-                      a2.getBoundName() );
+        assertNotNull( a2 );
 
         ActionSetFieldCol52 a3 = (ActionSetFieldCol52) tsdt.getActionCols().get( 2 );
         assertEquals( "f1",
@@ -240,9 +245,9 @@ public class GuidedDTModelConversionTest {
         assertEquals( 2,
                       tsdt.getData().size() );
         isRowEquivalent( tsdt.getData().get( 0 ),
-                         dt.data[0] );
+                         expected[0] );
         isRowEquivalent( tsdt.getData().get( 1 ),
-                         dt.data[1] );
+                         expected[1] );
 
     }
 
@@ -305,7 +310,7 @@ public class GuidedDTModelConversionTest {
         dt.actionCols.add( ins );
 
         ActionRetractFactCol ret = new ActionRetractFactCol();
-        ret.boundName = "f2";
+        ret.boundName = "ret1";
         dt.actionCols.add( ret );
 
         ActionSetFieldCol set = new ActionSetFieldCol();
@@ -325,6 +330,11 @@ public class GuidedDTModelConversionTest {
                 new String[]{"1", "desc", "metar1", "saliencer1", "f1c1r1", "f2c1r1", "f1c2r1", "f2c2r1", "a1r1", "a2r1", "a3r1", "a4r1"},
                 new String[]{"2", "desc", "metar2", "saliencer2", "f1c1r2", "f2c1r2", "f1c2r2", "f2c2r2", "a1r2", "a2r2", "a3r2", "a4r2"}
         };
+
+        String[][] expected = new String[][]{
+                                             new String[]{"1", "desc", "metar1", "saliencer1", "f1c1r1", "f1c2r1", "f2c1r1", "f2c2r1", "a1r1", "ret1", "a3r1", "a4r1"},
+                                             new String[]{"2", "desc", "metar2", "saliencer2", "f1c1r2", "f1c2r2", "f2c1r2", "f2c2r2", "a1r2", "ret1", "a3r2", "a4r2"}
+                                             };
 
         GuidedDecisionTable52 tsdt = upgrader.upgrade( dt );
 
@@ -422,8 +432,7 @@ public class GuidedDTModelConversionTest {
                       a1.getType() );
 
         ActionRetractFactCol52 a2 = (ActionRetractFactCol52) tsdt.getActionCols().get( 1 );
-        assertEquals( "f2",
-                      a2.getBoundName() );
+        assertNotNull( a2 );
 
         ActionSetFieldCol52 a3 = (ActionSetFieldCol52) tsdt.getActionCols().get( 2 );
         assertEquals( "f1",
@@ -475,7 +484,7 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 0 ).get( 7 ).getStringValue() );
         assertEquals( "a1r1",
                       tsdt.getData().get( 0 ).get( 8 ).getStringValue() );
-        assertEquals( "a2r1",
+        assertEquals( "ret1",
                       tsdt.getData().get( 0 ).get( 9 ).getStringValue() );
         assertEquals( "a3r1",
                       tsdt.getData().get( 0 ).get( 10 ).getStringValue() );
@@ -500,7 +509,7 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 1 ).get( 7 ).getStringValue() );
         assertEquals( "a1r2",
                       tsdt.getData().get( 1 ).get( 8 ).getStringValue() );
-        assertEquals( "a2r2",
+        assertEquals( "ret1",
                       tsdt.getData().get( 1 ).get( 9 ).getStringValue() );
         assertEquals( "a3r2",
                       tsdt.getData().get( 1 ).get( 10 ).getStringValue() );
@@ -508,9 +517,9 @@ public class GuidedDTModelConversionTest {
                       tsdt.getData().get( 1 ).get( 11 ).getStringValue() );
 
         isRowEquivalent( tsdt.getData().get( 0 ),
-                         dt.data[0] );
+                         expected[0] );
         isRowEquivalent( tsdt.getData().get( 1 ),
-                         dt.data[1] );
+                         expected[1] );
 
     }
 

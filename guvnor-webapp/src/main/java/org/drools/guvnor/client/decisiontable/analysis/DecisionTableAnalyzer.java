@@ -49,10 +49,19 @@ public class DecisionTableAnalyzer {
                 List<ConditionCol52> conditions = pattern.getConditions();
                 for (ConditionCol52 conditionCol : conditions) {
                     int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
-                    DTCellValue52 value = row.get(columnIndex);
+                    DTCellValue52 visibleCellValue = row.get(columnIndex);
+                    DTCellValue52 realCellValue;
+                    boolean cellIsNotBlank;
+                    if (conditionCol instanceof LimitedEntryCol) {
+                        realCellValue = ((LimitedEntryCol) conditionCol).getValue();
+                        cellIsNotBlank = visibleCellValue.getBooleanValue();
+                    } else {
+                        realCellValue = visibleCellValue;
+                        cellIsNotBlank = visibleCellValue.hasValue();
+                    }
                     // Blank cells are ignored
-                    if (value.hasValue()) {
-                        FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, value);
+                    if (cellIsNotBlank) {
+                        FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, realCellValue);
                         String factField = conditionCol.getFactField();
                         rowDetector.putOrMergeFieldDetector(pattern, factField, fieldDetector);
                     }
@@ -67,33 +76,28 @@ public class DecisionTableAnalyzer {
     }
 
     private FieldDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
-            DTCellValue52 value) {
-        FieldDetector newDetector;
+            DTCellValue52 realCellValue) {
         String operator = conditionCol.getOperator();
-        if (conditionCol instanceof LimitedEntryCol) {
-            newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
+        String type = model.getType( conditionCol, sce );
+        // Retrieve "Guvnor" enums
+        String[] allValueList = model.getValueList( conditionCol, sce );
+        FieldDetector newDetector;
+        if (allValueList.length != 0) {
+            // Guvnor enum
+            newDetector = new EnumFieldDetector(Arrays.asList(allValueList), realCellValue.getStringValue(), operator);
+        } else if ( type == null ) {
+            // type null means the field is free-format
+            newDetector = new UnrecognizedFieldDetector(operator);
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
+            newDetector = new StringFieldDetector(realCellValue.getStringValue(), operator);
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            newDetector = new NumericFieldDetector(realCellValue.getNumericValue(), operator);
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            newDetector = new BooleanFieldDetector(realCellValue.getBooleanValue(), operator);
+        } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            newDetector = new DateFieldDetector(realCellValue.getDateValue(), operator);
         } else {
-            // Extended Entry...
-            String type = model.getType( conditionCol, sce );
-            // Retrieve "Guvnor" enums
-            String[] allValueList = model.getValueList( conditionCol, sce );
-            if (allValueList.length != 0) {
-                // Guvnor enum
-                newDetector = new EnumFieldDetector(Arrays.asList(allValueList), value.getStringValue(), operator);
-            } else if ( type == null ) {
-                // type null means the field is free-format
-                newDetector = new UnrecognizedFieldDetector(operator);
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-                newDetector = new StringFieldDetector(value.getStringValue(), operator);
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-                newDetector = new NumericFieldDetector(value.getNumericValue(), operator);
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-                newDetector = new BooleanFieldDetector(value.getBooleanValue(), operator);
-            } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-                newDetector = new DateFieldDetector(value.getDateValue(), operator);
-            } else {
-                newDetector = new UnrecognizedFieldDetector(operator);
-            }
+            newDetector = new UnrecognizedFieldDetector(operator);
         }
         return newDetector;
     }

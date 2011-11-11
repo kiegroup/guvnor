@@ -36,6 +36,9 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.io.FileUtils;
+import org.drools.guvnor.server.security.RoleBasedPermission;
+import org.drools.guvnor.server.security.RoleBasedPermissionStore;
+import org.drools.guvnor.server.security.RoleType;
 import org.drools.repository.AssetItem;
 import org.drools.repository.JCRRepositoryConfigurator;
 import org.drools.repository.RulesRepository;
@@ -74,6 +77,14 @@ public class TestRepositoryStartupService extends RepositoryStartupService {
         guvnorBootstrapConfiguration.getProperties().put(JCRRepositoryConfigurator.REPOSITORY_ROOT_DIRECTORY,
                             repositoryDir.getAbsolutePath());
         return super.getRepositoryInstance();
+    }
+
+    @PostConstruct
+    private void insertTestData() {
+        RulesRepository rulesRepository = new RulesRepository(sessionForSetup);
+        RoleBasedPermissionStore adminStore = new RoleBasedPermissionStore(rulesRepository);
+        adminStore.addRoleBasedPermissionForTesting("admin",
+                new RoleBasedPermission("admin", RoleType.ADMIN.getName(), null, null));
     }
 
 }

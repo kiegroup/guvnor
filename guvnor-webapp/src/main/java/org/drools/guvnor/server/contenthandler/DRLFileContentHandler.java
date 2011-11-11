@@ -52,7 +52,7 @@ public class DRLFileContentHandler extends PlainTextContentHandler
     }
 
     String getContent(String content) {
-        if ( content != null && content.indexOf( "dialect" ) == -1 ) {
+        if ( content != null && !content.contains("dialect")) {
             return "dialect 'mvel'\n" + content;
         }
         return content;

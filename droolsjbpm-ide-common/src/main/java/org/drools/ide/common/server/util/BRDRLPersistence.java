@@ -19,13 +19,16 @@ package org.drools.ide.common.server.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.util.ReflectiveVisitor;
 import org.drools.ide.common.client.modeldriven.FieldNature;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.ActionCallMethod;
+import org.drools.ide.common.client.modeldriven.brl.ActionExecuteWorkItem;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldFunction;
 import org.drools.ide.common.client.modeldriven.brl.ActionFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.ActionGlobalCollectionAdd;
@@ -34,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.brl.ActionInsertLogicalFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionRetractFact;
 import org.drools.ide.common.client.modeldriven.brl.ActionSetField;
 import org.drools.ide.common.client.modeldriven.brl.ActionUpdateField;
+import org.drools.ide.common.client.modeldriven.brl.ActionWorkItemFieldValue;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.CEPWindow;
 import org.drools.ide.common.client.modeldriven.brl.CompositeFactPattern;
@@ -57,6 +61,9 @@ import org.drools.ide.common.client.modeldriven.brl.RuleModel;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.brl.SingleFieldConstraintEBLeftSide;
 import org.drools.ide.common.shared.SharedConstants;
+import org.drools.ide.common.shared.workitems.HasBinding;
+import org.drools.ide.common.shared.workitems.PortableParameterDefinition;
+import org.drools.ide.common.shared.workitems.PortableWorkDefinition;
 
 /**
  * This class persists the rule model to DRL and back
@@ -65,7 +72,15 @@ public class BRDRLPersistence
     implements
     BRLPersistence {
 
-    private static final BRLPersistence INSTANCE = new BRDRLPersistence();
+    private static final String          WORKITEM_PREFIX         = "wi";
+
+    private static final String          WORKITEM_HANDLER_PREFIX = "wih";
+
+    private static final BRLPersistence  INSTANCE                = new BRDRLPersistence();
+
+    //Keep a record of all variable bindings for Actions that depend on them
+    private Map<String, IFactPattern>    bindingsPatterns;
+    private Map<String, FieldConstraint> bindingsFields;
 
     protected BRDRLPersistence() {
     }
@@ -76,7 +91,6 @@ public class BRDRLPersistence
 
     /*
      * (non-Javadoc)
-     *
      * @see
      * org.drools.ide.common.server.util.BRLPersistence#marshal(org.drools.guvnor
      * .client.modeldriven.brl.RuleModel)
@@ -87,6 +101,8 @@ public class BRDRLPersistence
 
     protected String marshalRule(RuleModel model) {
         boolean isDSLEnhanced = model.hasDSLSentences();
+        bindingsPatterns = new HashMap<String, IFactPattern>();
+        bindingsFields = new HashMap<String, FieldConstraint>();
 
         StringBuilder buf = new StringBuilder();
         this.marshalHeader( model,
@@ -190,6 +206,7 @@ public class BRDRLPersistence
         String indentation = "\t\t";
         String nestedIndentation = indentation;
         boolean isNegated = model.isNegated();
+
         if ( model.lhs != null ) {
             if ( isNegated ) {
                 nestedIndentation += "\t";
@@ -197,6 +214,8 @@ public class BRDRLPersistence
                 buf.append( "not (\n" );
             }
             LHSPatternVisitor visitor = new LHSPatternVisitor( isDSLEnhanced,
+                                                               bindingsPatterns,
+                                                               bindingsFields,
                                                                buf,
                                                                nestedIndentation,
                                                                isNegated );
@@ -219,13 +238,24 @@ public class BRDRLPersistence
                             boolean isDSLEnhanced) {
         String indentation = "\t\t";
         if ( model.rhs != null ) {
+
+            //Add boiler-plate for actions operating on Dates
             Map<String, List<ActionFieldValue>> classes = getRHSClassDependencies( model );
             if ( classes.containsKey( SuggestionCompletionEngine.TYPE_DATE ) ) {
                 buf.append( indentation );
                 buf.append( "java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"" + System.getProperty( "drools.dateformat" ) + "\");\n" );
             }
 
+            //Add boiler-plate for actions operating on WorkItems
+            if ( !getRHSWorkItemDependencies( model ).isEmpty() ) {
+                buf.append( indentation );
+                buf.append( "org.drools.process.instance.WorkItemManager wim = (org.drools.process.instance.WorkItemManager) drools.getWorkingMemory().getWorkItemManager();\n" );
+            }
+
+            //Marshall the model itself
             RHSActionVisitor actionVisitor = new RHSActionVisitor( isDSLEnhanced,
+                                                                   bindingsPatterns,
+                                                                   bindingsFields,
                                                                    buf,
                                                                    indentation );
             for ( IAction action : model.rhs ) {
@@ -247,20 +277,41 @@ public class BRDRLPersistence
         return empty;
     }
 
+    private List<PortableWorkDefinition> getRHSWorkItemDependencies(RuleModel model) {
+        if ( model != null ) {
+            List<PortableWorkDefinition> workItems = new ArrayList<PortableWorkDefinition>();
+            for ( IAction action : model.rhs ) {
+                if ( action instanceof ActionExecuteWorkItem ) {
+                    workItems.add( ((ActionExecuteWorkItem) action).getWorkDefinition() );
+                }
+            }
+            return workItems;
+        }
+
+        List<PortableWorkDefinition> empty = Collections.emptyList();
+        return empty;
+    }
+
     public static class LHSPatternVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private boolean       isPatternNegated;
-        private String        indentation;
+        private StringBuilder                buf;
+        private boolean                      isDSLEnhanced;
+        private boolean                      isPatternNegated;
+        private String                       indentation;
+        private Map<String, IFactPattern>    bindingsPatterns;
+        private Map<String, FieldConstraint> bindingsFields;
 
         public LHSPatternVisitor(boolean isDSLEnhanced,
+                                 Map<String, IFactPattern> bindingsPatterns,
+                                 Map<String, FieldConstraint> bindingsFields,
                                  StringBuilder b,
                                  String indentation,
                                  boolean isPatternNegated) {
             this.isPatternNegated = isPatternNegated;
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
+            this.bindingsPatterns = bindingsPatterns;
+            this.bindingsFields = bindingsFields;
             buf = b;
         }
 
@@ -464,6 +515,8 @@ public class BRDRLPersistence
             if ( pattern.isNegated() ) {
                 buf.append( "not " );
             } else if ( pattern.isBound() ) {
+                bindingsPatterns.put( pattern.getBoundName(),
+                                      pattern );
                 buf.append( pattern.getBoundName() );
                 buf.append( " : " );
             }
@@ -547,6 +600,8 @@ public class BRDRLPersistence
                 buf.append( " )" );
             } else {
                 if ( constr.isBound() ) {
+                    bindingsFields.put( constr.getFieldBinding(),
+                                        constr );
                     buf.append( constr.getFieldBinding() );
                     buf.append( " : " );
                 }
@@ -561,7 +616,7 @@ public class BRDRLPersistence
                     StringBuilder parentBuf = new StringBuilder();
                     while ( parent != null ) {
                         String fieldName = parent.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         parentBuf.insert( 0,
@@ -573,7 +628,7 @@ public class BRDRLPersistence
                         buf.append( ((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText() );
                     } else {
                         String fieldName = constr.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         buf.append( fieldName );
@@ -726,16 +781,26 @@ public class BRDRLPersistence
 
     public static class RHSActionVisitor extends ReflectiveVisitor {
 
-        private StringBuilder buf;
-        private boolean       isDSLEnhanced;
-        private String        indentation;
-        private int           idx = 0;
+        private StringBuilder                buf;
+        private boolean                      isDSLEnhanced;
+        private String                       indentation;
+        private int                          idx = 0;
+        private Map<String, IFactPattern>    bindingsPatterns;
+        private Map<String, FieldConstraint> bindingsFields;
+
+        //Keep a record of Work Items that are instantiated for Actions that depend on them
+        private Set<String>                  instantiatedWorkItems;
 
         public RHSActionVisitor(boolean isDSLEnhanced,
+                                Map<String, IFactPattern> bindingsPatterns,
+                                Map<String, FieldConstraint> bindingsFields,
                                 StringBuilder b,
                                 String indentation) {
             this.isDSLEnhanced = isDSLEnhanced;
             this.indentation = indentation;
+            this.instantiatedWorkItems = new HashSet<String>();
+            this.bindingsPatterns = bindingsPatterns;
+            this.bindingsFields = bindingsFields;
             buf = b;
         }
 
@@ -794,7 +859,7 @@ public class BRDRLPersistence
                     buf.append( ">" );
                 }
                 if ( isLogic ) {
-                    buf.append( "insertLogical(" );
+                    buf.append( "insertLogical( " );
                     if ( action.getBoundName() == null ) {
                         buf.append( "fact" );
                         buf.append( idx++ );
@@ -803,7 +868,7 @@ public class BRDRLPersistence
                     }
                     buf.append( " );\n" );
                 } else {
-                    buf.append( "insert(" );
+                    buf.append( "insert( " );
                     if ( action.getBoundName() == null ) {
                         buf.append( "fact" );
                         buf.append( idx++ );
@@ -853,6 +918,65 @@ public class BRDRLPersistence
             buf.append( "\n" );
         }
 
+        public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
+            String wiName = action.getWorkDefinition().getName();
+            String wiHandlerName = WORKITEM_HANDLER_PREFIX + wiName;
+            String wiImplName = WORKITEM_PREFIX + wiName;
+
+            instantiatedWorkItems.add( wiName );
+            
+            buf.append( indentation );
+            buf.append( "org.drools.process.instance.impl.WorkItemImpl " );
+            buf.append( wiImplName );
+            buf.append( " = new org.drools.process.instance.impl.WorkItemImpl();\n" );
+            buf.append( indentation );
+            buf.append( wiImplName  );
+            buf.append(".setName( \"");
+            buf.append(wiName);
+            buf.append("\" );\n");
+            for ( PortableParameterDefinition ppd : action.getWorkDefinition().getParameters() ) {
+                makeWorkItemParameterDRL( ppd,
+                                          wiImplName );
+            }
+            buf.append( indentation );
+            buf.append( "wim.internalExecuteWorkItem( " );
+            buf.append( wiImplName );
+            buf.append( " );\n" );
+        }
+
+        private void makeWorkItemParameterDRL(PortableParameterDefinition ppd,
+                                              String wiImplName) {
+            boolean makeParameter = true;
+
+            //Only add bound parameters if their binding exists (i.e. the corresponding column has a value or - for Limited Entry - is true)
+            if ( ppd instanceof HasBinding ) {
+                HasBinding hb = (HasBinding) ppd;
+                if ( hb.isBound() ) {
+                    String binding = hb.getBinding();
+                    makeParameter = isBindingValid( binding );
+                }
+            }
+            if ( makeParameter ) {
+                buf.append( indentation );
+                buf.append( wiImplName );
+                buf.append( ".getParameters().put( \"" );
+                buf.append( ppd.getName() );
+                buf.append( "\", " );
+                buf.append( ppd.asString() );
+                buf.append( " );\n" );
+            }
+        }
+
+        private boolean isBindingValid(String binding) {
+            if ( bindingsPatterns.containsKey( binding ) ) {
+                return true;
+            }
+            if ( bindingsFields.containsKey( binding ) ) {
+                return true;
+            }
+            return false;
+        }
+
         public void visitActionSetField(final ActionSetField action) {
             if ( action instanceof ActionCallMethod ) {
                 this.generateSetMethodCallsMethod( (ActionCallMethod) action,
@@ -872,29 +996,55 @@ public class BRDRLPersistence
                 }
                 buf.append( variableName );
 
-                ActionFieldValue value = fieldValues[i];
-                if ( value instanceof ActionFieldFunction ) {
+                ActionFieldValue fieldValue = fieldValues[i];
+                if ( fieldValue instanceof ActionFieldFunction ) {
                     buf.append( "." );
-                    buf.append( value.field );
+                    buf.append( fieldValue.field );
                 } else {
                     buf.append( ".set" );
                     buf.append( Character.toUpperCase( fieldValues[i].field.charAt( 0 ) ) );
                     buf.append( fieldValues[i].field.substring( 1 ) );
                 }
                 buf.append( "( " );
-                if ( fieldValues[i].isFormula() ) {
-                    buf.append( fieldValues[i].value.substring( 1 ) );
-                } else if ( fieldValues[i].nature == FieldNature.TYPE_TEMPLATE ) {
-                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                                  fieldValues[i].type,
-                                                                  "@{" + fieldValues[i].value + "}" );
-                } else {
-                    DRLConstraintValueBuilder.buildRHSFieldValue( buf,
-                                                                  fieldValues[i].type,
-                                                                  fieldValues[i].value );
-                }
+                generateSetMethodCallParameterValue( buf,
+                                                     fieldValue );
                 buf.append( " );\n" );
             }
+        }
+
+        private void generateSetMethodCallParameterValue(StringBuilder buf,
+                                                         ActionFieldValue fieldValue) {
+            if ( fieldValue.isFormula() ) {
+                buf.append( fieldValue.value.substring( 1 ) );
+                return;
+            }
+
+            if ( fieldValue.nature == FieldNature.TYPE_TEMPLATE ) {
+                DRLConstraintValueBuilder.buildRHSFieldValue( buf,
+                                                              fieldValue.type,
+                                                              "@{" + fieldValue.value + "}" );
+                return;
+            }
+
+            if ( fieldValue instanceof ActionWorkItemFieldValue ) {
+                ActionWorkItemFieldValue afv = (ActionWorkItemFieldValue) fieldValue;
+                if ( instantiatedWorkItems.contains( afv.getWorkItemName() ) ) {
+                    buf.append( "(" );
+                    buf.append( afv.getWorkItemParameterClassName() );
+                    buf.append( ") " );
+                    buf.append( WORKITEM_PREFIX );
+                    buf.append( afv.getWorkItemName() );
+                    buf.append( ".getResult( \"" );
+                    buf.append( afv.getWorkItemParameterName() );
+                    buf.append( "\" )" );
+                } else {
+                    buf.append( "null" );
+                }
+                return;
+            }
+            DRLConstraintValueBuilder.buildRHSFieldValue( buf,
+                                                          fieldValue.type,
+                                                          fieldValue.value );
         }
 
         private void generateSetMethodCallsMethod(final ActionCallMethod action,
@@ -959,6 +1109,10 @@ public class BRDRLPersistence
 
         public void visitActionSetField(final ActionSetField action) {
             getClasses( action.fieldValues );
+        }
+
+        public void visitActionExecuteWorkItem(final ActionExecuteWorkItem action) {
+            //Do nothing other than preventing ReflectiveVisitor recording an error
         }
 
         public Map<String, List<ActionFieldValue>> getRHSClasses() {

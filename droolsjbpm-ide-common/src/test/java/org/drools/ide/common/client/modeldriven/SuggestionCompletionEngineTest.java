@@ -292,14 +292,28 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "name" );
-        assertEquals( 6,
+        assertEquals( 10,
                       c.length );
         assertEquals( "==",
                       c[0] );
         assertEquals( "!=",
                       c[1] );
-        assertEquals( "matches",
+        assertEquals( "<",
                       c[2] );
+        assertEquals( ">",
+                      c[3] );
+        assertEquals( "<=",
+                      c[4] );
+        assertEquals( ">=",
+                      c[5] );
+        assertEquals( "matches",
+                      c[6] );
+        assertEquals( "soundslike",
+                      c[7] );
+        assertEquals( "== null",
+                      c[8] );
+        assertEquals( "!= null",
+                      c[9] );
 
         c = com.getOperatorCompletions( "Person",
                                         "age" );
@@ -313,6 +327,14 @@ public class SuggestionCompletionEngineTest {
                       "<" );
         assertEquals( c[3],
                       ">" );
+        assertEquals( c[4],
+                      "<=" );
+        assertEquals( c[5],
+                      ">=" );
+        assertEquals( c[6],
+                      "== null" );
+        assertEquals( c[7],
+                      "!= null" );
 
         c = com.getOperatorCompletions( "Person",
                                         "rank" );
@@ -326,13 +348,45 @@ public class SuggestionCompletionEngineTest {
                       "<" );
         assertEquals( c[3],
                       ">" );
+        assertEquals( c[4],
+                      "<=" );
+        assertEquals( c[5],
+                      ">=" );
+        assertEquals( c[6],
+                      "== null" );
+        assertEquals( c[7],
+                      "!= null" );
 
         c = com.getConnectiveOperatorCompletions( "Vehicle",
                                                   "make" );
-        assertEquals( 5,
+        assertEquals( 13,
                       c.length );
         assertEquals( "|| ==",
                       c[0] );
+        assertEquals( "|| !=",
+                      c[1] );
+        assertEquals( "&& !=",
+                      c[2] );
+        assertEquals( "&& >",
+                      c[3] );
+        assertEquals( "&& <",
+                      c[4] );
+        assertEquals( "|| >",
+                      c[5] );
+        assertEquals( "|| <",
+                      c[6] );
+        assertEquals( "&& >=",
+                      c[7] );
+        assertEquals( "&& <=",
+                      c[8] );
+        assertEquals( "|| <=",
+                      c[9] );
+        assertEquals( "|| >=",
+                      c[10] );
+        assertEquals( "&& matches",
+                      c[11] );
+        assertEquals( "|| matches",
+                      c[12] );
 
         c = com.getGlobalVariables();
         assertEquals( 2,
