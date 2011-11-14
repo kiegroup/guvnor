@@ -55,11 +55,11 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );
 
-        widget.getGridWidget().addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
+        widget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
 
             public void onSelectedCellChange(SelectedCellChangeEvent event) {
 
-                CellValue< ? > cell = widget.getGridWidget().getData().get( event.getCellSelectionDetail().getCoordinate() );
+                CellValue< ? > cell = widget.getData().get( event.getCellSelectionDetail().getCoordinate() );
                 dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
             }
 

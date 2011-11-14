@@ -16,9 +16,11 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 
 import com.google.gwt.core.client.Scheduler;
@@ -26,6 +28,7 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -114,7 +117,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * Resize the DecoratedGridHeaderWidget and DecoratedGridSidebarWidget when
      * DecoratedGridWidget shows scrollbars
      */
-    public void assertDimensions() {
+    protected void assertDimensions() {
         headerWidget.setWidth( scrollPanel.getElement().getClientWidth()
                                + "px" );
         sidebarWidget.setHeight( scrollPanel.getElement().getClientHeight()
@@ -161,7 +164,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public abstract Panel getBodyPanel();
+    abstract Panel getBodyPanel();
 
     /**
      * Return the Widget responsible for rendering the DecoratedGridWidget
@@ -169,7 +172,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public abstract MergableGridWidget<T> getGridWidget();
+    abstract MergableGridWidget<T> getGridWidget();
 
     /**
      * Return the Widget responsible for rendering the DecoratedGridWidget
@@ -177,7 +180,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public DecoratedGridHeaderWidget<T> getHeaderWidget() {
+    DecoratedGridHeaderWidget<T> getHeaderWidget() {
         return headerWidget;
     }
 
@@ -188,7 +191,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public abstract Panel getMainPanel();
+    abstract Panel getMainPanel();
 
     /**
      * Return the ScrollPanel in which the DecoratedGridWidget "grid" is nested.
@@ -197,7 +200,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public abstract ScrollHandler getScrollHandler();
+    abstract ScrollHandler getScrollHandler();
 
     /**
      * Return the Widget responsible for rendering the DecoratedGridWidget
@@ -205,7 +208,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * 
      * @return
      */
-    public DecoratedGridSidebarWidget<T> getSidebarWidget() {
+    DecoratedGridSidebarWidget<T> getSidebarWidget() {
         return sidebarWidget;
     }
 
@@ -495,6 +498,99 @@ public abstract class DecoratedGridWidget<T> extends Composite {
             }
 
         } );
+    }
+
+    /**
+     * Redraw table columns. Partial redraw
+     * 
+     * @param startRedrawIndex
+     *            Start column index (inclusive)
+     * @param endRedrawIndex
+     *            End column index (inclusive)
+     */
+    public void redrawColumns(int startRedrawIndex,
+                              int endRedrawIndex) {
+        this.gridWidget.redrawColumns( startRedrawIndex,
+                                       endRedrawIndex );
+    }
+
+    /**
+     * Redraw table column. Partial redraw
+     * 
+     * @param index
+     *            Column index
+     */
+    public void redrawColumn(int index) {
+        this.gridWidget.redrawColumn( index );
+    }
+
+    /**
+     * Return an immutable list of selected cells
+     * 
+     * @return The selected cells
+     */
+    public List<CellValue< ? >> getSelectedCells() {
+        return this.gridWidget.getSelectedCells();
+    }
+
+    /**
+     * Set the value of the selected cells
+     * 
+     * @param value
+     */
+    public void setSelectedCellsValue(Object value) {
+        this.gridWidget.update( value );
+    }
+    
+    /**
+     * Return grid's data. Grouping reflected in the UI will be collapsed in the
+     * return value. Use of <code>getFlattenedData()</code> should be used in
+     * preference if the ungrouped data is needed (e.g. when persisting the
+     * model).
+     * 
+     * @return data
+     */
+    public DynamicData getData() {
+        return this.gridWidget.getData();
+    }
+
+    /**
+     * Return grid's columns
+     * 
+     * @return columns
+     */
+    public List<DynamicColumn<T>> getColumns() {
+        return this.gridWidget.getColumns();
+    }
+    
+    public void redraw() {
+        // Draw header first as the size of child Elements depends upon it
+        this.headerWidget.redraw();
+        this.sidebarWidget.redraw();
+        this.gridWidget.redraw();
+    }
+    
+    /**
+     * Toggle the state of DecoratedGridWidget merging.
+     * 
+     * @return The state of merging after completing this call
+     */
+    public boolean toggleMerging() {
+        return this.gridWidget.toggleMerging();
+    }
+
+    /**
+     * Add a handler for SelectedCellChangeEvents
+     */
+    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
+        return this.gridWidget.addSelectedCellChangeHandler( handler );
+    }
+    
+    /**
+     * Redraw header
+     */
+    public void redrawHeader() {
+        this.headerWidget.redraw();
     }
 
 }

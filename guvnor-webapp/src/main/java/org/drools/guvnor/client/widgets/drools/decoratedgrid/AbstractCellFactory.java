@@ -35,7 +35,7 @@ public abstract class AbstractCellFactory<T> {
     private static final String          DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
     // The containing MergableGridWidget to which cells will send their updates
-    protected MergableGridWidget<T>      grid;
+    protected DecoratedGridWidget<T>      grid;
 
     protected SuggestionCompletionEngine sce;
 
@@ -48,7 +48,7 @@ public abstract class AbstractCellFactory<T> {
      *            MergableGridWidget to which cells will send their updates
      */
     public AbstractCellFactory(SuggestionCompletionEngine sce,
-                               MergableGridWidget<T> grid) {
+                               DecoratedGridWidget<T> grid) {
 
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );

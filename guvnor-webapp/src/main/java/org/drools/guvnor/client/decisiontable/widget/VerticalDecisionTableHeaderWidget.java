@@ -384,8 +384,8 @@ public class VerticalDecisionTableHeaderWidget extends
             visibleActionCols.clear();
             multiRowColumnOffset = -1;
             multiRowColumnActionsOffset = -1;
-            for ( int iCol = 0; iCol < grid.getGridWidget().getColumns().size(); iCol++ ) {
-                DynamicColumn<DTColumnConfig52> col = grid.getGridWidget().getColumns().get( iCol );
+            for ( int iCol = 0; iCol < grid.getColumns().size(); iCol++ ) {
+                DynamicColumn<DTColumnConfig52> col = grid.getColumns().get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig52 modelCol = col.getModelColumn();
@@ -422,7 +422,7 @@ public class VerticalDecisionTableHeaderWidget extends
             switch ( iRow ) {
                 case 0 :
                     // General row, all visible cells included
-                    for ( DynamicColumn<DTColumnConfig52> col : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> col : grid.getColumns() ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
                             tce.addClassName( resources.headerText() );
@@ -604,7 +604,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 4 :
                     // Sorters
-                    for ( DynamicColumn<DTColumnConfig52> col : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> col : grid.getColumns() ) {
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
                             final DynamicColumn<DTColumnConfig52> sortableColumn = col;
@@ -668,7 +668,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 case -1 :
 
                     //A new column is added to the sort group
-                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getColumns() ) {
                         if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                             sortedColumns.put( sortedColumn.getSortIndex(),
                                                sortedColumn );
@@ -691,7 +691,7 @@ public class VerticalDecisionTableHeaderWidget extends
                     } else if ( column.getSortDirection() == SortDirection.DESCENDING ) {
                         column.setSortDirection( SortDirection.NONE );
                         column.clearSortIndex();
-                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getColumns() ) {
                             if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                                 sortedColumns.put( sortedColumn.getSortIndex(),
                                                    sortedColumn );
@@ -708,7 +708,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 default :
 
                     //An existing column is promoted to "lead"
-                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getColumns() ) {
                         if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                             if ( !sortedColumn.equals( column ) ) {
                                 sortedColumns.put( sortedColumn.getSortIndex() + 1,

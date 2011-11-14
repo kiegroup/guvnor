@@ -170,7 +170,7 @@ public class TemplateDataHeaderWidget extends
 
             // Extracting visible columns makes life easier
             headerColumns.clear();
-            final List<DynamicColumn<TemplateDataColumn>> columns = grid.getGridWidget().getColumns();
+            final List<DynamicColumn<TemplateDataColumn>> columns = grid.getColumns();
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
                 DynamicColumn<TemplateDataColumn> col = columns.get( iCol );
                 headerColumns.add( col );
@@ -252,7 +252,7 @@ public class TemplateDataHeaderWidget extends
                 column.setSortIndex( 0 );
                 column.setSortDirection( SortDirection.ASCENDING );
                 int sortIndex = 1;
-                final List<DynamicColumn<TemplateDataColumn>> columns = grid.getGridWidget().getColumns();
+                final List<DynamicColumn<TemplateDataColumn>> columns = grid.getColumns();
                 for ( DynamicColumn<TemplateDataColumn> sortableColumn : columns ) {
                     if ( !sortableColumn.equals( column ) ) {
                         if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {

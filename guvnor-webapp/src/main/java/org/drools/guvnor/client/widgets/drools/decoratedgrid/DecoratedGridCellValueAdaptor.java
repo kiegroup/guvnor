@@ -26,7 +26,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 /**
  * A Cell that casts values to whatever is appropriate for the wrapped Cell
  * 
- * 
  * @param <T>
  *            The data-type required by the wrapped cell
  * @param <C>
@@ -36,9 +35,9 @@ public class DecoratedGridCellValueAdaptor<T> extends
         AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
-    private AbstractCell<T>         cell;
+    private AbstractCell<T>            cell;
 
-    protected MergableGridWidget<?> grid;
+    protected DecoratedGridWidget< ? > grid;
 
     /**
      * @param cell
@@ -92,7 +91,7 @@ public class DecoratedGridCellValueAdaptor<T> extends
                              new ValueUpdater<T>() {
 
                                  public void update(T value) {
-                                     grid.update( value );
+                                     grid.setSelectedCellsValue( value );
                                  }
 
                              } );
@@ -119,11 +118,11 @@ public class DecoratedGridCellValueAdaptor<T> extends
     }
 
     /**
-     * Inject a MergableGridWidget to handle value updates
+     * Inject a DecoratedGridWidget to handle value updates
      * 
-     * @param manager
+     * @param grid
      */
-    public void setMergableGridWidget(MergableGridWidget<?> grid) {
+    public void setDecoratedGridWidget(DecoratedGridWidget< ? > grid) {
         this.grid = grid;
     }
 

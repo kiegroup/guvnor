@@ -75,7 +75,7 @@ public class TemplateDataTableWidget extends Composite
         widget.setSidebarWidget( sidebar );
 
         this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        widget.getGridWidget() );
+                                                        widget );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing
@@ -147,8 +147,8 @@ public class TemplateDataTableWidget extends Composite
     public void scrapeData(TemplateModel model) {
         model.clearRows();
 
-        final DynamicData data = widget.getGridWidget().getData().getFlattenedData();
-        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        final DynamicData data = widget.getData().getFlattenedData();
+        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
         int columnCount = columns.size();
 
         for ( DynamicDataRow row : data ) {
@@ -208,7 +208,7 @@ public class TemplateDataTableWidget extends Composite
 
         //Set row data
         String[][] data = model.getTableAsArray();
-        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
         for ( int iRow = 0; iRow < data.length; iRow++ ) {
             List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
             String[] rowData = data[iRow];
@@ -231,14 +231,11 @@ public class TemplateDataTableWidget extends Composite
                                     row );
         }
 
-        // Draw header first as the size of child Elements depends upon it
-        widget.getHeaderWidget().redraw();
-
         // Schedule redraw of grid after sizes of child Elements have been set
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             public void execute() {
-                widget.getGridWidget().redraw();
+                widget.redraw();
             }
 
         } );
@@ -266,7 +263,7 @@ public class TemplateDataTableWidget extends Composite
     // Add column to table with optional redraw
     private void addColumn(TemplateDataColumn modelColumn,
                            boolean bRedraw) {
-        int index = widget.getGridWidget().getColumns().size();
+        int index = widget.getColumns().size();
         insertColumnBefore( modelColumn,
                             index,
                             bRedraw );
@@ -276,7 +273,7 @@ public class TemplateDataTableWidget extends Composite
     // cannot be found
     private DynamicColumn<TemplateDataColumn> getDynamicColumn(TemplateDataColumn modelCol) {
         DynamicColumn<TemplateDataColumn> column = null;
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
         for ( DynamicColumn<TemplateDataColumn> dc : columns ) {
             if ( dc.getModelColumn().equals( modelCol ) ) {
                 column = dc;
@@ -302,8 +299,8 @@ public class TemplateDataTableWidget extends Composite
                                                                                  index );
 
         // Add column and data to grid
-        if ( index < widget.getGridWidget().getColumns().size() ) {
-            DynamicColumn<TemplateDataColumn> columnBefore = widget.getGridWidget().getColumns().get( index );
+        if ( index < widget.getColumns().size() ) {
+            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
             widget.insertColumnBefore( columnBefore,
                                        column,
                                        columnData,
@@ -319,7 +316,7 @@ public class TemplateDataTableWidget extends Composite
     // Make a row of data for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(TemplateDataColumn column,
                                                                        int colIndex) {
-        int dataSize = this.widget.getGridWidget().getData().size();
+        int dataSize = this.widget.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
@@ -333,7 +330,7 @@ public class TemplateDataTableWidget extends Composite
     // Construct a new row for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
         List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getGridWidget().getColumns();
+        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
         for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
             TemplateDataColumn col = columns.get( iCol ).getModelColumn();
             CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,

@@ -24,7 +24,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.decisiontable.cells.RowNumberCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionInsertFactCol52;
@@ -63,14 +63,14 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
-     *            MergableGridWidget to which cells will send their updates
+     *            DecoratedGridWidget to which cells will send their updates
      * @param model
      *            The Decision Table model to assist data-type derivation
      * @param eventBus
      *            An EventBus on which cells can subscribe to events
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
-                                    MergableGridWidget<DTColumnConfig52> grid,
+                                    DecoratedGridWidget<DTColumnConfig52> grid,
                                     GuidedDecisionTable52 model,
                                     EventBus eventBus) {
         super( sce,
@@ -156,7 +156,7 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
             cell = makeRowAnalysisCell();
         }
 
-        cell.setMergableGridWidget( grid );
+        cell.setDecoratedGridWidget( grid );
         return cell;
 
     }

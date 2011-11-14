@@ -229,8 +229,8 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param bRedraw
      *            Should grid be redrawn
      */
-    public void deleteColumn(DynamicColumn<T> column,
-                             boolean bRedraw) {
+    void deleteColumn(DynamicColumn<T> column,
+                      boolean bRedraw) {
 
         //Find index of column
         int index = columns.indexOf( column );
@@ -274,7 +274,7 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @param row
      */
-    public void deleteRow(DynamicDataRow row) {
+    void deleteRow(DynamicDataRow row) {
 
         //Find index of row
         int index = data.indexOf( row );
@@ -315,7 +315,7 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @return columns
      */
-    public List<DynamicColumn<T>> getColumns() {
+    protected List<DynamicColumn<T>> getColumns() {
         return columns;
     }
 
@@ -327,7 +327,7 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @return data
      */
-    public DynamicData getData() {
+    protected DynamicData getData() {
         return data;
     }
 
@@ -336,7 +336,7 @@ public abstract class MergableGridWidget<T> extends Widget
      * 
      * @return The selected cells
      */
-    public List<CellValue< ? >> getSelectedCells() {
+    protected List<CellValue< ? >> getSelectedCells() {
         return Collections.unmodifiableList( new ArrayList<CellValue< ? >>( this.selections ) );
     }
 
@@ -352,10 +352,10 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param bRedraw
      *            Should grid be redrawn
      */
-    public void insertColumnBefore(DynamicColumn<T> columnBefore,
-                                   DynamicColumn<T> newColumn,
-                                   List<CellValue< ? extends Comparable< ? >>> columnData,
-                                   boolean bRedraw) {
+    void insertColumnBefore(DynamicColumn<T> columnBefore,
+                            DynamicColumn<T> newColumn,
+                            List<CellValue< ? extends Comparable< ? >>> columnData,
+                            boolean bRedraw) {
 
         if ( newColumn == null ) {
             throw new IllegalArgumentException( "newColumn cannot be null" );
@@ -404,8 +404,8 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param rowData
      *            The row of data to insert
      */
-    public DynamicDataRow insertRowBefore(DynamicDataRow rowBefore,
-                                          List<CellValue< ? extends Comparable< ? >>> rowData) {
+    DynamicDataRow insertRowBefore(DynamicDataRow rowBefore,
+                                   List<CellValue< ? extends Comparable< ? >>> rowData) {
 
         if ( rowData == null ) {
             throw new IllegalArgumentException( "Row data cannot be null" );
@@ -460,15 +460,15 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * Redraw the whole table
      */
-    public abstract void redraw();
+    abstract void redraw();
 
     /**
      * Redraw table column. Partial redraw
      * 
      * @param index
-     *            Start column index (inclusive)
+     *            Column index
      */
-    public abstract void redrawColumn(int index);
+    abstract void redrawColumn(int index);
 
     /**
      * Redraw table columns. Partial redraw
@@ -478,15 +478,15 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param endRedrawIndex
      *            End column index (inclusive)
      */
-    public abstract void redrawColumns(int startRedrawIndex,
-                                       int endRedrawIndex);
+    abstract void redrawColumns(int startRedrawIndex,
+                                int endRedrawIndex);
 
     /**
      * Toggle the state of DecoratedGridWidget merging.
      * 
      * @return The state of merging after completing this call
      */
-    public boolean toggleMerging() {
+    boolean toggleMerging() {
         if ( !data.isMerged() ) {
             clearSelection();
             data.setMerged( true );
@@ -831,12 +831,12 @@ public abstract class MergableGridWidget<T> extends Widget
         rangeDirection = MOVE_DIRECTION.NONE;
     }
 
-    protected abstract void createEmptyRowElement(int index);
+    abstract void createEmptyRowElement(int index);
 
-    protected abstract void createRowElement(int index,
+    abstract void createRowElement(int index,
                                              DynamicDataRow rowData);
 
-    protected abstract void deleteRowElement(int index);
+    abstract void deleteRowElement(int index);
 
     //Check whether "Grouping" widget has been clicked
     protected boolean isGroupWidgetClicked(Event event,
@@ -859,10 +859,10 @@ public abstract class MergableGridWidget<T> extends Widget
      * @param endRedrawIndex
      *            End row index (inclusive)
      */
-    protected abstract void redrawRows(int startRedrawIndex,
+    abstract void redrawRows(int startRedrawIndex,
                                        int endRedrawIndex);
 
-    protected abstract void removeRowElement(int index);
+    abstract void removeRowElement(int index);
 
     /**
      * Remove styling indicating a selected state

@@ -37,7 +37,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
      * BodyPanel is a VerticalPanel in which Header and Grid are inserted
      */
     @Override
-    public Panel getBodyPanel() {
+    Panel getBodyPanel() {
         if ( this.bodyPanel == null ) {
             this.bodyPanel = new VerticalPanel();
         }
@@ -48,7 +48,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
      * Grid is a vertical table
      */
     @Override
-    public MergableGridWidget<T> getGridWidget() {
+    MergableGridWidget<T> getGridWidget() {
         if ( this.gridWidget == null ) {
             this.gridWidget = new VerticalMergableGridWidget<T>( resources );
         }
@@ -60,7 +60,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
      * inserted
      */
     @Override
-    public Panel getMainPanel() {
+    Panel getMainPanel() {
         if ( this.mainPanel == null ) {
             this.mainPanel = new HorizontalPanel();
         }
@@ -72,7 +72,7 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
      * according to the position of the scroll bars surrounding the GridWidget
      */
     @Override
-    public ScrollHandler getScrollHandler() {
+    ScrollHandler getScrollHandler() {
         return new ScrollHandler() {
 
             public void onScroll(ScrollEvent event) {

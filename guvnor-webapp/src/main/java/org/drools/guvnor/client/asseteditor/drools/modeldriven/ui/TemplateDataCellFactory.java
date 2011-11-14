@@ -18,7 +18,7 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
@@ -29,10 +29,10 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      * @param grid
-     *            MergableGridWidget to which cells will send their updates
+     *            DecoratedGridWidget to which cells will send their updates
      */
     public TemplateDataCellFactory(SuggestionCompletionEngine sce,
-                                   MergableGridWidget<TemplateDataColumn> grid) {
+                                   DecoratedGridWidget<TemplateDataColumn> grid) {
         super( sce,
                grid );
     }
@@ -85,7 +85,7 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
             }
         }
 
-        cell.setMergableGridWidget( grid );
+        cell.setDecoratedGridWidget( grid );
         return cell;
 
     }

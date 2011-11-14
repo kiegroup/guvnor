@@ -64,7 +64,7 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
      * 
      * @param row
      */
-    public abstract void deleteSelector(DynamicDataRow row);
+    abstract void deleteSelector(DynamicDataRow row);
 
     /**
      * Insert a Selector for the given row.
@@ -72,20 +72,20 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
      * @param row
      *            The row for which the selector will be added
      */
-    public abstract void insertSelector(DynamicDataRow row);
+    abstract void insertSelector(DynamicDataRow row);
 
     /**
      * Redraw the sidebar, this involves clearing any content before calling to
      * addSelector for each row in the grid's data
      */
-    public abstract void redraw();
+    abstract void redraw();
 
     /**
      * Resize the sidebar.
      * 
      * @param height
      */
-    public abstract void resizeSidebar(int height);
+    abstract void resizeSidebar(int height);
 
     /**
      * Set scroll position to enable some degree of synchronisation between
@@ -93,6 +93,6 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
      * 
      * @param position
      */
-    public abstract void setScrollPosition(int position);
+    abstract void setScrollPosition(int position);
 
 }

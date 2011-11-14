@@ -279,7 +279,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void deleteSelector(DynamicDataRow row) {
+    void deleteSelector(DynamicDataRow row) {
         int index = grid.getGridWidget().getData().indexOf( row );
         if ( index == -1 ) {
             throw new IllegalArgumentException( "row does not exist in table data." );
@@ -288,7 +288,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void insertSelector(DynamicDataRow row) {
+    void insertSelector(DynamicDataRow row) {
         if ( row == null ) {
             throw new IllegalArgumentException( "row cannot be null" );
         }
@@ -301,12 +301,12 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void redraw() {
+    void redraw() {
         selectors.redraw();
     }
 
     @Override
-    public void resizeSidebar(int height) {
+    void resizeSidebar(int height) {
         if ( height < 0 ) {
             throw new IllegalArgumentException( "height cannot be less than zero" );
         }
@@ -322,7 +322,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
     }
 
     @Override
-    public void setScrollPosition(int position) {
+    void setScrollPosition(int position) {
         if ( position < 0 ) {
             throw new IllegalArgumentException( "position cannot be less than zero" );
         }

@@ -148,7 +148,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void redraw() {
+    void redraw() {
 
         TableSectionElement nbody = Document.get().createTBodyElement();
 
@@ -171,7 +171,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void redrawColumn(int index) {
+    void redrawColumn(int index) {
         if ( index < 0 ) {
             throw new IllegalArgumentException( "index cannot be less than zero." );
         }
@@ -191,8 +191,8 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    public void redrawColumns(int startRedrawIndex,
-                              int endRedrawIndex) {
+    void redrawColumns(int startRedrawIndex,
+                       int endRedrawIndex) {
         if ( startRedrawIndex < 0 ) {
             throw new IllegalArgumentException( "startRedrawIndex cannot be less than zero." );
         }
