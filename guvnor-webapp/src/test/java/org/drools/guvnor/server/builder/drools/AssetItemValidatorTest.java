@@ -27,6 +27,7 @@ import org.drools.guvnor.server.contenthandler.drools.DSLDefinitionContentHandle
 import org.drools.guvnor.server.contenthandler.drools.DSLRuleContentHandler;
 import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
 import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.RuleTemplateHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;
