@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
+import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.server.util.ScenarioXMLPersistence;
 import org.drools.repository.AssetItem;

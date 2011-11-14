@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import org.drools.guvnor.client.common.AssetFormats;
+import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.ScenarioContentHandler;
 import org.junit.Test;
 
 public class ContentManagerTest {

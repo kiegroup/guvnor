@@ -16,6 +16,7 @@
 
 package org.drools.guvnor.server.contenthandler;
 
+import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
 import org.drools.guvnor.server.util.BRDRTPersistence;
 import org.drools.guvnor.server.util.BRDRTXMLPersistence;
 import org.drools.ide.common.server.util.BRLPersistence;

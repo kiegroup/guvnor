@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
-import org.drools.guvnor.server.contenthandler.DRLFileContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.junit.Test;
 

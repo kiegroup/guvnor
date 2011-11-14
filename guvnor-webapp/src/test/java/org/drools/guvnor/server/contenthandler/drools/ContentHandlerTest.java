@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -25,6 +25,17 @@ import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.contenthandler.ContentManager;
+import org.drools.guvnor.server.contenthandler.DefaultContentHandler;
+import org.drools.guvnor.server.contenthandler.EnumerationContentHandler;
+import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DSLDefinitionContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DSLRuleContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DecisionTableXLSHandler;
+import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.server.util.GuidedDTXMLPersistence;
 import org.drools.repository.AssetItem;

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
 import org.junit.Test;
 
 public class DRLFileContentHandlerTest {

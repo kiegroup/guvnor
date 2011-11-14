@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -26,6 +26,8 @@ import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
+import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DrlParser;
@@ -25,6 +25,8 @@ import org.drools.guvnor.client.asseteditor.drools.factmodel.FactModels;
 import org.drools.guvnor.client.asseteditor.drools.factmodel.FieldMetaModel;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleContentText;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ICanRenderSource;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.brl.PortableObject;
 import org.drools.lang.descr.AnnotationDescr;

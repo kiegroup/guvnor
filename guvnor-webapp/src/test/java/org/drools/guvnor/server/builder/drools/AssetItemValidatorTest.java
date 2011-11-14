@@ -14,12 +14,19 @@
  *   limitations under the License.
  */
 
-package org.drools.guvnor.server.builder;
+package org.drools.guvnor.server.builder.drools;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.server.MockAssetItemIterator;
+import org.drools.guvnor.server.builder.AssetItemValidator;
 import org.drools.guvnor.server.contenthandler.*;
+import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DSLDefinitionContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.DSLRuleContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.FactModelContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.GuidedDTContentHandler;
 import org.drools.repository.AssetItem;
 import org.drools.repository.AssetItemIterator;
 import org.drools.repository.PackageItem;

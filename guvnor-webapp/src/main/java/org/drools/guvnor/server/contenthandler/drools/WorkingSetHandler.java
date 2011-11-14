@@ -14,27 +14,10 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
-import java.util.HashMap;
+import org.drools.guvnor.client.rpc.WorkingSetConfigData;
+import org.drools.guvnor.server.contenthandler.BaseXStreamContentHandler;
 
-import org.mvel2.MVEL;
-
-public class WorkItemValidator {
-    private String content;
-    
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public String validate() {
-        try {
-            MVEL.eval(content, new HashMap());
-        } catch( Exception e ) {
-            return e.getMessage();
-        }
-        
-        return "";
-    }
+public class WorkingSetHandler extends BaseXStreamContentHandler<WorkingSetConfigData> {
 }

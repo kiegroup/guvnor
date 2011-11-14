@@ -1,5 +1,5 @@
 /*
- * Copyright 2005 JBoss Inc
+ * Copyright 2010 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,27 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
+import java.util.HashMap;
 
-public class DSLDefinitionContentHandler extends PlainTextContentHandler {
+import org.mvel2.MVEL;
 
+public class WorkItemValidator {
+    private String content;
+    
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public String validate() {
+        try {
+            MVEL.eval(content, new HashMap());
+        } catch( Exception e ) {
+            return e.getMessage();
+        }
+        
+        return "";
+    }
 }
