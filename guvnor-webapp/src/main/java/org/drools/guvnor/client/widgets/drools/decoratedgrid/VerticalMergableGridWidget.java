@@ -291,7 +291,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
             for ( CellValue< ? > cell : selections ) {
                 cell.removeState( CellState.OTHERWISE );
             }
-            update( null );
+            setSelectedCellsValue( null );
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT

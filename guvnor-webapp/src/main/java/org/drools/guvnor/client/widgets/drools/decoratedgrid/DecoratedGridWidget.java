@@ -41,7 +41,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * @param <T>
  *            The type of domain columns represented by the Grid
  */
-public abstract class DecoratedGridWidget<T> extends Composite {
+public abstract class DecoratedGridWidget<T> extends Composite
+    implements
+    SelectedCellValueUpdater {
 
     // Widgets for UI
     protected Panel                         mainPanel;
@@ -539,9 +541,9 @@ public abstract class DecoratedGridWidget<T> extends Composite {
      * @param value
      */
     public void setSelectedCellsValue(Object value) {
-        this.gridWidget.update( value );
+        this.gridWidget.setSelectedCellsValue( value );
     }
-    
+
     /**
      * Return grid's data. Grouping reflected in the UI will be collapsed in the
      * return value. Use of <code>getFlattenedData()</code> should be used in
@@ -562,14 +564,14 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     public List<DynamicColumn<T>> getColumns() {
         return this.gridWidget.getColumns();
     }
-    
+
     public void redraw() {
         // Draw header first as the size of child Elements depends upon it
         this.headerWidget.redraw();
         this.sidebarWidget.redraw();
         this.gridWidget.redraw();
     }
-    
+
     /**
      * Toggle the state of DecoratedGridWidget merging.
      * 
@@ -585,7 +587,7 @@ public abstract class DecoratedGridWidget<T> extends Composite {
     public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
         return this.gridWidget.addSelectedCellChangeHandler( handler );
     }
-    
+
     /**
      * Redraw header
      */

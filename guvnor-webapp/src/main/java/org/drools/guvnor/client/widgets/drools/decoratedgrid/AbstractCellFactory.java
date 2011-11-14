@@ -34,8 +34,8 @@ public abstract class AbstractCellFactory<T> {
 
     private static final String          DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    // The containing MergableGridWidget to which cells will send their updates
-    protected DecoratedGridWidget<T>      grid;
+    // A SelectedCellValueUpdater that cells can use to send their updates
+    protected SelectedCellValueUpdater   selectedCellValueUpdater;
 
     protected SuggestionCompletionEngine sce;
 
@@ -44,20 +44,21 @@ public abstract class AbstractCellFactory<T> {
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
-     * @param grid
-     *            MergableGridWidget to which cells will send their updates
+     * @param selectedCellValueUpdater
+     *            SelectedCellValueUpdater to which cells will send their
+     *            updates
      */
     public AbstractCellFactory(SuggestionCompletionEngine sce,
-                               DecoratedGridWidget<T> grid) {
+                               SelectedCellValueUpdater selectedCellValueUpdater) {
 
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
+        if ( selectedCellValueUpdater == null ) {
+            throw new IllegalArgumentException( "selectedCellValueUpdater cannot be null" );
         }
         this.sce = sce;
-        this.grid = grid;
+        this.selectedCellValueUpdater = selectedCellValueUpdater;
     }
 
     /**

@@ -29,7 +29,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
@@ -50,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MergableGridWidget<T> extends Widget
     implements
-    ValueUpdater<Object>,
+    SelectedCellValueUpdater,
     HasSelectedCellChangeHandlers,
     HasRowGroupingChangeHandlers {
 
@@ -502,9 +501,10 @@ public abstract class MergableGridWidget<T> extends Widget
 
     /*
      * (non-Javadoc)
-     * @see com.google.gwt.cell.client.ValueUpdater#update(java.lang.Object)
+     * @see org.drools.guvnor.client.widgets.drools.decoratedgrid.
+     * SelectedCellValueUpdater#setSelectedCellsValue(java.lang.Object)
      */
-    public void update(Object value) {
+    public void setSelectedCellsValue(Object value) {
 
         boolean bUngroupCells = false;
         Coordinate selection = selections.first().getCoordinate();

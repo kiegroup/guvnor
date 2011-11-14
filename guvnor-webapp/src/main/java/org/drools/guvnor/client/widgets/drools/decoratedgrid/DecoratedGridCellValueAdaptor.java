@@ -37,7 +37,7 @@ public class DecoratedGridCellValueAdaptor<T> extends
     // Really we want AbstractCell<?> but that leads to generics hell
     private AbstractCell<T>            cell;
 
-    protected DecoratedGridWidget< ? > grid;
+    protected SelectedCellValueUpdater selectedCellValueUpdater;
 
     /**
      * @param cell
@@ -91,7 +91,7 @@ public class DecoratedGridCellValueAdaptor<T> extends
                              new ValueUpdater<T>() {
 
                                  public void update(T value) {
-                                     grid.setSelectedCellsValue( value );
+                                     selectedCellValueUpdater.setSelectedCellsValue( value );
                                  }
 
                              } );
@@ -118,12 +118,12 @@ public class DecoratedGridCellValueAdaptor<T> extends
     }
 
     /**
-     * Inject a DecoratedGridWidget to handle value updates
+     * Inject a SelectedCellValueUpdater to handle value updates
      * 
-     * @param grid
+     * @param selectedCellValueUpdater
      */
-    public void setDecoratedGridWidget(DecoratedGridWidget< ? > grid) {
-        this.grid = grid;
+    public void setSelectedCellValueUpdater(SelectedCellValueUpdater selectedCellValueUpdater) {
+        this.selectedCellValueUpdater = selectedCellValueUpdater;
     }
 
     @Override
