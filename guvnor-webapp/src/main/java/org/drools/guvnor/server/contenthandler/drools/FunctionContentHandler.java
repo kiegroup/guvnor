@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
+
+import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 
 
 

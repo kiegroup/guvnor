@@ -27,8 +27,6 @@ import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.contenthandler.ContentManager;
 import org.drools.guvnor.server.contenthandler.DefaultContentHandler;
-import org.drools.guvnor.server.contenthandler.EnumerationContentHandler;
-import org.drools.guvnor.server.contenthandler.ModelContentHandler;
 import org.drools.guvnor.server.contenthandler.drools.BRLContentHandler;
 import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
 import org.drools.guvnor.server.contenthandler.drools.DSLDefinitionContentHandler;

@@ -23,6 +23,7 @@ import java.io.InputStream;
 
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
+import org.drools.guvnor.server.contenthandler.drools.ModelContentHandler;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;

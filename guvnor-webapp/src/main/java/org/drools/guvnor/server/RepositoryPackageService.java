@@ -58,7 +58,7 @@ import org.drools.guvnor.client.rpc.ValidatedResponse;
 import org.drools.guvnor.server.builder.AuditLogReporter;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
 import org.drools.guvnor.server.cache.RuleBaseCache;
-import org.drools.guvnor.server.contenthandler.ModelContentHandler;
+import org.drools.guvnor.server.contenthandler.drools.ModelContentHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.ide.common.client.modeldriven.testing.Scenario;
 import org.drools.ide.common.shared.workitems.PortableWorkDefinition;

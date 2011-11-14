@@ -39,7 +39,7 @@ import org.drools.definition.process.Connection;
 import org.drools.definition.process.Node;
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.client.rpc.RuleFlowContentModel;
-import org.drools.guvnor.server.contenthandler.BPMN2ProcessHandler;
+import org.drools.guvnor.server.contenthandler.drools.BPMN2ProcessHandler;
 import org.drools.guvnor.server.util.LoggingHelper;
 import org.drools.repository.utils.IOUtils;
 import org.drools.xml.SemanticModules;

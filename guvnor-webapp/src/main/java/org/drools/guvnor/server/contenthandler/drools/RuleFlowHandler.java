@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import com.google.gwt.user.client.rpc.SerializationException;
 import org.drools.compiler.DroolsParserException;
@@ -25,6 +25,9 @@ import org.drools.guvnor.server.builder.AssemblyErrorLogger;
 import org.drools.guvnor.server.builder.BRMSPackageBuilder;
 import org.drools.guvnor.server.builder.RuleFlowContentModelBuilder;
 import org.drools.guvnor.server.builder.RuleFlowProcessBuilder;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
+import org.drools.guvnor.server.contenthandler.ICompilable;
 import org.drools.repository.AssetItem;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.compiler.xml.XmlRuleFlowProcessDumper;

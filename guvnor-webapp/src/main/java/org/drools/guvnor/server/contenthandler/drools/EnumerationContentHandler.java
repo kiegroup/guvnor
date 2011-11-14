@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.rpc.BuilderResult;
 import org.drools.guvnor.client.rpc.BuilderResultLine;
+import org.drools.guvnor.server.contenthandler.IHasCustomValidator;
+import org.drools.guvnor.server.contenthandler.PlainTextContentHandler;
 import org.drools.ide.common.server.util.DataEnumLoader;
 import org.drools.repository.AssetItem;
 

@@ -5,6 +5,7 @@ package org.drools.guvnor.server.contenthandler;
 import java.io.InputStream;
 import static org.junit.Assert.*;
 
+import org.drools.guvnor.server.contenthandler.drools.SpringContextValidator;
 import org.junit.Test;
 
 public class SpringContextValidatorTest {

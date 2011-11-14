@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.contenthandler;
+package org.drools.guvnor.server.contenthandler.drools;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -30,6 +30,8 @@ import java.util.regex.Pattern;
 
 import org.drools.guvnor.client.rpc.RuleAsset;
 import org.drools.guvnor.server.builder.ClassLoaderBuilder;
+import org.drools.guvnor.server.contenthandler.ContentHandler;
+import org.drools.guvnor.server.contenthandler.ICanHasAttachment;
 import org.drools.guvnor.server.util.DroolsHeader;
 import org.drools.repository.AssetItem;
 import org.drools.repository.PackageItem;
