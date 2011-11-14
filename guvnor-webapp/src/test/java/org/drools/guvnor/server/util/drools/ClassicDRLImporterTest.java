@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.drools.guvnor.server.util;
+package org.drools.guvnor.server.util.drools;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.contenthandler.drools.DRLFileContentHandler;
+import org.drools.guvnor.server.util.ClassicDRLImporter;
 import org.drools.guvnor.server.util.ClassicDRLImporter.Asset;
 import org.junit.Test;
 
