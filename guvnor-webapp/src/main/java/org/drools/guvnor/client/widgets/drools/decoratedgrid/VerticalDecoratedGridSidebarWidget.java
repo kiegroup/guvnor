@@ -326,7 +326,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         if ( position < 0 ) {
             throw new IllegalArgumentException( "position cannot be less than zero" );
         }
-        this.scrollPanel.setScrollPosition( position );
+        this.scrollPanel.setVerticalScrollPosition( position );
     }
 
 }

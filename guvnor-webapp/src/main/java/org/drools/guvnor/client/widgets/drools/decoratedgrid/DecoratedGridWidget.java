@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
@@ -457,15 +456,15 @@ public abstract class DecoratedGridWidget<T> extends Composite
         }
 
         //Top extent
-        if ( ce.getOffsetY() < scrollPanel.getScrollPosition() ) {
-            scrollPanel.setScrollPosition( ce.getOffsetY() );
+        if ( ce.getOffsetY() < scrollPanel.getVerticalScrollPosition() ) {
+            scrollPanel.setVerticalScrollPosition( ce.getOffsetY() );
         }
 
         //Bottom extent
         int scrollHeight = scrollPanel.getElement().getClientHeight();
-        if ( ce.getOffsetY() + ce.getHeight() > scrollHeight + scrollPanel.getScrollPosition() ) {
-            int delta = ce.getOffsetY() + ce.getHeight() - scrollPanel.getScrollPosition() - scrollHeight;
-            scrollPanel.setScrollPosition( scrollPanel.getScrollPosition() + delta );
+        if ( ce.getOffsetY() + ce.getHeight() > scrollHeight + scrollPanel.getVerticalScrollPosition() ) {
+            int delta = ce.getOffsetY() + ce.getHeight() - scrollPanel.getVerticalScrollPosition() - scrollHeight;
+            scrollPanel.setVerticalScrollPosition( scrollPanel.getVerticalScrollPosition() + delta );
         }
 
     }

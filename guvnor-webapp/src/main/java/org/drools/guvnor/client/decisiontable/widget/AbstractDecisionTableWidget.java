@@ -30,7 +30,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasColumns;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasSystemControlledColumns;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
@@ -538,7 +537,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( bRedrawHeader ) {
             Scheduler.get().scheduleFinally( new ScheduledCommand() {
                 public void execute() {
-                    widget.redraw();
+                    widget.redrawHeader();
                 }
             } );
         }
