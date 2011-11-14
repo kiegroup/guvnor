@@ -22,6 +22,7 @@ import com.google.gwt.place.shared.PlaceHistoryHandler;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.explorer.FindPlace;
 import org.drools.guvnor.client.explorer.MultiActivityManager;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanelView;
 import org.drools.guvnor.client.rpc.ConfigurationServiceAsync;
@@ -42,7 +43,13 @@ public class AppControllerTest {
     @Before
     public void setUp() throws Exception {
         clientFactory = mock( ClientFactory.class );
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
         PerspectivesPanelView perspectivesPanelView = mock( PerspectivesPanelView.class );
+        when(
+                clientFactory.getNavigationViewFactory()
+        ).thenReturn(
+        		navigationViewFactory
+        );
         when(
                 clientFactory.getNavigationViewFactory().getPerspectivesPanelView()
         ).thenReturn(

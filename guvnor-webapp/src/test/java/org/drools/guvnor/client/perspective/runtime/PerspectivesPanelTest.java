@@ -25,6 +25,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
 
 import org.drools.guvnor.client.explorer.ClientFactory;
+import org.drools.guvnor.client.explorer.navigation.NavigationViewFactory;
 import org.drools.guvnor.client.perspective.ChangePerspectiveEvent;
 import org.drools.guvnor.client.perspective.PerspectiveFactory;
 import org.drools.guvnor.client.perspective.PerspectivesPanel;
@@ -49,10 +50,16 @@ public class PerspectivesPanelTest {
     @Before
     public void setUp() throws Exception {
         view = mock(PerspectivesPanelView.class);
+        NavigationViewFactory navigationViewFactory = mock(NavigationViewFactory.class);
         ClientFactory clientFactory = mock(ClientFactory.class);
         eventBus = spy(new EventBusMock());
         when(
-                clientFactory.getNavigationViewFactory().getPerspectivesPanelView()
+                clientFactory.getNavigationViewFactory()
+        ).thenReturn(
+        		navigationViewFactory
+        );
+        when(
+        		navigationViewFactory.getPerspectivesPanelView()
         ).thenReturn(
                 view
         );
