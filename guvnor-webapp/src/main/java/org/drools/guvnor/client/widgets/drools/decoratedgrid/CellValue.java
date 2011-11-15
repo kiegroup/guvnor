@@ -24,31 +24,24 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 /**
  * This is a wrapper around a value. The wrapper provides additional information
  * required to use the vanilla value in a Decision Table with merge
- * capabilities.
- * 
- * One coordinate is maintained and two indexes to map to and from HTML table
- * coordinates. The indexes used to be maintained in SelectionManager however it
- * required two more N x N collections of "mapping" objects in addition to that
- * containing the actual data.
- * 
- * The coordinate represents the physical location of the cell on an (R, C)
- * grid. One index maps the physical coordinate of the cell to the logical
- * coordinate of the HTML table whilst the other index maps from the logical
- * coordinate to the physical cell.
- * 
- * For example, given data (0,0), (0,1), (1,0) and (1,1) with cell at (0,0)
- * merged into (1,0) only the HTML coordinates (0,0), (0,1) and (1,0) exist;
- * with physical coordinates (0,0) and (1,0) relating to HTML coordinate (0,0)
- * which has a row span of 2. Therefore physical cells (0,0) and (1,0) have a
+ * capabilities. One coordinate is maintained and two indexes to map to and from
+ * HTML table coordinates. The indexes used to be maintained in SelectionManager
+ * however it required two more N x N collections of "mapping" objects in
+ * addition to that containing the actual data. The coordinate represents the
+ * physical location of the cell on an (R, C) grid. One index maps the physical
+ * coordinate of the cell to the logical coordinate of the HTML table whilst the
+ * other index maps from the logical coordinate to the physical cell. For
+ * example, given data (0,0), (0,1), (1,0) and (1,1) with cell at (0,0) merged
+ * into (1,0) only the HTML coordinates (0,0), (0,1) and (1,0) exist; with
+ * physical coordinates (0,0) and (1,0) relating to HTML coordinate (0,0) which
+ * has a row span of 2. Therefore physical cells (0,0) and (1,0) have a
  * <code>mapDataToHtml</code> coordinate of (0,0) whilst physical cell (1,0) has
  * a <code>mapHtmlToData</code> coordinate of (1,1).
  * 
  * @param <T>
  *            The data-type of the value
  */
-public class CellValue<T extends Comparable<T>>
-    implements
-        Comparable<CellValue<T>> {
+public class CellValue<T extends Comparable<T>> implements Comparable<CellValue<T>> {
 
     //Possible states of the cell
     public static enum CellState {
@@ -76,12 +69,8 @@ public class CellValue<T extends Comparable<T>>
          * @param row
          * @param col
          */
-        public GroupedCellValue(T value,
-                                 int row,
-                                 int col) {
-            super( value,
-                   row,
-                   col );
+        public GroupedCellValue(T value) {
+            super( value );
         }
 
         /**
@@ -172,16 +161,8 @@ public class CellValue<T extends Comparable<T>>
     private Coordinate         mapDataToHtml;
     private EnumSet<CellState> state   = EnumSet.noneOf( CellState.class );
 
-    public CellValue(T value,
-                     int row,
-                     int col) {
+    public CellValue(T value) {
         this.value = value;
-        this.coordinate = new Coordinate( row,
-                                          col );
-        this.mapHtmlToData = new Coordinate( row,
-                                             col );
-        this.mapDataToHtml = new Coordinate( row,
-                                             col );
     }
 
     public void addState(CellState state) {
@@ -209,9 +190,7 @@ public class CellValue<T extends Comparable<T>>
      * @return
      */
     public GroupedCellValue convertToGroupedCell() {
-        GroupedCellValue groupedCell = new GroupedCellValue( this.getValue(),
-                                                             this.getCoordinate().getRow(),
-                                                             this.getCoordinate().getCol() );
+        GroupedCellValue groupedCell = new GroupedCellValue( this.getValue() );
         if ( this.isOtherwise() ) {
             groupedCell.addState( CellState.OTHERWISE );
         }

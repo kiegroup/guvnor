@@ -13,7 +13,9 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
+
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 
 import com.google.gwt.event.shared.GwtEvent;
 

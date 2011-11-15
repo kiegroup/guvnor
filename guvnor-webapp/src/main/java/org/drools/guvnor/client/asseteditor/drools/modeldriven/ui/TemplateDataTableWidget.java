@@ -29,14 +29,15 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -44,39 +45,47 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public class TemplateDataTableWidget extends Composite
     implements
-    HasRows,
-    HasColumns<TemplateDataColumn> {
+    HasRows<List<String>>,
+    //TODO {manstis} HasColumns<T>,
+    HasColumns<TemplateDataColumn>,
+    InsertRowEvent.Handler,
+    DeleteRowEvent.Handler {
 
     // Decision Table data
+    protected TemplateModel                                      model;
     protected DecoratedGridWidget<TemplateDataColumn>            widget;
     protected TemplateDataCellFactory                            cellFactory;
     protected TemplateDataCellValueFactory                       cellValueFactory;
     protected SuggestionCompletionEngine                         sce;
+    protected final EventBus                                     eventBus;
 
     protected static final ResourcesProvider<TemplateDataColumn> resources = new TemplateDataTableResourcesProvider();
 
     /**
      * Constructor
      */
-    public TemplateDataTableWidget(SuggestionCompletionEngine sce) {
+    public TemplateDataTableWidget(SuggestionCompletionEngine sce,
+                                   EventBus eventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
+        }
         this.sce = sce;
+        this.eventBus = eventBus;
 
         // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<TemplateDataColumn>( resources );
+        widget = new VerticalDecoratedGridWidget<TemplateDataColumn>( resources,
+                                                                      eventBus );
         DecoratedGridHeaderWidget<TemplateDataColumn> header = new TemplateDataHeaderWidget( resources,
+                                                                                             eventBus,
                                                                                              widget );
         DecoratedGridSidebarWidget<TemplateDataColumn> sidebar = new VerticalDecoratedGridSidebarWidget<TemplateDataColumn>( resources,
-                                                                                                                             widget,
-                                                                                                                             this );
+                                                                                                                             eventBus,
+                                                                                                                             widget );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
-
-        this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        widget );
-        this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
@@ -99,9 +108,27 @@ public class TemplateDataTableWidget extends Composite
      * Append a row to the end of the table
      */
     public void appendRow() {
-        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
-        widget.insertRowBefore( null,
-                                rowData );
+        List<String> data = cellValueFactory.makeRowData();
+        appendRow( data );
+    }
+
+    /**
+     * Append an empty row to the end of the table
+     * 
+     * @param data
+     *            The row's data
+     */
+    public void appendRow(List<String> data) {
+        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
+        model.addRow( data.toArray( new String[data.size()] ) );
+        widget.appendRow( uiData );
+    }
+
+    /**
+     * Get the number of rows
+     */
+    public int rowCount() {
+        return this.model.getRowsCount();
     }
 
     /**
@@ -121,50 +148,40 @@ public class TemplateDataTableWidget extends Composite
     /**
      * Delete a row
      */
-    public void deleteRow(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
-        }
-        widget.deleteRow( row );
+    public void deleteRow(int index) {
+        model.removeRow( index );
+        widget.deleteRow( index );
     }
 
     /**
-     * Insert a row before that provided
+     * Insert an empty row before the given row
      * 
-     * @param rowBefore
-     *            the row before which the new row should be inserted
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
      */
-    public void insertRowBefore(DynamicDataRow rowBefore) {
-        if ( rowBefore == null ) {
-            throw new IllegalArgumentException( "rowBefore cannot be null" );
-        }
-
-        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData();
-        widget.insertRowBefore( rowBefore,
-                                rowData );
+    public void insertRowBefore(int index) {
+        List<String> data = cellValueFactory.makeRowData();
+        insertRowBefore( index,
+                         data );
     }
 
-    public void scrapeData(TemplateModel model) {
-        model.clearRows();
-
-        final DynamicData data = widget.getData().getFlattenedData();
-        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-        int columnCount = columns.size();
-
-        for ( DynamicDataRow row : data ) {
-
-            String[] rowData = new String[columnCount];
-
-            for ( int iCol = 0; iCol < columnCount; iCol++ ) {
-                CellValue< ? > cv = row.get( iCol );
-                DynamicColumn<TemplateDataColumn> column = columns.get( iCol );
-                String serialisedValue = cellValueFactory.convertValueToString( column.getModelColumn(),
-                                                                                cv );
-                rowData[iCol] = serialisedValue;
-            }
-            model.addRow( rowData );
-        }
-
+    /**
+     * Insert an empty row before the given row
+     * 
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
+     * @param data
+     *            The row's data
+     */
+    public void insertRowBefore(int index,
+                                List<String> data) {
+        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
+        model.addRow( Integer.toString( index ),
+                      data.toArray( new String[data.size()] ) );
+        widget.insertRowBefore( index,
+                                uiData );
     }
 
     /**
@@ -190,6 +207,12 @@ public class TemplateDataTableWidget extends Composite
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
+
+        this.model = model;
+        this.cellFactory = new TemplateDataCellFactory( sce,
+                                                        widget );
+        this.cellValueFactory = new TemplateDataCellValueFactory( sce,
+                                                                  model );
 
         //Get interpolation variables
         InterpolationVariable[] vars = model.getInterpolationVariablesList();
@@ -220,15 +243,11 @@ public class TemplateDataTableWidget extends Composite
                 if ( initialValue != null && initialValue.equals( "" ) ) {
                     initialValue = null;
                 }
-
-                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                           iRow,
-                                                                                           iCol,
-                                                                                           initialValue );
+                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
+                                                                                                   initialValue );
                 row.add( cv );
             }
-            widget.insertRowBefore( null,
-                                    row );
+            widget.appendRow( row );
         }
 
         // Schedule redraw of grid after sizes of child Elements have been set
@@ -319,25 +338,20 @@ public class TemplateDataTableWidget extends Composite
         int dataSize = this.widget.getData().size();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
-                                                                                       iRow,
-                                                                                       colIndex );
+            String value = cellValueFactory.makeModelCellValue( column );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
+                                                                                               value );
             columnData.add( cv );
         }
         return columnData;
     }
 
-    // Construct a new row for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeRowData() {
-        List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( col,
-                                                                                       0,
-                                                                                       iCol );
-            row.add( cv );
-        }
-        return row;
+    public void onDeleteRow(DeleteRowEvent event) {
+        deleteRow( event.getIndex() );
     }
+
+    public void onInsertRow(InsertRowEvent event) {
+        insertRowBefore( event.getIndex() );
+    }
+
 }

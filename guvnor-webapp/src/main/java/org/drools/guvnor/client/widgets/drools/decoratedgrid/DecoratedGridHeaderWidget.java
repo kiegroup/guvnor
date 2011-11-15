@@ -16,6 +16,9 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasColumnResizeHandlers;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -35,6 +38,7 @@ import com.google.gwt.event.dom.client.MouseUpHandler;
 import com.google.gwt.event.logical.shared.HasResizeHandlers;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -99,6 +103,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     // Resources
     protected static final Constants constants        = GWT.create( Constants.class );
     protected ResourcesProvider<T>   resources;
+    protected EventBus               eventBus;
 
     // Column resizing
     private ResizerInformation       resizerInfo      = new ResizerInformation();
@@ -111,6 +116,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
      * @param styleProvider
      */
     public DecoratedGridHeaderWidget(ResourcesProvider<T> resources,
+                                     EventBus eventBus,
                                      DecoratedGridWidget<T> grid) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
@@ -230,8 +236,7 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
 
     }
 
-    public HandlerRegistration addColumnResizeHandler(
-                                                      ColumnResizeHandler handler) {
+    public HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler) {
         if ( handler == null ) {
             throw new IllegalArgumentException( "handler cannot be null" );
         }

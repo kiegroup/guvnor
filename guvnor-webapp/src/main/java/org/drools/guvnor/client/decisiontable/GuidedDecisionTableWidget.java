@@ -1147,7 +1147,6 @@ public class GuidedDecisionTableWidget extends Composite
                 } else {
 
                     //Check whether data for column contains Pattern binding
-                    dtable.scrapeDataToModel();
                     int iCol = guidedDecisionTable.getAllColumns().indexOf( ac );
                     for ( List<DTCellValue52> row : guidedDecisionTable.getData() ) {
                         DTCellValue52 dcv = row.get( iCol );
@@ -1190,11 +1189,8 @@ public class GuidedDecisionTableWidget extends Composite
         return bindings;
     }
 
-    /**
-     * Need to copy the data from the Decision Table
-     */
     public void onSave() {
-        dtable.scrapeDataToModel();
+        // not needed.
     }
 
     public void onAfterSave() {

@@ -20,12 +20,12 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -62,6 +62,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -76,8 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Header for a Vertical Decision Table
  */
-public class VerticalDecisionTableHeaderWidget extends
-        DecoratedGridHeaderWidget<DTColumnConfig52> {
+public class VerticalDecisionTableHeaderWidget extends DecoratedGridHeaderWidget<DTColumnConfig52> {
 
     private static final String         DATE_FORMAT                 = ApplicationPreferences.getDroolsDateFormat();
 
@@ -734,8 +734,10 @@ public class VerticalDecisionTableHeaderWidget extends
      * @param decisionTable
      */
     public VerticalDecisionTableHeaderWidget(final ResourcesProvider<DTColumnConfig52> resources,
+                                             final EventBus eventBus,
                                              final DecoratedGridWidget<DTColumnConfig52> grid) {
         super( resources,
+               eventBus,
                grid );
     }
 

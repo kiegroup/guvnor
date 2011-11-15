@@ -17,6 +17,7 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -29,8 +30,10 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
 
-    public VerticalDecoratedGridWidget(ResourcesProvider<T> resources) {
-        super( resources );
+    public VerticalDecoratedGridWidget(ResourcesProvider<T> resources,
+                                       EventBus eventBus) {
+        super( resources,
+               eventBus );
     }
 
     /**
@@ -50,7 +53,8 @@ public class VerticalDecoratedGridWidget<T> extends DecoratedGridWidget<T> {
     @Override
     MergableGridWidget<T> getGridWidget() {
         if ( this.gridWidget == null ) {
-            this.gridWidget = new VerticalMergableGridWidget<T>( resources );
+            this.gridWidget = new VerticalMergableGridWidget<T>( resources,
+                                                                 eventBus );
         }
         return this.gridWidget;
     }

@@ -16,6 +16,8 @@
 
 package org.drools.guvnor.client.decisiontable.analysis;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,12 +33,9 @@ import org.drools.ide.common.client.modeldriven.dt52.Analysis;
 import org.drools.ide.common.client.modeldriven.dt52.ConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
-import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryCol;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class DecisionTableAnalyzerTest {
 
@@ -64,6 +63,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -91,8 +91,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData( data );
+        
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -125,6 +127,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -151,9 +154,11 @@ public class DecisionTableAnalyzerTest {
                         new DTCellValue52((BigDecimal) null)
                 )
         );
+        
+        dt.setData(data);
 
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -192,6 +197,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -230,8 +236,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -266,6 +274,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -293,8 +302,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+        
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -333,6 +344,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -371,8 +383,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -408,6 +422,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -429,8 +444,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getImpossibleMatchesSize());
@@ -463,6 +480,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -490,8 +508,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getConflictingMatchSize());
@@ -530,6 +550,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -575,8 +596,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getConflictingMatchSize());
@@ -620,6 +643,7 @@ public class DecisionTableAnalyzerTest {
 
         dt.getConditionPatterns().add(driverPattern);
 
+        @SuppressWarnings("unchecked")
         List<List<DTCellValue52>> data = Arrays.asList(
                 Arrays.asList(
                         new DTCellValue52(new BigDecimal("1")),
@@ -644,8 +668,10 @@ public class DecisionTableAnalyzerTest {
                 )
         );
 
+        dt.setData(data);
+
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
-        List<Analysis> analysisData = analyzer.analyze(dt, data);
+        List<Analysis> analysisData = analyzer.analyze(dt);
 
         assertEquals(data.size(), analysisData.size());
         assertEquals(0, analysisData.get(0).getConflictingMatchSize());
@@ -653,6 +679,7 @@ public class DecisionTableAnalyzerTest {
         assertEquals(1, analysisData.get(2).getConflictingMatchSize());
     }
 
+    @SuppressWarnings("serial")
     private SuggestionCompletionEngine buildSuggestionCompletionEngine() {
         SuggestionCompletionEngine sce = new SuggestionCompletionEngine();
 

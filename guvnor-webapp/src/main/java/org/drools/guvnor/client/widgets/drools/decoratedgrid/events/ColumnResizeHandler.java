@@ -13,22 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
 import com.google.gwt.event.shared.EventHandler;
 
 /**
- * Handler interface for {@link RowGroupingChangeEvent} events.
+ * Handler interface for {@link ColumnResizeEvent} events.
  */
-public interface RowGroupingChangeHandler
+public interface ColumnResizeHandler
     extends
     EventHandler {
 
     /**
-     * Called when {@link RowGroupingChangeEvent} is fired.
+     * Called when {@link ColumnResizeEvent} is fired.
      * 
      * @param event
-     *            the {@link RowGroupingChangeEvent} that was fired
+     *            the {@link ColumnResizeEvent} that was fired
      */
-    void onRowGroupingChange(RowGroupingChangeEvent event);
+    void onColumnResize(ColumnResizeEvent event);
 }

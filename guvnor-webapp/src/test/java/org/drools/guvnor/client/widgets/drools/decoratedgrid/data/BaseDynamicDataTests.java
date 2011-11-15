@@ -61,24 +61,16 @@ public abstract class BaseDynamicDataTests {
 
     protected List<CellValue< ? extends Comparable< ? >>> makeCellValueList() {
         List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
         return row;
     }
 
     protected List<CellValue< ? extends Comparable< ? >>> makeCellValueList(int size) {
         List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int i = 0; i < size; i++ ) {
-            row.add( new CellValue<String>( "",
-                                            0,
-                                            0 ) );
+            row.add( new CellValue<String>( "" ) );
         }
         return row;
     }

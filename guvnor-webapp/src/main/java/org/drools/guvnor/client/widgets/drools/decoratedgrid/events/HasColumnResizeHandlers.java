@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid;
+package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.event.shared.HasHandlers;
 
 /**
  * A widget that implements this interface is a public source of
- * {@link RowGroupingChangeEvent} events.
+ * {@link ColumnResizeEvent} events.
  */
-public interface HasRowGroupingChangeHandlers
-    extends
-    HasHandlers {
+public interface HasColumnResizeHandlers extends HasHandlers {
 
     /**
-     * Adds a {@link RowGroupingChangeEvent} handler.
-     * 
+     * Adds a {@link ColumnResizeEvent} handler.
+     *
      * @param handler
      *            the handler
      * @return the handler registration
      */
-    HandlerRegistration addRowGroupingChangeHandler(RowGroupingChangeHandler handler);
+    HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler);
 
 }

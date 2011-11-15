@@ -17,10 +17,10 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeHandler;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -39,18 +39,20 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                        SuggestionCompletionEngine sce,
                                        EventBus eventBus) {
         super( ctrls,
-               sce, 
+               sce,
                eventBus );
 
         VerticalPanel vp = new VerticalPanel();
 
         // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>( resources );
+        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>( resources,
+                                                                    eventBus );
         header = new VerticalDecisionTableHeaderWidget( resources,
+                                                        eventBus,
                                                         widget );
         DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( resources,
-                                                                                                                         widget,
-                                                                                                                         this );
+                                                                                                                         eventBus,
+                                                                                                                         widget );
         widget.setHeaderWidget( header );
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );

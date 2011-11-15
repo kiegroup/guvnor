@@ -28,6 +28,13 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasRowGroupingChangeHandlers;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasSelectedCellChangeHandlers;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -36,6 +43,7 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
@@ -49,9 +57,12 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MergableGridWidget<T> extends Widget
     implements
+    HasRows<List<CellValue< ? extends Comparable< ? >>>>,
+    //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
     HasSelectedCellChangeHandlers,
-    HasRowGroupingChangeHandlers {
+    HasRowGroupingChangeHandlers,
+    ToggleMergingEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -145,6 +156,7 @@ public abstract class MergableGridWidget<T> extends Widget
     // Resources
     protected static final Constants                         messages   = GWT.create( Constants.class );
     protected ResourcesProvider<T>                           resources;
+    protected EventBus                                       eventBus;
 
     protected String                                         selectorGroupedCellsHtml;
     protected String                                         selectorUngroupedCellsHtml;
@@ -167,8 +179,10 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * A grid of cells.
      */
-    public MergableGridWidget(ResourcesProvider<T> resources) {
+    public MergableGridWidget(ResourcesProvider<T> resources,
+                              EventBus eventBus) {
         this.resources = resources;
+        this.eventBus = eventBus;
 
         ImageResource selectorGroupedCells = resources.collapseCellsIcon();
         ImageResource selectorUngroupedCells = resources.expandCellsIcon();
@@ -202,6 +216,9 @@ public abstract class MergableGridWidget<T> extends Widget
         disableTextSelectInternal( table,
                                    true );
 
+        //Wire-up events
+        eventBus.addHandler( ToggleMergingEvent.TYPE,
+                             this );
     }
 
     /**
@@ -234,8 +251,7 @@ public abstract class MergableGridWidget<T> extends Widget
         //Find index of column
         int index = columns.indexOf( column );
         if ( index == -1 ) {
-            throw new IllegalArgumentException(
-                                                "Column not found in declared columns." );
+            throw new IllegalArgumentException( "Column not found in declared columns." );
         }
 
         //Expand any merged cells in column
@@ -271,16 +287,10 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * Delete the given row. Partial redraw.
      * 
-     * @param row
+     * @param index
+     *            The index of the row to delete
      */
-    void deleteRow(DynamicDataRow row) {
-
-        //Find index of row
-        int index = data.indexOf( row );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException(
-                                                "DynamicDataRow does not exist in table data." );
-        }
+    public void deleteRow(int index) {
 
         // Clear any selections
         clearSelection();
@@ -303,7 +313,7 @@ public abstract class MergableGridWidget<T> extends Widget
                     maxRedrawRow = data.size() - 1;
                 }
                 redrawRows( minRedrawRow,
-                                       maxRedrawRow );
+                            maxRedrawRow );
             }
         }
 
@@ -396,30 +406,34 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
-     * Insert the given row before the provided index. Partial redraw.
+     * Append a row to the end of the table. Partial redraw.
      * 
-     * @param rowBefore
-     *            The row before which the new row should be inserted
      * @param rowData
      *            The row of data to insert
      */
-    DynamicDataRow insertRowBefore(DynamicDataRow rowBefore,
-                                   List<CellValue< ? extends Comparable< ? >>> rowData) {
+    public void appendRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
+        int index = data.size();
+        insertRowBefore( index,
+                         rowData );
+    }
+
+    /**
+     * Insert the given row before the provided index. Partial redraw.
+     * 
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
+     * @param rowData
+     *            The row of data to insert
+     */
+    public void insertRowBefore(int index,
+                                List<CellValue< ? extends Comparable< ? >>> rowData) {
 
         if ( rowData == null ) {
             throw new IllegalArgumentException( "Row data cannot be null" );
         }
         if ( rowData.size() != columns.size() ) {
             throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
-        }
-
-        //Find index of row
-        int index = data.size();
-        if ( rowBefore != null ) {
-            index = data.indexOf( rowBefore );
-            if ( index == -1 ) {
-                throw new IllegalArgumentException( "rowBefore does not exist in table data." );
-            }
         }
 
         // Clear any selections
@@ -452,8 +466,14 @@ public abstract class MergableGridWidget<T> extends Widget
             redrawRows( minRedrawRow,
                         maxRedrawRow );
         }
-        return row;
 
+    }
+
+    /**
+     * Get the number of rows
+     */
+    public int rowCount() {
+        return this.data.size();
     }
 
     /**
@@ -481,12 +501,10 @@ public abstract class MergableGridWidget<T> extends Widget
                                 int endRedrawIndex);
 
     /**
-     * Toggle the state of DecoratedGridWidget merging.
-     * 
-     * @return The state of merging after completing this call
+     * Set the state of DecoratedGridWidget merging.
      */
-    boolean toggleMerging() {
-        if ( !data.isMerged() ) {
+    void setMerging(boolean isMerged) {
+        if ( isMerged ) {
             clearSelection();
             data.setMerged( true );
             redraw();
@@ -496,7 +514,6 @@ public abstract class MergableGridWidget<T> extends Widget
             redraw();
             RowGroupingChangeEvent.fire( this );
         }
-        return data.isMerged();
     }
 
     /*
@@ -1096,6 +1113,10 @@ public abstract class MergableGridWidget<T> extends Widget
                      startCell );
         rangeOriginCell = startCell;
         rangeExtentCell = null;
+    }
+
+    public void onToggleMerging(ToggleMergingEvent event) {
+        setMerging( event.isMerged() );
     }
 
 }

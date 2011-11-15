@@ -524,9 +524,12 @@ public class DynamicData
             //Add an empty row to the end of the data to simplify detection of merged cells that run to the end of the table
             DynamicDataRow blankRow = new DynamicDataRow();
             for ( int iCol = 0; iCol < COLUMNS; iCol++ ) {
-                CellValue cv = new CellValue( null,
-                                              maxRowIndex,
-                                              iCol );
+                CellValue cv = new CellValue( null );
+                Coordinate c = new Coordinate( data.size(),
+                                               iCol );
+                cv.setCoordinate( c );
+                cv.setHtmlCoordinate( c );
+                cv.setPhysicalCoordinate( c );
                 blankRow.add( cv );
             }
             data.add( blankRow );

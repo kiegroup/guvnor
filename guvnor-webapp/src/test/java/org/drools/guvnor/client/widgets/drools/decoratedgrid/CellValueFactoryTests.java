@@ -156,11 +156,12 @@ public class CellValueFactoryTests {
 
         factory = new DecisionTableCellValueFactory( sce,
                                                      dt );
-        
+
         Map<String, String> preferences = new HashMap<String, String>();
-        preferences.put( ApplicationPreferences.DATE_FORMAT, "dd-MMM-yyyy" );
+        preferences.put( ApplicationPreferences.DATE_FORMAT,
+                         "dd-MMM-yyyy" );
         ApplicationPreferences.setUp( preferences );
-        
+
         DecisionTableCellValueFactory.injectDateConvertor( JVMDateConverter.getInstance() );
 
     }
@@ -200,30 +201,22 @@ public class CellValueFactoryTests {
     @Test
     public void testEmptyCells() {
 
-        CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
-                                                                             0,
-                                                                             0 );
-        CellValue< ? extends Comparable< ? >> cell2 = factory.makeCellValue( at2,
-                                                                             0,
-                                                                             1 );
-        CellValue< ? extends Comparable< ? >> cell3 = factory.makeCellValue( c1,
-                                                                             0,
-                                                                             2 );
-        CellValue< ? extends Comparable< ? >> cell4 = factory.makeCellValue( c2,
-                                                                             0,
-                                                                             3 );
-        CellValue< ? extends Comparable< ? >> cell5 = factory.makeCellValue( c3,
-                                                                             0,
-                                                                             4 );
-        CellValue< ? extends Comparable< ? >> cell6 = factory.makeCellValue( c4,
-                                                                             0,
-                                                                             4 );
-        CellValue< ? extends Comparable< ? >> cell7 = factory.makeCellValue( a1,
-                                                                             0,
-                                                                             5 );
-        CellValue< ? extends Comparable< ? >> cell8 = factory.makeCellValue( a2,
-                                                                             0,
-                                                                             6 );
+        CellValue< ? extends Comparable< ? >> cell1 = factory.convertModelCellValue( at1,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell2 = factory.convertModelCellValue( at2,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell3 = factory.convertModelCellValue( c1,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell4 = factory.convertModelCellValue( c2,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell5 = factory.convertModelCellValue( c3,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell6 = factory.convertModelCellValue( c4,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell7 = factory.convertModelCellValue( a1,
+                                                                                     new DTCellValue52() );
+        CellValue< ? extends Comparable< ? >> cell8 = factory.convertModelCellValue( a2,
+                                                                                     new DTCellValue52() );
 
         assertEquals( cell1.getValue(),
                       null );
@@ -262,38 +255,22 @@ public class CellValueFactoryTests {
         DTCellValue52 dcv7 = new DTCellValue52( "Mike" );
         DTCellValue52 dcv8 = new DTCellValue52( "Mike" );
 
-        CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
-                                                                             0,
-                                                                             0,
-                                                                             dcv1 );
-        CellValue< ? extends Comparable< ? >> cell2 = factory.makeCellValue( at2,
-                                                                             0,
-                                                                             1,
-                                                                             dcv2 );
-        CellValue< ? extends Comparable< ? >> cell3 = factory.makeCellValue( c1,
-                                                                             0,
-                                                                             2,
-                                                                             dcv3 );
-        CellValue< ? extends Comparable< ? >> cell4 = factory.makeCellValue( c2,
-                                                                             0,
-                                                                             3,
-                                                                             dcv4 );
-        CellValue< ? extends Comparable< ? >> cell5 = factory.makeCellValue( c3,
-                                                                             0,
-                                                                             4,
-                                                                             dcv5 );
-        CellValue< ? extends Comparable< ? >> cell6 = factory.makeCellValue( c4,
-                                                                             0,
-                                                                             4,
-                                                                             dcv6 );
-        CellValue< ? extends Comparable< ? >> cell7 = factory.makeCellValue( a1,
-                                                                             0,
-                                                                             5,
-                                                                             dcv7 );
-        CellValue< ? extends Comparable< ? >> cell8 = factory.makeCellValue( a2,
-                                                                             0,
-                                                                             6,
-                                                                             dcv8 );
+        CellValue< ? extends Comparable< ? >> cell1 = factory.convertModelCellValue( at1,
+                                                                                     dcv1 );
+        CellValue< ? extends Comparable< ? >> cell2 = factory.convertModelCellValue( at2,
+                                                                                     dcv2 );
+        CellValue< ? extends Comparable< ? >> cell3 = factory.convertModelCellValue( c1,
+                                                                                     dcv3 );
+        CellValue< ? extends Comparable< ? >> cell4 = factory.convertModelCellValue( c2,
+                                                                                     dcv4 );
+        CellValue< ? extends Comparable< ? >> cell5 = factory.convertModelCellValue( c3,
+                                                                                     dcv5 );
+        CellValue< ? extends Comparable< ? >> cell6 = factory.convertModelCellValue( c4,
+                                                                                     dcv6 );
+        CellValue< ? extends Comparable< ? >> cell7 = factory.convertModelCellValue( a1,
+                                                                                     dcv7 );
+        CellValue< ? extends Comparable< ? >> cell8 = factory.convertModelCellValue( a2,
+                                                                                     dcv8 );
 
         assertEquals( cell1.getValue(),
                       new BigDecimal( 1 ) );
@@ -333,38 +310,22 @@ public class CellValueFactoryTests {
         DTCellValue52 dcv7 = new DTCellValue52( "Mike" );
         DTCellValue52 dcv8 = new DTCellValue52( "Mike" );
 
-        CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
-                                                                             0,
-                                                                             0,
-                                                                             dcv1 );
-        CellValue< ? extends Comparable< ? >> cell2 = factory.makeCellValue( at2,
-                                                                             0,
-                                                                             1,
-                                                                             dcv2 );
-        CellValue< ? extends Comparable< ? >> cell3 = factory.makeCellValue( c1,
-                                                                             0,
-                                                                             2,
-                                                                             dcv3 );
-        CellValue< ? extends Comparable< ? >> cell4 = factory.makeCellValue( c2,
-                                                                             0,
-                                                                             3,
-                                                                             dcv4 );
-        CellValue< ? extends Comparable< ? >> cell5 = factory.makeCellValue( c3,
-                                                                             0,
-                                                                             4,
-                                                                             dcv5 );
-        CellValue< ? extends Comparable< ? >> cell6 = factory.makeCellValue( c4,
-                                                                             0,
-                                                                             4,
-                                                                             dcv6 );
-        CellValue< ? extends Comparable< ? >> cell7 = factory.makeCellValue( a1,
-                                                                             0,
-                                                                             5,
-                                                                             dcv7 );
-        CellValue< ? extends Comparable< ? >> cell8 = factory.makeCellValue( a2,
-                                                                             0,
-                                                                             6,
-                                                                             dcv8 );
+        CellValue< ? extends Comparable< ? >> cell1 = factory.convertModelCellValue( at1,
+                                                                                     dcv1 );
+        CellValue< ? extends Comparable< ? >> cell2 = factory.convertModelCellValue( at2,
+                                                                                     dcv2 );
+        CellValue< ? extends Comparable< ? >> cell3 = factory.convertModelCellValue( c1,
+                                                                                     dcv3 );
+        CellValue< ? extends Comparable< ? >> cell4 = factory.convertModelCellValue( c2,
+                                                                                     dcv4 );
+        CellValue< ? extends Comparable< ? >> cell5 = factory.convertModelCellValue( c3,
+                                                                                     dcv5 );
+        CellValue< ? extends Comparable< ? >> cell6 = factory.convertModelCellValue( c4,
+                                                                                     dcv6 );
+        CellValue< ? extends Comparable< ? >> cell7 = factory.convertModelCellValue( a1,
+                                                                                     dcv7 );
+        CellValue< ? extends Comparable< ? >> cell8 = factory.convertModelCellValue( a2,
+                                                                                     dcv8 );
 
         assertEquals( cell1.getValue(),
                       new BigDecimal( 1 ) );
@@ -397,38 +358,22 @@ public class CellValueFactoryTests {
         DTCellValue52 dcv7 = new DTCellValue52( "" );
         DTCellValue52 dcv8 = new DTCellValue52( "" );
 
-        CellValue< ? extends Comparable< ? >> cell1 = factory.makeCellValue( at1,
-                                                                             0,
-                                                                             0,
-                                                                             dcv1 );
-        CellValue< ? extends Comparable< ? >> cell2 = factory.makeCellValue( at2,
-                                                                             0,
-                                                                             1,
-                                                                             dcv2 );
-        CellValue< ? extends Comparable< ? >> cell3 = factory.makeCellValue( c1,
-                                                                             0,
-                                                                             2,
-                                                                             dcv3 );
-        CellValue< ? extends Comparable< ? >> cell4 = factory.makeCellValue( c2,
-                                                                             0,
-                                                                             3,
-                                                                             dcv4 );
-        CellValue< ? extends Comparable< ? >> cell5 = factory.makeCellValue( c3,
-                                                                             0,
-                                                                             4,
-                                                                             dcv5 );
-        CellValue< ? extends Comparable< ? >> cell6 = factory.makeCellValue( c4,
-                                                                             0,
-                                                                             4,
-                                                                             dcv6 );
-        CellValue< ? extends Comparable< ? >> cell7 = factory.makeCellValue( a1,
-                                                                             0,
-                                                                             5,
-                                                                             dcv7 );
-        CellValue< ? extends Comparable< ? >> cell8 = factory.makeCellValue( a2,
-                                                                             0,
-                                                                             6,
-                                                                             dcv8 );
+        CellValue< ? extends Comparable< ? >> cell1 = factory.convertModelCellValue( at1,
+                                                                                     dcv1 );
+        CellValue< ? extends Comparable< ? >> cell2 = factory.convertModelCellValue( at2,
+                                                                                     dcv2 );
+        CellValue< ? extends Comparable< ? >> cell3 = factory.convertModelCellValue( c1,
+                                                                                     dcv3 );
+        CellValue< ? extends Comparable< ? >> cell4 = factory.convertModelCellValue( c2,
+                                                                                     dcv4 );
+        CellValue< ? extends Comparable< ? >> cell5 = factory.convertModelCellValue( c3,
+                                                                                     dcv5 );
+        CellValue< ? extends Comparable< ? >> cell6 = factory.convertModelCellValue( c4,
+                                                                                     dcv6 );
+        CellValue< ? extends Comparable< ? >> cell7 = factory.convertModelCellValue( a1,
+                                                                                     dcv7 );
+        CellValue< ? extends Comparable< ? >> cell8 = factory.convertModelCellValue( a2,
+                                                                                     dcv8 );
 
         assertEquals( cell1.getValue(),
                       null );

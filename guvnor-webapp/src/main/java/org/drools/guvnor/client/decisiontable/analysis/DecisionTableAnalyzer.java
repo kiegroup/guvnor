@@ -36,23 +36,25 @@ public class DecisionTableAnalyzer {
         this.sce = sce;
     }
 
-    public List<Analysis> analyze(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
-        return detectImpossibleMatches(modelWithWrongData, data);
+    public List<Analysis> analyze(GuidedDecisionTable52 model) {
+        return detectImpossibleMatches( model );
     }
 
-    private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 modelWithWrongData, List<List<DTCellValue52>> data) {
-        List<Analysis> analysisData = new ArrayList<Analysis>(data.size());
-        List<RowDetector> rowDetectorList = new ArrayList<RowDetector>(data.size());
-        for (List<DTCellValue52> row : data) {
-            RowDetector rowDetector = new RowDetector(row.get(0).getNumericValue().longValue() - 1);
-            for (Pattern52 pattern : modelWithWrongData.getConditionPatterns()) {
+    @SuppressWarnings("rawtypes")
+    private List<Analysis> detectImpossibleMatches(GuidedDecisionTable52 model) {
+        List<List<DTCellValue52>> data = model.getData();
+        List<Analysis> analysisData = new ArrayList<Analysis>( data.size() );
+        List<RowDetector> rowDetectorList = new ArrayList<RowDetector>( data.size() );
+        for ( List<DTCellValue52> row : data ) {
+            RowDetector rowDetector = new RowDetector( row.get( 0 ).getNumericValue().longValue() - 1 );
+            for ( Pattern52 pattern : model.getConditionPatterns() ) {
                 List<ConditionCol52> conditions = pattern.getConditions();
-                for (ConditionCol52 conditionCol : conditions) {
-                    int columnIndex = modelWithWrongData.getAllColumns().indexOf(conditionCol);
-                    DTCellValue52 visibleCellValue = row.get(columnIndex);
+                for ( ConditionCol52 conditionCol : conditions ) {
+                    int columnIndex = model.getAllColumns().indexOf( conditionCol );
+                    DTCellValue52 visibleCellValue = row.get( columnIndex );
                     DTCellValue52 realCellValue;
                     boolean cellIsNotBlank;
-                    if (conditionCol instanceof LimitedEntryCol) {
+                    if ( conditionCol instanceof LimitedEntryCol ) {
                         realCellValue = ((LimitedEntryCol) conditionCol).getValue();
                         cellIsNotBlank = visibleCellValue.getBooleanValue();
                     } else {
@@ -60,44 +62,58 @@ public class DecisionTableAnalyzer {
                         cellIsNotBlank = visibleCellValue.hasValue();
                     }
                     // Blank cells are ignored
-                    if (cellIsNotBlank) {
-                        FieldDetector fieldDetector = buildDetector(modelWithWrongData, conditionCol, realCellValue);
+                    if ( cellIsNotBlank ) {
+                        FieldDetector fieldDetector = buildDetector( model,
+                                                                     conditionCol,
+                                                                     realCellValue );
                         String factField = conditionCol.getFactField();
-                        rowDetector.putOrMergeFieldDetector(pattern, factField, fieldDetector);
+                        rowDetector.putOrMergeFieldDetector( pattern,
+                                                             factField,
+                                                             fieldDetector );
                     }
                 }
             }
-            rowDetectorList.add(rowDetector);
+            rowDetectorList.add( rowDetector );
         }
-        for (RowDetector rowDetector : rowDetectorList) {
-            analysisData.add(rowDetector.buildAnalysis(rowDetectorList));
+        for ( RowDetector rowDetector : rowDetectorList ) {
+            analysisData.add( rowDetector.buildAnalysis( rowDetectorList ) );
         }
         return analysisData;
     }
 
-    private FieldDetector buildDetector(GuidedDecisionTable52 model, ConditionCol52 conditionCol,
-            DTCellValue52 realCellValue) {
+    @SuppressWarnings("rawtypes")
+    private FieldDetector buildDetector(GuidedDecisionTable52 model,
+                                        ConditionCol52 conditionCol,
+                                        DTCellValue52 realCellValue) {
         String operator = conditionCol.getOperator();
-        String type = model.getType( conditionCol, sce );
+        String type = model.getType( conditionCol,
+                                     sce );
         // Retrieve "Guvnor" enums
-        String[] allValueList = model.getValueList( conditionCol, sce );
+        String[] allValueList = model.getValueList( conditionCol,
+                                                    sce );
         FieldDetector newDetector;
-        if (allValueList.length != 0) {
+        if ( allValueList.length != 0 ) {
             // Guvnor enum
-            newDetector = new EnumFieldDetector(Arrays.asList(allValueList), realCellValue.getStringValue(), operator);
+            newDetector = new EnumFieldDetector( Arrays.asList( allValueList ),
+                                                 realCellValue.getStringValue(),
+                                                 operator );
         } else if ( type == null ) {
             // type null means the field is free-format
-            newDetector = new UnrecognizedFieldDetector(operator);
+            newDetector = new UnrecognizedFieldDetector( operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_STRING ) ) {
-            newDetector = new StringFieldDetector(realCellValue.getStringValue(), operator);
+            newDetector = new StringFieldDetector( realCellValue.getStringValue(),
+                                                   operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            newDetector = new NumericFieldDetector(realCellValue.getNumericValue(), operator);
+            newDetector = new NumericFieldDetector( realCellValue.getNumericValue(),
+                                                    operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            newDetector = new BooleanFieldDetector(realCellValue.getBooleanValue(), operator);
+            newDetector = new BooleanFieldDetector( realCellValue.getBooleanValue(),
+                                                    operator );
         } else if ( type.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            newDetector = new DateFieldDetector(realCellValue.getDateValue(), operator);
+            newDetector = new DateFieldDetector( realCellValue.getDateValue(),
+                                                 operator );
         } else {
-            newDetector = new UnrecognizedFieldDetector(operator);
+            newDetector = new UnrecognizedFieldDetector( operator );
         }
         return newDetector;
     }

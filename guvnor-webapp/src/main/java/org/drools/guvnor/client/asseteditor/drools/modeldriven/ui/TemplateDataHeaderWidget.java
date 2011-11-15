@@ -18,12 +18,12 @@ package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 
 import com.google.gwt.core.client.Scheduler;
@@ -40,6 +40,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -275,8 +276,10 @@ public class TemplateDataHeaderWidget extends
      * @param grid
      */
     public TemplateDataHeaderWidget(final ResourcesProvider<TemplateDataColumn> resources,
+                                    final EventBus eventBus,
                                     final DecoratedGridWidget<TemplateDataColumn> grid) {
         super( resources,
+               eventBus,
                grid );
     }
 

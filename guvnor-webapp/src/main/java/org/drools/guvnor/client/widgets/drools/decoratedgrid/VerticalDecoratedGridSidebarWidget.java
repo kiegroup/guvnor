@@ -16,8 +16,11 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Unit;
@@ -26,6 +29,7 @@ import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
@@ -42,14 +46,15 @@ import com.google.gwt.user.client.ui.Widget;
  * A sidebar for a VericalDecisionTable. This provides a vertical list of
  * controls to add and remove the associated row from the DecisionTable.
  */
-public class VerticalDecoratedGridSidebarWidget<T> extends
-        DecoratedGridSidebarWidget<T> {
+public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarWidget<T> {
 
     /**
      * Widget to render selectors beside rows. Two selectors are provided per
      * row: (1) A "add new row (above selected)" and (2) "delete row".
      */
-    private class VerticalSelectorWidget extends CellPanel {
+    private class VerticalSelectorWidget extends CellPanel
+        implements
+        HasRows<List<CellValue< ? extends Comparable< ? >>>> {
 
         // Widgets (selectors) created (so they can be removed later)
         private ArrayList<Widget> widgets = new ArrayList<Widget>();
@@ -60,13 +65,78 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             sinkEvents( Event.getTypeInt( "click" ) );
         }
 
+        // Append a row to the end
+        public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
+
+            Element tre = DOM.createTR();
+            Element tce = DOM.createTD();
+            tre.setClassName( getRowStyle( widgets.size() ) );
+            tce.getStyle().setHeight( resources.rowHeight(),
+                                      Unit.PX );
+            tce.addClassName( resources.selectorCell() );
+            DOM.appendChild( getBody(),
+                             tre );
+            tre.appendChild( tce );
+
+            int index = widgets.size();
+            Widget widget = makeRowWidget( index );
+            add( widget,
+                 tce );
+
+            widgets.add( widget );
+            fixStyles( index );
+        }
+
+        // Insert a new row before the given index
+        public void insertRowBefore(int index,
+                                    List<CellValue< ? extends Comparable< ? >>> data) {
+
+            Element tre = DOM.createTR();
+            Element tce = DOM.createTD();
+            tre.setClassName( getRowStyle( widgets.size() ) );
+            tce.getStyle().setHeight( resources.rowHeight(),
+                                      Unit.PX );
+            tce.addClassName( resources.selectorCell() );
+            DOM.insertChild( getBody(),
+                             tre,
+                             index );
+            tre.appendChild( tce );
+
+            Widget widget = makeRowWidget( index );
+            add( widget,
+                 tce );
+
+            widgets.add( index,
+                         widget );
+            fixStyles( index );
+        }
+
         // Delete a row at the given index
-        private void deleteSelector(int index) {
+        public void deleteRow(int index) {
             Widget widget = widgets.get( index );
             remove( widget );
             getBody().<TableSectionElement> cast().deleteRow( index );
             widgets.remove( index );
             fixStyles( index );
+        }
+
+        // Get the number of rows
+        public int rowCount() {
+            return this.widgets.size();
+        }
+
+        // Redraw sidebar with the given number of rows
+        private void redraw() {
+            //Remove existing
+            int totalRows = widgets.size();
+            for ( int iRow = 0; iRow < totalRows; iRow++ ) {
+                deleteRow( 0 );
+            }
+            //Add selector for each row
+            for ( int iRow = 0; iRow < hasRows.rowCount(); iRow++ ) {
+                appendRow( null );
+            }
+
         }
 
         // Row styles need to be re-applied after inserting and deleting rows
@@ -85,32 +155,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             return trClasses;
         }
 
-        // Insert a new row before the given index
-        private void insertSelector(DynamicDataRow row,
-                                    int index) {
-
-            Element tre = DOM.createTR();
-            Element tce = DOM.createTD();
-            tre.setClassName( getRowStyle( widgets.size() ) );
-            tce.getStyle().setHeight( resources.rowHeight(),
-                                      Unit.PX );
-            tce.addClassName( resources.selectorCell() );
-            DOM.insertChild( getBody(),
-                             tre,
-                             index );
-            tre.appendChild( tce );
-
-            Widget widget = makeRowWidget( row );
-            add( widget,
-                    tce );
-
-            widgets.add( index,
-                         widget );
-            fixStyles( index );
-        }
-
         // Make the selector Widget
-        private Widget makeRowWidget(final DynamicDataRow row) {
+        private Widget makeRowWidget(final int index) {
 
             HorizontalPanel hp = new HorizontalPanel();
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
@@ -125,7 +171,9 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             fp.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    hasRows.insertRowBefore( row );
+                    //Raise an event to add row
+                    InsertRowEvent ire = new InsertRowEvent( index );
+                    eventBus.fireEvent( ire );
                 }
 
             } );
@@ -138,27 +186,14 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             fp.addClickHandler( new ClickHandler() {
 
                 public void onClick(ClickEvent event) {
-                    hasRows.deleteRow( row );
+                    //Raise an event to delete row
+                    DeleteRowEvent ire = new DeleteRowEvent( index );
+                    eventBus.fireEvent( ire );
                 }
 
             } );
             hp.add( fp );
             return hp;
-        }
-
-        // Redraw entire sidebar
-        private void redraw() {
-            //Remove existing
-            int totalRows = widgets.size();
-            for ( int iRow = 0; iRow < totalRows; iRow++ ) {
-                deleteSelector( 0 );
-            }
-            //Add selector for each row
-            for ( DynamicDataRow row : grid.getGridWidget().getData() ) {
-                insertSelector( row,
-                                widgets.size() );
-            }
-
         }
 
     }
@@ -173,6 +208,8 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
         private Element tce      = DOM.createTD();
         private Element outerDiv = DOM.createDiv();
         private Element innerDiv = DOM.createDiv();
+
+        private boolean isMerged = false;
 
         public void setHeight(int height) {
             super.setHeight( height + "px" );
@@ -196,7 +233,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             setSpacing( 0 );
             setPadding( 0 );
 
-            setIconImage( grid.getGridWidget().getData().isMerged() );
+            setIconImage( isMerged );
 
             tce.addClassName( resources.selectorSpacer() );
             innerDiv.addClassName( resources.selectorSpacerInnerDiv() );
@@ -224,7 +261,11 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
 
                                       public void onBrowserEvent(Event event) {
                                           if ( event.getType().equals( "click" ) ) {
-                                              setIconImage( grid.getGridWidget().toggleMerging() );
+                                              //Raise event to toggle merging
+                                              isMerged = !isMerged;
+                                              setIconImage( isMerged );
+                                              ToggleMergingEvent tme = new ToggleMergingEvent( isMerged );
+                                              eventBus.fireEvent( tme );
                                           }
                                       }
 
@@ -255,11 +296,11 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
      * @param decisionTable
      */
     public VerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
-                                              DecoratedGridWidget<T> grid,
-                                              HasRows hasRows) {
+                                              EventBus eventBus,
+                                              HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows) {
         // Argument validation performed in the superclass constructor
         super( resources,
-               grid,
+               eventBus,
                hasRows );
 
         // Construct the Widget
@@ -278,31 +319,25 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
 
     }
 
-    @Override
-    void deleteSelector(DynamicDataRow row) {
-        int index = grid.getGridWidget().getData().indexOf( row );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException( "row does not exist in table data." );
-        }
-        selectors.deleteSelector( index );
+    public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
+        selectors.appendRow( data );
     }
 
-    @Override
-    void insertSelector(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
-        }
-        int index = grid.getGridWidget().getData().indexOf( row );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException( "row does not exist in table data." );
-        }
-        selectors.insertSelector( row,
-                                  index );
+    public void insertRowBefore(int index,
+                                List<CellValue< ? extends Comparable< ? >>> data) {
+        selectors.insertRowBefore( index,
+                                   data );
     }
 
-    @Override
-    void redraw() {
-        selectors.redraw();
+    public void deleteRow(int index) {
+        selectors.deleteRow( index );
+    }
+
+    /**
+     * Get the number of rows
+     */
+    public int rowCount() {
+        return this.selectors.rowCount();
     }
 
     @Override
@@ -327,6 +362,11 @@ public class VerticalDecoratedGridSidebarWidget<T> extends
             throw new IllegalArgumentException( "position cannot be less than zero" );
         }
         this.scrollPanel.setVerticalScrollPosition( position );
+    }
+
+    @Override
+    void redraw() {
+        selectors.redraw();
     }
 
 }

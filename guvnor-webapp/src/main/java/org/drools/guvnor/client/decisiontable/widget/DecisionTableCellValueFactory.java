@@ -16,7 +16,9 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
@@ -39,7 +41,7 @@ import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 /**
  * A Factory to create CellValues applicable to given columns.
  */
-public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig52> {
+public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTColumnConfig52, DTCellValue52> {
 
     // Model used to determine data-types etc for cells
     private GuidedDecisionTable52 model;
@@ -59,113 +61,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             throw new IllegalArgumentException( "model cannot be null" );
         }
         this.model = model;
-    }
-
-    /**
-     * Convert a type-safe UI CellValue into a type-safe Model CellValue
-     * 
-     * @param column
-     *            Model column from which data-type can be derived
-     * @param cell
-     *            UI CellValue to convert into Model CellValue
-     * @return
-     */
-    public DTCellValue52 convertToDTModelCell(DTColumnConfig52 column,
-                                              CellValue< ? > cell) {
-        DTDataTypes52 dt = getDataType( column );
-        DTCellValue52 dtCell = null;
-
-        switch ( dt ) {
-            case BOOLEAN :
-                dtCell = new DTCellValue52( (Boolean) cell.getValue() );
-                break;
-            case DATE :
-                dtCell = new DTCellValue52( (Date) cell.getValue() );
-                break;
-            case NUMERIC :
-                dtCell = new DTCellValue52( (BigDecimal) cell.getValue() );
-                break;
-            default :
-                dtCell = new DTCellValue52( (String) cell.getValue() );
-        }
-        dtCell.setOtherwise( cell.isOtherwise() );
-        return dtCell;
-    }
-
-    /**
-     * Make a CellValue applicable for the column
-     * 
-     * @param column
-     *            The model column
-     * @param iRow
-     *            Row coordinate for initialisation
-     * @param iCol
-     *            Column coordinate for initialisation
-     * @param dcv
-     *            The Model cell containing the value
-     * @return A CellValue
-     */
-    public CellValue< ? extends Comparable< ? >> makeCellValue(DTColumnConfig52 column,
-                                                               int iRow,
-                                                               int iCol,
-                                                               DTCellValue52 dcv) {
-        DTDataTypes52 dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = null;
-
-        //If this is a legacy Decision Table values are always String 
-        //so ensure that the appropriate DTCellValue field is populated
-        assertDTCellValue( dataType,
-                           dcv );
-
-        switch ( dataType ) {
-            case BOOLEAN :
-                cell = makeNewBooleanCellValue( iRow,
-                                                iCol,
-                                                dcv.getBooleanValue() );
-                break;
-            case DATE :
-                cell = makeNewDateCellValue( iRow,
-                                             iCol,
-                                             dcv.getDateValue() );
-                break;
-            case NUMERIC :
-                if ( column instanceof RowNumberCol52 ) {
-                    cell = makeNewRowNumberCellValue( iRow,
-                                                      iCol );
-                } else {
-                    cell = makeNewNumericCellValue( iRow,
-                                                    iCol,
-                                                    dcv.getNumericValue() );
-                    if ( column instanceof AttributeCol52 ) {
-                        AttributeCol52 at = (AttributeCol52) column;
-                        if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
-                            if ( at.isUseRowNumber() ) {
-                                cell = makeNewRowNumberCellValue( iRow,
-                                                                  iCol );
-                            }
-                        }
-                    }
-                }
-                break;
-            default :
-                cell = makeNewStringCellValue( iRow,
-                                               iCol,
-                                               dcv.getStringValue() );
-                if ( column instanceof AttributeCol52 ) {
-                    AttributeCol52 ac = (AttributeCol52) column;
-                    if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
-                        cell = makeNewDialectCellValue( iRow,
-                                                        iCol,
-                                                        dcv.getStringValue() );
-                    }
-                }
-        }
-
-        if ( dcv.isOtherwise() ) {
-            cell.addState( CellState.OTHERWISE );
-        }
-
-        return cell;
     }
 
     //If the Decision Table model has been converted from the legacy text based
@@ -241,22 +136,120 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return model.getTypeSafeType( column,
                                       sce );
     }
+    
+    /**
+     * Make a Model cell for the given column
+     * 
+     * @param column
+     * @return
+     */
+    @Override
+    public DTCellValue52 makeModelCellValue(DTColumnConfig52 column) {
+        DTDataTypes52 dataType = getDataType( column );
+        DTCellValue52 dcv = new DTCellValue52( column.getDefaultValue() );
+        assertDTCellValue( dataType,
+                           dcv );
+        return dcv;
+    }
 
-    protected CellValue<BigDecimal> makeNewRowNumberCellValue(int iRow,
-                                                              int iCol) {
+
+    /**
+     * Convert a Model cell to one that can be used in the UI
+     * 
+     * @param cell
+     * @return
+     */
+    @Override
+    public CellValue< ? extends Comparable< ? >> convertModelCellValue(DTColumnConfig52 column,
+                                                                       DTCellValue52 dcv) {
+        DTDataTypes52 dataType = getDataType( column );
+        assertDTCellValue( dataType,
+                           dcv );
+
+        CellValue< ? extends Comparable< ? >> cell = null;
+        switch ( dataType ) {
+            case BOOLEAN :
+                cell = makeNewBooleanCellValue( dcv.getBooleanValue() );
+                break;
+            case DATE :
+                cell = makeNewDateCellValue( dcv.getDateValue() );
+                break;
+            case NUMERIC :
+                if ( column instanceof RowNumberCol52 ) {
+                    cell = makeNewRowNumberCellValue();
+                } else {
+                    cell = makeNewNumericCellValue( dcv.getNumericValue() );
+                    if ( column instanceof AttributeCol52 ) {
+                        AttributeCol52 at = (AttributeCol52) column;
+                        if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
+                            if ( at.isUseRowNumber() ) {
+                                cell = makeNewRowNumberCellValue();
+                            }
+                        }
+                    }
+                }
+                break;
+            default :
+                cell = makeNewStringCellValue( dcv.getStringValue() );
+                if ( column instanceof AttributeCol52 ) {
+                    AttributeCol52 ac = (AttributeCol52) column;
+                    if ( ac.getAttribute().equals( RuleAttributeWidget.DIALECT_ATTR ) ) {
+                        cell = makeNewDialectCellValue( dcv.getStringValue() );
+                    }
+                }
+        }
+
+        if ( dcv.isOtherwise() ) {
+            cell.addState( CellState.OTHERWISE );
+        }
+
+        return cell;
+    }
+
+    /**
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public List<DTCellValue52> makeRowData() {
+        List<DTCellValue52> data = new ArrayList<DTCellValue52>();
+        List<DTColumnConfig52> columns = model.getAllColumns();
+        for ( DTColumnConfig52 column : columns ) {
+            DTCellValue52 cell = makeModelCellValue( column );
+            data.add( cell );
+        }
+        return data;
+    }
+
+    /**
+     * Convert a row of the underlying model into a row for use in the UI
+     * 
+     * @param row
+     *            A row of model data
+     * @return
+     */
+    public List<CellValue< ? extends Comparable< ? >>> convertRowData(List<DTCellValue52> row) {
+        List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        List<DTColumnConfig52> columns = model.getAllColumns();
+        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+            DTCellValue52 dcv = row.get( iCol );
+            DTColumnConfig52 column = columns.get( iCol );
+            CellValue< ? extends Comparable< ? >> cv = convertModelCellValue( column,
+                                                                              dcv );
+            data.add( cv );
+        }
+        return data;
+    }
+
+    protected CellValue<BigDecimal> makeNewRowNumberCellValue() {
         // Rows are 0-based internally but 1-based in the UI
-        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( iRow + 1 ),
-                                                              iRow,
-                                                              iCol );
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( 0 ) );
         return cv;
     }
 
-    protected CellValue<Analysis> makeNewAnalysisCellValue(int iRow,
-                                                           int iCol) {
+    protected CellValue<Analysis> makeNewAnalysisCellValue() {
         Analysis analysis = new Analysis();
-        return new CellValue<Analysis>( analysis,
-                                        iRow,
-                                        iCol );
+        return new CellValue<Analysis>( analysis );
     }
 
 }

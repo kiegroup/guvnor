@@ -15,23 +15,28 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import java.util.List;
 
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
  * An abstract "Sidebar" widget to decorate a <code>DecoratedGridWidget</code>
  * 
  * @param <T>
- *            The type of domain columns represented by the Header
  */
-public abstract class DecoratedGridSidebarWidget<T> extends Composite {
+public abstract class DecoratedGridSidebarWidget<T> extends Composite
+    implements
+    HasRows<List<CellValue< ? extends Comparable< ? >>>> {
 
-    protected DecoratedGridWidget<T> grid;
-    protected HasRows                hasRows;
+    protected HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows;
+
+    protected AbstractCellValueFactory<T, ? >                      cellValueFactory;
 
     // Resources
-    protected ResourcesProvider<T>   resources;
+    protected ResourcesProvider<T>                                 resources;
+
+    protected EventBus                                             eventBus;
 
     /**
      * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar
@@ -39,46 +44,25 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
      * removal of rows.
      * 
      * @param resources
-     * @param grid
+     * @param eventBus
      * @param hasRows
      */
     public DecoratedGridSidebarWidget(ResourcesProvider<T> resources,
-                                      DecoratedGridWidget<T> grid,
-                                      HasRows hasRows) {
+                                      EventBus eventBus,
+                                      HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
         }
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         if ( hasRows == null ) {
             throw new IllegalArgumentException( "hasRows cannot be null" );
         }
         this.resources = resources;
-        this.grid = grid;
+        this.eventBus = eventBus;
         this.hasRows = hasRows;
     }
-
-    /**
-     * Delete a Selector for the given row.
-     * 
-     * @param row
-     */
-    abstract void deleteSelector(DynamicDataRow row);
-
-    /**
-     * Insert a Selector for the given row.
-     * 
-     * @param row
-     *            The row for which the selector will be added
-     */
-    abstract void insertSelector(DynamicDataRow row);
-
-    /**
-     * Redraw the sidebar, this involves clearing any content before calling to
-     * addSelector for each row in the grid's data
-     */
-    abstract void redraw();
 
     /**
      * Resize the sidebar.
@@ -94,5 +78,11 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite {
      * @param position
      */
     abstract void setScrollPosition(int position);
+
+    /**
+     * Redraw the sidebar, this involves clearing any content before calling to
+     * addSelector for each row in the grid's data
+     */
+    abstract void redraw();
 
 }

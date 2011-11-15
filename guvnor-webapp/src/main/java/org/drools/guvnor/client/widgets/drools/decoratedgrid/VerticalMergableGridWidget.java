@@ -36,6 +36,7 @@ import com.google.gwt.dom.client.TableCellElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
@@ -49,8 +50,10 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     //Deferred binding creates an appropriate class depending on browser
     private CellHeightCalculatorImpl cellHeightCalculator = GWT.create( CellHeightCalculatorImpl.class );
 
-    public VerticalMergableGridWidget(ResourcesProvider<T> resources) {
-        super( resources );
+    public VerticalMergableGridWidget(ResourcesProvider<T> resources,
+                                      EventBus eventBus) {
+        super( resources,
+               eventBus );
     }
 
     @Override

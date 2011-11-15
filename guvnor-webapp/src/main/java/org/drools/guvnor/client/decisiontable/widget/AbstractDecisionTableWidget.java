@@ -34,6 +34,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -68,9 +70,11 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractDecisionTableWidget extends Composite
     implements
-    HasRows,
+    HasRows<List<DTCellValue52>>,
     HasColumns<DTColumnConfig52>,
-    HasSystemControlledColumns {
+    HasSystemControlledColumns,
+    InsertRowEvent.Handler,
+    DeleteRowEvent.Handler {
 
     // Decision Table data
     protected GuidedDecisionTable52                       model;
@@ -98,10 +102,19 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
+        }
         this.sce = sce;
         this.dtableCtrls = dtableCtrls;
         this.dtableCtrls.setDecisionTableWidget( this );
         this.eventBus = eventBus;
+
+        //Wire-up the events
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
     }
 
     /**
@@ -120,13 +133,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
         addColumn( modelColumn,
                    true );
-    }
-
-    /**
-     * Append an empty row to the end of the table
-     */
-    public void appendRow() {
-        insertRowBefore( null );
     }
 
     /**
@@ -151,21 +157,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
-     * Delete the given row
-     * 
-     * @param row
-     *            Decision Table row to delete
-     */
-    public void deleteRow(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
-        }
-        widget.deleteRow( row );
-        updateSystemControlledColumnValues();
-        redrawSystemControlledColumns();
-    }
-
-    /**
      * Return the model
      * 
      * @return The DecisionTable data model
@@ -184,18 +175,74 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
+     * Append an empty row to the end of the table
+     */
+    public void appendRow() {
+        List<DTCellValue52> data = cellValueFactory.makeRowData();
+        appendRow( data );
+    }
+
+    /**
+     * Append an empty row to the end of the table
+     * 
+     * @param data
+     *            The row's data
+     */
+    public void appendRow(List<DTCellValue52> data) {
+        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
+        model.getData().add( data );
+        widget.appendRow( uiData );
+        redrawSystemControlledColumns();
+    }
+
+    /**
      * Insert an empty row before the given row
      * 
-     * @param rowBefore
-     *            The row before which the new (empty) row will be inserted. If
-     *            this value is null the row will be appended to the end of the
-     *            table
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
      */
-    public void insertRowBefore(DynamicDataRow rowBefore) {
-        List<CellValue< ? extends Comparable< ? >>> rowData = makeRowData( 0 ); // TODO FIXME the 0 is incorrect
-        widget.insertRowBefore( rowBefore,
-                                rowData );
+    public void insertRowBefore(int index) {
+        List<DTCellValue52> data = cellValueFactory.makeRowData();
+        insertRowBefore( index,
+                         data );
+    }
+
+    /**
+     * Insert an empty row before the given row
+     * 
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
+     * @param data
+     *            The row's data
+     */
+    public void insertRowBefore(int index,
+                                List<DTCellValue52> data) {
+        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
+        model.getData().add( index,
+                             data );
+        widget.insertRowBefore( index,
+                                uiData );
         redrawSystemControlledColumns();
+    }
+
+    /**
+     * Delete the given row
+     * 
+     * @param row
+     *            Decision Table row to delete
+     */
+    public void deleteRow(int index) {
+        model.getData().remove( index );
+        widget.deleteRow( index );
+        updateSystemControlledColumnValues();
+        redrawSystemControlledColumns();
+    }
+
+    public int rowCount() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     /**
@@ -222,44 +269,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void redrawSystemControlledColumns() {
         widget.redrawSystemControlledColumns();
-    }
-
-    /**
-     * Update the Decision Table model with the data contained in the grid. The
-     * Decision Table does not synchronise model data with UI data during user
-     * interaction with the UI. Consequentially this should be called to refresh
-     * the Model with the UI when needed.
-     */
-    public List<List<DTCellValue52>> scrapeData() {
-
-        // Copy data
-        final DynamicData data = widget.getData().getFlattenedData();
-        final List<DynamicColumn<DTColumnConfig52>> columns = widget.getColumns();
-
-        final int GRID_ROWS = data.size();
-        List<List<DTCellValue52>> grid = new ArrayList<List<DTCellValue52>>();
-        for ( int iRow = 0; iRow < GRID_ROWS; iRow++ ) {
-            DynamicDataRow dataRow = data.get( iRow );
-            List<DTCellValue52> row = new ArrayList<DTCellValue52>();
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-
-                //Values put back into the Model are type-safe
-                CellValue< ? > cv = dataRow.get( iCol );
-                DTColumnConfig52 column = columns.get( iCol ).getModelColumn();
-                if ( !(column instanceof AnalysisCol52) ) {
-                    DTCellValue52 dcv = cellValueFactory.convertToDTModelCell( column,
-                                                                                  cv );
-                    dcv.setOtherwise( cv.isOtherwise() );
-                    row.add( dcv );
-                }
-            }
-            grid.add( row );
-        }
-        return grid;
-    }
-
-    public void scrapeDataToModel() {
-        this.model.setData( scrapeData() );
     }
 
     public void setColumnVisibility(DTColumnConfig52 modelColumn,
@@ -1164,10 +1173,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
             DTCellValue52 dcv = new DTCellValue52( modelColumn.getDefaultValue() );
-            CellValue< ? > cell = cellValueFactory.makeCellValue( modelColumn,
-                                                                  iRow,
-                                                                  index,
-                                                                  dcv );
+            CellValue< ? > cell = cellValueFactory.convertModelCellValue( modelColumn,
+                                                                          dcv );
             columnData.add( cell );
         }
 
@@ -1248,10 +1255,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             List<DTCellValue52> row = model.getData().get( iRow );
             DTCellValue52 dcv = row.get( colIndex );
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeCellValue( column,
-                                                                                       iRow,
-                                                                                       colIndex,
-                                                                                       dcv );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
+                                                                                               dcv );
             columnData.add( cv );
         }
         return columnData;
@@ -1263,33 +1268,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>( dataSize );
 
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeNewAnalysisCellValue( iRow,
-                                                                                                  colIndex );
+            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.makeNewAnalysisCellValue();
             columnData.add( cv );
         }
         return columnData;
-    }
-
-    // Construct a new row for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeRowData(int rowIndex) {
-        List<CellValue< ? extends Comparable< ? >>> rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        List<DynamicColumn<DTColumnConfig52>> columns = widget.getColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DTColumnConfig52 col = columns.get( iCol ).getModelColumn();
-            CellValue< ? extends Comparable< ? >> cv;
-            if ( col instanceof AnalysisCol52 ) {
-                cv = cellValueFactory.makeNewAnalysisCellValue( rowIndex,
-                                                                iCol );
-            } else {
-                DTCellValue52 dcv = new DTCellValue52( col.getDefaultValue() );
-                cv = cellValueFactory.makeCellValue( col,
-                                                     rowIndex,
-                                                     iCol,
-                                                     dcv );
-            }
-            rowData.add( cv );
-        }
-        return rowData;
     }
 
     // Copy values from one (transient) model column into another
@@ -1381,9 +1363,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private void removeOtherwiseStates(final DynamicColumn<DTColumnConfig52> column) {
 
         //Grouping needs to be removed
-        if ( widget.getData().isMerged() ) {
-            widget.toggleMerging();
-        }
+        widget.setMerging( false );
 
         DynamicData data = widget.getData();
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
@@ -1399,18 +1379,17 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                         final DynamicColumn<DTColumnConfig52> column) {
 
         //Grouping needs to be removed
-        if ( widget.getData().isMerged() ) {
-            widget.toggleMerging();
-        }
+        widget.setMerging( false );
 
         DynamicData data = widget.getData();
         column.setCell( cellFactory.getCell( editColumn ) );
+        int iCol = model.getAllColumns().indexOf( editColumn );
         for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DTCellValue52 dcv = model.getData().get( iRow ).get( iCol );
             DynamicDataRow row = data.get( iRow );
             row.set( column.getColumnIndex(),
-                     cellValueFactory.makeCellValue( editColumn,
-                                                     iRow,
-                                                     column.getColumnIndex() ) );
+                     cellValueFactory.convertModelCellValue( editColumn,
+                                                             dcv ) );
         }
 
     }
@@ -1513,10 +1492,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     public void analyze() {
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( sce );
-        // Workaround design the real model isn't up to date with the GWT model
-        List<List<DTCellValue52>> data = scrapeData();
-        List<Analysis> analysisData = analyzer.analyze( model,
-                                                        data );
+        List<Analysis> analysisData = analyzer.analyze( model );
         showAnalysis( analysisData );
     }
 
@@ -1763,6 +1739,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
         return 0;
+    }
+
+    public void onDeleteRow(DeleteRowEvent event) {
+        deleteRow( event.getIndex() );
+    }
+
+    public void onInsertRow(InsertRowEvent event) {
+        insertRowBefore( event.getIndex() );
     }
 
 }

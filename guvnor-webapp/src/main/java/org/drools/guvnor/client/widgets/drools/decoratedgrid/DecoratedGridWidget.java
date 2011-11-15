@@ -20,13 +20,19 @@ import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
@@ -42,6 +48,8 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class DecoratedGridWidget<T> extends Composite
     implements
+    HasRows<List<CellValue< ? extends Comparable< ? >>>>,
+    //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater {
 
     // Widgets for UI
@@ -59,13 +67,18 @@ public abstract class DecoratedGridWidget<T> extends Composite
     // Resources
     protected ResourcesProvider<T>          resources;
 
+    //Event Bus
+    protected EventBus                      eventBus;
+
     /**
      * Construct at empty DecoratedGridWidget, without DecoratedGridHeaderWidget
      * or DecoratedGridSidebarWidget These should be set before the grid is
      * displayed using setHeaderWidget and setSidebarWidget respectively.
      */
-    public DecoratedGridWidget(ResourcesProvider<T> resources) {
+    public DecoratedGridWidget(ResourcesProvider<T> resources,
+                               EventBus eventBus) {
         this.resources = resources;
+        this.eventBus = eventBus;
 
         mainPanel = getMainPanel();
         bodyPanel = getBodyPanel();
@@ -142,20 +155,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
             headerWidget.redraw();
             assertDimensions();
         }
-    }
-
-    /**
-     * Delete the given row
-     * 
-     * @param row
-     */
-    public void deleteRow(DynamicDataRow row) {
-        if ( row == null ) {
-            throw new IllegalArgumentException( "row cannot be null" );
-        }
-        sidebarWidget.deleteSelector( row );
-        gridWidget.deleteRow( row );
-        assertDimensions();
     }
 
     /**
@@ -246,25 +245,58 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Insert a row before that specified
+     * Append an empty row to the end of the table
      * 
-     * @param rowBefore
-     *            Row before which the new row will be inserted, or null in
-     *            which case the row will be appended to the end
      * @param rowData
      *            New row data
      */
-    public void insertRowBefore(DynamicDataRow rowBefore,
-                                List<CellValue< ? extends Comparable< ? >>> rowData) {
-
-        if ( rowData == null ) {
-            throw new IllegalArgumentException( "rowData cannot be null" );
+    public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
+        if ( data == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
         }
-
-        DynamicDataRow row = gridWidget.insertRowBefore( rowBefore,
-                                                         rowData );
-        sidebarWidget.insertSelector( row );
+        gridWidget.appendRow( data );
+        sidebarWidget.appendRow( data );
         assertDimensions();
+    }
+
+    /**
+     * Insert a row before that specified
+     * 
+     * @param index
+     *            The index of the row before which the new (empty) row will be
+     *            inserted.
+     * @param data
+     *            New row data
+     */
+    public void insertRowBefore(int index,
+                                List<CellValue< ? extends Comparable< ? >>> data) {
+        if ( data == null ) {
+            throw new IllegalArgumentException( "data cannot be null" );
+        }
+        gridWidget.insertRowBefore( index,
+                                    data );
+        sidebarWidget.insertRowBefore( index,
+                                       data );
+        assertDimensions();
+    }
+
+    /**
+     * Delete the given row
+     * 
+     * @param index
+     *            The index of the row to delete
+     */
+    public void deleteRow(int index) {
+        sidebarWidget.deleteRow( index );
+        gridWidget.deleteRow( index );
+        assertDimensions();
+    }
+
+    /**
+     * Get the number of rows
+     */
+    public int rowCount() {
+        return this.gridWidget.rowCount();
     }
 
     /**
@@ -437,7 +469,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         //Redraw whole table
         gridWidget.redraw();
-        sidebarWidget.redraw();
     }
 
     //Ensure the selected cell is visible
@@ -572,15 +603,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Toggle the state of DecoratedGridWidget merging.
-     * 
-     * @return The state of merging after completing this call
-     */
-    public boolean toggleMerging() {
-        return this.gridWidget.toggleMerging();
-    }
-
-    /**
      * Add a handler for SelectedCellChangeEvents
      */
     public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
@@ -592,6 +614,20 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void redrawHeader() {
         this.headerWidget.redraw();
+    }
+
+    /**
+     * Redraw sidebar
+     */
+    public void redrawSidebar() {
+        this.sidebarWidget.redraw();
+    }
+
+    /**
+     * Set the state of DecoratedGridWidget merging.
+     */
+    public void setMerging(boolean isMerged) {
+        this.gridWidget.setMerging( isMerged );
     }
 
 }

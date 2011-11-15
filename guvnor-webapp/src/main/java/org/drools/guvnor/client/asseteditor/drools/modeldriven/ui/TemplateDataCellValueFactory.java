@@ -16,17 +16,24 @@
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
  */
-public class TemplateDataCellValueFactory extends AbstractCellValueFactory<TemplateDataColumn> {
+public class TemplateDataCellValueFactory extends AbstractCellValueFactory<TemplateDataColumn, String> {
+
+    //Template model
+    private TemplateModel model;
 
     /**
      * Construct a Cell Value Factory for a specific Template data editor
@@ -34,126 +41,13 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      */
-    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce) {
+    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce,
+                                        TemplateModel model) {
         super( sce );
-    }
-
-    /**
-     * Serialise value to a String
-     * 
-     * @param column
-     *            The model column
-     * @param cv
-     *            CellValue for which value will be serialised
-     * @return String representation of value
-     */
-    public String convertValueToString(TemplateDataColumn column,
-                                       CellValue< ? > cv) {
-        DTDataTypes52 dataType = getDataType( column );
-
-        switch ( dataType ) {
-            case BOOLEAN :
-                return convertBooleanValueToString( cv );
-            case DATE :
-                return convertDateValueToString( cv );
-            case NUMERIC :
-                return convertNumericValueToString( cv );
-            default :
-                return convertStringValueToString( cv );
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
         }
-
-    }
-
-    /**
-     * Make a CellValue applicable for the column. This is used by legacy UI
-     * Models (Template Data Editor and legacy Guided Decision Tables) that
-     * store values in a two-dimensional array of Strings.
-     * 
-     * @param column
-     *            The model column
-     * @param iRow
-     *            Row coordinate for initialisation
-     * @param iCol
-     *            Column coordinate for initialisation
-     * @param initialValue
-     *            The initial value of the cell
-     * @return A CellValue
-     */
-    public CellValue< ? extends Comparable< ? >> makeCellValue(TemplateDataColumn column,
-                                                               int iRow,
-                                                               int iCol,
-                                                               String initialValue) {
-        DTDataTypes52 dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = null;
-
-        switch ( dataType ) {
-            case BOOLEAN :
-                Boolean b = Boolean.FALSE;
-                try {
-                    b = Boolean.valueOf( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewBooleanCellValue( iRow,
-                                                iCol,
-                                                b );
-                break;
-            case DATE :
-                Date d = null;
-                try {
-                    if ( DATE_CONVERTOR == null ) {
-                        throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
-                    }
-                    d = DATE_CONVERTOR.parse( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewDateCellValue( iRow,
-                                             iCol,
-                                             d );
-                break;
-            case NUMERIC :
-                BigDecimal bd = null;
-                try {
-                    bd = new BigDecimal( initialValue );
-                } catch ( Exception e ) {
-                }
-                cell = makeNewNumericCellValue( iRow,
-                                                iCol,
-                                                bd );
-                break;
-            default :
-                cell = makeNewStringCellValue( iRow,
-                                               iCol,
-                                               initialValue );
-        }
-
-        return cell;
-    }
-
-    //Convert a Boolean value to a String
-    private String convertBooleanValueToString(CellValue< ? > value) {
-        return (value.getValue() == null ? null : ((Boolean) value.getValue()).toString());
-    }
-
-    //Convert a Date value to a String
-    private String convertDateValueToString(CellValue< ? > value) {
-        String result = null;
-        if ( value.getValue() != null ) {
-            if ( DATE_CONVERTOR == null ) {
-                throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
-            }
-            result = DATE_CONVERTOR.format( (Date) value.getValue() );
-        }
-        return result;
-    }
-
-    //Convert a BigDecimal value to a String
-    private String convertNumericValueToString(CellValue< ? > value) {
-        return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
-    }
-
-    //Convert a String value to a String
-    private String convertStringValueToString(CellValue< ? > value) {
-        return (value.getValue() == null ? null : (String) value.getValue());
+        this.model = model;
     }
 
     // Get the Data Type corresponding to a given column
@@ -191,6 +85,110 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         } else {
             return DTDataTypes52.STRING;
         }
+    }
+
+    /**
+     * Make a Model cell for the given column
+     * 
+     * @param column
+     * @return
+     */
+    @Override
+    public String makeModelCellValue(TemplateDataColumn column) {
+        return new String();
+    }
+
+    /**
+     * Convert a Model cell to one that can be used in the UI
+     * 
+     * @param cell
+     * @return
+     */
+    @Override
+    public CellValue< ? extends Comparable< ? >> convertModelCellValue(TemplateDataColumn column,
+                                                                       String dcv) {
+
+        DTDataTypes52 dataType = getDataType( column );
+        CellValue< ? extends Comparable< ? >> cell = null;
+
+        switch ( dataType ) {
+            case BOOLEAN :
+                Boolean b = Boolean.FALSE;
+                try {
+                    b = Boolean.valueOf( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewBooleanCellValue( b );
+                break;
+            case DATE :
+                Date d = null;
+                try {
+                    if ( DATE_CONVERTOR == null ) {
+                        throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                    }
+                    d = DATE_CONVERTOR.parse( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewDateCellValue( d );
+                break;
+            case NUMERIC :
+                BigDecimal bd = null;
+                try {
+                    bd = new BigDecimal( dcv );
+                } catch ( Exception e ) {
+                }
+                cell = makeNewNumericCellValue( bd );
+                break;
+            default :
+                cell = makeNewStringCellValue( dcv );
+        }
+
+        return cell;
+    }
+
+    /**
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public List<String> makeRowData() {
+        List<String> data = new ArrayList<String>();
+        InterpolationVariable[] variables = model.getInterpolationVariablesList();
+        for ( InterpolationVariable var : variables ) {
+            TemplateDataColumn column = makeModelColumn( var );
+            String cell = makeModelCellValue( column );
+            data.add( cell );
+        }
+        return data;
+    }
+
+    //Convert an interpolation variable to a column
+    private TemplateDataColumn makeModelColumn(InterpolationVariable var) {
+        return new TemplateDataColumn( var.getVarName(),
+                                       var.getDataType(),
+                                       var.getFactType(),
+                                       var.getFactField() );
+    }
+
+    /**
+     * Convert a row of the underlying model into a row for use in the UI
+     * 
+     * @param row
+     *            A row of model data
+     * @return
+     */
+    public List<CellValue< ? extends Comparable< ? >>> convertRowData(List<String> row) {
+        List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        InterpolationVariable[] variables = model.getInterpolationVariablesList();
+        for ( int iCol = 0; iCol < variables.length; iCol++ ) {
+            String dcv = row.get( iCol );
+            InterpolationVariable var = variables[iCol];
+            TemplateDataColumn column = makeModelColumn( var );
+            CellValue< ? extends Comparable< ? >> cv = convertModelCellValue( column,
+                                                                              dcv );
+            data.add( cv );
+        }
+        return data;
     }
 
 }
