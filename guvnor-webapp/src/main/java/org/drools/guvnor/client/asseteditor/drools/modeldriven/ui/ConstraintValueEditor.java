@@ -106,7 +106,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else if ( con instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) con;
             fieldName = cc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
             }
             this.fieldName = fieldName;
@@ -116,7 +116,7 @@ public class ConstraintValueEditor extends DirtyableComposite {
         } else {
             this.qualifiedFieldName = fieldName;
             String factType = pattern.getFactType();
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
                                                 index );

@@ -339,7 +339,7 @@ public class SuggestionCompletionEngine
                 if ( con instanceof SingleFieldConstraint ) {
                     SingleFieldConstraint sfc = (SingleFieldConstraint) con;
                     String fieldName = sfc.getFieldName();
-                    if ( fieldName.contains( "." ) ) {
+                    if ( fieldName != null && fieldName.contains( "." ) ) {
                         fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                     }
                     currentValueMap.put( fieldName,
