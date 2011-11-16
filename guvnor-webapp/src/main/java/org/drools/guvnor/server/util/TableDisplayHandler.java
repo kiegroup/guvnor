@@ -128,11 +128,11 @@ public class TableDisplayHandler {
         return result;
     }
 
-    private List<TableDataRow> loadRows(Iterator<AssetItem> it, int numRows) {
+    private List<TableDataRow> loadRows(Iterator<AssetItem> iterator, int numRows) {
         List<TableDataRow> data = new ArrayList<TableDataRow>();
 
-        for (Iterator<AssetItem> iter = it; iter.hasNext(); ) {
-            AssetItem r = iter.next();
+        while(iterator.hasNext()){
+            AssetItem r = iterator.next();
             TableDataRow row = new TableDataRow();
 
             row.id = r.getUUID();

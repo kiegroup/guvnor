@@ -854,7 +854,7 @@ public class RepositoryPackageService
     //more likely would) be different than those expected. We can't use the *real* Work Item Handler as we 
     //have no control what code it executes unless we look into using SecurityManagers...
     private WorkItemHandler getWorkItemHandlerStub() {
-        WorkItemHandler wih = new WorkItemHandler() {
+        return new WorkItemHandler() {
 
             public void executeWorkItem(WorkItem workItem,
                                         WorkItemManager manager) {
@@ -866,8 +866,6 @@ public class RepositoryPackageService
             }
 
         };
-        return wih;
-
     }
 
 }

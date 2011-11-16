@@ -218,11 +218,7 @@ abstract class PackageAssemblerBase extends AssemblerBase {
      * @return
      */
     public boolean isPackageConfigurationInError() {
-        if ( errorLogger.hasErrors() ) {
-            return this.errorLogger.getErrors().get( 0 ).isPackageItem();
-        } else {
-            return false;
-        }
+        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isPackageItem();
     }
 
     private void addDrl(String drl) throws IOException,

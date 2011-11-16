@@ -91,10 +91,9 @@ public abstract class ContentHandler {
     private String findKeyforValue(HashMap<String, String> catRules,
                                    String catToFind) {
         for (Map.Entry<String, String> stringStringEntry : catRules.entrySet()) {
-            Map.Entry entry = stringStringEntry;
             //Found rule name that should be used to extend current rule as defined in the Category Rule
-            if (entry.getValue().equals(catToFind)) {
-                return (String) entry.getKey();
+            if (stringStringEntry.getValue().equals(catToFind)) {
+                return (String) stringStringEntry.getKey();
             }
         }
         return "";
