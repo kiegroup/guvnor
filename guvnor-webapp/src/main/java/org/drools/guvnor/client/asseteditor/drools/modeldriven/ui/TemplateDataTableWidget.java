@@ -29,8 +29,10 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
@@ -49,7 +51,8 @@ public class TemplateDataTableWidget extends Composite
     //TODO {manstis} HasColumns<T>,
     HasColumns<TemplateDataColumn>,
     InsertRowEvent.Handler,
-    DeleteRowEvent.Handler {
+    DeleteRowEvent.Handler,
+    AppendRowEvent.Handler {
 
     // Decision Table data
     protected TemplateModel                                      model;
@@ -90,6 +93,14 @@ public class TemplateDataTableWidget extends Composite
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
+        //Wire-up event handlers
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+
         initWidget( widget );
     }
 
@@ -104,31 +115,16 @@ public class TemplateDataTableWidget extends Composite
                    true );
     }
 
-    /**
-     * Append a row to the end of the table
-     */
     public void appendRow() {
-        List<String> data = cellValueFactory.makeRowData();
-        appendRow( data );
-    }
-
-    /**
-     * Append an empty row to the end of the table
-     * 
-     * @param data
-     *            The row's data
-     */
-    public void appendRow(List<String> data) {
-        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
-        model.addRow( data.toArray( new String[data.size()] ) );
-        widget.appendRow( uiData );
+        AppendRowEvent are = new AppendRowEvent();
+        eventBus.fireEvent( are );
     }
 
     /**
      * Get the number of rows
      */
-    public int rowCount() {
-        return this.model.getRowsCount();
+    public List<List<String>> getRows() {
+        return this.model.getTableAsList();
     }
 
     /**
@@ -143,45 +139,6 @@ public class TemplateDataTableWidget extends Composite
         DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
         widget.deleteColumn( col,
                              true );
-    }
-
-    /**
-     * Delete a row
-     */
-    public void deleteRow(int index) {
-        model.removeRow( index );
-        widget.deleteRow( index );
-    }
-
-    /**
-     * Insert an empty row before the given row
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     */
-    public void insertRowBefore(int index) {
-        List<String> data = cellValueFactory.makeRowData();
-        insertRowBefore( index,
-                         data );
-    }
-
-    /**
-     * Insert an empty row before the given row
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     * @param data
-     *            The row's data
-     */
-    public void insertRowBefore(int index,
-                                List<String> data) {
-        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
-        model.addRow( Integer.toString( index ),
-                      data.toArray( new String[data.size()] ) );
-        widget.insertRowBefore( index,
-                                uiData );
     }
 
     /**
@@ -213,6 +170,7 @@ public class TemplateDataTableWidget extends Composite
                                                         widget );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce,
                                                                   model );
+        this.widget.setCellValueFactory( cellValueFactory );
 
         //Get interpolation variables
         InterpolationVariable[] vars = model.getInterpolationVariablesList();
@@ -233,7 +191,7 @@ public class TemplateDataTableWidget extends Composite
         String[][] data = model.getTableAsArray();
         final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
         for ( int iRow = 0; iRow < data.length; iRow++ ) {
-            List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+            DynamicDataRow row = new DynamicDataRow();
             String[] rowData = data[iRow];
             for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
                 TemplateDataColumn col = columns.get( iCol ).getModelColumn();
@@ -247,10 +205,10 @@ public class TemplateDataTableWidget extends Composite
                                                                                                    initialValue );
                 row.add( cv );
             }
-            widget.appendRow( row );
+//            widget.appendRow( row );
         }
 
-        // Schedule redraw of grid after sizes of child Elements have been set
+        // Schedule redraw
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             public void execute() {
@@ -347,11 +305,18 @@ public class TemplateDataTableWidget extends Composite
     }
 
     public void onDeleteRow(DeleteRowEvent event) {
-        deleteRow( event.getIndex() );
+        model.removeRow( event.getIndex() );
     }
 
     public void onInsertRow(InsertRowEvent event) {
-        insertRowBefore( event.getIndex() );
+        List<String> data = cellValueFactory.makeRowData();
+        model.addRow( Integer.toString( event.getIndex() ),
+                      data.toArray( new String[data.size()] ) );
+    }
+
+    public void onAppendRow(AppendRowEvent event) {
+        List<String> data = cellValueFactory.makeRowData();
+        model.addRow( data.toArray( new String[data.size()] ) );
     }
 
 }

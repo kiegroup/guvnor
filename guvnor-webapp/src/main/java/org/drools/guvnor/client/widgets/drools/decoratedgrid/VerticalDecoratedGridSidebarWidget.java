@@ -16,8 +16,9 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
-import java.util.List;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
@@ -52,9 +53,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
      * Widget to render selectors beside rows. Two selectors are provided per
      * row: (1) A "add new row (above selected)" and (2) "delete row".
      */
-    private class VerticalSelectorWidget extends CellPanel
-        implements
-        HasRows<List<CellValue< ? extends Comparable< ? >>>> {
+    private class VerticalSelectorWidget extends CellPanel {
 
         // Widgets (selectors) created (so they can be removed later)
         private ArrayList<Widget> widgets = new ArrayList<Widget>();
@@ -66,8 +65,9 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
         }
 
         // Append a row to the end
-        public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
+        public void appendRow() {
 
+            //UI Components
             Element tre = DOM.createTR();
             Element tce = DOM.createTD();
             tre.setClassName( getRowStyle( widgets.size() ) );
@@ -78,19 +78,18 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
                              tre );
             tre.appendChild( tce );
 
-            int index = widgets.size();
-            Widget widget = makeRowWidget( index );
+            Widget widget = makeRowWidget();
             add( widget,
                  tce );
 
             widgets.add( widget );
-            fixStyles( index );
+            fixStyles( widgets.size() );
         }
 
         // Insert a new row before the given index
-        public void insertRowBefore(int index,
-                                    List<CellValue< ? extends Comparable< ? >>> data) {
+        public void insertRowBefore(int index) {
 
+            //UI Components
             Element tre = DOM.createTR();
             Element tce = DOM.createTD();
             tre.setClassName( getRowStyle( widgets.size() ) );
@@ -102,7 +101,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
                              index );
             tre.appendChild( tce );
 
-            Widget widget = makeRowWidget( index );
+            Widget widget = makeRowWidget();
             add( widget,
                  tce );
 
@@ -113,28 +112,26 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
         // Delete a row at the given index
         public void deleteRow(int index) {
+
+            //UI Components
             Widget widget = widgets.get( index );
             remove( widget );
             getBody().<TableSectionElement> cast().deleteRow( index );
+
             widgets.remove( index );
             fixStyles( index );
-        }
-
-        // Get the number of rows
-        public int rowCount() {
-            return this.widgets.size();
         }
 
         // Redraw sidebar with the given number of rows
         private void redraw() {
             //Remove existing
-            int totalRows = widgets.size();
-            for ( int iRow = 0; iRow < totalRows; iRow++ ) {
+            final int rowsToRemove = widgets.size();
+            for ( int iRow = 0; iRow < rowsToRemove; iRow++ ) {
                 deleteRow( 0 );
             }
             //Add selector for each row
-            for ( int iRow = 0; iRow < hasRows.rowCount(); iRow++ ) {
-                appendRow( null );
+            for ( int iRow = 0; iRow < hasRows.getRows().size(); iRow++ ) {
+                appendRow();
             }
 
         }
@@ -156,9 +153,9 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
         }
 
         // Make the selector Widget
-        private Widget makeRowWidget(final int index) {
+        private Widget makeRowWidget() {
 
-            HorizontalPanel hp = new HorizontalPanel();
+            final HorizontalPanel hp = new HorizontalPanel();
             hp.setVerticalAlignment( VerticalPanel.ALIGN_MIDDLE );
             hp.setHorizontalAlignment( HorizontalPanel.ALIGN_CENTER );
             hp.setWidth( "100%" );
@@ -172,6 +169,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
                 public void onClick(ClickEvent event) {
                     //Raise an event to add row
+                    int index = hasRows.getRowMapper().mapToAbsoluteRow( widgets.indexOf( hp ) );
                     InsertRowEvent ire = new InsertRowEvent( index );
                     eventBus.fireEvent( ire );
                 }
@@ -187,6 +185,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
                 public void onClick(ClickEvent event) {
                     //Raise an event to delete row
+                    int index = hasRows.getRowMapper().mapToAbsoluteRow( widgets.indexOf( hp ) );
                     DeleteRowEvent ire = new DeleteRowEvent( index );
                     eventBus.fireEvent( ire );
                 }
@@ -297,7 +296,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
      */
     public VerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
                                               EventBus eventBus,
-                                              HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows) {
+                                              HasGroupedRows<DynamicDataRow> hasRows) {
         // Argument validation performed in the superclass constructor
         super( resources,
                eventBus,
@@ -317,27 +316,6 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
         initWidget( container );
 
-    }
-
-    public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
-        selectors.appendRow( data );
-    }
-
-    public void insertRowBefore(int index,
-                                List<CellValue< ? extends Comparable< ? >>> data) {
-        selectors.insertRowBefore( index,
-                                   data );
-    }
-
-    public void deleteRow(int index) {
-        selectors.deleteRow( index );
-    }
-
-    /**
-     * Get the number of rows
-     */
-    public int rowCount() {
-        return this.selectors.rowCount();
     }
 
     @Override
@@ -367,6 +345,20 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
     @Override
     void redraw() {
         selectors.redraw();
+    }
+
+    public void onDeleteRow(DeleteRowEvent event) {
+        int index = hasRows.getRowMapper().mapToMergedRow( event.getIndex() );
+        selectors.deleteRow( index );
+    }
+
+    public void onInsertRow(InsertRowEvent event) {
+        int index = hasRows.getRowMapper().mapToMergedRow( event.getIndex() );
+        selectors.insertRowBefore( index );
+    }
+
+    public void onAppendRow(AppendRowEvent event) {
+        selectors.appendRow();
     }
 
 }

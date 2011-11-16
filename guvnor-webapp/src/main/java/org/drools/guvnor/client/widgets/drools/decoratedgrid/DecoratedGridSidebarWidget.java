@@ -15,7 +15,10 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import java.util.List;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -27,16 +30,14 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class DecoratedGridSidebarWidget<T> extends Composite
     implements
-    HasRows<List<CellValue< ? extends Comparable< ? >>>> {
+    DeleteRowEvent.Handler,
+    InsertRowEvent.Handler,
+    AppendRowEvent.Handler {
 
-    protected HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows;
-
-    protected AbstractCellValueFactory<T, ? >                      cellValueFactory;
-
-    // Resources
-    protected ResourcesProvider<T>                                 resources;
-
-    protected EventBus                                             eventBus;
+    protected HasGroupedRows<DynamicDataRow>    hasRows;
+    protected AbstractCellValueFactory< ? , ? > cellValueFactory;
+    protected ResourcesProvider<T>              resources;
+    protected EventBus                          eventBus;
 
     /**
      * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar
@@ -49,7 +50,7 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
      */
     public DecoratedGridSidebarWidget(ResourcesProvider<T> resources,
                                       EventBus eventBus,
-                                      HasRows<List<CellValue< ? extends Comparable< ? >>>> hasRows) {
+                                      HasGroupedRows<DynamicDataRow> hasRows) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
         }
@@ -62,6 +63,14 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
         this.resources = resources;
         this.eventBus = eventBus;
         this.hasRows = hasRows;
+
+        //Wire-up event handlers
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
     }
 
     /**
@@ -84,5 +93,9 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
      * addSelector for each row in the grid's data
      */
     abstract void redraw();
+
+    public void setCellValueFactory(AbstractCellValueFactory< ? , ? > cellValueFactory) {
+        this.cellValueFactory = cellValueFactory;
+    }
 
 }

@@ -24,6 +24,7 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeW
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemCol52;
 import org.drools.ide.common.client.modeldriven.dt52.ActionWorkItemInsertFactCol52;
@@ -63,80 +64,44 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         this.model = model;
     }
 
-    //If the Decision Table model has been converted from the legacy text based
-    //class then all values are held in the DTCellValue's StringValue. This
-    //function attempts to set the correct DTCellValue property based on
-    //the DTCellValue's data type.
-    private void assertDTCellValue(DTDataTypes52 dataType,
-                                   DTCellValue52 dcv) {
-        //If already converted exit
-        if ( dcv.getDataType().equals( dataType ) ) {
-            return;
+    /**
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public List<DTCellValue52> makeRowData() {
+        List<DTCellValue52> data = new ArrayList<DTCellValue52>();
+        List<DTColumnConfig52> columns = model.getAllColumns();
+        for ( DTColumnConfig52 column : columns ) {
+            DTCellValue52 cell = makeModelCellValue( column );
+            data.add( cell );
         }
-
-        String text = dcv.getStringValue();
-        switch ( dataType ) {
-            case BOOLEAN :
-                dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
-                break;
-            case DATE :
-                Date d = null;
-                try {
-                    if ( text != null ) {
-                        if ( DATE_CONVERTOR == null ) {
-                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
-                        }
-                        d = DATE_CONVERTOR.parse( text );
-                    }
-                } catch ( IllegalArgumentException e ) {
-                }
-                dcv.setDateValue( d );
-                break;
-            case NUMERIC :
-                BigDecimal bd = null;
-                try {
-                    if ( text != null ) {
-                        bd = new BigDecimal( text );
-                    }
-                } catch ( NumberFormatException e ) {
-                }
-                dcv.setNumericValue( bd );
-                break;
-        }
-
+        return data;
     }
 
-    // Get the Data Type corresponding to a given column
-    protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
-
-        //Limited Entry are simply boolean
-        if ( column instanceof LimitedEntryCol ) {
-            return DTDataTypes52.BOOLEAN;
+    /**
+     * Construct a new row of data for the MergableGridWidget
+     * 
+     * @param cell
+     * @return
+     */
+    @Override
+    public DynamicDataRow makeUIRowData() {
+        DynamicDataRow data = new DynamicDataRow();
+        List<DTColumnConfig52> columns = model.getAllColumns();
+        for ( DTColumnConfig52 column : columns ) {
+            DTCellValue52 dcv = makeModelCellValue( column );
+            DTDataTypes52 dataType = getDataType( column );
+            assertDTCellValue( dataType,
+                               dcv );
+            CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
+                                                                                dcv );
+            data.add( cell );
         }
 
-        //Action Work Items are always boolean
-        if ( column instanceof ActionWorkItemCol52 ) {
-            return DTDataTypes52.BOOLEAN;
-        }
-
-        //Actions setting Field Values from Work Item Result Parameters are always boolean
-        if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
-            return DTDataTypes52.BOOLEAN;
-        }
-
-        //Operators "is null" and "is not null" require a boolean cell
-        if ( column instanceof ConditionCol52 ) {
-            ConditionCol52 cc = (ConditionCol52) column;
-            if ( cc.getOperator() != null && (cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" )) ) {
-                return DTDataTypes52.BOOLEAN;
-            }
-        }
-
-        //Extended Entry...
-        return model.getTypeSafeType( column,
-                                      sce );
+        return data;
     }
-    
+
     /**
      * Make a Model cell for the given column
      * 
@@ -151,7 +116,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                            dcv );
         return dcv;
     }
-
 
     /**
      * Convert a Model cell to one that can be used in the UI
@@ -206,39 +170,78 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return cell;
     }
 
-    /**
-     * Construct a new row of data for the underlying model
-     * 
-     * @return
-     */
-    public List<DTCellValue52> makeRowData() {
-        List<DTCellValue52> data = new ArrayList<DTCellValue52>();
-        List<DTColumnConfig52> columns = model.getAllColumns();
-        for ( DTColumnConfig52 column : columns ) {
-            DTCellValue52 cell = makeModelCellValue( column );
-            data.add( cell );
+    // Get the Data Type corresponding to a given column
+    protected DTDataTypes52 getDataType(DTColumnConfig52 column) {
+
+        //Limited Entry are simply boolean
+        if ( column instanceof LimitedEntryCol ) {
+            return DTDataTypes52.BOOLEAN;
         }
-        return data;
+
+        //Action Work Items are always boolean
+        if ( column instanceof ActionWorkItemCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
+        //Actions setting Field Values from Work Item Result Parameters are always boolean
+        if ( column instanceof ActionWorkItemSetFieldCol52 || column instanceof ActionWorkItemInsertFactCol52 ) {
+            return DTDataTypes52.BOOLEAN;
+        }
+
+        //Operators "is null" and "is not null" require a boolean cell
+        if ( column instanceof ConditionCol52 ) {
+            ConditionCol52 cc = (ConditionCol52) column;
+            if ( cc.getOperator() != null && (cc.getOperator().equals( "== null" ) || cc.getOperator().equals( "!= null" )) ) {
+                return DTDataTypes52.BOOLEAN;
+            }
+        }
+
+        //Extended Entry...
+        return model.getTypeSafeType( column,
+                                      sce );
     }
 
-    /**
-     * Convert a row of the underlying model into a row for use in the UI
-     * 
-     * @param row
-     *            A row of model data
-     * @return
-     */
-    public List<CellValue< ? extends Comparable< ? >>> convertRowData(List<DTCellValue52> row) {
-        List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        List<DTColumnConfig52> columns = model.getAllColumns();
-        for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-            DTCellValue52 dcv = row.get( iCol );
-            DTColumnConfig52 column = columns.get( iCol );
-            CellValue< ? extends Comparable< ? >> cv = convertModelCellValue( column,
-                                                                              dcv );
-            data.add( cv );
+    //If the Decision Table model has been converted from the legacy text based
+    //class then all values are held in the DTCellValue's StringValue. This
+    //function attempts to set the correct DTCellValue property based on
+    //the DTCellValue's data type.
+    private void assertDTCellValue(DTDataTypes52 dataType,
+                                   DTCellValue52 dcv) {
+        //If already converted exit
+        if ( dcv.getDataType().equals( dataType ) ) {
+            return;
         }
-        return data;
+
+        String text = dcv.getStringValue();
+        switch ( dataType ) {
+            case BOOLEAN :
+                dcv.setBooleanValue( (text == null ? null : Boolean.valueOf( text )) );
+                break;
+            case DATE :
+                Date d = null;
+                try {
+                    if ( text != null ) {
+                        if ( DATE_CONVERTOR == null ) {
+                            throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+                        }
+                        d = DATE_CONVERTOR.parse( text );
+                    }
+                } catch ( IllegalArgumentException e ) {
+                }
+                dcv.setDateValue( d );
+                break;
+            case NUMERIC :
+                BigDecimal bd = null;
+                try {
+                    if ( text != null ) {
+                        bd = new BigDecimal( text );
+                    }
+                } catch ( NumberFormatException e ) {
+                }
+                dcv.setNumericValue( bd );
+                break;
+        }
+
     }
 
     protected CellValue<BigDecimal> makeNewRowNumberCellValue() {

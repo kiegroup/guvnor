@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellValueFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
@@ -50,41 +51,41 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         this.model = model;
     }
 
-    // Get the Data Type corresponding to a given column
-    protected DTDataTypes52 getDataType(TemplateDataColumn column) {
+    /**
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public List<String> makeRowData() {
+        List<String> data = new ArrayList<String>();
+        InterpolationVariable[] variables = model.getInterpolationVariablesList();
+        for ( InterpolationVariable var : variables ) {
+            TemplateDataColumn column = makeModelColumn( var );
+            String dcv = makeModelCellValue( column );
+            data.add( dcv );
+        }
+        return data;
+    }
 
-        // Columns with lists of values, enums etc are always Text (for now)
-        String[] vals = null;
-        String factType = column.getFactType();
-        String factField = column.getFactField();
-
-        //Strip field name, if it is fully qualified
-        if ( factField != null ) {
-            if ( factField.contains( "." ) ) {
-                factField = factField.substring( factField.indexOf( "." ) + 1 );
-            }
-
-            //Check for enumerations
-            if ( factType != null ) {
-                vals = sce.getEnumValues( factType,
-                                          factField );
-                if ( vals != null && vals.length > 0 ) {
-                    return DTDataTypes52.STRING;
-                }
-            }
+    /**
+     * Construct a new row of data for the MergableGridWidget
+     * 
+     * @param cell
+     * @return
+     */
+    @Override
+    public DynamicDataRow makeUIRowData() {
+        DynamicDataRow data = new DynamicDataRow();
+        InterpolationVariable[] variables = model.getInterpolationVariablesList();
+        for ( InterpolationVariable var : variables ) {
+            TemplateDataColumn column = makeModelColumn( var );
+            String dcv = makeModelCellValue( column );
+            CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
+                                                                                dcv );
+            data.add( cell );
         }
 
-        //Otherwise use data type extracted from model
-        String dataType = column.getDataType();
-        if ( dataType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
-            return DTDataTypes52.BOOLEAN;
-        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
-            return DTDataTypes52.DATE;
-        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
-            return DTDataTypes52.NUMERIC;
-        } else {
-            return DTDataTypes52.STRING;
-        }
+        return data;
     }
 
     /**
@@ -146,20 +147,41 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
         return cell;
     }
 
-    /**
-     * Construct a new row of data for the underlying model
-     * 
-     * @return
-     */
-    public List<String> makeRowData() {
-        List<String> data = new ArrayList<String>();
-        InterpolationVariable[] variables = model.getInterpolationVariablesList();
-        for ( InterpolationVariable var : variables ) {
-            TemplateDataColumn column = makeModelColumn( var );
-            String cell = makeModelCellValue( column );
-            data.add( cell );
+    // Get the Data Type corresponding to a given column
+    protected DTDataTypes52 getDataType(TemplateDataColumn column) {
+
+        // Columns with lists of values, enums etc are always Text (for now)
+        String[] vals = null;
+        String factType = column.getFactType();
+        String factField = column.getFactField();
+
+        //Strip field name, if it is fully qualified
+        if ( factField != null ) {
+            if ( factField.contains( "." ) ) {
+                factField = factField.substring( factField.indexOf( "." ) + 1 );
+            }
+
+            //Check for enumerations
+            if ( factType != null ) {
+                vals = sce.getEnumValues( factType,
+                                          factField );
+                if ( vals != null && vals.length > 0 ) {
+                    return DTDataTypes52.STRING;
+                }
+            }
         }
-        return data;
+
+        //Otherwise use data type extracted from model
+        String dataType = column.getDataType();
+        if ( dataType.equals( SuggestionCompletionEngine.TYPE_BOOLEAN ) ) {
+            return DTDataTypes52.BOOLEAN;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_DATE ) ) {
+            return DTDataTypes52.DATE;
+        } else if ( dataType.equals( SuggestionCompletionEngine.TYPE_NUMERIC ) ) {
+            return DTDataTypes52.NUMERIC;
+        } else {
+            return DTDataTypes52.STRING;
+        }
     }
 
     //Convert an interpolation variable to a column
@@ -168,27 +190,6 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                                        var.getDataType(),
                                        var.getFactType(),
                                        var.getFactField() );
-    }
-
-    /**
-     * Convert a row of the underlying model into a row for use in the UI
-     * 
-     * @param row
-     *            A row of model data
-     * @return
-     */
-    public List<CellValue< ? extends Comparable< ? >>> convertRowData(List<String> row) {
-        List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        InterpolationVariable[] variables = model.getInterpolationVariablesList();
-        for ( int iCol = 0; iCol < variables.length; iCol++ ) {
-            String dcv = row.get( iCol );
-            InterpolationVariable var = variables[iCol];
-            TemplateDataColumn column = makeModelColumn( var );
-            CellValue< ? extends Comparable< ? >> cv = convertModelCellValue( column,
-                                                                              dcv );
-            data.add( cv );
-        }
-        return data;
     }
 
 }

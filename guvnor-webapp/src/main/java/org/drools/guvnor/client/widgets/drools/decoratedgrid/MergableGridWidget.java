@@ -28,6 +28,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasRowGroupingChangeHandlers;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasSelectedCellChangeHandlers;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
@@ -35,6 +36,9 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingC
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -57,12 +61,15 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class MergableGridWidget<T> extends Widget
     implements
-    HasRows<List<CellValue< ? extends Comparable< ? >>>>,
+    HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
     HasSelectedCellChangeHandlers,
     HasRowGroupingChangeHandlers,
-    ToggleMergingEvent.Handler {
+    ToggleMergingEvent.Handler,
+    DeleteRowEvent.Handler,
+    InsertRowEvent.Handler,
+    AppendRowEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -166,15 +173,17 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     // Data and columns to render
-    protected List<DynamicColumn<T>> columns              = new ArrayList<DynamicColumn<T>>();
-    protected DynamicData            data                 = new DynamicData();
+    protected List<DynamicColumn<T>>          columns              = new ArrayList<DynamicColumn<T>>();
+    protected DynamicData                     data                 = new DynamicData();
+    protected RowMapper                       rowMapper            = new RowMapper( data );
+    protected AbstractCellValueFactory<T, ? > cellValueFactory;
 
     //Properties for multi-cell selection
-    protected CellValue< ? >         rangeOriginCell;
-    protected CellValue< ? >         rangeExtentCell;
+    protected CellValue< ? >                  rangeOriginCell;
+    protected CellValue< ? >                  rangeExtentCell;
 
-    protected MOVE_DIRECTION         rangeDirection       = MOVE_DIRECTION.NONE;
-    protected boolean                bDragOperationPrimed = false;
+    protected MOVE_DIRECTION                  rangeDirection       = MOVE_DIRECTION.NONE;
+    protected boolean                         bDragOperationPrimed = false;
 
     /**
      * A grid of cells.
@@ -218,6 +227,12 @@ public abstract class MergableGridWidget<T> extends Widget
 
         //Wire-up events
         eventBus.addHandler( ToggleMergingEvent.TYPE,
+                             this );
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
     }
 
@@ -279,41 +294,6 @@ public abstract class MergableGridWidget<T> extends Widget
             redraw();
             if ( bRedrawSidebar ) {
                 RowGroupingChangeEvent.fire( this );
-            }
-        }
-
-    }
-
-    /**
-     * Delete the given row. Partial redraw.
-     * 
-     * @param index
-     *            The index of the row to delete
-     */
-    public void deleteRow(int index) {
-
-        // Clear any selections
-        clearSelection();
-
-        //Delete row data
-        data.deleteRow( index );
-
-        // Partial redraw
-        if ( !data.isMerged() ) {
-            // Single row when not merged
-            removeRowElement( index );
-        } else {
-            // Affected rows when merged
-            removeRowElement( index );
-
-            if ( data.size() > 0 ) {
-                int minRedrawRow = findMinRedrawRow( index - 1 );
-                int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
-                if ( maxRedrawRow > data.size() - 1 ) {
-                    maxRedrawRow = data.size() - 1;
-                }
-                redrawRows( minRedrawRow,
-                            maxRedrawRow );
             }
         }
 
@@ -406,74 +386,14 @@ public abstract class MergableGridWidget<T> extends Widget
     }
 
     /**
-     * Append a row to the end of the table. Partial redraw.
-     * 
-     * @param rowData
-     *            The row of data to insert
+     * Get the rows
      */
-    public void appendRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
-        int index = data.size();
-        insertRowBefore( index,
-                         rowData );
-    }
-
-    /**
-     * Insert the given row before the provided index. Partial redraw.
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     * @param rowData
-     *            The row of data to insert
-     */
-    public void insertRowBefore(int index,
-                                List<CellValue< ? extends Comparable< ? >>> rowData) {
-
-        if ( rowData == null ) {
-            throw new IllegalArgumentException( "Row data cannot be null" );
+    public List<DynamicDataRow> getRows() {
+        List<DynamicDataRow> rows = new ArrayList<DynamicDataRow>();
+        for ( DynamicDataRow row : this.data ) {
+            rows.add( row );
         }
-        if ( rowData.size() != columns.size() ) {
-            throw new IllegalArgumentException( "rowData contains a different number of columns to the grid" );
-        }
-
-        // Clear any selections
-        clearSelection();
-
-        // Find rows that need to be (re)drawn
-        int minRedrawRow = index;
-        int maxRedrawRow = index;
-        if ( data.isMerged() ) {
-            if ( index < data.size() ) {
-                minRedrawRow = findMinRedrawRow( index );
-                maxRedrawRow = findMaxRedrawRow( index ) + 1;
-            } else {
-                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
-                maxRedrawRow = index;
-            }
-        }
-
-        DynamicDataRow row = data.addRow( index,
-                                          rowData );
-
-        // Partial redraw
-        if ( !data.isMerged() ) {
-            // Only new row when not merged
-            createRowElement( index,
-                              row );
-        } else {
-            // Affected rows when merged
-            createEmptyRowElement( index );
-            redrawRows( minRedrawRow,
-                        maxRedrawRow );
-        }
-
-    }
-
-    /**
-     * Get the number of rows
-     */
-    public int rowCount() {
-        return this.data.size();
+        return rows;
     }
 
     /**
@@ -701,7 +621,7 @@ public abstract class MergableGridWidget<T> extends Widget
 
     //Get the next cell when selection moves in the specified direction
     private Coordinate getNextCell(Coordinate c,
-                                    MOVE_DIRECTION dir) {
+                                   MOVE_DIRECTION dir) {
 
         int step = 0;
         Coordinate nc = c;
@@ -713,15 +633,13 @@ public abstract class MergableGridWidget<T> extends Widget
                 step = c.getCol() > 0 ? 1 : 0;
                 if ( step > 0 ) {
                     nc = new Coordinate( c.getRow(),
-                                         c.getCol()
-                                                 - step );
+                                         c.getCol() - step );
 
                     // Skip hidden columns
                     while ( nc.getCol() > 0
                             && !columns.get( nc.getCol() ).isVisible() ) {
                         nc = new Coordinate( c.getRow(),
-                                             nc.getCol()
-                                                     - step );
+                                             nc.getCol() - step );
                     }
 
                     //Move to top of a merged cells
@@ -740,15 +658,13 @@ public abstract class MergableGridWidget<T> extends Widget
                 step = c.getCol() < columns.size() - 1 ? 1 : 0;
                 if ( step > 0 ) {
                     nc = new Coordinate( c.getRow(),
-                                         c.getCol()
-                                                 + step );
+                                         c.getCol() + step );
 
                     // Skip hidden columns
                     while ( nc.getCol() < columns.size() - 2
                             && !columns.get( nc.getCol() ).isVisible() ) {
                         nc = new Coordinate( c.getRow(),
-                                             nc.getCol()
-                                                     + step );
+                                             nc.getCol() + step );
                     }
 
                     //Move to top of a merged cells
@@ -766,8 +682,7 @@ public abstract class MergableGridWidget<T> extends Widget
                 // Move up
                 step = c.getRow() > 0 ? 1 : 0;
                 if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow()
-                                                 - step,
+                    nc = new Coordinate( c.getRow() - step,
                                          c.getCol() );
 
                     //Move to top of a merged cells
@@ -785,8 +700,7 @@ public abstract class MergableGridWidget<T> extends Widget
                 // Move down
                 step = c.getRow() < data.size() - 1 ? 1 : 0;
                 if ( step > 0 ) {
-                    nc = new Coordinate( c.getRow()
-                                                 + step,
+                    nc = new Coordinate( c.getRow() + step,
                                          c.getCol() );
 
                     //Move to top of a merged cells
@@ -1117,6 +1031,93 @@ public abstract class MergableGridWidget<T> extends Widget
 
     public void onToggleMerging(ToggleMergingEvent event) {
         setMerging( event.isMerged() );
+    }
+
+    public void onDeleteRow(DeleteRowEvent event) {
+        int index = rowMapper.mapToMergedRow( event.getIndex() );
+
+        // Clear any selections
+        clearSelection();
+
+        //Delete row data
+        data.deleteRow( index );
+
+        // Partial redraw
+        if ( !data.isMerged() ) {
+            // Single row when not merged
+            removeRowElement( index );
+        } else {
+            // Affected rows when merged
+            removeRowElement( index );
+
+            if ( data.size() > 0 ) {
+                int minRedrawRow = findMinRedrawRow( index - 1 );
+                int maxRedrawRow = findMaxRedrawRow( index - 1 ) + 1;
+                if ( maxRedrawRow > data.size() - 1 ) {
+                    maxRedrawRow = data.size() - 1;
+                }
+                redrawRows( minRedrawRow,
+                            maxRedrawRow );
+            }
+        }
+    }
+
+    public void onInsertRow(InsertRowEvent event) {
+        int index = rowMapper.mapToMergedRow( event.getIndex() );
+        DynamicDataRow rowData = cellValueFactory.makeUIRowData();
+        insertRow( index,
+                   rowData );
+    }
+
+    public void onAppendRow(AppendRowEvent event) {
+        int index = data.size();
+        DynamicDataRow rowData = cellValueFactory.makeUIRowData();
+        insertRow( index,
+                   rowData );
+    }
+
+    private void insertRow(int index,
+                           DynamicDataRow rowData) {
+
+        // Clear any selections
+        clearSelection();
+
+        // Find rows that need to be (re)drawn
+        int minRedrawRow = index;
+        int maxRedrawRow = index;
+        if ( data.isMerged() ) {
+            if ( index < data.size() ) {
+                minRedrawRow = findMinRedrawRow( index );
+                maxRedrawRow = findMaxRedrawRow( index ) + 1;
+            } else {
+                minRedrawRow = findMinRedrawRow( (index > 0 ? index - 1 : index) );
+                maxRedrawRow = index;
+            }
+        }
+
+        data.addRow( index,
+                     rowData );
+
+        // Partial redraw
+        if ( !data.isMerged() ) {
+            // Only new row when not merged
+            createRowElement( index,
+                              rowData );
+        } else {
+            // Affected rows when merged
+            createEmptyRowElement( index );
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
+        }
+
+    }
+
+    public void setCellValueFactory(AbstractCellValueFactory<T, ? > cellValueFactory) {
+        this.cellValueFactory = cellValueFactory;
+    }
+
+    public RowMapper getRowMapper() {
+        return this.rowMapper;
     }
 
 }

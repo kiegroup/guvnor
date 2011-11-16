@@ -36,6 +36,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -74,7 +75,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasColumns<DTColumnConfig52>,
     HasSystemControlledColumns,
     InsertRowEvent.Handler,
-    DeleteRowEvent.Handler {
+    DeleteRowEvent.Handler,
+    AppendRowEvent.Handler {
 
     // Decision Table data
     protected GuidedDecisionTable52                       model;
@@ -114,6 +116,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.addHandler( InsertRowEvent.TYPE,
                              this );
         eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
     }
 
@@ -156,6 +160,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              bRedraw );
     }
 
+    public void appendRow() {
+        AppendRowEvent are = new AppendRowEvent();
+        eventBus.fireEvent( are );
+    }
+
     /**
      * Return the model
      * 
@@ -174,75 +183,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         return this.sce;
     }
 
-    /**
-     * Append an empty row to the end of the table
-     */
-    public void appendRow() {
-        List<DTCellValue52> data = cellValueFactory.makeRowData();
-        appendRow( data );
-    }
-
-    /**
-     * Append an empty row to the end of the table
-     * 
-     * @param data
-     *            The row's data
-     */
-    public void appendRow(List<DTCellValue52> data) {
-        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
-        model.getData().add( data );
-        widget.appendRow( uiData );
-        redrawSystemControlledColumns();
-    }
-
-    /**
-     * Insert an empty row before the given row
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     */
-    public void insertRowBefore(int index) {
-        List<DTCellValue52> data = cellValueFactory.makeRowData();
-        insertRowBefore( index,
-                         data );
-    }
-
-    /**
-     * Insert an empty row before the given row
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     * @param data
-     *            The row's data
-     */
-    public void insertRowBefore(int index,
-                                List<DTCellValue52> data) {
-        List<CellValue< ? extends Comparable< ? >>> uiData = cellValueFactory.convertRowData( data );
-        model.getData().add( index,
-                             data );
-        widget.insertRowBefore( index,
-                                uiData );
-        redrawSystemControlledColumns();
-    }
-
-    /**
-     * Delete the given row
-     * 
-     * @param row
-     *            Decision Table row to delete
-     */
-    public void deleteRow(int index) {
-        model.getData().remove( index );
-        widget.deleteRow( index );
-        updateSystemControlledColumnValues();
-        redrawSystemControlledColumns();
-    }
-
-    public int rowCount() {
-        // TODO Auto-generated method stub
-        return 0;
+    public List<List<DTCellValue52>> getRows() {
+        return model.getData();
     }
 
     /**
@@ -315,6 +257,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         widget.getData().clear();
         widget.getColumns().clear();
+        widget.setCellValueFactory( this.cellValueFactory );
 
         // Dummy rows because the underlying DecoratedGridWidget expects there
         // to be enough rows to receive the columns data
@@ -420,7 +363,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Ensure System Controlled values are correctly initialised
         updateSystemControlledColumnValues();
 
-        // Schedule redraw of grid after sizes of child Elements have been set
+        // Schedule redraw
         Scheduler.get().scheduleFinally( new ScheduledCommand() {
 
             public void execute() {
@@ -1742,11 +1685,42 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     public void onDeleteRow(DeleteRowEvent event) {
-        deleteRow( event.getIndex() );
+        model.getData().remove( event.getIndex() );
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+                redrawSystemControlledColumns();
+            }
+            
+        });
     }
 
     public void onInsertRow(InsertRowEvent event) {
-        insertRowBefore( event.getIndex() );
+        List<DTCellValue52> data = cellValueFactory.makeRowData();
+        model.getData().add( event.getIndex(),
+                             data );
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+                redrawSystemControlledColumns();
+            }
+            
+        });
+    }
+
+    public void onAppendRow(AppendRowEvent event) {
+        List<DTCellValue52> data = cellValueFactory.makeRowData();
+        model.getData().add( data );
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+                redrawSystemControlledColumns();
+            }
+            
+        });
     }
 
 }

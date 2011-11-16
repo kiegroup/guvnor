@@ -20,8 +20,13 @@ import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeHandler;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeHandler;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
@@ -34,6 +39,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -48,9 +54,12 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class DecoratedGridWidget<T> extends Composite
     implements
-    HasRows<List<CellValue< ? extends Comparable< ? >>>>,
+    HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
-    SelectedCellValueUpdater {
+    SelectedCellValueUpdater,
+    DeleteRowEvent.Handler,
+    InsertRowEvent.Handler,
+    AppendRowEvent.Handler {
 
     // Widgets for UI
     protected Panel                         mainPanel;
@@ -107,6 +116,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
             }
 
         } );
+
+        //Wire-up event handlers
+        eventBus.addHandler( DeleteRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
 
     }
 
@@ -245,58 +262,10 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Append an empty row to the end of the table
-     * 
-     * @param rowData
-     *            New row data
+     * Get the rows
      */
-    public void appendRow(List<CellValue< ? extends Comparable< ? >>> data) {
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        gridWidget.appendRow( data );
-        sidebarWidget.appendRow( data );
-        assertDimensions();
-    }
-
-    /**
-     * Insert a row before that specified
-     * 
-     * @param index
-     *            The index of the row before which the new (empty) row will be
-     *            inserted.
-     * @param data
-     *            New row data
-     */
-    public void insertRowBefore(int index,
-                                List<CellValue< ? extends Comparable< ? >>> data) {
-        if ( data == null ) {
-            throw new IllegalArgumentException( "data cannot be null" );
-        }
-        gridWidget.insertRowBefore( index,
-                                    data );
-        sidebarWidget.insertRowBefore( index,
-                                       data );
-        assertDimensions();
-    }
-
-    /**
-     * Delete the given row
-     * 
-     * @param index
-     *            The index of the row to delete
-     */
-    public void deleteRow(int index) {
-        sidebarWidget.deleteRow( index );
-        gridWidget.deleteRow( index );
-        assertDimensions();
-    }
-
-    /**
-     * Get the number of rows
-     */
-    public int rowCount() {
-        return this.gridWidget.rowCount();
+    public List<DynamicDataRow> getRows() {
+        return this.gridWidget.getRows();
     }
 
     /**
@@ -628,6 +597,45 @@ public abstract class DecoratedGridWidget<T> extends Composite
      */
     public void setMerging(boolean isMerged) {
         this.gridWidget.setMerging( isMerged );
+    }
+
+    public void setCellValueFactory(AbstractCellValueFactory<T, ? > cellValueFactory) {
+        this.gridWidget.setCellValueFactory( cellValueFactory );
+        this.sidebarWidget.setCellValueFactory( cellValueFactory );
+    }
+
+    public RowMapper getRowMapper() {
+        return this.gridWidget.getRowMapper();
+    }
+
+    public void onDeleteRow(DeleteRowEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                assertDimensions();
+            }
+
+        } );
+    }
+
+    public void onInsertRow(InsertRowEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                assertDimensions();
+            }
+
+        } );
+    }
+
+    public void onAppendRow(AppendRowEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                assertDimensions();
+            }
+
+        } );
     }
 
 }

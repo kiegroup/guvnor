@@ -41,7 +41,9 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
  * @param <T>
  *            The data-type of the value
  */
-public class CellValue<T extends Comparable<T>> implements Comparable<CellValue<T>> {
+public class CellValue<T extends Comparable<T>>
+    implements
+    Comparable<CellValue<T>> {
 
     //Possible states of the cell
     public static enum CellState {

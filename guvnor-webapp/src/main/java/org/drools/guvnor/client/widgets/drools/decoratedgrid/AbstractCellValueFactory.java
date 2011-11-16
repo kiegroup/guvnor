@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.drools.guvnor.client.util.DateConverter;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
@@ -52,6 +53,20 @@ public abstract class AbstractCellValueFactory<C, V> {
     }
 
     /**
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public abstract List<V> makeRowData();
+
+    /**
+     * Construct a new row of data for the MergableGridWidget
+     * 
+     * @return
+     */
+    public abstract DynamicDataRow makeUIRowData();
+
+    /**
      * Make a Model cell for the given column
      * 
      * @param column
@@ -67,22 +82,6 @@ public abstract class AbstractCellValueFactory<C, V> {
      */
     protected abstract CellValue< ? extends Comparable< ? >> convertModelCellValue(C column,
                                                                                    V cell);
-
-    /**
-     * Construct a new row of data for the underlying model
-     * 
-     * @return
-     */
-    public abstract List<V> makeRowData();
-
-    /**
-     * Convert a row of the underlying model into a row for use in the UI
-     * 
-     * @param row
-     *            A row of model data
-     * @return
-     */
-    public abstract List<CellValue< ? extends Comparable< ? >>> convertRowData(List<V> row);
 
     /**
      * Get the data-type for a column

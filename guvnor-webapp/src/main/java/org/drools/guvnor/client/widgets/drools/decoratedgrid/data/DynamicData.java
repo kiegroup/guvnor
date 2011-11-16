@@ -88,16 +88,11 @@ public class DynamicData
      * 
      * @param index
      * @param rowData
-     * @return DynamicDataRow The newly created row
      */
-    public DynamicDataRow addRow(int index,
-                                 List<CellValue< ? extends Comparable< ? >>> rowData) {
-        DynamicDataRow row = new DynamicDataRow();
-        for ( CellValue< ? extends Comparable< ? >> cell : rowData ) {
-            row.add( cell );
-        }
+    public void addRow(int index,
+                       DynamicDataRow rowData) {
         data.add( index,
-                  row );
+                  rowData );
 
         //Execute command if set
         if ( onRowChangeCommand != null ) {
@@ -105,18 +100,16 @@ public class DynamicData
         }
 
         assertModelMerging();
-        return row;
     }
 
     /**
      * Add a row of data at the end of the table
      * 
      * @param rowData
-     * @return DynamicDataRow The newly created row
      */
-    public DynamicDataRow addRow(List<CellValue< ? extends Comparable< ? >>> rowData) {
-        return addRow( data.size(),
-                       rowData );
+    public void addRow(DynamicDataRow rowData) {
+        addRow( data.size(),
+                rowData );
     }
 
     /**
