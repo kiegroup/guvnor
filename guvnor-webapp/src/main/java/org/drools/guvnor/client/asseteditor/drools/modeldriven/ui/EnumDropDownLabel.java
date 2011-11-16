@@ -41,7 +41,7 @@ public class EnumDropDownLabel extends Composite {
     protected Constants                  constants = ((Constants) GWT.create( Constants.class ));
 
     protected final Label                textWidget;
-    protected final EnumDropDown         enumDropDown;
+    protected final EnumDropDown               enumDropDown;
     protected final Button               okButton;
     protected final Panel                panel     = new HorizontalPanel();
     protected final PopupPanel           popup;
@@ -82,7 +82,16 @@ public class EnumDropDownLabel extends Composite {
     private void showPopup() {
         popup.setPopupPosition( this.getAbsoluteLeft(),
                                 this.getAbsoluteTop() );
-
+        //Change from mul
+        if (constraint.getOperator().equals("in") && !enumDropDown.isMultipleSelect()) {
+            //Reset the current value since we are changing type of the list from multi to non-multi or vice versa
+            enumDropDown.setMultipleSelect(true);
+            constraint.setValue("");
+            
+        } else if (!constraint.getOperator().equals("in") && enumDropDown.isMultipleSelect()) {
+            enumDropDown.setMultipleSelect(false);
+            constraint.setValue("");
+        }
         //Lazy initialisation of drop-down data as it's content could depend on another drop-down
         enumDropDown.setDropDownData( constraint.getValue(),
                                       getDropDownData() );
@@ -139,14 +148,15 @@ public class EnumDropDownLabel extends Composite {
                                                            textWidget.setText( newText );
                                                        }
                                                    },
-                                                   getDropDownData() );
+                                                   getDropDownData(),
+                                                   "in".equals(constraint.getOperator()) );
 
         if ( box.getItemCount() > 6 ) {
             box.setVisibleItemCount( 6 );
         } else {
             box.setVisibleItemCount( box.getItemCount() );
         }
-
+        
         box.setEnabled( enabled );
 
         return box;
@@ -210,18 +220,12 @@ public class EnumDropDownLabel extends Composite {
 
     //Lookup display text from drop-down selection
     private void updateTextWidget() {
-        int index = enumDropDown.getSelectedIndex();
-        if ( index >= 0 ) {
-            textWidget.setText( enumDropDown.getItemText( index ) );
-        }
+       textWidget.setText( enumDropDown.getSelectedItemsText() );
     }
 
     //Lookup model value from drop-down selection
     private void updateModel() {
-        int index = enumDropDown.getSelectedIndex();
-        if ( index >= 0 ) {
-            constraint.setValue( enumDropDown.getValue( index ) );
-        }
+       constraint.setValue( enumDropDown.getSelectedValue() );
     }
 
 }
