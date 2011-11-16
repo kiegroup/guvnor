@@ -17,50 +17,24 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * Represents a change in the selected cell.
  */
-public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler> {
+public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeEvent.Handler> {
 
-    // Parameters for the Event
-    private final CellSelectionDetail              cellDetails;
+    public static interface Handler
+        extends
+        EventHandler {
 
-    /**
-     * Handler type.
-     */
-    private static Type<SelectedCellChangeHandler> TYPE = new Type<SelectedCellChangeHandler>();
-
-    /**
-     * Fires a value change event on all registered handlers in the handler
-     * manager. If no such handlers exist, this method will do nothing.
-     * 
-     * @param source
-     *            the source of the handlers
-     * @param cellDetails
-     *            details of selected cell
-     */
-    public static void fire(HasSelectedCellChangeHandlers source,
-                            CellSelectionDetail cellDetails) {
-        if ( source == null ) {
-            throw new IllegalArgumentException( "source cannot be null" );
-        }
-        if ( cellDetails == null ) {
-            throw new IllegalArgumentException( "cellDetails cannot be null" );
-        }
-        SelectedCellChangeEvent event = new SelectedCellChangeEvent( cellDetails );
-        source.fireEvent( event );
+        void onSelectedCellChange(SelectedCellChangeEvent event);
     }
 
-    /**
-     * Gets the type of Handlers that can handle the event
-     * 
-     * @return
-     */
-    public static Type<SelectedCellChangeHandler> getType() {
-        return TYPE;
-    }
+    public static Type<SelectedCellChangeEvent.Handler> TYPE = new Type<SelectedCellChangeEvent.Handler>();
+
+    private final CellSelectionDetail                    cellDetails;
 
     /**
      * Creates a value change event.
@@ -68,16 +42,11 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
      * @param cellExtents
      *            details of selected cell
      */
-    protected SelectedCellChangeEvent(CellSelectionDetail cellDetails) {
+    public SelectedCellChangeEvent(CellSelectionDetail cellDetails) {
         if ( cellDetails == null ) {
             throw new IllegalArgumentException( "cellDetails cannot be null" );
         }
         this.cellDetails = cellDetails;
-    }
-
-    @Override
-    public final Type<SelectedCellChangeHandler> getAssociatedType() {
-        return TYPE;
     }
 
     /**
@@ -90,14 +59,12 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeHandler>
     }
 
     @Override
-    public String toDebugString() {
-        return super.toDebugString()
-               + "cellDetails = "
-               + getCellSelectionDetail().toString();
+    public final Type<SelectedCellChangeEvent.Handler> getAssociatedType() {
+        return TYPE;
     }
 
     @Override
-    protected void dispatch(SelectedCellChangeHandler handler) {
+    protected void dispatch(SelectedCellChangeEvent.Handler handler) {
         handler.onSelectedCellChange( this );
     }
 }

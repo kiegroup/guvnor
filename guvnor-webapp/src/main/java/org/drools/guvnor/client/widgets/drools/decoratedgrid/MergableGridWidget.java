@@ -29,16 +29,12 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasRowGroupingChangeHandlers;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasSelectedCellChangeHandlers;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeHandler;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -48,7 +44,6 @@ import com.google.gwt.dom.client.TableElement;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.dom.client.TableSectionElement;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
@@ -64,8 +59,6 @@ public abstract class MergableGridWidget<T> extends Widget
     HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
-    HasSelectedCellChangeHandlers,
-    HasRowGroupingChangeHandlers,
     ToggleMergingEvent.Handler,
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
@@ -144,7 +137,7 @@ public abstract class MergableGridWidget<T> extends Widget
     // merged cells). So a merged cell spanning 2 rows is stored as 2
     // selections. Selections are ordered by row number so we can
     // iterate top to bottom.
-    protected TreeSet<CellValue< ? extends Comparable< ? >>> selections = new TreeSet<CellValue< ? extends Comparable< ? >>>(
+    protected TreeSet<CellValue< ? extends Comparable< ? >>> selections           = new TreeSet<CellValue< ? extends Comparable< ? >>>(
                                                                                                                                               new Comparator<CellValue< ? extends Comparable< ? >>>() {
 
                                                                                                                                                   public int compare(CellValue< ? extends Comparable< ? >> o1,
@@ -161,29 +154,27 @@ public abstract class MergableGridWidget<T> extends Widget
     protected TableSectionElement                            tbody;
 
     // Resources
-    protected static final Constants                         messages   = GWT.create( Constants.class );
+    protected static final Constants                         messages             = GWT.create( Constants.class );
     protected ResourcesProvider<T>                           resources;
     protected EventBus                                       eventBus;
 
     protected String                                         selectorGroupedCellsHtml;
     protected String                                         selectorUngroupedCellsHtml;
 
-    private static String makeImageHtml(ImageResource image) {
-        return AbstractImagePrototype.create( image ).getHTML();
-    }
-
     // Data and columns to render
-    protected List<DynamicColumn<T>>          columns              = new ArrayList<DynamicColumn<T>>();
-    protected DynamicData                     data                 = new DynamicData();
-    protected RowMapper                       rowMapper            = new RowMapper( data );
-    protected AbstractCellValueFactory<T, ? > cellValueFactory;
+    protected List<DynamicColumn<T>>                         columns              = new ArrayList<DynamicColumn<T>>();
+    protected DynamicData                                    data                 = new DynamicData();
+    protected RowMapper                                      rowMapper            = new RowMapper( data );
+    protected AbstractCellValueFactory<T, ? >                cellValueFactory;
 
     //Properties for multi-cell selection
-    protected CellValue< ? >                  rangeOriginCell;
-    protected CellValue< ? >                  rangeExtentCell;
+    protected CellValue< ? >                                 rangeOriginCell;
+    protected CellValue< ? >                                 rangeExtentCell;
 
-    protected MOVE_DIRECTION                  rangeDirection       = MOVE_DIRECTION.NONE;
-    protected boolean                         bDragOperationPrimed = false;
+    protected MOVE_DIRECTION                                 rangeDirection       = MOVE_DIRECTION.NONE;
+    protected boolean                                        bDragOperationPrimed = false;
+
+    protected static final RowGroupingChangeEvent            ROW_GROUPING_EVENT   = new RowGroupingChangeEvent();
 
     /**
      * A grid of cells.
@@ -236,20 +227,8 @@ public abstract class MergableGridWidget<T> extends Widget
                              this );
     }
 
-    /**
-     * Add a handler for RowGroupingChangeEvents
-     */
-    public HandlerRegistration addRowGroupingChangeHandler(RowGroupingChangeHandler handler) {
-        return addHandler( handler,
-                           RowGroupingChangeEvent.getType() );
-    }
-
-    /**
-     * Add a handler for SelectedCellChangeEvents
-     */
-    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
-        return addHandler( handler,
-                           SelectedCellChangeEvent.getType() );
+    private static String makeImageHtml(ImageResource image) {
+        return AbstractImagePrototype.create( image ).getHTML();
     }
 
     /**
@@ -293,7 +272,7 @@ public abstract class MergableGridWidget<T> extends Widget
         if ( bRedraw ) {
             redraw();
             if ( bRedrawSidebar ) {
-                RowGroupingChangeEvent.fire( this );
+                eventBus.fireEvent( ROW_GROUPING_EVENT );
             }
         }
 
@@ -432,7 +411,7 @@ public abstract class MergableGridWidget<T> extends Widget
             clearSelection();
             data.setMerged( false );
             redraw();
-            RowGroupingChangeEvent.fire( this );
+            eventBus.fireEvent( ROW_GROUPING_EVENT );
         }
     }
 
@@ -513,7 +492,7 @@ public abstract class MergableGridWidget<T> extends Widget
             }
             redrawRows( minRedrawRow,
                         maxRedrawRow );
-            RowGroupingChangeEvent.fire( this );
+            eventBus.fireEvent( ROW_GROUPING_EVENT );
         }
 
     }
@@ -744,7 +723,7 @@ public abstract class MergableGridWidget<T> extends Widget
             }
             redrawRows( minRedrawRow,
                         maxRedrawRow );
-            RowGroupingChangeEvent.fire( this );
+            eventBus.fireEvent( ROW_GROUPING_EVENT );
         }
 
     }
@@ -1018,8 +997,8 @@ public abstract class MergableGridWidget<T> extends Widget
 
         //Raise event signalling change in selection 
         CellSelectionDetail ce = getSelectedCellExtents( data.get( start ) );
-        SelectedCellChangeEvent.fire( this,
-                                      ce );
+        SelectedCellChangeEvent scce = new SelectedCellChangeEvent( ce );
+        eventBus.fireEvent( scce );
 
         clearSelection();
         CellValue< ? > startCell = data.get( start );

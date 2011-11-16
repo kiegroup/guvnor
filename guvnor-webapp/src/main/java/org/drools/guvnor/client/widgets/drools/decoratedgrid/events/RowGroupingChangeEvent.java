@@ -15,60 +15,32 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * Represents a change in the grouping of rows.
+ * Represents a change in the grouping of rows. The number of rows may change
+ * when the grouping changes, for example the Sidebar needs to be redrawn when
+ * grouping is changed
  */
-public class RowGroupingChangeEvent extends GwtEvent<RowGroupingChangeHandler> {
+public class RowGroupingChangeEvent extends GwtEvent<RowGroupingChangeEvent.Handler> {
 
-    /**
-     * Handler type.
-     */
-    private static Type<RowGroupingChangeHandler> TYPE = new Type<RowGroupingChangeHandler>();
+    public static interface Handler
+        extends
+        EventHandler {
 
-    /**
-     * Fires a value change event on all registered handlers in the handler
-     * manager. If no such handlers exist, this method will do nothing.
-     * 
-     * @param source
-     *            the source of the handlers
-     */
-    public static void fire(HasRowGroupingChangeHandlers source) {
-        if ( source == null ) {
-            throw new IllegalArgumentException( "source cannot be null" );
-        }
-        RowGroupingChangeEvent event = new RowGroupingChangeEvent();
-        source.fireEvent( event );
+        void onRowGroupingChange(RowGroupingChangeEvent event);
     }
 
-    /**
-     * Gets the type of Handlers that can handle the event
-     * 
-     * @return
-     */
-    public static Type<RowGroupingChangeHandler> getType() {
-        return TYPE;
-    }
-
-    /**
-     * Creates a redraw event.
-     */
-    protected RowGroupingChangeEvent() {
-    }
+    public static Type<RowGroupingChangeEvent.Handler> TYPE = new Type<RowGroupingChangeEvent.Handler>();
 
     @Override
-    public final Type<RowGroupingChangeHandler> getAssociatedType() {
+    public final Type<RowGroupingChangeEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    public String toDebugString() {
-        return super.toDebugString();
-    }
-
-    @Override
-    protected void dispatch(RowGroupingChangeHandler handler) {
+    protected void dispatch(RowGroupingChangeEvent.Handler handler) {
         handler.onRowGroupingChange( this );
     }
 }

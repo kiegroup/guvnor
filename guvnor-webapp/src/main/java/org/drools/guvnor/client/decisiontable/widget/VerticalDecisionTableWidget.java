@@ -20,7 +20,6 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridSideba
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
@@ -57,16 +56,6 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         widget.setSidebarWidget( sidebar );
         widget.setHasSystemControlledColumns( this );
 
-        widget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
-
-            public void onSelectedCellChange(SelectedCellChangeEvent event) {
-
-                CellValue< ? > cell = widget.getData().get( event.getCellSelectionDetail().getCoordinate() );
-                dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
-            }
-
-        } );
-
         vp.add( widget );
         vp.add( ctrls );
         initWidget( vp );
@@ -85,6 +74,11 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         header.setModel( model );
         super.setModel( model );
+    }
+
+    public void onSelectedCellChange(SelectedCellChangeEvent event) {
+        CellValue< ? > cell = widget.getData().get( event.getCellSelectionDetail().getCoordinate() );
+        dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
     }
 
 }

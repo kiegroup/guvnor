@@ -19,6 +19,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -32,7 +33,8 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
     implements
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
-    AppendRowEvent.Handler {
+    AppendRowEvent.Handler,
+    RowGroupingChangeEvent.Handler {
 
     protected HasGroupedRows<DynamicDataRow>    hasRows;
     protected AbstractCellValueFactory< ? , ? > cellValueFactory;
@@ -70,6 +72,8 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
         eventBus.addHandler( InsertRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( RowGroupingChangeEvent.TYPE,
                              this );
     }
 

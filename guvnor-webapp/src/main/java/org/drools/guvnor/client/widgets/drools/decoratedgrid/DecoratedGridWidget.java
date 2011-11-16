@@ -22,15 +22,11 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeHandler;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeHandler;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeHandler;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -38,7 +34,6 @@ import com.google.gwt.event.dom.client.ScrollHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Panel;
@@ -57,6 +52,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
     HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
+    ColumnResizeEvent.Handler,
+    SelectedCellChangeEvent.Handler,
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler {
@@ -108,15 +105,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
         initWidget( mainPanel );
 
-        //Add handler for when the selected cell changes, to ensure the cell is visible
-        gridWidget.addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
-
-            public void onSelectedCellChange(SelectedCellChangeEvent event) {
-                cellSelected( event.getCellSelectionDetail() );
-            }
-
-        } );
-
         //Wire-up event handlers
         eventBus.addHandler( DeleteRowEvent.TYPE,
                              this );
@@ -124,7 +112,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
-
+        eventBus.addHandler( SelectedCellChangeEvent.TYPE,
+                             this );
     }
 
     /**
@@ -341,17 +330,8 @@ public abstract class DecoratedGridWidget<T> extends Composite
             throw new IllegalArgumentException( "headerWidget cannot be null" );
         }
         this.headerWidget = headerWidget;
-        headerWidget.addColumnResizeHandler( new ColumnResizeHandler() {
-
-            public void onColumnResize(ColumnResizeEvent event) {
-
-                // Resizing columns can cause the scrollbar to appear
-                assertDimensions();
-                gridWidget.resizeColumn( event.getColumn(),
-                                         event.getWidth() );
-            }
-
-        } );
+        eventBus.addHandler( ColumnResizeEvent.TYPE,
+                             this );
         this.headerWidget.addResizeHandler( new ResizeHandler() {
 
             public void onResize(ResizeEvent event) {
@@ -404,13 +384,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
             public void onResize(ResizeEvent event) {
                 sidebarWidget.resizeSidebar( event.getHeight() );
-            }
-
-        } );
-        this.gridWidget.addRowGroupingChangeHandler( new RowGroupingChangeHandler() {
-
-            public void onRowGroupingChange(RowGroupingChangeEvent event) {
-                sidebarWidget.redraw();
             }
 
         } );
@@ -572,13 +545,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Add a handler for SelectedCellChangeEvents
-     */
-    public HandlerRegistration addSelectedCellChangeHandler(SelectedCellChangeHandler handler) {
-        return this.gridWidget.addSelectedCellChangeHandler( handler );
-    }
-
-    /**
      * Redraw header
      */
     public void redrawHeader() {
@@ -606,6 +572,22 @@ public abstract class DecoratedGridWidget<T> extends Composite
 
     public RowMapper getRowMapper() {
         return this.gridWidget.getRowMapper();
+    }
+
+    public void onColumnResize(final ColumnResizeEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                assertDimensions();
+                gridWidget.resizeColumn( event.getColumn(),
+                                         event.getWidth() );
+            }
+
+        } );
+    }
+
+    public void onSelectedCellChange(SelectedCellChangeEvent event) {
+        cellSelected( event.getCellSelectionDetail() );
     }
 
     public void onDeleteRow(DeleteRowEvent event) {

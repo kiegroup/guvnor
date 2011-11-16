@@ -914,9 +914,9 @@ public class VerticalDecisionTableHeaderWidget extends DecoratedGridHeaderWidget
         }
 
         // Fire event to any interested consumers
-        ColumnResizeEvent.fire( this,
-                                widget.visibleCols.get( resizeColumnIndex ),
-                                resizeColumnWidth );
+        ColumnResizeEvent cre = new ColumnResizeEvent( widget.visibleCols.get( resizeColumnIndex ),
+                                                       resizeColumnWidth );
+        eventBus.fireEvent( cre );
     }
 
 }

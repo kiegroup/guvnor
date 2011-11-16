@@ -321,9 +321,9 @@ public class TemplateDataHeaderWidget extends
                                  Unit.PX );
 
         // Fire event to any interested consumers
-        ColumnResizeEvent.fire( this,
-                                widget.headerColumns.get( resizeColumnIndex ),
-                                resizeColumnWidth );
+        ColumnResizeEvent cre = new ColumnResizeEvent( widget.headerColumns.get( resizeColumnIndex ),
+                                                       resizeColumnWidth );
+        eventBus.fireEvent( cre );
     }
 
     @Override

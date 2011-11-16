@@ -21,6 +21,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
 import com.google.gwt.dom.client.Style.Overflow;
@@ -359,6 +360,10 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
     public void onAppendRow(AppendRowEvent event) {
         selectors.appendRow();
+    }
+
+    public void onRowGroupingChange(RowGroupingChangeEvent event) {
+        selectors.redraw();
     }
 
 }

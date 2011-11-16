@@ -34,6 +34,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
@@ -74,6 +75,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     HasRows<List<DTCellValue52>>,
     HasColumns<DTColumnConfig52>,
     HasSystemControlledColumns,
+    SelectedCellChangeEvent.Handler,
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler {
@@ -118,6 +120,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.addHandler( DeleteRowEvent.TYPE,
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
+                             this );
+        eventBus.addHandler( SelectedCellChangeEvent.TYPE,
                              this );
     }
 
@@ -1692,8 +1696,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 updateSystemControlledColumnValues();
                 redrawSystemControlledColumns();
             }
-            
-        });
+
+        } );
     }
 
     public void onInsertRow(InsertRowEvent event) {
@@ -1706,8 +1710,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 updateSystemControlledColumnValues();
                 redrawSystemControlledColumns();
             }
-            
-        });
+
+        } );
     }
 
     public void onAppendRow(AppendRowEvent event) {
@@ -1719,8 +1723,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
                 updateSystemControlledColumnValues();
                 redrawSystemControlledColumns();
             }
-            
-        });
+
+        } );
     }
 
 }

@@ -16,9 +16,6 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeHandler;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.HasColumnResizeHandlers;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -55,8 +52,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     implements
-    HasResizeHandlers,
-    HasColumnResizeHandlers {
+    HasResizeHandlers {
 
     /**
      * Container class for information relating to re-size operations
@@ -121,10 +117,14 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
         }
-        this.resources = resources;
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
+        }
         if ( grid == null ) {
             throw new IllegalArgumentException( "grid cannot be null" );
         }
+        this.resources = resources;
+        this.eventBus = eventBus;
         this.grid = grid;
 
         // Container DIV in which the components will live
@@ -171,12 +171,9 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
                                    resizeColumn( resizerInfo.resizeColumn,
                                                  resizerInfo.resizeColumnWidth );
 
-                                   // Second call to set dimensions as a column
-                                   // resize can add (or remove) a scroll bar to
-                                   // (or from) the Decision Table and our
-                                   // resizer needs to be redrawn accordingly.
-                                   // Just having the call to set dimensions
-                                   // after the column has been resized added
+                                   // Second call to set dimensions as a column resize can add (or remove) a scroll bar
+                                   // to (or from) the Decision Table and our resizer needs to be redrawn accordingly.
+                                   // Just having the call to set dimensions after the column has been resized added
                                    // excess flicker to movement of the resizer.
                                    setResizerDimensions( event.getX() );
                                    event.preventDefault();
@@ -234,15 +231,6 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
                        },
                        MouseOutEvent.getType() );
 
-    }
-
-    public HandlerRegistration addColumnResizeHandler(ColumnResizeHandler handler) {
-        if ( handler == null ) {
-            throw new IllegalArgumentException( "handler cannot be null" );
-        }
-
-        return addHandler( handler,
-                           ColumnResizeEvent.getType() );
     }
 
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
