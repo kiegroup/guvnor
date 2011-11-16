@@ -32,9 +32,6 @@ public interface Images
     @Source("images/deploy.gif")
     ImageResource deploy();
 
-    @Source("images/header_logo.gif")
-    ImageResource headerLogo();
-
     @Source("images/rules.gif")
     ImageResource rules();
 
