@@ -123,7 +123,7 @@ public class Connectives {
             String fieldName = cc.getFieldName();
             String factType = this.pattern.getFactType();
 
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
                                                 index );

@@ -100,7 +100,7 @@ public class EnumDropDownLabel extends Composite {
         } else if ( constraint instanceof ConnectiveConstraint ) {
             ConnectiveConstraint cc = (ConnectiveConstraint) constraint;
             fieldName = cc.getFieldName();
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
             }
             valueType = cc.getFieldType();
@@ -108,7 +108,7 @@ public class EnumDropDownLabel extends Composite {
 
             factType = this.pattern.getFactType();
             fieldName = this.qualifiedFieldName;
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
                                                 index );

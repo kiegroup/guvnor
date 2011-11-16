@@ -561,7 +561,7 @@ public class BRDRLPersistence
                     StringBuilder parentBuf = new StringBuilder();
                     while ( parent != null ) {
                         String fieldName = parent.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName != null && fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         parentBuf.insert( 0,
@@ -573,7 +573,7 @@ public class BRDRLPersistence
                         buf.append( ((SingleFieldConstraintEBLeftSide) constr).getExpressionLeftSide().getText() );
                     } else {
                         String fieldName = constr.getFieldName();
-                        if( fieldName.contains( "." ) ) {
+                        if ( fieldName != null && fieldName.contains( "." ) ) {
                             fieldName = fieldName.substring( fieldName.indexOf( "." ) + 1 );
                         }
                         buf.append( fieldName );
