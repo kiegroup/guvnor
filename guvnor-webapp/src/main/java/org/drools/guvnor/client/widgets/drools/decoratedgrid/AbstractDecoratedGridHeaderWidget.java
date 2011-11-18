@@ -15,9 +15,15 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.guvnor.client.messages.Constants;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Style.Overflow;
 import com.google.gwt.dom.client.Style.Position;
@@ -37,6 +43,7 @@ import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.CellPanel;
@@ -47,12 +54,16 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * An abstract "Header" widget to decorate a <code>DecoratedGridWidget</code>
  * 
+ * @param <M>
+ *            The domain model represented by the Header
  * @param <T>
  *            The type of domain columns represented by the Header
  */
-public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
+public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     implements
-    HasResizeHandlers {
+    HasResizeHandlers,
+    SetInternalModelEvent.Handler<M, T>,
+    DeleteColumnEvent.Handler {
 
     /**
      * Container class for information relating to re-size operations
@@ -94,7 +105,10 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     private static final int         MIN_COLUMN_WIDTH = 16;
 
     protected Panel                  panel;
-    protected DecoratedGridWidget<T> grid;
+
+    //Model
+    protected M                      model;
+    protected List<DynamicColumn<T>> sortableColumns  = new ArrayList<DynamicColumn<T>>();
 
     // Resources
     protected static final Constants constants        = GWT.create( Constants.class );
@@ -109,23 +123,18 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
      * Construct a "Header" for the provided DecoratedGridWidget
      * 
      * @param grid
-     * @param styleProvider
+     * @param eventBus
      */
-    public DecoratedGridHeaderWidget(ResourcesProvider<T> resources,
-                                     EventBus eventBus,
-                                     DecoratedGridWidget<T> grid) {
+    public AbstractDecoratedGridHeaderWidget(ResourcesProvider<T> resources,
+                                             EventBus eventBus) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
         }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
-        if ( grid == null ) {
-            throw new IllegalArgumentException( "grid cannot be null" );
-        }
         this.resources = resources;
         this.eventBus = eventBus;
-        this.grid = grid;
 
         // Container DIV in which the components will live
         Element tre = DOM.createTR();
@@ -231,6 +240,9 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
                        },
                        MouseOutEvent.getType() );
 
+        //Wire-up other event handlers
+        eventBus.addHandler( DeleteColumnEvent.TYPE,
+                             this );
     }
 
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
@@ -269,9 +281,9 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
     // would be rendered inside the DIV and hence still be covered
     // by the resizer.
     private void setResizerDimensions(int position) {
-        resizer.getStyle().setHeight(
-                                      grid.getSidebarWidget().getOffsetHeight(),
-                                      Unit.PX );
+        //TODO {manstis} How can we get the enclosing size?
+        //resizer.getStyle().setHeight( grid.getSidebarWidget().getOffsetHeight(), Unit.PX );
+        resizer.getStyle().setHeight( 100, Unit.PX );
         resizer.getStyle().setLeft( position,
                                     Unit.PX );
     }
@@ -304,5 +316,16 @@ public abstract class DecoratedGridHeaderWidget<T> extends CellPanel
      */
     protected abstract void resizeColumn(DynamicColumn<T> resizeColumn,
                                          int resizeColumnWidth);
+
+    public void onDeleteColumn(final DeleteColumnEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                sortableColumns.remove( event.getIndex() );
+                redraw();
+            }
+
+        } );
+    }
 
 }

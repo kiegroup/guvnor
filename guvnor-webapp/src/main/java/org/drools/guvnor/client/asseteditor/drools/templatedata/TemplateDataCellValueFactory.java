@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,9 +42,16 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      */
-    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce,
-                                        TemplateModel model) {
+    public TemplateDataCellValueFactory(SuggestionCompletionEngine sce) {
         super( sce );
+    }
+
+    /**
+     * Set the model for which CellValues will be created
+     * 
+     * @param model
+     */
+    public void setModel(TemplateModel model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }

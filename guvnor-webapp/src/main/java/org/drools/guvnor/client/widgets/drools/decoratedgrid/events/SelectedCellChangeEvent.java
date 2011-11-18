@@ -15,7 +15,7 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget.CellSelectionDetail;
 
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;

@@ -45,14 +45,16 @@ import com.google.gwt.user.client.Event;
  * A Vertical implementation of MergableGridWidget, that renders columns as erm,
  * columns and rows as rows. Supports merging of cells between rows.
  */
-public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
+public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractMergableGridWidget<M, T> {
 
     //Deferred binding creates an appropriate class depending on browser
     private CellHeightCalculatorImpl cellHeightCalculator = GWT.create( CellHeightCalculatorImpl.class );
 
-    public VerticalMergableGridWidget(ResourcesProvider<T> resources,
+    public AbstractVerticalMergableGridWidget(ResourcesProvider<T> resources,
+                                      AbstractCellValueFactory<T, ? > cellValueFactory,
                                       EventBus eventBus) {
         super( resources,
+               cellValueFactory,
                eventBus );
     }
 
@@ -151,7 +153,7 @@ public class VerticalMergableGridWidget<T> extends MergableGridWidget<T> {
     }
 
     @Override
-    void redraw() {
+    protected void redraw() {
 
         TableSectionElement nbody = Document.get().createTBodyElement();
 

@@ -36,7 +36,7 @@ import com.google.gwt.event.shared.SimpleEventBus;
  */
 public class DynamicColumn<T> extends DynamicBaseColumn
     implements
-        HasValueChangeHandlers<SortConfiguration> {
+    HasValueChangeHandlers<SortConfiguration> {
 
     private int               columnIndex        = 0;
     private T                 modelColumn;
@@ -46,7 +46,16 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     private int               width              = 100;
 
     // Event handling using GWT's EventBus
+    //TODO {manstis} use the usual eventBus
     private SimpleEventBus    seb                = new SimpleEventBus();
+
+    public DynamicColumn(T modelColumn) {
+        this( modelColumn,
+              null,
+              0,
+              false,
+              true );
+    }
 
     public DynamicColumn(T modelColumn,
                          DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
@@ -96,14 +105,12 @@ public class DynamicColumn<T> extends DynamicBaseColumn
         @SuppressWarnings("unchecked")
         DynamicColumn<T> c = (DynamicColumn<T>) o;
         return c.columnIndex == this.columnIndex
-                && c.modelColumn.equals( this.modelColumn )
-                && c.isVisible.equals( this.isVisible )
-                && c.isSystemControlled.equals( this.isSystemControlled )
-                && c.sortConfig.getSortDirection() == this.sortConfig
-                        .getSortDirection()
-                && c.sortConfig.isSortable() == this.sortConfig.isSortable()
-                && c.sortConfig.getSortIndex() == this.sortConfig
-                        .getSortIndex()
+               && c.modelColumn.equals( this.modelColumn )
+               && c.isVisible.equals( this.isVisible )
+               && c.isSystemControlled.equals( this.isSystemControlled )
+               && c.sortConfig.getSortDirection() == this.sortConfig.getSortDirection()
+               && c.sortConfig.isSortable() == this.sortConfig.isSortable()
+               && c.sortConfig.getSortIndex() == this.sortConfig.getSortIndex()
                && c.width == this.width;
     }
 

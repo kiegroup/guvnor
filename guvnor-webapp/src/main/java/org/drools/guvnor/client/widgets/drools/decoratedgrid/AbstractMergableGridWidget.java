@@ -30,10 +30,12 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 
 import com.google.gwt.core.client.GWT;
@@ -54,15 +56,16 @@ import com.google.gwt.user.client.ui.Widget;
  * render "rows" and "columns" (e.g. some may transpose the normal meaning to
  * provide a horizontal implementation of normally vertical tabular data)
  */
-public abstract class MergableGridWidget<T> extends Widget
+public abstract class AbstractMergableGridWidget<M, T> extends Widget
     implements
-    HasGroupedRows<DynamicDataRow>,
+    //TODO {manstis} HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
-    SelectedCellValueUpdater,
     ToggleMergingEvent.Handler,
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
-    AppendRowEvent.Handler {
+    AppendRowEvent.Handler,
+    DeleteColumnEvent.Handler,
+    SetInternalModelEvent.Handler<M, T> {
 
     /**
      * Container for a details of a selected cell
@@ -162,9 +165,9 @@ public abstract class MergableGridWidget<T> extends Widget
     protected String                                         selectorUngroupedCellsHtml;
 
     // Data and columns to render
-    protected List<DynamicColumn<T>>                         columns              = new ArrayList<DynamicColumn<T>>();
-    protected DynamicData                                    data                 = new DynamicData();
-    protected RowMapper                                      rowMapper            = new RowMapper( data );
+    protected List<DynamicColumn<T>>                         columns;
+    protected DynamicData                                    data;
+    protected RowMapper                                      rowMapper;
     protected AbstractCellValueFactory<T, ? >                cellValueFactory;
 
     //Properties for multi-cell selection
@@ -179,9 +182,11 @@ public abstract class MergableGridWidget<T> extends Widget
     /**
      * A grid of cells.
      */
-    public MergableGridWidget(ResourcesProvider<T> resources,
-                              EventBus eventBus) {
+    public AbstractMergableGridWidget(ResourcesProvider<T> resources,
+                                      AbstractCellValueFactory<T, ? > cellValueFactory,
+                                      EventBus eventBus) {
         this.resources = resources;
+        this.cellValueFactory = cellValueFactory;
         this.eventBus = eventBus;
 
         ImageResource selectorGroupedCells = resources.collapseCellsIcon();
@@ -225,57 +230,12 @@ public abstract class MergableGridWidget<T> extends Widget
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
+        eventBus.addHandler( DeleteColumnEvent.TYPE,
+                             this );
     }
 
     private static String makeImageHtml(ImageResource image) {
         return AbstractImagePrototype.create( image ).getHTML();
-    }
-
-    /**
-     * Delete a column
-     * 
-     * @param column
-     *            Column to delete
-     * @param bRedraw
-     *            Should grid be redrawn
-     */
-    void deleteColumn(DynamicColumn<T> column,
-                      boolean bRedraw) {
-
-        //Find index of column
-        int index = columns.indexOf( column );
-        if ( index == -1 ) {
-            throw new IllegalArgumentException( "Column not found in declared columns." );
-        }
-
-        //Expand any merged cells in column
-        boolean bRedrawSidebar = false;
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            CellValue< ? > cv = data.get( iRow ).get( index );
-            if ( cv.isGrouped() ) {
-                removeModelGrouping( cv,
-                                     false );
-                bRedrawSidebar = true;
-            }
-        }
-
-        // Clear any selections
-        clearSelection();
-
-        // Delete column from grid
-        columns.remove( index );
-        reindexColumns();
-
-        data.deleteColumn( index );
-
-        // Redraw
-        if ( bRedraw ) {
-            redraw();
-            if ( bRedrawSidebar ) {
-                eventBus.fireEvent( ROW_GROUPING_EVENT );
-            }
-        }
-
     }
 
     /**
@@ -1008,6 +968,15 @@ public abstract class MergableGridWidget<T> extends Widget
         rangeExtentCell = null;
     }
 
+    public void setData(DynamicData data) {
+        this.data = data;
+        this.rowMapper = new RowMapper( data );
+    }
+
+    public void setColumns(List<DynamicColumn<T>> columns) {
+        this.columns = columns;
+    }
+
     public void onToggleMerging(ToggleMergingEvent event) {
         setMerging( event.isMerged() );
     }
@@ -1091,12 +1060,36 @@ public abstract class MergableGridWidget<T> extends Widget
 
     }
 
-    public void setCellValueFactory(AbstractCellValueFactory<T, ? > cellValueFactory) {
-        this.cellValueFactory = cellValueFactory;
-    }
+    public void onDeleteColumn(DeleteColumnEvent event) {
+        int index = event.getIndex();
 
-    public RowMapper getRowMapper() {
-        return this.rowMapper;
+        //Expand any merged cells in column
+        boolean bRedrawSidebar = false;
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            CellValue< ? > cv = data.get( iRow ).get( index );
+            if ( cv.isGrouped() ) {
+                removeModelGrouping( cv,
+                                     false );
+                bRedrawSidebar = true;
+            }
+        }
+
+        // Clear any selections
+        clearSelection();
+
+        // Delete column from grid
+        columns.remove( index );
+        reindexColumns();
+
+        data.deleteColumn( index );
+
+        // Redraw
+        if ( event.redraw() ) {
+            redraw();
+            if ( bRedrawSidebar ) {
+                eventBus.fireEvent( ROW_GROUPING_EVENT );
+            }
+        }
     }
 
 }

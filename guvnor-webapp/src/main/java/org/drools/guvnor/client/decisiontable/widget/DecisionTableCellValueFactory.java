@@ -52,12 +52,17 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
-     * @param model
-     *            The Decision Table model to assist data-type derivation
      */
-    public DecisionTableCellValueFactory(SuggestionCompletionEngine sce,
-                                         GuidedDecisionTable52 model) {
+    public DecisionTableCellValueFactory(SuggestionCompletionEngine sce) {
         super( sce );
+    }
+
+    /**
+     * Set the model for which CellValues will be created
+     * 
+     * @param model
+     */
+    public void setModel(GuidedDecisionTable52 model) {
         if ( model == null ) {
             throw new IllegalArgumentException( "model cannot be null" );
         }
@@ -140,14 +145,14 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
                 break;
             case NUMERIC :
                 if ( column instanceof RowNumberCol52 ) {
-                    cell = makeNewRowNumberCellValue();
+                    cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
                 } else {
                     cell = makeNewNumericCellValue( dcv.getNumericValue() );
                     if ( column instanceof AttributeCol52 ) {
                         AttributeCol52 at = (AttributeCol52) column;
                         if ( at.getAttribute().equals( RuleAttributeWidget.SALIENCE_ATTR ) ) {
                             if ( at.isUseRowNumber() ) {
-                                cell = makeNewRowNumberCellValue();
+                                cell = makeNewRowNumberCellValue( dcv.getNumericValue() );
                             }
                         }
                     }
@@ -244,13 +249,16 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
 
     }
 
-    protected CellValue<BigDecimal> makeNewRowNumberCellValue() {
+    public CellValue<BigDecimal> makeNewRowNumberCellValue(BigDecimal initialValue) {
         // Rows are 0-based internally but 1-based in the UI
-        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( new BigDecimal( 0 ) );
+        CellValue<BigDecimal> cv = makeNewNumericCellValue();
+        if ( initialValue != null ) {
+            cv.setValue( initialValue );
+        }
         return cv;
     }
 
-    protected CellValue<Analysis> makeNewAnalysisCellValue() {
+    public CellValue<Analysis> makeNewAnalysisCellValue() {
         Analysis analysis = new Analysis();
         return new CellValue<Analysis>( analysis );
     }

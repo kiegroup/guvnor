@@ -138,7 +138,7 @@ public abstract class AbstractCellValueFactory<C, V> {
     protected CellValue<BigDecimal> makeNewNumericCellValue(BigDecimal initialValue) {
         CellValue<BigDecimal> cv = makeNewNumericCellValue();
         if ( initialValue != null ) {
-            cv.setValue( (BigDecimal) initialValue );
+            cv.setValue( initialValue );
         }
         return cv;
     }

@@ -17,7 +17,8 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
@@ -48,7 +49,7 @@ import com.google.gwt.user.client.ui.Widget;
  * A sidebar for a VericalDecisionTable. This provides a vertical list of
  * controls to add and remove the associated row from the DecisionTable.
  */
-public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarWidget<T> {
+public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends AbstractDecoratedGridSidebarWidget<M, T> {
 
     /**
      * Widget to render selectors beside rows. Two selectors are provided per
@@ -131,7 +132,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
                 deleteRow( 0 );
             }
             //Add selector for each row
-            for ( int iRow = 0; iRow < hasRows.getRows().size(); iRow++ ) {
+            for ( int iRow = 0; iRow < data.size(); iRow++ ) {
                 appendRow();
             }
 
@@ -170,7 +171,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
                 public void onClick(ClickEvent event) {
                     //Raise an event to add row
-                    int index = hasRows.getRowMapper().mapToAbsoluteRow( widgets.indexOf( hp ) );
+                    int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
                     InsertRowEvent ire = new InsertRowEvent( index );
                     eventBus.fireEvent( ire );
                 }
@@ -186,7 +187,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
 
                 public void onClick(ClickEvent event) {
                     //Raise an event to delete row
-                    int index = hasRows.getRowMapper().mapToAbsoluteRow( widgets.indexOf( hp ) );
+                    int index = rowMapper.mapToAbsoluteRow( widgets.indexOf( hp ) );
                     DeleteRowEvent ire = new DeleteRowEvent( index );
                     eventBus.fireEvent( ire );
                 }
@@ -286,22 +287,24 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
     }
 
     // UI Elements
-    private ScrollPanel                       scrollPanel;
-    private VerticalSelectorWidget            selectors;
-    private final VerticalSideBarSpacerWidget spacer = new VerticalSideBarSpacerWidget();
+    private ScrollPanel                 scrollPanel;
+    private VerticalSelectorWidget      selectors;
+    private VerticalSideBarSpacerWidget spacer = new VerticalSideBarSpacerWidget();
+
+    //Underlying model
+    protected DynamicData               data;
+    protected RowMapper                 rowMapper;
 
     /**
      * Construct a "Sidebar" for the provided DecisionTable
      * 
      * @param decisionTable
      */
-    public VerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
-                                              EventBus eventBus,
-                                              HasGroupedRows<DynamicDataRow> hasRows) {
+    public AbstractVerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
+                                              EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
-               eventBus,
-               hasRows );
+               eventBus );
 
         // Construct the Widget
         scrollPanel = new ScrollPanel();
@@ -336,7 +339,7 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
     }
 
     @Override
-    void setScrollPosition(int position) {
+    public void setScrollPosition(int position) {
         if ( position < 0 ) {
             throw new IllegalArgumentException( "position cannot be less than zero" );
         }
@@ -344,17 +347,17 @@ public class VerticalDecoratedGridSidebarWidget<T> extends DecoratedGridSidebarW
     }
 
     @Override
-    void redraw() {
+    protected void redraw() {
         selectors.redraw();
     }
 
     public void onDeleteRow(DeleteRowEvent event) {
-        int index = hasRows.getRowMapper().mapToMergedRow( event.getIndex() );
+        int index = rowMapper.mapToMergedRow( event.getIndex() );
         selectors.deleteRow( index );
     }
 
     public void onInsertRow(InsertRowEvent event) {
-        int index = hasRows.getRowMapper().mapToMergedRow( event.getIndex() );
+        int index = rowMapper.mapToMergedRow( event.getIndex() );
         selectors.insertRowBefore( index );
     }
 

@@ -15,11 +15,11 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.Composite;
@@ -28,18 +28,18 @@ import com.google.gwt.user.client.ui.Composite;
  * An abstract "Sidebar" widget to decorate a <code>DecoratedGridWidget</code>
  * 
  * @param <T>
+ *            Column data-type
  */
-public abstract class DecoratedGridSidebarWidget<T> extends Composite
+public abstract class AbstractDecoratedGridSidebarWidget<M, T> extends Composite
     implements
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
+    SetInternalModelEvent.Handler<M, T>,
     RowGroupingChangeEvent.Handler {
 
-    protected HasGroupedRows<DynamicDataRow>    hasRows;
-    protected AbstractCellValueFactory< ? , ? > cellValueFactory;
-    protected ResourcesProvider<T>              resources;
-    protected EventBus                          eventBus;
+    protected ResourcesProvider<T> resources;
+    protected EventBus             eventBus;
 
     /**
      * Construct a "Sidebar" for the provided DecoratedGridWidget. The sidebar
@@ -48,23 +48,17 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
      * 
      * @param resources
      * @param eventBus
-     * @param hasRows
      */
-    public DecoratedGridSidebarWidget(ResourcesProvider<T> resources,
-                                      EventBus eventBus,
-                                      HasGroupedRows<DynamicDataRow> hasRows) {
+    public AbstractDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
+                                              EventBus eventBus) {
         if ( resources == null ) {
             throw new IllegalArgumentException( "resources cannot be null" );
         }
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
-        if ( hasRows == null ) {
-            throw new IllegalArgumentException( "hasRows cannot be null" );
-        }
         this.resources = resources;
         this.eventBus = eventBus;
-        this.hasRows = hasRows;
 
         //Wire-up event handlers
         eventBus.addHandler( DeleteRowEvent.TYPE,
@@ -90,16 +84,12 @@ public abstract class DecoratedGridSidebarWidget<T> extends Composite
      * 
      * @param position
      */
-    abstract void setScrollPosition(int position);
+    public abstract void setScrollPosition(int position);
 
     /**
      * Redraw the sidebar, this involves clearing any content before calling to
      * addSelector for each row in the grid's data
      */
     abstract void redraw();
-
-    public void setCellValueFactory(AbstractCellValueFactory< ? , ? > cellValueFactory) {
-        this.cellValueFactory = cellValueFactory;
-    }
 
 }

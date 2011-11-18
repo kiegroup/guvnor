@@ -154,8 +154,8 @@ public class CellValueFactoryTests {
         a2.setFactField( "name" );
         dt.getActionCols().add( a2 );
 
-        factory = new DecisionTableCellValueFactory( sce,
-                                                     dt );
+        factory = new DecisionTableCellValueFactory( sce );
+        factory.setModel( dt );
 
         Map<String, String> preferences = new HashMap<String, String>();
         preferences.put( ApplicationPreferences.DATE_FORMAT,

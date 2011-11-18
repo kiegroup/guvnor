@@ -13,18 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
+package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalTemplateDataModelEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
+import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -54,8 +56,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Header for a Vertical Decision Table
  */
-public class TemplateDataHeaderWidget extends
-        DecoratedGridHeaderWidget<TemplateDataColumn> {
+public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<TemplateModel, TemplateDataColumn> {
 
     /**
      * This is the guts of the widget.
@@ -171,9 +172,8 @@ public class TemplateDataHeaderWidget extends
 
             // Extracting visible columns makes life easier
             headerColumns.clear();
-            final List<DynamicColumn<TemplateDataColumn>> columns = grid.getColumns();
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-                DynamicColumn<TemplateDataColumn> col = columns.get( iCol );
+            for ( int iCol = 0; iCol < sortableColumns.size(); iCol++ ) {
+                DynamicColumn<TemplateDataColumn> col = sortableColumns.get( iCol );
                 headerColumns.add( col );
             }
 
@@ -218,7 +218,8 @@ public class TemplateDataHeaderWidget extends
                             public void onClick(ClickEvent event) {
                                 if ( sortableColumn.isSortable() ) {
                                     updateSortOrder( sortableColumn );
-                                    grid.sort();
+                                    //TODO {manstis} raise an event
+                                    //grid.sort();
                                 }
                             }
 
@@ -253,8 +254,7 @@ public class TemplateDataHeaderWidget extends
                 column.setSortIndex( 0 );
                 column.setSortDirection( SortDirection.ASCENDING );
                 int sortIndex = 1;
-                final List<DynamicColumn<TemplateDataColumn>> columns = grid.getColumns();
-                for ( DynamicColumn<TemplateDataColumn> sortableColumn : columns ) {
+                for ( DynamicColumn<TemplateDataColumn> sortableColumn : sortableColumns ) {
                     if ( !sortableColumn.equals( column ) ) {
                         if ( sortableColumn.getSortDirection() != SortDirection.NONE ) {
                             sortableColumn.setSortIndex( sortIndex );
@@ -276,11 +276,13 @@ public class TemplateDataHeaderWidget extends
      * @param grid
      */
     public TemplateDataHeaderWidget(final ResourcesProvider<TemplateDataColumn> resources,
-                                    final EventBus eventBus,
-                                    final DecoratedGridWidget<TemplateDataColumn> grid) {
+                                    final EventBus eventBus) {
         super( resources,
-               eventBus,
-               grid );
+               eventBus );
+
+        //Wire-up event handlers
+        eventBus.addHandler( SetInternalTemplateDataModelEvent.TYPE,
+                             this );
     }
 
     @Override
@@ -370,6 +372,15 @@ public class TemplateDataHeaderWidget extends
                 tce.getStyle().setCursor( cursor );
             }
         }
+    }
+
+    public void onSetInternalModel(SetInternalModelEvent<TemplateModel, TemplateDataColumn> event) {
+        this.model = event.getModel();
+        List<DynamicColumn<TemplateDataColumn>> columns = event.getColumns();
+        for ( DynamicColumn<TemplateDataColumn> column : columns ) {
+            sortableColumns.add( column );
+        }
+
     }
 
 }

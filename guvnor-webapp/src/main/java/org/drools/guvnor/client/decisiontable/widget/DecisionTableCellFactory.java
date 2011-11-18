@@ -51,11 +51,10 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
 
     private static String[]       DIALECTS = {"java", "mvel"};
 
-    // Model used to determine data-types etc for cells
-    private GuidedDecisionTable52 model;
-
     //Event Bus on which cells can subscribe to events
     private EventBus              eventBus;
+
+    private GuidedDecisionTable52 model;
 
     /**
      * Construct a Cell Factory for a specific Decision Table
@@ -63,7 +62,8 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
      * @param selectedCellValueUpdater
-     *            SelectedCellValueUpdater to which cells will send their updates
+     *            SelectedCellValueUpdater to which cells will send their
+     *            updates
      * @param model
      *            The Decision Table model to assist data-type derivation
      * @param eventBus
@@ -71,18 +71,25 @@ public class DecisionTableCellFactory extends AbstractCellFactory<DTColumnConfig
      */
     public DecisionTableCellFactory(SuggestionCompletionEngine sce,
                                     SelectedCellValueUpdater selectedCellValueUpdater,
-                                    GuidedDecisionTable52 model,
                                     EventBus eventBus) {
         super( sce,
                selectedCellValueUpdater );
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-        this.model = model;
         if ( eventBus == null ) {
             throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.eventBus = eventBus;
+    }
+
+    /**
+     * Set the model for which cells will be created
+     * 
+     * @param model
+     */
+    public void setModel(GuidedDecisionTable52 model) {
+        if ( model == null ) {
+            throw new IllegalArgumentException( "model cannot be null" );
+        }
+        this.model = model;
     }
 
     /**

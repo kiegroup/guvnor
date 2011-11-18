@@ -18,15 +18,15 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.MergableGridWidget.CellSelectionDetail;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
 
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
@@ -44,51 +44,61 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  * DecoratedGridSidebarWidget encapsulating basic operation: keyboard navigation
  * and column resizing.
  * 
+ * @param <M>
+ *            The domain model represented by the Grid
  * @param <T>
  *            The type of domain columns represented by the Grid
  */
-public abstract class DecoratedGridWidget<T> extends Composite
+public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     implements
-    HasGroupedRows<DynamicDataRow>,
+    //TODO {manstis} HasGroupedRows<DynamicDataRow>,
     //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
     ColumnResizeEvent.Handler,
     SelectedCellChangeEvent.Handler,
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
-    AppendRowEvent.Handler {
+    AppendRowEvent.Handler,
+    SetModelEvent.Handler<M>,
+    DeleteColumnEvent.Handler {
 
     // Widgets for UI
-    protected Panel                         mainPanel;
-    protected Panel                         bodyPanel;
-    protected ScrollPanel                   scrollPanel;
-    protected MergableGridWidget<T>         gridWidget;
-    protected DecoratedGridHeaderWidget<T>  headerWidget;
-    protected DecoratedGridSidebarWidget<T> sidebarWidget;
-    protected HasSystemControlledColumns    hasSystemControlledColumns;
+    protected Panel                                    mainPanel;
+    protected Panel                                    bodyPanel;
+    protected ScrollPanel                              scrollPanel;
+    protected AbstractMergableGridWidget<M, T>         gridWidget;
+    protected AbstractDecoratedGridHeaderWidget<M, T>  headerWidget;
+    protected AbstractDecoratedGridSidebarWidget<M, T> sidebarWidget;
+    protected HasSystemControlledColumns               hasSystemControlledColumns;
 
-    protected int                           height;
-    protected int                           width;
+    protected int                                      height;
+    protected int                                      width;
 
     // Resources
-    protected ResourcesProvider<T>          resources;
+    protected final ResourcesProvider<T>               resources;
 
     //Event Bus
-    protected EventBus                      eventBus;
+    protected final EventBus                           eventBus;
 
     /**
      * Construct at empty DecoratedGridWidget, without DecoratedGridHeaderWidget
      * or DecoratedGridSidebarWidget These should be set before the grid is
      * displayed using setHeaderWidget and setSidebarWidget respectively.
      */
-    public DecoratedGridWidget(ResourcesProvider<T> resources,
-                               EventBus eventBus) {
-        this.resources = resources;
-        this.eventBus = eventBus;
+    public AbstractDecoratedGridWidget(ResourcesProvider<T> resources,
+                                       EventBus eventBus,
+                                       Panel mainPanel,
+                                       Panel bodyPanel,
+                                       AbstractMergableGridWidget<M, T> gridWidget,
+                                       AbstractDecoratedGridHeaderWidget<M, T> headerWidget,
+                                       AbstractDecoratedGridSidebarWidget<M, T> sidebarWidget) {
 
-        mainPanel = getMainPanel();
-        bodyPanel = getBodyPanel();
-        gridWidget = getGridWidget();
+        if ( resources == null ) {
+            throw new IllegalArgumentException( "resources cannot be null" );
+        }
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
+        }
         if ( mainPanel == null ) {
             throw new IllegalArgumentException( "mainPanel cannot be null" );
         }
@@ -98,10 +108,27 @@ public abstract class DecoratedGridWidget<T> extends Composite
         if ( gridWidget == null ) {
             throw new IllegalArgumentException( "gridWidget cannot be null" );
         }
+        if ( headerWidget == null ) {
+            throw new IllegalArgumentException( "headerWidget cannot be null" );
+        }
+        if ( sidebarWidget == null ) {
+            throw new IllegalArgumentException( "sidebarWidget cannot be null" );
+        }
+
+        this.resources = resources;
+        this.eventBus = eventBus;
+        this.mainPanel = mainPanel;
+        this.bodyPanel = bodyPanel;
+        this.gridWidget = gridWidget;
+        this.headerWidget = headerWidget;
+        this.sidebarWidget = sidebarWidget;
 
         scrollPanel = new ScrollPanel();
         scrollPanel.add( gridWidget );
         scrollPanel.addScrollHandler( getScrollHandler() );
+
+        initialiseHeaderWidget();
+        initialiseSidebarWidget();
 
         initWidget( mainPanel );
 
@@ -145,78 +172,13 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Delete the given column
-     * 
-     * @param column
-     * @param bRedraw
-     */
-    public void deleteColumn(DynamicColumn<T> column,
-                             boolean bRedraw) {
-        if ( column == null ) {
-            throw new IllegalArgumentException( "Column cannot be null." );
-        }
-        gridWidget.deleteColumn( column,
-                                 bRedraw );
-        if ( bRedraw ) {
-            headerWidget.redraw();
-            assertDimensions();
-        }
-    }
-
-    /**
-     * Get the DecoratedGridWidget inner panel to which the
-     * DecoratedGridHeaderWidget will be added. This allows subclasses to have
-     * some control over the internal layout of the grid.
-     * 
-     * @return
-     */
-    abstract Panel getBodyPanel();
-
-    /**
-     * Return the Widget responsible for rendering the DecoratedGridWidget
-     * "grid".
-     * 
-     * @return
-     */
-    abstract MergableGridWidget<T> getGridWidget();
-
-    /**
-     * Return the Widget responsible for rendering the DecoratedGridWidget
-     * "header".
-     * 
-     * @return
-     */
-    DecoratedGridHeaderWidget<T> getHeaderWidget() {
-        return headerWidget;
-    }
-
-    /**
-     * Return the DecoratedGridWidget outer most panel to which all child
-     * widgets is added. This allows subclasses to have some control over the
-     * internal layout of the grid.
-     * 
-     * @return
-     */
-    abstract Panel getMainPanel();
-
-    /**
      * Return the ScrollPanel in which the DecoratedGridWidget "grid" is nested.
      * This allows ScrollEvents to be hooked up to other defendant controls
      * (e.g. the Header).
      * 
      * @return
      */
-    abstract ScrollHandler getScrollHandler();
-
-    /**
-     * Return the Widget responsible for rendering the DecoratedGridWidget
-     * "sidebar".
-     * 
-     * @return
-     */
-    DecoratedGridSidebarWidget<T> getSidebarWidget() {
-        return sidebarWidget;
-    }
+    protected abstract ScrollHandler getScrollHandler();
 
     /**
      * Insert a column before that specified
@@ -248,13 +210,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
             headerWidget.redraw();
             assertDimensions();
         }
-    }
-
-    /**
-     * Get the rows
-     */
-    public List<DynamicDataRow> getRows() {
-        return this.gridWidget.getRows();
     }
 
     /**
@@ -318,18 +273,9 @@ public abstract class DecoratedGridWidget<T> extends Composite
         this.hasSystemControlledColumns = hasSystemControlledColumns;
     }
 
-    /**
-     * Set the Header Widget and attach resize handlers to GridWidget to support
-     * column resizing and to resize GridWidget's ScrollPanel when header
-     * resizes.
-     * 
-     * @param headerWidget
-     */
-    public void setHeaderWidget(DecoratedGridHeaderWidget<T> headerWidget) {
-        if ( headerWidget == null ) {
-            throw new IllegalArgumentException( "headerWidget cannot be null" );
-        }
-        this.headerWidget = headerWidget;
+    //Initialise the Header Widget and attach resize handlers to GridWidget to support
+    //column resizing and to resize GridWidget's ScrollPanel when header resizes.
+    private void initialiseHeaderWidget() {
         eventBus.addHandler( ColumnResizeEvent.TYPE,
                              this );
         this.headerWidget.addResizeHandler( new ResizeHandler() {
@@ -340,9 +286,25 @@ public abstract class DecoratedGridWidget<T> extends Composite
                 assertDimensions();
             }
         } );
-
         bodyPanel.add( headerWidget );
         bodyPanel.add( scrollPanel );
+    }
+
+    //Set the SidebarWidget and attach a ResizeEvent handler to the Sidebar for when the header changes 
+    //size and the Sidebar needs to be redrawn to align correctly. Also attach a RowGroupingChangeEvent 
+    //handler to the MergableGridWidget so the Sidebar can redraw itself when rows are merged, grouped, 
+    //ungrouped or unmerged.
+    private void initialiseSidebarWidget() {
+        this.headerWidget.addResizeHandler( new ResizeHandler() {
+
+            public void onResize(ResizeEvent event) {
+                sidebarWidget.resizeSidebar( event.getHeight() );
+            }
+
+        } );
+
+        this.mainPanel.add( sidebarWidget );
+        this.mainPanel.add( bodyPanel );
     }
 
     /**
@@ -364,32 +326,6 @@ public abstract class DecoratedGridWidget<T> extends Composite
         this.height = height;
         setHeight( height );
         setWidth( width );
-    }
-
-    /**
-     * Set the SidebarWidget and attach a ResizeEvent handler to the Sidebar for
-     * when the header changes size and the Sidebar needs to be redrawn to align
-     * correctly. Also attach a RowGroupingChangeEvent handler to the
-     * MergableGridWidget so the Sidebar can redraw itself when rows are merged,
-     * grouped, ungrouped or unmerged.
-     * 
-     * @param sidebarWidget
-     */
-    public void setSidebarWidget(final DecoratedGridSidebarWidget<T> sidebarWidget) {
-        if ( sidebarWidget == null ) {
-            throw new IllegalArgumentException( "sidebarWidget cannot be null" );
-        }
-        this.sidebarWidget = sidebarWidget;
-        this.headerWidget.addResizeHandler( new ResizeHandler() {
-
-            public void onResize(ResizeEvent event) {
-                sidebarWidget.resizeSidebar( event.getHeight() );
-            }
-
-        } );
-
-        this.mainPanel.add( sidebarWidget );
-        this.mainPanel.add( bodyPanel );
     }
 
     /**
@@ -552,30 +488,14 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     /**
-     * Redraw sidebar
-     */
-    public void redrawSidebar() {
-        this.sidebarWidget.redraw();
-    }
-
-    /**
      * Set the state of DecoratedGridWidget merging.
      */
     public void setMerging(boolean isMerged) {
         this.gridWidget.setMerging( isMerged );
     }
 
-    public void setCellValueFactory(AbstractCellValueFactory<T, ? > cellValueFactory) {
-        this.gridWidget.setCellValueFactory( cellValueFactory );
-        this.sidebarWidget.setCellValueFactory( cellValueFactory );
-    }
-
-    public RowMapper getRowMapper() {
-        return this.gridWidget.getRowMapper();
-    }
-
     public void onColumnResize(final ColumnResizeEvent event) {
-        Scheduler.get().scheduleFinally( new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
 
             public void execute() {
                 assertDimensions();
@@ -591,7 +511,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     public void onDeleteRow(DeleteRowEvent event) {
-        Scheduler.get().scheduleFinally( new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
 
             public void execute() {
                 assertDimensions();
@@ -601,7 +521,7 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     public void onInsertRow(InsertRowEvent event) {
-        Scheduler.get().scheduleFinally( new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
 
             public void execute() {
                 assertDimensions();
@@ -611,13 +531,25 @@ public abstract class DecoratedGridWidget<T> extends Composite
     }
 
     public void onAppendRow(AppendRowEvent event) {
-        Scheduler.get().scheduleFinally( new Command() {
+        Scheduler.get().scheduleDeferred( new Command() {
 
             public void execute() {
                 assertDimensions();
             }
 
         } );
+    }
+
+    public void onDeleteColumn(DeleteColumnEvent event) {
+        if ( event.redraw() ) {
+            Scheduler.get().scheduleDeferred( new Command() {
+
+                public void execute() {
+                    assertDimensions();
+                }
+
+            } );
+        }
     }
 
 }

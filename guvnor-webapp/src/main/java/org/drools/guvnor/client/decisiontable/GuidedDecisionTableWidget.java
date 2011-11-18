@@ -577,8 +577,9 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String cm = constants.DeleteActionColumnWarning( c.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
+                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( c );
                                                  guidedDecisionTable.getActionCols().remove( c );
-                                                 dtable.deleteColumn( c );
+                                                 dtable.deleteColumn( columnIndex );
                                                  refreshActionsWidget();
                                              }
                                          }
@@ -815,6 +816,7 @@ public class GuidedDecisionTableWidget extends Composite
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
 
                                                  //Remove condition from pattern
+                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( origCol );
                                                  Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
                                                  origPattern.getConditions().remove( origCol );
 
@@ -828,7 +830,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                  }
 
                                                  //Update UI
-                                                 dtable.deleteColumn( origCol );
+                                                 dtable.deleteColumn( columnIndex );
                                                  refreshConditionsWidget();
                                              }
                                          }
@@ -1080,8 +1082,9 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( at );
                                                  guidedDecisionTable.getAttributeCols().remove( at );
-                                                 dtable.deleteColumn( at );
+                                                 dtable.deleteColumn( columnIndex );
                                                  refreshAttributeWidget();
                                              }
                                          }
@@ -1097,8 +1100,9 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
+                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( md );
                                                  guidedDecisionTable.getMetadataCols().remove( md );
-                                                 dtable.deleteColumn( md );
+                                                 dtable.deleteColumn( columnIndex );
                                                  refreshAttributeWidget();
                                              }
                                          }
