@@ -63,7 +63,9 @@ public class SuggestionCompletionEngine
 
     private static final String[]                   STANDARD_OPERATORS       = new String[]{"==", "!=", "== null", "!= null"};
     private static final String[]                   COMPARABLE_OPERATORS     = new String[]{"==", "!=", "<", ">", "<=", ">=", "== null", "!= null"};
-    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null"};
+
+    private static final String[]                   STRING_OPERATORS         = new String[]{"==", "!=", "<", ">", "<=", ">=", "matches", "soundslike", "== null", "!= null", "in" };
+
     private static final String[]                   COLLECTION_OPERATORS     = new String[]{"contains", "excludes", "==", "!=", "== null", "!= null"};
 
     private static final String[]                   SIMPLE_CEP_OPERATORS     = new String[]{"after", "before", "coincides"};

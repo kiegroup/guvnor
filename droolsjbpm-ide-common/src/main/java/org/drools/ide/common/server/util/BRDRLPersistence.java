@@ -738,10 +738,14 @@ public class BRDRLPersistence
                     break;
                 case BaseSingleFieldConstraint.TYPE_ENUM :
                     buf.append( " " );
-                    DRLConstraintValueBuilder.buildLHSFieldValue( buf,
+                    if (operator.equals("in")) {
+                        buf.append( value );
+                    } else {
+                        DRLConstraintValueBuilder.buildLHSFieldValue( buf,
                                                                   type,
                                                                   fieldType,
                                                                   value );
+                    }
                     break;
                 default :
                     if ( !operator.equals( "== null" ) && !operator.equals( "!= null" ) ) {

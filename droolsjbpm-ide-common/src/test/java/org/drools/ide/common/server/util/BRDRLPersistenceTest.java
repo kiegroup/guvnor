@@ -193,6 +193,31 @@ public class BRDRLPersistenceTest {
         assertEquals( expected,
                       drl );
     }
+    
+    @Test
+    public void testEnumTypeStringInOperator() {
+        //A legacy "Guvnor" enums (i.e pick-list of underlying field data-type)
+        String expected = "rule \"my rule\"\n\tdialect \"mvel\"\n\twhen\n\t\tCheese( type in ( \"CHEDDAR\",\"STILTON\" ) )\n"
+                          + "\tthen\n\t\tinsert( new Report() );\nend\n";
+        final RuleModel m = new RuleModel();
+        final FactPattern pat = new FactPattern( "Cheese" );
+
+        m.addLhsItem( pat );
+        final SingleFieldConstraint con = new SingleFieldConstraint();
+        con.setFieldName( "type" );
+        con.setOperator( "in" );
+        con.setValue( "( \"CHEDDAR\",\"STILTON\" )" );
+        con.setFieldType( SuggestionCompletionEngine.TYPE_STRING );
+        con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_ENUM );
+        pat.addConstraint( con );
+
+        m.addRhsItem( new ActionInsertFact( "Report" ) );
+        m.name = "my rule";
+
+        final String drl = brlPersistence.marshal( m );
+        assertEquals( expected,
+                      drl );
+    }
 
     @Test
     public void testEnumTypeNumeric() {

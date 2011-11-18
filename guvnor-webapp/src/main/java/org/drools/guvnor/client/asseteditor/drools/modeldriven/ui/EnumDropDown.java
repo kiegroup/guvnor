@@ -16,6 +16,9 @@
 
 package org.drools.guvnor.client.asseteditor.drools.modeldriven.ui;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import org.drools.guvnor.client.common.DropDownValueChanged;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.IDirtyable;
@@ -46,18 +49,64 @@ public class EnumDropDown extends ListBox
     public EnumDropDown(final String currentValue,
                         final DropDownValueChanged valueChanged,
                         final DropDownData dropData) {
-
+        this(currentValue, valueChanged, dropData, false);
+            
+    }
+    
+    public EnumDropDown(final String currentValue,
+            final DropDownValueChanged valueChanged,
+            final DropDownData dropData, 
+            boolean multipleSelect) {
+        super(multipleSelect);
         this.valueChangedCommand = valueChanged;
 
         addChangeHandler( new ChangeHandler() {
             public void onChange(ChangeEvent event) {
-                valueChangedCommand.valueChanged( getItemText( getSelectedIndex() ),
-                                                  getValue( getSelectedIndex() ) );
+                valueChangedCommand.valueChanged( getSelectedItemsText(),
+                        getSelectedValue() );
             }
         } );
 
         setDropDownData( currentValue,
-                         dropData );
+                dropData );
+    }
+    
+    String getSelectedItemsText() {
+        StringBuffer buffer = new StringBuffer();
+        boolean first = true;
+        for (int i=0; i < getItemCount(); i++) {
+            if (isItemSelected(i)) {
+                if (!first) {
+                    buffer.append(",");
+                }
+                first = false;
+                buffer.append(getItemText(i));
+            }
+        }
+        return buffer.toString();
+    }
+    
+    String getSelectedValue() {
+        StringBuffer buffer = new StringBuffer();
+        if (isMultipleSelect()) {
+            boolean first = true;
+            buffer.append("( ");
+            for (int i=0; i < getItemCount(); i++) {
+                if (isItemSelected(i)) {
+                    if (!first) {
+                        buffer.append(",");
+                    }
+                    first = false;
+                    buffer.append("\"");
+                    buffer.append(getValue(i));
+                    buffer.append("\"");
+                }
+            }
+            buffer.append(" )");
+        } else {
+            buffer.append(getValue(getSelectedIndex()));
+        }
+        return buffer.toString();
     }
 
     public void setDropDownData(final String currentValue,
@@ -116,6 +165,19 @@ public class EnumDropDown extends ListBox
         clear();
         //        addItem( constants.Choose() );
         boolean selected = false;
+        HashSet<String> currentValues = new HashSet<String>();
+        String trimmedCurrentValue = currentValue;
+        if (isMultipleSelect() && trimmedCurrentValue != null) {
+            trimmedCurrentValue = currentValue.replace("\"", "");
+            trimmedCurrentValue = trimmedCurrentValue.replace("(", "");
+            trimmedCurrentValue = trimmedCurrentValue.replace(")", "");
+            trimmedCurrentValue = trimmedCurrentValue.trim();
+            if ( trimmedCurrentValue.indexOf(",") > 0) {
+                currentValues.addAll(Arrays.asList( trimmedCurrentValue.split(",") ));
+            }
+        } else {
+            currentValues.add( currentValue );
+        }
 
         for ( int i = 0; i < enumeratedValues.length; i++ ) {
             String v = enumeratedValues[i];
@@ -132,8 +194,8 @@ public class EnumDropDown extends ListBox
                 addItem( v );
                 val = v;
             }
-            if ( currentValue != null && currentValue.equals( val ) ) {
-                setSelectedIndex( i );
+            if ( currentValue != null && currentValues.contains( val )) {
+                setItemSelected(i, true);
                 //                setSelectedIndex( i + 1 );
                 selected = true;
             }
