@@ -29,6 +29,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUp
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertTemplateDataColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
@@ -51,7 +53,8 @@ public class TemplateDataTableWidget extends Composite
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
-    DeleteColumnEvent.Handler {
+    DeleteColumnEvent.Handler,
+    InsertTemplateDataColumnEvent.Handler<TemplateDataColumn> {
 
     // Decision Table data
     protected TemplateModel                                                  model;
@@ -161,9 +164,9 @@ public class TemplateDataTableWidget extends Composite
             throw new IllegalArgumentException( "modelColumn cannot be null" );
         }
 
-        DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
-        widget.setColumnVisibility( col.getColumnIndex(),
-                                            isVisible );
+        //TODO {manstis} Needs rewrite to events
+        //DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
+        //widget.setColumnVisibility( col.getColumnIndex(),isVisible );
     }
 
     /**
@@ -196,24 +199,25 @@ public class TemplateDataTableWidget extends Composite
 
         //Set row data
         String[][] data = model.getTableAsArray();
-        final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-        for ( int iRow = 0; iRow < data.length; iRow++ ) {
-            DynamicDataRow row = new DynamicDataRow();
-            String[] rowData = data[iRow];
-            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-
-                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
-                String initialValue = rowData[iCol];
-                if ( initialValue != null && initialValue.equals( "" ) ) {
-                    initialValue = null;
-                }
-                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
-                                                                                                   initialValue );
-                row.add( cv );
-            }
-            //            widget.appendRow( row );
-        }
+        //TODO {manstis} Needs rewrite to events
+        //final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
+//        for ( int iRow = 0; iRow < data.length; iRow++ ) {
+//            DynamicDataRow row = new DynamicDataRow();
+//            String[] rowData = data[iRow];
+//            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+//                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
+//
+//                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
+//                String initialValue = rowData[iCol];
+//                if ( initialValue != null && initialValue.equals( "" ) ) {
+//                    initialValue = null;
+//                }
+//                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
+//                                                                                                   initialValue );
+//                row.add( cv );
+//            }
+//            widget.appendRow( row );
+//        }
 
         // Schedule redraw
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -247,24 +251,11 @@ public class TemplateDataTableWidget extends Composite
     // Add column to table with optional redraw
     private void addColumn(TemplateDataColumn modelColumn,
                            boolean bRedraw) {
-        int index = widget.getColumns().size();
-        insertColumnBefore( modelColumn,
-                            index,
-                            bRedraw );
-    }
-
-    // Retrieves the DynamicColumn relating to the Model column or null if it
-    // cannot be found
-    private DynamicColumn<TemplateDataColumn> getDynamicColumn(TemplateDataColumn modelCol) {
-        DynamicColumn<TemplateDataColumn> column = null;
-        List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-        for ( DynamicColumn<TemplateDataColumn> dc : columns ) {
-            if ( dc.getModelColumn().equals( modelCol ) ) {
-                column = dc;
-                break;
-            }
-        }
-        return column;
+        //TODO {manstis} Needs rewrite to events
+//        int index = widget.getColumns().size();
+//        insertColumnBefore( modelColumn,
+//                            index,
+//                            bRedraw );
     }
 
     // Insert a new model column at the specified index
@@ -283,17 +274,13 @@ public class TemplateDataTableWidget extends Composite
                                                                                  index );
 
         // Add column and data to grid
-        if ( index < widget.getColumns().size() ) {
-            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
-            widget.insertColumnBefore( columnBefore,
-                                       column,
-                                       columnData,
-                                       bRedraw );
-        } else {
-            widget.appendColumn( column,
-                                 columnData,
-                                 bRedraw );
-        }
+        //TODO {manstis} Needs rewrite to events
+//        if ( index < widget.getColumns().size() ) {
+//            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
+//            //widget.insertColumnBefore( columnBefore,column,columnData,bRedraw );
+//        } else {
+//            //widget.appendColumn( column,columnData,bRedraw );
+//        }
 
     }
 
@@ -328,7 +315,10 @@ public class TemplateDataTableWidget extends Composite
 
     public void onDeleteColumn(DeleteColumnEvent event) {
         // TODO Auto-generated method stub
+    }
 
+    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn> event) {
+        // TODO Auto-generated method stub
     }
 
 }

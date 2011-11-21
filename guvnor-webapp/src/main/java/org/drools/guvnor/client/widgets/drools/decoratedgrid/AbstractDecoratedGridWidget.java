@@ -24,6 +24,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
@@ -60,7 +61,8 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
     SetModelEvent.Handler<M>,
-    DeleteColumnEvent.Handler {
+    DeleteColumnEvent.Handler,
+    InsertColumnEvent.Handler<T> {
 
     // Widgets for UI
     protected Panel                                    mainPanel;
@@ -69,7 +71,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     protected AbstractMergableGridWidget<M, T>         gridWidget;
     protected AbstractDecoratedGridHeaderWidget<M, T>  headerWidget;
     protected AbstractDecoratedGridSidebarWidget<M, T> sidebarWidget;
-    protected HasSystemControlledColumns               hasSystemControlledColumns;
 
     protected int                                      height;
     protected int                                      width;
@@ -141,23 +142,8 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
                              this );
         eventBus.addHandler( SelectedCellChangeEvent.TYPE,
                              this );
-    }
-
-    /**
-     * Append a column to the end of the column list
-     * 
-     * @param column
-     * @param columnData
-     * @param bRedraw
-     *            Redraw the grid after the column has been appended
-     */
-    public void appendColumn(DynamicColumn<T> column,
-                             List<CellValue< ? extends Comparable< ? >>> columnData,
-                             boolean bRedraw) {
-        insertColumnBefore( null,
-                            column,
-                            columnData,
-                            bRedraw );
+        eventBus.addHandler( DeleteColumnEvent.TYPE,
+                             this );
     }
 
     /**
@@ -179,99 +165,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
      * @return
      */
     protected abstract ScrollHandler getScrollHandler();
-
-    /**
-     * Insert a column before that specified
-     * 
-     * @param columnBefore
-     * @param newColumn
-     * @param columnData
-     * @param bRedraw
-     *            Redraw the grid after the column has been inserted
-     */
-    public void insertColumnBefore(DynamicColumn<T> columnBefore,
-                                   DynamicColumn<T> newColumn,
-                                   List<CellValue< ? extends Comparable< ? >>> columnData,
-                                   boolean bRedraw) {
-
-        if ( newColumn == null ) {
-            throw new IllegalArgumentException( "newColumn cannot be null" );
-        }
-        if ( columnData == null ) {
-            throw new IllegalArgumentException( "columnData cannot be null" );
-        }
-        gridWidget.insertColumnBefore( columnBefore,
-                                       newColumn,
-                                       columnData,
-                                       bRedraw );
-
-        // Redraw
-        if ( bRedraw ) {
-            headerWidget.redraw();
-            assertDimensions();
-        }
-    }
-
-    /**
-     * Redraw any columns that have their values programmatically manipulated
-     */
-    public void redrawSystemControlledColumns() {
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-        for ( DynamicColumn< ? > col : columns ) {
-            if ( col.isSystemControlled() ) {
-                gridWidget.redrawColumn( col.getColumnIndex() );
-            }
-        }
-    }
-
-    /**
-     * Set the visibility of a column
-     * 
-     * @param index
-     *            The index of the column to hide
-     * @param isVisible
-     *            true if the column is to be visible
-     */
-    public void setColumnVisibility(int index,
-                                    boolean isVisible) {
-
-        final List<DynamicColumn<T>> columns = gridWidget.getColumns();
-
-        if ( index < 0
-             || index > columns.size() ) {
-            throw new IllegalArgumentException(
-                                                "Column index must be greater than zero and less than then number of declared columns." );
-        }
-
-        if ( isVisible
-             && !columns.get( index ).isVisible() ) {
-            columns.get( index ).setVisible( isVisible );
-            gridWidget.getData().setColumnVisibility( index,
-                                                      isVisible );
-            gridWidget.showColumn( index );
-            headerWidget.redraw();
-        } else if ( !isVisible
-                    && columns.get( index ).isVisible() ) {
-            columns.get( index ).setVisible( isVisible );
-            gridWidget.getData().setColumnVisibility( index,
-                                                      isVisible );
-            gridWidget.hideColumn( index );
-            headerWidget.redraw();
-        }
-    }
-
-    /**
-     * Some implementations may require the values of cells within the
-     * DecoratedGridWidget to be programmatically manipulated (such as
-     * "Row Number", which has to be recalculated after a sort operation). Such
-     * implementations can register themselves here to receive requests to
-     * update cell values when necessary (currently only after a sort).
-     * 
-     * @param hasSystemControlledColumns
-     */
-    public void setHasSystemControlledColumns(HasSystemControlledColumns hasSystemControlledColumns) {
-        this.hasSystemControlledColumns = hasSystemControlledColumns;
-    }
 
     //Initialise the Header Widget and attach resize handlers to GridWidget to support
     //column resizing and to resize GridWidget's ScrollPanel when header resizes.
@@ -469,9 +362,9 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
      * 
      * @return columns
      */
-    public List<DynamicColumn<T>> getColumns() {
-        return this.gridWidget.getColumns();
-    }
+    //    public List<DynamicColumn<T>> getColumns() {
+    //        return this.gridWidget.getColumns();
+    //    }
 
     public void redraw() {
         // Draw header first as the size of child Elements depends upon it
@@ -541,6 +434,18 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
+        if ( event.redraw() ) {
+            Scheduler.get().scheduleDeferred( new Command() {
+
+                public void execute() {
+                    assertDimensions();
+                }
+
+            } );
+        }
+    }
+
+    public void onInsertColumn(InsertColumnEvent<T> event) {
         if ( event.redraw() ) {
             Scheduler.get().scheduleDeferred( new Command() {
 

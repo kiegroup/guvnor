@@ -25,6 +25,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
@@ -740,6 +741,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
 
         //Wire-up event handlers
         eventBus.addHandler( SetInternalDecisionTableModelEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertInternalDecisionTableColumnEvent.TYPE,
                              this );
     }
 

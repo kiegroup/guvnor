@@ -67,6 +67,21 @@ public abstract class AbstractCellValueFactory<C, V> {
     public abstract DynamicDataRow makeUIRowData();
 
     /**
+     * Construct a new column of data for the underlying model
+     * 
+     * @return
+     */
+    public abstract List<V> makeColumnData(C column);
+
+    /**
+     * Construct a new column of data for the MergableGridWidget
+     * 
+     * @param cell
+     * @return
+     */
+    public abstract List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(C column);
+
+    /**
      * Make a Model cell for the given column
      * 
      * @param column

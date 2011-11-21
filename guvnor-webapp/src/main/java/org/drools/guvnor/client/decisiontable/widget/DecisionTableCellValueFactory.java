@@ -87,7 +87,6 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     /**
      * Construct a new row of data for the MergableGridWidget
      * 
-     * @param cell
      * @return
      */
     @Override
@@ -104,6 +103,37 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
             data.add( cell );
         }
 
+        return data;
+    }
+
+    /**
+     * Construct a new column of data for the underlying model
+     * 
+     * @return
+     */
+    public List<DTCellValue52> makeColumnData(DTColumnConfig52 column) {
+        List<DTCellValue52> data = new ArrayList<DTCellValue52>();
+        for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
+            DTCellValue52 cell = makeModelCellValue( column );
+            data.add( cell );
+        }
+        return data;
+    }
+
+    /**
+     * Construct a new column of data for the MergableGridWidget
+     * 
+     * @param cell
+     * @return
+     */
+    public List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(DTColumnConfig52 column) {
+        List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
+            DTCellValue52 dcv = makeModelCellValue( column );
+            CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
+                                                                                dcv );
+            data.add( cell );
+        }
         return data;
     }
 

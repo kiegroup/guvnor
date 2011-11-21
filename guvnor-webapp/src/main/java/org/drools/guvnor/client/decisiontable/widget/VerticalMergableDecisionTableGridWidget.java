@@ -17,8 +17,8 @@ package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalMergableGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
@@ -40,12 +40,8 @@ public class VerticalMergableDecisionTableGridWidget extends AbstractVerticalMer
         //Wire-up event handlers
         eventBus.addHandler( SetInternalDecisionTableModelEvent.TYPE,
                              this );
-    }
-
-    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> event) {
-        this.setColumns( event.getColumns() );
-        this.setData( event.getData() );
-        this.redraw();
+        eventBus.addHandler( InsertInternalDecisionTableColumnEvent.TYPE,
+                             this );
     }
 
 }

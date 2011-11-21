@@ -13,11 +13,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid;
+package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataCellFactory;
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataCellValueFactory;
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetTemplateDataEvent;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
@@ -65,6 +68,10 @@ public abstract class AbstractDecoratedTemplateDataGridWidget extends AbstractDe
     }
 
     public void onSetModel(SetModelEvent<TemplateModel> event) {
+        //TODO {manstis} Add the code!
+    }
+
+    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn> event) {
         //TODO {manstis} Add the code!
     }
 

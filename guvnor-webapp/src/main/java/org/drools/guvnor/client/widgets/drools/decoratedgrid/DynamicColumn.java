@@ -58,6 +58,15 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     }
 
     public DynamicColumn(T modelColumn,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell) {
+        this( modelColumn,
+              cell,
+              0,
+              false,
+              true );
+    }
+
+    public DynamicColumn(T modelColumn,
                          DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
                          int columnIndex) {
         this( modelColumn,

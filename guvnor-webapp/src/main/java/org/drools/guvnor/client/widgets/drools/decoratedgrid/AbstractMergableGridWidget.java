@@ -35,8 +35,11 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -65,7 +68,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
     DeleteColumnEvent.Handler,
-    SetInternalModelEvent.Handler<M, T> {
+    SetInternalModelEvent.Handler<M, T>,
+    InsertInternalColumnEvent.Handler<T>,
+    SetColumnVisibilityEvent.Handler,
+    UpdateColumnEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -232,6 +238,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                              this );
         eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
+        eventBus.addHandler( SetColumnVisibilityEvent.TYPE,
+                             this );
+        eventBus.addHandler( UpdateColumnEvent.TYPE,
+                             this );
     }
 
     private static String makeImageHtml(ImageResource image) {
@@ -266,73 +276,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      */
     protected List<CellValue< ? >> getSelectedCells() {
         return Collections.unmodifiableList( new ArrayList<CellValue< ? >>( this.selections ) );
-    }
-
-    /**
-     * Insert a column before another
-     * 
-     * @param columnBefore
-     *            The column before which the new column should be inserted
-     * @param newColumn
-     *            Column definition
-     * @param columnData
-     *            Data for column
-     * @param bRedraw
-     *            Should grid be redrawn
-     */
-    void insertColumnBefore(DynamicColumn<T> columnBefore,
-                            DynamicColumn<T> newColumn,
-                            List<CellValue< ? extends Comparable< ? >>> columnData,
-                            boolean bRedraw) {
-
-        if ( newColumn == null ) {
-            throw new IllegalArgumentException( "newColumn cannot be null" );
-        }
-        if ( columnData == null ) {
-            throw new IllegalArgumentException( "columnData cannot be null" );
-        }
-        if ( columnData.size() != data.size() ) {
-            throw new IllegalArgumentException( "columnData contains a different number of rows to the grid" );
-        }
-
-        //Find index of new column
-        int index = columns.size();
-        if ( columnBefore != null ) {
-            index = columns.indexOf( columnBefore );
-            if ( index == -1 ) {
-                throw new IllegalArgumentException( "columnBefore does not exist in table data." );
-            }
-        }
-
-        // Clear any selections
-        clearSelection();
-
-        // Add column definition
-        columns.add( index,
-                     newColumn );
-        reindexColumns();
-
-        data.addColumn( index,
-                        columnData,
-                        newColumn.isVisible() );
-
-        // Redraw
-        if ( bRedraw ) {
-            redrawColumns( index,
-                           columns.size() - 1 );
-        }
-
-    }
-
-    /**
-     * Get the rows
-     */
-    public List<DynamicDataRow> getRows() {
-        List<DynamicDataRow> rows = new ArrayList<DynamicDataRow>();
-        for ( DynamicDataRow row : this.data ) {
-            rows.add( row );
-        }
-        return rows;
     }
 
     /**
@@ -1091,5 +1034,76 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             }
         }
     }
+
+    public void onInsertInternalColumn(InsertInternalColumnEvent<T> event) {
+
+        DynamicColumn<T> column = event.getColumn();
+        int index = event.getIndex();
+        boolean redraw = event.redraw();
+        List<CellValue< ? extends Comparable< ? >>> columnData = event.getData();
+
+        // Clear any selections
+        clearSelection();
+
+        // Add column definition
+        columns.add( index,
+                     column );
+        reindexColumns();
+
+        data.addColumn( index,
+                        columnData,
+                        column.isVisible() );
+
+        // Redraw
+        if ( redraw ) {
+            redrawColumns( index,
+                           columns.size() - 1 );
+        }
+
+    }
+
+    public void onSetInternalModel(SetInternalModelEvent<M, T> event) {
+        this.setColumns( event.getColumns() );
+        this.setData( event.getData() );
+        this.redraw();
+    }
+
+    public void onSetColumnVisibility(SetColumnVisibilityEvent event) {
+
+        int index = event.getIndex();
+        boolean isVisible = event.isVisible();
+
+        if ( isVisible && !columns.get( index ).isVisible() ) {
+            columns.get( index ).setVisible( isVisible );
+            data.setColumnVisibility( index,
+                                      isVisible );
+            showColumn( index );
+        } else if ( !isVisible && columns.get( index ).isVisible() ) {
+            columns.get( index ).setVisible( isVisible );
+            data.setColumnVisibility( index,
+                                      isVisible );
+            hideColumn( index );
+        }
+    }
+
+    public void onUpdateColumn(UpdateColumnEvent event) {
+        int iColIndex = event.getIndex();
+        List<CellValue< ? extends Comparable< ? >>> columnData = event.getColumnData();
+        for(int iRow = 0; iRow < columnData.size(); iRow++) {
+            DynamicDataRow row = data.get(iRow);
+            CellValue< ? extends Comparable< ? >> cell = columnData.get( iRow );
+            row.set( iColIndex, cell );
+        }
+        redrawColumn( iColIndex );
+        
+        //TODO {manstis} Needs to be handled in the UI layer
+        // Ensure Salience cells are rendered with the correct Cell
+        //col.setCell( cellFactory.getCell( attrCol ) );
+        //col.setSystemControlled( attrCol.isUseRowNumber() );
+        //col.setSortable( !attrCol.isUseRowNumber() );
+        
+    }
+    
+    
 
 }

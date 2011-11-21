@@ -20,7 +20,10 @@ import java.util.List;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -63,7 +66,10 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     implements
     HasResizeHandlers,
     SetInternalModelEvent.Handler<M, T>,
-    DeleteColumnEvent.Handler {
+    DeleteColumnEvent.Handler,
+    InsertInternalColumnEvent.Handler<T>,
+    SetColumnVisibilityEvent.Handler,
+    UpdateColumnEvent.Handler {
 
     /**
      * Container class for information relating to re-size operations
@@ -243,6 +249,10 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
         //Wire-up other event handlers
         eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
+        eventBus.addHandler( SetColumnVisibilityEvent.TYPE,
+                             this );
+        eventBus.addHandler( UpdateColumnEvent.TYPE,
+                             this );
     }
 
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
@@ -283,7 +293,8 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     private void setResizerDimensions(int position) {
         //TODO {manstis} How can we get the enclosing size?
         //resizer.getStyle().setHeight( grid.getSidebarWidget().getOffsetHeight(), Unit.PX );
-        resizer.getStyle().setHeight( 100, Unit.PX );
+        resizer.getStyle().setHeight( 100,
+                                      Unit.PX );
         resizer.getStyle().setLeft( position,
                                     Unit.PX );
     }
@@ -322,6 +333,38 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
             public void execute() {
                 sortableColumns.remove( event.getIndex() );
+                redraw();
+            }
+
+        } );
+    }
+
+    public void onInsertInternalColumn(final InsertInternalColumnEvent<T> event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                sortableColumns.add( event.getIndex(),
+                                     event.getColumn() );
+                redraw();
+            }
+
+        } );
+    }
+
+    public void onSetColumnVisibility(SetColumnVisibilityEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                redraw();
+            }
+
+        } );
+    }
+
+    public void onUpdateColumn(UpdateColumnEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
                 redraw();
             }
 

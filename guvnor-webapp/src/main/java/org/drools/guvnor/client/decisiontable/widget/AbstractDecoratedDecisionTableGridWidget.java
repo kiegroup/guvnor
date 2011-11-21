@@ -13,15 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid;
+package org.drools.guvnor.client.decisiontable.widget;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellFactory;
-import org.drools.guvnor.client.decisiontable.widget.DecisionTableCellValueFactory;
-import org.drools.guvnor.client.util.GWTDateConverter;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridSidebarWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertDecisionTableColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
@@ -75,38 +82,26 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         //Wire-up event handlers
         eventBus.addHandler( SetGuidedDecisionTableModelEvent.TYPE,
                              this );
+        eventBus.addHandler( InsertDecisionTableColumnEvent.TYPE,
+                             this );
     }
 
     public void onSetModel(SetModelEvent<GuidedDecisionTable52> event) {
 
         GuidedDecisionTable52 model = event.getModel();
 
-        //Date converter is injected so a GWT compatible one can be used here and another in testing
-        DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
-
-        //TODO {manstis} Raise event so UI and underlying model can update
-        //Setup command to recalculate System Controlled values when rows are added\deleted
-        //getData().setOnRowChangeCommand( new Command() {
-        //public void execute() {
-        //updateSystemControlledColumnValues();
-        //}
-        //} );
         DynamicData data = new DynamicData();
         List<DynamicColumn<DTColumnConfig52>> columns = new ArrayList<DynamicColumn<DTColumnConfig52>>();
         setupInternalModel( model,
                             columns,
                             data );
 
-        // Ensure System Controlled values are correctly initialised
-        //TODO {manstis} Raise event so UI and underlying model can update
-        //updateSystemControlledColumnValues();
 
         //Raise event setting data and columns for UI components
         SetInternalDecisionTableModelEvent sime = new SetInternalDecisionTableModelEvent( model,
                                                                                           data,
                                                                                           columns );
         eventBus.fireEvent( sime );
-
     }
 
     private void setupInternalModel(GuidedDecisionTable52 model,
@@ -274,6 +269,21 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
             columnData.add( cv );
         }
         return columnData;
+    }
+
+    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52> event) {
+        DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( event.getColumn(),
+                                                                                      cellFactory.getCell( event.getColumn() ) );
+        column.setVisible( !event.getColumn().isHideColumn() );
+        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.makeUIColumnData( event.getColumn() );
+
+        //Raise event setting data and columns for UI components
+        InsertInternalDecisionTableColumnEvent ice = new InsertInternalDecisionTableColumnEvent( column,
+                                                                                                 event.getIndex(),
+                                                                                                 event.redraw(),
+                                                                                                 data );
+        eventBus.fireEvent( ice );
+
     }
 
 }

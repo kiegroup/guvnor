@@ -15,7 +15,6 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedTemplateDataGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetTemplateDataEvent;
 

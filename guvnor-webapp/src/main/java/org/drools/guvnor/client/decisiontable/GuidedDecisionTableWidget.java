@@ -924,7 +924,6 @@ public class GuidedDecisionTableWidget extends Composite
                         at.setUseRowNumber( useRowNumber.getValue() );
                         reverseOrder.setEnabled( useRowNumber.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        dtable.redrawSystemControlledColumns();
                     }
                 } );
 
@@ -932,7 +931,6 @@ public class GuidedDecisionTableWidget extends Composite
                     public void onClick(ClickEvent sender) {
                         at.setReverseOrder( reverseOrder.getValue() );
                         dtable.updateSystemControlledColumnValues();
-                        dtable.redrawSystemControlledColumns();
                     }
                 } );
                 hp.add( reverseOrder );

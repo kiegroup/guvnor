@@ -15,6 +15,7 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
+import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
@@ -52,13 +53,15 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
                                                          selectedCellValueUpdater,
                                                          eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce );
+        
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedDecisionTableGridWidget( resources,
                                                                cellFactory,
                                                                cellValueFactory,
                                                                eventBus );
-        widget.setHasSystemControlledColumns( this );
 
         vp.add( widget );
         vp.add( ctrls );
