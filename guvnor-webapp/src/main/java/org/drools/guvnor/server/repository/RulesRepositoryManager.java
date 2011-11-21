@@ -62,6 +62,7 @@ public class RulesRepositoryManager {
     public void createRulesRepository() {
         String username = credentials.getUsername();
         if (username == null) {
+            log.warn("Creating RulesRepository without default username.");
             // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
             // with limited privileges. In Guvnor, access control is done in a higher level.
             username = DEFAULT_USERNAME;
@@ -92,7 +93,7 @@ public class RulesRepositoryManager {
 //        }
     }
 
-    @Produces @Named("repository")
+    @Produces
     public RulesRepository getRulesRepository() {
         return rulesRepository;
     }
