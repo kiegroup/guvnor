@@ -355,7 +355,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient
     public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -450,7 +450,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient
     public void testUpdateAssetFromAtomWithStateNotExist(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
