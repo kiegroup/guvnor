@@ -33,6 +33,7 @@ import org.jboss.seam.security.Identity;
 import org.jboss.security.SecurityContext;
 import org.jboss.security.SecurityContextAssociation;
 import org.jboss.security.SecurityContextFactory;
+import org.picketlink.idm.api.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,21 +52,22 @@ public class RulesRepositoryManager {
 
     @Inject
     private Identity identity;
-    
-    @Inject
-    private Credentials credentials;
 
     // Not @Inject: here it is created and outjected
     private RulesRepository rulesRepository;
 
     @PostConstruct
     public void createRulesRepository() {
-        String username = credentials.getUsername();
-        if (username == null) {
-            log.warn("Creating RulesRepository without default username.");
+        User user = identity.getUser();
+        String username;
+        // TODO user should never be null, weld messes up the identity proxy?
+        if (user == null) {
+            log.warn("Creating RulesRepository with default username.");
             // Do not use user name "anonymous" as this user is configured in JackRabbit SimpleLoginModule
             // with limited privileges. In Guvnor, access control is done in a higher level.
             username = DEFAULT_USERNAME;
+        } else {
+            username = user.getId();
         }
         doSecurityContextAssociation();
         rulesRepository = new RulesRepository(repositoryStartupService.newSession(username));
