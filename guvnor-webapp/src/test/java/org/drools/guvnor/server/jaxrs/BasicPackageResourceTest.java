@@ -68,6 +68,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     // Fixable after this is fixed: https://issues.jboss.org/browse/ARQ-540
     @Test
     public void startServers() throws Exception {
+        loginAs("admin");
         //Package version 1(Initial version)
         PackageItem pkg = rulesRepository.createPackage( "restPackage1",
                                                                    "this is package restPackage1" );
@@ -127,7 +128,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         rule3.updateContent( "declare Album2\n genre2: String \n end" );
         rule3.checkin( "version 2" );
         //impl.buildPackage(pkg.getUUID(), true);
-        pkg.checkin( "version3" );               
+        pkg.checkin( "version3" );
+        logoutAs("admin");
     }
     
     @Test @RunAsClient
@@ -278,7 +280,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/source").toExternalForm(), p.getSourceLink().toString());
         assertEquals(new URL(baseURL, "rest/packages/restPackage1/binary").toExternalForm(), p.getBinaryLink().toString());
         PackageMetadata pm = p.getMetadata();
-        assertEquals("alan_parsons", pm.getLastContributor());
+        assertEquals("admin", pm.getLastContributor());
         assertNotNull(pm.getCreated());
         assertNotNull(pm.getUuid());
         assertNotNull(pm.getLastModified());
