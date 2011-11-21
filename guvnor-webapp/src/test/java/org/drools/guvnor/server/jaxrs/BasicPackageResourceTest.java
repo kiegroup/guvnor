@@ -506,12 +506,12 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         e.addLink(l);
         e.setSummary("updated desc for testCreatePackageFromAtom");
         e.addAuthor("Test McTesty");		
-        resp = client.put(new URL(baseURL, "packages/testCreatePackageFromAtom").toExternalForm(), e);
+        resp = client.put(new URL(baseURL, "rest/packages/testCreatePackageFromAtom").toExternalForm(), e);
         assertEquals(ResponseType.SUCCESS, resp.getType());
         assertEquals(204, resp.getStatus());
 
         //NOTE: could not figure out why the code below always returns -1 as the ResponseCode.
-/*        URL url = new URL(baseURL, "packages/testCreatePackageFromAtom");
+/*        URL url = new URL(baseURL, "rest/packages/testCreatePackageFromAtom");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
