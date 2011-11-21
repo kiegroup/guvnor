@@ -222,7 +222,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
 		Document<Feed> doc = abdera.getParser().parse(in);
 		Feed feed = doc.getRoot();
-		assertEquals("/packages", feed.getBaseUri().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages", feed.getBaseUri().getPath());
 		assertEquals("Packages", feed.getTitle());
 		
 		List<Entry> entries = feed.getEntries();
@@ -235,7 +235,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 				foundPackageEntry = true;
 				List<Link> links = entry.getLinks();
 				assertEquals(1, links.size());
-				assertEquals("/packages/restPackage1", links.get(0).getHref().getPath());
+				assertEquals(baseURL.getPath() + "rest/packages/restPackage1", links.get(0).getHref().getPath());
 			}
 		}
 		assertTrue(foundPackageEntry);
@@ -314,13 +314,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
 		Document<Entry> doc = abdera.getParser().parse(in);
 		Entry entry = doc.getRoot();
-		assertEquals("/packages/restPackage1", entry.getBaseUri().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1", entry.getBaseUri().getPath());
 		assertEquals("restPackage1", entry.getTitle());
 		assertNotNull(entry.getPublished());
 		assertNotNull(entry.getAuthor().getName());		
 		assertEquals("this is package restPackage1", entry.getSummary());
 		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
-		assertEquals("/packages/restPackage1/binary", entry.getContentSrc().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/binary", entry.getContentSrc().getPath());
 		
 		List<Link> links = entry.getLinks();
 		assertEquals(7, links.size());
@@ -329,13 +329,13 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 			linksMap.put(link.getTitle(), link);
 		}
 		
-		assertEquals("/packages/restPackage1/assets/drools", linksMap.get("drools").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/func", linksMap.get("func").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/myDSL", linksMap.get("myDSL").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/rule1", linksMap.get("rule1").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/rule2", linksMap.get("rule2").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/rule4", linksMap.get("rule4").getHref().getPath());		
-		assertEquals("/packages/restPackage1/assets/model1", linksMap.get("model1").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/drools", linksMap.get("drools").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/func", linksMap.get("func").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/myDSL", linksMap.get("myDSL").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/rule1", linksMap.get("rule1").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/rule2", linksMap.get("rule2").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/rule4", linksMap.get("rule4").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1", linksMap.get("model1").getHref().getPath());
 		
 		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
@@ -493,7 +493,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 
 		Document<Entry> doc = resp.getDocument();
 		Entry returnedEntry = doc.getRoot();
-		assertEquals("/packages/testCreatePackageFromAtom", returnedEntry.getBaseUri().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/testCreatePackageFromAtom", returnedEntry.getBaseUri().getPath());
 		assertEquals("testCreatePackageFromAtom", returnedEntry.getTitle());
 		assertEquals("desc for testCreatePackageFromAtom", returnedEntry.getSummary());
 		
@@ -538,7 +538,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
 		doc = abdera.getParser().parse(in);
 		entry = doc.getRoot();
-		assertEquals("/packages/testCreatePackageFromAtom", entry.getBaseUri().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/testCreatePackageFromAtom", entry.getBaseUri().getPath());
 		assertEquals("testCreatePackageFromAtom", entry.getTitle());
 		assertTrue(entry.getPublished() != null);
 		assertEquals("updated desc for testCreatePackageFromAtom", entry.getSummary());
@@ -665,11 +665,11 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 			entriesMap.put(entry.getTitle(), entry);
 		}
 		
-		assertEquals("/packages/restPackage1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());
 		assertTrue(entriesMap.get("1").getUpdated() != null);		
-		assertEquals("/packages/restPackage1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());
 		assertTrue(entriesMap.get("2").getUpdated() != null);		
-		assertEquals("/packages/restPackage1/versions/3", entriesMap.get("3").getLinks().get(0).getHref().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/3", entriesMap.get("3").getLinks().get(0).getHref().getPath());
 		assertTrue(entriesMap.get("3").getUpdated() != null);		
     }
     
@@ -690,11 +690,11 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
 		Document<Entry> doc = abdera.getParser().parse(in);
 		Entry entry = doc.getRoot();
-		assertEquals("/packages/restPackage1/versions/2", entry.getBaseUri().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2", entry.getBaseUri().getPath());
 		assertEquals("restPackage1", entry.getTitle());
 		assertEquals("this is package restPackage1", entry.getSummary());
 		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
-		assertEquals("/packages/restPackage1/versions/2/binary", entry.getContentSrc().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/binary", entry.getContentSrc().getPath());
 		
 		List<Link> links = entry.getLinks();
 		assertEquals(7, links.size());
@@ -703,12 +703,12 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
 			linksMap.put(link.getTitle(), link);
 		}
 		
-		assertEquals("/packages/restPackage1/versions/2/assets/drools", linksMap.get("drools").getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2/assets/func", linksMap.get("func").getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2/assets/myDSL", linksMap.get("myDSL").getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2/assets/rule1", linksMap.get("rule1").getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2/assets/rule2", linksMap.get("rule2").getHref().getPath());		
-		assertEquals("/packages/restPackage1/versions/2/assets/model1", linksMap.get("model1").getHref().getPath());   
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/drools", linksMap.get("drools").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/func", linksMap.get("func").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/myDSL", linksMap.get("myDSL").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/rule1", linksMap.get("rule1").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/rule2", linksMap.get("rule2").getHref().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/versions/2/assets/model1", linksMap.get("model1").getHref().getPath());
 	}    
 
     @Test @RunAsClient
@@ -793,7 +793,7 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         assertEquals(200, connection3.getResponseCode());
         assertEquals(MediaType.TEXT_PLAIN, connection3.getContentType());
         String result = IOUtils.toString(connection3.getInputStream());
-        assertEquals(result,newContent+"\n");
+        assertEquals(result, newContent);
     }
     
     @Test @RunAsClient
@@ -1035,9 +1035,9 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
             entriesMap.put(entry.getTitle(), entry);
         }
         
-        assertEquals("/packages/restPackage1/assets/model1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());       
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/1", entriesMap.get("1").getLinks().get(0).getHref().getPath());
         assertTrue(entriesMap.get("1").getUpdated() != null);       
-        assertEquals("/packages/restPackage1/assets/model1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());       
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/2", entriesMap.get("2").getLinks().get(0).getHref().getPath());
         assertTrue(entriesMap.get("2").getUpdated() != null);     
     }
     
@@ -1060,8 +1060,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         Entry entry = doc.getRoot();
         assertEquals("model1", entry.getTitle());
         assertTrue(entry.getPublished() != null);        
-        assertEquals("/packages/restPackage1/assets/model1/versions/1", entry.getId().getPath());
-        assertEquals("/packages/restPackage1/assets/model1/versions/1/binary", entry.getContentSrc().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/1", entry.getId().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/1/binary", entry.getContentSrc().getPath());
         ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
         assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
@@ -1088,8 +1088,8 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         entry = doc.getRoot();
         assertEquals("model1", entry.getTitle());
         assertTrue(entry.getPublished() != null);        
-        assertEquals("/packages/restPackage1/assets/model1/versions/2", entry.getId().getPath());
-        assertEquals("/packages/restPackage1/assets/model1/versions/2/binary", entry.getContentSrc().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/2", entry.getId().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/versions/2/binary", entry.getContentSrc().getPath());
         metadataExtension  = entry.getExtension(Translator.METADATA); 
         formatExtension = metadataExtension.getExtension(Translator.FORMAT);     
         assertEquals("model.drl", formatExtension.getSimpleExtension(Translator.VALUE)); 
