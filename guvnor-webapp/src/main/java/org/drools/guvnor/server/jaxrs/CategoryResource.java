@@ -103,7 +103,7 @@ public class CategoryResource extends Resource {
     @PUT
     @Path("{categoryPath}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void updateCategoryFromJAXB(@PathParam("categoryPath") String categoryPath, Category category) {
+    public void createCategory(@PathParam("categoryPath") String categoryPath, Category category) {
         String parentPath;
         String name;
         int lastDotIndex = categoryPath.lastIndexOf("/");
@@ -119,7 +119,7 @@ public class CategoryResource extends Resource {
 
     @DELETE
     @Path("{categoryPath}")
-    public void deletePackage(@PathParam("categoryPath") String categoryPath) {
+    public void deleteCategory(@PathParam("categoryPath") String categoryPath) {
         try {
             repositoryCategoryService.removeCategory(categoryPath);
         } catch (SerializationException e) {
