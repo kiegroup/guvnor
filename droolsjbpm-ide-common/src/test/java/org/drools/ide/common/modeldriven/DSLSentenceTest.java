@@ -30,7 +30,7 @@ public class DSLSentenceTest {
 
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "this is {something} here and {here}" );
-        assertEquals( "this is something here and here",
+        assertEquals( "this is {something} here and {here}",
                       sen.toString() );
 
         sen.setDefinition( "foo bar" );
@@ -49,7 +49,7 @@ public class DSLSentenceTest {
     public void testEnumSentence() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "this is {variable:ENUM:Value.test} here and {here}" );
-        assertEquals( "this is variable here and here",
+        assertEquals( "this is {variable} here and {here}",
                       sen.toString() );
     }
 
@@ -57,7 +57,7 @@ public class DSLSentenceTest {
     public void testLogColonSentence() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "Log : \"{message}\"" );
-        assertEquals( "Log : \"message\"",
+        assertEquals( "Log : \"{message}\"",
                       sen.toString() );
     }
 
@@ -65,7 +65,7 @@ public class DSLSentenceTest {
     public void testWithNewLines() {
         final DSLSentence sen = new DSLSentence();
         sen.setDefinition( "this is {variable}\\n here and {here}" );
-        assertEquals( "this is variable\n here and here",
+        assertEquals( "this is {variable}\n here and {here}",
                       sen.toString() );
 
     }
@@ -109,6 +109,36 @@ public class DSLSentenceTest {
         sen.getValues().set( 0,
                              "333-22-4444" );
         assertEquals( "When a person exists with social security number \"333-22-4444\"",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testEnumSentenceWithBoolean() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "When a person is alive {alive:BOOLEAN:checked}" );
+        sen.getValues().set( 0,
+                             "true" );
+        assertEquals( "When a person is alive true",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testEnumSentenceWithEnumeration() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "When a person is \"{rating:ENUM:Person.gender}\"" );
+        sen.getValues().set( 0,
+                             "Male" );
+        assertEquals( "When a person is \"Male\"",
+                      sen.interpolate() );
+    }
+
+    @Test
+    public void testEnumSentenceWithDate() {
+        final DSLSentence sen = new DSLSentence();
+        sen.setDefinition( "When a person was born on \"{dob:DATE:default}\"" );
+        sen.getValues().set( 0,
+                             "31-Dec-1999" );
+        assertEquals( "When a person was born on \"31-Dec-1999\"",
                       sen.interpolate() );
     }
 
