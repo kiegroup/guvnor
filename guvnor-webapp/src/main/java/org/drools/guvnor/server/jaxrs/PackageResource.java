@@ -41,7 +41,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import java.io.InputStream;
-import java.net.URLDecoder;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -91,8 +91,10 @@ public class PackageResource extends Resource {
             Entry e = factory.getAbdera().newEntry();
             e.setTitle(item.getName());
             Link l = factory.newLink();
-            l.setHref(uriInfo.getBaseUriBuilder().path("packages")
-                    .path(item.getName()).build().toString());
+            l.setHref(uriInfo.getBaseUriBuilder()
+                    .path("packages/{itemName}")
+                    .build(item.getName())
+                    .toString());
             e.addLink(l);
             f.addEntry(e);
         }
@@ -272,10 +274,9 @@ public class PackageResource extends Resource {
                     Link l = factory.newLink();
                     l.setHref(uriInfo
                             .getBaseUriBuilder()
-                            .path("packages")
-                            .path(p.getName())
-                            .path("versions")
-                            .path(Long.toString(historicalPackage.getVersionNumber())).build().toString());
+                            .path("packages/{packageName}/versions/{versionNumber}")
+                            .build(p.getName(), Long.toString(historicalPackage.getVersionNumber()))
+                            .toString());
                     e.addLink(l);
                     f.addEntry(e);
                 }
@@ -464,7 +465,7 @@ public class PackageResource extends Resource {
     public Entry getAssetAsAtom(@PathParam("packageName") String packageName, @PathParam("assetName") String assetName) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"));
+            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(assetName);
             return toAssetEntryAbdera(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -545,7 +546,7 @@ public class PackageResource extends Resource {
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Entry createAssetFromBinary(@PathParam("packageName") String packageName, InputStream is) {
         try {
-            String assetName = URLDecoder.decode( getHttpHeader(headers, "slug"), "UTF-8" );
+            String assetName = getHttpHeader(headers, "slug");
             if (assetName == null) {
                 throw new WebApplicationException(Response.status(500).entity("Slug header is missing").build());
             }
@@ -685,7 +686,7 @@ public class PackageResource extends Resource {
                             @PathParam("assetName") String assetName) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem ai = rulesRepository.loadPackage(packageName).loadAsset( URLDecoder.decode(assetName, "UTF-8") );
+            AssetItem ai = rulesRepository.loadPackage(packageName).loadAsset( assetName );
             // assetService.archiveAsset(ai.getUUID());
             repositoryAssetService.removeAsset(ai.getUUID());
             rulesRepository.save();
@@ -707,13 +708,17 @@ public class PackageResource extends Resource {
             Feed f = factory.getAbdera().newFeed();
             f.setTitle("Version history of " + asset.getName());
 
-            UriBuilder base;            
+            URI base;
             if (asset.isHistoricalVersion()) {
-                base = uriInfo.getBaseUriBuilder().path("packages").path(asset.getPackageName()).path("assets").path("versions").path(Long.toString(asset.getVersionNumber()));
+                base = uriInfo.getBaseUriBuilder()
+                        .path("packages/{packageName}/assets/{assetName}/versions/{versionNumber}")
+                        .build(asset.getPackageName(), asset.getName(), Long.toString(asset.getVersionNumber()));
             } else {
-                base = uriInfo.getBaseUriBuilder().path("packages").path(asset.getPackageName()).path("assets").path(asset.getName()).path("versions");
+                base = uriInfo.getBaseUriBuilder()
+                        .path("packages/{packageName}/assets/{assetName}/versions")
+                        .build(asset.getPackageName(), asset.getName());
             }
-            f.setBaseUri(base.build().toString());
+            f.setBaseUri(base.toString());
                         
             AssetHistoryIterator it = asset.getHistory();
             while (it.hasNext()) {
@@ -726,12 +731,9 @@ public class PackageResource extends Resource {
                         Link l = factory.newLink();
                         l.setHref(uriInfo
                                 .getBaseUriBuilder()
-                                .path("packages")
-                                .path(asset.getPackageName())
-                                .path("assets")
-                                .path(asset.getName())
-                                .path("versions")
-                                .path(Long.toString(historicalAsset.getVersionNumber())).build().toString());
+                                .path("packages/{packageName}/assets/{assetName}/versions/{versionNumber}")
+                                .build(asset.getPackageName(), asset.getName(),
+                                        Long.toString(historicalAsset.getVersionNumber())).toString());
                         e.addLink(l);
                         f.addEntry(e);
                     }
@@ -750,7 +752,7 @@ public class PackageResource extends Resource {
                                            @PathParam("versionNumber") long versionNumber) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"), versionNumber);
+            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(assetName, versionNumber);
             return toAssetEntryAbdera(asset, uriInfo);
         } catch (Exception e) {
             throw new WebApplicationException(e);
@@ -765,7 +767,7 @@ public class PackageResource extends Resource {
                                            @PathParam("versionNumber") long versionNumber) {
         try {
             //Throws RulesRepositoryException if the package or asset does not exist
-            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(URLDecoder.decode(assetName, "UTF-8"), versionNumber);
+            AssetItem asset = rulesRepository.loadPackage(packageName).loadAsset(assetName, versionNumber);
             return asset.getContent();
         } catch (Exception e) {
             throw new WebApplicationException(e);
