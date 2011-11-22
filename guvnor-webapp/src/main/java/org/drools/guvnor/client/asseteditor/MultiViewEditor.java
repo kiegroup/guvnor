@@ -343,18 +343,15 @@ public class MultiViewEditor extends GuvnorEditor {
 
     @Override
     public boolean isDirty() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void makeDirty() {
-        // TODO Auto-generated method stub
     }
 
     @Override
     public void resetDirty() {
-        // TODO Auto-generated method stub
     }
 
     public void setCloseCommand(Command command) {

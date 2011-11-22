@@ -41,7 +41,7 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         SelectedCellValueUpdater selectedCellValueUpdater = new SelectedCellValueUpdater() {
 
             public void setSelectedCellsValue(Object value) {
-                // TODO Auto-generated method stub
+                // TODO {manstis} Add some code
             }
 
         };

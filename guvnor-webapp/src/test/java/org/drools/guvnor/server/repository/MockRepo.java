@@ -79,22 +79,18 @@ class MockRepo implements Repository {
     }
 
     public Value getDescriptorValue(String arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Value[] getDescriptorValues(String arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isSingleValueDescriptor(String arg0) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean isStandardDescriptor(String arg0) {
-        // TODO Auto-generated method stub
         return false;
     }
     

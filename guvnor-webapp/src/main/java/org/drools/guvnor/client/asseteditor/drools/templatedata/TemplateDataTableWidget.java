@@ -79,7 +79,7 @@ public class TemplateDataTableWidget extends Composite
         SelectedCellValueUpdater selectedCellValueUpdater = new SelectedCellValueUpdater() {
 
             public void setSelectedCellsValue(Object value) {
-                // TODO Auto-generated method stub
+                // TODO {manstis} Add some code
             }
 
         };
@@ -309,11 +309,11 @@ public class TemplateDataTableWidget extends Composite
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
-        // TODO Auto-generated method stub
+        // TODO {manstis} Add some code
     }
 
     public void onInsertColumn(InsertColumnEvent<TemplateDataColumn> event) {
-        // TODO Auto-generated method stub
+        // TODO {manstis} Add some code
     }
 
 }

@@ -51,8 +51,6 @@ public class DecisionTableXLSHandler extends ContentHandler
     public void assembleDRL(BRMSPackageBuilder builder,
                             RuleAsset asset,
                             StringBuilder stringBuilder) {
-        // TODO Auto-generated method stub
-
     }
 
     public void assembleDRL(BRMSPackageBuilder builder,

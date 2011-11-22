@@ -137,7 +137,6 @@ public class RepositorySessionUtil {
         } catch ( LoginException e ) {
             e.printStackTrace();
         } catch ( RepositoryException e ) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return null;
