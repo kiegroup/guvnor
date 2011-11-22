@@ -18,6 +18,7 @@ package org.drools.guvnor.server.jaxrs;
 
 
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.RepositoryServiceServlet;
 import org.drools.guvnor.server.ServiceImplementation;
@@ -33,12 +34,14 @@ public class Resource {
     final ServiceImplementation service;
     final RepositoryPackageService packageService;
     final RepositoryAssetService assetService;
+    final RepositoryCategoryService repositoryCategoryService;
     final RulesRepository repository;
 
     public Resource() {
         service = RepositoryServiceServlet.getService();
         packageService = RepositoryServiceServlet.getPackageService();
         assetService = RepositoryServiceServlet.getAssetService();
+        repositoryCategoryService = RepositoryServiceServlet.getCategoryService();
         repository = service.getRulesRepository();
     }
 }

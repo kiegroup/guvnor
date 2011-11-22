@@ -48,8 +48,6 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     private static RestTestingBase restTestingBase;
     
-    private String category = "Home Mortgage";
-    
     @BeforeClass
     public static void startServers() throws Exception {
        	restTestingBase = new RestTestingBase();
@@ -107,7 +105,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 1", "UTF-8"));
+        ClientResponse resp = client.get(generateBaseUrl() + "/categories/Category%201");
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -135,7 +133,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 2", "UTF-8"));
+        resp = client.get(generateBaseUrl() + "/categories/Category%202");
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -206,7 +204,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/" + URLEncoder.encode("Category 1", "UTF-8"));
+        resp = client.get(generateBaseUrl() + "/categories/Category%201");
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -231,13 +229,13 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         //------------------------------------------------------------------
                 
         //clean up
-        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process1", "UTF-8"));
+        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/Process1");
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error deleting 'Process1'");
         }
-        
-        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/" + URLEncoder.encode("Process2", "UTF-8"));
+
+        resp = client.delete(generateBaseUrl() + "/packages/categoriesPackage1/assets/Process2");
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error deleting 'Process2'");
@@ -247,7 +245,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -260,7 +258,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8"));
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -272,7 +270,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -284,7 +282,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -297,7 +295,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/" + URLEncoder.encode(category, "UTF-8") + "/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
