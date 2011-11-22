@@ -16,9 +16,7 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.util.GWTDateConverter;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.event.shared.EventBus;
@@ -66,11 +64,6 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
         vp.add( widget );
         vp.add( ctrls );
         initWidget( vp );
-    }
-
-    public void onSelectedCellChange(SelectedCellChangeEvent event) {
-        CellValue< ? > cell = widget.getData().get( event.getCellSelectionDetail().getCoordinate() );
-        dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
     }
 
 }

@@ -22,17 +22,14 @@ import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasColumns;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.HasRows;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertTemplateDataColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertTemplateDataColumnEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
@@ -47,9 +44,6 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public class TemplateDataTableWidget extends Composite
     implements
-    HasRows<List<String>>,
-    //TODO {manstis} HasColumns<T>,
-    HasColumns<TemplateDataColumn>,
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
@@ -97,9 +91,9 @@ public class TemplateDataTableWidget extends Composite
 
         // Construct the widget from which we're composed
         widget = new VerticalDecoratedTemplateDataGridWidget( resources,
-                                                     cellFactory,
-                                                     cellValueFactory,
-                                                     eventBus );
+                                                              cellFactory,
+                                                              cellValueFactory,
+                                                              eventBus );
 
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
@@ -201,23 +195,23 @@ public class TemplateDataTableWidget extends Composite
         String[][] data = model.getTableAsArray();
         //TODO {manstis} Needs rewrite to events
         //final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-//        for ( int iRow = 0; iRow < data.length; iRow++ ) {
-//            DynamicDataRow row = new DynamicDataRow();
-//            String[] rowData = data[iRow];
-//            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-//                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-//
-//                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
-//                String initialValue = rowData[iCol];
-//                if ( initialValue != null && initialValue.equals( "" ) ) {
-//                    initialValue = null;
-//                }
-//                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
-//                                                                                                   initialValue );
-//                row.add( cv );
-//            }
-//            widget.appendRow( row );
-//        }
+        //        for ( int iRow = 0; iRow < data.length; iRow++ ) {
+        //            DynamicDataRow row = new DynamicDataRow();
+        //            String[] rowData = data[iRow];
+        //            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
+        //                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
+        //
+        //                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
+        //                String initialValue = rowData[iCol];
+        //                if ( initialValue != null && initialValue.equals( "" ) ) {
+        //                    initialValue = null;
+        //                }
+        //                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
+        //                                                                                                   initialValue );
+        //                row.add( cv );
+        //            }
+        //            widget.appendRow( row );
+        //        }
 
         // Schedule redraw
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
@@ -252,10 +246,10 @@ public class TemplateDataTableWidget extends Composite
     private void addColumn(TemplateDataColumn modelColumn,
                            boolean bRedraw) {
         //TODO {manstis} Needs rewrite to events
-//        int index = widget.getColumns().size();
-//        insertColumnBefore( modelColumn,
-//                            index,
-//                            bRedraw );
+        //        int index = widget.getColumns().size();
+        //        insertColumnBefore( modelColumn,
+        //                            index,
+        //                            bRedraw );
     }
 
     // Insert a new model column at the specified index
@@ -266,7 +260,8 @@ public class TemplateDataTableWidget extends Composite
         // Create new column for grid
         DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
                                                                                           cellFactory.getCell( modelColumn ),
-                                                                                          index );
+                                                                                          index,
+                                                                                          eventBus );
         column.setVisible( true );
 
         // Create column data
@@ -275,19 +270,19 @@ public class TemplateDataTableWidget extends Composite
 
         // Add column and data to grid
         //TODO {manstis} Needs rewrite to events
-//        if ( index < widget.getColumns().size() ) {
-//            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
-//            //widget.insertColumnBefore( columnBefore,column,columnData,bRedraw );
-//        } else {
-//            //widget.appendColumn( column,columnData,bRedraw );
-//        }
+        //        if ( index < widget.getColumns().size() ) {
+        //            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
+        //            //widget.insertColumnBefore( columnBefore,column,columnData,bRedraw );
+        //        } else {
+        //            //widget.appendColumn( column,columnData,bRedraw );
+        //        }
 
     }
 
     // Make a row of data for insertion into a DecoratedGridWidget
     private List<CellValue< ? extends Comparable< ? >>> makeColumnData(TemplateDataColumn column,
                                                                        int colIndex) {
-        int dataSize = this.widget.getData().size();
+        int dataSize = this.model.getRowsCount();
         List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < dataSize; iRow++ ) {
             String value = cellValueFactory.makeModelCellValue( column );

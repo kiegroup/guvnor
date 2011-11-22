@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget.CellSelectionDetail;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
@@ -52,8 +51,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     implements
-    //TODO {manstis} HasGroupedRows<DynamicDataRow>,
-    //TODO {manstis} HasColumns<T>,
     SelectedCellValueUpdater,
     ColumnResizeEvent.Handler,
     SelectedCellChangeEvent.Handler,
@@ -226,17 +223,18 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
      */
     public void sort() {
 
+        //TODO {manstis} Fix sorting
         //Extract list of sort information
         List<SortConfiguration> sortConfig = new ArrayList<SortConfiguration>();
-        List<DynamicColumn<T>> columns = gridWidget.getColumns();
-        for ( DynamicColumn<T> column : columns ) {
-            SortConfiguration sc = column.getSortConfiguration();
-            if ( sc.getSortIndex() != -1 ) {
-                sortConfig.add( sc );
-            }
-        }
+        //        List<DynamicColumn<T>> columns = gridWidget.getColumns();
+        //        for ( DynamicColumn<T> column : columns ) {
+        //            SortConfiguration sc = column.getSortConfiguration();
+        //            if ( sc.getSortIndex() != -1 ) {
+        //                sortConfig.add( sc );
+        //            }
+        //        }
 
-        gridWidget.getData().sort( sortConfig );
+        //        gridWidget.getData().sort( sortConfig );
 
         //Redraw whole table
         gridWidget.redraw();
@@ -244,6 +242,11 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
 
     //Ensure the selected cell is visible
     private void cellSelected(CellSelectionDetail ce) {
+        
+        //No selection
+        if ( ce == null ) {
+            return;
+        }
 
         //Left extent
         if ( ce.getOffsetX() < scrollPanel.getHorizontalScrollPosition() ) {
@@ -345,27 +348,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
         this.gridWidget.setSelectedCellsValue( value );
     }
 
-    /**
-     * Return grid's data. Grouping reflected in the UI will be collapsed in the
-     * return value. Use of <code>getFlattenedData()</code> should be used in
-     * preference if the ungrouped data is needed (e.g. when persisting the
-     * model).
-     * 
-     * @return data
-     */
-    public DynamicData getData() {
-        return this.gridWidget.getData();
-    }
-
-    /**
-     * Return grid's columns
-     * 
-     * @return columns
-     */
-    //    public List<DynamicColumn<T>> getColumns() {
-    //        return this.gridWidget.getColumns();
-    //    }
-
     public void redraw() {
         // Draw header first as the size of child Elements depends upon it
         this.headerWidget.redraw();
@@ -378,13 +360,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
      */
     public void redrawHeader() {
         this.headerWidget.redraw();
-    }
-
-    /**
-     * Set the state of DecoratedGridWidget merging.
-     */
-    public void setMerging(boolean isMerged) {
-        this.gridWidget.setMerging( isMerged );
     }
 
     public void onColumnResize(final ColumnResizeEvent event) {

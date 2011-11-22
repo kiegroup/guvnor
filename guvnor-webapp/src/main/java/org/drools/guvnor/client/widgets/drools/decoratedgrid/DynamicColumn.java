@@ -21,9 +21,9 @@ import org.drools.guvnor.client.widgets.tables.SortDirection;
 import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.event.shared.SimpleEventBus;
 
 /**
  * A column that retrieves it's cell value from an indexed position in a List
@@ -46,41 +46,47 @@ public class DynamicColumn<T> extends DynamicBaseColumn
     private int               width              = 100;
 
     // Event handling using GWT's EventBus
-    //TODO {manstis} use the usual eventBus
-    private SimpleEventBus    seb                = new SimpleEventBus();
+    private EventBus          eventBus;
 
-    public DynamicColumn(T modelColumn) {
+    public DynamicColumn(T modelColumn,
+                         EventBus eventBus) {
         this( modelColumn,
               null,
               0,
               false,
-              true );
-    }
-
-    public DynamicColumn(T modelColumn,
-                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell) {
-        this( modelColumn,
-              cell,
-              0,
-              false,
-              true );
+              true,
+              eventBus );
     }
 
     public DynamicColumn(T modelColumn,
                          DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
-                         int columnIndex) {
+                             EventBus eventBus) {
+        this( modelColumn,
+              cell,
+              0,
+              false,
+              true,
+              eventBus );
+    }
+
+    public DynamicColumn(T modelColumn,
+                         DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
+                         int columnIndex,
+                         EventBus eventBus) {
         this( modelColumn,
               cell,
               columnIndex,
               false,
-              true );
+              true,
+              eventBus );
     }
 
     public DynamicColumn(T modelColumn,
                          DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
                          int columnIndex,
                          boolean isSystemControlled,
-                         boolean isSortable) {
+                         boolean isSortable,
+                         EventBus eventBus) {
         super( cell );
         if ( modelColumn == null ) {
             throw new IllegalArgumentException( "modelColumn cannot be null" );
@@ -92,15 +98,7 @@ public class DynamicColumn<T> extends DynamicBaseColumn
         this.columnIndex = columnIndex;
         this.sortConfig.setSortable( isSortable );
         this.isSystemControlled = isSystemControlled;
-    }
-
-    public HandlerRegistration addValueChangeHandler(
-                                                     ValueChangeHandler<SortConfiguration> handler) {
-        if ( handler == null ) {
-            throw new IllegalArgumentException( "handler cannot be null" );
-        }
-        return seb.addHandler( ValueChangeEvent.getType(),
-                               handler );
+        this.eventBus = eventBus;
     }
 
     @Override
@@ -121,13 +119,6 @@ public class DynamicColumn<T> extends DynamicBaseColumn
                && c.sortConfig.isSortable() == this.sortConfig.isSortable()
                && c.sortConfig.getSortIndex() == this.sortConfig.getSortIndex()
                && c.width == this.width;
-    }
-
-    public void fireEvent(GwtEvent< ? > event) {
-        if ( event == null ) {
-            throw new IllegalArgumentException( "event cannot be null" );
-        }
-        seb.fireEvent( event );
     }
 
     public int getColumnIndex() {
@@ -252,6 +243,21 @@ public class DynamicColumn<T> extends DynamicBaseColumn
             throw new IllegalArgumentException( "width cannot be less than zero" );
         }
         this.width = width;
+    }
+
+    public HandlerRegistration addValueChangeHandler(ValueChangeHandler<SortConfiguration> handler) {
+        if ( handler == null ) {
+            throw new IllegalArgumentException( "handler cannot be null" );
+        }
+        return eventBus.addHandler( ValueChangeEvent.getType(),
+                                    handler );
+    }
+
+    public void fireEvent(GwtEvent< ? > event) {
+        if ( event == null ) {
+            throw new IllegalArgumentException( "event cannot be null" );
+        }
+        eventBus.fireEvent( event );
     }
 
 }

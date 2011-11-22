@@ -24,10 +24,8 @@ import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeW
 import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
@@ -37,8 +35,9 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDecisionTableModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -61,7 +60,6 @@ import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 import org.drools.ide.common.client.modeldriven.dt52.RowNumberCol52;
 
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Composite;
@@ -73,8 +71,6 @@ import com.google.gwt.user.client.ui.Composite;
  */
 public abstract class AbstractDecisionTableWidget extends Composite
     implements
-    //TODO {manstis} HasRows<List<DTCellValue52>>,
-    //TODO {manstis} HasColumns<DTColumnConfig52>,
     SelectedCellChangeEvent.Handler,
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
@@ -188,9 +184,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
      */
     public void makeOtherwiseCell() {
         List<CellValue< ? >> selections = widget.getSelectedCells();
-        CellValue< ? > cell = selections.get( 0 );
-
-        if ( canAcceptOtherwiseValues( cell ) ) {
+        Coordinate c = selections.get( 0 ).getCoordinate();
+        DTColumnConfig52 column = model.getAllColumns().get( c.getCol() );
+        if ( canAcceptOtherwiseValues( column ) ) {
 
             //Set "otherwise" property on cell
             for ( CellValue< ? > cv : selections ) {
@@ -274,11 +270,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        boolean bRedrawColumn = false;
-        boolean bRedrawHeader = false;
-        boolean bUpdateCellsForDataType = false;
-        //TODO {manstis} Needs rewrite to events
-        //DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
+        boolean bUpdateColumnData = false;
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -295,35 +289,28 @@ public abstract class AbstractDecisionTableWidget extends Composite
                                  editColumn.getFactType() )
                  || !isEqualOrNull( origColumn.getFactField(),
                                     editColumn.getFactField() ) ) {
-                bRedrawColumn = true;
-                bRedrawHeader = true;
-                bUpdateCellsForDataType = true;
+                bUpdateColumnData = true;
+                bUpdateColumnDefinition = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactType(),
                                     editColumn.getFactType() )
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() ) ) {
-            bRedrawColumn = true;
-            bRedrawHeader = true;
-            bUpdateCellsForDataType = true;
+            bUpdateColumnData = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            //TODO {manstis} Needs rewrite to events
-            //bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,column );
+            bUpdateColumnData = updateCellsForOptionValueList( editColumn,
+                                                               origColumn );
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
-        }
-
-        // Update column field in Header Widget
-        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update LimitedEntryValue in Header Widget
@@ -331,7 +318,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
             LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
             if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bRedrawHeader = true;
+                bUpdateColumnDefinition = true;
             }
         }
 
@@ -339,26 +326,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
-        //Update model with new cells, if required
-        if ( bUpdateCellsForDataType ) {
-            //TODO {manstis} Needs rewrite to events
-            //updateCellsForDataType( origColumn,column );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
-        //Redraw columns
-        if ( bRedrawColumn ) {
-            int maxColumnIndex = model.getAllColumns().size() - 1;
-            //TODO {manstis} Needs rewrite to events
-            //widget.redrawColumns( column.getColumnIndex(),maxColumnIndex );
-        }
-
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column data
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
+                                                                                getColumnData( origColumn ) );
+            eventBus.fireEvent( tme );
+            eventBus.fireEvent( updateColumnData );
         }
 
     }
@@ -380,11 +364,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        boolean bRedrawColumn = false;
-        boolean bRedrawHeader = false;
-        boolean bUpdateCellsForDataType = false;
-        //TODO {manstis} Needs rewrite to events
-        //DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
+        boolean bUpdateColumnData = false;
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -398,34 +380,32 @@ public abstract class AbstractDecisionTableWidget extends Composite
         if ( !isEqualOrNull( origColumn.getBoundName(),
                              editColumn.getBoundName() ) ) {
             if ( !isEqualOrNull( origColumn.getFactField(),
-                                   editColumn.getFactField() ) ) {
-                bRedrawColumn = true;
-                bRedrawHeader = true;
-                bUpdateCellsForDataType = true;
+                                 editColumn.getFactField() ) ) {
+                bUpdateColumnData = true;
+                bUpdateColumnDefinition = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactField(),
-                                       editColumn.getFactField() ) ) {
-            bRedrawColumn = true;
-            bRedrawHeader = true;
-            bUpdateCellsForDataType = true;
+                                    editColumn.getFactField() ) ) {
+            bUpdateColumnData = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            //TODO {manstis} Needs rewrite to events
-            //bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,column );
+            bUpdateColumnData = updateCellsForOptionValueList( editColumn,
+                                                               origColumn );
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column field in Header Widget
         if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update LimitedEntryValue in Header Widget
@@ -433,7 +413,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
             LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
             if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bRedrawHeader = true;
+                bUpdateColumnDefinition = true;
             }
         }
 
@@ -441,26 +421,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
-        //Update model with new cells, if required
-        if ( bUpdateCellsForDataType ) {
-            //TODO {manstis} Needs rewrite to events
-            //updateCellsForDataType( origColumn,column );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
-        //Redraw columns
-        if ( bRedrawColumn ) {
-            int maxColumnIndex = model.getAllColumns().size() - 1;
-            //TODO {manstis} Needs rewrite to events
-            //widget.redrawColumns( column.getColumnIndex(),maxColumnIndex );
-        }
-
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column data
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
+                                                                                getColumnData( origColumn ) );
+            eventBus.fireEvent( tme );
+            eventBus.fireEvent( updateColumnData );
         }
 
     }
@@ -482,7 +459,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        boolean bRedrawHeader = false;
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -497,35 +475,31 @@ public abstract class AbstractDecisionTableWidget extends Composite
                              editColumn.getBoundName() ) ) {
             if ( !isEqualOrNull( origColumn.getFactField(),
                                  editColumn.getFactField() ) ) {
-                bRedrawHeader = true;
+                bUpdateColumnDefinition = true;
             }
 
         } else if ( !isEqualOrNull( origColumn.getFactField(),
                                     editColumn.getFactField() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
-        }
-
-        // Update column field in Header Widget
-        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
 
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
     }
@@ -547,6 +521,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
+
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
@@ -554,9 +531,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Update column header in Header Widget
-        boolean bRedrawHeader = false;
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update LimitedEntryValue in Header Widget
@@ -564,7 +540,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
             LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
             if ( !lecOrig.getValue().equals( lecEditing.getValue() ) ) {
-                bRedrawHeader = true;
+                bUpdateColumnDefinition = true;
             }
         }
 
@@ -572,13 +548,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
     }
@@ -600,6 +577,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
+
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
             setColumnVisibility( origColumn,
@@ -607,22 +587,22 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         // Update column header in Header Widget
-        boolean bRedrawHeader = false;
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Copy new values into original column definition
         populateModelColumn( origColumn,
                              editColumn );
 
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
     }
@@ -656,11 +636,9 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
-        boolean bRedrawColumn = false;
-        boolean bRedrawHeader = false;
-        boolean bUpdateCellsForDataType = false;
-        //TODO {manstis} Needs rewrite to events
-        //DynamicColumn<DTColumnConfig52> column = getDynamicColumn( origColumn );
+        boolean bUpdateColumnData = false;
+        boolean bUpdateColumnDefinition = false;
+        int iCol = model.getAllColumns().indexOf( origColumn );
 
         // Update column's visibility
         if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
@@ -671,24 +649,25 @@ public abstract class AbstractDecisionTableWidget extends Composite
         // Change in operator
         if ( !isEqualOrNull( origColumn.getOperator(),
                              editColumn.getOperator() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
 
             //Clear otherwise if column cannot accept them
             if ( !canAcceptOtherwiseValues( editColumn ) ) {
-                //TODO {manstis} Needs rewrite to events
-                //removeOtherwiseStates( column );
-                bRedrawColumn = true;
+                //Grouping needs to be removed
+                //widget.setMerging( false );
+                removeOtherwiseStates( origColumn );
+                bUpdateColumnData = true;
             }
         }
 
         if ( !isEqualOrNull( origPattern.getBoundName(),
                              editPattern.getBoundName() ) ) {
             // Change in bound name requires column to be repositioned
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
             addColumn( editColumn,
-                       false );
-            int origColIndex = model.getAllColumns().indexOf( origColumn );
-            int editColIndex = model.getAllColumns().indexOf( editColumn );
+                       true );
+            int origColumnIndex = model.getAllColumns().indexOf( origColumn );
+            int editColumnIndex = model.getAllColumns().indexOf( editColumn );
 
             // If the FactType, FieldType and ConstraintValueType are unchanged
             // we can copy cell values from the old column into the new
@@ -697,31 +676,30 @@ public abstract class AbstractDecisionTableWidget extends Composite
                  && isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() )
                  && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
-
-                final DynamicData data = widget.getData();
-                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                    DynamicDataRow row = data.get( iRow );
-                    CellValue< ? > oldCell = row.get( origColIndex );
-                    CellValue< ? > newCell = row.get( editColIndex );
-                    newCell.setValue( oldCell.getValue() );
-                }
+                //TODO {manstis} Change to use events
+                //                final DynamicData data = widget.getData();
+                //                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                //                    DynamicDataRow row = data.get( iRow );
+                //                    CellValue< ? > oldCell = row.get( origColIndex );
+                //                    CellValue< ? > newCell = row.get( editColIndex );
+                //                    newCell.setValue( oldCell.getValue() );
+                //                }
             }
 
             // Delete old column and redraw
-            int columnIndex = model.getAllColumns().indexOf( origColumn );
-            deleteColumn( columnIndex,
+            deleteColumn( origColumnIndex,
                           false );
-            origColIndex = Math.min( model.getAllColumns().size() - 1,
-                                     origColIndex );
-            editColIndex = Math.min( model.getAllColumns().size() - 1,
-                                     editColIndex );
-            if ( editColIndex > origColIndex ) {
-                int temp = origColIndex;
-                origColIndex = editColIndex;
-                editColIndex = temp;
-            }
-            widget.redrawColumns( editColIndex,
-                                  origColIndex );
+            //            origColIndex = Math.min( model.getAllColumns().size() - 1,
+            //                                     origColIndex );
+            //            editColIndex = Math.min( model.getAllColumns().size() - 1,
+            //                                     editColIndex );
+            //            if ( editColIndex > origColIndex ) {
+            //                int temp = origColIndex;
+            //                origColIndex = editColIndex;
+            //                editColIndex = temp;
+            //            }
+            //            widget.redrawColumns( editColIndex,
+            //                                  origColIndex );
 
         } else if ( !isEqualOrNull( origPattern.getFactType(),
                                     editPattern.getFactType() )
@@ -736,34 +714,29 @@ public abstract class AbstractDecisionTableWidget extends Composite
             // Update column's Cell type. Other than the obvious change in data-type if the 
             // Operator changes to or from "not set" (possible for literal columns and formulae)
             // the column needs to be changed to or from Text.
-            bRedrawColumn = true;
-            bUpdateCellsForDataType = true;
+            bUpdateColumnData = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column's cell content if the Optional Value list has changed
         if ( !isEqualOrNull( origColumn.getValueList(),
                              editColumn.getValueList() ) ) {
-            //TODO {manstis} Needs rewrite to events
-            //bRedrawColumn = bRedrawColumn || updateCellsForOptionValueList( editColumn,column );
+            bUpdateColumnData = updateCellsForOptionValueList( editColumn,
+                                                               origColumn );
         }
 
         // Update column header in Header Widget
         if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bRedrawHeader = true;
-        }
-
-        // Update column field in Header Widget
-        if ( origColumn.getFactField() != null && !origColumn.getFactField().equals( editColumn.getFactField() ) ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update column binding in Header Widget
         if ( !origColumn.isBound() && editColumn.isBound() ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         } else if ( origColumn.isBound() && !editColumn.isBound() ) {
-            bRedrawHeader = true;
+            bUpdateColumnDefinition = true;
         } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
-            bRedrawColumn = true;
+            bUpdateColumnDefinition = true;
         }
 
         // Update LimitedEntryValue in Header Widget
@@ -772,7 +745,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
             LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
             if ( isEqualOrNull( lecOrig.getValue(),
                                 lecEditing.getValue() ) ) {
-                bRedrawHeader = true;
+                bUpdateColumnDefinition = true;
             }
         }
 
@@ -780,26 +753,23 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
-        //Update model with new cells, if required
-        if ( bUpdateCellsForDataType ) {
-            //TODO {manstis} Needs rewrite to events
-            //updateCellsForDataType( origColumn,column );
+        //Update Column cell
+        if ( bUpdateColumnDefinition ) {
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
+                                                                                                  false,
+                                                                                                  true,
+                                                                                                  iCol );
+            eventBus.fireEvent( updateColumnDefinition );
         }
 
-        //Redraw columns
-        if ( bRedrawColumn ) {
-            int maxColumnIndex = model.getAllColumns().size() - 1;
-            //TODO {manstis} Needs rewrite to events
-            //widget.redrawColumns( column.getColumnIndex(),maxColumnIndex );
-        }
-
-        // Schedule redraw event after column has been redrawn
-        if ( bRedrawHeader ) {
-            Scheduler.get().scheduleFinally( new ScheduledCommand() {
-                public void execute() {
-                    widget.redrawHeader();
-                }
-            } );
+        //Update Column data
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
+                                                                                getColumnData( origColumn ) );
+            eventBus.fireEvent( tme );
+            eventBus.fireEvent( updateColumnData );
         }
 
     }
@@ -1075,57 +1045,29 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     //Remove Otherwise state from column cells
-    private void removeOtherwiseStates(final DynamicColumn<DTColumnConfig52> column) {
-
-        //Grouping needs to be removed
-        widget.setMerging( false );
-
-        DynamicData data = widget.getData();
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            CellValue< ? > cv = row.get( column.getColumnIndex() );
-            cv.removeState( CellState.OTHERWISE );
+    private void removeOtherwiseStates(DTColumnConfig52 column) {
+        int index = this.model.getAllColumns().indexOf( column );
+        for ( List<DTCellValue52> row : this.model.getData() ) {
+            DTCellValue52 dcv = row.get( index );
+            dcv.setOtherwise( false );
         }
-
-    }
-
-    // Ensure the Column cell type and corresponding values are correct
-    private void updateCellsForDataType(final DTColumnConfig52 editColumn,
-                                        final DynamicColumn<DTColumnConfig52> column) {
-
-        //Grouping needs to be removed
-        widget.setMerging( false );
-
-        DynamicData data = widget.getData();
-        column.setCell( cellFactory.getCell( editColumn ) );
-        int iCol = model.getAllColumns().indexOf( editColumn );
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DTCellValue52 dcv = model.getData().get( iRow ).get( iCol );
-            DynamicDataRow row = data.get( iRow );
-            row.set( column.getColumnIndex(),
-                     cellValueFactory.convertModelCellValue( editColumn,
-                                                             dcv ) );
-        }
-
     }
 
     // Ensure the values in a column are within the Value List
     private boolean updateCellsForOptionValueList(final DTColumnConfig52 editColumn,
-                                                  final DynamicColumn<DTColumnConfig52> column) {
-        boolean bRedrawRequired = false;
-        DynamicData data = widget.getData();
+                                                  final DTColumnConfig52 origColumn) {
+        boolean bUpdateColumnData = false;
         List<String> vals = Arrays.asList( model.getValueList( editColumn,
                                                                sce ) );
-        column.setCell( cellFactory.getCell( editColumn ) );
-        int iCol = column.getColumnIndex();
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DynamicDataRow row = data.get( iRow );
-            if ( !vals.contains( row.get( iCol ).getValue() ) ) {
-                row.get( iCol ).setValue( null );
-                bRedrawRequired = true;
+
+        int iCol = model.getAllColumns().indexOf( origColumn );
+        for ( List<DTCellValue52> row : this.model.getData() ) {
+            if ( !vals.contains( row.get( iCol ).getStringValue() ) ) {
+                row.get( iCol ).setStringValue( null );
+                bUpdateColumnData = true;
             }
         }
-        return bRedrawRequired;
+        return bUpdateColumnData;
     }
 
     // Update Row Number column values
@@ -1179,18 +1121,6 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.fireEvent( updateColumnData );
     }
 
-    /**
-     * Check whether the given Cell can accept "otherwise" values
-     * 
-     * @param cell
-     * @return true if the Cell can accept "otherwise" values
-     */
-    protected boolean canAcceptOtherwiseValues(CellValue< ? > cell) {
-        Coordinate c = cell.getCoordinate();
-        DTColumnConfig52 column = model.getAllColumns().get( c.getCol() );
-        return canAcceptOtherwiseValues( column );
-    }
-
     public void analyze() {
         DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer( sce );
         List<Analysis> analysisData = analyzer.analyze( model );
@@ -1201,16 +1131,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
     private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
-        DynamicData dynamicData = widget.getData();
-        for ( int i = 0; i < analysisData.size(); i++ ) {
-            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get( i ).get( analysisColumnIndex );
-            Analysis analysis = analysisData.get( i );
-            cellValue.setValue( analysis );
-        }
+        //TODO {manstis} Copy analysis data to UI
+        //        DynamicData dynamicData = widget.getData();
+        //        for ( int i = 0; i < analysisData.size(); i++ ) {
+        //            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get( i ).get( analysisColumnIndex );
+        //            Analysis analysis = analysisData.get( i );
+        //            cellValue.setValue( analysis );
+        //        }
         analysisCol.setHideColumn( false );
         setColumnVisibility( analysisCol,
                              !analysisCol.isHideColumn() );
-        widget.redrawColumn( analysisColumnIndex );
     }
 
     /**
@@ -1476,6 +1406,16 @@ public abstract class AbstractDecisionTableWidget extends Composite
             List<DTCellValue52> row = model.getData().get( iRow );
             row.add( index,
                      dcv );
+        }
+    }
+
+    public void onSelectedCellChange(SelectedCellChangeEvent event) {
+        if ( event.getCellSelectionDetail() == null ) {
+            dtableCtrls.getOtherwiseButton().setEnabled( false );
+        } else {
+            Coordinate c = event.getCellSelectionDetail().getCoordinate();
+            DTColumnConfig52 column = model.getAllColumns().get( c.getCol() );
+            dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( column ) );
         }
     }
 

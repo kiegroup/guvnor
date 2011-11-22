@@ -202,7 +202,9 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
     /**
      * Simple spacer to ensure scrollable part of sidebar aligns with grid.
      */
-    private class VerticalSideBarSpacerWidget extends CellPanel {
+    private class VerticalSideBarSpacerWidget extends CellPanel
+        implements
+        ToggleMergingEvent.Handler {
 
         private Image   icon     = new Image();
         private Element tre      = DOM.createTR();
@@ -263,9 +265,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
                                       public void onBrowserEvent(Event event) {
                                           if ( event.getType().equals( "click" ) ) {
                                               //Raise event to toggle merging
-                                              isMerged = !isMerged;
-                                              setIconImage( isMerged );
-                                              ToggleMergingEvent tme = new ToggleMergingEvent( isMerged );
+                                              ToggleMergingEvent tme = new ToggleMergingEvent( !isMerged );
                                               eventBus.fireEvent( tme );
                                           }
                                       }
@@ -274,6 +274,13 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
 
             DOM.sinkEvents( icon.getElement(),
                             Event.getTypeInt( "click" ) );
+            eventBus.addHandler( ToggleMergingEvent.TYPE,
+                                 this );
+        }
+
+        public void onToggleMerging(ToggleMergingEvent event) {
+            isMerged = event.isMerged();
+            setIconImage( isMerged );
         }
 
         // Set the icon's image accordingly
@@ -301,7 +308,7 @@ public abstract class AbstractVerticalDecoratedGridSidebarWidget<M, T> extends A
      * @param decisionTable
      */
     public AbstractVerticalDecoratedGridSidebarWidget(ResourcesProvider<T> resources,
-                                              EventBus eventBus) {
+                                                      EventBus eventBus) {
         // Argument validation performed in the superclass constructor
         super( resources,
                eventBus );

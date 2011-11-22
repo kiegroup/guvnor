@@ -913,6 +913,7 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
     }
 
     public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> event) {
+        this.sortableColumns.clear();
         this.model = event.getModel();
         List<DynamicColumn<DTColumnConfig52>> columns = event.getColumns();
         for ( DynamicColumn<DTColumnConfig52> column : columns ) {

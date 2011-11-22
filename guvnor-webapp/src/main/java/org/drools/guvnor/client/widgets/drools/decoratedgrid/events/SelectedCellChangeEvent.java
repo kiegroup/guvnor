@@ -34,10 +34,16 @@ public class SelectedCellChangeEvent extends GwtEvent<SelectedCellChangeEvent.Ha
 
     public static Type<SelectedCellChangeEvent.Handler> TYPE = new Type<SelectedCellChangeEvent.Handler>();
 
-    private final CellSelectionDetail                    cellDetails;
+    private CellSelectionDetail                         cellDetails;
 
     /**
-     * Creates a value change event.
+     * Creates a cell selection event for no selection
+     */
+    public SelectedCellChangeEvent() {
+    }
+
+    /**
+     * Creates a cell selection event
      * 
      * @param cellExtents
      *            details of selected cell

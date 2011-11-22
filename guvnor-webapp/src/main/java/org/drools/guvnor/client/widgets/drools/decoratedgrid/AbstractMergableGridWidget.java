@@ -62,8 +62,6 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public abstract class AbstractMergableGridWidget<M, T> extends Widget
     implements
-    //TODO {manstis} HasGroupedRows<DynamicDataRow>,
-    //TODO {manstis} HasColumns<T>,
     ToggleMergingEvent.Handler,
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
@@ -253,27 +251,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     /**
-     * Return grid's columns
-     * 
-     * @return columns
-     */
-    protected List<DynamicColumn<T>> getColumns() {
-        return columns;
-    }
-
-    /**
-     * Return grid's data. Grouping reflected in the UI will be collapsed in the
-     * return value. Use of <code>getFlattenedData()</code> should be used in
-     * preference if the ungrouped data is needed (e.g. when persisting the
-     * model).
-     * 
-     * @return data
-     */
-    protected DynamicData getData() {
-        return data;
-    }
-
-    /**
      * Return an immutable list of selected cells
      * 
      * @return The selected cells
@@ -305,22 +282,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      */
     abstract void redrawColumns(int startRedrawIndex,
                                 int endRedrawIndex);
-
-    /**
-     * Set the state of DecoratedGridWidget merging.
-     */
-    void setMerging(boolean isMerged) {
-        if ( isMerged ) {
-            clearSelection();
-            data.setMerged( true );
-            redraw();
-        } else {
-            clearSelection();
-            data.setMerged( false );
-            redraw();
-            eventBus.fireEvent( ROW_GROUPING_EVENT );
-        }
-    }
 
     /*
      * (non-Javadoc)
@@ -646,6 +607,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         // Clear collection
         selections.clear();
         rangeDirection = MOVE_DIRECTION.NONE;
+        SelectedCellChangeEvent scce = new SelectedCellChangeEvent();
+        eventBus.fireEvent( scce );
     }
 
     abstract void createEmptyRowElement(int index);
@@ -729,7 +692,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             rangeDirection = dir;
             rangeExtentCell = data.get( nc );
             selectRange( rangeOriginCell,
-                             rangeExtentCell );
+                         rangeExtentCell );
 
         }
     }
@@ -902,12 +865,13 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
             throw new IllegalArgumentException( "start cannot be null" );
         }
 
-        //Raise event signalling change in selection 
+        clearSelection();
+        
+        //Raise event signalling change in selection
         CellSelectionDetail ce = getSelectedCellExtents( data.get( start ) );
         SelectedCellChangeEvent scce = new SelectedCellChangeEvent( ce );
         eventBus.fireEvent( scce );
 
-        clearSelection();
         CellValue< ? > startCell = data.get( start );
         selectRange( startCell,
                      startCell );
@@ -925,7 +889,16 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     }
 
     public void onToggleMerging(ToggleMergingEvent event) {
-        setMerging( event.isMerged() );
+        if ( event.isMerged() ) {
+            clearSelection();
+            data.setMerged( true );
+            redraw();
+        } else {
+            clearSelection();
+            data.setMerged( false );
+            redraw();
+            eventBus.fireEvent( ROW_GROUPING_EVENT );
+        }
     }
 
     public void onDeleteRow(DeleteRowEvent event) {

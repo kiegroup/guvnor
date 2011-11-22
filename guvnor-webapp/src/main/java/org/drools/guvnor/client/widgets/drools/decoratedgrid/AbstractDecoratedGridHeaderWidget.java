@@ -23,7 +23,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -69,7 +69,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     DeleteColumnEvent.Handler,
     InsertInternalColumnEvent.Handler<T>,
     SetColumnVisibilityEvent.Handler,
-    UpdateColumnDataEvent.Handler {
+    UpdateColumnDefinitionEvent.Handler {
 
     /**
      * Container class for information relating to re-size operations
@@ -251,7 +251,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
                              this );
         eventBus.addHandler( SetColumnVisibilityEvent.TYPE,
                              this );
-        eventBus.addHandler( UpdateColumnDataEvent.TYPE,
+        eventBus.addHandler( UpdateColumnDefinitionEvent.TYPE,
                              this );
     }
 
@@ -361,7 +361,7 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
         } );
     }
 
-    public void onUpdateColumnData(UpdateColumnDataEvent event) {
+    public void onUpdateColumnDefinition(UpdateColumnDefinitionEvent event) {
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
