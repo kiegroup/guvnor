@@ -157,11 +157,11 @@ public class CellValue<T extends Comparable<T>>
     }
 
     private T                  value;
-    private int                rowSpan = 1;
-    private Coordinate         coordinate;
-    private Coordinate         mapHtmlToData;
-    private Coordinate         mapDataToHtml;
-    private EnumSet<CellState> state   = EnumSet.noneOf( CellState.class );
+    private int                rowSpan       = 1;
+    private Coordinate         coordinate    = new Coordinate();
+    private Coordinate         mapHtmlToData = new Coordinate();
+    private Coordinate         mapDataToHtml = new Coordinate();
+    private EnumSet<CellState> state         = EnumSet.noneOf( CellState.class );
 
     public CellValue(T value) {
         this.value = value;

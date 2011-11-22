@@ -37,7 +37,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDecisionTableModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -878,7 +879,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     // Find the right-most index for an Action column
     private int findActionColumnIndex() {
         int analysisColumnsSize = 1;
-        int index = model.getAllColumns().size() - analysisColumnsSize;
+        int index = model.getAllColumns().size() - analysisColumnsSize - 1;
         return index;
     }
 
@@ -1137,38 +1138,45 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         //Raise event to the grid widget
-        UpdateColumnEvent uce = new UpdateColumnEvent( iColIndex,
-                                                       getColumnData( column ) );
+        UpdateColumnDataEvent uce = new UpdateColumnDataEvent( iColIndex,
+                                                               getColumnData( column ) );
         eventBus.fireEvent( uce );
     }
 
-    // Update Salience column values
+    // Update Salience column definition and values
     private void updateSalienceColumnValues(AttributeCol52 column) {
 
+        //Ensure Salience cells are rendered with the correct Cell
+        int iColIndex = model.getAllColumns().indexOf( column );
+        UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cellFactory.getCell( column ),
+                                                                                              column.isUseRowNumber(),
+                                                                                              !column.isUseRowNumber(),
+                                                                                              iColIndex );
+        eventBus.fireEvent( updateColumnDefinition );
+
+        //If Salience values are-user defined, exit
         if ( !column.isUseRowNumber() ) {
             return;
         }
 
-        int iColIndex = model.getAllColumns().indexOf( column );
+        //If Salience values are not reverse order use the Row Number values
         if ( !column.isReverseOrder() ) {
             updateRowNumberColumnValues( column );
-        } else {
-
-            int salience = (column.isReverseOrder() ? model.getData().size() : 1);
-            for ( List<DTCellValue52> row : model.getData() ) {
-                row.get( iColIndex ).setNumericValue( new BigDecimal( salience ) );
-                if ( column.isReverseOrder() ) {
-                    salience--;
-                } else {
-                    salience++;
-                }
-            }
-
-            //Raise event to the grid widget
-            UpdateColumnEvent uce = new UpdateColumnEvent( iColIndex,
-                                                           getColumnData( column ) );
-            eventBus.fireEvent( uce );
         }
+
+        //If Salience values are reverse order derive them and update column
+        int salience = (column.isReverseOrder() ? model.getData().size() : 1);
+        for ( List<DTCellValue52> row : model.getData() ) {
+            row.get( iColIndex ).setNumericValue( new BigDecimal( salience ) );
+            if ( column.isReverseOrder() ) {
+                salience--;
+            } else {
+                salience++;
+            }
+        }
+        UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iColIndex,
+                                                                            getColumnData( column ) );
+        eventBus.fireEvent( updateColumnData );
     }
 
     /**

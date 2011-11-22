@@ -23,25 +23,25 @@ import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * An event to update a columns content
+ * An event to update a Columns data
  */
-public class UpdateColumnEvent extends GwtEvent<UpdateColumnEvent.Handler> {
+public class UpdateColumnDataEvent extends GwtEvent<UpdateColumnDataEvent.Handler> {
 
     public static interface Handler
         extends
         EventHandler {
 
-        void onUpdateColumn(UpdateColumnEvent event);
+        void onUpdateColumnData(UpdateColumnDataEvent event);
 
     }
 
-    public static Type<UpdateColumnEvent.Handler>       TYPE = new Type<UpdateColumnEvent.Handler>();
+    public static Type<UpdateColumnDataEvent.Handler>   TYPE = new Type<UpdateColumnDataEvent.Handler>();
 
     private final int                                   index;
     private List<CellValue< ? extends Comparable< ? >>> columnData;
 
-    public UpdateColumnEvent(int index,
-                             List<CellValue< ? extends Comparable< ? >>> columnData) {
+    public UpdateColumnDataEvent(int index,
+                                 List<CellValue< ? extends Comparable< ? >>> columnData) {
         this.index = index;
         this.columnData = columnData;
     }
@@ -55,13 +55,13 @@ public class UpdateColumnEvent extends GwtEvent<UpdateColumnEvent.Handler> {
     }
 
     @Override
-    public Type<UpdateColumnEvent.Handler> getAssociatedType() {
+    public Type<UpdateColumnDataEvent.Handler> getAssociatedType() {
         return TYPE;
     }
 
     @Override
-    protected void dispatch(UpdateColumnEvent.Handler handler) {
-        handler.onUpdateColumn( this );
+    protected void dispatch(UpdateColumnDataEvent.Handler handler) {
+        handler.onUpdateColumnData( this );
     }
 
 }

@@ -97,7 +97,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       2 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );
@@ -208,7 +208,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       2 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );
@@ -314,7 +314,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       1 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );

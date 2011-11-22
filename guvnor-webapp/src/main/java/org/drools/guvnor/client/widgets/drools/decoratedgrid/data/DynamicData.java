@@ -22,11 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
-
-import com.google.gwt.user.client.Command;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 
 /**
  * A simple container for rows of data.
@@ -41,8 +39,6 @@ public class DynamicData
 
     private static final long    serialVersionUID = 5061393855340039472L;
 
-    private Command              onRowChangeCommand;
-
     private List<DynamicDataRow> data             = new ArrayList<DynamicDataRow>();
 
     /**
@@ -54,11 +50,47 @@ public class DynamicData
     public void addColumn(int index,
                           List<CellValue< ? extends Comparable< ? >>> columnData,
                           boolean isVisible) {
-        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
-            CellValue< ? > cv = columnData.get( iRow );
-            data.get( iRow ).add( index,
-                                  cv );
+
+        //Check the column contains the same number of rows as the existing table
+        int numberOfRows = 0;
+        if ( this.data.size() > 0 ) {
+            for ( DynamicDataRow row : this.data ) {
+                numberOfRows++;
+                if ( row instanceof GroupedDynamicDataRow ) {
+                    numberOfRows = numberOfRows + ((GroupedDynamicDataRow) row).getChildRows().size() - 1;
+                }
+            }
         }
+        if ( numberOfRows != columnData.size() ) {
+            throw new IllegalArgumentException( "columnData contains a different number of rows to that defined." );
+        }
+
+        //Add the column data to the table
+        int iRowIndex = 0;
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            CellValue< ? extends Comparable< ? >> cell = columnData.get( iRowIndex );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                //Setting value on a GroupedCellValue causes all children to assume the same value
+                groupedRow.add( index,
+                                cell );
+
+                //So set the children's values accordingly
+                for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                    cell = columnData.get( iRowIndex );
+                    groupedRow.getChildRows().get( iGroupedRow ).set( index,
+                                                                      cell );
+                    iRowIndex++;
+                }
+            } else {
+                row.add( index,
+                         cell );
+                iRowIndex++;
+            }
+        }
+
         visibleColumns.add( index,
                             isVisible );
 
@@ -74,11 +106,6 @@ public class DynamicData
         DynamicDataRow row = new DynamicDataRow();
         data.add( row );
 
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
         assertModelMerging();
         return row;
     }
@@ -93,11 +120,6 @@ public class DynamicData
                        DynamicDataRow rowData) {
         data.add( index,
                   rowData );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
 
         assertModelMerging();
     }
@@ -148,11 +170,6 @@ public class DynamicData
         data.add( startRowIndex,
                   groupedRow );
 
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
         assertModelMerging();
     }
 
@@ -176,12 +193,6 @@ public class DynamicData
 
     public DynamicDataRow deleteRow(int index) {
         DynamicDataRow row = data.remove( index );
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
         assertModelMerging();
         return row;
     }
@@ -269,11 +280,6 @@ public class DynamicData
         data.addAll( startRowIndex,
                      expandedRow );
 
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
-        }
-
         assertModelMerging();
 
         //If the row is replaced with another grouped row ensure the row can be expanded
@@ -341,18 +347,6 @@ public class DynamicData
             removeModelGrouping();
             removeModelMerging();
         }
-    }
-
-    /**
-     * Configure a command that can be executed whenever a row is added\deleted.
-     * This allows consumers of DynamicData to ensure column values are within
-     * keeping of their requirements. E.G. A Column containing a Row Number can
-     * be updated etc
-     * 
-     * @param cmd
-     */
-    public void setOnRowChangeCommand(Command cmd) {
-        this.onRowChangeCommand = cmd;
     }
 
     public int size() {
@@ -433,11 +427,6 @@ public class DynamicData
               return comparison;
           }
                               } );
-        }
-
-        //Execute command if set
-        if ( onRowChangeCommand != null ) {
-            onRowChangeCommand.execute();
         }
 
         assertModelMerging();

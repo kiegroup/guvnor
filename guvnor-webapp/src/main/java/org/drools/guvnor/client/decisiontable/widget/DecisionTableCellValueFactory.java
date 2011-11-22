@@ -243,7 +243,7 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     private void assertDTCellValue(DTDataTypes52 dataType,
                                    DTCellValue52 dcv) {
         //If already converted exit
-        if ( dcv.getDataType().equals( dataType ) ) {
+        if ( dataType.equals( dcv.getDataType() ) ) {
             return;
         }
 

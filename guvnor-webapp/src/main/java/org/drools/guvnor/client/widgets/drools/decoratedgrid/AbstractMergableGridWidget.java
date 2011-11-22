@@ -39,7 +39,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVis
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -71,7 +72,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     SetInternalModelEvent.Handler<M, T>,
     InsertInternalColumnEvent.Handler<T>,
     SetColumnVisibilityEvent.Handler,
-    UpdateColumnEvent.Handler {
+    UpdateColumnDataEvent.Handler,
+    UpdateColumnDefinitionEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -240,7 +242,9 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                              this );
         eventBus.addHandler( SetColumnVisibilityEvent.TYPE,
                              this );
-        eventBus.addHandler( UpdateColumnEvent.TYPE,
+        eventBus.addHandler( UpdateColumnDataEvent.TYPE,
+                             this );
+        eventBus.addHandler( UpdateColumnDefinitionEvent.TYPE,
                              this );
     }
 
@@ -1086,24 +1090,41 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         }
     }
 
-    public void onUpdateColumn(UpdateColumnEvent event) {
+    public void onUpdateColumnData(UpdateColumnDataEvent event) {
+        int iRowIndex = 0;
         int iColIndex = event.getIndex();
         List<CellValue< ? extends Comparable< ? >>> columnData = event.getColumnData();
-        for(int iRow = 0; iRow < columnData.size(); iRow++) {
-            DynamicDataRow row = data.get(iRow);
-            CellValue< ? extends Comparable< ? >> cell = columnData.get( iRow );
-            row.set( iColIndex, cell );
+
+        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+            DynamicDataRow row = data.get( iRow );
+            CellValue< ? extends Comparable< ? >> cell = columnData.get( iRowIndex );
+            if ( row instanceof GroupedDynamicDataRow ) {
+                GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
+
+                //Setting value on a GroupedCellValue causes all children to assume the same value
+                groupedRow.get( iColIndex ).setValue( cell.getValue() );
+
+                //So set the children's values accordingly
+                for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
+                    cell = columnData.get( iRowIndex );
+                    groupedRow.getChildRows().get( iGroupedRow ).get( iColIndex ).setValue( cell.getValue() );
+                    iRowIndex++;
+                }
+            } else {
+                row.get( iColIndex ).setValue( cell.getValue() );
+                iRowIndex++;
+            }
         }
+
         redrawColumn( iColIndex );
-        
-        //TODO {manstis} Needs to be handled in the UI layer
-        // Ensure Salience cells are rendered with the correct Cell
-        //col.setCell( cellFactory.getCell( attrCol ) );
-        //col.setSystemControlled( attrCol.isUseRowNumber() );
-        //col.setSortable( !attrCol.isUseRowNumber() );
-        
     }
-    
-    
+
+    public void onUpdateColumnDefinition(UpdateColumnDefinitionEvent event) {
+        int index = event.getColumnIndex();
+        DynamicColumn<T> column = columns.get( index );
+        column.setCell( event.getCell() );
+        column.setSystemControlled( event.isSystemControlled() );
+        column.setSortable( event.isSortable() );
+    }
 
 }
