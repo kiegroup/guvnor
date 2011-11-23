@@ -217,7 +217,7 @@ public class TemplateDataTableWidget extends Composite
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             public void execute() {
-                widget.redraw();
+//                widget.redraw();
             }
 
         } );

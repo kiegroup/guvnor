@@ -30,14 +30,15 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
@@ -71,7 +72,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     InsertInternalColumnEvent.Handler<T>,
     SetColumnVisibilityEvent.Handler,
     UpdateColumnDataEvent.Handler,
-    UpdateColumnDefinitionEvent.Handler {
+    UpdateColumnDefinitionEvent.Handler,
+    ColumnResizeEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -243,6 +245,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         eventBus.addHandler( UpdateColumnDataEvent.TYPE,
                              this );
         eventBus.addHandler( UpdateColumnDefinitionEvent.TYPE,
+                             this );
+        eventBus.addHandler( ColumnResizeEvent.TYPE,
                              this );
     }
 
@@ -866,7 +870,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         }
 
         clearSelection();
-        
+
         //Raise event signalling change in selection
         CellSelectionDetail ce = getSelectedCellExtents( data.get( start ) );
         SelectedCellChangeEvent scce = new SelectedCellChangeEvent( ce );
@@ -1098,6 +1102,11 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         column.setCell( event.getCell() );
         column.setSystemControlled( event.isSystemControlled() );
         column.setSortable( event.isSortable() );
+    }
+
+    public void onColumnResize(final ColumnResizeEvent event) {
+        resizeColumn( event.getColumn(),
+                      event.getWidth() );
     }
 
 }
