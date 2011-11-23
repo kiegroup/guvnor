@@ -121,15 +121,17 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
     }
 
     /**
-     * Construct a new column of data for the MergableGridWidget
+     * Convert a column of domain data to that suitable for the UI
      * 
-     * @param cell
+     * @param column
+     * @param columnData
      * @return
      */
-    public List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(DTColumnConfig52 column) {
+    public List<CellValue< ? extends Comparable< ? >>> convertColumnData(DTColumnConfig52 column,
+                                                                         List<DTCellValue52> columnData) {
         List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
-            DTCellValue52 dcv = makeModelCellValue( column );
+            DTCellValue52 dcv = columnData.get( iRow );
             CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
                                                                                 dcv );
             data.add( cell );

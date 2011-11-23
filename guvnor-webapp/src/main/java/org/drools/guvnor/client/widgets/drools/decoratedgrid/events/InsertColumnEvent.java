@@ -15,19 +15,21 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import java.util.List;
+
 import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
  * An event to insert a column
  */
-public abstract class InsertColumnEvent<T> extends GwtEvent<InsertColumnEvent.Handler<T>> {
+public abstract class InsertColumnEvent<T, C> extends GwtEvent<InsertColumnEvent.Handler<T, C>> {
 
-    public static interface Handler<T>
+    public static interface Handler<T, C>
         extends
         EventHandler {
 
-        void onInsertColumn(InsertColumnEvent<T> event);
+        void onInsertColumn(InsertColumnEvent<T, C> event);
     }
 
     private int     index;
@@ -36,22 +38,32 @@ public abstract class InsertColumnEvent<T> extends GwtEvent<InsertColumnEvent.Ha
 
     private T       column;
 
+    private List<C> columnData;
+
     public InsertColumnEvent(T column,
+                             List<C> columnData,
                              int index,
                              boolean redraw) {
-        this.column = column;
-        this.index = index;
+        this( column,
+              columnData,
+              index );
         this.redraw = redraw;
     }
 
     public InsertColumnEvent(T column,
+                             List<C> columnData,
                              int index) {
         this.column = column;
+        this.columnData = columnData;
         this.index = index;
     }
 
     public T getColumn() {
         return this.column;
+    }
+
+    public List<C> getColumnData() {
+        return this.columnData;
     }
 
     public int getIndex() {
@@ -63,7 +75,7 @@ public abstract class InsertColumnEvent<T> extends GwtEvent<InsertColumnEvent.Ha
     }
 
     @Override
-    protected void dispatch(InsertColumnEvent.Handler<T> handler) {
+    protected void dispatch(InsertColumnEvent.Handler<T, C> handler) {
         handler.onInsertColumn( this );
     }
 

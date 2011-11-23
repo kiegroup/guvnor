@@ -48,8 +48,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  *            The domain model represented by the Grid
  * @param <T>
  *            The type of domain columns represented by the Grid
+ * @param <C>
+ *            The type of domain cell represented by the Grid
  */
-public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
+public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     implements
     SelectedCellValueUpdater,
     ColumnResizeEvent.Handler,
@@ -59,7 +61,7 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     AppendRowEvent.Handler,
     SetModelEvent.Handler<M>,
     DeleteColumnEvent.Handler,
-    InsertColumnEvent.Handler<T> {
+    InsertColumnEvent.Handler<T, C> {
 
     // Widgets for UI
     protected Panel                                    mainPanel;
@@ -242,7 +244,7 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
 
     //Ensure the selected cell is visible
     private void cellSelected(CellSelectionDetail ce) {
-        
+
         //No selection
         if ( ce == null ) {
             return;
@@ -420,7 +422,7 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
         }
     }
 
-    public void onInsertColumn(InsertColumnEvent<T> event) {
+    public void onInsertColumn(InsertColumnEvent<T, C> event) {
         if ( event.redraw() ) {
             Scheduler.get().scheduleDeferred( new Command() {
 

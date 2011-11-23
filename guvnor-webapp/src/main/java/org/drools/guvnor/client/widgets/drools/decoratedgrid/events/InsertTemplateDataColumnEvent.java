@@ -15,31 +15,37 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import java.util.List;
+
 import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataColumn;
 
 /**
  * An event to insert a Template Data column
  */
-public class InsertTemplateDataColumnEvent extends InsertColumnEvent<TemplateDataColumn> {
+public class InsertTemplateDataColumnEvent extends InsertColumnEvent<TemplateDataColumn, String> {
 
     public InsertTemplateDataColumnEvent(TemplateDataColumn column,
+                                         List<String> columnData,
                                          int index,
                                          boolean redraw) {
         super( column,
+               columnData,
                index,
                redraw );
     }
 
     public InsertTemplateDataColumnEvent(TemplateDataColumn column,
+                                         List<String> columnData,
                                          int index) {
         super( column,
+               columnData,
                index );
     }
 
-    public static Type<InsertColumnEvent.Handler<TemplateDataColumn>> TYPE = new Type<InsertColumnEvent.Handler<TemplateDataColumn>>();
+    public static Type<InsertColumnEvent.Handler<TemplateDataColumn, String>> TYPE = new Type<InsertColumnEvent.Handler<TemplateDataColumn, String>>();
 
     @Override
-    public Type<InsertColumnEvent.Handler<TemplateDataColumn>> getAssociatedType() {
+    public Type<InsertColumnEvent.Handler<TemplateDataColumn, String>> getAssociatedType() {
         return TYPE;
     }
 

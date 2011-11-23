@@ -43,6 +43,14 @@ public class UpdateColumnDefinitionEvent extends GwtEvent<UpdateColumnDefinition
     private int                                                       columnIndex;
 
     public UpdateColumnDefinitionEvent(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
+                                       int columnIndex) {
+        this( cell,
+              false,
+              true,
+              columnIndex );
+    }
+
+    public UpdateColumnDefinitionEvent(DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell,
                                        boolean isSystemControlled,
                                        boolean isSortable,
                                        int columnIndex) {

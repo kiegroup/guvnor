@@ -48,7 +48,7 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * A Decorated Grid for Decision Tables
  */
-public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52> {
+public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52, DTCellValue52> {
 
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
@@ -277,12 +277,13 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         return columnData;
     }
 
-    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52> event) {
+    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52, DTCellValue52> event) {
         DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( event.getColumn(),
                                                                                       cellFactory.getCell( event.getColumn() ),
                                                                                       eventBus );
         column.setVisible( !event.getColumn().isHideColumn() );
-        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.makeUIColumnData( event.getColumn() );
+        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.convertColumnData( event.getColumn(),
+                                                                                               event.getColumnData() );
 
         //Raise event setting data and columns for UI components
         InsertInternalDecisionTableColumnEvent ice = new InsertInternalDecisionTableColumnEvent( column,

@@ -31,7 +31,7 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * A Decorated Grid for Template Data
  */
-public abstract class AbstractDecoratedTemplateDataGridWidget extends AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn> {
+public abstract class AbstractDecoratedTemplateDataGridWidget extends AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn, String> {
 
     //Factories to create new data elements
     protected final TemplateDataCellFactory      cellFactory;
@@ -71,7 +71,7 @@ public abstract class AbstractDecoratedTemplateDataGridWidget extends AbstractDe
         //TODO {manstis} Add the code!
     }
 
-    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn> event) {
+    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn, String> event) {
         //TODO {manstis} Add the code!
     }
 

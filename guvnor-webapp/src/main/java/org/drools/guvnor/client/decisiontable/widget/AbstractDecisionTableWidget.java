@@ -76,7 +76,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
     DeleteColumnEvent.Handler,
-    InsertDecisionTableColumnEvent.Handler<DTColumnConfig52> {
+    InsertDecisionTableColumnEvent.Handler<DTColumnConfig52, DTCellValue52> {
 
     // Decision Table data
     protected GuidedDecisionTable52                       model;
@@ -128,29 +128,138 @@ public abstract class AbstractDecisionTableWidget extends Composite
     }
 
     /**
-     * Add a column to the table, at the appropriate position determined by the
-     * column subclass: RowNumberCol, Metadata columns, Attribute columns,
-     * Condition columns and lastly Action columns. Condition Ccolumns are
-     * further grouped by Pattern.
+     * Add a column to the table.
      * 
      * @param modelColumn
      *            The Decision Table column to insert
      */
-    public void addColumn(DTColumnConfig52 modelColumn) {
+    public void addColumn(ActionCol52 modelColumn) {
         if ( modelColumn == null ) {
-            throw new IllegalArgumentException(
-                                                "modelColumn cannot be null." );
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
         }
+        model.getActionCols().add( modelColumn );
         addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
                    true );
     }
 
     /**
-     * Delete the column at the given index
+     * Add a column to the table.
      * 
-     * @param index
+     * @param modelColumn
+     *            The Decision Table column to insert
      */
-    public void deleteColumn(int index) {
+    public void addColumn(AttributeCol52 modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+        model.getAttributeCols().add( modelColumn );
+        addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
+                   true );
+    }
+
+    /**
+     * Add a column to the table.
+     * 
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
+    public void addColumn(MetadataCol52 modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+        model.getMetadataCols().add( modelColumn );
+        addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
+                   true );
+    }
+
+    /**
+     * Add a column to the table.
+     * 
+     * @param pattern
+     *            The Pattern to which the column will be added
+     * @param modelColumn
+     *            The Decision Table column to insert
+     */
+    public void addColumn(Pattern52 pattern,
+                          ConditionCol52 modelColumn) {
+        if ( modelColumn == null ) {
+            throw new IllegalArgumentException( "modelColumn cannot be null." );
+        }
+
+        //Add pattern if it does not already exist
+        if ( !model.getConditionPatterns().contains( pattern ) ) {
+            model.getConditionPatterns().add( pattern );
+
+            //Signal patterns changed event
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            eventBus.fireEvent( pce );
+        }
+
+        pattern.getConditions().add( modelColumn );
+        addColumn( modelColumn,
+                   cellValueFactory.makeColumnData( modelColumn ),
+                   true );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(ActionCol52 modelColumn) {
+        int index = model.getAllColumns().indexOf( modelColumn );
+        model.getActionCols().remove( modelColumn );
+        deleteColumn( index,
+                      true );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(AttributeCol52 modelColumn) {
+        int index = model.getAllColumns().indexOf( modelColumn );
+        model.getAttributeCols().remove( modelColumn );
+        deleteColumn( index,
+                      true );
+    }
+
+    /**
+     * Delete the given column
+     * 
+     * @param modelColumn
+     */
+    public void deleteColumn(MetadataCol52 modelColumn) {
+        int index = model.getAllColumns().indexOf( modelColumn );
+        model.getMetadataCols().remove( modelColumn );
+        deleteColumn( index,
+                      true );
+    }
+
+    /**
+     * Delete the given column from the given pattern
+     * 
+     * @param pattern
+     * @param modelColumn
+     */
+    public void deleteColumn(ConditionCol52 modelColumn) {
+        int index = model.getAllColumns().indexOf( modelColumn );
+        Pattern52 pattern = model.getPattern( modelColumn );
+        pattern.getConditions().remove( modelColumn );
+
+        //Remove pattern if it contains zero conditions
+        if ( pattern.getConditions().size() == 0 ) {
+            model.getConditionPatterns().remove( pattern );
+
+            //Signal patterns changed event to Decision Table Widget
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            eventBus.fireEvent( pce );
+        }
+
         deleteColumn( index,
                       true );
     }
@@ -326,22 +435,26 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
+        //First remove merging if column data is being changed. This is necessary before we potentially update
+        //the column's cell type as removing merging causes a redraw that needs the column's cell to be
+        //consistent with the column's data-type
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            eventBus.fireEvent( tme );
+        }
+
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
         //Update Column data
         if ( bUpdateColumnData ) {
-            ToggleMergingEvent tme = new ToggleMergingEvent( false );
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
                                                                                 getColumnData( origColumn ) );
-            eventBus.fireEvent( tme );
             eventBus.fireEvent( updateColumnData );
         }
 
@@ -421,22 +534,26 @@ public abstract class AbstractDecisionTableWidget extends Composite
         populateModelColumn( origColumn,
                              editColumn );
 
+        //First remove merging if column data is being changed. This is necessary before we potentially update
+        //the column's cell type as removing merging causes a redraw that needs the column's cell to be
+        //consistent with the column's data-type
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            eventBus.fireEvent( tme );
+        }
+
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
         //Update Column data
         if ( bUpdateColumnData ) {
-            ToggleMergingEvent tme = new ToggleMergingEvent( false );
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
                                                                                 getColumnData( origColumn ) );
-            eventBus.fireEvent( tme );
             eventBus.fireEvent( updateColumnData );
         }
 
@@ -494,10 +611,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
@@ -550,10 +665,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
@@ -597,10 +710,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
@@ -619,10 +730,10 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * @param editColumn
      *            A copy of the original column containing the modified values
      */
-    public void updateColumn(final Pattern52 origPattern,
-                             final ConditionCol52 origColumn,
-                             final Pattern52 editPattern,
-                             final ConditionCol52 editColumn) {
+    public void updateColumn(Pattern52 origPattern,
+                             ConditionCol52 origColumn,
+                             Pattern52 editPattern,
+                             ConditionCol52 editColumn) {
         if ( origPattern == null ) {
             throw new IllegalArgumentException( "origPattern cannot be null" );
         }
@@ -636,38 +747,24 @@ public abstract class AbstractDecisionTableWidget extends Composite
             throw new IllegalArgumentException( "editColumn cannot be null" );
         }
 
+        //Add pattern to model, if applicable
+        if ( !model.getConditionPatterns().contains( editPattern ) ) {
+            model.getConditionPatterns().add( editPattern );
+
+            //Signal patterns changed event
+            PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+            eventBus.fireEvent( pce );
+        }
+
         boolean bUpdateColumnData = false;
         boolean bUpdateColumnDefinition = false;
-        int iCol = model.getAllColumns().indexOf( origColumn );
 
-        // Update column's visibility
-        if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
-            setColumnVisibility( origColumn,
-                                 !editColumn.isHideColumn() );
-        }
-
-        // Change in operator
-        if ( !isEqualOrNull( origColumn.getOperator(),
-                             editColumn.getOperator() ) ) {
-            bUpdateColumnDefinition = true;
-
-            //Clear otherwise if column cannot accept them
-            if ( !canAcceptOtherwiseValues( editColumn ) ) {
-                //Grouping needs to be removed
-                //widget.setMerging( false );
-                removeOtherwiseStates( origColumn );
-                bUpdateColumnData = true;
-            }
-        }
-
+        // Change in bound name requires column to be repositioned
         if ( !isEqualOrNull( origPattern.getBoundName(),
                              editPattern.getBoundName() ) ) {
-            // Change in bound name requires column to be repositioned
-            bUpdateColumnDefinition = true;
-            addColumn( editColumn,
-                       true );
+
+            List<DTCellValue52> columnData = cellValueFactory.makeColumnData( editColumn );
             int origColumnIndex = model.getAllColumns().indexOf( origColumn );
-            int editColumnIndex = model.getAllColumns().indexOf( editColumn );
 
             // If the FactType, FieldType and ConstraintValueType are unchanged
             // we can copy cell values from the old column into the new
@@ -676,33 +773,56 @@ public abstract class AbstractDecisionTableWidget extends Composite
                  && isEqualOrNull( origColumn.getFactField(),
                                    editColumn.getFactField() )
                  && origColumn.getConstraintValueType() == editColumn.getConstraintValueType() ) {
-                //TODO {manstis} Change to use events
-                //                final DynamicData data = widget.getData();
-                //                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-                //                    DynamicDataRow row = data.get( iRow );
-                //                    CellValue< ? > oldCell = row.get( origColIndex );
-                //                    CellValue< ? > newCell = row.get( editColIndex );
-                //                    newCell.setValue( oldCell.getValue() );
-                //                }
+
+                columnData.clear();
+                for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
+                    List<DTCellValue52> row = model.getData().get( iRow );
+                    columnData.add( row.get( origColumnIndex ) );
+                }
             }
 
-            // Delete old column and redraw
-            deleteColumn( origColumnIndex,
-                          false );
-            //            origColIndex = Math.min( model.getAllColumns().size() - 1,
-            //                                     origColIndex );
-            //            editColIndex = Math.min( model.getAllColumns().size() - 1,
-            //                                     editColIndex );
-            //            if ( editColIndex > origColIndex ) {
-            //                int temp = origColIndex;
-            //                origColIndex = editColIndex;
-            //                editColIndex = temp;
-            //            }
-            //            widget.redrawColumns( editColIndex,
-            //                                  origColIndex );
+            editPattern.getConditions().add( editColumn );
+            addColumn( editColumn,
+                       columnData,
+                       true );
 
-        } else if ( !isEqualOrNull( origPattern.getFactType(),
-                                    editPattern.getFactType() )
+            // Delete old column
+            origPattern.getConditions().remove( origColumn );
+            if ( origPattern.getConditions().size() == 0 ) {
+                model.getConditionPatterns().remove( origPattern );
+
+                //Signal patterns changed event to Decision Table Widget
+                PatternsChangedEvent pce = new PatternsChangedEvent( model.getConditionPatterns() );
+                eventBus.fireEvent( pce );
+            }
+            deleteColumn( origColumnIndex,
+                          true );
+
+        } else {
+
+            // Update column's visibility
+            if ( origColumn.isHideColumn() != editColumn.isHideColumn() ) {
+                setColumnVisibility( origColumn,
+                                     !editColumn.isHideColumn() );
+            }
+
+            // Change in operator
+            if ( !isEqualOrNull( origColumn.getOperator(),
+                                 editColumn.getOperator() ) ) {
+                bUpdateColumnDefinition = true;
+
+                //Clear otherwise if column cannot accept them
+                if ( !canAcceptOtherwiseValues( editColumn ) ) {
+                    removeOtherwiseStates( origColumn );
+                    bUpdateColumnData = true;
+                }
+            }
+
+            // Update column's Cell type. Other than the obvious change in data-type if the 
+            // Operator changes to or from "not set" (possible for literal columns and formulae)
+            // the column needs to be changed to or from Text.
+            if ( !isEqualOrNull( origPattern.getFactType(),
+                                 editPattern.getFactType() )
                     || !isEqualOrNull( origColumn.getFactField(),
                                        editColumn.getFactField() )
                     || !isEqualOrNull( origColumn.getFieldType(),
@@ -710,65 +830,68 @@ public abstract class AbstractDecisionTableWidget extends Composite
                     || !isEqualOrNull( origColumn.getOperator(),
                                        editColumn.getOperator() )
                     || origColumn.getConstraintValueType() != editColumn.getConstraintValueType() ) {
-
-            // Update column's Cell type. Other than the obvious change in data-type if the 
-            // Operator changes to or from "not set" (possible for literal columns and formulae)
-            // the column needs to be changed to or from Text.
-            bUpdateColumnData = true;
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column's cell content if the Optional Value list has changed
-        if ( !isEqualOrNull( origColumn.getValueList(),
-                             editColumn.getValueList() ) ) {
-            bUpdateColumnData = updateCellsForOptionValueList( editColumn,
-                                                               origColumn );
-        }
-
-        // Update column header in Header Widget
-        if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update column binding in Header Widget
-        if ( !origColumn.isBound() && editColumn.isBound() ) {
-            bUpdateColumnDefinition = true;
-        } else if ( origColumn.isBound() && !editColumn.isBound() ) {
-            bUpdateColumnDefinition = true;
-        } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
-            bUpdateColumnDefinition = true;
-        }
-
-        // Update LimitedEntryValue in Header Widget
-        if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
-            LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
-            LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
-            if ( isEqualOrNull( lecOrig.getValue(),
-                                lecEditing.getValue() ) ) {
+                bUpdateColumnData = true;
                 bUpdateColumnDefinition = true;
             }
+
+            // Update column's cell content if the Optional Value list has changed
+            if ( !isEqualOrNull( origColumn.getValueList(),
+                                 editColumn.getValueList() ) ) {
+                bUpdateColumnData = updateCellsForOptionValueList( editColumn,
+                                                                   origColumn );
+            }
+
+            // Update column header in Header Widget
+            if ( !origColumn.getHeader().equals( editColumn.getHeader() ) ) {
+                bUpdateColumnDefinition = true;
+            }
+
+            // Update column binding in Header Widget
+            if ( !origColumn.isBound() && editColumn.isBound() ) {
+                bUpdateColumnDefinition = true;
+            } else if ( origColumn.isBound() && !editColumn.isBound() ) {
+                bUpdateColumnDefinition = true;
+            } else if ( origColumn.isBound() && editColumn.isBound() && !origColumn.getBinding().equals( editColumn.getBinding() ) ) {
+                bUpdateColumnDefinition = true;
+            }
+
+            // Update LimitedEntryValue in Header Widget
+            if ( origColumn instanceof LimitedEntryCol && editColumn instanceof LimitedEntryCol ) {
+                LimitedEntryCol lecOrig = (LimitedEntryCol) origColumn;
+                LimitedEntryCol lecEditing = (LimitedEntryCol) editColumn;
+                if ( isEqualOrNull( lecOrig.getValue(),
+                                    lecEditing.getValue() ) ) {
+                    bUpdateColumnDefinition = true;
+                }
+            }
+
+            // Copy new values into original column definition
+            populateModelColumn( origColumn,
+                                 editColumn );
         }
 
-        // Copy new values into original column definition
-        populateModelColumn( origColumn,
-                             editColumn );
+        //First remove merging if column data is being changed. This is necessary before we potentially update
+        //the column's cell type as removing merging causes a redraw that needs the column's cell to be
+        //consistent with the column's data-type
+        if ( bUpdateColumnData ) {
+            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            eventBus.fireEvent( tme );
+        }
 
         //Update Column cell
         if ( bUpdateColumnDefinition ) {
-            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( editColumn );
+            int iCol = model.getAllColumns().indexOf( origColumn );
+            DecoratedGridCellValueAdaptor< ? extends Comparable< ? >> cell = cellFactory.getCell( origColumn );
             UpdateColumnDefinitionEvent updateColumnDefinition = new UpdateColumnDefinitionEvent( cell,
-                                                                                                  false,
-                                                                                                  true,
                                                                                                   iCol );
             eventBus.fireEvent( updateColumnDefinition );
         }
 
         //Update Column data
         if ( bUpdateColumnData ) {
-            ToggleMergingEvent tme = new ToggleMergingEvent( false );
+            int iCol = model.getAllColumns().indexOf( origColumn );
             UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( iCol,
                                                                                 getColumnData( origColumn ) );
-            eventBus.fireEvent( tme );
             eventBus.fireEvent( updateColumnData );
         }
 
@@ -796,6 +919,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
     // Add column to table with optional redraw
     private void addColumn(DTColumnConfig52 modelColumn,
+                           List<DTCellValue52> columnData,
                            boolean bRedraw) {
         int index = 0;
         if ( modelColumn instanceof MetadataCol52 ) {
@@ -809,6 +933,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
 
         InsertDecisionTableColumnEvent dce = new InsertDecisionTableColumnEvent( modelColumn,
+                                                                                 columnData,
                                                                                  index,
                                                                                  bRedraw );
         eventBus.fireEvent( dce );
@@ -925,6 +1050,18 @@ public abstract class AbstractDecisionTableWidget extends Composite
             DTCellValue52 dcv = row.get( iColIndex );
             columnData.add( cellValueFactory.convertModelCellValue( column,
                                                                     dcv ) );
+        }
+        return columnData;
+    }
+
+    // Retrieve the data for the analysis column
+    private List<CellValue< ? extends Comparable< ? >>> getAnalysisColumnData() {
+        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+        List<Analysis> analysisData = model.getAnalysisData();
+        for ( int i = 0; i < analysisData.size(); i++ ) {
+            Analysis analysis = analysisData.get( i );
+            CellValue<Analysis> cell = new CellValue<Analysis>( analysis );
+            columnData.add( cell );
         }
         return columnData;
     }
@@ -1127,17 +1264,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
         showAnalysis( analysisData );
     }
 
-    @SuppressWarnings("unchecked")
     private void showAnalysis(List<Analysis> analysisData) {
         AnalysisCol52 analysisCol = model.getAnalysisCol();
         int analysisColumnIndex = model.getAllColumns().indexOf( analysisCol );
-        //TODO {manstis} Copy analysis data to UI
-        //        DynamicData dynamicData = widget.getData();
-        //        for ( int i = 0; i < analysisData.size(); i++ ) {
-        //            CellValue<Analysis> cellValue = (CellValue<Analysis>) dynamicData.get( i ).get( analysisColumnIndex );
-        //            Analysis analysis = analysisData.get( i );
-        //            cellValue.setValue( analysis );
-        //        }
+
+        UpdateColumnDataEvent updateColumnData = new UpdateColumnDataEvent( analysisColumnIndex,
+                                                                            getAnalysisColumnData() );
+        eventBus.fireEvent( updateColumnData );
+
         analysisCol.setHideColumn( false );
         setColumnVisibility( analysisCol,
                              !analysisCol.isHideColumn() );
@@ -1299,8 +1433,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update UI
         List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( condition );
-        int columnIndex = model.getAllColumns().indexOf( condition );
-        deleteColumn( columnIndex );
+        deleteColumn( condition );
         //TODO {manstis} Need to move a column with existing data
         //insertColumnBefore( condition,columnData,conditionTargetColumnIndex,true );
     }
@@ -1348,8 +1481,7 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update UI
         List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( action );
-        int columnIndex = model.getAllColumns().indexOf( action );
-        deleteColumn( columnIndex );
+        deleteColumn( action );
         //TODO {manstis} Need to move a column with existing data
         //insertColumnBefore( action,columnData,actionTargetColumnIndex,true );
     }
@@ -1397,12 +1529,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
         }
     }
 
-    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52> event) {
+    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52, DTCellValue52> event) {
         int index = event.getIndex();
-        DTColumnConfig52 column = event.getColumn();
-        List<DTCellValue52> data = cellValueFactory.makeColumnData( column );
-        for ( int iRow = 0; iRow < data.size(); iRow++ ) {
-            DTCellValue52 dcv = data.get( iRow );
+        List<DTCellValue52> columnData = event.getColumnData();
+        for ( int iRow = 0; iRow < columnData.size(); iRow++ ) {
+            DTCellValue52 dcv = columnData.get( iRow );
             List<DTCellValue52> row = model.getData().get( iRow );
             row.add( index,
                      dcv );
