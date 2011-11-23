@@ -702,7 +702,7 @@ public class FactPatternWidget extends RuleModellerWidget {
             String fieldName = c.getFieldName();
             String factType = this.pattern.getFactType();
 
-            if ( fieldName.contains( "." ) ) {
+            if ( fieldName != null && fieldName.contains( "." ) ) {
                 int index = fieldName.indexOf( "." );
                 factType = fieldName.substring( 0,
                                                 index );
@@ -795,7 +795,7 @@ public class FactPatternWidget extends RuleModellerWidget {
         //If the field is a direct descendant of the Pattern only show the leaf-name
         //otherwise show the qualified field name which includes the preceding field type 
         String fieldName = con.getFieldName();
-        if ( fieldName.contains( "." ) ) {
+        if ( fieldName != null && fieldName.contains( "." ) ) {
             String factType = fieldName.substring( 0,
                                                    fieldName.indexOf( "." ) );
             if ( factType.equals( this.pattern.getFactType() ) ) {

@@ -17,12 +17,14 @@
 package org.drools.guvnor.server.jaxrs;
 
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 
 import org.apache.cxf.jaxrs.servlet.CXFNonSpringJaxrsServlet;
 import org.drools.guvnor.server.RepositoryAssetService;
+import org.drools.guvnor.server.RepositoryCategoryService;
 import org.drools.guvnor.server.RepositoryPackageService;
 import org.drools.guvnor.server.ServiceImplementation;
 import org.drools.guvnor.server.files.FileManagerService;
@@ -38,6 +40,8 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
     protected RepositoryPackageService repositoryPackageService;
     @Inject
     protected RepositoryAssetService repositoryAssetService;
+    @Inject
+    protected RepositoryCategoryService repositoryCategoryService;
     @Inject
     protected RulesRepository rulesRepository;
     @Inject
@@ -62,11 +66,12 @@ public class HackInjectCXFNonSpringJaxrsServlet extends CXFNonSpringJaxrsServlet
     }
 
     @Override
-    protected Object createSingletonInstance(Class<?> cls, ServletConfig sc) throws ServletException {
-        Object singletonInstance = super.createSingletonInstance(cls, sc);
+    protected Object createSingletonInstance(Class<?> cls, Map<String, String> props, ServletConfig sc) throws ServletException {
+        Object singletonInstance = super.createSingletonInstance(cls, props, sc);
         if (singletonInstance instanceof Resource) {
             Resource resource = (Resource) singletonInstance;
-            resource.inject(serviceImplementation, repositoryPackageService, repositoryAssetService, rulesRepository,
+            resource.inject(serviceImplementation, repositoryPackageService, repositoryAssetService,
+                    repositoryCategoryService, rulesRepository,
                     fileManagerService);
         }
         return singletonInstance;

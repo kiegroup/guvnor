@@ -35,17 +35,17 @@ public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTest
         //[1][-][3]
         //[1][2][3]
         //[-][2][3]
-        rows.get( 0 ).get( 0 ).setValue( "1" );
-        rows.get( 0 ).get( 1 ).setValue( "-" );
-        rows.get( 0 ).get( 2 ).setValue( "3" );
+        data.get( 0 ).get( 0 ).setValue( "1" );
+        data.get( 0 ).get( 1 ).setValue( "-" );
+        data.get( 0 ).get( 2 ).setValue( "3" );
 
-        rows.get( 1 ).get( 0 ).setValue( "1" );
-        rows.get( 1 ).get( 1 ).setValue( "2" );
-        rows.get( 1 ).get( 2 ).setValue( "3" );
+        data.get( 1 ).get( 0 ).setValue( "1" );
+        data.get( 1 ).get( 1 ).setValue( "2" );
+        data.get( 1 ).get( 2 ).setValue( "3" );
 
-        rows.get( 2 ).get( 0 ).setValue( "-" );
-        rows.get( 2 ).get( 1 ).setValue( "2" );
-        rows.get( 2 ).get( 2 ).setValue( "3" );
+        data.get( 2 ).get( 0 ).setValue( "-" );
+        data.get( 2 ).get( 1 ).setValue( "2" );
+        data.get( 2 ).get( 2 ).setValue( "3" );
     }
 
     @Test
@@ -105,7 +105,7 @@ public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTest
                       2 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -236,7 +236,7 @@ public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTest
                       2 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -347,7 +347,7 @@ public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTest
                       0 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -449,7 +449,7 @@ public class DynamicDataTestsWithMergingRowAdditions extends BaseDynamicDataTest
                       0 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 

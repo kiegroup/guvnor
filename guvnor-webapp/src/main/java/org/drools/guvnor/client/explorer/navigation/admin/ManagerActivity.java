@@ -12,7 +12,6 @@ import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogPresent
 import org.drools.guvnor.client.explorer.navigation.admin.widget.EventLogViewImpl;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.PermissionViewer;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.RepoConfigManager;
-import org.drools.guvnor.client.explorer.navigation.admin.widget.RuleVerifierManager;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.StateManager;
 import org.drools.guvnor.client.explorer.navigation.admin.widget.WorkspaceManager;
 import org.drools.guvnor.client.messages.Constants;
@@ -113,11 +112,11 @@ public class ManagerActivity extends Activity {
 
                 } );
                 break;
-
+/*
             case 7 :
                 tabbedPanel.add( constants.RulesVerificationManager(),
                                  new RuleVerifierManager() );
-                break;
+                break;*/
             case 8 :
                 tabbedPanel.add( constants.RepositoryConfig(),
                                  new RepoConfigManager() );

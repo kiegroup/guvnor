@@ -140,11 +140,7 @@ public class PackageAssembler extends PackageAssemblerBase {
      * @return
      */
     public boolean isPackageConfigurationInError() {
-        if (errorLogger.hasErrors()) {
-            return this.errorLogger.getErrors().get(0).isPackageItem();
-        } else {
-            return false;
-        }
+        return errorLogger.hasErrors() && this.errorLogger.getErrors().get(0).isPackageItem();
     }
 
     /**

@@ -72,7 +72,6 @@ public class MockFactHandle
     }
 
     public long getRecency() {
-        // TODO Auto-generated method stub
         return 0;
     }
 }

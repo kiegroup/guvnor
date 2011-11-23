@@ -143,13 +143,9 @@ public class WorkitemDefinitionEditor extends DirtyableComposite implements
     }
 
     public void onSave() {
-        // TODO Auto-generated method stub
-
     }
 
     public void onAfterSave() {
-        // TODO Auto-generated method stub
-
     }
 
 }

@@ -53,7 +53,7 @@ public class SuggestionCompletionCacheTest {
             public void loadPackage(String packageName,
                              Command command) {
                 loaded = true;
-
+                command.execute();
             }
         };
 

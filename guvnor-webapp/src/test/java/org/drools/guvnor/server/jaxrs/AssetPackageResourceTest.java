@@ -332,13 +332,13 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
 		Document<Entry> doc = abdera.getParser().parse(in);
 		Entry entry = doc.getRoot();
-		assertEquals("/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());		
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());
 		assertEquals("model1", entry.getTitle());
 		assertNotNull(entry.getPublished());
 		assertNotNull(entry.getAuthor().getName());
 		assertEquals("desc for model1", entry.getSummary());
 		//assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
-		assertEquals("/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
+		assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
 		
 		ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
@@ -355,7 +355,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient
     public void testUpdateAssetFromAtom(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -370,13 +370,13 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
         assertNotNull(in);
         Document<Entry> doc = abdera.getParser().parse(in);
         Entry entry = doc.getRoot();
-        assertEquals("/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());     
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1", entry.getBaseUri().getPath());
         assertEquals("model1", entry.getTitle());
         assertNotNull(entry.getPublished());
         assertNotNull(entry.getAuthor().getName());
         assertEquals("desc for model1", entry.getSummary());
         //assertEquals(MediaType.APPLICATION_OCTET_STREAM_TYPE.getType(), entry.getContentMimeType().getPrimaryType());
-        assertEquals("/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
+        assertEquals(baseURL.getPath() + "rest/packages/restPackage1/assets/model1/binary", entry.getContentSrc().getPath());
         
         ExtensibleElement metadataExtension  = entry.getExtension(Translator.METADATA); 
         ExtensibleElement archivedExtension = metadataExtension.getExtension(Translator.ARCHIVED);     
@@ -450,7 +450,7 @@ public class AssetPackageResourceTest extends GuvnorTestBase {
     
     @Test @RunAsClient
     public void testUpdateAssetFromAtomWithStateNotExist(@ArquillianResource URL baseURL) throws Exception {     
-        URL url = new URL(baseURL + "/packages/restPackage1/assets/model1");
+        URL url = new URL(baseURL + "rest/packages/restPackage1/assets/model1");
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));

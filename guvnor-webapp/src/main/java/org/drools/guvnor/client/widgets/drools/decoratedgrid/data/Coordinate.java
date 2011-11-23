@@ -23,6 +23,12 @@ public class Coordinate {
     private int col;
     private String displayString;
 
+    public Coordinate() {
+        this.row = 0;
+        this.col = 0;
+        this.displayString = "(R" + this.row + ",C" + this.col + ")";
+    }
+    
     public Coordinate(Coordinate c) {
         this.row = c.row;
         this.col = c.col;

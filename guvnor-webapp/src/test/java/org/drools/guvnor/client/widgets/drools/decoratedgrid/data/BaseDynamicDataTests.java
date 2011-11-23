@@ -32,12 +32,9 @@ public abstract class BaseDynamicDataTests {
 
     protected static final List<CellValue< ? extends Comparable< ? >>> EMPTY_COLUMN = new ArrayList<CellValue< ? extends Comparable< ? >>>();
 
-    protected List<DynamicDataRow>                                     rows         = new ArrayList<DynamicDataRow>();
-
     @Before
     public void setup() {
         data.clear();
-        rows.clear();
 
         data.addColumn( 0,
                         EMPTY_COLUMN,
@@ -49,36 +46,32 @@ public abstract class BaseDynamicDataTests {
                         EMPTY_COLUMN,
                         true );
 
-        rows.add( makeRow() );
-        rows.add( makeRow() );
-        rows.add( makeRow() );
+        data.addRow( makeRow() );
+        data.addRow( makeRow() );
+        data.addRow( makeRow() );
 
     }
 
     protected DynamicDataRow makeRow() {
-        return data.addRow( makeCellValueList() );
+        DynamicDataRow row = new DynamicDataRow();
+        for ( CellValue< ? > cell : makeCellValueList() ) {
+            row.add( cell );
+        }
+        return row;
     }
 
     protected List<CellValue< ? extends Comparable< ? >>> makeCellValueList() {
         List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
-        row.add( new CellValue<String>( "",
-                                        0,
-                                        0 ) );
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
+        row.add( new CellValue<String>( "" ) );
         return row;
     }
 
     protected List<CellValue< ? extends Comparable< ? >>> makeCellValueList(int size) {
         List<CellValue< ? extends Comparable< ? >>> row = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int i = 0; i < size; i++ ) {
-            row.add( new CellValue<String>( "",
-                                            0,
-                                            0 ) );
+            row.add( new CellValue<String>( "" ) );
         }
         return row;
     }

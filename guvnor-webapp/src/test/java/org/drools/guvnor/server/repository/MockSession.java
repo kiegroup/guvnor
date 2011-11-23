@@ -266,61 +266,50 @@ class MockSession implements Session {
 
     public AccessControlManager getAccessControlManager()
             throws UnsupportedRepositoryOperationException, RepositoryException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Node getNode(String arg0) throws PathNotFoundException,
             RepositoryException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Node getNodeByIdentifier(String arg0) throws ItemNotFoundException,
             RepositoryException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Property getProperty(String arg0) throws PathNotFoundException,
             RepositoryException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public RetentionManager getRetentionManager()
             throws UnsupportedRepositoryOperationException, RepositoryException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean hasCapability(String arg0, Object arg1, Object[] arg2)
             throws RepositoryException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean hasPermission(String arg0, String arg1)
             throws RepositoryException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean nodeExists(String arg0) throws RepositoryException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public boolean propertyExists(String arg0) throws RepositoryException {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void removeItem(String arg0) throws VersionException, LockException,
             ConstraintViolationException, AccessDeniedException,
             RepositoryException {
-        // TODO Auto-generated method stub
-
     }
     
 }

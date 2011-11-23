@@ -79,7 +79,7 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
                       2 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -202,7 +202,7 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
                       2 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -325,7 +325,7 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
                       2 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 
@@ -429,7 +429,7 @@ public class DynamicDataTestsWithoutMergingRowAdditions extends BaseDynamicDataT
                       1 );
 
         data.addRow( 1,
-                     makeCellValueList() );
+                     makeRow() );
         assertEquals( data.size(),
                       4 );
 

@@ -262,7 +262,6 @@ public class CategoryItemTest extends RepositoryTestCase {
             session.save();
 
         } catch (RepositoryException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             fail();
         }

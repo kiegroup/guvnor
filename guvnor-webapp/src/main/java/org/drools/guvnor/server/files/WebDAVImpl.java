@@ -873,7 +873,7 @@ public class WebDAVImpl
             if (uri.endsWith("webdav") || uri.endsWith("webdav/")) {
                 return new String[0];
             }
-            if (uri.indexOf("webdav/") > -1) {
+            if (uri.contains("webdav/")) {
                 return uri.split("webdav/",
                         2)[1].split("/");
             }

@@ -41,7 +41,7 @@ public class ConfigFileWorkDefinitionsLoader extends AbstractWorkDefinitionsLoad
         Scanner scanner = new Scanner( this.getClass().getResourceAsStream( WORKITEM_DEFINITIONS ) );
         try {
             while ( scanner.hasNextLine() ) {
-                definition.append( scanner.nextLine() + NEW_LINE );
+                definition.append(scanner.nextLine()).append(NEW_LINE);
             }
         } finally {
             scanner.close();

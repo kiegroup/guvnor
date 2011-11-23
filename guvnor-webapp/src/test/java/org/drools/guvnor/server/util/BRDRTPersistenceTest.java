@@ -114,7 +114,7 @@ public class BRDRTPersistenceTest {
             "\tthen\n" +
             "\t\tPerson fact0 = new Person();\n" +
             "\t\tfact0.setAge( 87 );\n" +
-            "\t\tinsert(fact0 );\n" +
+            "\t\tinsert( fact0 );\n" +
             "end\n" +
             "\n" +
             "rule \"with composite_0\"\n" +
@@ -125,7 +125,7 @@ public class BRDRTPersistenceTest {
             "\tthen\n" +
             "\t\tPerson fact0 = new Person();\n" +
             "\t\tfact0.setAge( 34 );\n" +
-            "\t\tinsert(fact0 );\n" +
+            "\t\tinsert( fact0 );\n" +
             "end";
 
         TemplateModel m = new TemplateModel();
@@ -179,7 +179,7 @@ public class BRDRTPersistenceTest {
                 "\tthen\n" +
                 "\t\tPerson fact0 = new Person();\n" +
                 "\t\tfact0.setAge( 87 );\n" +
-                "\t\tinsert(fact0 );\n" +
+                "\t\tinsert( fact0 );\n" +
                 "end\n" +
                 "\n" +
                 "rule \"with composite_0\"\n" +
@@ -189,7 +189,7 @@ public class BRDRTPersistenceTest {
                 "\tthen\n" +
                 "\t\tPerson fact0 = new Person();\n" +
                 "\t\tfact0.setAge( 34 );\n" +
-                "\t\tinsert(fact0 );\n" +
+                "\t\tinsert( fact0 );\n" +
                 "end";
 
         TemplateModel m = new TemplateModel();

@@ -36,7 +36,9 @@ public class RowNumberCell extends AbstractCell<BigDecimal> {
     public void render(Context context,
                        BigDecimal value,
                        SafeHtmlBuilder sb) {
-        sb.append( SafeHtmlUtils.fromTrustedString( value.toPlainString() ) );
+        if ( value != null ) {
+            sb.append( SafeHtmlUtils.fromTrustedString( value.toPlainString() ) );
+        }
     }
 
 }

@@ -37,17 +37,17 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
         //[1][-][3]
         //[1][2][3]
         //[-][2][3]
-        rows.get( 0 ).get( 0 ).setValue( "1" );
-        rows.get( 0 ).get( 1 ).setValue( "-" );
-        rows.get( 0 ).get( 2 ).setValue( "3" );
+        data.get( 0 ).get( 0 ).setValue( "1" );
+        data.get( 0 ).get( 1 ).setValue( "-" );
+        data.get( 0 ).get( 2 ).setValue( "3" );
 
-        rows.get( 1 ).get( 0 ).setValue( "1" );
-        rows.get( 1 ).get( 1 ).setValue( "2" );
-        rows.get( 1 ).get( 2 ).setValue( "3" );
+        data.get( 1 ).get( 0 ).setValue( "1" );
+        data.get( 1 ).get( 1 ).setValue( "2" );
+        data.get( 1 ).get( 2 ).setValue( "3" );
 
-        rows.get( 2 ).get( 0 ).setValue( "-" );
-        rows.get( 2 ).get( 1 ).setValue( "2" );
-        rows.get( 2 ).get( 2 ).setValue( "3" );
+        data.get( 2 ).get( 0 ).setValue( "-" );
+        data.get( 2 ).get( 1 ).setValue( "2" );
+        data.get( 2 ).get( 2 ).setValue( "3" );
     }
 
     @Test
@@ -97,7 +97,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       2 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );
@@ -208,7 +208,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       2 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );
@@ -314,7 +314,7 @@ public class DynamicDataTestsWithGroupingColumnAdditions extends BaseDynamicData
                       1 );
 
         data.addColumn( 3,
-                        makeCellValueList( 2 ),
+                        makeCellValueList( 3 ),
                         true );
         assertEquals( data.size(),
                       2 );

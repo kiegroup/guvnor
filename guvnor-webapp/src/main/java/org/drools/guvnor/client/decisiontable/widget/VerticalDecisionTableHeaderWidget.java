@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.TreeMap;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridHeaderWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridWidget;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -62,6 +64,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -76,8 +79,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Header for a Vertical Decision Table
  */
-public class VerticalDecisionTableHeaderWidget extends
-        DecoratedGridHeaderWidget<DTColumnConfig52> {
+public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHeaderWidget<GuidedDecisionTable52, DTColumnConfig52> {
 
     private static final String         DATE_FORMAT                 = ApplicationPreferences.getDroolsDateFormat();
 
@@ -85,8 +87,6 @@ public class VerticalDecisionTableHeaderWidget extends
 
     // UI Components
     private HeaderWidget                widget;
-
-    private GuidedDecisionTable52       model;
 
     //Offsets from the left most column
     private int                         multiRowColumnOffset        = -1;
@@ -384,8 +384,8 @@ public class VerticalDecisionTableHeaderWidget extends
             visibleActionCols.clear();
             multiRowColumnOffset = -1;
             multiRowColumnActionsOffset = -1;
-            for ( int iCol = 0; iCol < grid.getGridWidget().getColumns().size(); iCol++ ) {
-                DynamicColumn<DTColumnConfig52> col = grid.getGridWidget().getColumns().get( iCol );
+            for ( int iCol = 0; iCol < sortableColumns.size(); iCol++ ) {
+                DynamicColumn<DTColumnConfig52> col = sortableColumns.get( iCol );
                 if ( col.isVisible() ) {
                     visibleCols.add( col );
                     DTColumnConfig52 modelCol = col.getModelColumn();
@@ -422,7 +422,7 @@ public class VerticalDecisionTableHeaderWidget extends
             switch ( iRow ) {
                 case 0 :
                     // General row, all visible cells included
-                    for ( DynamicColumn<DTColumnConfig52> col : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> col : sortableColumns ) {
                         if ( col.isVisible() ) {
                             tce = DOM.createTD();
                             tce.addClassName( resources.headerText() );
@@ -604,7 +604,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
                 case 4 :
                     // Sorters
-                    for ( DynamicColumn<DTColumnConfig52> col : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> col : sortableColumns ) {
                         if ( col.isVisible() ) {
                             final HeaderSorter shp = new HeaderSorter( col );
                             final DynamicColumn<DTColumnConfig52> sortableColumn = col;
@@ -613,7 +613,8 @@ public class VerticalDecisionTableHeaderWidget extends
                                 public void onClick(ClickEvent event) {
                                     if ( sortableColumn.isSortable() ) {
                                         updateSortOrder( sortableColumn );
-                                        grid.sort();
+                                        //TODO {manstis} raise an event
+                                        //grid.sort();
                                     }
                                 }
 
@@ -668,7 +669,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 case -1 :
 
                     //A new column is added to the sort group
-                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortableColumns ) {
                         if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                             sortedColumns.put( sortedColumn.getSortIndex(),
                                                sortedColumn );
@@ -691,7 +692,7 @@ public class VerticalDecisionTableHeaderWidget extends
                     } else if ( column.getSortDirection() == SortDirection.DESCENDING ) {
                         column.setSortDirection( SortDirection.NONE );
                         column.clearSortIndex();
-                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                        for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortableColumns ) {
                             if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                                 sortedColumns.put( sortedColumn.getSortIndex(),
                                                    sortedColumn );
@@ -708,7 +709,7 @@ public class VerticalDecisionTableHeaderWidget extends
                 default :
 
                     //An existing column is promoted to "lead"
-                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : grid.getGridWidget().getColumns() ) {
+                    for ( DynamicColumn<DTColumnConfig52> sortedColumn : sortableColumns ) {
                         if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
                             if ( !sortedColumn.equals( column ) ) {
                                 sortedColumns.put( sortedColumn.getSortIndex() + 1,
@@ -734,21 +735,15 @@ public class VerticalDecisionTableHeaderWidget extends
      * @param decisionTable
      */
     public VerticalDecisionTableHeaderWidget(final ResourcesProvider<DTColumnConfig52> resources,
-                                             final DecoratedGridWidget<DTColumnConfig52> grid) {
+                                             final EventBus eventBus) {
         super( resources,
-               grid );
-    }
+               eventBus );
 
-    /**
-     * Inject the model
-     * 
-     * @param model
-     */
-    void setModel(GuidedDecisionTable52 model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-        this.model = model;
+        //Wire-up event handlers
+        eventBus.addHandler( SetInternalDecisionTableModelEvent.TYPE,
+                             this );
+        eventBus.addHandler( InsertInternalDecisionTableColumnEvent.TYPE,
+                             this );
     }
 
     @Override
@@ -767,7 +762,7 @@ public class VerticalDecisionTableHeaderWidget extends
 
     // Schedule resize event after header has been drawn or resized
     private void fireResizeEvent() {
-        Scheduler.get().scheduleFinally( new ScheduledCommand() {
+        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
             public void execute() {
                 ResizeEvent.fire( VerticalDecisionTableHeaderWidget.this,
                                   getBody().getOffsetWidth(),
@@ -912,9 +907,19 @@ public class VerticalDecisionTableHeaderWidget extends
         }
 
         // Fire event to any interested consumers
-        ColumnResizeEvent.fire( this,
-                                widget.visibleCols.get( resizeColumnIndex ),
-                                resizeColumnWidth );
+        ColumnResizeEvent cre = new ColumnResizeEvent( widget.visibleCols.get( resizeColumnIndex ),
+                                                       resizeColumnWidth );
+        eventBus.fireEvent( cre );
+    }
+
+    public void onSetInternalModel(SetInternalModelEvent<GuidedDecisionTable52, DTColumnConfig52> event) {
+        this.sortableColumns.clear();
+        this.model = event.getModel();
+        List<DynamicColumn<DTColumnConfig52>> columns = event.getColumns();
+        for ( DynamicColumn<DTColumnConfig52> column : columns ) {
+            sortableColumns.add( column );
+        }
+        redraw();
     }
 
 }

@@ -38,7 +38,7 @@ public class DynamicDataRow
     private long                                        creationIndex;
     private List<CellValue< ? extends Comparable< ? >>> rowData;
 
-    DynamicDataRow() {
+    public DynamicDataRow() {
         creationIndex = getNextCreationIndex();
         rowData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
     }
@@ -70,7 +70,7 @@ public class DynamicDataRow
         return rowData.size();
     }
 
-    boolean add(CellValue< ? extends Comparable< ? >> cell) {
+    public boolean add(CellValue< ? extends Comparable< ? >> cell) {
         return rowData.add( cell );
     }
 

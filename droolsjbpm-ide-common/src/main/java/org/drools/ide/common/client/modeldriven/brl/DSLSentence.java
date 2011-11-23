@@ -42,28 +42,28 @@ public class DSLSentence
      */
     public String toString() {
         getDefinition();
-        final char[] chars = this.definition.toCharArray();
-        boolean inBracket = false;
-        boolean inBracketAfterColon = false;
-
-        String result = "";
-        for ( int i = 0; i < chars.length; i++ ) {
-            final char c = chars[i];
-            if ( c != '{' && c != '}' && c != ':' && !inBracketAfterColon ) {
-                result += c;
-            } else if ( c == '{' ) {
-                inBracket = true;
-            } else if ( c == '}' ) {
-                inBracket = false;
-                inBracketAfterColon = false;
-            } else if ( c == ':' && inBracket ) {
-                inBracketAfterColon = true;
-            } else if ( c == ':' && !inBracket ) {
-                result += c;
+        StringBuilder result = new StringBuilder( definition );
+        int variableStart = definition.indexOf( "{" );
+        while ( variableStart >= 0 ) {
+            int variableEnd = getIndexForEndOfVariable( result.toString(),
+                                                        variableStart );
+            String variable = result.substring( variableStart + 1,
+                                                variableEnd );
+            int variableNameEnd = variable.indexOf( ":" );
+            if ( variableNameEnd == -1 ) {
+                variableNameEnd = variable.length();
             }
+            String variableName = variable.substring( 0,
+                                                      variableNameEnd );
+            result.replace( variableStart + 1,
+                            variableEnd,
+                            variableName );
+            variableEnd = variableEnd - variable.length() + variableName.length();
+            variableStart = result.indexOf( "{",
+                                            variableEnd );
         }
-        return result.replace( "\\n",
-                               "\n" );
+        return result.toString().replace( "\\n",
+                                          "\n" );
     }
 
     /**

@@ -112,98 +112,74 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void clearNodeMemory(NodeMemory node) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void executeQueuedActions() {
-        // TODO Auto-generated method stub
-        
     }
 
     public ExecutorService getExecutorService() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public FactHandle getFactHandleByIdentity(Object object) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public FactHandleFactory getFactHandleFactory() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public int getId() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public InternalFactHandle getInitialFactHandle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Lock getLock() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public long getNextPropagationIdCounter() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public Object getNodeMemory(NodeMemory node) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public ObjectStore getObjectStore() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public PartitionTaskManager getPartitionTaskManager(RuleBasePartitionId partitionId) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public TimerService getTimerService() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public TruthMaintenanceSystem getTruthMaintenanceSystem() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public boolean isSequential() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     public void queueWorkingMemoryAction(WorkingMemoryAction action) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void removeProcessInstance(ProcessInstance processInstance) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void retract(FactHandle factHandle,
@@ -211,124 +187,90 @@ public class MockWorkingMemory implements InternalWorkingMemory {
                         boolean updateEqualsMap,
                         Rule rule,
                         Activation activation) throws FactException {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setAgendaEventSupport(AgendaEventSupport agendaEventSupport) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setExecutorService(ExecutorService executor) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setId(int id) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setRuleBase(InternalRuleBase ruleBase) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setWorkingMemoryEventSupport(WorkingMemoryEventSupport workingMemoryEventSupport) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void clearActivationGroup(String group) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void clearAgenda() {
-        // TODO Auto-generated method stub
-        
     }
 
     public void clearAgendaGroup(String group) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void clearRuleFlowGroup(String group) {
-        // TODO Auto-generated method stub
-        
     }
 
     public int fireAllRules() throws FactException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter) throws FactException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public int fireAllRules(int fireLimit) throws FactException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit) throws FactException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public Agenda getAgenda() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public FactHandle getFactHandle(Object object) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object getGlobal(String identifier) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public GlobalResolver getGlobalResolver() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Object getObject(org.drools.runtime.rule.FactHandle handle) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public ProcessInstance getProcessInstance(long id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public QueryResults getQueryResults(String query) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public QueryResults getQueryResults(String query,
                                         Object[] arguments) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public RuleBase getRuleBase() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -341,99 +283,71 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
     
     public WorkItemManager getWorkItemManager() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String id) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void halt() {
-        // TODO Auto-generated method stub
-        
     }
 
     public Iterator< ? > iterateFactHandles() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Iterator< ? > iterateFactHandles(org.drools.runtime.ObjectFilter filter) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Iterator< ? > iterateObjects(org.drools.runtime.ObjectFilter filter) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setFocus(String focus) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void setGlobalResolver(GlobalResolver globalResolver) {
-        // TODO Auto-generated method stub
-        
     }
 
     public ProcessInstance startProcess(String processId) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void addEventListener(WorkingMemoryEventListener listener) {
-        // TODO Auto-generated method stub
-        
     }
 
     public List getAgendaEventListeners() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public List getWorkingMemoryEventListeners() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void removeEventListener(WorkingMemoryEventListener listener) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void removeEventListener(AgendaEventListener listener) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void addEventListener(RuleBaseEventListener listener) {
-        // TODO Auto-generated method stub
-        
     }
 
     public List<RuleBaseEventListener> getRuleBaseEventListeners() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void removeEventListener(RuleBaseEventListener listener) {
-        // TODO Auto-generated method stub
-        
     }
 
     public FactHandle insert(Object object) throws FactException {
@@ -443,154 +357,112 @@ public class MockWorkingMemory implements InternalWorkingMemory {
 
     public FactHandle insert(Object object,
                              boolean dynamic) throws FactException {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void modifyInsert(FactHandle factHandle,
                              Object object) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void modifyRetract(FactHandle factHandle) {
-        // TODO Auto-generated method stub
-        
     }
 
     public void retract(org.drools.runtime.rule.FactHandle handle) throws FactException {
-        // TODO Auto-generated method stub
-        
     }
 
     public void update(org.drools.runtime.rule.FactHandle handle,
                        Object object) throws FactException {
-        // TODO Auto-generated method stub
-        
     }
 
     public InternalKnowledgeRuntime getKnowledgeRuntime() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void setKnowledgeRuntime(InternalKnowledgeRuntime kruntime) {
-        // TODO Auto-generated method stub
-        
     }
 
     public Map<String, ExitPoint> getExitPoints() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Environment getEnvironment() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     public SessionConfiguration getSessionConfiguration() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Map<String, WorkingMemoryEntryPoint> getEntryPoints() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void endBatchExecution() {
-        // TODO Auto-generated method stub
-        
     }
 
     public ExecutionResultImpl getExecutionResult() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void startBatchExecution(ExecutionResultImpl results) {
-        // TODO Auto-generated method stub
-        
     }
 
     public Collection< Object > getObjects() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public Collection< Object > getObjects(ObjectFilter filter) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public void endOperation() {
-        // TODO Auto-generated method stub
-        
     }
 
     public long getIdleTime() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public void startOperation() {
-        // TODO Auto-generated method stub
-        
     }
 
     public long getTimeToNextJob() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public void updateEntryPointsCache() {
-        // TODO Auto-generated method stub
-        
     }
 
     public void activationFired() {
-        // TODO Auto-generated method stub
-        
     }
 
     public void prepareToFireActivation() {
-        // TODO Auto-generated method stub
-        
     }
 
     public String getEntryPointId() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public long getFactCount() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public long getTotalFactCount() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
     public DateFormats getDateFormats() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public <T extends org.drools.runtime.rule.FactHandle> Collection<T> getFactHandles(ObjectFilter filter) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public EntryPoint getEntryPoint() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -599,22 +471,17 @@ public class MockWorkingMemory implements InternalWorkingMemory {
                        Rule rule,
                        Activation activation,
                        ObjectTypeConf typeConf) {
-        // TODO Auto-generated method stub
-        
     }
 
     public Map<String, Channel> getChannels() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public InternalProcessRuntime getProcessRuntime() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     public EntryPointNode getEntryPointNode() {
-        // TODO Auto-generated method stub
         return null;
     }
 

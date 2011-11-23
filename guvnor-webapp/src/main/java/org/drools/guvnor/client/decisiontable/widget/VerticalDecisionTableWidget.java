@@ -15,15 +15,9 @@
  */
 package org.drools.guvnor.client.decisiontable.widget;
 
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellChangeHandler;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridSidebarWidget;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.VerticalDecoratedGridWidget;
+import org.drools.guvnor.client.util.GWTDateConverter;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
-import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
-import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,56 +27,43 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
-    private VerticalDecisionTableHeaderWidget header;
-
     public VerticalDecisionTableWidget(DecisionTableControlsWidget ctrls,
                                        SuggestionCompletionEngine sce,
                                        EventBus eventBus) {
         super( ctrls,
-               sce, 
+               sce,
                eventBus );
 
         VerticalPanel vp = new VerticalPanel();
 
-        // Construct the widget from which we're composed
-        widget = new VerticalDecoratedGridWidget<DTColumnConfig52>( resources );
-        header = new VerticalDecisionTableHeaderWidget( resources,
-                                                        widget );
-        DecoratedGridSidebarWidget<DTColumnConfig52> sidebar = new VerticalDecoratedGridSidebarWidget<DTColumnConfig52>( resources,
-                                                                                                                         widget,
-                                                                                                                         this );
-        widget.setHeaderWidget( header );
-        widget.setSidebarWidget( sidebar );
-        widget.setHasSystemControlledColumns( this );
+        //Callback for cell updates
+        //TODO {manstis} This might become an event raised from the UI
+        SelectedCellValueUpdater selectedCellValueUpdater = new SelectedCellValueUpdater() {
 
-        widget.getGridWidget().addSelectedCellChangeHandler( new SelectedCellChangeHandler() {
-
-            public void onSelectedCellChange(SelectedCellChangeEvent event) {
-
-                CellValue< ? > cell = widget.getGridWidget().getData().get( event.getCellSelectionDetail().getCoordinate() );
-                dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( cell ) );
+            public void setSelectedCellsValue(Object value) {
+                // TODO {manstis} Add some code
             }
 
-        } );
+        };
+
+        //Factories for new cell elements
+        this.cellFactory = new DecisionTableCellFactory( sce,
+                                                         selectedCellValueUpdater,
+                                                         eventBus );
+        this.cellValueFactory = new DecisionTableCellValueFactory( sce );
+        
+        //Date converter is injected so a GWT compatible one can be used here and another in testing
+        DecisionTableCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
+
+        // Construct the widget from which we're composed
+        widget = new VerticalDecoratedDecisionTableGridWidget( resources,
+                                                               cellFactory,
+                                                               cellValueFactory,
+                                                               eventBus );
 
         vp.add( widget );
         vp.add( ctrls );
         initWidget( vp );
-    }
-
-    /**
-     * Set the Decision Table's data and hook-up the Header
-     * 
-     * @param data
-     */
-    @Override
-    public void setModel(GuidedDecisionTable52 model) {
-        if ( model == null ) {
-            throw new IllegalArgumentException( "model cannot be null" );
-        }
-
-        header.setModel( model );
-        super.setModel( model );
     }
 
 }

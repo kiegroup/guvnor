@@ -386,6 +386,13 @@ public class TemplateModel extends RuleModel
 
     private int                       rowsCount      = 0;
 
+    /**
+     * Append a row of data
+     * 
+     * @param rowId
+     * @param row
+     * @return
+     */
     public String addRow(String rowId,
                          String[] row) {
         Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
@@ -411,6 +418,44 @@ public class TemplateModel extends RuleModel
                 list.add( rowId );
             } else {
                 list.add( row[entry.getValue()] );
+            }
+        }
+        rowsCount++;
+        return rowId;
+    }
+
+    /**
+     * Add a row of data at the specified index
+     * 
+     * @param index
+     * @param row
+     * @return
+     */
+    public String addRow(int index,
+                         String[] row) {
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+        if ( row.length != vars.size() - 1 ) {
+            throw new IllegalArgumentException( "Invalid numbers of columns: " + row.length + " expected: "
+                                                + vars.size() );
+        }
+        String rowId = getNewIdColValue();
+        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
+            List<String> list = table.get( entry.getKey().getVarName() );
+            if ( list == null ) {
+                list = new ArrayList<String>();
+                table.put( entry.getKey().getVarName(),
+                           list );
+            }
+            if ( rowsCount != list.size() ) {
+                throw new IllegalArgumentException( "invalid list size for " + entry.getKey() + ", expected: "
+                                                    + rowsCount + " was: " + list.size() );
+            }
+            if ( ID_COLUMN_NAME.equals( entry.getKey().getVarName() ) ) {
+                list.add( index,
+                          rowId );
+            } else {
+                list.add( index,
+                          row[entry.getValue()] );
             }
         }
         rowsCount++;
@@ -493,6 +538,37 @@ public class TemplateModel extends RuleModel
             }
         }
         return ret;
+    }
+
+    public List<List<String>> getTableAsList() {
+        List<List<String>> rows = new ArrayList<List<String>>();
+        if ( rowsCount <= 0 ) {
+            rows.add( new ArrayList<String>() );
+            return rows;
+        }
+
+        //Refresh against interpolation variables
+        putInSync();
+
+        Map<InterpolationVariable, Integer> vars = getInterpolationVariables();
+        for ( Map.Entry<InterpolationVariable, Integer> entry : vars.entrySet() ) {
+            InterpolationVariable var = entry.getKey();
+            String varName = var.varName;
+            if ( ID_COLUMN_NAME.equals( varName ) ) {
+                continue;
+            }
+            int idx = entry.getValue();
+            for ( int iRow = 0; iRow < rowsCount; iRow++ ) {
+                List<String> row = rows.get( iRow );
+                if ( row == null ) {
+                    row = new ArrayList<String>();
+                    rows.add( row );
+                }
+                row.set( idx,
+                         table.get( varName ).get( iRow ) );
+            }
+        }
+        return rows;
     }
 
     public void putInSync() {

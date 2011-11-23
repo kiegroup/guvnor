@@ -59,8 +59,7 @@ public class AssetWorkDefinitionsLoader extends AbstractWorkDefinitionsLoader {
         for ( AssetPageRow row : assetWorkDefinitions.getPageRowList() ) {
             RuleAsset asset = repositoryAssetService.loadRuleAsset( row.getUuid() );
             RuleContentText content = (RuleContentText) asset.getContent();
-            String definition = new String( content.content );
-            definitions.add( definition );
+            definitions.add( content.content );
         }
 
         return definitions;

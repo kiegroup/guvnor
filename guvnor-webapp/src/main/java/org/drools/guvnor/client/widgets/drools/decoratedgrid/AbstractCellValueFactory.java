@@ -17,15 +17,17 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.drools.guvnor.client.util.DateConverter;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt52.DTDataTypes52;
 
 /**
  * A Factory to create CellValues applicable to given columns.
  */
-public abstract class AbstractCellValueFactory<T> {
+public abstract class AbstractCellValueFactory<C, V> {
 
     // Dates are serialised to Strings with the user-defined format, or dd-MMM-yyyy by default
     protected static DateConverter       DATE_CONVERTOR = null;
@@ -51,135 +53,118 @@ public abstract class AbstractCellValueFactory<T> {
     }
 
     /**
-     * Make an empty CellValue applicable for the column
+     * Construct a new row of data for the underlying model
+     * 
+     * @return
+     */
+    public abstract List<V> makeRowData();
+
+    /**
+     * Construct a new row of data for the MergableGridWidget
+     * 
+     * @return
+     */
+    public abstract DynamicDataRow makeUIRowData();
+
+    /**
+     * Construct a new column of data for the underlying model
+     * 
+     * @return
+     */
+    public abstract List<V> makeColumnData(C column);
+
+    /**
+     * Construct a new column of data for the MergableGridWidget
+     * 
+     * @param cell
+     * @return
+     */
+    public abstract List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(C column);
+
+    /**
+     * Make a Model cell for the given column
      * 
      * @param column
-     *            The model column
-     * @param iRow
-     *            Row coordinate for initialisation
-     * @param iCol
-     *            Column coordinate for initialisation
-     * @return A CellValue
+     * @return
      */
-    public CellValue< ? extends Comparable< ? >> makeCellValue(T column,
-                                                               int iRow,
-                                                               int iCol) {
-        DTDataTypes52 dataType = getDataType( column );
-        CellValue< ? extends Comparable< ? >> cell = null;
+    protected abstract V makeModelCellValue(C column);
 
-        switch ( dataType ) {
-            case BOOLEAN :
-                cell = makeNewBooleanCellValue( iRow,
-                                                iCol );
-                break;
-            case DATE :
-                cell = makeNewDateCellValue( iRow,
-                                             iCol );
-                break;
-            case NUMERIC :
-                cell = makeNewNumericCellValue( iRow,
-                                                iCol );
-                break;
-            default :
-                cell = makeNewStringCellValue( iRow,
-                                               iCol );
-        }
+    /**
+     * Convert a Model cell to one that can be used in the UI
+     * 
+     * @param cell
+     * @return
+     */
+    protected abstract CellValue< ? extends Comparable< ? >> convertModelCellValue(C column,
+                                                                                   V cell);
 
-        return cell;
-    }
+    /**
+     * Get the data-type for a column
+     * 
+     * @param column
+     * @return
+     */
+    protected abstract DTDataTypes52 getDataType(C column);
 
-    // Get the Data Type corresponding to a given column
-    protected abstract DTDataTypes52 getDataType(T column);
-
-    protected CellValue<Boolean> makeNewBooleanCellValue(int iRow,
-                                                         int iCol) {
-        CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE,
-                                                        iRow,
-                                                        iCol );
+    protected CellValue<Boolean> makeNewBooleanCellValue() {
+        CellValue<Boolean> cv = new CellValue<Boolean>( Boolean.FALSE );
         return cv;
     }
 
-    protected CellValue<Boolean> makeNewBooleanCellValue(int iRow,
-                                                         int iCol,
-                                                         Boolean initialValue) {
-        CellValue<Boolean> cv = makeNewBooleanCellValue( iRow,
-                                                         iCol );
+    protected CellValue<Boolean> makeNewBooleanCellValue(Boolean initialValue) {
+        CellValue<Boolean> cv = makeNewBooleanCellValue();
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }
         return cv;
     }
 
-    protected CellValue<Date> makeNewDateCellValue(int iRow,
-                                                   int iCol) {
-        CellValue<Date> cv = new CellValue<Date>( null,
-                                                  iRow,
-                                                  iCol );
+    protected CellValue<Date> makeNewDateCellValue() {
+        CellValue<Date> cv = new CellValue<Date>( null );
         return cv;
     }
 
-    protected CellValue<Date> makeNewDateCellValue(int iRow,
-                                                   int iCol,
-                                                   Date initialValue) {
-        CellValue<Date> cv = makeNewDateCellValue( iRow,
-                                                   iCol );
+    protected CellValue<Date> makeNewDateCellValue(Date initialValue) {
+        CellValue<Date> cv = makeNewDateCellValue();
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }
         return cv;
     }
 
-    protected CellValue<String> makeNewDialectCellValue(int iRow,
-                                                        int iCol) {
-        CellValue<String> cv = new CellValue<String>( "java",
-                                                      iRow,
-                                                      iCol );
+    protected CellValue<String> makeNewDialectCellValue() {
+        CellValue<String> cv = new CellValue<String>( "java" );
         return cv;
     }
 
-    protected CellValue<String> makeNewDialectCellValue(int iRow,
-                                                        int iCol,
-                                                        String initialValue) {
-        CellValue<String> cv = makeNewDialectCellValue( iRow,
-                                                        iCol );
+    protected CellValue<String> makeNewDialectCellValue(String initialValue) {
+        CellValue<String> cv = makeNewDialectCellValue();
         if ( initialValue != null ) {
             cv.setValue( initialValue );
         }
         return cv;
     }
 
-    protected CellValue<BigDecimal> makeNewNumericCellValue(int iRow,
-                                                            int iCol) {
-        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null,
-                                                              iRow,
-                                                              iCol );
+    protected CellValue<BigDecimal> makeNewNumericCellValue() {
+        CellValue<BigDecimal> cv = new CellValue<BigDecimal>( null );
         return cv;
     }
 
-    protected CellValue<BigDecimal> makeNewNumericCellValue(int iRow,
-                                                            int iCol,
-                                                            BigDecimal initialValue) {
-        CellValue<BigDecimal> cv = makeNewNumericCellValue( iRow,
-                                                            iCol );
+    protected CellValue<BigDecimal> makeNewNumericCellValue(BigDecimal initialValue) {
+        CellValue<BigDecimal> cv = makeNewNumericCellValue();
         if ( initialValue != null ) {
-            cv.setValue( (BigDecimal) initialValue );
+            cv.setValue( initialValue );
         }
         return cv;
     }
 
-    protected CellValue<String> makeNewStringCellValue(int iRow,
-                                                       int iCol) {
-        CellValue<String> cv = new CellValue<String>( null,
-                                                      iRow,
-                                                      iCol );
+    protected CellValue<String> makeNewStringCellValue() {
+        CellValue<String> cv = new CellValue<String>( null );
         return cv;
     }
 
-    protected CellValue<String> makeNewStringCellValue(int iRow,
-                                                       int iCol,
-                                                       Object initialValue) {
-        CellValue<String> cv = makeNewStringCellValue( iRow,
-                                                       iCol );
+    protected CellValue<String> makeNewStringCellValue(Object initialValue) {
+        CellValue<String> cv = makeNewStringCellValue();
         if ( initialValue != null && !initialValue.equals( "" ) ) {
             cv.setValue( initialValue.toString() );
         }

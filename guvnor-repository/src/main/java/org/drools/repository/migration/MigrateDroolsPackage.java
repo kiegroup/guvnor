@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 public class MigrateDroolsPackage {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
     public boolean needsMigration(RulesRepository repo) throws RepositoryException {
         Node root = repo.getSession().getRootNode().getNode(RulesRepository.RULES_REPOSITORY_NAME);
         return !root.hasNode("drools.package.migrated");

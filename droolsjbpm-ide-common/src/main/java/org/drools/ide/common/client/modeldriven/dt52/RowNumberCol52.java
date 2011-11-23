@@ -22,4 +22,9 @@ public class RowNumberCol52 extends DTColumnConfig52 {
 
     private static final long serialVersionUID = -2272148755430209968L;
 
+    @Override
+    public String getDefaultValue() {
+        return "0";
+    }
+
 }

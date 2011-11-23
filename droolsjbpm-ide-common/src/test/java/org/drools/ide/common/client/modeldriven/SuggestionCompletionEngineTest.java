@@ -292,7 +292,7 @@ public class SuggestionCompletionEngineTest {
 
         c = com.getOperatorCompletions( "Person",
                                         "name" );
-        assertEquals( 10,
+        assertEquals( 11,
                       c.length );
         assertEquals( "==",
                       c[0] );
@@ -314,6 +314,8 @@ public class SuggestionCompletionEngineTest {
                       c[8] );
         assertEquals( "!= null",
                       c[9] );
+        assertEquals( "in",
+                      c[10] );
 
         c = com.getOperatorCompletions( "Person",
                                         "age" );

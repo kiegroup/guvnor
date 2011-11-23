@@ -51,10 +51,10 @@
     <init-param>
       <param-name>jaxrs.providers</param-name>
       <param-value>
-          org.apache.cxf.jaxrs.provider.AtomEntryProvider
-          org.apache.cxf.jaxrs.provider.AtomFeedProvider	
-          org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
-        </param-value>
+        org.apache.cxf.jaxrs.provider.AtomEntryProvider
+        org.apache.cxf.jaxrs.provider.AtomFeedProvider
+        org.drools.guvnor.server.jaxrs.CXFAuthenticationHandler
+      </param-value>
     </init-param>
     <!-- Use per-request life-cycle -->
     <!-- Enabling this breaks CDI injection in HackInjectCXFNonSpringJaxrsServlet -->

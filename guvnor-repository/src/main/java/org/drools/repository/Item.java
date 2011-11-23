@@ -92,7 +92,6 @@ public abstract class Item {
             try {
                 return this.node.isSame(rhs.getNode());
             } catch (RepositoryException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
             return false;
