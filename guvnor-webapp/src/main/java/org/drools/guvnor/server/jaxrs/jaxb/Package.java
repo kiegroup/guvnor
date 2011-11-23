@@ -35,8 +35,6 @@ public class Package {
 
     //private String snapshot;
 
-    private Category category;
-
     private URI binaryLink, sourceLink;
 
     private Set<URI> assets;
@@ -69,15 +67,6 @@ public class Package {
     public void setSnapshot(String snapshot) {
         this.snapshot = snapshot;
     }*/
-
-    @XmlElement()
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
 
     @XmlElement
     public String getTitle() {

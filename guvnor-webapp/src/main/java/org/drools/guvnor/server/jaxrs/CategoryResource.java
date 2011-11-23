@@ -57,7 +57,7 @@ public class CategoryResource extends Resource {
     private final int pageSize = 10;
 
     @GET
-    @Path("{categoryName}")
+    @Path("{categoryName}/assets")
     @Produces(MediaType.APPLICATION_ATOM_XML)
     public Feed getAssetsAsAtom(@PathParam("categoryName") String categoryName) {
         Factory factory = Abdera.getNewFactory();
@@ -75,7 +75,7 @@ public class CategoryResource extends Resource {
             Link l = factory.newLink();
             l.setRel("next-page");
             l.setHref(uriInfo.getBaseUriBuilder()
-                    .path("categories/{categoryName}/page/{pageNumber}")
+                    .path("categories/{categoryName}/assets//page/{pageNumber}")
                     .build(categoryName, (Integer) 1)
                     .toString());
             f.addLink(l);
@@ -85,7 +85,7 @@ public class CategoryResource extends Resource {
     }
 
     @GET
-    @Path("{categoryName}")
+    @Path("{categoryName}/assets")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXB(@PathParam("categoryName") String categoryName) {
         Collection<Asset> ret = new ArrayList<Asset>();
@@ -103,7 +103,7 @@ public class CategoryResource extends Resource {
     @PUT
     @Path("{categoryPath}")
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public void createCategory(@PathParam("categoryPath") String categoryPath, Category category) {
+    public void createCategory(@PathParam("categoryPath") String categoryPath) {
         String parentPath;
         String name;
         int lastDotIndex = categoryPath.lastIndexOf("/");
@@ -114,7 +114,7 @@ public class CategoryResource extends Resource {
             parentPath = "";
             name = categoryPath;
         }
-        repositoryCategoryService.createCategory(parentPath, name, "TODO");
+        repositoryCategoryService.createCategory(parentPath, name, "TODO"); // TODO description is ignored by back-end
     }
 
     @DELETE
@@ -150,7 +150,7 @@ public class CategoryResource extends Resource {
                 l.setRel("next-page");
                 UriBuilder builder = uriInfo.getAbsolutePathBuilder();
                 l.setHref(uriInfo.getBaseUriBuilder()
-                        .path("categories/{categoryName}/page/{pageNumber}")
+                        .path("categories/{categoryName}/assets//page/{pageNumber}")
                         .build(categoryName, (Integer) ++p)
                         .toString());
                 ret.getLinks().add(l);
@@ -163,7 +163,7 @@ public class CategoryResource extends Resource {
     }*/
 
     @GET
-    @Path("{categoryName}/page/{page}")
+    @Path("{categoryName}/assets//page/{page}")
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Collection<Asset> getAssetsAsJAXBIndex(@PathParam("categoryName") String categoryName,
             @PathParam("page") int page) {

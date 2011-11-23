@@ -105,8 +105,8 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(generateBaseUrl() + "/categories/Category%201");
-        
+        ClientResponse resp = client.get(generateBaseUrl() + "/categories/Category%201/assets");
+
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
         }
@@ -133,8 +133,8 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/Category%202");
-        
+        resp = client.get(generateBaseUrl() + "/categories/Category%202/assets");
+
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
         }
@@ -204,8 +204,8 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(generateBaseUrl() + "/categories/Category%201");
-        
+        resp = client.get(generateBaseUrl() + "/categories/Category%201/assets");
+
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
         }
@@ -245,7 +245,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/assets");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -258,7 +258,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/assets");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);
@@ -270,7 +270,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsAtom() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_ATOM_XML);
@@ -282,7 +282,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJson() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_JSON);
@@ -295,7 +295,7 @@ public class CategoryResourceTest extends AbstractBusClientServerTestBase {
 
     @Test @Ignore
     public void testGetAssetsByCategoryAndPageAsJaxb() throws Exception {
-        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/page/0");
+        URL url = new URL(generateBaseUrl() + "/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
         connection.setRequestProperty("Accept", MediaType.APPLICATION_XML);

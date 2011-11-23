@@ -23,6 +23,7 @@ import org.apache.abdera.model.Entry;
 import org.apache.abdera.model.ExtensibleElement;
 import org.drools.guvnor.server.jaxrs.jaxb.Asset;
 import org.drools.guvnor.server.jaxrs.jaxb.AssetMetadata;
+import org.drools.guvnor.server.jaxrs.jaxb.Category;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.repository.AssetItem;
@@ -46,6 +47,12 @@ public class Translator {
     public static final QName FORMAT = new QName(NS, "format");
     public static final QName CATEGORIES = new QName(NS, "categories");
 
+    public static Category toCategory(CategoryItem categoryItem, UriInfo uriInfo) {
+        Category category = new Category();
+        category.setPath(categoryItem.getFullPath());
+        return category;
+    }
+
     public static Asset toAsset(AssetItem a, UriInfo uriInfo) {
         AssetMetadata metadata = new AssetMetadata();
         metadata.setUuid(a.getUUID());
@@ -68,15 +75,15 @@ public class Translator {
         ret.setType(a.getType());
         ret.setCheckInComment(a.getCheckinComment());
         ret.setDescription(a.getDescription());
-        UriBuilder builder = uriInfo.getBaseUriBuilder();
-        ret.setRefLink(
-                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName()).build());
-        builder = uriInfo.getBaseUriBuilder();
-        ret.setBinaryLink(
-                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName() + "/binary").build());
-        builder = uriInfo.getBaseUriBuilder();
-        ret.setSourceLink(
-                builder.path("/packages/" + a.getPackage().getName() + "/assets/" + a.getName() + "/source").build());
+        ret.setRefLink(uriInfo.getBaseUriBuilder()
+                .path("/packages/{packageName}/assets/{assetName}")
+                .build(a.getPackage().getName(), a.getName()));
+        ret.setBinaryLink(uriInfo.getBaseUriBuilder()
+                .path("/packages/{packageName}/assets/{assetName}/binary")
+                .build(a.getPackage().getName(), a.getName()));
+        ret.setSourceLink(uriInfo.getBaseUriBuilder()
+                .path("/packages/{packageName}/assets/{assetName}/source")
+                .build(a.getPackage().getName(), a.getName()));
         ret.setVersion(a.getVersionNumber());
         return ret;
     }
@@ -96,12 +103,12 @@ public class Translator {
         ret.setCheckInComment(p.getCheckinComment());
         ret.setDescription(p.getDescription());
 
-        UriBuilder builder = uriInfo.getBaseUriBuilder();
-        ret.setBinaryLink(
-                builder.path("/packages/" + p.getName() + "/binary").build());
-        builder = uriInfo.getBaseUriBuilder();
-        ret.setSourceLink(
-                builder.path("/packages/" + p.getName() + "/source").build());
+        ret.setBinaryLink(uriInfo.getBaseUriBuilder()
+                .path("/packages/{packageName}/binary")
+                .build(p.getName()));
+        ret.setSourceLink(uriInfo.getBaseUriBuilder()
+                .path("/packages/{packageName}/source")
+                .build(p.getName()));
         //ret.setSnapshot(p.getSnapshotName());
         ret.setVersion(p.getVersionNumber());
         Iterator<AssetItem> iter = p.getAssets();
@@ -117,11 +124,12 @@ public class Translator {
     }
 
     public static Entry toPackageEntryAbdera(PackageItem p, UriInfo uriInfo) {
-        UriBuilder base;
+        URI baseURL;
         if (p.isHistoricalVersion()) {
-            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName()).path("versions").path(Long.toString(p.getVersionNumber()));
+            baseURL = uriInfo.getBaseUriBuilder()
+                    .path("packages/{packageName}/versions/{version}").build(p.getName(), Long.toString(p.getVersionNumber()));
         } else {
-            base = uriInfo.getBaseUriBuilder().path("packages").path(p.getName());
+            baseURL = uriInfo.getBaseUriBuilder().path("packages/{packageName}").build(p.getName());
         }
 
         Factory factory = Abdera.getNewFactory();
@@ -130,16 +138,17 @@ public class Translator {
         e.setTitle(p.getTitle());
         e.setSummary(p.getDescription());
         e.setPublished(new Date(p.getLastModified().getTimeInMillis()));
-        e.setBaseUri(base.clone().build().toString());
+        e.setBaseUri(baseURL.toString());
         e.addAuthor(p.getLastContributor());
 
-        e.setId(base.clone().build().toString());
+        e.setId(baseURL.toString());
 
         Iterator<AssetItem> i = p.getAssets();
         while (i.hasNext()) {
             AssetItem item = i.next();
             org.apache.abdera.model.Link l = factory.newLink();
-            l.setHref((base.clone().path("assets").path(item.getName())).build().toString());
+
+            l.setHref(UriBuilder.fromUri(baseURL).path("assets/{assetName}").build(item.getName()).toString());
             l.setTitle(item.getTitle());
             l.setRel("asset");
             e.addLink(l);
@@ -158,7 +167,7 @@ public class Translator {
         childExtension.addSimpleExtension(VALUE, p.getState() == null ? "" : p.getState().getName());
 
         org.apache.abdera.model.Content content = factory.newContent();
-        content.setSrc(base.clone().path("binary").build().toString());
+        content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
         content.setMimeType("application/octet-stream");
         content.setContentType(Type.MEDIA);
         e.setContentElement(content);
@@ -209,11 +218,15 @@ public class Translator {
         return e;
     }*/
     public static Entry toAssetEntryAbdera(AssetItem a, UriInfo uriInfo) {
-        UriBuilder base;
+        URI baseURL;
         if (a.isHistoricalVersion()) {
-            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName()).path("versions").path(Long.toString(a.getVersionNumber()));
+            baseURL = uriInfo.getBaseUriBuilder()
+                    .path("packages/{packageName}/assets/{assetName}/versions/{version}")
+                    .build(a.getPackageName(), a.getName(), Long.toString(a.getVersionNumber()));
         } else {
-            base = uriInfo.getBaseUriBuilder().path("packages").path(a.getPackageName()).path("assets").path(a.getName());
+            baseURL = uriInfo.getBaseUriBuilder()
+                    .path("packages/{packageName}/assets/{assetName}")
+                    .build(a.getPackageName(), a.getName());
         }
 
         Factory factory = Abdera.getNewFactory();
@@ -222,10 +235,10 @@ public class Translator {
         e.setTitle(a.getTitle());
         e.setSummary(a.getDescription());
         e.setPublished(new Date(a.getLastModified().getTimeInMillis()));
-        e.setBaseUri(base.clone().build().toString());
+        e.setBaseUri(baseURL.toString());
         e.addAuthor(a.getLastContributor());
 
-        e.setId(base.clone().build().toString());
+        e.setId(baseURL.toString());
 
 /*        Iterator<AssetItem> i = p.getAssets();
 while (i.hasNext()) {
@@ -259,7 +272,7 @@ while (i.hasNext()) {
         }
 
         org.apache.abdera.model.Content content = factory.newContent();
-        content.setSrc(base.clone().path("binary").build().toString());
+        content.setSrc(UriBuilder.fromUri(baseURL).path("binary").build().toString());
         content.setMimeType("application/octet-stream");
         content.setContentType(Type.MEDIA);
         e.setContentElement(content);
@@ -314,8 +327,8 @@ while (i.hasNext()) {
         l = new Link();
         l.setHref(builder.path("/packages/" + a.getPackageName() + "/asset/" +  a.getName() + "/source").build());
         l.setRel("source");
-        e.getLinks().add(l);                
-        
+        e.getLinks().add(l);
+
         return e;
     }*/
 }
