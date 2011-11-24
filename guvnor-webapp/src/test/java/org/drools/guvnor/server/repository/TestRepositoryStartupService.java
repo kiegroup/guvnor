@@ -53,8 +53,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This startup class manages the JCR repository, sets it up if necessary.
  */
-@ApplicationScoped
-@Alternative // @Specializes
+@Alternative @Specializes
 public class TestRepositoryStartupService extends RepositoryStartupService {
 
     @Override
