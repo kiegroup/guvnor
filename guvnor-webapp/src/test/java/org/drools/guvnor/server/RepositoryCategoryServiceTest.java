@@ -244,6 +244,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
                                            "/testLoadRuleListForCategoriesWithAnalystPermissionRootCat" ) );
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
+        RuntimeException failingException = null;
         try {
             //Create assets for test
             PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
@@ -326,11 +327,17 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             assertEquals( 3,
                     response.getTotalRowSize() );
             assertTrue( response.isLastPage() );
+        } catch (RuntimeException e) {
+            failingException = e;
         } finally {
-            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
-            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
-            logoutAs(USERNAME);
-            loginAs(ADMIN_USERNAME);
+            try {
+                roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+                roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
+                logoutAs(USERNAME);
+                loginAs(ADMIN_USERNAME);
+            } catch (RuntimeException e) {
+                throw (failingException != null) ? failingException : e;
+            }
         }
     }
 
@@ -338,9 +345,9 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     public void testLoadRuleListForCategoriesWithAnalystNoRootCatPermission() throws SerializationException {
         CategoryItem rootCategory = rulesRepository.loadCategory( "/" );
         CategoryItem cat = rootCategory.addCategory("testLoadRuleListForCategoriesWithAnalystNoRootCatPermission", "description");
-        cat.addCategory( "testLoadRuleListForCategoriesWithAnalystPermissionCat1",
+        cat.addCategory( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat1",
                          "yeah");
-        cat.addCategory( "testLoadRuleListForCategoriesWithAnalystPermissionCat2",
+        cat.addCategory( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat2",
         "yeah");
 
         logoutAs(ADMIN_USERNAME);
@@ -351,35 +358,27 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
         roleBasedPermissionStore.addRoleBasedPermissionForTesting(USERNAME, new RoleBasedPermission( USERNAME,
                                            RoleType.ANALYST.getName(),
                                            null,
-                                           "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystPermissionCat1" ) );
+                                           "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat1" ) );
         roleBasedPermissionManager.create(); // HACK flushes the permission cache
 
+        RuntimeException failingException = null;
         try {
             //Create asset for test
-            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystPermission",
+            PackageItem pkg = rulesRepository.createPackage( "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
             "" );
 
             AssetItem asset = pkg
                     .addAsset(
-                            "testLoadRuleListForCategoriesWithAnalystPermission1",
+                            "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission1",
                             "",
-                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystPermissionCat1",
+                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat1",
                             null);
             asset.updateSubject("testMetaDataSearch");
             asset.updateExternalSource("numberwang");
             asset.checkin("");
             asset = pkg
                     .addAsset(
-                            "testLoadRuleListForCategoriesWithAnalystPermission2",
-                            "",
-                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
-                            null);
-            asset.updateSubject("testMetaDataSearch");
-            asset.updateExternalSource("numberwang");
-            asset.checkin("");
-            asset = pkg
-                    .addAsset(
-                            "testLoadRuleListForCategoriesWithAnalystPermission3",
+                            "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission2",
                             "",
                             "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
                             null);
@@ -388,9 +387,18 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             asset.checkin("");
             asset = pkg
                     .addAsset(
-                            "testLoadRuleListForCategoriesWithAnalystPermission4",
+                            "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission3",
                             "",
-                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystPermissionCat1",
+                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
+                            null);
+            asset.updateSubject("testMetaDataSearch");
+            asset.updateExternalSource("numberwang");
+            asset.checkin("");
+            asset = pkg
+                    .addAsset(
+                            "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission4",
+                            "",
+                            "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission/testLoadRuleListForCategoriesWithAnalystNoRootCatPermissionCat1",
                             null);
             asset.updateSubject("testMetaDataSearch");
             asset.updateExternalSource("numberwang");
@@ -400,7 +408,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             asset.checkin("");
             asset = pkg
                     .addAsset(
-                            "testLoadRuleListForCategoriesWithAnalystPermission5",
+                            "testLoadRuleListForCategoriesWithAnalystNoRootCatPermission5",
                             "",
                             "/testLoadRuleListForCategoriesWithAnalystNoRootCatPermission",
                             null);
@@ -425,11 +433,17 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
             assertEquals( 0,
                     response.getTotalRowSize() );
             assertTrue( response.isLastPage() );
+        } catch (RuntimeException e) {
+            failingException = e;
         } finally {
-            roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
-            roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
-            logoutAs(USERNAME);
-            loginAs(ADMIN_USERNAME);
+            try {
+                roleBasedPermissionResolver.setEnableRoleBasedAuthorization(false);
+                roleBasedPermissionStore.clearAllRoleBasedPermissionsForTesting(USERNAME);
+                logoutAs(USERNAME);
+                loginAs(ADMIN_USERNAME);
+            } catch (RuntimeException e) {
+                throw (failingException != null) ? failingException : e;
+            }
         }
     }
 
