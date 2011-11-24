@@ -119,8 +119,9 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         AssetItem item = rulesRepository.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
         item.updateFormat("drl");
-        FormData upload = new FormData();
+        rulesRepository.save();
 
+        FormData upload = new FormData();
         upload.setFile( new MockFile() );
         upload.setUuid(item.getUUID());
         fileManagerService.attachFile( upload );
@@ -233,19 +234,20 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testImportArchivedPackage() throws Exception {
         // Import package
-        String drl = "package testClassicDRLImport\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
+        String drl = "package testImportArchivedPackage\n import blah \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
         fileManagerService.importClassicDRL(in,
                 null);
 
-        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        PackageItem pkg = rulesRepository.loadPackage("testImportArchivedPackage");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
         // Archive it
         pkg.archiveItem( true );
+        rulesRepository.save();
 
-        pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        pkg = rulesRepository.loadPackage("testImportArchivedPackage");
         assertNotNull( pkg );
         assertTrue( pkg.isArchived() );
 
@@ -254,7 +256,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
         fileManagerService.importClassicDRL(in2,
                 null);
 
-        pkg = rulesRepository.loadPackage("testClassicDRLImport");
+        pkg = rulesRepository.loadPackage("testImportArchivedPackage");
         assertNotNull( pkg );
         assertFalse( pkg.isArchived() );
 
@@ -429,12 +431,12 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     @Test
     public void testClassicDRLImportWithDSL() throws Exception {
-        String drl = "package testClassicDRLImportDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
+        String drl = "package testClassicDRLImportWithDSL\n import blah \n expander goo \n rule 'ola' \n when \n then \n end \n rule 'hola' \n when \n then \n end";
         InputStream in = new ByteArrayInputStream( drl.getBytes() );
         fileManagerService.importClassicDRL(in,
                 null);
 
-        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImportDSL");
+        PackageItem pkg = rulesRepository.loadPackage("testClassicDRLImportWithDSL");
         assertNotNull( pkg );
 
         List<AssetItem> rules = iteratorToList( pkg.getAssets() );
