@@ -381,7 +381,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                                                                                                         TableFormat.LIMITED_ENTRY,
                                                                                                         "an initial desc",
                                                                                                         "testCreateNewGuidedDecisionTableUsingConfiguration",
-                                                                                                        AssetFormats.DSL_TEMPLATE_RULE );
+                                                                                                        AssetFormats.DECISION_TABLE_GUIDED );
 
         String uuid = serviceImplementation.createNewRule( config );
         assertNotNull( uuid );
@@ -1824,15 +1824,20 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     public void testLoadingWorkDefinitionsFromPackageAssets() throws SerializationException {
 
-        String packageUUID = repositoryPackageService.createPackage( "testWorkItems",
-                                                                     "",
+        repositoryCategoryService.createCategory( "",
+                                                  "testLoadingWorkDefinitionsFromPackageAssetsCategory",
+                                                  "testLoadingWorkDefinitionsFromPackageAssetsCategory" );
+
+        
+        String packageUUID = repositoryPackageService.createPackage( "testLoadingWorkDefinitionsFromPackageAssets",
+                                                                     "testLoadingWorkDefinitionsFromPackageAssets",
                                                                      "package" );
 
         //Create #1 Work Item definition
         String uuid1 = serviceImplementation.createNewRule( "workItem1",
-                                                            "",
-                                                            "",
-                                                            "testWorkItems",
+                                                            "workItem1description",
+                                                            "testLoadingWorkDefinitionsFromPackageAssetsCategory",
+                                                            "testLoadingWorkDefinitionsFromPackageAssets",
                                                             "wid" );
         RuleAsset asset1 = repositoryAssetService.loadRuleAsset( uuid1 );
         RuleContentText content1 = new RuleContentText();
@@ -1857,9 +1862,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //Create #2 Work Item definition
         String uuid2 = serviceImplementation.createNewRule( "workItem2",
-                                                            "",
-                                                            "",
-                                                            "testWorkItems",
+                                                            "workItem2description",
+                                                            "testLoadingWorkDefinitionsFromPackageAssetsCategory",
+                                                            "testLoadingWorkDefinitionsFromPackageAssets",
                                                             "wid" );
         RuleAsset asset2 = repositoryAssetService.loadRuleAsset( uuid2 );
         RuleContentText content2 = new RuleContentText();
@@ -1872,7 +1877,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
                            + "\"IntegerParam\" : new IntegerDataType()\n"
                            + "],\n"
                            + "\"results\" : [\n"
-                           + "\"IntegerResult\" : new StringDataType()\n"
+                           + "\"IntegerResult\" : new IntegerDataType()\n"
                            + "],\n"
                            + "\"displayName\" : \"My Task2\","
                            + "\"icon\" : \"\",\n"
@@ -1884,9 +1889,9 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         //Create #3 Work Item definition
         String uuid3 = serviceImplementation.createNewRule( "workItem3",
-                                                            "",
-                                                            "",
-                                                            "testWorkItems",
+                                                            "workItem3description",
+                                                            "testLoadingWorkDefinitionsFromPackageAssetsCategory",
+                                                            "testLoadingWorkDefinitionsFromPackageAssets",
                                                             "wid" );
         RuleAsset asset3 = repositoryAssetService.loadRuleAsset( uuid3 );
         RuleContentText content3 = new RuleContentText();
@@ -1981,11 +1986,11 @@ public class ServiceImplementationTest extends GuvnorTestBase {
             //Check parameters, WID3
             assertNotNull( wid3.getParameters() );
             assertEquals( 1,
-                          wid2.getParameters().size() );
+                          wid3.getParameters().size() );
 
-            assertNotNull( wid2.getParameter( "ObjectParam" ) );
+            assertNotNull( wid3.getParameter( "ObjectParam" ) );
 
-            assertTrue( wid2.getParameter( "ObjectParam" ).getType() instanceof ObjectDataType );
+            assertTrue( wid3.getParameter( "ObjectParam" ).getType() instanceof ObjectDataType );
 
             //Check results, WID3
             assertNotNull( wid3.getResults() );
