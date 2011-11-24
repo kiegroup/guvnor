@@ -75,41 +75,39 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testAttachModel() throws Exception {
 
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.createPackage( "testAttachModelImports",
+        PackageItem pkg = rulesRepository.createPackage( "testAttachModelImports",
                                               "heh" );
         AssetItem asset = pkg.addAsset( "MyModel",
                                         "" );
-        asset.updateFormat( AssetFormats.MODEL );
+        asset.updateFormat(AssetFormats.MODEL);
         asset.checkin( "" );
 
-        pkg.updateBinaryUpToDate( true );
-        repo.save();
+        pkg.updateBinaryUpToDate(true);
+        rulesRepository.save();
 
-        assertTrue( pkg.isBinaryUpToDate() );
-        assertEquals( "",
-                      DroolsHeader.getDroolsHeader( pkg ) );
+        assertTrue(pkg.isBinaryUpToDate());
+        assertEquals("",
+                DroolsHeader.getDroolsHeader(pkg));
 
         fileManagerService.attachFileToAsset(asset.getUUID(),
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
 
-        pkg = repo.loadPackage( "testAttachModelImports" );
+        pkg = rulesRepository.loadPackage( "testAttachModelImports" );
 
-        assertFalse( pkg.isBinaryUpToDate() );
+        assertFalse(pkg.isBinaryUpToDate());
         assertNotNull( DroolsHeader.getDroolsHeader( pkg ) );
-        assertTrue( DroolsHeader.getDroolsHeader( pkg ).indexOf( "import com.billasurf.Board" ) > -1 );
-        assertTrue( DroolsHeader.getDroolsHeader( pkg ).indexOf( "import com.billasurf.Person" ) > -1 );
+        assertTrue(DroolsHeader.getDroolsHeader(pkg).indexOf("import com.billasurf.Board") > -1);
+        assertTrue(DroolsHeader.getDroolsHeader(pkg).indexOf("import com.billasurf.Person") > -1);
 
-        DroolsHeader.updateDroolsHeader( "goo wee",
-                                                  pkg );
-        pkg.checkin( "" );
+        DroolsHeader.updateDroolsHeader("goo wee",
+                pkg);
+        pkg.checkin("");
 
         fileManagerService.attachFileToAsset(asset.getUUID(),
                 this.getClass().getResourceAsStream("/billasurf.jar"),
                 "billasurf.jar");
-        pkg = repo.loadPackage( "testAttachModelImports" );
+        pkg = rulesRepository.loadPackage( "testAttachModelImports" );
         assertEquals( "goo wee\nimport com.billasurf.Board\nimport com.billasurf.Person\n",
                       DroolsHeader.getDroolsHeader( pkg ) );
 
@@ -118,9 +116,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testGetFilebyUUID() throws Exception {
 
-        RulesRepository repo = rulesRepository;
-
-        AssetItem item = repo.loadDefaultPackage().addAsset( "testGetFilebyUUID",
+        AssetItem item = rulesRepository.loadDefaultPackage().addAsset( "testGetFilebyUUID",
                                                              "description" );
         item.updateFormat("drl");
         FormData upload = new FormData();
@@ -144,11 +140,9 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     @Test
     public void testGetPackageBinaryAndSource() throws Exception {
 
-        RulesRepository repo = rulesRepository;
-
         long before = System.currentTimeMillis();
         Thread.sleep( 20 );
-        PackageItem pkg = repo.createPackage( "testGetBinaryPackageServlet",
+        PackageItem pkg = rulesRepository.createPackage( "testGetBinaryPackageServlet",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -479,9 +473,7 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     //purpose of this test is to detect memory leak?)
     public void testHeadOOME() throws Exception {
 
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.createPackage( "testHeadOOME",
+        PackageItem pkg = rulesRepository.createPackage( "testHeadOOME",
                                               "" );
         DroolsHeader.updateDroolsHeader( "import java.util.List",
                                                   pkg );
@@ -510,12 +502,10 @@ public class FileManagerServiceTest extends GuvnorTestBase {
     private void updatePackage(String nm) throws Exception {
         System.err.println( "---> Updating the package " );
 
-        RulesRepository repo = rulesRepository;
-
-        PackageItem pkg = repo.loadPackage( nm );
-        pkg.updateDescription( System.currentTimeMillis() + "" );
-        pkg.checkin( "a change" );
-        repo.logout();
+        PackageItem pkg = rulesRepository.loadPackage( nm );
+        pkg.updateDescription(System.currentTimeMillis() + "");
+        pkg.checkin("a change");
+        rulesRepository.logout();
 
     }
 
@@ -529,81 +519,80 @@ public class FileManagerServiceTest extends GuvnorTestBase {
 
     }
 
-}
+    private static class MockFile
+        implements FileItem {
 
-class MockFile
-    implements
-    FileItem {
+        private static final long serialVersionUID = 510l;
 
-    private static final long serialVersionUID = 510l;
+        InputStream               stream           = new ByteArrayInputStream( "foo bar".getBytes() );
 
-    InputStream               stream           = new ByteArrayInputStream( "foo bar".getBytes() );
+        public void setInputStream(InputStream is) throws IOException {
+            stream.close();
+            stream = is;
+        }
 
-    public void setInputStream(InputStream is) throws IOException {
-        stream.close();
-        stream = is;
-    }
+        public void delete() {
+        }
 
-    public void delete() {
-    }
+        public byte[] get() {
 
-    public byte[] get() {
+            return null;
+        }
 
-        return null;
-    }
+        public String getContentType() {
 
-    public String getContentType() {
+            return null;
+        }
 
-        return null;
-    }
+        public String getFieldName() {
 
-    public String getFieldName() {
+            return null;
+        }
 
-        return null;
-    }
+        public InputStream getInputStream() throws IOException {
+            return stream;
+        }
 
-    public InputStream getInputStream() throws IOException {
-        return stream;
-    }
+        public String getName() {
+            return "foo.bar";
+        }
 
-    public String getName() {
-        return "foo.bar";
-    }
+        public OutputStream getOutputStream() throws IOException {
 
-    public OutputStream getOutputStream() throws IOException {
+            return null;
+        }
 
-        return null;
-    }
+        public long getSize() {
+            return 0;
+        }
 
-    public long getSize() {
-        return 0;
-    }
+        public String getString() {
+            return null;
+        }
 
-    public String getString() {
-        return null;
-    }
+        public String getString(String arg0) throws UnsupportedEncodingException {
+            return null;
+        }
 
-    public String getString(String arg0) throws UnsupportedEncodingException {
-        return null;
-    }
+        public boolean isFormField() {
+            return false;
+        }
 
-    public boolean isFormField() {
-        return false;
-    }
+        public boolean isInMemory() {
+            return false;
+        }
 
-    public boolean isInMemory() {
-        return false;
-    }
+        public void setFieldName(String arg0) {
 
-    public void setFieldName(String arg0) {
+        }
 
-    }
+        public void setFormField(boolean arg0) {
 
-    public void setFormField(boolean arg0) {
+        }
 
-    }
+        public void write(File arg0) throws Exception {
 
-    public void write(File arg0) throws Exception {
+        }
 
     }
 
