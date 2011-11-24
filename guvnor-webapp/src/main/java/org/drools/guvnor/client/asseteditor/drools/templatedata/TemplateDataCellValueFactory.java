@@ -110,15 +110,17 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
     }
 
     /**
-     * Construct a new column of data for the MergableGridWidget
+     * Convert a column of domain data to that suitable for the UI
      * 
-     * @param cell
+     * @param column
+     * @param columnData
      * @return
      */
-    public List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(TemplateDataColumn column) {
+    public List<CellValue< ? extends Comparable< ? >>> convertColumnData(TemplateDataColumn column,
+                                                                         List<String> columnData) {
         List<CellValue< ? extends Comparable< ? >>> data = new ArrayList<CellValue< ? extends Comparable< ? >>>();
         for ( int iRow = 0; iRow < model.getRowsCount(); iRow++ ) {
-            String dcv = makeModelCellValue( column );
+            String dcv = columnData.get( iRow );
             CellValue< ? extends Comparable< ? >> cell = convertModelCellValue( column,
                                                                                 dcv );
             data.add( cell );

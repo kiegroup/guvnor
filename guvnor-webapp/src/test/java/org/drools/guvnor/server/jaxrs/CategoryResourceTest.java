@@ -105,7 +105,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         RequestOptions options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201").toExternalForm());
+        ClientResponse resp = client.get(new URL(baseURL, "rest/categories/Category%201/assets").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -135,7 +135,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(new URL(baseURL, "rest/categories/Category%202").toExternalForm());
+        resp = client.get(new URL(baseURL, "rest/categories/Category%202/assets").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -212,7 +212,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
         options = client.getDefaultRequestOptions();
         options.setAccept(MediaType.APPLICATION_ATOM_XML);
 
-        resp = client.get(new URL(baseURL, "rest/categories/Category%201").toExternalForm());
+        resp = client.get(new URL(baseURL, "rest/categories/Category%201/assets").toExternalForm());
         
         if (resp.getType() != ResponseType.SUCCESS){
             fail("Error getting assets from 'Category 1'");
@@ -253,7 +253,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient @Ignore
     public void testGetAssetsByCategoryAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage");
+        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -268,7 +268,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient @Ignore
     public void testGetAssetsByCategoryAsJaxb(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage");
+        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -282,7 +282,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient @Ignore
     public void testGetAssetsByCategoryAndPageAsAtom(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/page/0");
+        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -296,7 +296,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient @Ignore
     public void testGetAssetsByCategoryAndPageAsJson(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/page/0");
+        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));
@@ -311,7 +311,7 @@ public class CategoryResourceTest extends GuvnorTestBase {
 
     @Test @RunAsClient @Ignore
     public void testGetAssetsByCategoryAndPageAsJaxb(@ArquillianResource URL baseURL) throws Exception {
-        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/page/0");
+        URL url = new URL(baseURL, "rest/categories/Home%20Mortgage/assets//page/0");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("Authorization",
                 "Basic " + new Base64().encodeToString(( "admin:admin".getBytes() )));

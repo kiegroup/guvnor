@@ -64,30 +64,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        String cat = "testTextSearch";
+        String cat = "testQueryFullTextPagedResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQueryFullTextPagedResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule1",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextPagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule2",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextPagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule3",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextPagedResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
@@ -120,30 +120,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextFullResults() throws Exception {
 
-        String cat = "testTextSearch";
+        String cat = "testQueryFullTextFullResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQueryFullTextFullResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule1",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule2",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule3",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextFullResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
@@ -272,30 +272,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        String cat = "testTextSearch";
+        String cat = "testQuickFindAssetPagedResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQuickFindAssetPagedResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule1",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetPagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule2",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetPagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule3",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetPagedResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
@@ -329,30 +329,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetFullResults() throws Exception {
 
-        String cat = "testTextSearch";
+        String cat = "testQuickFindAssetFullResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQuickFindAssetFullResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule1",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule2",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("testTextRule3",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetFullResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",
@@ -558,7 +558,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         try {
             final int PAGE_SIZE = 2;
 
-            PackageItem pkg = rulesRepository.createPackage( "testMetaDataSearch",
+            PackageItem pkg = rulesRepository.createPackage( "testQueryMetaDataPagedResultsWithAnalystPermission_package",
                                                                        "" );
 
             AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset1",
@@ -677,7 +677,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
         try {
             final int PAGE_SIZE = 2;
 
-            PackageItem pkg = rulesRepository.createPackage("testMetaDataSearch",
+            PackageItem pkg = rulesRepository.createPackage("testQueryMetaDataPagedResultsWithAnalystPermissionRootCategory_package",
                     "");
 
             AssetItem asset = pkg.addAsset( "testMetaDataSearchAsset1",
@@ -777,7 +777,7 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryMetaDataFullResults() throws Exception {
 
-        PackageItem pkg = rulesRepository.createPackage("testMetaDataSearch",
+        PackageItem pkg = rulesRepository.createPackage("testQueryMetaDataFullResults_package",
                 "");
 
         AssetItem[] assets = new AssetItem[3];
@@ -960,30 +960,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQuickFindAssetCaseInsensitiveFullResults() throws Exception {
 
-        String cat = "testTextSearch";
+        String cat = "testQuickFindAssetCaseInsensitiveFullResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQuickFindAssetCaseInsensitiveFullResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("TESTTEXTRULE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("tEsTtExTrUlE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
@@ -1009,30 +1009,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        String cat = "testTextSearch";
+        String cat = "testQuickFindAssetCaseInsensitivePagedResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQuickFindAssetCaseInsensitivePagedResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("TESTTEXTRULE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("tEsTtExTrUlE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQuickFindAssetCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
@@ -1067,30 +1067,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
     @Test
     public void testQueryFullTextCaseInsensitiveFullResults() throws Exception {
 
-        String cat = "testTextSearch";
+        String cat = "testQueryFullTextCaseInsensitiveFullResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQueryFullTextCaseInsensitiveFullResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("TESTTEXTRULE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("tEsTtExTrUlE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitiveFullResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule",
@@ -1113,30 +1113,30 @@ public class RepositoryQueryAndFindTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        String cat = "testTextSearch";
+        String cat = "testQueryFullTextCaseInsensitivePagedResults";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
                                                   "qkfnd" );
-        repositoryPackageService.createPackage( "testTextSearch",
+        repositoryPackageService.createPackage( "testQueryFullTextCaseInsensitivePagedResults",
                                                 "for testing search.",
                                                 "package" );
 
         serviceImplementation.createNewRule("testTextRule",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("TESTTEXTRULE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         serviceImplementation.createNewRule("tEsTtExTrUlE",
                 "desc",
                 cat,
-                "testTextSearch",
+                "testQueryFullTextCaseInsensitivePagedResults",
                 AssetFormats.DRL);
 
         QueryPageRequest request = new QueryPageRequest( "testTextRule*",

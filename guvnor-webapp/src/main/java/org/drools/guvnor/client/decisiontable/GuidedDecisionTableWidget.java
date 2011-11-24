@@ -30,7 +30,6 @@ import org.drools.guvnor.client.common.ImageButton;
 import org.drools.guvnor.client.common.PrettyFormLayout;
 import org.drools.guvnor.client.common.SmallLabel;
 import org.drools.guvnor.client.decisiontable.widget.DecisionTableControlsWidget;
-import org.drools.guvnor.client.decisiontable.widget.PatternsChangedEvent;
 import org.drools.guvnor.client.decisiontable.widget.VerticalDecisionTableWidget;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
@@ -507,7 +506,6 @@ public class GuidedDecisionTableWidget extends Composite
                     }
 
                     private void newActionAdded(ActionCol52 column) {
-                        guidedDecisionTable.getActionCols().add( column );
                         dtable.addColumn( column );
                         refreshActionsWidget();
                     }
@@ -577,9 +575,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String cm = constants.DeleteActionColumnWarning( c.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
-                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( c );
-                                                 guidedDecisionTable.getActionCols().remove( c );
-                                                 dtable.deleteColumn( columnIndex );
+                                                 dtable.deleteColumn( c );
                                                  refreshActionsWidget();
                                              }
                                          }
@@ -652,7 +648,8 @@ public class GuidedDecisionTableWidget extends Composite
             for ( ConditionCol52 c : p.getConditions() ) {
                 HorizontalPanel hp = new HorizontalPanel();
                 hp.add( removeCondition( c ) );
-                hp.add( editCondition( c ) );
+                hp.add( editCondition( p,
+                                       c ) );
                 SmallLabel conditionLabel = makeColumnLabel( c );
                 hp.add( conditionLabel );
                 conditionsPanel.add( hp );
@@ -711,20 +708,9 @@ public class GuidedDecisionTableWidget extends Composite
                                                                 public void execute(Pattern52 pattern,
                                                                                     ConditionCol52 column) {
 
-                                                                    //Add pattern to model, if applicable
-                                                                    if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
-                                                                        guidedDecisionTable.getConditionPatterns().add( pattern );
-
-                                                                        //Signal patterns changed event to Decision Table Widget
-                                                                        PatternsChangedEvent pce = new PatternsChangedEvent( guidedDecisionTable.getConditionPatterns() );
-                                                                        eventBus.fireEvent( pce );
-                                                                    }
-
-                                                                    //Add new column to pattern
-                                                                    pattern.getConditions().add( column );
-
                                                                     //Update UI
-                                                                    dtable.addColumn( column );
+                                                                    dtable.addColumn( pattern,
+                                                                                      column );
                                                                     refreshConditionsWidget();
                                                                 }
                                                             },
@@ -745,7 +731,8 @@ public class GuidedDecisionTableWidget extends Composite
         }
     }
 
-    private Widget editCondition(final ConditionCol52 origCol) {
+    private Widget editCondition(final Pattern52 origPattern,
+                                 final ConditionCol52 origCol) {
         return new ImageButton( images.edit(),
                                 constants.EditThisColumnsConfiguration(),
                                 new ClickHandler() {
@@ -755,29 +742,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                                                     new ConditionColumnCommand() {
                                                                                         public void execute(Pattern52 pattern,
                                                                                                             ConditionCol52 column) {
-
-                                                                                            //Add pattern to model, if applicable
-                                                                                            if ( !guidedDecisionTable.getConditionPatterns().contains( pattern ) ) {
-                                                                                                guidedDecisionTable.getConditionPatterns().add( pattern );
-
-                                                                                                //Signal patterns changed event to Decision Table Widget
-                                                                                                PatternsChangedEvent pce = new PatternsChangedEvent( guidedDecisionTable.getConditionPatterns() );
-                                                                                                eventBus.fireEvent( pce );
-                                                                                            }
-
-                                                                                            //Move column from original pattern to new pattern, if applicable
-                                                                                            Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
-                                                                                            if ( !origPattern.getBoundName().equals( pattern.getBoundName() ) ) {
-                                                                                                origPattern.getConditions().remove( origCol );
-                                                                                                if ( origPattern.getConditions().size() == 0 ) {
-                                                                                                    guidedDecisionTable.getConditionPatterns().remove( origPattern );
-
-                                                                                                    //Signal patterns changed event to Decision Table Widget
-                                                                                                    PatternsChangedEvent pce = new PatternsChangedEvent( guidedDecisionTable.getConditionPatterns() );
-                                                                                                    eventBus.fireEvent( pce );
-                                                                                                }
-                                                                                                pattern.getConditions().add( column );
-                                                                                            }
 
                                                                                             //Update UI
                                                                                             dtable.updateColumn( origPattern,
@@ -815,22 +779,8 @@ public class GuidedDecisionTableWidget extends Composite
                                              String cm = constants.DeleteConditionColumnWarning( origCol.getHeader() );
                                              if ( com.google.gwt.user.client.Window.confirm( cm ) ) {
 
-                                                 //Remove condition from pattern
-                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( origCol );
-                                                 Pattern52 origPattern = guidedDecisionTable.getPattern( origCol );
-                                                 origPattern.getConditions().remove( origCol );
-
-                                                 //Remove pattern if it contains zero conditions
-                                                 if ( origPattern.getConditions().size() == 0 ) {
-                                                     guidedDecisionTable.getConditionPatterns().remove( origPattern );
-
-                                                     //Signal patterns changed event to Decision Table Widget
-                                                     PatternsChangedEvent pce = new PatternsChangedEvent( guidedDecisionTable.getConditionPatterns() );
-                                                     eventBus.fireEvent( pce );
-                                                 }
-
                                                  //Update UI
-                                                 dtable.deleteColumn( columnIndex );
+                                                 dtable.deleteColumn( origCol );
                                                  refreshConditionsWidget();
                                              }
                                          }
@@ -998,8 +948,7 @@ public class GuidedDecisionTableWidget extends Composite
                                                    //This attribute is only used for Decision Tables
                                                    list.addItem( GuidedDecisionTable52.NEGATE_RULE_ATTR );
 
-                                                   // Remove any attributes
-                                                   // already added
+                                                   // Remove any attributes already added
                                                    for ( AttributeCol52 col : guidedDecisionTable.getAttributeCols() ) {
                                                        for ( int iItem = 0; iItem < list.getItemCount(); iItem++ ) {
                                                            if ( list.getItemText( iItem ).equals( col.getAttribute() ) ) {
@@ -1019,7 +968,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                        public void onChange(ChangeEvent event) {
                                                            AttributeCol52 attr = new AttributeCol52();
                                                            attr.setAttribute( list.getItemText( list.getSelectedIndex() ) );
-                                                           guidedDecisionTable.getAttributeCols().add( attr );
                                                            dtable.addColumn( attr );
                                                            refreshAttributeWidget();
                                                            pop.hide();
@@ -1039,7 +987,6 @@ public class GuidedDecisionTableWidget extends Composite
                                                            MetadataCol52 met = new MetadataCol52();
                                                            met.setHideColumn( true );
                                                            met.setMetadata( metadata );
-                                                           guidedDecisionTable.getMetadataCols().add( met );
                                                            dtable.addColumn( met );
                                                            refreshAttributeWidget();
                                                            pop.hide();
@@ -1080,9 +1027,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( at.getAttribute() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
-                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( at );
-                                                 guidedDecisionTable.getAttributeCols().remove( at );
-                                                 dtable.deleteColumn( columnIndex );
+                                                 dtable.deleteColumn( at );
                                                  refreshAttributeWidget();
                                              }
                                          }
@@ -1098,9 +1043,7 @@ public class GuidedDecisionTableWidget extends Composite
                                          public void onClick(ClickEvent w) {
                                              String ms = constants.DeleteActionColumnWarning( md.getMetadata() );
                                              if ( com.google.gwt.user.client.Window.confirm( ms ) ) {
-                                                 int columnIndex = guidedDecisionTable.getAllColumns().indexOf( md );
-                                                 guidedDecisionTable.getMetadataCols().remove( md );
-                                                 dtable.deleteColumn( columnIndex );
+                                                 dtable.deleteColumn( md );
                                                  refreshAttributeWidget();
                                              }
                                          }

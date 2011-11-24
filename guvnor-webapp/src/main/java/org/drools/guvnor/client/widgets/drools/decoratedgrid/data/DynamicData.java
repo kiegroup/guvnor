@@ -47,6 +47,7 @@ public class DynamicData
      * @param index
      * @param columnData
      */
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void addColumn(int index,
                           List<CellValue< ? extends Comparable< ? >>> columnData,
                           boolean isVisible) {
@@ -74,12 +75,14 @@ public class DynamicData
                 GroupedDynamicDataRow groupedRow = (GroupedDynamicDataRow) row;
 
                 //Setting value on a GroupedCellValue causes all children to assume the same value
+                GroupedCellValue gcv = cell.convertToGroupedCell();
                 groupedRow.add( index,
-                                cell );
+                                gcv );
 
                 //So set the children's values accordingly
                 for ( int iGroupedRow = 0; iGroupedRow < groupedRow.getChildRows().size(); iGroupedRow++ ) {
                     cell = columnData.get( iRowIndex );
+                    gcv.addCellToGroup( cell );
                     groupedRow.getChildRows().get( iGroupedRow ).set( index,
                                                                       cell );
                     iRowIndex++;
@@ -484,9 +487,14 @@ public class DynamicData
         }
     }
 
-    //Ensure merging and indexing is reflected in the entire model
+    /**
+     * Ensure merging and indexing is reflected in the entire model. This should
+     * be called whenever any changes are made to the underlying data externally
+     * to the add/remove methods provided publicly herein, such as bulk move
+     * operations.
+     */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private void assertModelMerging() {
+    public void assertModelMerging() {
 
         if ( data.size() == 0 ) {
             return;

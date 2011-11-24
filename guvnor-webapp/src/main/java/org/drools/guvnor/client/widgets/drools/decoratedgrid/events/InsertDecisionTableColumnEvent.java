@@ -15,31 +15,38 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
 
+import java.util.List;
+
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 /**
  * An event to insert a Decision Table column
  */
-public class InsertDecisionTableColumnEvent extends InsertColumnEvent<DTColumnConfig52> {
-    
+public class InsertDecisionTableColumnEvent extends InsertColumnEvent<DTColumnConfig52, DTCellValue52> {
+
     public InsertDecisionTableColumnEvent(DTColumnConfig52 column,
+                                          List<DTCellValue52> columnData,
                                           int index,
                                           boolean redraw) {
         super( column,
+               columnData,
                index,
                redraw );
     }
 
     public InsertDecisionTableColumnEvent(DTColumnConfig52 column,
+                                          List<DTCellValue52> columnData,
                                           int index) {
         super( column,
+               columnData,
                index );
     }
 
-    public static Type<InsertColumnEvent.Handler<DTColumnConfig52>> TYPE = new Type<InsertColumnEvent.Handler<DTColumnConfig52>>();
+    public static Type<InsertColumnEvent.Handler<DTColumnConfig52, DTCellValue52>> TYPE = new Type<InsertColumnEvent.Handler<DTColumnConfig52, DTCellValue52>>();
 
     @Override
-    public Type<InsertColumnEvent.Handler<DTColumnConfig52>> getAssociatedType() {
+    public Type<InsertColumnEvent.Handler<DTColumnConfig52, DTCellValue52>> getAssociatedType() {
         return TYPE;
     }
 

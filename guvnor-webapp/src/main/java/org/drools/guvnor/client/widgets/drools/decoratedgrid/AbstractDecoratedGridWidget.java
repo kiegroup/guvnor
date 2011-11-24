@@ -48,8 +48,10 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  *            The domain model represented by the Grid
  * @param <T>
  *            The type of domain columns represented by the Grid
+ * @param <C>
+ *            The type of domain cell represented by the Grid
  */
-public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
+public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     implements
     SelectedCellValueUpdater,
     ColumnResizeEvent.Handler,
@@ -59,7 +61,7 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     AppendRowEvent.Handler,
     SetModelEvent.Handler<M>,
     DeleteColumnEvent.Handler,
-    InsertColumnEvent.Handler<T> {
+    InsertColumnEvent.Handler<T, C> {
 
     // Widgets for UI
     protected Panel                                    mainPanel;
@@ -242,7 +244,7 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
 
     //Ensure the selected cell is visible
     private void cellSelected(CellSelectionDetail ce) {
-        
+
         //No selection
         if ( ce == null ) {
             return;
@@ -307,30 +309,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     }
 
     /**
-     * Redraw table columns. Partial redraw
-     * 
-     * @param startRedrawIndex
-     *            Start column index (inclusive)
-     * @param endRedrawIndex
-     *            End column index (inclusive)
-     */
-    public void redrawColumns(int startRedrawIndex,
-                              int endRedrawIndex) {
-        this.gridWidget.redrawColumns( startRedrawIndex,
-                                       endRedrawIndex );
-    }
-
-    /**
-     * Redraw table column. Partial redraw
-     * 
-     * @param index
-     *            Column index
-     */
-    public void redrawColumn(int index) {
-        this.gridWidget.redrawColumn( index );
-    }
-
-    /**
      * Return an immutable list of selected cells
      * 
      * @return The selected cells
@@ -348,27 +326,11 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
         this.gridWidget.setSelectedCellsValue( value );
     }
 
-    public void redraw() {
-        // Draw header first as the size of child Elements depends upon it
-        this.headerWidget.redraw();
-        this.sidebarWidget.redraw();
-        this.gridWidget.redraw();
-    }
-
-    /**
-     * Redraw header
-     */
-    public void redrawHeader() {
-        this.headerWidget.redraw();
-    }
-
     public void onColumnResize(final ColumnResizeEvent event) {
         Scheduler.get().scheduleDeferred( new Command() {
 
             public void execute() {
                 assertDimensions();
-                gridWidget.resizeColumn( event.getColumn(),
-                                         event.getWidth() );
             }
 
         } );
@@ -409,18 +371,6 @@ public abstract class AbstractDecoratedGridWidget<M, T> extends Composite
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
-        if ( event.redraw() ) {
-            Scheduler.get().scheduleDeferred( new Command() {
-
-                public void execute() {
-                    assertDimensions();
-                }
-
-            } );
-        }
-    }
-
-    public void onInsertColumn(InsertColumnEvent<T> event) {
         if ( event.redraw() ) {
             Scheduler.get().scheduleDeferred( new Command() {
 

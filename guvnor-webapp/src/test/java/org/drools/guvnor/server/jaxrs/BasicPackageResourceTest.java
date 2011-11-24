@@ -25,7 +25,6 @@ import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
 import org.drools.guvnor.client.common.AssetFormats;
 import org.drools.guvnor.server.GuvnorTestBase;
 import org.drools.guvnor.server.ServiceImplementation;
-import org.drools.guvnor.server.jaxrs.jaxb.Category;
 import org.drools.guvnor.server.jaxrs.jaxb.Package;
 import org.drools.guvnor.server.jaxrs.jaxb.PackageMetadata;
 import org.drools.guvnor.server.util.DroolsHeader;
@@ -1254,9 +1253,6 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
     }
 
     protected Package createTestPackage(String title) {
-        Category c = new Category();
-        c.setName("test");
-
         Package p = new Package();
         PackageMetadata metadata = new PackageMetadata();
         metadata.setCreated(new Date(System.currentTimeMillis()));
@@ -1265,7 +1261,6 @@ public class BasicPackageResourceTest extends GuvnorTestBase {
         metadata.setLastModified(new Date(System.currentTimeMillis()));
 
         p.setMetadata(metadata);
-        p.setCategory(c);
         p.setCheckInComment("Check in comment for test package.");
         p.setTitle(title);
         p.setDescription("A simple test package with 0 assets.");

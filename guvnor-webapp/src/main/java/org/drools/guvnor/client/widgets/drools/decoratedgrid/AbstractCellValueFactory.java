@@ -69,17 +69,20 @@ public abstract class AbstractCellValueFactory<C, V> {
     /**
      * Construct a new column of data for the underlying model
      * 
+     * @param column
      * @return
      */
     public abstract List<V> makeColumnData(C column);
 
     /**
-     * Construct a new column of data for the MergableGridWidget
+     * Convert a column of domain data to that suitable for the UI
      * 
-     * @param cell
+     * @param column
+     * @param columnData
      * @return
      */
-    public abstract List<CellValue< ? extends Comparable< ? >>> makeUIColumnData(C column);
+    public abstract List<CellValue< ? extends Comparable< ? >>> convertColumnData(C column,
+                                                                                  List<V> columnData);
 
     /**
      * Make a Model cell for the given column

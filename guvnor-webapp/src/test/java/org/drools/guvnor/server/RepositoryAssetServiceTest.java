@@ -620,6 +620,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAsset() throws Exception {
+        long originalAchivedAssetsTotal = repositoryAssetService.loadArchivedAssets( 0, 1000 ).total;
         String cat = "testArchiveAsset";
         repositoryCategoryService.createCategory( "/",
                                                   cat,
@@ -664,7 +665,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
-        assertEquals( 0,
+        assertEquals( originalAchivedAssetsTotal,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
 
@@ -694,6 +695,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
     @Test
     public void testArchiveAssetWhenParentPackageArchived() throws Exception {
+        long originalAchivedAssetsTotal = repositoryAssetService.loadArchivedAssets( 0, 1000 ).total;
         String packageName = "testArchiveAssetWhenParentPackageArchived";
         String cat = packageName;
         repositoryCategoryService.createCategory( "/",
@@ -739,7 +741,7 @@ public class RepositoryAssetServiceTest extends GuvnorTestBase {
 
         TableDataResult td = repositoryAssetService.loadArchivedAssets( 0,
                                                                         1000 );
-        assertEquals( 0,
+        assertEquals( originalAchivedAssetsTotal,
                       td.total );
         repositoryAssetService.archiveAsset( uuid4 );
         PackageItem packageItem = rulesRepository.loadPackage( packageName );

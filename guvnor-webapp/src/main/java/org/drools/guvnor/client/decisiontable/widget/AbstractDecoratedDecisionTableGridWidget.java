@@ -42,13 +42,15 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
  * A Decorated Grid for Decision Tables
  */
-public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52> {
+public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52, DTCellValue52> {
 
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
@@ -277,12 +279,13 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         return columnData;
     }
 
-    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52> event) {
+    public void onInsertColumn(InsertColumnEvent<DTColumnConfig52, DTCellValue52> event) {
         DynamicColumn<DTColumnConfig52> column = new DynamicColumn<DTColumnConfig52>( event.getColumn(),
                                                                                       cellFactory.getCell( event.getColumn() ),
                                                                                       eventBus );
         column.setVisible( !event.getColumn().isHideColumn() );
-        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.makeUIColumnData( event.getColumn() );
+        List<CellValue< ? extends Comparable< ? >>> data = cellValueFactory.convertColumnData( event.getColumn(),
+                                                                                               event.getColumnData() );
 
         //Raise event setting data and columns for UI components
         InsertInternalDecisionTableColumnEvent ice = new InsertInternalDecisionTableColumnEvent( column,
@@ -291,6 +294,16 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                                  data );
         eventBus.fireEvent( ice );
 
+        //Assert dimensions once column has been added
+        if ( event.redraw() ) {
+            Scheduler.get().scheduleDeferred( new Command() {
+
+                public void execute() {
+                    assertDimensions();
+                }
+
+            } );
+        }
     }
 
 }

@@ -48,17 +48,17 @@ public class TemplateDataTableWidget extends Composite
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
     DeleteColumnEvent.Handler,
-    InsertTemplateDataColumnEvent.Handler<TemplateDataColumn> {
+    InsertTemplateDataColumnEvent.Handler<TemplateDataColumn, String> {
 
     // Decision Table data
-    protected TemplateModel                                                  model;
-    protected AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn> widget;
-    protected TemplateDataCellFactory                                        cellFactory;
-    protected TemplateDataCellValueFactory                                   cellValueFactory;
-    protected SuggestionCompletionEngine                                     sce;
-    protected final EventBus                                                 eventBus;
+    protected TemplateModel                                                          model;
+    protected AbstractDecoratedGridWidget<TemplateModel, TemplateDataColumn, String> widget;
+    protected TemplateDataCellFactory                                                cellFactory;
+    protected TemplateDataCellValueFactory                                           cellValueFactory;
+    protected SuggestionCompletionEngine                                             sce;
+    protected final EventBus                                                         eventBus;
 
-    protected static final ResourcesProvider<TemplateDataColumn>             resources = new TemplateDataTableResourcesProvider();
+    protected static final ResourcesProvider<TemplateDataColumn>                     resources = new TemplateDataTableResourcesProvider();
 
     /**
      * Constructor
@@ -217,7 +217,7 @@ public class TemplateDataTableWidget extends Composite
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             public void execute() {
-                widget.redraw();
+//                widget.redraw();
             }
 
         } );
@@ -312,7 +312,7 @@ public class TemplateDataTableWidget extends Composite
         // TODO {manstis} Add some code
     }
 
-    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn> event) {
+    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn, String> event) {
         // TODO {manstis} Add some code
     }
 

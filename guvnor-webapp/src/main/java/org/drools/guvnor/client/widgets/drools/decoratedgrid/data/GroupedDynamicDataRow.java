@@ -94,7 +94,7 @@ public class GroupedDynamicDataRow extends DynamicDataRow {
     }
 
     @Override
-    CellValue< ? extends Comparable< ? >> remove(int index) {
+    public CellValue< ? extends Comparable< ? >> remove(int index) {
         for ( DynamicDataRow groupedRow : this.groupedRows ) {
             groupedRow.remove( index );
         }

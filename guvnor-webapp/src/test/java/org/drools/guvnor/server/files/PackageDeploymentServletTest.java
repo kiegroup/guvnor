@@ -344,8 +344,7 @@ public class PackageDeploymentServletTest extends GuvnorTestBase {
         AssetItem asset = pkg.addAsset( "myprocess",
                                         "" );
         asset.updateFormat("pgn");
-        File imageFile = new File( getClass().getResource( "resources/myprocess.png" ).toURI() );
-        asset.updateBinaryContentAttachment(new FileInputStream(imageFile));
+        asset.updateBinaryContentAttachment(getClass().getResource( "resources/myprocess.png" ).openStream());
         asset.updateContent( "import org.drools.guvnor.server.files.SampleFact\n global org.drools.guvnor.server.files.SampleFact sf" );
         asset.checkin("");
 
