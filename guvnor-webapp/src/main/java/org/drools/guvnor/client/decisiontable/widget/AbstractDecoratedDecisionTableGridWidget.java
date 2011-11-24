@@ -42,7 +42,9 @@ import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.MetadataCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
 
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -292,6 +294,16 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
                                                                                                  data );
         eventBus.fireEvent( ice );
 
+        //Assert dimensions once column has been added
+        if ( event.redraw() ) {
+            Scheduler.get().scheduleDeferred( new Command() {
+
+                public void execute() {
+                    assertDimensions();
+                }
+
+            } );
+        }
     }
 
 }

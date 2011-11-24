@@ -32,6 +32,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEve
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertDecisionTableColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDecisionTableModelEvent;
@@ -76,7 +77,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
     DeleteColumnEvent.Handler,
-    InsertDecisionTableColumnEvent.Handler<DTColumnConfig52, DTCellValue52> {
+    InsertDecisionTableColumnEvent.Handler<DTColumnConfig52, DTCellValue52>,
+    MoveColumnsEvent.Handler {
 
     // Decision Table data
     protected GuidedDecisionTable52                       model;
@@ -124,6 +126,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
         eventBus.addHandler( InsertDecisionTableColumnEvent.TYPE,
+                             this );
+        eventBus.addHandler( MoveColumnsEvent.TYPE,
                              this );
     }
 
@@ -1301,90 +1305,43 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update model
         if ( patternTargetIndex > patternSourceIndex ) {
+
             //Move down (after)
             Pattern52 patternBeingMovedAfter = model.getConditionPatterns().get( patternTargetIndex );
-            model.getConditionPatterns().remove( pattern );
-            if ( patternTargetIndex > model.getConditionPatterns().size() - 1 ) {
-                model.getConditionPatterns().add( pattern );
-            } else {
-                model.getConditionPatterns().add( patternTargetIndex,
-                                                  pattern );
-            }
-            //Update UI
-            movePatternAfter( pattern,
-                              patternBeingMovedAfter );
-        } else {
-            //Move up (before)
-            Pattern52 patternBeingMovedBefore = model.getConditionPatterns().get( patternTargetIndex );
+            int sourceColumnIndex = model.getAllColumns().indexOf( pattern.getConditions().get( 0 ) );
+            int targetColumnIndex = model.getAllColumns().indexOf( patternBeingMovedAfter.getConditions().get( patternBeingMovedAfter.getConditions().size() - 1 ) );
+            int numberOfColumns = pattern.getConditions().size();
+
+            //Update model
             model.getConditionPatterns().remove( pattern );
             model.getConditionPatterns().add( patternTargetIndex,
                                               pattern );
-            //Update UI
-            movePatternBefore( pattern,
-                               patternBeingMovedBefore );
+
+            //Update data and UI
+            MoveColumnsEvent mce = new MoveColumnsEvent( sourceColumnIndex,
+                                                         targetColumnIndex,
+                                                         numberOfColumns );
+            eventBus.fireEvent( mce );
+
+        } else {
+            //Move up (before)
+            Pattern52 patternBeingMovedBefore = model.getConditionPatterns().get( patternTargetIndex );
+            int sourceColumnIndex = model.getAllColumns().indexOf( pattern.getConditions().get( 0 ) );
+            int targetColumnIndex = model.getAllColumns().indexOf( patternBeingMovedBefore.getConditions().get( 0 ) );
+            int numberOfColumns = pattern.getConditions().size();
+
+            //Update model
+            model.getConditionPatterns().remove( pattern );
+            model.getConditionPatterns().add( patternTargetIndex,
+                                              pattern );
+
+            //Update data and UI
+            MoveColumnsEvent mce = new MoveColumnsEvent( sourceColumnIndex,
+                                                         targetColumnIndex,
+                                                         numberOfColumns );
+            eventBus.fireEvent( mce );
         }
 
-    }
-
-    // Move a Pattern, or more accurately the group of columns relating to a
-    // pattern, before another Pattern in the order in which they are added to a
-    // rule's DRL
-    private void movePatternBefore(Pattern52 pattern,
-                                   Pattern52 beforePattern) {
-
-        //Find the index of the first column of the pattern before which the one being 
-        //moved will be inserted. Columns of the Pattern being moved will be inserted 
-        //*before* this column.
-        DTColumnConfig52 beforeColumn = beforePattern.getConditions().get( 0 );
-        int beforeColumnIndex = model.getAllColumns().indexOf( beforeColumn );
-
-        //Move columns
-        for ( ConditionCol52 cc : pattern.getConditions() ) {
-            int columnIndex = model.getAllColumns().indexOf( cc );
-            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( cc );
-            deleteColumn( columnIndex,
-                          false );
-            //TODO {manstis} Need to move a column with existing data
-            //insertColumnBefore( cc,columnData,beforeColumnIndex++,false );
-        }
-
-        //Partial redraw
-        int startRedrawIndex = model.getAllColumns().indexOf( pattern.getConditions().get( 0 ) );
-        int endRedrawIndex = model.getAllColumns().indexOf( beforePattern.getConditions().get( beforePattern.getConditions().size() - 1 ) );
-        widget.redrawColumns( startRedrawIndex,
-                              endRedrawIndex );
-        widget.redrawHeader();
-    }
-
-    // Move a Pattern, or more accurately the group of columns relating to a
-    // pattern, after another Pattern in the order in which they are added to a
-    // rule's DRL
-    private void movePatternAfter(Pattern52 pattern,
-                                  Pattern52 afterPattern) {
-
-        //Find the index of the last column of the pattern after which the one being 
-        //moved will be inserted. Since columns of the Pattern being moved are first
-        //deleted the afterColumnIndex effectively points to the first column after
-        //the last column of the existing afterPattern.
-        DTColumnConfig52 afterColumn = afterPattern.getConditions().get( afterPattern.getConditions().size() - 1 );
-        int afterColumnIndex = model.getAllColumns().indexOf( afterColumn );
-
-        //Move columns
-        for ( ConditionCol52 cc : pattern.getConditions() ) {
-            int columnIndex = model.getAllColumns().indexOf( cc );
-            List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( cc );
-            deleteColumn( columnIndex,
-                          false );
-            //TODO {manstis} Need to move a column with existing data
-            //insertColumnBefore( cc,columnData,afterColumnIndex,false );
-        }
-
-        //Partial redraw
-        int startRedrawIndex = model.getAllColumns().indexOf( afterPattern.getConditions().get( 0 ) );
-        int endRedrawIndex = model.getAllColumns().indexOf( pattern.getConditions().get( pattern.getConditions().size() - 1 ) );
-        widget.redrawColumns( startRedrawIndex,
-                              endRedrawIndex );
-        widget.redrawHeader();
     }
 
     /**
@@ -1418,24 +1375,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update model
         pattern.getConditions().remove( condition );
-        if ( conditionTargetIndex > conditionSourceIndex ) {
-            if ( conditionTargetIndex > pattern.getConditions().size() - 1 ) {
-                pattern.getConditions().add( condition );
-            } else {
-                pattern.getConditions().add( conditionTargetIndex,
-                                             condition );
-            }
+        pattern.getConditions().add( conditionTargetIndex,
+                                     condition );
 
-        } else {
-            pattern.getConditions().add( conditionTargetIndex,
-                                         condition );
-        }
-
-        //Update UI
-        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( condition );
-        deleteColumn( condition );
-        //TODO {manstis} Need to move a column with existing data
-        //insertColumnBefore( condition,columnData,conditionTargetColumnIndex,true );
+        //Update data and UI
+        MoveColumnsEvent mce = new MoveColumnsEvent( conditionSourceColumnIndex,
+                                                     conditionTargetColumnIndex,
+                                                     1 );
+        eventBus.fireEvent( mce );
     }
 
     /**
@@ -1466,24 +1413,14 @@ public abstract class AbstractDecisionTableWidget extends Composite
 
         //Update model
         model.getActionCols().remove( action );
-        if ( actionTargetIndex > actionSourceIndex ) {
-            if ( actionTargetIndex > model.getActionCols().size() - 1 ) {
-                model.getActionCols().add( action );
-            } else {
-                model.getActionCols().add( actionTargetIndex,
-                                           action );
-            }
+        model.getActionCols().add( actionTargetIndex,
+                                   action );
 
-        } else {
-            model.getActionCols().add( actionTargetIndex,
-                                       action );
-        }
-
-        //Update UI
-        List<CellValue< ? extends Comparable< ? >>> columnData = getColumnData( action );
-        deleteColumn( action );
-        //TODO {manstis} Need to move a column with existing data
-        //insertColumnBefore( action,columnData,actionTargetColumnIndex,true );
+        //Update data and UI
+        MoveColumnsEvent mce = new MoveColumnsEvent( actionSourceColumnIndex,
+                                                     actionTargetColumnIndex,
+                                                     1 );
+        eventBus.fireEvent( mce );
     }
 
     public void onDeleteRow(DeleteRowEvent event) {
@@ -1548,6 +1485,34 @@ public abstract class AbstractDecisionTableWidget extends Composite
             DTColumnConfig52 column = model.getAllColumns().get( c.getCol() );
             dtableCtrls.getOtherwiseButton().setEnabled( canAcceptOtherwiseValues( column ) );
         }
+    }
+
+    public void onMoveColumns(MoveColumnsEvent event) {
+        int sourceColumnIndex = event.getSourceColumnIndex();
+        int targetColumnIndex = event.getTargetColumnIndex();
+        int numberOfColumns = event.getNumberOfColumns();
+
+        //Move source columns to destination
+        if ( targetColumnIndex > sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
+                    List<DTCellValue52> row = model.getData().get( iRow );
+                    row.add( targetColumnIndex,
+                             row.remove( sourceColumnIndex ) );
+                }
+            }
+        } else if ( targetColumnIndex < sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                for ( int iRow = 0; iRow < model.getData().size(); iRow++ ) {
+                    List<DTCellValue52> row = model.getData().get( iRow );
+                    row.add( targetColumnIndex,
+                             row.remove( sourceColumnIndex ) );
+                }
+                sourceColumnIndex++;
+                targetColumnIndex++;
+            }
+        }
+
     }
 
 }

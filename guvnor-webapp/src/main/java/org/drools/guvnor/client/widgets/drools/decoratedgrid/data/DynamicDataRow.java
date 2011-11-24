@@ -74,8 +74,8 @@ public class DynamicDataRow
         return rowData.add( cell );
     }
 
-    void add(int index,
-             CellValue< ? extends Comparable< ? >> cell) {
+    public void add(int index,
+                    CellValue< ? extends Comparable< ? >> cell) {
         rowData.add( index,
                      cell );
     }
@@ -84,7 +84,7 @@ public class DynamicDataRow
         rowData.clear();
     }
 
-    CellValue< ? extends Comparable< ? >> remove(int index) {
+    public CellValue< ? extends Comparable< ? >> remove(int index) {
         return rowData.remove( index );
     }
 

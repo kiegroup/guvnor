@@ -24,6 +24,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertIntern
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
+import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -69,7 +71,8 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     DeleteColumnEvent.Handler,
     InsertInternalColumnEvent.Handler<T>,
     SetColumnVisibilityEvent.Handler,
-    UpdateColumnDefinitionEvent.Handler {
+    UpdateColumnDefinitionEvent.Handler,
+    MoveColumnsEvent.Handler {
 
     /**
      * Container class for information relating to re-size operations
@@ -253,6 +256,8 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
                              this );
         eventBus.addHandler( UpdateColumnDefinitionEvent.TYPE,
                              this );
+        eventBus.addHandler( MoveColumnsEvent.TYPE,
+                             this );
     }
 
     public HandlerRegistration addResizeHandler(ResizeHandler handler) {
@@ -329,10 +334,10 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
                                          int resizeColumnWidth);
 
     public void onDeleteColumn(final DeleteColumnEvent event) {
+        sortableColumns.remove( event.getIndex() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
-                sortableColumns.remove( event.getIndex() );
                 redraw();
             }
 
@@ -340,11 +345,11 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     }
 
     public void onInsertInternalColumn(final InsertInternalColumnEvent<T> event) {
+        sortableColumns.add( event.getIndex(),
+                             event.getColumn() );
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {
-                sortableColumns.add( event.getIndex(),
-                                     event.getColumn() );
                 redraw();
             }
 
@@ -362,6 +367,36 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     }
 
     public void onUpdateColumnDefinition(UpdateColumnDefinitionEvent event) {
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                redraw();
+            }
+
+        } );
+    }
+
+    public void onMoveColumns(MoveColumnsEvent event) {
+        int sourceColumnIndex = event.getSourceColumnIndex();
+        int targetColumnIndex = event.getTargetColumnIndex();
+        int numberOfColumns = event.getNumberOfColumns();
+
+        //Move source columns to destination
+        if ( targetColumnIndex > sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                this.sortableColumns.add( targetColumnIndex,
+                                          this.sortableColumns.remove( sourceColumnIndex ) );
+            }
+        } else if ( targetColumnIndex < sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                this.sortableColumns.add( targetColumnIndex,
+                                          this.sortableColumns.remove( sourceColumnIndex ) );
+                sourceColumnIndex++;
+                targetColumnIndex++;
+            }
+        }
+
+        //Redraw
         Scheduler.get().scheduleFinally( new Command() {
 
             public void execute() {

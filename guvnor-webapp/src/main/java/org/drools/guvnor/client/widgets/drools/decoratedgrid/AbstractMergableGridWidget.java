@@ -35,6 +35,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumn
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
@@ -73,7 +74,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     SetColumnVisibilityEvent.Handler,
     UpdateColumnDataEvent.Handler,
     UpdateColumnDefinitionEvent.Handler,
-    ColumnResizeEvent.Handler {
+    ColumnResizeEvent.Handler,
+    MoveColumnsEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -247,6 +249,8 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         eventBus.addHandler( UpdateColumnDefinitionEvent.TYPE,
                              this );
         eventBus.addHandler( ColumnResizeEvent.TYPE,
+                             this );
+        eventBus.addHandler( MoveColumnsEvent.TYPE,
                              this );
     }
 
@@ -1107,6 +1111,53 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     public void onColumnResize(final ColumnResizeEvent event) {
         resizeColumn( event.getColumn(),
                       event.getWidth() );
+    }
+
+    public void onMoveColumns(MoveColumnsEvent event) {
+        int sourceColumnIndex = event.getSourceColumnIndex();
+        int targetColumnIndex = event.getTargetColumnIndex();
+        int numberOfColumns = event.getNumberOfColumns();
+        
+        //Work-out what columns need redrawing
+        int startRedrawIndex = sourceColumnIndex;
+        int endRedrawIndex = targetColumnIndex;
+        if ( targetColumnIndex < sourceColumnIndex ) {
+            startRedrawIndex = targetColumnIndex;
+            endRedrawIndex = sourceColumnIndex  + numberOfColumns - 1;
+        }
+
+        //Move source columns and data to destination
+        if ( targetColumnIndex > sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                this.columns.add( targetColumnIndex,
+                                  this.columns.remove( sourceColumnIndex ) );
+                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                    DynamicDataRow row = data.get( iRow );
+                    row.add( targetColumnIndex,
+                             row.remove( sourceColumnIndex ) );
+                }
+            }
+        } else if ( targetColumnIndex < sourceColumnIndex ) {
+            for ( int iCol = 0; iCol < numberOfColumns; iCol++ ) {
+                this.columns.add( targetColumnIndex,
+                                  this.columns.remove( sourceColumnIndex ) );
+                for ( int iRow = 0; iRow < data.size(); iRow++ ) {
+                    DynamicDataRow row = data.get( iRow );
+                    row.add( targetColumnIndex,
+                             row.remove( sourceColumnIndex ) );
+                }
+                sourceColumnIndex++;
+                targetColumnIndex++;
+            }
+        }
+
+        //Redraw the affected columns
+        reindexColumns();
+//        redraw();
+        data.assertModelMerging();
+        redrawColumns( startRedrawIndex,
+                       endRedrawIndex );
+
     }
 
 }

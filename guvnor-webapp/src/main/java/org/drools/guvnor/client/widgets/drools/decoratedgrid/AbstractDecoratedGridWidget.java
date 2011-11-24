@@ -309,21 +309,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     }
 
     /**
-     * Redraw table columns. Partial redraw
-     * 
-     * @param startRedrawIndex
-     *            Start column index (inclusive)
-     * @param endRedrawIndex
-     *            End column index (inclusive)
-     */
-    //TODO {manstis} This can go once fully event based
-    public void redrawColumns(int startRedrawIndex,
-                              int endRedrawIndex) {
-        this.gridWidget.redrawColumns( startRedrawIndex,
-                                       endRedrawIndex );
-    }
-
-    /**
      * Return an immutable list of selected cells
      * 
      * @return The selected cells
@@ -339,14 +324,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
      */
     public void setSelectedCellsValue(Object value) {
         this.gridWidget.setSelectedCellsValue( value );
-    }
-
-    /**
-     * Redraw header
-     */
-    //TODO {manstis} This can go once fully event based
-    public void redrawHeader() {
-        this.headerWidget.redraw();
     }
 
     public void onColumnResize(final ColumnResizeEvent event) {
@@ -394,18 +371,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     }
 
     public void onDeleteColumn(DeleteColumnEvent event) {
-        if ( event.redraw() ) {
-            Scheduler.get().scheduleDeferred( new Command() {
-
-                public void execute() {
-                    assertDimensions();
-                }
-
-            } );
-        }
-    }
-
-    public void onInsertColumn(InsertColumnEvent<T, C> event) {
         if ( event.redraw() ) {
             Scheduler.get().scheduleDeferred( new Command() {
 
