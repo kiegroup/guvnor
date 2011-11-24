@@ -345,17 +345,17 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewRuleUsingConfiguration() throws Exception {
-        rulesRepository.createPackage( "testCreateNewRule",
+        rulesRepository.createPackage( "testCreateNewRuleUsingConfiguration",
                                        "desc" );
         repositoryCategoryService.createCategory( "",
-                                                  "testCreateNewRule",
+                                                  "testCreateNewRuleUsingConfiguration",
                                                   "this is a cat" );
 
-        NewAssetConfiguration config = new NewAssetConfiguration( "testCreateNewRuleName",
-                                                                  "testCreateNewRule",
+        NewAssetConfiguration config = new NewAssetConfiguration( "testCreateNewRuleUsingConfigurationName",
+                                                                  "testCreateNewRuleUsingConfiguration",
                                                                   null,
                                                                   "an initial desc",
-                                                                  "testCreateNewRule",
+                                                                  "testCreateNewRuleUsingConfiguration",
                                                                   AssetFormats.DSL_TEMPLATE_RULE );
 
         String uuid = serviceImplementation.createNewRule( config );
@@ -369,18 +369,18 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
     @Test
     public void testCreateNewGuidedDecisionTableUsingConfiguration() throws Exception {
-        rulesRepository.createPackage( "testCreateNewRule",
+        rulesRepository.createPackage( "testCreateNewGuidedDecisionTableUsingConfiguration",
                                        "desc" );
         repositoryCategoryService.createCategory( "",
-                                                  "testCreateNewRule",
+                                                  "testCreateNewGuidedDecisionTableUsingConfiguration",
                                                   "this is a cat" );
 
-        NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( "testCreateNewRuleName",
-                                                                                                        "testCreateNewRule",
+        NewGuidedDecisionTableAssetConfiguration config = new NewGuidedDecisionTableAssetConfiguration( "testCreateNewGuidedDecisionTableUsingConfigurationName",
+                                                                                                        "testCreateNewGuidedDecisionTableUsingConfiguration",
                                                                                                         null,
                                                                                                         TableFormat.LIMITED_ENTRY,
                                                                                                         "an initial desc",
-                                                                                                        "testCreateNewRule",
+                                                                                                        "testCreateNewGuidedDecisionTableUsingConfiguration",
                                                                                                         AssetFormats.DSL_TEMPLATE_RULE );
 
         String uuid = serviceImplementation.createNewRule( config );
@@ -403,22 +403,22 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     @Test
     //path name contains Apostrophe is no longer a problem with jackrabbit 2.0
     public void testCreateNewRuleContainsApostrophe() throws Exception {
-        rulesRepository.createPackage("testCreateNewRuleContainsApostrophe",
+        rulesRepository.createPackage("testCreateNewRuleContainsApostropheContainsApostrophe",
                 "desc");
         repositoryCategoryService.createCategory( "",
-                                                  "testCreateNewRuleContainsApostrophe",
+                                                  "testCreateNewRuleContainsApostropheContainsApostrophe",
                                                   "this is a cat" );
 
         String uuid = null;
         try {
-            uuid = serviceImplementation.createNewRule( "testCreateNewRuleContains' character",
+            uuid = serviceImplementation.createNewRule( "testCreateNewRuleContainsApostropheContains' character",
                                        "an initial desc",
-                                       "testCreateNewRuleContainsApostrophe",
-                                       "testCreateNewRuleContainsApostrophe",
+                                       "testCreateNewRuleContainsApostropheContainsApostrophe",
+                                       "testCreateNewRuleContainsApostropheContainsApostrophe",
                                        AssetFormats.DSL_TEMPLATE_RULE );
             //fail( "did not get expected exception" );
         } catch ( SerializationException e ) {
-            //assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
+            //assertTrue( e.getMessage().indexOf( "'testCreateNewRuleContainsApostropheContains' character' is not a valid path. ''' not a valid name character" ) >= 0 );
         }
 
 
@@ -426,7 +426,7 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         assertEquals( assetWrapper.getDescription(),
                       "an initial desc" );
         assertEquals( assetWrapper.getName(),
-                      "testCreateNewRuleContains' character" );
+                      "testCreateNewRuleContainsApostropheContains' character" );
 
     }
 
@@ -1448,37 +1448,37 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         final int PAGE_SIZE = 2;
 
 
-        String cat = "testCategory";
+        String cat = "testLoadRuleListForStatePagedResultsCategory";
         String status = "testStatus";
         String uuid;
         repositoryCategoryService.createCategory( "/",
                                                   cat,
-                                                  "testCategoryDescription" );
-        repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription",
+                                                  "testLoadRuleListForStatePagedResultsCategoryDescription" );
+        repositoryPackageService.createPackage( "testLoadRuleListForStatePagedResultsCategoryPackage",
+                                                "testLoadRuleListForStatePagedResultsCategoryPackageDescription",
                                                 "package" );
         serviceImplementation.createState(status);
 
         uuid = serviceImplementation.createNewRule( "testTextRule1",
-                                   "testCategoryRule1",
+                                   "testLoadRuleListForStatePagedResultsCategoryRule1",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStatePagedResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState(uuid,
                 status);
 
         uuid = serviceImplementation.createNewRule( "testTextRule2",
-                                   "testCategoryRule2",
+                                   "testLoadRuleListForStatePagedResultsCategoryRule2",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStatePagedResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
                                             status );
 
         uuid = serviceImplementation.createNewRule( "testTextRule3",
-                                   "testCategoryRule3",
+                                   "testLoadRuleListForStatePagedResultsCategoryRule3",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStatePagedResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
                                             status );
@@ -1509,37 +1509,37 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     public void testLoadRuleListForStateFullResults() throws Exception {
 
 
-        String cat = "testCategory";
+        String cat = "testLoadRuleListForStateFullResultsCategory";
         String status = "testStatus";
         String uuid;
         repositoryCategoryService.createCategory( "/",
                                                   cat,
-                                                  "testCategoryDescription" );
-        repositoryPackageService.createPackage( "testCategoryPackage",
-                                                "testCategoryPackageDescription",
+                                                  "testLoadRuleListForStateFullResultsCategoryDescription" );
+        repositoryPackageService.createPackage( "testLoadRuleListForStateFullResultsCategoryPackage",
+                                                "testLoadRuleListForStateFullResultsCategoryPackageDescription",
                                                 "package" );
         serviceImplementation.createState(status);
 
         uuid = serviceImplementation.createNewRule( "testTextRule1",
-                                   "testCategoryRule1",
+                                   "testLoadRuleListForStateFullResultsCategoryRule1",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStateFullResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState(uuid,
                 status);
 
         uuid = serviceImplementation.createNewRule( "testTextRule2",
-                                   "testCategoryRule2",
+                                   "testLoadRuleListForStateFullResultsCategoryRule2",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStateFullResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
                                             status );
 
         uuid = serviceImplementation.createNewRule( "testTextRule3",
-                                   "testCategoryRule3",
+                                   "testLoadRuleListForStateFullResultsCategoryRule3",
                                    cat,
-                                   "testCategoryPackage",
+                                   "testLoadRuleListForStateFullResultsCategoryPackage",
                                    AssetFormats.DRL );
         repositoryAssetService.changeState( uuid,
                                             status );
@@ -1571,12 +1571,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rulesRepository.createPackage("testLoadInboxPackage",
                 "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
-                "testLoadInboxCategory",
-                "testLoadInboxCategoryDescription");
+                "testLoadInboxPagedResultsCategory",
+                "testLoadInboxPagedResultsCategoryDescription");
 
         uuid = serviceImplementation.createNewRule( "rule1",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxPagedResultsCategory",
                                    "testLoadInboxPackage",
                                    AssetFormats.DRL );
 
@@ -1584,14 +1584,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         uuid = serviceImplementation.createNewRule( "rule2",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxPagedResultsCategory",
                                    "testLoadInboxPackage",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         uuid = serviceImplementation.createNewRule( "rule3",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxPagedResultsCategory",
                                    "testLoadInboxPackage",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
@@ -1631,12 +1631,12 @@ public class ServiceImplementationTest extends GuvnorTestBase {
         rulesRepository.createPackage("testLoadInboxFullResults",
                 "testLoadInboxDescription");
         repositoryCategoryService.createCategory("",
-                "testLoadInboxCategory",
-                "testLoadInboxCategoryDescription");
+                "testLoadInboxFullResultsCategory",
+                "testLoadInboxFullResultsCategoryDescription");
 
         uuid = serviceImplementation.createNewRule( "rule1",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxFullResultsCategory",
                                    "testLoadInboxFullResults",
                                    AssetFormats.DRL );
 
@@ -1644,14 +1644,14 @@ public class ServiceImplementationTest extends GuvnorTestBase {
 
         uuid = serviceImplementation.createNewRule( "rule2",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxFullResultsCategory",
                                    "testLoadInboxFullResults",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
 
         uuid = serviceImplementation.createNewRule( "rule3",
                                    "desc",
-                                   "testLoadInboxCategory",
+                                   "testLoadInboxFullResultsCategory",
                                    "testLoadInboxFullResults",
                                    AssetFormats.DRL );
         asset = repositoryAssetService.loadRuleAsset( uuid );
