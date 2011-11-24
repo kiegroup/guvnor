@@ -313,7 +313,7 @@ public class RepositoryAssetOperations {
                 .buildWithTotalRowCount(totalRowsCount);
 
         long methodDuration = System.currentTimeMillis() - start;
-        log.debug("Searched for Archived Assests in " + methodDuration + " ms.");
+        log.debug("Searched for Archived Assets in " + methodDuration + " ms.");
         return response;
     }
 
