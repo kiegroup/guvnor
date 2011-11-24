@@ -105,7 +105,7 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
     }
 
     @Test
-    public void testCategory() throws Exception {
+    public void testLoadRuleListForCategoryPagedResultsCategory() throws Exception {
 
         String[] originalCats = repositoryCategoryService.loadChildCategories( "/" );
 
@@ -139,28 +139,28 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
         final int PAGE_SIZE = 2;
 
-        String cat = "testCategory";
+        String cat = "testLoadRuleListForCategoryPagedResultsCategory";
         repositoryCategoryService.createCategory("/",
                 cat,
                 "testCategoryDescription");
-        repositoryPackageService.createPackage("testCategoryPackage",
-                "testCategoryPackageDescription",
+        repositoryPackageService.createPackage("testLoadRuleListForCategoryPagedResultsCategoryPackage",
+                "testLoadRuleListForCategoryPagedResultsCategoryPackageDescription",
                 "package");
 
         serviceImplementation.createNewRule("testTextRule1",
-                "testCategoryRule1",
+                "testLoadRuleListForCategoryPagedResultsCategoryRule1",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryPagedResultsCategoryPackage",
                 AssetFormats.DRL);
         serviceImplementation.createNewRule("testTextRule2",
-                "testCategoryRule2",
+                "testLoadRuleListForCategoryPagedResultsCategoryRule2",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryPagedResultsCategoryPackage",
                 AssetFormats.DRL);
         serviceImplementation.createNewRule("testTextRule3",
-                "testCategoryRule3",
+                "testLoadRuleListForCategoryPagedResultsCategoryRule3",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryPagedResultsCategoryPackage",
                 AssetFormats.DRL);
 
         CategoryPageRequest request = new CategoryPageRequest( cat,
@@ -187,28 +187,28 @@ public class RepositoryCategoryServiceTest extends GuvnorTestBase {
 
     @Test
     public void testLoadRuleListForCategoryFullResults() throws Exception {
-        String cat = "testCategory";
+        String cat = "testLoadRuleListForCategoryFullResultsCategory";
         repositoryCategoryService.createCategory("/",
                 cat,
-                "testCategoryDescription");
-        repositoryPackageService.createPackage("testCategoryPackage",
-                "testCategoryPackageDescription",
+                "testLoadRuleListForCategoryFullResultsCategoryDescription");
+        repositoryPackageService.createPackage("testLoadRuleListForCategoryFullResultsCategoryPackage",
+                "testLoadRuleListForCategoryFullResultsCategoryPackageDescription",
                 "package");
 
         serviceImplementation.createNewRule("testTextRule1",
-                "testCategoryRule1",
+                "testLoadRuleListForCategoryFullResultsCategoryRule1",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryFullResultsCategoryPackage",
                 AssetFormats.DRL);
         serviceImplementation.createNewRule("testTextRule2",
-                "testCategoryRule2",
+                "testLoadRuleListForCategoryFullResultsCategoryRule2",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryFullResultsCategoryPackage",
                 AssetFormats.DRL);
         serviceImplementation.createNewRule("testTextRule3",
-                "testCategoryRule3",
+                "testLoadRuleListForCategoryFullResultsCategoryRule3",
                 cat,
-                "testCategoryPackage",
+                "testLoadRuleListForCategoryFullResultsCategoryPackage",
                 AssetFormats.DRL);
 
         CategoryPageRequest request = new CategoryPageRequest( cat,
