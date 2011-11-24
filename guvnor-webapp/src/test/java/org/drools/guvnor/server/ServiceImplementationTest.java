@@ -1681,18 +1681,6 @@ public class ServiceImplementationTest extends GuvnorTestBase {
     }
 
     @Test
-    public void testImportSampleRepository() throws Exception {
-        repositoryPackageService.installSampleRepository();
-        PackageConfigData[] cfgs = repositoryPackageService.listPackages();
-        assertEquals( 2,
-                      cfgs.length );
-        assertTrue( cfgs[0].getName().equals( "mortgages" ) || cfgs[1].getName().equals( "mortgages" ) );
-        String puuid = (cfgs[0].getName().equals( "mortgages" )) ? cfgs[0].getUuid() : cfgs[1].getUuid();
-        BulkTestRunResult bulkTestRunResult = repositoryPackageService.runScenariosInPackage( puuid );
-        assertNull(bulkTestRunResult.getResult());
-    }
-
-    @Test
     @Ignore("To be fixed: GUVNOR-296")
     public void testHistoryAfterReImportSampleRepository() throws Exception {
 
