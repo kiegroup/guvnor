@@ -55,6 +55,7 @@
     <module>guvnor-webapp</module>
     <module>guvnor-bulk-importer</module>
     <module>guvnor-examples</module>
+    <module>guvnor-distribution-wars</module>
   </modules>
 
   <profiles>
