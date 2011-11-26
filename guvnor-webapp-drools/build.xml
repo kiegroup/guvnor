@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project name="org.drools.guvnor.Guvnor" basedir=".">
+
+  <property file="build.properties"/>
+
+  <property name="jbossAS.tempdir" location="target/guvnor-standalone"/>
+
+
+  <!-- Creates a stand alone zip. JBoss AS + Guvnor -->
+  <target name="guvnor-standalone">
+
+    <condition property="isJBossASDowloaded">
+      <available file="${jbossAS.version}.zip"/>
+    </condition>
+    <antcall target="download-jboss-as"/>
+
+    <mkdir dir="${jbossAS.tempdir}"/>
+    <unzip src="${jbossAS.version}.zip"
+           dest="${jbossAS.tempdir}"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/docs"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/all"/>
+    <delete dir="${jbossAS.tempdir}/${jbossAS.version}/server/minimal"/>
+    <unzip src="target/guvnor-webapp.war"
+           dest="${jbossAS.tempdir}/${jbossAS.version}/server/default/deploy/guvnor-webapp.war"/>
+    <zip basedir="${jbossAS.tempdir}"
+         destfile="target/guvnor-standalone.zip"/>
+    <delete dir="${jbossAS.tempdir}"/>
+
+    <antcall target="remove-jboss-as"/>
+  </target>
+
+  <!-- If JBoss AS is not downloaded get it -->
+  <target name="download-jboss-as" unless="isJBossASDowloaded">
+    <get src="http://heanet.dl.sourceforge.net/sourceforge/jboss/${jbossAS.version}.zip"
+         dest="${jbossAS.version}.zip"/>
+  </target>
+
+  <!-- If JBoss AS was downloaded remove it -->
+  <target name="remove-jboss-as" unless="isJBossASDowloaded">
+    <delete file="${jbossAS.version}.zip"/>
+  </target>
+
+</project>
+

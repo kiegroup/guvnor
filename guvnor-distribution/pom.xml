@@ -69,7 +69,12 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>guvnor-webapp</artifactId>
+      <artifactId>guvnor-webapp-core</artifactId>
+      <classifier>sources</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>guvnor-webapp-drools</artifactId>
       <classifier>sources</classifier>
     </dependency>
     <dependency>

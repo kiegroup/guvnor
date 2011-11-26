@@ -13,7 +13,7 @@
   <fileSets>
     <fileSet>
       <!-- TODO Workaround for https://issues.jboss.org/browse/SOLDER-220 -->
-      <directory>../guvnor-webapp/src/main/resources/META-INF/</directory>
+      <directory>../guvnor-webapp-drools/src/main/resources/META-INF/</directory>
       <includes>
         <include>beans.xml</include>
       </includes>
@@ -24,7 +24,7 @@
   <dependencySets>
     <dependencySet>
       <includes>
-        <include>org.drools:guvnor-webapp:war</include>
+        <include>org.drools:guvnor-webapp-drools:war</include>
       </includes>
       <outputDirectory>.</outputDirectory>
       <unpack>true</unpack>

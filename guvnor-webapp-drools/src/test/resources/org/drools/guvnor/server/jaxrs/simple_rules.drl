@@ -1,0 +1,9 @@
+package org.drools.guvnor.server.jaxrs.test1;
+
+rule "Simple Rule"
+    when
+        obj : Object ()
+    then
+        retract (obj);
+end
+

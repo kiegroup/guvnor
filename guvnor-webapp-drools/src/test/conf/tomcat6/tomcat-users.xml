@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tomcat-users>
+<!--
+  By default, no user is included in the "manager" role required to operate the "/manager" web application.
+  This file changes that.
+-->
+
+  <role rolename="manager-script"/>
+  <!-- Keep username/password in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
+  <user username="admin" password="admin" roles="manager-script"/>
+
+</tomcat-users>
