@@ -297,6 +297,12 @@
       <artifactId>guvnor-webapp-core</artifactId>
     </dependency>
 
+    <dependency><!-- Needed by GWT IDE plugin -->
+      <groupId>javax.el</groupId>
+      <artifactId>el-api</artifactId>
+      <scope>provided</scope><!-- Both tomcat and jetty include this, so it's probably part of the servlet spec -->
+    </dependency>
+
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
