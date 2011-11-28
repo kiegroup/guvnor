@@ -18,11 +18,10 @@
   <properties>
     <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
     <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
-    <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir> -->
-    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml 
-      &ndash;&gt; -->
-    <!--<managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version> -->
-    <!--<managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home> -->
+    <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
+    <!--&lt;!&ndash; Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml &ndash;&gt;-->
+    <!--<managed-appserver.tomcat6.version>6.0.33</managed-appserver.tomcat6.version>-->
+    <!--<managed-appserver.tomcat6.home>${project.build.directory}/apache-tomcat-${managed-appserver.tomcat6.version}</managed-appserver.tomcat6.home>-->
   </properties>
 
   <build>
@@ -137,8 +136,7 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <!-- Download JBoss AS and unpack it to have it available during 
-              tests -->
+            <!-- Download JBoss AS and unpack it to have it available during tests -->
             <!-- You can specify path to JBoss AS 7 in arquillian.xml -->
             <id>unpack</id>
             <phase>process-test-classes</phase>
@@ -293,6 +291,7 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>guvnor-webapp-core</artifactId>
