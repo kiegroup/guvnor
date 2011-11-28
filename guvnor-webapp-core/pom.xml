@@ -212,6 +212,11 @@
       <artifactId>seam-security</artifactId>
       <version>${seam.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jboss.security</groupId>
+      <artifactId>jboss-security-spi</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency><!-- TODO Workaround for https://issues.jboss.org/browse/SEAMINTL-69 -->
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -228,6 +233,7 @@
       <!--<artifactId>seam-rest</artifactId>-->
       <!--<version>${seam.version}</version>-->
     <!--</dependency>-->
+
     <!-- Arquillian (testing for weld) -->
     <!--<dependency>-->
       <!--<groupId>org.jboss.arquillian.junit</groupId>-->
@@ -448,13 +454,6 @@
       <artifactId>gwt-dev</artifactId>
       <version>${gwt.version}</version>
       <scope>provided</scope><!-- HACK to remove it from the runtime classpath -->
-    </dependency>
-    <dependency>
-      <groupId>org.jboss.security</groupId>
-      <artifactId>jboss-security-spi</artifactId>
-      <version>2.0.3.SP1</version>
-      <type>jar</type>
-      <scope>provided</scope>
     </dependency>
 
   </dependencies>
