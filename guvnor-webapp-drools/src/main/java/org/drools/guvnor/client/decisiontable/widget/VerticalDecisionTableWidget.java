@@ -16,7 +16,6 @@
 package org.drools.guvnor.client.decisiontable.widget;
 
 import org.drools.guvnor.client.util.GWTDateConverter;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.event.shared.EventBus;
@@ -36,19 +35,8 @@ public class VerticalDecisionTableWidget extends AbstractDecisionTableWidget {
 
         VerticalPanel vp = new VerticalPanel();
 
-        //Callback for cell updates
-        //TODO {manstis} This might become an event raised from the UI
-        SelectedCellValueUpdater selectedCellValueUpdater = new SelectedCellValueUpdater() {
-
-            public void setSelectedCellsValue(Object value) {
-                // TODO {manstis} Add some code
-            }
-
-        };
-
         //Factories for new cell elements
         this.cellFactory = new DecisionTableCellFactory( sce,
-                                                         selectedCellValueUpdater,
                                                          eventBus );
         this.cellValueFactory = new DecisionTableCellValueFactory( sce );
         

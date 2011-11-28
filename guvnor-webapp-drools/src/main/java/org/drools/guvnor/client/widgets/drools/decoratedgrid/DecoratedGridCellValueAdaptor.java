@@ -17,10 +17,13 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.Set;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 
 /**
@@ -28,22 +31,21 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
  * 
  * @param <T>
  *            The data-type required by the wrapped cell
- * @param <C>
- *            The data-type of columns represented in the domain model
  */
-public class DecoratedGridCellValueAdaptor<T> extends
-        AbstractCell<CellValue< ? extends Comparable< ? >>> {
+public class DecoratedGridCellValueAdaptor<T extends Comparable<T>> extends AbstractCell<CellValue< ? extends Comparable< ? >>> {
 
     // Really we want AbstractCell<?> but that leads to generics hell
-    private AbstractCell<T>            cell;
+    private AbstractCell<T> cell;
 
-    protected SelectedCellValueUpdater selectedCellValueUpdater;
+    private EventBus        eventBus;
 
     /**
      * @param cell
      */
-    public DecoratedGridCellValueAdaptor(AbstractCell<T> cell) {
+    public DecoratedGridCellValueAdaptor(AbstractCell<T> cell,
+                                         EventBus eventBus) {
         super( cell.getConsumedEvents() );
+        this.eventBus = eventBus;
         this.cell = cell;
     }
 
@@ -91,7 +93,7 @@ public class DecoratedGridCellValueAdaptor<T> extends
                              new ValueUpdater<T>() {
 
                                  public void update(T value) {
-                                     selectedCellValueUpdater.setSelectedCellsValue( value );
+                                     eventBus.fireEvent( new CellValueChangedEvent( value ) );
                                  }
 
                              } );
@@ -115,15 +117,6 @@ public class DecoratedGridCellValueAdaptor<T> extends
         return cell.resetFocus( context,
                                 parent,
                                 (T) value.getValue() );
-    }
-
-    /**
-     * Inject a SelectedCellValueUpdater to handle value updates
-     * 
-     * @param selectedCellValueUpdater
-     */
-    public void setSelectedCellValueUpdater(SelectedCellValueUpdater selectedCellValueUpdater) {
-        this.selectedCellValueUpdater = selectedCellValueUpdater;
     }
 
     @Override

@@ -232,4 +232,57 @@ public class TemplateDataCellValueFactory extends AbstractCellValueFactory<Templ
                                        var.getFactField() );
     }
 
+    /**
+     * Convert a type-safe UI CellValue into a type-safe Model CellValue
+     * 
+     * @param column
+     *            Model column from which data-type can be derived
+     * @param cell
+     *            UI CellValue to convert into Model CellValue
+     * @return
+     */
+    public String convertToModelCell(TemplateDataColumn column,
+                                     CellValue< ? > cv) {
+        DTDataTypes52 dataType = getDataType( column );
+
+        switch ( dataType ) {
+            case BOOLEAN :
+                return convertBooleanValueToString( cv );
+            case DATE :
+                return convertDateValueToString( cv );
+            case NUMERIC :
+                return convertNumericValueToString( cv );
+            default :
+                return convertStringValueToString( cv );
+        }
+
+    }
+
+    //Convert a Boolean value to a String
+    private String convertBooleanValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((Boolean) value.getValue()).toString());
+    }
+
+    //Convert a Date value to a String
+    private String convertDateValueToString(CellValue< ? > value) {
+        String result = null;
+        if ( value.getValue() != null ) {
+            if ( DATE_CONVERTOR == null ) {
+                throw new IllegalArgumentException( "DATE_CONVERTOR has not been initialised." );
+            }
+            result = DATE_CONVERTOR.format( (Date) value.getValue() );
+        }
+        return result;
+    }
+
+    //Convert a BigDecimal value to a String
+    private String convertNumericValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : ((BigDecimal) value.getValue()).toPlainString());
+    }
+
+    //Convert a String value to a String
+    private String convertStringValueToString(CellValue< ? > value) {
+        return (value.getValue() == null ? null : (String) value.getValue());
+    }
+
 }

@@ -25,6 +25,7 @@ import org.drools.guvnor.client.decisiontable.cells.PopupTextEditCell;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.i18n.client.DateTimeFormat;
 
 /**
@@ -32,33 +33,30 @@ import com.google.gwt.i18n.client.DateTimeFormat;
  */
 public abstract class AbstractCellFactory<T> {
 
-    private static final String          DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
+    private static final String                DATE_FORMAT = ApplicationPreferences.getDroolsDateFormat();
 
-    // A SelectedCellValueUpdater that cells can use to send their updates
-    protected SelectedCellValueUpdater   selectedCellValueUpdater;
+    protected final SuggestionCompletionEngine sce;
 
-    protected SuggestionCompletionEngine sce;
+    protected final EventBus                   eventBus;
 
     /**
      * Construct a Cell Factory for a specific grid widget
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
-     * @param selectedCellValueUpdater
-     *            SelectedCellValueUpdater to which cells will send their
-     *            updates
+     * @param eventBus
+     *            EventBus to which cells can send update events
      */
-    public AbstractCellFactory(SuggestionCompletionEngine sce,
-                               SelectedCellValueUpdater selectedCellValueUpdater) {
-
+    public AbstractCellFactory(final SuggestionCompletionEngine sce,
+                               final EventBus eventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
-        if ( selectedCellValueUpdater == null ) {
-            throw new IllegalArgumentException( "selectedCellValueUpdater cannot be null" );
+        if ( eventBus == null ) {
+            throw new IllegalArgumentException( "eventBus cannot be null" );
         }
         this.sce = sce;
-        this.selectedCellValueUpdater = selectedCellValueUpdater;
+        this.eventBus = eventBus;
     }
 
     /**
@@ -73,22 +71,26 @@ public abstract class AbstractCellFactory<T> {
     // Make a new Cell for Boolean columns
     protected DecoratedGridCellValueAdaptor<Boolean> makeBooleanCell() {
         CheckboxCellImpl cbc = GWT.create( CheckboxCellImpl.class );
-        return new DecoratedGridCellValueAdaptor<Boolean>( cbc );
+        return new DecoratedGridCellValueAdaptor<Boolean>( cbc,
+                                                           eventBus );
     }
 
     // Make a new Cell for Date columns
     protected DecoratedGridCellValueAdaptor<Date> makeDateCell() {
-        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ) ) );
+        return new DecoratedGridCellValueAdaptor<Date>( new PopupDateEditCell( DateTimeFormat.getFormat( DATE_FORMAT ) ),
+                                                        eventBus );
     }
 
     // Make a new Cell for Numeric columns
     protected DecoratedGridCellValueAdaptor<BigDecimal> makeNumericCell() {
-        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell() );
+        return new DecoratedGridCellValueAdaptor<BigDecimal>( new PopupNumericEditCell(),
+                                                              eventBus );
     }
 
     // Make a new Cell for a Text columns
     protected DecoratedGridCellValueAdaptor<String> makeTextCell() {
-        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell() );
+        return new DecoratedGridCellValueAdaptor<String>( new PopupTextEditCell(),
+                                                          eventBus );
     }
 
 }

@@ -21,9 +21,7 @@ import java.util.List;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
@@ -74,19 +72,9 @@ public class TemplateDataTableWidget extends Composite
         this.sce = sce;
         this.eventBus = eventBus;
 
-        //Callback for cell updates
-        //TODO {manstis} This might become an event raised from the UI
-        SelectedCellValueUpdater selectedCellValueUpdater = new SelectedCellValueUpdater() {
-
-            public void setSelectedCellsValue(Object value) {
-                // TODO {manstis} Add some code
-            }
-
-        };
-
         //Factories for new cell elements
         this.cellFactory = new TemplateDataCellFactory( sce,
-                                                        selectedCellValueUpdater );
+                                                        eventBus );
         this.cellValueFactory = new TemplateDataCellValueFactory( sce );
 
         // Construct the widget from which we're composed
@@ -217,7 +205,7 @@ public class TemplateDataTableWidget extends Composite
         Scheduler.get().scheduleDeferred( new ScheduledCommand() {
 
             public void execute() {
-//                widget.redraw();
+                //                widget.redraw();
             }
 
         } );
@@ -258,11 +246,12 @@ public class TemplateDataTableWidget extends Composite
                                     boolean bRedraw) {
 
         // Create new column for grid
-        DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
-                                                                                          cellFactory.getCell( modelColumn ),
-                                                                                          index,
-                                                                                          eventBus );
-        column.setVisible( true );
+        //TODO {manstis} Change to events
+        //DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
+        //                                                                                  cellFactory.getCell( modelColumn ),
+        //                                                                                  index,
+        //                                                                                  eventBus );
+        //column.setVisible( true );
 
         // Create column data
         List<CellValue< ? extends Comparable< ? >>> columnData = makeColumnData( modelColumn,

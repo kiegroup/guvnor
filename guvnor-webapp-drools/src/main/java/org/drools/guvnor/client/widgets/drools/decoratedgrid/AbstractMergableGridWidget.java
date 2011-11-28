@@ -16,9 +16,9 @@
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.drools.guvnor.client.messages.Constants;
@@ -30,6 +30,9 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.GroupedDynamicDataRow;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.RowMapper;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
@@ -40,9 +43,11 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.RowGroupingC
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SortDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
@@ -75,7 +80,10 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
     UpdateColumnDataEvent.Handler,
     UpdateColumnDefinitionEvent.Handler,
     ColumnResizeEvent.Handler,
-    MoveColumnsEvent.Handler {
+    MoveColumnsEvent.Handler,
+    SortDataEvent.Handler,
+    CellValueChangedEvent.Handler,
+    CellStateChangedEvent.Handler {
 
     /**
      * Container for a details of a selected cell
@@ -252,19 +260,16 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
                              this );
         eventBus.addHandler( MoveColumnsEvent.TYPE,
                              this );
+        eventBus.addHandler( SortDataEvent.TYPE,
+                             this );
+        eventBus.addHandler( CellValueChangedEvent.TYPE,
+                             this );
+        eventBus.addHandler( CellStateChangedEvent.TYPE,
+                             this );
     }
 
     private static String makeImageHtml(ImageResource image) {
         return AbstractImagePrototype.create( image ).getHTML();
-    }
-
-    /**
-     * Return an immutable list of selected cells
-     * 
-     * @return The selected cells
-     */
-    protected List<CellValue< ? >> getSelectedCells() {
-        return Collections.unmodifiableList( new ArrayList<CellValue< ? >>( this.selections ) );
     }
 
     /**
@@ -290,66 +295,6 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
      */
     abstract void redrawColumns(int startRedrawIndex,
                                 int endRedrawIndex);
-
-    /*
-     * (non-Javadoc)
-     * @see org.drools.guvnor.client.widgets.drools.decoratedgrid.
-     * SelectedCellValueUpdater#setSelectedCellsValue(java.lang.Object)
-     */
-    public void setSelectedCellsValue(Object value) {
-
-        boolean bUngroupCells = false;
-        Coordinate selection = selections.first().getCoordinate();
-
-        //If selections span multiple cells, any of which are grouped we should ungroup them
-        if ( selections.size() > 1 ) {
-            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
-                if ( cell instanceof GroupedCellValue ) {
-                    bUngroupCells = true;
-                    break;
-                }
-            }
-        }
-
-        // Update underlying data (update before ungrouping as selections would need to be expanded too)
-        for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
-            Coordinate c = cell.getCoordinate();
-            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
-                data.set( c,
-                          value );
-            }
-            if ( value != null ) {
-                cell.removeState( CellState.OTHERWISE );
-            }
-        }
-
-        //Ungroup if applicable
-        if ( bUngroupCells ) {
-            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
-                if ( cell instanceof GroupedCellValue ) {
-                    removeModelGrouping( cell,
-                                         true );
-                }
-            }
-        }
-
-        // Partial redraw
-        int baseRowIndex = selections.first().getCoordinate().getRow();
-        int minRedrawRow = findMinRedrawRow( baseRowIndex );
-        int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
-
-        // When merged cells become unmerged (if their value is
-        // cleared need to ensure the re-draw range is at least
-        // as large as the selection range
-        if ( maxRedrawRow < selections.last().getCoordinate().getRow() ) {
-            maxRedrawRow = selections.last().getCoordinate().getRow();
-        }
-        redrawRows( minRedrawRow,
-                    maxRedrawRow );
-
-        //Re-select applicable cells, following change to merge
-        startSelecting( selection );
-    }
 
     //Apply grouping by collapsing applicable rows
     private void applyModelGrouping(CellValue< ? > startCell,
@@ -410,8 +355,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
             int iRow = baseRowIndex;
             CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1
-                    && iRow < data.size() - 1 ) {
+            while ( cell.getRowSpan() != 1 && iRow < data.size() - 1 ) {
                 iRow++;
                 DynamicDataRow row = data.get( iRow );
                 cell = row.get( iCol );
@@ -463,8 +407,7 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         for ( int iCol = 0; iCol < baseRow.size(); iCol++ ) {
             int iRow = baseRowIndex;
             CellValue< ? extends Comparable< ? >> cell = baseRow.get( iCol );
-            while ( cell.getRowSpan() != 1
-                    && iRow > 0 ) {
+            while ( cell.getRowSpan() != 1 && iRow > 0 ) {
                 iRow--;
                 DynamicDataRow row = data.get( iRow );
                 cell = row.get( iCol );
@@ -894,18 +837,22 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
     public void setColumns(List<DynamicColumn<T>> columns) {
         this.columns = columns;
+        reindexColumns();
     }
 
     public void onToggleMerging(ToggleMergingEvent event) {
+        clearSelection();
         if ( event.isMerged() ) {
-            clearSelection();
-            data.setMerged( true );
-            redraw();
+            if ( !data.isMerged() ) {
+                data.setMerged( true );
+                redraw();
+            }
         } else {
-            clearSelection();
-            data.setMerged( false );
-            redraw();
-            eventBus.fireEvent( ROW_GROUPING_EVENT );
+            if ( data.isMerged() ) {
+                data.setMerged( false );
+                redraw();
+                eventBus.fireEvent( ROW_GROUPING_EVENT );
+            }
         }
     }
 
@@ -1117,13 +1064,13 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
         int sourceColumnIndex = event.getSourceColumnIndex();
         int targetColumnIndex = event.getTargetColumnIndex();
         int numberOfColumns = event.getNumberOfColumns();
-        
+
         //Work-out what columns need redrawing
         int startRedrawIndex = sourceColumnIndex;
         int endRedrawIndex = targetColumnIndex;
         if ( targetColumnIndex < sourceColumnIndex ) {
             startRedrawIndex = targetColumnIndex;
-            endRedrawIndex = sourceColumnIndex  + numberOfColumns - 1;
+            endRedrawIndex = sourceColumnIndex + numberOfColumns - 1;
         }
 
         //Move source columns and data to destination
@@ -1153,11 +1100,209 @@ public abstract class AbstractMergableGridWidget<M, T> extends Widget
 
         //Redraw the affected columns
         reindexColumns();
-//        redraw();
         data.assertModelMerging();
         redrawColumns( startRedrawIndex,
                        endRedrawIndex );
 
+    }
+
+    public void onSortData(SortDataEvent event) {
+        //Remove merging
+        ToggleMergingEvent tme = new ToggleMergingEvent( false );
+        eventBus.fireEvent( tme );
+
+        //Sort data
+        List<SortConfiguration> sortConfiguration = event.getSortConfiguration();
+        data.sort( sortConfiguration );
+        redraw();
+
+        //Copy data and raise event for underlying model to update itself
+        List<List<CellValue< ? extends Comparable< ? >>>> changedData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+        for ( DynamicDataRow row : data ) {
+            List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+            changedData.add( changedRow );
+
+            //[size() - 1] to exclude the Analysis column data
+            for ( int iCol = 0; iCol < row.size() - 1; iCol++ ) {
+                CellValue< ? extends Comparable< ? >> changedCell = row.get( iCol );
+                changedRow.add( changedCell );
+            }
+        }
+        UpdateModelEvent dce = new UpdateModelEvent( new Coordinate( 0,
+                                                                     0 ),
+                                                     changedData );
+        eventBus.fireEvent( dce );
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void onCellValueChanged(CellValueChangedEvent event) {
+
+        Object value = event.getValue();
+        boolean bUngroupCells = false;
+        Coordinate selection = selections.first().getCoordinate();
+        List<List<CellValue< ? extends Comparable< ? >>>> changedData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+
+        //If selections span multiple cells, any of which are grouped we should ungroup them
+        if ( selections.size() > 1 ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    bUngroupCells = true;
+                    break;
+                }
+            }
+        }
+
+        // Update underlying data (update before ungrouping as selections would need to be expanded too)
+        for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+            Coordinate c = cell.getCoordinate();
+            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
+                data.set( c,
+                          value );
+                if ( value != null ) {
+                    cell.removeState( CellState.OTHERWISE );
+                }
+
+                //Copy data that is changing for an event to update the underlying model
+                if ( cell instanceof GroupedCellValue ) {
+                    GroupedCellValue gcv = (GroupedCellValue) cell;
+                    for ( int iChildValueIndex = 0; iChildValueIndex < gcv.getGroupedCells().size(); iChildValueIndex++ ) {
+                        List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+                        changedRow.add( data.get( c ) );
+                        changedData.add( changedRow );
+                    }
+                } else {
+                    List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+                    changedRow.add( data.get( c ) );
+                    changedData.add( changedRow );
+                }
+
+            }
+        }
+
+        //Ungroup if applicable
+        if ( bUngroupCells ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    //Removing merging partially redraws the grid
+                    removeModelGrouping( cell,
+                                         true );
+                }
+            }
+        } else {
+            data.assertModelMerging();
+
+            // Partial redraw
+            int baseRowIndex = selections.first().getCoordinate().getRow();
+            int minRedrawRow = findMinRedrawRow( baseRowIndex );
+            int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
+
+            // When merged cells become unmerged (if their value is
+            // cleared need to ensure the re-draw range is at least
+            // as large as the selection range
+            if ( maxRedrawRow < selections.last().getCoordinate().getRow() ) {
+                maxRedrawRow = selections.last().getCoordinate().getRow();
+            }
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
+        }
+
+        //Re-select applicable cells, following change to merge
+        startSelecting( selection );
+
+        //Raise event for underlying model to update itself
+        UpdateModelEvent dce = new UpdateModelEvent( selections.first().getCoordinate(),
+                                                     changedData );
+        eventBus.fireEvent( dce );
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void onCellStateChanged(CellStateChangedEvent event) {
+        Set<CellStateOperation> states = event.getStates();
+
+        boolean bUngroupCells = false;
+        Coordinate selection = selections.first().getCoordinate();
+        List<List<CellValue< ? extends Comparable< ? >>>> changedData = new ArrayList<List<CellValue< ? extends Comparable< ? >>>>();
+
+        //If selections span multiple cells, any of which are grouped we should ungroup them
+        if ( selections.size() > 1 ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    bUngroupCells = true;
+                    break;
+                }
+            }
+        }
+
+        // Update underlying data (update before ungrouping as selections would need to be expanded too)
+        for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+            Coordinate c = cell.getCoordinate();
+            if ( !columns.get( c.getCol() ).isSystemControlled() ) {
+                CellValue< ? extends Comparable< ? >> cv = data.get( c );
+                for ( CellStateOperation state : states ) {
+                    switch ( state.getOperation() ) {
+                        case ADD :
+                            cv.addState( state.getState() );
+                            if ( state.getState() == CellState.OTHERWISE ) {
+                                cv.setValue( null );
+                            }
+                            break;
+                        case REMOVE :
+                            cv.removeState( state.getState() );
+                            break;
+                    }
+                }
+
+                //Copy data that is changing for an event to update the underlying model
+                if ( cell instanceof GroupedCellValue ) {
+                    GroupedCellValue gcv = (GroupedCellValue) cell;
+                    for ( int iChildValueIndex = 0; iChildValueIndex < gcv.getGroupedCells().size(); iChildValueIndex++ ) {
+                        List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+                        changedRow.add( data.get( c ) );
+                        changedData.add( changedRow );
+                    }
+                } else {
+                    List<CellValue< ? extends Comparable< ? >>> changedRow = new ArrayList<CellValue< ? extends Comparable< ? >>>();
+                    changedRow.add( data.get( c ) );
+                    changedData.add( changedRow );
+                }
+
+            }
+        }
+
+        //Ungroup if applicable
+        if ( bUngroupCells ) {
+            for ( CellValue< ? extends Comparable< ? >> cell : selections ) {
+                if ( cell instanceof GroupedCellValue ) {
+                    //Removing merging partially redraws the grid
+                    removeModelGrouping( cell,
+                                         true );
+                }
+            }
+        } else {
+            data.assertModelMerging();
+
+            // Partial redraw
+            int baseRowIndex = selections.first().getCoordinate().getRow();
+            int minRedrawRow = findMinRedrawRow( baseRowIndex );
+            int maxRedrawRow = findMaxRedrawRow( baseRowIndex );
+
+            // When merged cells become unmerged (if their value is
+            // cleared need to ensure the re-draw range is at least
+            // as large as the selection range
+            if ( maxRedrawRow < selections.last().getCoordinate().getRow() ) {
+                maxRedrawRow = selections.last().getCoordinate().getRow();
+            }
+            redrawRows( minRedrawRow,
+                        maxRedrawRow );
+        }
+
+        //Re-select applicable cells, following change to merge
+        startSelecting( selection );
+
+        //Raise event for underlying model to update itself
+        UpdateModelEvent dce = new UpdateModelEvent( selections.first().getCoordinate(),
+                                                     changedData );
+        eventBus.fireEvent( dce );
     }
 
 }

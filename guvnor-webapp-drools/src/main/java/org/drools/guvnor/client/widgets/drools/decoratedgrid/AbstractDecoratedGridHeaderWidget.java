@@ -17,15 +17,16 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import org.drools.guvnor.client.messages.Constants;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.MoveColumnsEvent;
-import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetColumnVisibilityEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.tables.SortDirection;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
@@ -332,6 +333,96 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
      */
     protected abstract void resizeColumn(DynamicColumn<T> resizeColumn,
                                          int resizeColumnWidth);
+
+    /**
+     * Update sort order. The column clicked becomes the primary sort column.
+     * and the other, previously sorted, columns degrade in priority
+     * 
+     * @param column
+     */
+    protected void updateSortOrder(DynamicColumn<T> column) {
+
+        int sortIndex;
+        TreeMap<Integer, DynamicColumn<T>> sortedColumns = new TreeMap<Integer, DynamicColumn<T>>();
+        switch ( column.getSortIndex() ) {
+            case -1 :
+
+                //A new column is added to the sort group
+                for ( DynamicColumn<T> sortedColumn : sortableColumns ) {
+                    if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                        sortedColumns.put( sortedColumn.getSortIndex(),
+                                           sortedColumn );
+                    }
+                }
+                sortIndex = 1;
+                for ( DynamicColumn<T> sortedColumn : sortedColumns.values() ) {
+                    sortedColumn.setSortIndex( sortIndex );
+                    sortIndex++;
+                }
+                column.setSortIndex( 0 );
+                column.setSortDirection( SortDirection.ASCENDING );
+                break;
+
+            case 0 :
+
+                //The existing "lead" column's sort direction is changed
+                if ( column.getSortDirection() == SortDirection.ASCENDING ) {
+                    column.setSortDirection( SortDirection.DESCENDING );
+                } else if ( column.getSortDirection() == SortDirection.DESCENDING ) {
+                    column.setSortDirection( SortDirection.NONE );
+                    column.clearSortIndex();
+                    for ( DynamicColumn<T> sortedColumn : sortableColumns ) {
+                        if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                            sortedColumns.put( sortedColumn.getSortIndex(),
+                                               sortedColumn );
+                        }
+                    }
+                    sortIndex = 0;
+                    for ( DynamicColumn<T> sortedColumn : sortedColumns.values() ) {
+                        sortedColumn.setSortIndex( sortIndex );
+                        sortIndex++;
+                    }
+                }
+                break;
+
+            default :
+
+                //An existing column is promoted to "lead"
+                for ( DynamicColumn<T> sortedColumn : sortableColumns ) {
+                    if ( sortedColumn.getSortDirection() != SortDirection.NONE ) {
+                        if ( !sortedColumn.equals( column ) ) {
+                            sortedColumns.put( sortedColumn.getSortIndex() + 1,
+                                               sortedColumn );
+                        }
+                    }
+                }
+                column.setSortIndex( 0 );
+                sortIndex = 1;
+                for ( DynamicColumn<T> sortedColumn : sortedColumns.values() ) {
+                    sortedColumn.setSortIndex( sortIndex );
+                    sortIndex++;
+                }
+                break;
+        }
+    }
+
+    /**
+     * Get the column sorting configuration. The list contains an entry for each
+     * column on which the data should be sorted.
+     * 
+     * @return
+     */
+    protected List<SortConfiguration> getSortConfiguration() {
+        List<SortConfiguration> sortConfiguration = new ArrayList<SortConfiguration>();
+        List<DynamicColumn<T>> columns = sortableColumns;
+        for ( DynamicColumn<T> column : columns ) {
+            SortConfiguration sc = column.getSortConfiguration();
+            if ( sc.getSortIndex() != -1 ) {
+                sortConfiguration.add( sc );
+            }
+        }
+        return sortConfiguration;
+    }
 
     public void onDeleteColumn(final DeleteColumnEvent event) {
         sortableColumns.remove( event.getIndex() );

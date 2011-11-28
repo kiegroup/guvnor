@@ -102,6 +102,18 @@ public abstract class AbstractCellValueFactory<C, V> {
                                                                                    V cell);
 
     /**
+     * Convert a type-safe UI CellValue into a type-safe Model CellValue
+     * 
+     * @param column
+     *            Model column from which data-type can be derived
+     * @param cell
+     *            UI CellValue to convert into Model CellValue
+     * @return
+     */
+    protected abstract V convertToModelCell(C column,
+                                            CellValue< ? > cell);
+
+    /**
      * Get the data-type for a column
      * 
      * @param column

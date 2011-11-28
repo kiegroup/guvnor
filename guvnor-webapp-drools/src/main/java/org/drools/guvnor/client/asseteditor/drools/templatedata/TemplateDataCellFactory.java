@@ -18,8 +18,9 @@ package org.drools.guvnor.client.asseteditor.drools.templatedata;
 import org.drools.guvnor.client.decisiontable.cells.PopupDropDownEditCell;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractCellFactory;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.SelectedCellValueUpdater;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
+
+import com.google.gwt.event.shared.EventBus;
 
 public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataColumn> {
 
@@ -28,14 +29,13 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
      * 
      * @param sce
      *            SuggestionCompletionEngine to assist with drop-downs
-     * @param selectedCellValueUpdater
-     *            SelectedCellValueUpdater to which cells will send their
-     *            updates
+     * @param eventBus
+     *            EventBus to which cells can send update events
      */
     public TemplateDataCellFactory(SuggestionCompletionEngine sce,
-                                   SelectedCellValueUpdater selectedCellValueUpdater) {
+                                   EventBus eventBus) {
         super( sce,
-               selectedCellValueUpdater );
+               eventBus );
     }
 
     /**
@@ -71,7 +71,8 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
         if ( vals != null && vals.length > 0 ) {
             PopupDropDownEditCell pudd = new PopupDropDownEditCell();
             pudd.setItems( vals );
-            cell = new DecoratedGridCellValueAdaptor<String>( pudd );
+            cell = new DecoratedGridCellValueAdaptor<String>( pudd,
+                                                              eventBus );
 
         } else {
             String dataType = column.getDataType();
@@ -86,7 +87,6 @@ public class TemplateDataCellFactory extends AbstractCellFactory<TemplateDataCol
             }
         }
 
-        cell.setSelectedCellValueUpdater( selectedCellValueUpdater );
         return cell;
 
     }

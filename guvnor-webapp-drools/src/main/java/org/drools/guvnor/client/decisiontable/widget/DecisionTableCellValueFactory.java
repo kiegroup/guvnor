@@ -295,4 +295,35 @@ public class DecisionTableCellValueFactory extends AbstractCellValueFactory<DTCo
         return new CellValue<Analysis>( analysis );
     }
 
+    /**
+     * Convert a type-safe UI CellValue into a type-safe Model CellValue
+     * 
+     * @param column
+     *            Model column from which data-type can be derived
+     * @param cell
+     *            UI CellValue to convert into Model CellValue
+     * @return
+     */
+    public DTCellValue52 convertToModelCell(DTColumnConfig52 column,
+                                            CellValue< ? > cell) {
+        DTDataTypes52 dt = getDataType( column );
+        DTCellValue52 dtCell = null;
+
+        switch ( dt ) {
+            case BOOLEAN :
+                dtCell = new DTCellValue52( (Boolean) cell.getValue() );
+                break;
+            case DATE :
+                dtCell = new DTCellValue52( (Date) cell.getValue() );
+                break;
+            case NUMERIC :
+                dtCell = new DTCellValue52( (BigDecimal) cell.getValue() );
+                break;
+            default :
+                dtCell = new DTCellValue52( (String) cell.getValue() );
+        }
+        dtCell.setOtherwise( cell.isOtherwise() );
+        return dtCell;
+    }
+
 }

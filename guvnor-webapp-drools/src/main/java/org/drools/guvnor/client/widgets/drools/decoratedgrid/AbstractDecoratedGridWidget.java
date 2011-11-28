@@ -15,9 +15,6 @@
  */
 package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
@@ -53,7 +50,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
  */
 public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     implements
-    SelectedCellValueUpdater,
     ColumnResizeEvent.Handler,
     SelectedCellChangeEvent.Handler,
     DeleteRowEvent.Handler,
@@ -220,28 +216,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
         setWidth( width );
     }
 
-    /**
-     * Sort data based upon information stored in Columns
-     */
-    public void sort() {
-
-        //TODO {manstis} Fix sorting
-        //Extract list of sort information
-        List<SortConfiguration> sortConfig = new ArrayList<SortConfiguration>();
-        //        List<DynamicColumn<T>> columns = gridWidget.getColumns();
-        //        for ( DynamicColumn<T> column : columns ) {
-        //            SortConfiguration sc = column.getSortConfiguration();
-        //            if ( sc.getSortIndex() != -1 ) {
-        //                sortConfig.add( sc );
-        //            }
-        //        }
-
-        //        gridWidget.getData().sort( sortConfig );
-
-        //Redraw whole table
-        gridWidget.redraw();
-    }
-
     //Ensure the selected cell is visible
     private void cellSelected(CellSelectionDetail ce) {
 
@@ -306,24 +280,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
             }
 
         } );
-    }
-
-    /**
-     * Return an immutable list of selected cells
-     * 
-     * @return The selected cells
-     */
-    public List<CellValue< ? >> getSelectedCells() {
-        return this.gridWidget.getSelectedCells();
-    }
-
-    /**
-     * Set the value of the selected cells
-     * 
-     * @param value
-     */
-    public void setSelectedCellsValue(Object value) {
-        this.gridWidget.setSelectedCellsValue( value );
     }
 
     public void onColumnResize(final ColumnResizeEvent event) {

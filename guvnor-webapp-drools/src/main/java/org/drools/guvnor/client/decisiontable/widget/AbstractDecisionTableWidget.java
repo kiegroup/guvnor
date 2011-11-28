@@ -18,7 +18,9 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleAttributeWidget;
 import org.drools.guvnor.client.decisiontable.analysis.DecisionTableAnalyzer;
@@ -27,6 +29,9 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DecoratedGridCellValueAdaptor;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.CellStateOperation;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellStateChangedEvent.Operation;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
@@ -39,6 +44,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDec
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ToggleMergingEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateColumnDefinitionEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
@@ -78,7 +84,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
     AppendRowEvent.Handler,
     DeleteColumnEvent.Handler,
     InsertDecisionTableColumnEvent.Handler<DTColumnConfig52, DTCellValue52>,
-    MoveColumnsEvent.Handler {
+    MoveColumnsEvent.Handler,
+    UpdateModelEvent.Handler {
 
     // Decision Table data
     protected GuidedDecisionTable52                       model;
@@ -128,6 +135,8 @@ public abstract class AbstractDecisionTableWidget extends Composite
         eventBus.addHandler( InsertDecisionTableColumnEvent.TYPE,
                              this );
         eventBus.addHandler( MoveColumnsEvent.TYPE,
+                             this );
+        eventBus.addHandler( UpdateModelEvent.TYPE,
                              this );
     }
 
@@ -296,17 +305,11 @@ public abstract class AbstractDecisionTableWidget extends Composite
      * explicitly defined for this column.
      */
     public void makeOtherwiseCell() {
-        List<CellValue< ? >> selections = widget.getSelectedCells();
-        Coordinate c = selections.get( 0 ).getCoordinate();
-        DTColumnConfig52 column = model.getAllColumns().get( c.getCol() );
-        if ( canAcceptOtherwiseValues( column ) ) {
-
-            //Set "otherwise" property on cell
-            for ( CellValue< ? > cv : selections ) {
-                cv.addState( CellState.OTHERWISE );
-            }
-            widget.setSelectedCellsValue( null );
-        }
+        Set<CellStateOperation> operations = new HashSet<CellStateOperation>();
+        operations.add( new CellStateOperation( CellState.OTHERWISE,
+                                                Operation.ADD ) );
+        CellStateChangedEvent csce = new CellStateChangedEvent( operations );
+        eventBus.fireEvent( csce );
     }
 
     public void setColumnVisibility(DTColumnConfig52 modelColumn,
@@ -1513,6 +1516,37 @@ public abstract class AbstractDecisionTableWidget extends Composite
             }
         }
 
+    }
+
+    public void onUpdateModel(UpdateModelEvent event) {
+
+        //Copy data into the underlying model
+        List<List<CellValue< ? extends Comparable< ? >>>> changedData = event.getData();
+        Coordinate originCoordinate = event.getOriginCoordinate();
+        int originRowIndex = originCoordinate.getRow();
+        int originColumnIndex = originCoordinate.getCol();
+
+        for ( int iRow = 0; iRow < changedData.size(); iRow++ ) {
+            List<CellValue< ? extends Comparable< ? >>> changedRow = changedData.get( iRow );
+            int targetRowIndex = originRowIndex + iRow;
+            for ( int iCol = 0; iCol < changedRow.size(); iCol++ ) {
+                int targetColumnIndex = originColumnIndex + iCol;
+                CellValue< ? extends Comparable< ? >> changedCell = changedRow.get( iCol );
+                DTCellValue52 dcv = cellValueFactory.convertToModelCell( model.getAllColumns().get( targetColumnIndex ),
+                                                                         changedCell );
+                model.getData().get( targetRowIndex ).set( targetColumnIndex,
+                                                           dcv );
+            }
+        }
+
+        //Update system controlled columns
+        Scheduler.get().scheduleFinally( new Command() {
+
+            public void execute() {
+                updateSystemControlledColumnValues();
+            }
+
+        } );
     }
 
 }

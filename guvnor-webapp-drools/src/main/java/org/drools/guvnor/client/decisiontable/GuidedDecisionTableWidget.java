@@ -68,6 +68,7 @@ import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AbsolutePanel;
@@ -108,7 +109,14 @@ public class GuidedDecisionTableWidget extends Composite
     private SuggestionCompletionEngine  sce;
 
     private VerticalDecisionTableWidget dtable;
-    private EventBus                    eventBus;
+
+    //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
+    private EventBus                    eventBus  = new SimpleEventBus();
+
+    //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
+    @SuppressWarnings("unused")
+    private EventBus                    globalEventBus;
+
     private ClientFactory               clientFactory;
 
     private enum ActionTypes {
@@ -123,15 +131,15 @@ public class GuidedDecisionTableWidget extends Composite
     public GuidedDecisionTableWidget(RuleAsset asset,
                                      RuleViewer viewer,
                                      ClientFactory clientFactory,
-                                     EventBus eventBus) {
+                                     EventBus globalEventBus) {
 
         this.guidedDecisionTable = (GuidedDecisionTable52) asset.getContent();
         this.guidedDecisionTable.initAnalysisColumn();
         this.packageName = asset.getMetaData().getPackageName();
         this.packageUUID = asset.getMetaData().getPackageUUID();
         this.guidedDecisionTable.setTableName( asset.getName() );
+        this.globalEventBus = globalEventBus;
         this.clientFactory = clientFactory;
-        this.eventBus = eventBus;
 
         layout = new VerticalPanel();
 

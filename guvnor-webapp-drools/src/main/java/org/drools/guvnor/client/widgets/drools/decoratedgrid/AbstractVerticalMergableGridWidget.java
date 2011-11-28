@@ -21,6 +21,7 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.CellState
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue.GroupedCellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicDataRow;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.CellValueChangedEvent;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -51,8 +52,8 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
     private CellHeightCalculatorImpl cellHeightCalculator = GWT.create( CellHeightCalculatorImpl.class );
 
     public AbstractVerticalMergableGridWidget(ResourcesProvider<T> resources,
-                                      AbstractCellValueFactory<T, ? > cellValueFactory,
-                                      EventBus eventBus) {
+                                              AbstractCellValueFactory<T, ? > cellValueFactory,
+                                              EventBus eventBus) {
         super( resources,
                cellValueFactory,
                eventBus );
@@ -296,7 +297,7 @@ public abstract class AbstractVerticalMergableGridWidget<M, T> extends AbstractM
             for ( CellValue< ? > cell : selections ) {
                 cell.removeState( CellState.OTHERWISE );
             }
-            setSelectedCellsValue( null );
+            eventBus.fireEvent( new CellValueChangedEvent( null ) );
             return;
 
         } else if ( event.getKeyCode() == KeyCodes.KEY_RIGHT
