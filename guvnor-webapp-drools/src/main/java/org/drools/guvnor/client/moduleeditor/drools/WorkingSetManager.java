@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.rpc.RepositoryServiceFactory;
 import org.drools.guvnor.client.rpc.RuleAsset;
@@ -33,6 +32,7 @@ import org.drools.ide.common.client.factconstraints.helper.CustomFormsContainer;
 
 import com.google.gwt.user.client.Command;
 import java.util.ArrayList;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.SetFactTypeFilter;
 
 public class WorkingSetManager {
 
@@ -81,30 +81,21 @@ public class WorkingSetManager {
      * refreshed.
      */
     public void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
-
         this.applyWorkingSets(packageName, wss, false, done);
-
     }
     
-    public void applyTemporalWorkingSetForFactTypes(final String packageName, final Set<String> factTypes, final Command done) {
-        
-        Set<RuleAsset> workingSets = null;
-        if (factTypes != null && !factTypes.isEmpty()) {
-            //create a temporal RuleAsset to hold the fact types.
-            final RuleAsset workingSet = new RuleAsset();
-            workingSet.setUuid( "workingSetMock" );
-            
-            WorkingSetConfigData wsConfig = new WorkingSetConfigData();
-            wsConfig.validFacts = factTypes.toArray(new String[factTypes.size()]);
-
-            workingSet.setContent( wsConfig );
-            
-            workingSets = new HashSet<RuleAsset>() {{this.add(workingSet);}};
-        }
-
-        this.applyWorkingSets(packageName, workingSets,true, done);
-
+    /**
+     * Applies the workingSets' valid facts to SCE. This method DOESN'T update the
+     * internal activeWorkingSets map.
+     * @param packageName the package name.
+     * @param wss the WorkingSet' assets list
+     * @param done the command to execute after the SCE and internal map are
+     * refreshed.
+     */
+    public void applyTemporalWorkingSets(final String packageName, final Set<RuleAsset> wss, final Command done) {
+        this.applyWorkingSets(packageName, wss, true, done);
     }
+    
     
     private void applyWorkingSets(final String packageName, final Set<RuleAsset> wss, final boolean temporal, final Command done) {
 
@@ -112,13 +103,13 @@ public class WorkingSetManager {
         Command cmd = new Command() {
 
             public void execute() {
-                if (!temporal){
+                //if (!temporal){
                     //update the map
                     activeWorkingSets.remove(packageName);
                     if (wss != null && !wss.isEmpty()) {
                         activeWorkingSets.put(packageName, wss);
                     }
-                }
+                //}
                 if (done != null) {
                     done.execute();
                 }
@@ -128,10 +119,10 @@ public class WorkingSetManager {
         if (wss == null || wss.isEmpty()) {
             //if no WS, we refresh the SCE (release any filter)
             SuggestionCompletionCache.getInstance().refreshPackage(packageName, cmd);
-            if (!temporal){
+            //if (!temporal){
                 //update the map
                 this.activeWorkingSets.remove(packageName);
-            }
+            //}
             return;
         } else {
 

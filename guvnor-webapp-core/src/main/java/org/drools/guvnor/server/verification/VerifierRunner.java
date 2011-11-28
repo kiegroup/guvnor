@@ -37,7 +37,7 @@ import org.drools.verifier.data.VerifierReport;
 
 import java.io.StringReader;
 
-abstract class VerifierRunner {
+public abstract class VerifierRunner {
 
     private final Verifier verifier;
     protected final PackageItem packageItem;
@@ -85,7 +85,7 @@ abstract class VerifierRunner {
         return VerifierReportCreator.doReport(report);
     }
 
-    private void fireAnalysis() throws RuntimeException {
+    protected void fireAnalysis() throws RuntimeException {
 
         verifier.fireAnalysis(getScopesAgendaFilter());
 
@@ -102,7 +102,7 @@ abstract class VerifierRunner {
 
     protected abstract ScopesAgendaFilter getScopesAgendaFilter();
 
-    private void addHeaderToVerifier() {
+    protected void addHeaderToVerifier() {
         StringBuilder header = new StringBuilder();
         header.append("package ").append(packageItem.getName()).append("\n");
         header.append(DroolsHeader.getDroolsHeader(packageItem)).append("\n");

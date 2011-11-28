@@ -14,6 +14,7 @@ import org.drools.verifier.VerifierConfigurationImpl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class VerifierConfigurationFactory {
 
@@ -24,6 +25,12 @@ public class VerifierConfigurationFactory {
     }
 
     public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(RuleAsset[] workingSets) throws SerializationException {
+        return addWorkingSetConstraints(
+                getConstraintRulesFromWorkingSets(workingSets),
+                new VerifierConfigurationImpl());
+    }
+    
+    public static VerifierConfiguration getPlainWorkingSetVerifierConfiguration(Set<WorkingSetConfigData> workingSets) throws SerializationException {
         return addWorkingSetConstraints(
                 getConstraintRulesFromWorkingSets(workingSets),
                 new VerifierConfigurationImpl());
@@ -50,6 +57,22 @@ public class VerifierConfigurationFactory {
                 WorkingSetConfigData wsConfig = (WorkingSetConfigData) workingSet.content;
                 if (wsConfig.constraints != null) {
                     for (ConstraintConfiguration config : wsConfig.constraints) {
+                        constraintRules.add(ConstraintsFactory.getInstance().getVerifierRule(config));
+                    }
+                }
+            }
+        }
+
+        return constraintRules;
+    }
+    
+    private static List<String> getConstraintRulesFromWorkingSets(Set<WorkingSetConfigData> workingSets) {
+        List<String> constraintRules = new LinkedList<String>();
+
+        if (workingSets != null) {
+            for (WorkingSetConfigData workingSet : workingSets) {
+                if (workingSet.constraints != null) {
+                    for (ConstraintConfiguration config : workingSet.constraints) {
                         constraintRules.add(ConstraintsFactory.getInstance().getVerifierRule(config));
                     }
                 }

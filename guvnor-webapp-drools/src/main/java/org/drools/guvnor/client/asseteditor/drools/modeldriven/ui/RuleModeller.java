@@ -62,6 +62,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
+import org.drools.guvnor.client.rpc.*;
 
 /**
  * This is the parent widget that contains the model based rule builder.
@@ -91,6 +92,7 @@ public class RuleModeller extends DirtyableComposite
 
                                                                   public void execute() {
                                                                       hasModifiedWidgets = true;
+                                                                      verifyRule(null);
                                                                   }
                                                               };
 
@@ -683,7 +685,7 @@ public class RuleModeller extends DirtyableComposite
         }
 
         LoadingPopup.showMessage( constants.VerifyingItemPleaseWait() );
-        Set<String> activeWorkingSets = WorkingSetManager.getInstance().getActiveAssetUUIDs( asset.getMetaData().getPackageName() );
+        Set<WorkingSetConfigData> activeWorkingSets = WorkingSetManager.getInstance().getActiveWorkingSets(asset.getMetaData().getPackageName());
 
         VerificationServiceAsync verificationService = GWT.create( VerificationService.class );
 

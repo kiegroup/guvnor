@@ -36,6 +36,6 @@ public interface VerificationService
                                       Set<String> activeWorkingSets) throws SerializationException;
 
     public AnalysisReport verifyAssetWithoutVerifiersRules(RuleAsset asset,
-                                                           Set<String> activeWorkingSets) throws SerializationException;
+                                                           Set<WorkingSetConfigData> activeWorkingSets) throws SerializationException;
 
 }

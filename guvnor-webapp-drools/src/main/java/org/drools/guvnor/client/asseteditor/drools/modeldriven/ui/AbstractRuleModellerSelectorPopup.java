@@ -88,6 +88,9 @@ public abstract class AbstractRuleModellerSelectorPopup extends Popup {
             if ( cmd != null ) {
                 cmd.execute();
                 ruleModeller.refreshWidget();
+                
+                //new Pattern was added, we need to re-verify the rule
+                ruleModeller.verifyRule(null, true);
             }
         }
     }

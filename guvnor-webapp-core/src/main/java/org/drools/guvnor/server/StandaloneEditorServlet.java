@@ -45,7 +45,10 @@ public class StandaloneEditorServlet extends HttpServlet {
         GE_CLIENT_NAME_PARAMETER_NAME("client", false),
         
         //UUID of working-set to activate
-        GE_ACTIVE_WORKING_SET_UUIDS_PARAMETER_NAME("activeWorkingSetUUIDs", true);
+	GE_ACTIVE_WORKING_SET_UUIDS_PARAMETER_NAME("activeWorkingSetUUIDs", true),
+        //XML definition of working-set to activate. The format is the same 
+        //that the one returned by rest/packages/pkgXXX/assets/wsXXX/source 
+        GE_ACTIVE_WORKING_SET_XML_DEFINITIONS_PARAMETER_NAME("workingSetXMLDefinitions", true);
 
         private final String parameterName;
         private final boolean multipleValues;

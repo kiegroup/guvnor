@@ -1,0 +1,27 @@
+<org.drools.guvnor.client.rpc.WorkingSetConfigData>
+  <constraints class="linked-list">
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+      <args/>
+      <constraintName>MandatoryFieldConstraint</constraintName>
+      <factType>Applicant</factType>
+      <fieldName>name</fieldName>
+    </org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+      <args>
+        <entry>
+          <string>matches</string>
+          <string>ABC</string>
+        </entry>
+      </args>
+      <constraintName>Matches</constraintName>
+      <factType>Applicant</factType>
+      <fieldName>name</fieldName>
+    </org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl>
+    <org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl reference="../org.drools.ide.common.client.factconstraints.config.SimpleConstraintConfigurationImpl[2]"/>
+  </constraints>
+  <validFacts>
+    <string>Applicant</string>
+    <string>Bankruptcy</string>
+    <string>IncomeSource</string>
+  </validFacts>
+</org.drools.guvnor.client.rpc.WorkingSetConfigData>

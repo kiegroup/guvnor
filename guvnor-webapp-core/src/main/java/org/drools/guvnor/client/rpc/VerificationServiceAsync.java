@@ -25,7 +25,7 @@ public interface VerificationServiceAsync {
                      AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
 
     void verifyAssetWithoutVerifiersRules(org.drools.guvnor.client.rpc.RuleAsset asset,
-                                          java.util.Set<String> sactiveWorkingSets,
+                                          java.util.Set<WorkingSetConfigData> activeWorkingSets,
                                           AsyncCallback<org.drools.guvnor.client.rpc.AnalysisReport> arg2);
 
     void analysePackage(String packageUUID,
