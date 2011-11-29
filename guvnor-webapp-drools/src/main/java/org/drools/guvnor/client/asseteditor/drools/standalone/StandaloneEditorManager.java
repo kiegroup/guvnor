@@ -8,25 +8,26 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-
-import org.drools.guvnor.client.asseteditor.MultiViewEditor;
-import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.asseteditor.drools.OryxMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
 import org.drools.guvnor.client.common.GenericCallback;
 import org.drools.guvnor.client.common.LoadingPopup;
 import org.drools.guvnor.client.explorer.ClientFactory;
 import org.drools.guvnor.client.messages.Constants;
-import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.RuleAsset;
-import org.drools.guvnor.client.rpc.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.rpc.StandaloneEditorService;
 import org.drools.guvnor.client.rpc.StandaloneEditorServiceAsync;
-import org.drools.guvnor.client.widgets.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import org.drools.guvnor.client.asseteditor.MultiViewEditor;
+import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.OryxMultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
+import org.drools.guvnor.client.asseteditor.drools.standalone.RealAssetsMultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.asseteditor.drools.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
+import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
+import org.drools.guvnor.client.rpc.StandaloneEditorInvocationParameters;
+import org.drools.guvnor.client.widgets.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
 
 /**
  * Class used to manage the stand-alone version of Guvnor's Editors
@@ -79,86 +80,95 @@ public class StandaloneEditorManager {
                 //Load SCE and create a MultiViewEditor for the assets.
                 //We take the package from the first asset (because all the assets
                 //must belong to the same package)
+                final Command afterWorkingSetsAreAppliedCommand = new Command() {
 
+                    public void execute() {
+                        LoadingPopup.close();
 
-                Set<String> validFacts = null;
-                if (parameters.getValidFactTypes() != null) {
-                    validFacts = new HashSet<String>();
-                    validFacts.addAll(Arrays.asList(parameters.getValidFactTypes()));
+                        //Configure RuleModeller
+                        RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
+                        ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
+                        ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
+                        ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
+
+                        //Create the editor
+                        MultiViewEditorMenuBarCreator editorMenuBarCreator;
+                        if (parameters.isTemporalAssets()) {
+                            editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
+                                //"Done" buton command
+
+                                public void execute() {
+                                    afterSaveAndClose();
+                                }
+                            }, new Command() {
+                                //"Done" buton command
+
+                                public void execute() {
+                                    afterCancelButtonCallbackFunction();
+                                }
+                            });
+                        } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
+                            editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
+                                // "Close" button command
+
+                                public void execute() {
+                                    afterCloseButtonCallbackFunction();
+                                }
+                            });
+                        } else {
+                            editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
+                                //"Cancel" button command
+
+                                public void execute() {
+                                    afterCancelButtonCallbackFunction();
+                                }
+                            });
+                        }
+
+                        editor = new MultiViewEditor(
+                                parameters.getAssetsToBeEdited(),
+                                clientFactory,
+                                eventBus,
+                                new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
+                                editorMenuBarCreator);
+
+                        editor.setCloseCommand(new Command() {
+
+                            public void execute() {
+                                afterSaveAndClose();
+                            }
+                        });
+
+                        //Add the editor to main panel
+                        mainPanel.add(editor);
+                    }
+                };
+                
+                
+                final Command applyTemporalWorkingSets = new Command() {
+
+                    public void execute() {
+                        Set<RuleAsset> temporalWorkingSetAssets = new HashSet<RuleAsset>();
+                        if (parameters.getActiveTemporalWorkingSets() != null && parameters.getActiveTemporalWorkingSets().length > 0){
+                            //if there is any working-set to apply, then turn auto verifier on
+                            WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
+                            
+                            temporalWorkingSetAssets.addAll(Arrays.asList(parameters.getActiveTemporalWorkingSets()));
+                        }
+                        WorkingSetManager.getInstance().applyTemporalWorkingSets(assets[0].getMetaData().getPackageName(), temporalWorkingSetAssets, afterWorkingSetsAreAppliedCommand);
+                        
+                    }
+                };
+                
+                //Apply working set configurations
+                Set<RuleAsset> workingSetAssets = new HashSet<RuleAsset>();
+                if (parameters.getActiveWorkingSets() != null && parameters.getActiveWorkingSets().length > 0){
+                    //if there is any working-set to apply, then turn auto verifier on
+                    WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
+                    
+                    workingSetAssets.addAll(Arrays.asList(parameters.getActiveWorkingSets()));
                 }
-                
-                Command afterWorkingSetsAreAppliedCommand = new Command() {
-
-                                      public void execute() {
-                                          LoadingPopup.close();
-
-                                          //Configure RuleModeller
-                                          RuleModellerConfiguration ruleModellerConfiguration = RuleModellerConfiguration.getInstance();
-                                          ruleModellerConfiguration.setHideLHS(parameters.isHideLHS());
-                                          ruleModellerConfiguration.setHideRHS(parameters.isHideRHS());
-                                          ruleModellerConfiguration.setHideAttributes(parameters.isHideAttributes());
-
-                                          //Create the editor
-                                          MultiViewEditorMenuBarCreator editorMenuBarCreator;
-                                          if (parameters.isTemporalAssets()) {
-                                              editorMenuBarCreator = new TemporalAssetsMultiViewEditorMenuBarCreator(new Command() {
-                                                  //"Done" buton command
-
-                                                  public void execute() {
-                                                      afterSaveAndClose();
-                                                  }
-                                              }, new Command() {
-                                                  //"Done" buton command
-
-                                                  public void execute() {
-                                                      afterCancelButtonCallbackFunction();
-                                                  }
-                                              }
-                                              );
-                                          } else if (parameters.getClientName().equalsIgnoreCase("oryx")) {
-                                              editorMenuBarCreator = new OryxMultiViewEditorMenuBarCreator(new Command() {
-                                                  // "Close" button command
-                                                  public void execute() {
-                                                      afterCloseButtonCallbackFunction();
-                                                  }
-                                              });
-                                          } else {
-                                              editorMenuBarCreator = new RealAssetsMultiViewEditorMenuBarCreator(new Command() {
-                                                  //"Cancel" button command
-
-                                                  public void execute() {
-                                                      afterCancelButtonCallbackFunction();
-                                                  }
-                                              });
-                                          }
-
-                                          editor = new MultiViewEditor(
-                                                  parameters.getAssetsToBeEdited(),
-                                                  clientFactory,
-                                                  eventBus,
-                                                  new StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider(),
-                                                  editorMenuBarCreator);
-
-                                          editor.setCloseCommand(new Command() {
-
-                                              public void execute() {
-                                                  afterSaveAndClose();
-                                              }
-                                          });
-
-                                          //Add the editor to main panel
-                                          mainPanel.add(editor);
-                                      }
-                                  };
-                
-                //If any Working-Set UUID was provided, use it instead "valid facts"
-                if (parameters.getActiveWorkingSets() != null && parameters.getActiveWorkingSets().length >0){
-                    WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), parameters.getActiveWorkingSets(), afterWorkingSetsAreAppliedCommand);
-                }else{
-                    //use a temporal working-set
-                    WorkingSetManager.getInstance().applyTemporalWorkingSetForFactTypes(assets[0].getMetaData().getPackageName(), validFacts, afterWorkingSetsAreAppliedCommand);
-                }
-                
+                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), workingSetAssets, applyTemporalWorkingSets);
                 
             }
         });

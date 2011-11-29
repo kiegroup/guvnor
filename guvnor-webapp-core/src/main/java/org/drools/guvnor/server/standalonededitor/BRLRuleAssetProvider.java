@@ -92,6 +92,7 @@ public class BRLRuleAssetProvider
         asset.setName(ruleModel.name);
         asset.setFormat(AssetFormats.BUSINESS_RULE);
         asset.setMetaData(createMetaData());
+        asset.setState("temporal");
 
         return asset;
     }
