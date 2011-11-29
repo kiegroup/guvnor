@@ -106,10 +106,10 @@ public class RuleViewer extends GuvnorEditor {
                 eventBus);
 
         // for designer we need to give it more playing room
-        if ( editor.getClass().getName().equals( "org.drools.guvnor.client.processeditor.BusinessProcessEditor" ) ) {
+        if (editor instanceof BusinessProcessEditor) {  
             if ( this.ruleViewerSettings.isStandalone() ) {
                 // standalone bigger dimensions"
-                editor.setWidth( "1600px" );
+                editor.setWidth( "100%" );
                 editor.setHeight( "1000px" );
             } else {
                 // normal dimensions inside guvnor
