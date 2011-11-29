@@ -59,10 +59,6 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     
     private static final long serialVersionUID = 530l;
 
-    public RulesRepository getRulesRepository() {
-        return this.repository;
-    }
-
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
         HttpSession session = this.getThreadLocalRequest().getSession();
