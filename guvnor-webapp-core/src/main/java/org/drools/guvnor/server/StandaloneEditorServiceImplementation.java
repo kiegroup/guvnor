@@ -48,6 +48,8 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
 
     private static final LoggingHelper log = LoggingHelper.getLogger(StandaloneEditorServiceImplementation.class);
     
+    private static final long serialVersionUID = 530l;
+    
     @Inject
     public RulesRepository repository;
 
@@ -57,7 +59,6 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
     @Inject
     private RepositoryAssetService repositoryAssetService;
     
-    private static final long serialVersionUID = 530l;
 
     public StandaloneEditorInvocationParameters getInvocationParameters(String parametersUUID) throws DetailedSerializationException {
 
