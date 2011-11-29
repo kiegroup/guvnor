@@ -67,10 +67,10 @@ EditorWidget {
         frame = new Frame( name );
         frame.getElement().setAttribute( "domain", Document.get().getDomain() );
         frame.setWidth( "100%" );
-        frame.setHeight( "100%" );
+        frame.setHeight( "580px" );
         initWidget( frame );
         setWidth( "100%" );
-        setHeight( "100%" );
+        setHeight( "580px" );
     }
 
     private final native String callSave(IFrameElement iframe) /*-{
