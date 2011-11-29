@@ -138,8 +138,7 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
      * @param sessionParameters
      * @return 
      */
-    private RuleAsset[] getActiveTemporalWorkingSets(Map<String, Object> sessionParameters) throws DetailedSerializationException {
-        try {
+    private RuleAsset[] getActiveTemporalWorkingSets(Map<String, Object> sessionParameters) {
             String[] validFacts = (String[])sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_VALID_FACT_TYPE_PARAMETER_NAME.getParameterName());
             String[] xmlDefinitions = (String[])sessionParameters.get(StandaloneEditorServlet.STANDALONE_EDITOR_SERVLET_PARAMETERS.GE_ACTIVE_WORKING_SET_XML_DEFINITIONS_PARAMETER_NAME.getParameterName());
             
@@ -178,10 +177,6 @@ public class StandaloneEditorServiceImplementation extends RemoteServiceServlet
             
             
             return result.toArray(new RuleAsset[result.size()]);
-        } catch (Exception ex) {
-            log.error("Error getting Working Set Definitions", ex);
-            throw new DetailedSerializationException("Error getting Working Set Definitions", ex.getLocalizedMessage());
-        }
     }
     
 
