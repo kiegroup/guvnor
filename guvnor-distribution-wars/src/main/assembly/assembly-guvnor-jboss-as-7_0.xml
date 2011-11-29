@@ -13,11 +13,11 @@
   <fileSets>
     <fileSet>
       <!-- TODO Workaround for https://issues.jboss.org/browse/SOLDER-220 -->
-      <directory>../guvnor-webapp-drools/src/main/resources/META-INF/</directory>
+      <directory>../guvnor-webapp-drools/src/main/webapp/WEB-INF/</directory>
       <includes>
         <include>beans.xml</include>
       </includes>
-      <outputDirectory>WEB-INF/</outputDirectory>
+      <outputDirectory>WEB-INF/classes/META-INF/</outputDirectory>
     </fileSet>
   </fileSets>
 

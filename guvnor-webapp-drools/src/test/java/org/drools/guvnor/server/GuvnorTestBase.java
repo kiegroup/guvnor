@@ -103,7 +103,7 @@ public abstract class GuvnorTestBase {
 
     private static File writeMergedBeansXmlFile() {
         // TODO Workaround for https://issues.jboss.org/browse/ARQ-585
-        File productionBeansXml = new File("src/main/resources/META-INF/beans.xml");
+        File productionBeansXml = new File("src/main/webapp/WEB-INF/beans.xml");
         File mergedBeansXml = new File("target/mergedBeans.xml");
         try {
             List<String> lines = FileUtils.readLines(productionBeansXml, "UTF-8");
