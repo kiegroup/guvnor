@@ -33,7 +33,6 @@ public class ApplicationPreferencesLoaderTest {
                       preferences.size() );
         assertTrue( preferences.containsKey( "visual-ruleflow" ) );
         assertTrue( preferences.containsKey( "verifier" ) );
-        assertTrue( preferences.containsKey( "flex-bpel-editor" ) );
         assertEquals( "true",
                       preferences.get( "verifier" ) );
         assertEquals( "true",

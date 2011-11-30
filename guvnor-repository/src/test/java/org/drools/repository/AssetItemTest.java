@@ -200,10 +200,6 @@ public class AssetItemTest extends RepositoryTestCase {
         asset = AssetItem.getAssetNameFromFileName("something-1.0.0.drl");
         assertEquals("something-1.0.0", asset[0]);
         assertEquals("drl", asset[1]);
-
-        asset = AssetItem.getAssetNameFromFileName("foo.bpel.jar");
-        assertEquals("foo", asset[0]);
-        assertEquals("bpel.jar", asset[1]);
         
         asset = AssetItem.getAssetNameFromFileName("SubmitApplication.rf");
         assertEquals("SubmitApplication", asset[0]);

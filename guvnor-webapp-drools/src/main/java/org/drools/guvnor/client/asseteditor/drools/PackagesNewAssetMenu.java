@@ -68,10 +68,6 @@ public class PackagesNewAssetMenu implements IsWidget, PackagesNewAssetMenuView.
         view.openNewAssetWizardWithoutCategories( AssetFormats.DRL_MODEL, clientFactory, eventBus );
     }
 
-    public void onNewBPELPackage() {
-        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory, eventBus );
-    }
-
     public void onNewFunction() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION, clientFactory, eventBus );
     }

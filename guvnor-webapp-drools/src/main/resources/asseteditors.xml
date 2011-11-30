@@ -76,7 +76,7 @@
         <title>constants.Model()</title>    
     </asseteditor>
     
-    <!--  bpel editor group   -->   
+    <!-- jBPM editor group   -->
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
         <format>rf</format>
@@ -99,19 +99,12 @@
     </asseteditor>
     
     <asseteditor>
-        <class>org.drools.guvnor.client.asseteditor.BPELWrapper</class> 
-        <format>bpel.jar</format>
-        <icon>images.ruleflowSmall()</icon>
-        <title>constants.RuleFlows()</title>    
-    </asseteditor>
-    
-    <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.RuleFlowWrapper</class> 
         <format>rf</format>
         <icon>images.ruleflowSmall()</icon>
         <title>constants.RuleFlows()</title>    
-    </asseteditor>    
-    <!--  end of bpel editor group   --> 
+    </asseteditor>
+    <!--  end of jBPM editor group   -->
         
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.DefaultRuleContentWidget</class> 
@@ -187,13 +180,7 @@
         <format>wsdl</format>
         <icon>images.technicalRuleAssets()</icon>
         <title>constants.WSDLs()</title>    
-    </asseteditor>     
-    <!-- asseteditor>
-        <class>org.drools.guvnor.client.ruleeditor.BPELWrapper</class> 
-        <format>bpel.jar</format>
-        <icon>images.ruleflowSmall()</icon>
-        <title>constants.RuleFlows()</title>    
-    </asseteditor-->
+    </asseteditor>
     <asseteditor>
         <class>org.drools.guvnor.client.asseteditor.XmlFileWidget</class> 
         <format>esbconfig</format>

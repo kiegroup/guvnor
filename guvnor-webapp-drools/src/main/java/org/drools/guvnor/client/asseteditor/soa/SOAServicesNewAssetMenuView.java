@@ -27,8 +27,6 @@ public interface SOAServicesNewAssetMenuView extends IsWidget {
 
         void onNewAsset(String format);
 
-        void onNewBPELPackage();
-
         void onNewRuleFlow();
 
         void onNewBPMN2Process();

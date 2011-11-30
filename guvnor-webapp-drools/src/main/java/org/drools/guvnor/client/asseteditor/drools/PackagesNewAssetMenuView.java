@@ -38,8 +38,6 @@ public interface PackagesNewAssetMenuView extends IsWidget {
 
         void onNewDeclarativeModel();
 
-        void onNewBPELPackage();
-
         void onNewFunction();
 
         void onNewDSL();

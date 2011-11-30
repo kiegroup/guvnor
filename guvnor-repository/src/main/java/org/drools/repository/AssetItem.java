@@ -603,10 +603,6 @@ public class AssetItem extends CategorisableItem {
         String[] r = new String[]{"", ""};
         if ( !fileName.contains( "." ) ) {
             r[0] = fileName;
-        } else if ( fileName.endsWith( ".bpel.jar" ) ) {
-            r[0] = fileName.substring( 0,
-                                       fileName.lastIndexOf( ".bpel.jar" ) );
-            r[1] = "bpel.jar";
         } else if ( fileName.endsWith( ".model.drl" ) ) {
             r[0] = fileName.substring( 0,
                                        fileName.lastIndexOf( ".model.drl" ) );
