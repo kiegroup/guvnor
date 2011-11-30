@@ -113,8 +113,6 @@ public class WorkflowManagerServlet extends AssetFileServlet {
         String fullPath = path;
         if (extension.equals("bpr")) {
             fullPath += workflowName + "/bpr";
-        } else if (extension.equals("bpel")) {
-            fullPath += workflowName + "/bpel/" + workflowName;
         } else if (extension.equals("wsdl") || extension.equals("xsd")) {
             fullPath += workflowName + "/wsdl/" + workflowName + "/wsdl";
         } else if (extension.equals("xml")) {
@@ -344,7 +342,6 @@ public class WorkflowManagerServlet extends AssetFileServlet {
 
         list.add(fullPath + "/" + workflowName);
         list.add(getFullPath(fullPath, workflowName, "bpr"));
-        list.add(getFullPath(fullPath, workflowName, "bpel"));
         list.add(getFullPath(fullPath, workflowName, "wsdl"));
         list.add(getFullPath(fullPath, workflowName, "pdd"));
         list.add(getFullPath(fullPath, workflowName, "xml"));

@@ -1978,13 +1978,7 @@ public interface Constants
 
     String PredicatesInfo();
 
-    String NewBPELPackage();
-
-    String CreateANewBPELPackage();
-
     String OpenEditorInNewWindow();
-
-    String BPELPackages();
 
     String ValueCanNotBeEmpty();
 

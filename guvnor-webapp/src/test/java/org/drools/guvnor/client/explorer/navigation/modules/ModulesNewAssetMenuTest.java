@@ -115,12 +115,6 @@ public class ModulesNewAssetMenuTest {
 //    }
 //
 //    @Test
-//    public void testNewBPELPackage() throws Exception {
-//        presenter.onNewBPELPackage();
-//        verify( view ).openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE );
-//    }
-//
-//    @Test
 //    public void testNewFunction() throws Exception {
 //        presenter.onNewFunction();
 //        verify( view ).openNewAssetWizardWithoutCategories( AssetFormats.FUNCTION );

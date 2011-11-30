@@ -59,10 +59,6 @@ public class ApplicationPreferences {
         return getStringPref(DATE_FORMAT);
     }
 
-    public static boolean showFlewBPELEditor() {
-        return getBooleanPref("flex-bpel-editor");
-    }
-
     public static boolean showVerifier() {
         return getBooleanPref("verifier");
     }

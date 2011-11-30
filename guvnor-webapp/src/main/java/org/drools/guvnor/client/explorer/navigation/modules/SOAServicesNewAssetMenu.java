@@ -46,10 +46,6 @@ public class SOAServicesNewAssetMenu implements IsWidget, SOAServicesNewAssetMen
         view.openNewAssetWizardWithoutCategories(format, clientFactory, eventBus );
     }
 
-    public void onNewBPELPackage() {
-        view.openNewAssetWizardWithCategories( AssetFormats.BPEL_PACKAGE, clientFactory, eventBus );
-    }
-
     public void onNewRuleFlow() {
         view.openNewAssetWizardWithoutCategories( AssetFormats.RULE_FLOW_RF, clientFactory, eventBus );
     }

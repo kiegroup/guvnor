@@ -68,9 +68,6 @@ public class EditorLauncher {
                                      new RuleModellerWidgetFactory() );
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.DSL_TEMPLATE_RULE ) ) {
             return new RuleValidatorWrapper( new DSLRuleEditor( asset ) );
-        } else if ( asset.getMetaData().getFormat().equals( AssetFormats.BPEL_PACKAGE ) && ApplicationPreferences.showFlewBPELEditor() ) {
-            return new BPELWrapper( asset,
-                                    viewer );
         } else if ( asset.getMetaData().getFormat().equals( AssetFormats.MODEL ) ) {
             return new ModelAttachmentFileWidget( asset,
                                                   viewer );

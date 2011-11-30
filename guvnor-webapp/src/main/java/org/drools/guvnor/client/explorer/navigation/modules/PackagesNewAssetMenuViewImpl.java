@@ -49,7 +49,6 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
         addNewRuleTemplateMenuItem();
         addNewPojoModelMenuItem();
         addNewDeclarativeModelMenuItem();
-        addNewBPELEditorMenuItem();
         addNewFunctionMenuItem();
         addNewDSLMenuItem();
         addNewRuleFlowMenuItem();
@@ -147,18 +146,6 @@ public class PackagesNewAssetMenuViewImpl implements PackagesNewAssetMenuView {
                         presenter.onNewFunction();
                     }
                 } );
-    }
-
-    private void addNewBPELEditorMenuItem() {
-        if ( ApplicationPreferences.showFlewBPELEditor() ) {
-            createNewMenu.addItem( Util.getHeader( images.modelAsset(), constants.NewBPELPackage() ).asString(),
-                    true,
-                    new Command() {
-                        public void execute() {
-                            presenter.onNewBPELPackage();
-                        }
-                    } );
-        }
     }
 
     private void addNewDeclarativeModelMenuItem() {
