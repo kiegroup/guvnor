@@ -23,8 +23,6 @@ import org.drools.guvnor.client.asseteditor.MultiViewEditor;
 import org.drools.guvnor.client.asseteditor.MultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.asseteditor.drools.OryxMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.asseteditor.drools.modeldriven.ui.RuleModellerConfiguration;
-import org.drools.guvnor.client.asseteditor.drools.standalone.RealAssetsMultiViewEditorMenuBarCreator;
-import org.drools.guvnor.client.asseteditor.drools.standalone.TemporalAssetsMultiViewEditorMenuBarCreator;
 import org.drools.guvnor.client.moduleeditor.drools.WorkingSetManager;
 import org.drools.guvnor.client.rpc.StandaloneEditorInvocationParameters;
 import org.drools.guvnor.client.widgets.toolbar.StandaloneEditorIndividualActionToolbarButtonsConfigurationProvider;
@@ -145,31 +143,22 @@ public class StandaloneEditorManager {
                 };
                 
                 
-                final Command applyTemporalWorkingSets = new Command() {
-
-                    public void execute() {
-                        Set<RuleAsset> temporalWorkingSetAssets = new HashSet<RuleAsset>();
-                        if (parameters.getActiveTemporalWorkingSets() != null && parameters.getActiveTemporalWorkingSets().length > 0){
-                            //if there is any working-set to apply, then turn auto verifier on
-                            WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
-                            
-                            temporalWorkingSetAssets.addAll(Arrays.asList(parameters.getActiveTemporalWorkingSets()));
-                        }
-                        WorkingSetManager.getInstance().applyTemporalWorkingSets(assets[0].getMetaData().getPackageName(), temporalWorkingSetAssets, afterWorkingSetsAreAppliedCommand);
-                        
-                    }
-                };
-                
                 //Apply working set configurations
                 Set<RuleAsset> workingSetAssets = new HashSet<RuleAsset>();
+                if (parameters.getActiveTemporalWorkingSets() != null && parameters.getActiveTemporalWorkingSets().length > 0){
+                    workingSetAssets.addAll(Arrays.asList(parameters.getActiveTemporalWorkingSets()));
+                }
+                
                 if (parameters.getActiveWorkingSets() != null && parameters.getActiveWorkingSets().length > 0){
-                    //if there is any working-set to apply, then turn auto verifier on
-                    WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
-                    
                     workingSetAssets.addAll(Arrays.asList(parameters.getActiveWorkingSets()));
                 }
-                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), workingSetAssets, applyTemporalWorkingSets);
                 
+                if (!workingSetAssets.isEmpty()){
+                    //if there is any working-set to apply, then turn auto verifier on
+                    WorkingSetManager.getInstance().setAutoVerifierEnabled(true);
+                }
+                
+                WorkingSetManager.getInstance().applyWorkingSets(assets[0].getMetaData().getPackageName(), workingSetAssets, afterWorkingSetsAreAppliedCommand);
             }
         });
 
