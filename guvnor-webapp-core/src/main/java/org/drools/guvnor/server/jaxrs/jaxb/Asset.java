@@ -31,8 +31,6 @@ public class Asset {
     
     private long version;
 
-    private String type;
-
     private URI binaryLink, sourceLink, refLink;
 
     @XmlElement
@@ -51,15 +49,6 @@ public class Asset {
 
     public void setSourceLink(URI sourceLink) {
         this.sourceLink = sourceLink;
-    }
-
-    @XmlElement()
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     @XmlElement()

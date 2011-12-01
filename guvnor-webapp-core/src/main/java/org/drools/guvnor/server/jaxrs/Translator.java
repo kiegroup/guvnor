@@ -73,7 +73,6 @@ public class Translator {
 
         Asset ret = new Asset();
         ret.setMetadata(metadata);
-        ret.setType(a.getType());
         ret.setCheckInComment(a.getCheckinComment());
         ret.setDescription(a.getDescription());
         ret.setRefLink(uriInfo.getBaseUriBuilder()
