@@ -37,6 +37,7 @@ import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.GuidedDecisionTable52;
 import org.drools.ide.common.client.modeldriven.dt52.LimitedEntryConditionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.Pattern52;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DecisionTableAnalyzerTest {
@@ -577,6 +578,11 @@ public class DecisionTableAnalyzerTest {
         assertEquals(1, analysisData.get(1).getConflictingMatchSize());
         assertEquals(2, analysisData.get(2).getConflictingMatchSize());
         assertEquals(1, analysisData.get(3).getConflictingMatchSize());
+
+        assertEquals(0, analysisData.get(0).getDuplicatedMatchSize());
+        assertEquals(0, analysisData.get(1).getDuplicatedMatchSize());
+        assertEquals(0, analysisData.get(2).getDuplicatedMatchSize());
+        assertEquals(0, analysisData.get(3).getDuplicatedMatchSize());
     }
 
     @Test
@@ -753,6 +759,84 @@ public class DecisionTableAnalyzerTest {
         assertEquals(0, analysisData.get(0).getConflictingMatchSize());
         assertEquals(1, analysisData.get(1).getConflictingMatchSize());
         assertEquals(1, analysisData.get(2).getConflictingMatchSize());
+    }
+
+
+    @Test @Ignore("TODO fix GUVNOR-1677 duplication")
+    public void testDuplicatedMatchNumeric() throws ParseException {
+        SuggestionCompletionEngine sce = buildSuggestionCompletionEngine();
+
+        GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        Pattern52 driverPattern = new Pattern52();
+        driverPattern.setBoundName("driverPattern");
+        driverPattern.setFactType("Driver");
+
+        ConditionCol52 ageMinimum = new ConditionCol52();
+        ageMinimum.setFactField("age");
+        ageMinimum.setOperator(">=");
+        ageMinimum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMinimum);
+
+        ConditionCol52 ageMaximum = new ConditionCol52();
+        ageMaximum.setFactField("age");
+        ageMaximum.setOperator("<=");
+        ageMaximum.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        driverPattern.getConditions().add(ageMaximum);
+
+        dt.getConditionPatterns().add(driverPattern);
+
+        ActionSetFieldCol52 message = new ActionSetFieldCol52();
+        message.setFactField("message");
+        dt.getActionCols().add(message);
+
+        @SuppressWarnings("unchecked")
+        List<List<DTCellValue52>> data = Arrays.asList(
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("1")),
+                        new DTCellValue52("Row 1 description"),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52(new BigDecimal("20")),
+                        new DTCellValue52("Same message")
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("2")),
+                        new DTCellValue52("Row 2 description"),
+                        new DTCellValue52(new BigDecimal("21")),
+                        new DTCellValue52(new BigDecimal("40")),
+                        new DTCellValue52("Same message")
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("3")),
+                        new DTCellValue52("Row 3 description"),
+                        new DTCellValue52(new BigDecimal("30")),
+                        new DTCellValue52(new BigDecimal("60")),
+                        new DTCellValue52("Same message")
+                ),
+                Arrays.asList(
+                        new DTCellValue52(new BigDecimal("4")),
+                        new DTCellValue52("Row 4 description"),
+                        new DTCellValue52(new BigDecimal("50")),
+                        new DTCellValue52((BigDecimal) null),
+                        new DTCellValue52("Same message")
+                )
+        );
+
+        dt.setData(data);
+
+        DecisionTableAnalyzer analyzer = new DecisionTableAnalyzer(sce);
+        List<Analysis> analysisData = analyzer.analyze(dt);
+
+        assertEquals(data.size(), analysisData.size());
+        assertEquals(0, analysisData.get(0).getDuplicatedMatchSize());
+        assertEquals(1, analysisData.get(1).getDuplicatedMatchSize());
+        assertEquals(2, analysisData.get(2).getDuplicatedMatchSize());
+        assertEquals(1, analysisData.get(3).getDuplicatedMatchSize());
+
+        assertEquals(0, analysisData.get(0).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(1).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(2).getConflictingMatchSize());
+        assertEquals(0, analysisData.get(3).getConflictingMatchSize());
     }
 
     @SuppressWarnings("serial")

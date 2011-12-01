@@ -26,6 +26,7 @@ public class Analysis implements Comparable<Analysis> {
 
     private List<String> impossibleMatchHtmlList = new ArrayList<String>();
     private List<String> conflictingMatchHtmlList = new ArrayList<String>();
+    private List<String> duplicatedMatchHtmlList = new ArrayList<String>();
 
     public void addImpossibleMatch(String htmlEntry) {
         impossibleMatchHtmlList.add(htmlEntry);
@@ -33,6 +34,10 @@ public class Analysis implements Comparable<Analysis> {
 
     public void addConflictingMatch(String htmlEntry) {
         conflictingMatchHtmlList.add(htmlEntry);
+    }
+
+    public void addDuplicatedMatch(String htmlEntry) {
+        duplicatedMatchHtmlList.add(htmlEntry);
     }
 
     public String toHtmlString() {
@@ -52,12 +57,19 @@ public class Analysis implements Comparable<Analysis> {
             }
             htmlBuilder.append(htmlEntry);
         }
+        for (String htmlEntry : duplicatedMatchHtmlList) {
+            if (!first) {
+                htmlBuilder.append(", ");
+                first = false;
+            }
+            htmlBuilder.append(htmlEntry);
+        }
         htmlBuilder.append("</span>");
         return htmlBuilder.toString();
     }
 
     public int getWarningsSize() {
-        return getImpossibleMatchesSize() + getConflictingMatchSize();
+        return getImpossibleMatchesSize() + getConflictingMatchSize() + getDuplicatedMatchSize();
     }
 
     public int getImpossibleMatchesSize() {
@@ -66,6 +78,10 @@ public class Analysis implements Comparable<Analysis> {
 
     public int getConflictingMatchSize() {
         return conflictingMatchHtmlList.size();
+    }
+
+    public int getDuplicatedMatchSize() {
+        return duplicatedMatchHtmlList.size();
     }
 
     public int compareTo(Analysis other) {
