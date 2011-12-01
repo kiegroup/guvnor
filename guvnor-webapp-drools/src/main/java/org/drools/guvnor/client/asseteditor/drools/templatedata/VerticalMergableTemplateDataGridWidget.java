@@ -15,9 +15,9 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
+import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetInternalTemplateDataModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractVerticalMergableGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalTemplateDataModelEvent;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 import com.google.gwt.event.shared.EventBus;

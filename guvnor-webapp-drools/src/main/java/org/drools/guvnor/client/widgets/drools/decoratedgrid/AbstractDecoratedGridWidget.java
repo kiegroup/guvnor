@@ -18,9 +18,7 @@ package org.drools.guvnor.client.widgets.drools.decoratedgrid;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractMergableGridWidget.CellSelectionDetail;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SelectedCellChangeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
@@ -55,9 +53,7 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
     DeleteRowEvent.Handler,
     InsertRowEvent.Handler,
     AppendRowEvent.Handler,
-    SetModelEvent.Handler<M>,
-    DeleteColumnEvent.Handler,
-    InsertColumnEvent.Handler<T, C> {
+    SetModelEvent.Handler<M> {
 
     // Widgets for UI
     protected Panel                                    mainPanel;
@@ -136,8 +132,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
         eventBus.addHandler( SelectedCellChangeEvent.TYPE,
-                             this );
-        eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
     }
 
@@ -324,18 +318,6 @@ public abstract class AbstractDecoratedGridWidget<M, T, C> extends Composite
             }
 
         } );
-    }
-
-    public void onDeleteColumn(DeleteColumnEvent event) {
-        if ( event.redraw() ) {
-            Scheduler.get().scheduleDeferred( new Command() {
-
-                public void execute() {
-                    assertDimensions();
-                }
-
-            } );
-        }
     }
 
 }

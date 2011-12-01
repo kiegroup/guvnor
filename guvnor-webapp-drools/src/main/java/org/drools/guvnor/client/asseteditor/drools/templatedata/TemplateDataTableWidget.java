@@ -15,26 +15,24 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.util.GWTDateConverter;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.Coordinate;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.AppendRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertRowEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertTemplateDataColumnEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.UpdateModelEvent;
 import org.drools.ide.common.client.modeldriven.SuggestionCompletionEngine;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel.InterpolationVariable;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.user.client.ui.Composite;
 
 /**
@@ -45,8 +43,7 @@ public class TemplateDataTableWidget extends Composite
     InsertRowEvent.Handler,
     DeleteRowEvent.Handler,
     AppendRowEvent.Handler,
-    DeleteColumnEvent.Handler,
-    InsertTemplateDataColumnEvent.Handler<TemplateDataColumn, String> {
+    UpdateModelEvent.Handler {
 
     // Decision Table data
     protected TemplateModel                                                          model;
@@ -54,7 +51,13 @@ public class TemplateDataTableWidget extends Composite
     protected TemplateDataCellFactory                                                cellFactory;
     protected TemplateDataCellValueFactory                                           cellValueFactory;
     protected SuggestionCompletionEngine                                             sce;
-    protected final EventBus                                                         eventBus;
+
+    //This EventBus is local to the screen and should be used for local operations, set data, add rows etc
+    private EventBus                                                                 eventBus  = new SimpleEventBus();
+
+    //This EventBus is global to Guvnor and should be used for global operations, navigate pages etc 
+    @SuppressWarnings("unused")
+    private EventBus                                                                 globalEventBus;
 
     protected static final ResourcesProvider<TemplateDataColumn>                     resources = new TemplateDataTableResourcesProvider();
 
@@ -62,15 +65,15 @@ public class TemplateDataTableWidget extends Composite
      * Constructor
      */
     public TemplateDataTableWidget(SuggestionCompletionEngine sce,
-                                   EventBus eventBus) {
+                                   EventBus globalEventBus) {
         if ( sce == null ) {
             throw new IllegalArgumentException( "sce cannot be null" );
         }
-        if ( eventBus == null ) {
-            throw new IllegalArgumentException( "eventBus cannot be null" );
+        if ( globalEventBus == null ) {
+            throw new IllegalArgumentException( "globalEventBus cannot be null" );
         }
         this.sce = sce;
-        this.eventBus = eventBus;
+        this.globalEventBus = globalEventBus;
 
         //Factories for new cell elements
         this.cellFactory = new TemplateDataCellFactory( sce,
@@ -86,8 +89,6 @@ public class TemplateDataTableWidget extends Composite
         //Date converter is injected so a GWT compatible one can be used here and another in testing
         TemplateDataCellValueFactory.injectDateConvertor( GWTDateConverter.getInstance() );
 
-        setModel( model );
-
         //Wire-up event handlers
         eventBus.addHandler( DeleteRowEvent.TYPE,
                              this );
@@ -95,21 +96,10 @@ public class TemplateDataTableWidget extends Composite
                              this );
         eventBus.addHandler( AppendRowEvent.TYPE,
                              this );
-        eventBus.addHandler( DeleteColumnEvent.TYPE,
+        eventBus.addHandler( UpdateModelEvent.TYPE,
                              this );
 
         initWidget( widget );
-    }
-
-    /**
-     * Add a column to the end of the table
-     */
-    public void addColumn(TemplateDataColumn modelColumn) {
-        if ( modelColumn == null ) {
-            throw new IllegalArgumentException( "modelColumn cannot be null." );
-        }
-        addColumn( modelColumn,
-                   true );
     }
 
     public void appendRow() {
@@ -125,33 +115,6 @@ public class TemplateDataTableWidget extends Composite
     }
 
     /**
-     * Delete a column
-     */
-    public void deleteColumn(TemplateDataColumn modelColumn) {
-        if ( modelColumn == null ) {
-            throw new IllegalArgumentException( "modelColumn cannot be null." );
-        }
-        //TODO {manstis} Need to store list of columns probably
-        //        int index = model.getAllColumns().indexOf( modelColumn );
-        //        DeleteColumnEvent dce = new DeleteColumnEvent( index );
-        //        eventBus.fireEvent( dce );
-    }
-
-    /**
-     * Set column visibility
-     */
-    public void setColumnVisibility(TemplateDataColumn modelColumn,
-                                    boolean isVisible) {
-        if ( modelColumn == null ) {
-            throw new IllegalArgumentException( "modelColumn cannot be null" );
-        }
-
-        //TODO {manstis} Needs rewrite to events
-        //DynamicColumn<TemplateDataColumn> col = getDynamicColumn( modelColumn );
-        //widget.setColumnVisibility( col.getColumnIndex(),isVisible );
-    }
-
-    /**
      * Set the Template Data editor's data. This removes all existing columns
      * from the Template Data editor and re-creates them with the provided data.
      * 
@@ -164,52 +127,9 @@ public class TemplateDataTableWidget extends Composite
         this.model = model;
         this.cellValueFactory.setModel( model );
 
-        //Get interpolation variables
-        InterpolationVariable[] vars = model.getInterpolationVariablesList();
-        if ( vars.length == 0 ) {
-            return;
-        }
-
-        //Add corresponding columns to table
-        for ( InterpolationVariable var : vars ) {
-            addColumn( new TemplateDataColumn( var.getVarName(),
-                                               var.getDataType(),
-                                               var.getFactType(),
-                                               var.getFactField() ),
-                       false );
-        }
-
-        //Set row data
-        String[][] data = model.getTableAsArray();
-        //TODO {manstis} Needs rewrite to events
-        //final List<DynamicColumn<TemplateDataColumn>> columns = widget.getColumns();
-        //        for ( int iRow = 0; iRow < data.length; iRow++ ) {
-        //            DynamicDataRow row = new DynamicDataRow();
-        //            String[] rowData = data[iRow];
-        //            for ( int iCol = 0; iCol < columns.size(); iCol++ ) {
-        //                TemplateDataColumn col = columns.get( iCol ).getModelColumn();
-        //
-        //                //Underlying Template model uses empty Strings as null values; which is quite different in the MergedGrid world
-        //                String initialValue = rowData[iCol];
-        //                if ( initialValue != null && initialValue.equals( "" ) ) {
-        //                    initialValue = null;
-        //                }
-        //                CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( col,
-        //                                                                                                   initialValue );
-        //                row.add( cv );
-        //            }
-        //            widget.appendRow( row );
-        //        }
-
-        // Schedule redraw
-        Scheduler.get().scheduleDeferred( new ScheduledCommand() {
-
-            public void execute() {
-                //                widget.redraw();
-            }
-
-        } );
-
+        //Fire event for UI components to set themselves up
+        SetTemplateDataEvent sme = new SetTemplateDataEvent( model );
+        eventBus.fireEvent( sme );
     }
 
     /**
@@ -230,58 +150,6 @@ public class TemplateDataTableWidget extends Composite
                              height );
     }
 
-    // Add column to table with optional redraw
-    private void addColumn(TemplateDataColumn modelColumn,
-                           boolean bRedraw) {
-        //TODO {manstis} Needs rewrite to events
-        //        int index = widget.getColumns().size();
-        //        insertColumnBefore( modelColumn,
-        //                            index,
-        //                            bRedraw );
-    }
-
-    // Insert a new model column at the specified index
-    private void insertColumnBefore(TemplateDataColumn modelColumn,
-                                    int index,
-                                    boolean bRedraw) {
-
-        // Create new column for grid
-        //TODO {manstis} Change to events
-        //DynamicColumn<TemplateDataColumn> column = new DynamicColumn<TemplateDataColumn>( modelColumn,
-        //                                                                                  cellFactory.getCell( modelColumn ),
-        //                                                                                  index,
-        //                                                                                  eventBus );
-        //column.setVisible( true );
-
-        // Create column data
-        List<CellValue< ? extends Comparable< ? >>> columnData = makeColumnData( modelColumn,
-                                                                                 index );
-
-        // Add column and data to grid
-        //TODO {manstis} Needs rewrite to events
-        //        if ( index < widget.getColumns().size() ) {
-        //            DynamicColumn<TemplateDataColumn> columnBefore = widget.getColumns().get( index );
-        //            //widget.insertColumnBefore( columnBefore,column,columnData,bRedraw );
-        //        } else {
-        //            //widget.appendColumn( column,columnData,bRedraw );
-        //        }
-
-    }
-
-    // Make a row of data for insertion into a DecoratedGridWidget
-    private List<CellValue< ? extends Comparable< ? >>> makeColumnData(TemplateDataColumn column,
-                                                                       int colIndex) {
-        int dataSize = this.model.getRowsCount();
-        List<CellValue< ? extends Comparable< ? >>> columnData = new ArrayList<CellValue< ? extends Comparable< ? >>>();
-        for ( int iRow = 0; iRow < dataSize; iRow++ ) {
-            String value = cellValueFactory.makeModelCellValue( column );
-            CellValue< ? extends Comparable< ? >> cv = cellValueFactory.convertModelCellValue( column,
-                                                                                               value );
-            columnData.add( cv );
-        }
-        return columnData;
-    }
-
     public void onDeleteRow(DeleteRowEvent event) {
         model.removeRow( event.getIndex() );
     }
@@ -297,12 +165,38 @@ public class TemplateDataTableWidget extends Composite
         model.addRow( data.toArray( new String[data.size()] ) );
     }
 
-    public void onDeleteColumn(DeleteColumnEvent event) {
-        // TODO {manstis} Add some code
-    }
+    public void onUpdateModel(UpdateModelEvent event) {
 
-    public void onInsertColumn(InsertColumnEvent<TemplateDataColumn, String> event) {
-        // TODO {manstis} Add some code
+        //Copy data into the underlying model
+        List<List<CellValue< ? extends Comparable< ? >>>> changedData = event.getData();
+        Coordinate originCoordinate = event.getOriginCoordinate();
+        int originRowIndex = originCoordinate.getRow();
+        int originColumnIndex = originCoordinate.getCol();
+
+        InterpolationVariable[] vars = model.getInterpolationVariablesList();
+
+        for ( int iRow = 0; iRow < changedData.size(); iRow++ ) {
+            List<CellValue< ? extends Comparable< ? >>> changedRow = changedData.get( iRow );
+            int targetRowIndex = originRowIndex + iRow;
+            for ( int iCol = 0; iCol < changedRow.size(); iCol++ ) {
+                int targetColumnIndex = originColumnIndex + iCol;
+                CellValue< ? extends Comparable< ? >> changedCell = changedRow.get( iCol );
+
+                InterpolationVariable var = vars[targetColumnIndex];
+                TemplateDataColumn col = new TemplateDataColumn( var.getVarName(),
+                                                                 var.getDataType(),
+                                                                 var.getFactType(),
+                                                                 var.getFactField() );
+
+                String dcv = cellValueFactory.convertToModelCell( col,
+                                                                  changedCell );
+
+                List<String> columnData = model.getTable().get( var.getVarName() );
+                columnData.set( targetRowIndex,
+                                dcv );
+            }
+        }
+
     }
 
 }

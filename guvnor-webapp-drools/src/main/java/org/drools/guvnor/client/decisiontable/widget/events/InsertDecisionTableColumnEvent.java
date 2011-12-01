@@ -13,10 +13,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
+package org.drools.guvnor.client.decisiontable.widget.events;
 
 import java.util.List;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
 import org.drools.ide.common.client.modeldriven.dt52.DTCellValue52;
 import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 

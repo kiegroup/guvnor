@@ -13,8 +13,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
+package org.drools.guvnor.client.asseteditor.drools.templatedata.events;
 
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
 /**

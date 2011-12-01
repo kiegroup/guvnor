@@ -112,27 +112,28 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
 
     }
 
-    private static final int         MIN_COLUMN_WIDTH = 16;
+    private static final int                         MIN_COLUMN_WIDTH = 16;
 
-    protected Panel                  panel;
+    protected Panel                                  panel;
 
     //Model
-    protected M                      model;
-    protected List<DynamicColumn<T>> sortableColumns  = new ArrayList<DynamicColumn<T>>();
+    protected M                                      model;
+    protected List<DynamicColumn<T>>                 sortableColumns  = new ArrayList<DynamicColumn<T>>();
 
     // Resources
-    protected static final Constants constants        = GWT.create( Constants.class );
-    protected ResourcesProvider<T>   resources;
-    protected EventBus               eventBus;
+    protected static final Constants                 constants        = GWT.create( Constants.class );
+    protected ResourcesProvider<T>                   resources;
+    protected EventBus                               eventBus;
 
     // Column resizing
-    private ResizerInformation       resizerInfo      = new ResizerInformation();
-    private DivElement               resizer;
+    private AbstractDecoratedGridSidebarWidget<M, T> sidebar;
+    private ResizerInformation                       resizerInfo      = new ResizerInformation();
+    private DivElement                               resizer;
 
     /**
      * Construct a "Header" for the provided DecoratedGridWidget
      * 
-     * @param grid
+     * @param resources
      * @param eventBus
      */
     public AbstractDecoratedGridHeaderWidget(ResourcesProvider<T> resources,
@@ -297,9 +298,8 @@ public abstract class AbstractDecoratedGridHeaderWidget<M, T> extends CellPanel
     // would be rendered inside the DIV and hence still be covered
     // by the resizer.
     private void setResizerDimensions(int position) {
-        //TODO {manstis} How can we get the enclosing size?
-        //resizer.getStyle().setHeight( grid.getSidebarWidget().getOffsetHeight(), Unit.PX );
-        resizer.getStyle().setHeight( 100,
+        //TODO {manstis} resizer.getStyle().setHeight( sidebar.getOffsetHeight(),
+        resizer.getStyle().setHeight( 500,
                                       Unit.PX );
         resizer.getStyle().setLeft( position,
                                     Unit.PX );

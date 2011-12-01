@@ -27,6 +27,8 @@ import com.google.gwt.user.client.ui.Composite;
 /**
  * An abstract "Sidebar" widget to decorate a <code>DecoratedGridWidget</code>
  * 
+ * @param <M>
+ *            Domain Model type
  * @param <T>
  *            Column data-type
  */

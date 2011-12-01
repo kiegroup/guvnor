@@ -19,13 +19,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.guvnor.client.configurations.ApplicationPreferences;
+import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisionTableColumnEvent;
+import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SortDataEvent;
 import org.drools.ide.common.client.modeldriven.brl.BaseSingleFieldConstraint;
@@ -664,7 +664,8 @@ public class VerticalDecisionTableHeaderWidget extends AbstractDecoratedGridHead
     /**
      * Construct a "Header" for the provided DecisionTable
      * 
-     * @param decisionTable
+     * @param resources
+     * @param eventBus
      */
     public VerticalDecisionTableHeaderWidget(final ResourcesProvider<DTColumnConfig52> resources,
                                              final EventBus eventBus) {

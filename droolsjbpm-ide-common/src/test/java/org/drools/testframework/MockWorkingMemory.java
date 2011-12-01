@@ -486,8 +486,6 @@ public class MockWorkingMemory implements InternalWorkingMemory {
     }
 
 	public void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

@@ -18,6 +18,10 @@ package org.drools.guvnor.client.decisiontable.widget;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.decisiontable.widget.events.InsertDecisionTableColumnEvent;
+import org.drools.guvnor.client.decisiontable.widget.events.InsertInternalDecisionTableColumnEvent;
+import org.drools.guvnor.client.decisiontable.widget.events.SetGuidedDecisionTableModelEvent;
+import org.drools.guvnor.client.decisiontable.widget.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridSidebarWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridWidget;
@@ -26,11 +30,8 @@ import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.data.DynamicData;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.DeleteColumnEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertDecisionTableColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalDecisionTableColumnEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetGuidedDecisionTableModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalDecisionTableModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetModelEvent;
 import org.drools.ide.common.client.modeldriven.dt52.ActionCol52;
 import org.drools.ide.common.client.modeldriven.dt52.AnalysisCol52;
@@ -50,7 +51,10 @@ import com.google.gwt.user.client.ui.Panel;
 /**
  * A Decorated Grid for Decision Tables
  */
-public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52, DTCellValue52> {
+public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractDecoratedGridWidget<GuidedDecisionTable52, DTColumnConfig52, DTCellValue52>
+    implements
+    DeleteColumnEvent.Handler,
+    InsertColumnEvent.Handler<DTColumnConfig52, DTCellValue52> {
 
     //Factories to create new data elements
     protected final DecisionTableCellFactory      cellFactory;
@@ -85,6 +89,8 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         eventBus.addHandler( SetGuidedDecisionTableModelEvent.TYPE,
                              this );
         eventBus.addHandler( InsertDecisionTableColumnEvent.TYPE,
+                             this );
+        eventBus.addHandler( DeleteColumnEvent.TYPE,
                              this );
     }
 
@@ -295,6 +301,18 @@ public abstract class AbstractDecoratedDecisionTableGridWidget extends AbstractD
         eventBus.fireEvent( ice );
 
         //Assert dimensions once column has been added
+        if ( event.redraw() ) {
+            Scheduler.get().scheduleDeferred( new Command() {
+
+                public void execute() {
+                    assertDimensions();
+                }
+
+            } );
+        }
+    }
+
+    public void onDeleteColumn(DeleteColumnEvent event) {
         if ( event.redraw() ) {
             Scheduler.get().scheduleDeferred( new Command() {
 

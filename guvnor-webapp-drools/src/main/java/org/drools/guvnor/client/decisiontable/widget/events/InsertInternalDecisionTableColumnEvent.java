@@ -13,33 +13,34 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package org.drools.guvnor.client.widgets.drools.decoratedgrid.events;
+package org.drools.guvnor.client.decisiontable.widget.events;
 
 import java.util.List;
 
-import org.drools.guvnor.client.asseteditor.drools.templatedata.TemplateDataColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.CellValue;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.InsertInternalColumnEvent;
+import org.drools.ide.common.client.modeldriven.dt52.DTColumnConfig52;
 
 /**
  * An event to insert a column in the table
  */
-public abstract class InsertInternalTemplateDataColumnEvent extends InsertInternalColumnEvent<TemplateDataColumn> {
+public class InsertInternalDecisionTableColumnEvent extends InsertInternalColumnEvent<DTColumnConfig52> {
 
-    public InsertInternalTemplateDataColumnEvent(DynamicColumn<TemplateDataColumn> column,
-                                                 int index,
-                                                 boolean redraw,
-                                                 List<CellValue< ? extends Comparable< ? >>> data) {
+    public InsertInternalDecisionTableColumnEvent(DynamicColumn<DTColumnConfig52> column,
+                                                  int index,
+                                                  boolean redraw,
+                                                  List<CellValue< ? extends Comparable< ? >>> data) {
         super( column,
                index,
                redraw,
                data );
     }
 
-    public static Type<InsertInternalColumnEvent.Handler<TemplateDataColumn>> TYPE = new Type<InsertInternalColumnEvent.Handler<TemplateDataColumn>>();
+    public static Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>> TYPE = new Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>>();
 
     @Override
-    public Type<InsertInternalColumnEvent.Handler<TemplateDataColumn>> getAssociatedType() {
+    public Type<InsertInternalColumnEvent.Handler<DTColumnConfig52>> getAssociatedType() {
         return TYPE;
     }
 

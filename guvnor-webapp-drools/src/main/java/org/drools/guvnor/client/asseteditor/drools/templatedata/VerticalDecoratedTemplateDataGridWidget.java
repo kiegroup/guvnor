@@ -15,8 +15,8 @@
  */
 package org.drools.guvnor.client.asseteditor.drools.templatedata;
 
+import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetTemplateDataEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetTemplateDataEvent;
 
 import com.google.gwt.event.dom.client.ScrollEvent;
 import com.google.gwt.event.dom.client.ScrollHandler;

@@ -18,13 +18,14 @@ package org.drools.guvnor.client.asseteditor.drools.templatedata;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.drools.guvnor.client.asseteditor.drools.templatedata.events.SetInternalTemplateDataModelEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.AbstractDecoratedGridHeaderWidget;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.DynamicColumn;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.ResourcesProvider;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.SortConfiguration;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.ColumnResizeEvent;
 import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalModelEvent;
-import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SetInternalTemplateDataModelEvent;
+import org.drools.guvnor.client.widgets.drools.decoratedgrid.events.SortDataEvent;
 import org.drools.guvnor.client.widgets.tables.SortDirection;
 import org.drools.ide.common.client.modeldriven.dt.TemplateModel;
 
@@ -218,8 +219,9 @@ public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<
                             public void onClick(ClickEvent event) {
                                 if ( sortableColumn.isSortable() ) {
                                     updateSortOrder( sortableColumn );
-                                    //TODO {manstis} raise an event
-                                    //grid.sort();
+
+                                    SortDataEvent sde = new SortDataEvent( getSortConfiguration() );
+                                    eventBus.fireEvent( sde );
                                 }
                             }
 
@@ -375,12 +377,13 @@ public class TemplateDataHeaderWidget extends AbstractDecoratedGridHeaderWidget<
     }
 
     public void onSetInternalModel(SetInternalModelEvent<TemplateModel, TemplateDataColumn> event) {
+        this.sortableColumns.clear();
         this.model = event.getModel();
         List<DynamicColumn<TemplateDataColumn>> columns = event.getColumns();
         for ( DynamicColumn<TemplateDataColumn> column : columns ) {
             sortableColumns.add( column );
         }
-
+        redraw();
     }
 
 }

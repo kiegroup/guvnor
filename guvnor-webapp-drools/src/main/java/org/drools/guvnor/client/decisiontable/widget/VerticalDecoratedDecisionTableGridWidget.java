@@ -45,7 +45,7 @@ public class VerticalDecoratedDecisionTableGridWidget extends AbstractDecoratedD
                new VerticalDecisionTableHeaderWidget( resources,
                                                       eventBus ),
                new VerticalDecisionTableSidebarWidget( resources,
-                                                                    eventBus ) );
+                                                       eventBus ) );
     }
 
     /**
