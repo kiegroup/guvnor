@@ -10,17 +10,6 @@
 
   <includeBaseDirectory>false</includeBaseDirectory>
 
-  <fileSets>
-    <fileSet>
-      <!-- TODO Workaround for https://issues.jboss.org/browse/SOLDER-220 -->
-      <directory>../guvnor-webapp-drools/src/main/webapp/WEB-INF/</directory>
-      <includes>
-        <include>beans.xml</include>
-      </includes>
-      <outputDirectory>WEB-INF/classes/META-INF/</outputDirectory>
-    </fileSet>
-  </fileSets>
-
   <dependencySets>
     <dependencySet>
       <includes>

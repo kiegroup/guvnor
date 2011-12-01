@@ -10,8 +10,9 @@
         http://jboss.org/schema/weld/beans http://jboss.org/schema/weld/beans_1_1.xsd">
 
   <!--
-    TODO This file is duplicated in src/main/resources/META-INF/beans.xml
-    as a workaround for https://issues.jboss.org/browse/SOLDER-220
+    TODO WARNING THIS FILE IS AN EXACT DUPLICATE OF src/main/webapp/WEB-INF/beans.xml
+    It is a workaround for https://issues.jboss.org/browse/SOLDER-220
+    This file should be deleted, the WEB-INF is the correct one.
   -->
 
   <weld:scan>
