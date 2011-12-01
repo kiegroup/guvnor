@@ -555,7 +555,7 @@
 
           <tbody>
             <row>
-              <entry>/categories/{categoryName}</entry>
+              <entry>/categories/{categoryName}/assets</entry>
 
               <entry>GET</entry>
 
@@ -566,7 +566,7 @@
             </row>
 
             <row>
-              <entry>/categories/{categoryName}</entry>
+              <entry>/categories/{categoryName}/assets</entry>
 
               <entry>GET</entry>
 
@@ -577,7 +577,7 @@
             </row>
 
             <row>
-              <entry>/{categoryName}/page/{page}</entry>
+              <entry>/categories/{categoryName}/assets//page/{page}</entry>
 
               <entry>GET</entry>
 
