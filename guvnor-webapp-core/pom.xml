@@ -17,7 +17,7 @@
 
   <properties>
     <weld.version>1.1.4.Final</weld.version>
-    <seam.version>3.1.0.Beta5</seam.version>
+    <seam.version>3.1.0.CR1</seam.version>
     <!-- Keep in sync with /guvnor-webapp/src/test/resources/arquillian.xml -->
     <managed-appserver.jboss7.version>7.0.2.Final</managed-appserver.jboss7.version>
     <!--<managed-appserver.download.dir>${project.basedir}/local/managed-appserver</managed-appserver.download.dir>-->
